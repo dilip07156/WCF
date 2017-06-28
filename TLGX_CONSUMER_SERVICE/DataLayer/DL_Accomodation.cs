@@ -984,7 +984,7 @@ namespace DataLayer
                         search.ProductCategorySubType = AccomodationDetails.ProductCategorySubType;
 
                         //Check Ratting changes
-                        if(search.HotelRating != AccomodationDetails.HotelRating)
+                        if (search.HotelRating != AccomodationDetails.HotelRating)
                             search.RatingDate = DateTime.Today.Date;
 
                         search.HotelRating = AccomodationDetails.HotelRating;
@@ -1879,7 +1879,7 @@ namespace DataLayer
             }
         }
 
-        public bool CheckMediaPositionDuplicateforAccommodation(Guid Accommodation_Id, int MediaPosition,Guid Accommodation_Media_Id)
+        public bool CheckMediaPositionDuplicateforAccommodation(Guid Accommodation_Id, int MediaPosition, Guid Accommodation_Media_Id)
         {
             bool IsDuplicate = false;
             using (ConsumerEntities context = new ConsumerEntities())
@@ -1888,11 +1888,11 @@ namespace DataLayer
                               where x.Accommodation_Id == Accommodation_Id
                                     && x.Media_Position == MediaPosition
                               select x);
-                if(Accommodation_Media_Id != Guid.Empty)
+                if (Accommodation_Media_Id != Guid.Empty)
                 {
                     search = from x in search where x.Accommodation_Media_Id != Accommodation_Media_Id select x;
                 }
-                var result = (from x in search select x.Accommodation_Id).ToList();          
+                var result = (from x in search select x.Accommodation_Id).ToList();
                 if (result != null && result.Count() > 0)
                     IsDuplicate = true;
             }
@@ -2364,6 +2364,20 @@ namespace DataLayer
             catch
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation room info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public List<DataContracts.DC_Accomodation_Category_DDL> GetAccomodationRoomInfo_RoomCategory(Guid Accomodation_Id)
+        {
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                var search = (from ar in context.Accommodation_RoomInfo
+                             where ar.Accommodation_Id == Accomodation_Id
+                             select new DataContracts.DC_Accomodation_Category_DDL
+                             {
+                                 Accommodation_RoomInfo_Id = ar.Accommodation_RoomInfo_Id,
+                                 RoomCategory = ar.RoomCategory
+                             }).ToList();
+                return search;
             }
         }
 

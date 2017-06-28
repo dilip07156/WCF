@@ -5246,4 +5246,12 @@ namespace DataContracts
         public bool IsActive { get; set; }
 
     }
+    [DataContract]
+    public class DC_Accomodation_Category_DDL
+    {
+        [DataMember]
+        public Guid Accommodation_RoomInfo_Id { get; set; }
+        [DataMember]
+        public string RoomCategory { get; set; }
+    }
 }
