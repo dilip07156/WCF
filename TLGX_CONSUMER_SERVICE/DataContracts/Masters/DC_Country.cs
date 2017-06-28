@@ -44,6 +44,12 @@ namespace DataContracts.Masters
         int _TotalRecords;
 
         [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
+
+        [DataMember]
         public Guid Country_Id
         {
             get
@@ -486,6 +492,12 @@ namespace DataContracts.Masters
         int? _PageNo;
         int? _PageSize;
 
+
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
         [DataMember]
         public Guid? Country_Id
         {

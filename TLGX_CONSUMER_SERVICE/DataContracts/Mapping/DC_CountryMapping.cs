@@ -32,6 +32,12 @@ namespace DataContracts.Mapping
 
 
         [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
+
+        [DataMember]
         public Guid CountryMapping_Id
         {
             get
@@ -294,6 +300,13 @@ namespace DataContracts.Mapping
         string _SortBy;
         string _StatusExcept;
         string _SystemCountryName;
+
+
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
 
         [DataMember]
         public Guid? Supplier_Id

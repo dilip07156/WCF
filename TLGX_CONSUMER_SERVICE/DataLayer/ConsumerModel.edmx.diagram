@@ -39,7 +39,7 @@
         <EntityTypeShape EntityType="ConsumerModel.DynamicAttribute" Width="1.625" PointX="0.75" PointY="0.75" />
       </Diagram>
       <Diagram DiagramId="68f2bdb02b35425b9cc8f92095493a63" Name="Mapping" >
-        <EntityTypeShape EntityType="ConsumerModel.Accommodation_ProductMapping" Width="2.5" PointX="5.375" PointY="0.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="ConsumerModel.Accommodation_ProductMapping" Width="2.5" PointX="4.5" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ConsumerModel.m_CityMapping" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.m_CountryMapping" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.m_MasterAttributeMapping" Width="1.5" PointX="7.375" PointY="0.75" />

@@ -47,5 +47,6 @@ namespace DataLayer
         public string Website { get; set; }
         public string StreetNo { get; set; }
         public string TX_COUNTRYNAME { get; set; }
+        public string StarRating { get; set; }
     }
 }
