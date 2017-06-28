@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/TLGX_DataHandler_WcfService.DataContracts" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/TLGX_DataHandler_WcfService.DataContracts" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:64450/DataHandlerService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:64450/DataHandlerService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System.Net" />
+  <xs:complexType name="DC_SupplierImportFileDetails_TestProcess">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Data" nillable="true">
+        <xs:complexType>
+          <xs:annotation>
+            <xs:appinfo>
+              <ActualType Name="DataSet" Namespace="http://schemas.datacontract.org/2004/07/System.Data" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
+            </xs:appinfo>
+          </xs:annotation>
+          <xs:sequence>
+            <xs:element ref="xs:schema" />
+            <xs:any />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Entity" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="No_Of_Records_ToProcess" type="xs:int" />
+      <xs:element minOccurs="0" name="PROCESS_USER" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="STATUS" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SavedFilePath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SupplierImportFile_Id" type="ser:guid" />
+      <xs:element minOccurs="0" name="Supplier_Id" type="ser:guid" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DC_SupplierImportFileDetails_TestProcess" nillable="true" type="tns:DC_SupplierImportFileDetails_TestProcess" />
+  <xs:complexType name="DC_Status">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string" />
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/System.Net" minOccurs="0" name="StatusCode" type="q1:HttpStatusCode" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DC_Status" nillable="true" type="tns:DC_Status" />
+</xs:schema>

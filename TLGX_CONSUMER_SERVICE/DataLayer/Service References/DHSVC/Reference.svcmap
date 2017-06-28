@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="ded547d5-2a58-4cd3-86b8-c1f71805ea85" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:64450/DataHandlerService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="DataHandlerService.xsd" MetadataType="Schema" ID="38317d54-86f8-4113-b8e2-b55e0595bd5e" SourceId="1" SourceUrl="http://localhost:64450/DataHandlerService.svc?xsd=xsd2" />
+    <MetadataFile FileName="DataHandlerService.disco" MetadataType="Disco" ID="72ce4086-9246-4fe9-912e-50839b9f4ef6" SourceId="1" SourceUrl="http://localhost:64450/DataHandlerService.svc?disco" />
+    <MetadataFile FileName="DataHandlerService.wsdl" MetadataType="Wsdl" ID="ce13ff88-da81-4d8e-be1d-6b8fbd0f66e8" SourceId="1" SourceUrl="http://localhost:64450/DataHandlerService.svc?wsdl" />
+    <MetadataFile FileName="DataHandlerService1.xsd" MetadataType="Schema" ID="5777d38b-ee49-423a-92dc-03c0b6b1138e" SourceId="1" SourceUrl="http://localhost:64450/DataHandlerService.svc?xsd=xsd4" />
+    <MetadataFile FileName="DataHandlerService2.xsd" MetadataType="Schema" ID="0e6c0e44-62a0-4891-8a30-7adac985cd00" SourceId="1" SourceUrl="http://localhost:64450/DataHandlerService.svc?xsd=xsd1" />
+    <MetadataFile FileName="DataHandlerService3.xsd" MetadataType="Schema" ID="4d701a87-24a8-42a6-80b0-1eb886a2d4b0" SourceId="1" SourceUrl="http://localhost:64450/DataHandlerService.svc?xsd=xsd0" />
+    <MetadataFile FileName="DataHandlerService4.xsd" MetadataType="Schema" ID="3286ed05-60ce-4891-9b0c-6ed45ae2f68e" SourceId="1" SourceUrl="http://localhost:64450/DataHandlerService.svc?xsd=xsd3" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

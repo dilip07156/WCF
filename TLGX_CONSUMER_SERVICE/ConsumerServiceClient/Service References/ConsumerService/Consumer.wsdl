@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Consumer" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:57643/Consumer.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:57643/Consumer.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/DataContracts" />
+      <xsd:import schemaLocation="http://localhost:57643/Consumer.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:57643/Consumer.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Net" />
+      <xsd:import schemaLocation="http://localhost:57643/Consumer.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/DataContracts.Masters" />
+      <xsd:import schemaLocation="http://localhost:57643/Consumer.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/DataContracts.DC_Address" />
+      <xsd:import schemaLocation="http://localhost:57643/Consumer.svc?xsd=xsd6" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IConsumer_GetAccomodationList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationList" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationList_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q1:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AccomodationSearch_InputMessage">
+    <wsdl:part name="parameters" element="tns:AccomodationSearch" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AccomodationSearch_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AccomodationSearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AccomodationSearch_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q2:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationDetails_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationDetails" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationDetails_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationDetailsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationDetails_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q3:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationInfo" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationInfo_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q4="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q4:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateAccomodationInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateAccomodationInfo" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateAccomodationInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateAccomodationInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateAccomodationInfo_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q5="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q5:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddAccomodationInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddAccomodationInfo" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddAccomodationInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddAccomodationInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddAccomodationInfo_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q6="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q6:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationContacts_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationContacts" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationContacts_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationContactsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationContacts_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q7="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q7:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateAccomodationContacts_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateAccomodationContacts" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateAccomodationContacts_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateAccomodationContactsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateAccomodationContacts_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q8="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q8:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddAccomodationContacts_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddAccomodationContacts" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddAccomodationContacts_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddAccomodationContactsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddAccomodationContacts_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q9="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q9:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationDescriptions_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationDescriptions" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationDescriptions_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationDescriptionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationDescriptions_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q10="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q10:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateAccomodationDescriptions_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateAccomodationDescriptions" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateAccomodationDescriptions_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateAccomodationDescriptionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateAccomodationDescriptions_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q11="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q11:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddAccomodationDescriptions_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddAccomodationDescriptions" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddAccomodationDescriptions_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddAccomodationDescriptionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddAccomodationDescriptions_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q12="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q12:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationFacilities_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationFacilities" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationFacilities_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationFacilitiesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationFacilities_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q13="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q13:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateAccomodationFacilities_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateAccomodationFacilities" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateAccomodationFacilities_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateAccomodationFacilitiesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateAccomodationFacilities_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q14="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q14:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddAccomodationFacilities_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddAccomodationFacilities" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddAccomodationFacilities_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddAccomodationFacilitiesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddAccomodationFacilities_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q15="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q15:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationHealthAndSafety_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationHealthAndSafety" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationHealthAndSafety_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationHealthAndSafetyResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationHealthAndSafety_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q16="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q16:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationHotelUpdates_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationHotelUpdates" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationHotelUpdates_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationHotelUpdatesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationHotelUpdates_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q17="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q17:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationMedia_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationMedia" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationMedia_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationMediaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationMedia_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q18="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q18:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationNearbyPlaces_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationNearbyPlaces" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationNearbyPlaces_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationNearbyPlacesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationNearbyPlaces_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q19="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q19:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationPaxOccupancy_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationPaxOccupancy" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationPaxOccupancy_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationPaxOccupancyResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationPaxOccupancy_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q20="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q20:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationRoomInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationRoomInfo" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationRoomInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationRoomInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationRoomInfo_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q21="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q21:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationRouteInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationRouteInfo" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationRouteInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationRouteInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationRouteInfo_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q22="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q22:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationRuleInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationRuleInfo" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationRuleInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationRuleInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationRuleInfo_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q23="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q23:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccomodationStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAccomodationStatus_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q24="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q24:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateAccomodationStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateAccomodationStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateAccomodationStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateAccomodationStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateAccomodationStatus_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q25="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q25:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddAccomodationStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddAccomodationStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddAccomodationStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddAccomodationStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddAccomodationStatus_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q26="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q26:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAllCountries_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllCountries" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAllCountries_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllCountriesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAllCountries_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q27="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q27:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAllCities_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllCities" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAllCities_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllCitiesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetAllCities_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q28="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q28:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetCitiesByCountry_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCitiesByCountry" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetCitiesByCountry_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCitiesByCountryResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetCitiesByCountry_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q29="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q29:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetDynamicAttributes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDynamicAttributes" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetDynamicAttributes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDynamicAttributesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetDynamicAttributes_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q30="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q30:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateDynamicAttributes_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateDynamicAttributes" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateDynamicAttributes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateDynamicAttributesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_UpdateDynamicAttributes_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q31="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q31:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddDynamicAttributes_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddDynamicAttributes" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddDynamicAttributes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddDynamicAttributesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_AddDynamicAttributes_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q32="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q32:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetGeoLocationByAddress_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetGeoLocationByAddress" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetGeoLocationByAddress_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetGeoLocationByAddressResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetGeoLocationByAddress_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q33="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q33:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetGeoLocationByLatLng_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetGeoLocationByLatLng" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetGeoLocationByLatLng_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetGeoLocationByLatLngResponse" />
+  </wsdl:message>
+  <wsdl:message name="IConsumer_GetGeoLocationByLatLng_DC_ErrorStatusFault_FaultMessage">
+    <wsdl:part xmlns:q34="http://schemas.datacontract.org/2004/07/DataContracts" name="detail" element="q34:DC_ErrorStatus" />
+  </wsdl:message>
+  <wsdl:portType name="IConsumer">
+    <wsdl:operation name="GetAccomodationList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationList" message="tns:IConsumer_GetAccomodationList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationListResponse" message="tns:IConsumer_GetAccomodationList_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationListDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAccomodationList_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AccomodationSearch">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/AccomodationSearch" message="tns:IConsumer_AccomodationSearch_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/AccomodationSearchResponse" message="tns:IConsumer_AccomodationSearch_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/AccomodationSearchDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_AccomodationSearch_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccomodationDetails">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationDetails" message="tns:IConsumer_GetAccomodationDetails_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationDetailsResponse" message="tns:IConsumer_GetAccomodationDetails_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationDetailsDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAccomodationDetails_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccomodationInfo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationInfo" message="tns:IConsumer_GetAccomodationInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationInfoResponse" message="tns:IConsumer_GetAccomodationInfo_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationInfoDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAccomodationInfo_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateAccomodationInfo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/UpdateAccomodationInfo" message="tns:IConsumer_UpdateAccomodationInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/UpdateAccomodationInfoResponse" message="tns:IConsumer_UpdateAccomodationInfo_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/UpdateAccomodationInfoDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_UpdateAccomodationInfo_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddAccomodationInfo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/AddAccomodationInfo" message="tns:IConsumer_AddAccomodationInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/AddAccomodationInfoResponse" message="tns:IConsumer_AddAccomodationInfo_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/AddAccomodationInfoDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_AddAccomodationInfo_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccomodationContacts">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationContacts" message="tns:IConsumer_GetAccomodationContacts_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationContactsResponse" message="tns:IConsumer_GetAccomodationContacts_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationContactsDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAccomodationContacts_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateAccomodationContacts">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/UpdateAccomodationContacts" message="tns:IConsumer_UpdateAccomodationContacts_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/UpdateAccomodationContactsResponse" message="tns:IConsumer_UpdateAccomodationContacts_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/UpdateAccomodationContactsDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_UpdateAccomodationContacts_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddAccomodationContacts">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/AddAccomodationContacts" message="tns:IConsumer_AddAccomodationContacts_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/AddAccomodationContactsResponse" message="tns:IConsumer_AddAccomodationContacts_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/AddAccomodationContactsDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_AddAccomodationContacts_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccomodationDescriptions">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationDescriptions" message="tns:IConsumer_GetAccomodationDescriptions_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationDescriptionsResponse" message="tns:IConsumer_GetAccomodationDescriptions_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationDescriptionsDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAccomodationDescriptions_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateAccomodationDescriptions">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/UpdateAccomodationDescriptions" message="tns:IConsumer_UpdateAccomodationDescriptions_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/UpdateAccomodationDescriptionsResponse" message="tns:IConsumer_UpdateAccomodationDescriptions_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/UpdateAccomodationDescriptionsDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_UpdateAccomodationDescriptions_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddAccomodationDescriptions">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/AddAccomodationDescriptions" message="tns:IConsumer_AddAccomodationDescriptions_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/AddAccomodationDescriptionsResponse" message="tns:IConsumer_AddAccomodationDescriptions_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/AddAccomodationDescriptionsDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_AddAccomodationDescriptions_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccomodationFacilities">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationFacilities" message="tns:IConsumer_GetAccomodationFacilities_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationFacilitiesResponse" message="tns:IConsumer_GetAccomodationFacilities_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationFacilitiesDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAccomodationFacilities_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateAccomodationFacilities">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/UpdateAccomodationFacilities" message="tns:IConsumer_UpdateAccomodationFacilities_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/UpdateAccomodationFacilitiesResponse" message="tns:IConsumer_UpdateAccomodationFacilities_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/UpdateAccomodationFacilitiesDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_UpdateAccomodationFacilities_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddAccomodationFacilities">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/AddAccomodationFacilities" message="tns:IConsumer_AddAccomodationFacilities_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/AddAccomodationFacilitiesResponse" message="tns:IConsumer_AddAccomodationFacilities_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/AddAccomodationFacilitiesDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_AddAccomodationFacilities_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccomodationHealthAndSafety">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationHealthAndSafety" message="tns:IConsumer_GetAccomodationHealthAndSafety_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationHealthAndSafetyResponse" message="tns:IConsumer_GetAccomodationHealthAndSafety_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationHealthAndSafetyDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAccomodationHealthAndSafety_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccomodationHotelUpdates">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationHotelUpdates" message="tns:IConsumer_GetAccomodationHotelUpdates_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationHotelUpdatesResponse" message="tns:IConsumer_GetAccomodationHotelUpdates_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationHotelUpdatesDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAccomodationHotelUpdates_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccomodationMedia">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationMedia" message="tns:IConsumer_GetAccomodationMedia_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationMediaResponse" message="tns:IConsumer_GetAccomodationMedia_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationMediaDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAccomodationMedia_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccomodationNearbyPlaces">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationNearbyPlaces" message="tns:IConsumer_GetAccomodationNearbyPlaces_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationNearbyPlacesResponse" message="tns:IConsumer_GetAccomodationNearbyPlaces_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationNearbyPlacesDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAccomodationNearbyPlaces_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccomodationPaxOccupancy">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationPaxOccupancy" message="tns:IConsumer_GetAccomodationPaxOccupancy_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationPaxOccupancyResponse" message="tns:IConsumer_GetAccomodationPaxOccupancy_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationPaxOccupancyDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAccomodationPaxOccupancy_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccomodationRoomInfo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationRoomInfo" message="tns:IConsumer_GetAccomodationRoomInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationRoomInfoResponse" message="tns:IConsumer_GetAccomodationRoomInfo_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationRoomInfoDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAccomodationRoomInfo_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccomodationRouteInfo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationRouteInfo" message="tns:IConsumer_GetAccomodationRouteInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationRouteInfoResponse" message="tns:IConsumer_GetAccomodationRouteInfo_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationRouteInfoDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAccomodationRouteInfo_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccomodationRuleInfo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationRuleInfo" message="tns:IConsumer_GetAccomodationRuleInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationRuleInfoResponse" message="tns:IConsumer_GetAccomodationRuleInfo_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationRuleInfoDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAccomodationRuleInfo_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccomodationStatus">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationStatus" message="tns:IConsumer_GetAccomodationStatus_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationStatusResponse" message="tns:IConsumer_GetAccomodationStatus_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/GetAccomodationStatusDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAccomodationStatus_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateAccomodationStatus">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/UpdateAccomodationStatus" message="tns:IConsumer_UpdateAccomodationStatus_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/UpdateAccomodationStatusResponse" message="tns:IConsumer_UpdateAccomodationStatus_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/UpdateAccomodationStatusDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_UpdateAccomodationStatus_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddAccomodationStatus">
+      <wsdl:input wsaw:Action="http://tempuri.org/IAccomodation/AddAccomodationStatus" message="tns:IConsumer_AddAccomodationStatus_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IAccomodation/AddAccomodationStatusResponse" message="tns:IConsumer_AddAccomodationStatus_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IAccomodation/AddAccomodationStatusDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_AddAccomodationStatus_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllCountries">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMasters/GetAllCountries" message="tns:IConsumer_GetAllCountries_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMasters/GetAllCountriesResponse" message="tns:IConsumer_GetAllCountries_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IMasters/GetAllCountriesDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAllCountries_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllCities">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMasters/GetAllCities" message="tns:IConsumer_GetAllCities_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMasters/GetAllCitiesResponse" message="tns:IConsumer_GetAllCities_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IMasters/GetAllCitiesDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetAllCities_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCitiesByCountry">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMasters/GetCitiesByCountry" message="tns:IConsumer_GetCitiesByCountry_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMasters/GetCitiesByCountryResponse" message="tns:IConsumer_GetCitiesByCountry_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IMasters/GetCitiesByCountryDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetCitiesByCountry_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDynamicAttributes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMasters/GetDynamicAttributes" message="tns:IConsumer_GetDynamicAttributes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMasters/GetDynamicAttributesResponse" message="tns:IConsumer_GetDynamicAttributes_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IMasters/GetDynamicAttributesDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetDynamicAttributes_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateDynamicAttributes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMasters/UpdateDynamicAttributes" message="tns:IConsumer_UpdateDynamicAttributes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMasters/UpdateDynamicAttributesResponse" message="tns:IConsumer_UpdateDynamicAttributes_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IMasters/UpdateDynamicAttributesDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_UpdateDynamicAttributes_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddDynamicAttributes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMasters/AddDynamicAttributes" message="tns:IConsumer_AddDynamicAttributes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMasters/AddDynamicAttributesResponse" message="tns:IConsumer_AddDynamicAttributes_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IMasters/AddDynamicAttributesDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_AddDynamicAttributes_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetGeoLocationByAddress">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGeoLocation/GetGeoLocationByAddress" message="tns:IConsumer_GetGeoLocationByAddress_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IGeoLocation/GetGeoLocationByAddressResponse" message="tns:IConsumer_GetGeoLocationByAddress_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IGeoLocation/GetGeoLocationByAddressDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetGeoLocationByAddress_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetGeoLocationByLatLng">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGeoLocation/GetGeoLocationByLatLng" message="tns:IConsumer_GetGeoLocationByLatLng_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IGeoLocation/GetGeoLocationByLatLngResponse" message="tns:IConsumer_GetGeoLocationByLatLng_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IGeoLocation/GetGeoLocationByLatLngDC_ErrorStatusFault" name="DC_ErrorStatusFault" message="tns:IConsumer_GetGeoLocationByLatLng_DC_ErrorStatusFault_FaultMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:service name="Consumer" />
+</wsdl:definitions>

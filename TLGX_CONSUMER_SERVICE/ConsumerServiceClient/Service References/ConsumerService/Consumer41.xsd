@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/DataContracts.Masters" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/DataContracts.Masters" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:57643/Consumer.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="DC_DynamicAttributes_RQ">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AttributeClass" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ObjectSubElement_Id" nillable="true" type="ser:guid" />
+      <xs:element minOccurs="0" name="ObjectType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Object_Id" nillable="true" type="ser:guid" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DC_DynamicAttributes_RQ" nillable="true" type="tns:DC_DynamicAttributes_RQ" />
+  <xs:complexType name="ArrayOfDC_DynamicAttributes_RS">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DC_DynamicAttributes_RS" nillable="true" type="tns:DC_DynamicAttributes_RS" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDC_DynamicAttributes_RS" nillable="true" type="tns:ArrayOfDC_DynamicAttributes_RS" />
+  <xs:complexType name="DC_DynamicAttributes_RS">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AttributeClass" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AttributeName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AttributeValue" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DynamicAttribute_Id" type="ser:guid" />
+      <xs:element minOccurs="0" name="ObjectSubElement_Id" nillable="true" type="ser:guid" />
+      <xs:element minOccurs="0" name="ObjectType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Object_Id" nillable="true" type="ser:guid" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DC_DynamicAttributes_RS" nillable="true" type="tns:DC_DynamicAttributes_RS" />
+</xs:schema>

@@ -1,0 +1,431 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0301DDA4-0900-4EED-A386-BE26E3F067AD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DataLayer</RootNamespace>
+    <AssemblyName>DataLayer</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.2.1.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.2.1.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Accommodation.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_ClassificationAttributes.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_Contact.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_Descriptions.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_Facility.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_HealthAndSafety.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_HotelUpdates.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_Media.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_NearbyPlaces.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_PaxOccupancy.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_ProductMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_RoomFacility.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_RoomInfo.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_RouteInfo.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_RuleInfo.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_Status.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Accommodation_SupplierRoomTypeMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Activity.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Activity_Content.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Activity_SupplierProductMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Application.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetRole.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetUser.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetUserClaim.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetUserLogin.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Client.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CommonFunctions.cs" />
+    <Compile Include="ConsumerModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ConsumerModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ConsumerModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ConsumerModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ConsumerModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Counter.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DHSVCProxy.cs" />
+    <Compile Include="DL_Accomodation.cs" />
+    <Compile Include="DL_Admin.cs" />
+    <Compile Include="DL_GeoLocation.cs" />
+    <Compile Include="DL_Mapping.cs" />
+    <Compile Include="DL_Masters.cs" />
+    <Compile Include="DL_Master_Country.cs" />
+    <Compile Include="DL_Master_City.cs" />
+    <Compile Include="DL_Schedule.cs" />
+    <Compile Include="DL_UploadStaticData.cs" />
+    <Compile Include="DynamicAttribute.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DynamicLibrary.cs" />
+    <Compile Include="GoogleGeoCode.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LogTrack.cs" />
+    <Compile Include="Media_Attributes.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_Activity_Master.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_Approval_RoleMaster.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_Approval_StatusFlow.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_Approval_StatusMaster.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_CityArea.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_CityAreaLocation.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_CityMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_CityMaster.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_CountryMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_CountryMaster.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_EntityType.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_FrequencyType.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_keyword.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_keyword_alias.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_masterattribute.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_MasterAttributeMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_masterattributevalue.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_MasterAttributeValueMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_PortMaster.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_States.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_Statuses.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_SupplierImportAttributes.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_SupplierImportAttributeValues.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_TeamMembers.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_Teams.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_WorkflowMaster.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_WorkFlowMessage.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="m_WorkflowSteps.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Organisation_Company.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueryHelper.cs" />
+    <Compile Include="Schedule_NextOccurance.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\DHSVC\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="SiteMap.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="stg_SupplierCityMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="stg_SupplierCountryMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="stg_SupplierHotelRoomMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="stg_SupplierProductMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Supplier.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SupplierImportFileDetail.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SupplierImportFile_ErrorLog.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Supplier_Market.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Supplier_ProductCategory.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Supplier_Schedule.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserEntity.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vwMappingStat.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="ConsumerModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ConsumerModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="ConsumerModel.edmx.diagram">
+      <DependentUpon>ConsumerModel.edmx</DependentUpon>
+    </None>
+    <None Include="log4net.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
+    <None Include="Service References\DHSVC\DataHandlerService.wsdl" />
+    <None Include="Service References\DHSVC\DataHandlerService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DHSVC\DataHandlerService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DHSVC\DataHandlerService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DHSVC\DataHandlerService3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DHSVC\DataHandlerService4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ConsumerModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ConsumerModel.edmx</DependentUpon>
+      <LastGenOutput>ConsumerModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="ConsumerModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ConsumerModel.edmx</DependentUpon>
+      <LastGenOutput>ConsumerModel.cs</LastGenOutput>
+    </Content>
+    <None Include="Service References\DHSVC\DataLayer.DHSVC.DC_Status.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DHSVC\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\DHSVC\configuration.svcinfo" />
+    <None Include="Service References\DHSVC\configuration91.svcinfo" />
+    <None Include="Service References\DHSVC\DataHandlerService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataContracts\DataContracts.csproj">
+      <Project>{a479d1cc-fec1-457c-8790-bb00e93082c4}</Project>
+      <Name>DataContracts</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\DHSVC\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

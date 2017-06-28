@@ -1,0 +1,119 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace DataLayer
+{
+    public static class CommonFunctions
+    {
+        public static string RemoveSpecialCharacters(string str)
+        {
+            StringBuilder sb = new StringBuilder();
+            char[] arr = str.Where(c => (char.IsLetterOrDigit(c))).ToArray();
+            return new string(arr);
+        }
+
+        public static string GetCharacter(string str,int lenghth)
+        {
+            str = RemoveSpecialCharacters(str);
+            int len = str.Length;
+            if (len > lenghth)
+                return str.Substring(len - lenghth);
+            else
+                return str;
+        }
+
+        public static string RemoveSpecialChars(string str)
+        {
+            return str.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "").Replace("'", "").Replace("!", "").Replace("#", "").Replace("\"", "");
+        }
+        public static string RemoveVowels(string str)
+        {
+            return str.Replace("A", "").Replace("E", "").Replace("I", "").Replace("O", "").Replace("U", "");
+        }
+        public static string RemoveNumbers(string str)
+        {
+            return str.Replace("0", "").Replace("1", "").Replace("2", "").Replace("3", "").Replace("4", "").Replace("5", "").Replace("6", "").Replace("7", "").Replace("8", "").Replace("9", "");
+        }
+
+        public static string ReturnNumbersFromString(string str)
+        {
+            return Regex.Replace(str, @"[^\d]", "");
+        }
+
+        public static string NumberTo3CharString(int num)
+        {
+            int n = 0;
+            string ret = "000";
+            if (num < 0)
+            {
+                string negative = num.ToString().Replace("-", "");
+                n = Convert.ToInt32(negative);
+            }
+            else
+                n = num;
+            
+            if (n > 0)
+            {
+                if (n < 99)
+                {
+                    if (n < 9)
+                    {
+                        ret = "00" + n.ToString();
+                    }
+                    else
+                        ret = "0" + n.ToString();
+                }
+                else
+                    ret = n.ToString();
+            }
+
+            return ret;
+        }
+
+        public static string GenerateCityCode(DataContracts.Masters.DC_City param)
+        {
+            string code = "";
+            string countrycode = "";
+            string cityname = "";
+            string num = "";
+            List<DataContracts.Masters.DC_Country> country = new List<DataContracts.Masters.DC_Country>();
+            DataContracts.Masters.DC_Country_Search_RQ RQ = new DataContracts.Masters.DC_Country_Search_RQ();
+            DL_Masters dlm = new DL_Masters();
+            if (param.Country_Id != null && param.Country_Id != Guid.Empty)
+            {
+                RQ.Country_Id = param.Country_Id;
+                RQ.PageNo = 0;
+                RQ.PageSize = int.MaxValue;
+                country = dlm.GetCountryMaster(RQ);
+
+                if (country != null && country.Count > 0)
+                {
+                    if (!string.IsNullOrWhiteSpace(country[0].ISO3166_1_Alpha_3))
+                        countrycode = country[0].ISO3166_1_Alpha_3.ToString();
+                    else
+                    {
+                        if (!string.IsNullOrWhiteSpace(country[0].ISO3166_1_Alpha_2))
+                            countrycode = country[0].ISO3166_1_Alpha_2.ToString();
+                        else
+                        {
+                            if (!string.IsNullOrWhiteSpace(country[0].Code))
+                                countrycode = country[0].Code.ToString();
+                        }
+                    }
+
+                    cityname = RemoveSpecialChars(RemoveVowels(param.Name.ToUpper()));
+                    cityname = cityname.Substring(0, 4);
+                    num = dlm.GetNextCityCodeNumber(countrycode + "-" + cityname);
+                    code = countrycode + "-" + cityname + num;
+                }
+            }
+
+            return code;
+        }
+    }
+}
