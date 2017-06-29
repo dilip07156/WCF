@@ -462,7 +462,20 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
+        public IList<DataContracts.DC_Accomodation_Category_DDL> GetAccomodationRoomInfo_RoomCategory(string Accomodation_Id)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                List<DC_Accomodation_Category_DDL> searchResults = new List<DC_Accomodation_Category_DDL>();
+                searchResults = objBL.GetAccomodationRoomInfo_RoomCategory(Guid.Parse(Accomodation_Id));
 
+                if (searchResults == null)
+                {
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                }
+                return searchResults;
+            }
+        }
         public bool AddAccomodationRoomInfo(DataContracts.DC_Accommodation_RoomInfo RI)
         {
             using (BL_Accomodation obj = new BL_Accomodation())

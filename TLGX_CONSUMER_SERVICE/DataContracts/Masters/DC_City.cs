@@ -27,6 +27,13 @@ namespace DataContracts.Masters
         string _Google_PlaceId;
         int _TotalRecords;
 
+
+
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
         [DataMember]
         public Guid City_Id
         {
@@ -249,6 +256,14 @@ namespace DataContracts.Masters
         int? _PageSize;
         string _AlphaPageIndex;
         string _status;
+
+
+
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
 
         [DataMember]
         public Guid? Country_Id

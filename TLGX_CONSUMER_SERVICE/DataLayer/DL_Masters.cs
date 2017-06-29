@@ -116,7 +116,9 @@ namespace DataLayer
                                      MARC = a.MARC,
                                      Status = a.Status,
                                      WMO = a.WMO,
-                                     TotalRecords = total
+                                     TotalRecords = total,
+                                     Latitude = a.Latitude,
+                                     Longitude = a.Longitude
                                  };
 
                     return result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
@@ -176,7 +178,8 @@ namespace DataLayer
                         objNew.Status = param.Status;
                         objNew.WMO = param.WMO;
                         objNew.Country_Id = param.Country_Id;
-
+                        objNew.Latitude = param.Latitude;
+                        objNew.Longitude = param.Longitude;
                         context.m_CountryMaster.Add(objNew);
                     }
                     else if (param.Action == "Update")
@@ -271,7 +274,8 @@ namespace DataLayer
                     objNew.MARC = param.MARC;
                     objNew.Status = param.Status;
                     objNew.WMO = param.WMO;
-
+                    objNew.Latitude = param.Latitude;
+                    objNew.Longitude = param.Longitude;
                     context.m_CountryMaster.Add(objNew);
                     context.SaveChanges();
 
@@ -802,7 +806,9 @@ namespace DataLayer
                                      StateName = a.StateName,
                                      State_Id = a.State_Id,
                                      Status = a.Status,
-                                     TotalRecords = total
+                                     TotalRecords = total,
+                                     Latitude = a.Latitude,
+                                     Longitude = a.Longitude
                                  };
 
                     return result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
@@ -896,7 +902,8 @@ namespace DataLayer
                         objNew.StateName = param.StateName;
                         objNew.State_Id = param.State_Id;
                         objNew.Status = param.Status;
-
+                        objNew.Latitude = param.Latitude;
+                        objNew.Longitude = param.Longitude;
                         context.m_CityMaster.Add(objNew);
                         context.SaveChanges();
 

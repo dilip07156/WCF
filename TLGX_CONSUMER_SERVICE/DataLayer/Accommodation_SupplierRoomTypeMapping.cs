@@ -59,5 +59,7 @@ namespace DataLayer
         public string Tx_ReorderedName { get; set; }
         public string Tx_Facilities { get; set; }
         public Nullable<bool> Tx_BedType { get; set; }
+        public string MappingStatus { get; set; }
+        public Nullable<int> MapId { get; set; }
     }
 }

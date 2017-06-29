@@ -58,6 +58,10 @@ namespace DataContracts.Mapping
         string _mstAcco_Id;
         string _mstHotelName;
 
+
+
+        [DataMember]
+        public string StarRating { get; set; }
         [DataMember]
         public Guid Accommodation_ProductMapping_Id
         {
@@ -709,6 +713,11 @@ namespace DataContracts.Mapping
         string _source;
         string _address_tx;
         string _TelephoneNumber_tx;
+
+
+
+        [DataMember]
+        public string StarRating { get; set; }
 
         [DataMember]
         public string SupplierId
