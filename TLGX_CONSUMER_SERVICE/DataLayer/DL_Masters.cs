@@ -3796,15 +3796,19 @@ namespace DataLayer
                 {
                     foreach (var item in obj)
                     {
-                        var search = context.m_keyword.Find(item.Keyword);
-                        if (search != null)
+                        var search = context.m_keyword.Where(a => a.Keyword == item.Keyword);
+                        if (search.ToList().Count > 0)
                         {
-                            search.Keyword = item.Keyword;
-                            search.Missing = item.Missing;
-                            search.Extra = item.Extra;
-                            search.Edit_Date = item.Edit_Date;
-                            search.Edit_User = item.Edit_User;
-                            search.Status = item.Status;
+                            var res = search.FirstOrDefault();
+                            var asearch = context.m_keyword.Find(res.Keyword_Id);
+
+                            asearch.Keyword = item.Keyword;
+                            asearch.Missing = item.Missing;
+                            asearch.Extra = item.Extra;
+                            asearch.Edit_Date = item.Edit_Date;
+                            asearch.Edit_User = item.Edit_User;
+                            asearch.Status = item.Status;
+                            context.SaveChanges();
                         }
                         else
                         {
@@ -3820,9 +3824,9 @@ namespace DataLayer
                             objnew.Edit_User = item.Edit_User;
                             objnew.Status = item.Status;
                             context.m_keyword.Add(objnew);
+                            context.SaveChanges();
                         }
                     }
-                    context.SaveChanges();
                 }
                 ret.StatusMessage = "Keyword " + ReadOnlyMessage.strUpdatedSuccessfully;
                 ret.StatusCode = ReadOnlyMessage.StatusCode.Success;
@@ -3949,7 +3953,8 @@ namespace DataLayer
                     // START INSERTING ALIAS
                     foreach (var item in obj)
                     {
-                        var search = context.m_keyword_alias.Where(a => a.Keyword_Id == GetKeywordIDbyName(item.Keyword) && a.Value == item.Value);
+                        item.Keyword_Id = GetKeywordIDbyName(item.Keyword);
+                        var search = context.m_keyword_alias.Where(a => a.Keyword_Id == item.Keyword_Id && a.Value == item.Value);
                         if (search.ToList().Count > 0)
                         {
                             var res = search.FirstOrDefault();
@@ -3964,7 +3969,7 @@ namespace DataLayer
                             var ID = Guid.NewGuid();
                             DataLayer.m_keyword_alias objnewAlias = new m_keyword_alias();
                             objnewAlias.KeywordAlias_Id = ID;
-                            objnewAlias.Keyword_Id = GetKeywordIDbyName(item.Keyword);
+                            objnewAlias.Keyword_Id = item.Keyword_Id; // GetKeywordIDbyName(item.Keyword);
                             objnewAlias.Value = item.Value;
                             objnewAlias.Create_Date = item.Create_Date;
                             objnewAlias.Create_User = item.Create_User;
@@ -3979,7 +3984,7 @@ namespace DataLayer
                 ret.StatusCode = ReadOnlyMessage.StatusCode.Success;
                 return ret;
             }
-            catch
+            catch(Exception e)
             {
                 ret.StatusMessage = "Keyword " + ReadOnlyMessage.strFailed;
                 ret.StatusCode = ReadOnlyMessage.StatusCode.Failed;
