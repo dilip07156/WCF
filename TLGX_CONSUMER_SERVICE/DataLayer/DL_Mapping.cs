@@ -1748,7 +1748,56 @@ namespace DataLayer
             }
             return objLst;
         }
+        public List<DataContracts.Mapping.DC_RollOffReportStatus> getStatisticforStatusReport(DataContracts.Mapping.DC_RollOFParams parm)
+        {
+            List<DataContracts.Mapping.DC_RollOffReportStatus> objLst = new List<DC_RollOffReportStatus>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    DateTime fd = Convert.ToDateTime(parm.Fromdate);
+                    DateTime td = Convert.ToDateTime(parm.ToDate);
+                    var search = (from t in context.Accommodation_Status
+                                  join t1 in context.Accommodations on t.Accommodation_Id equals t1.Accommodation_Id
+                                  where (t.Create_Date >= fd && t.Edit_Date <= td)
+                                  select new
+                                  {
+                                      HotelID = t1.CompanyHotelID,
+                                      HotelName = t1.HotelName,
+                                      market = t.CompanyMarket,
+                                      status = t.Status,
+                                      fromd=t.From,
+                                      tod=t.To,
+                                      reason=t.DeactivationReason,
+                                     // flag = t.IsInternal == true ? "YES" : "NO",
+                                      LupdateDate = t.Edit_Date == null ? t.Create_Date : t.Edit_Date,
+                                      LupdateBy = t.Edit_User == null ? t.Create_User : t.Edit_User
+                                  }).ToList();
+                    foreach (var item in search)
+                    {
 
+                        DC_RollOffReportStatus obj = new DC_RollOffReportStatus();
+                        obj.Hotelid = item.HotelID.Value;
+                        obj.Hotelname = item.HotelName;
+                        obj.Companymarket = item.market;
+                        obj.Status = item.status;
+                        obj.Validfrom = Convert.ToString(item.fromd);
+                        obj.Validto = Convert.ToString(item.tod);
+                        obj.Reason = item.reason;
+                       // obj.Internal_Flag = item.flag;
+                        obj.LastupdateDate = Convert.ToString(item.LupdateDate);
+                        obj.LastupdatedBy = item.LupdateBy;
+                        objLst.Add(obj);
+                    }
+                }
+
+            }
+            catch
+            {
+
+            }
+            return objLst;
+        }
         #endregion
         #region Master Attribute Mapping
         public List<DataContracts.Mapping.DC_MasterAttributeMapping_RS> SearchMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping_RQ RQ)
