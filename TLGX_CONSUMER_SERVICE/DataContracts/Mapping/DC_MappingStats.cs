@@ -339,7 +339,137 @@ namespace DataContracts.Mapping
             }
         }
     }
+    [DataContract]
+    public class DC_RollOffReportStatus
+    {
+        int _hotelid;
+        string _hotelname;
+        string _companymarket;
+        string _status;
+        string _validfrom;
+        string _validto;
+        string _reason;
+        string _lastupdatedBy;
+        string _lastupdateDate;
+        [DataMember]
+        public int Hotelid
+        {
+            get
+            {
+                return _hotelid;
+            }
 
+            set
+            {
+                _hotelid = value;
+            }
+        }
+        [DataMember]
+        public string Hotelname
+        {
+            get
+            {
+                return _hotelname;
+            }
+
+            set
+            {
+                _hotelname = value;
+            }
+        }
+        [DataMember]
+        public string Companymarket
+        {
+            get
+            {
+                return _companymarket;
+            }
+
+            set
+            {
+                _companymarket = value;
+            }
+        }
+        [DataMember]
+        public string Status
+        {
+            get
+            {
+                return _status;
+            }
+
+            set
+            {
+                _status = value;
+            }
+        }
+        [DataMember]
+        public string Validfrom
+        {
+            get
+            {
+                return _validfrom;
+            }
+
+            set
+            {
+                _validfrom = value;
+            }
+        }
+        [DataMember]
+        public string Validto
+        {
+            get
+            {
+                return _validto;
+            }
+
+            set
+            {
+                _validto = value;
+            }
+        }
+        [DataMember]
+        public string Reason
+        {
+            get
+            {
+                return _reason;
+            }
+
+            set
+            {
+                _reason = value;
+            }
+        }
+        [DataMember]
+        public string LastupdatedBy
+        {
+            get
+            {
+                return _lastupdatedBy;
+            }
+
+            set
+            {
+                _lastupdatedBy = value;
+            }
+        }
+        [DataMember]
+        public string LastupdateDate
+        {
+            get
+            {
+                return _lastupdateDate;
+            }
+
+            set
+            {
+                _lastupdateDate = value;
+            }
+        }
+    }
+    [DataContract]
     public class DC_RollOFParams
     {
         string _fromdate;

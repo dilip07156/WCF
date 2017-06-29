@@ -134,6 +134,13 @@ namespace ConsumerSvc
                 return objBL.getStatisticforRuleReport(param);
             }
         }
+        public IList<DataContracts.Mapping.DC_RollOffReportStatus> getStatisticforStatusReport(DataContracts.Mapping.DC_RollOFParams param)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.getStatisticforStatusReport(param);
+            }
+        }
         #endregion
         #region Master Attribute Mapping
         public List<DataContracts.Mapping.DC_MasterAttributeMapping_RS> SearchMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping_RQ RQ)
