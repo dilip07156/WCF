@@ -4752,6 +4752,12 @@ namespace DataContracts
     }
 
     [DataContract]
+    public class DC_RoomCategoryMaster_RQ
+    {
+        [DataMember]
+        public string RoomCategory { get; set; }
+    }
+    [DataContract]
     public class DC_Accomodation_Search_RS
     {
         string _AccomodationId;

@@ -217,6 +217,13 @@ namespace BusinessLayer
                 return objBL.getStatisticforRuleReport(param);
             }
         }
+        public List<DataContracts.Mapping.DC_RollOffReportStatus> getStatisticforStatusReport(DataContracts.Mapping.DC_RollOFParams param)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.getStatisticforStatusReport(param);
+            }
+        }
 
         #endregion
         #region Master Attribute Mapping

@@ -25,5 +25,7 @@ namespace DataLayer
         public string UpdateType { get; set; }
         public Nullable<System.DateTime> InsertDate { get; set; }
         public string ActionText { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
     }
 }

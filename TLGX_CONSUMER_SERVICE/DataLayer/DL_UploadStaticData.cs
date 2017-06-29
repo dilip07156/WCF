@@ -890,6 +890,8 @@ namespace DataLayer
                             objNew.Action = obj.Action;
                             objNew.UpdateType = obj.UpdateType;
                             objNew.ActionText = obj.ActionText;
+                            objNew.Latitude = obj.Latitude;
+                            objNew.Longitude = obj.Longitude;
                             context.stg_SupplierCountryMapping.Add(objNew);
                         }
                             context.SaveChanges();
@@ -975,7 +977,9 @@ namespace DataLayer
                                          InsertDate = a.InsertDate,
                                          SupplierId = a.SupplierId,
                                          SupplierName = a.SupplierName,
-                                         TotalRecords = total
+                                         TotalRecords = total,
+                                         Latitude = a.Latitude,
+                                         Longitude = a.Longitude
                                      }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 
@@ -1088,7 +1092,9 @@ namespace DataLayer
                                          CountryName = a.CountryName,
                                          SupplierId = a.SupplierId,
                                          SupplierName = a.SupplierName,
-                                         TotalRecords = total
+                                         TotalRecords = total,
+                                         Latitude = a.Latitude,
+                                         Longitude = a.Longitude
                                      }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 
@@ -1142,6 +1148,8 @@ namespace DataLayer
                             objNew.Action = obj.Action;
                             objNew.UpdateType = obj.UpdateType;
                             objNew.ActionText = obj.ActionText;
+                            objNew.Latitude = obj.Latitude;
+                            objNew.Longitude = obj.Longitude;
                             context.stg_SupplierCityMapping.Add(objNew);
                         }
                             context.SaveChanges();
@@ -1218,7 +1226,7 @@ namespace DataLayer
                             objNew.Action = obj.Action;
                             objNew.UpdateType = obj.UpdateType;
                             objNew.ActionText = obj.ActionText;
-
+                            objNew.StarRating = obj.StarRating;
                             context.stg_SupplierProductMapping.Add(objNew);
                         }
                             context.SaveChanges();

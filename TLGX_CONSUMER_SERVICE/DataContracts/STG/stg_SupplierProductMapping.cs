@@ -116,5 +116,9 @@ namespace DataContracts.STG
 
         [DataMember]
         public string TX_COUNTRYNAME { get; set; }
+
+
+        [DataMember]
+        public string StarRating { get; set; }
     }
 }

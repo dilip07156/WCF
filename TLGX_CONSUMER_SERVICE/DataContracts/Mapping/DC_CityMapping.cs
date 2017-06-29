@@ -35,6 +35,13 @@ namespace DataContracts.Mapping
         string _StateCode;
         string _StateName;
 
+
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
+
         [DataMember]
         public Guid CityMapping_Id
         {
@@ -374,6 +381,14 @@ namespace DataContracts.Mapping
         string _SupplierCityName;
         string _StatusExcept;
         string _ResultSet;
+
+
+
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
 
         [DataMember]
         public Guid? Country_Id

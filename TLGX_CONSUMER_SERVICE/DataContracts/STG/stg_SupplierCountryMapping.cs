@@ -53,6 +53,13 @@ namespace DataContracts.STG
 
         [DataMember]
         public int TotalRecords { get; set; }
+
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
+
     }
 
     [DataContract]
@@ -78,5 +85,11 @@ namespace DataContracts.STG
 
         [DataMember]
         public int PageSize { get; set; }
+
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
     }
 }

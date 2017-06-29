@@ -116,7 +116,9 @@ namespace DataLayer
                                      MARC = a.MARC,
                                      Status = a.Status,
                                      WMO = a.WMO,
-                                     TotalRecords = total
+                                     TotalRecords = total,
+                                     Latitude = a.Latitude,
+                                     Longitude = a.Longitude
                                  };
 
                     return result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
@@ -176,7 +178,8 @@ namespace DataLayer
                         objNew.Status = param.Status;
                         objNew.WMO = param.WMO;
                         objNew.Country_Id = param.Country_Id;
-
+                        objNew.Latitude = param.Latitude;
+                        objNew.Longitude = param.Longitude;
                         context.m_CountryMaster.Add(objNew);
                     }
                     else if (param.Action == "Update")
@@ -271,7 +274,8 @@ namespace DataLayer
                     objNew.MARC = param.MARC;
                     objNew.Status = param.Status;
                     objNew.WMO = param.WMO;
-
+                    objNew.Latitude = param.Latitude;
+                    objNew.Longitude = param.Longitude;
                     context.m_CountryMaster.Add(objNew);
                     context.SaveChanges();
 
@@ -464,6 +468,7 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Country Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
 
         public List<State_AlphaPage> GetStatesAlphaPaging(DC_State_Search_RQ RQ)
         {
@@ -802,7 +807,9 @@ namespace DataLayer
                                      StateName = a.StateName,
                                      State_Id = a.State_Id,
                                      Status = a.Status,
-                                     TotalRecords = total
+                                     TotalRecords = total,
+                                     Latitude = a.Latitude,
+                                     Longitude = a.Longitude
                                  };
 
                     return result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
@@ -896,7 +903,8 @@ namespace DataLayer
                         objNew.StateName = param.StateName;
                         objNew.State_Id = param.State_Id;
                         objNew.Status = param.Status;
-
+                        objNew.Latitude = param.Latitude;
+                        objNew.Longitude = param.Longitude;
                         context.m_CityMaster.Add(objNew);
                         context.SaveChanges();
 
@@ -3729,11 +3737,10 @@ namespace DataLayer
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var ID = Guid.NewGuid();
                     foreach (var item in obj)
                     {
+                        var ID = Guid.NewGuid();
                         DataLayer.m_keyword objnew = new m_keyword();
-                        DataLayer.m_keyword_alias objnewAlias = new m_keyword_alias();
                         objnew.Keyword_Id = ID;
                         objnew.Keyword = item.Keyword;
                         objnew.Missing = item.Missing;
@@ -3743,129 +3750,335 @@ namespace DataLayer
                         objnew.Edit_Date = item.Edit_Date;
                         objnew.Edit_User = item.Edit_User;
                         objnew.Status = item.Status;
-                        objnewAlias.KeywordAlias_Id = Guid.NewGuid();
-                        objnewAlias.Keyword_Id = ID;
-                        objnewAlias.Value = item.AliasValue;
-                        objnewAlias.Create_Date = item.AliasCreate_Date;
-                        objnewAlias.Create_User = item.AliasCreate_User;
-                        objnewAlias.Status = item.AliasStatus;
                         context.m_keyword.Add(objnew);
-                        context.m_keyword_alias.Add(objnewAlias);
+
+                        //DataLayer.m_keyword_alias objnewAlias = new m_keyword_alias();
+                        //objnew.Keyword_Id = ID;
+                        //objnew.Keyword = item.Keyword;
+                        //objnew.Missing = item.Missing;
+                        //objnew.Extra = item.Extra;
+                        //objnew.Create_User = item.Create_User;
+                        //objnew.Create_Date = item.Create_Date;
+                        //objnew.Edit_Date = item.Edit_Date;
+                        //objnew.Edit_User = item.Edit_User;
+                        //objnew.Status = item.Status;
+                        //objnewAlias.KeywordAlias_Id = Guid.NewGuid();
+                        //objnewAlias.Keyword_Id = ID;
+                        //objnewAlias.Value = item.AliasValue;
+                        //objnewAlias.Create_Date = item.AliasCreate_Date;
+                        //objnewAlias.Create_User = item.AliasCreate_User;
+                        //objnewAlias.Status = item.AliasStatus;
+                        //context.m_keyword_alias.Add(objnewAlias);
+
+
                         context.SaveChanges();
                     }
 
                 }
-                ret.StatusMessage = "Success";
+                ret.StatusMessage = "Keyword " +  ReadOnlyMessage.strAddedSuccessfully;
+                ret.StatusCode = ReadOnlyMessage.StatusCode.Success;
                 return ret;
             }
             catch
             {
-                ret.StatusMessage = "Failed";
+                ret.StatusMessage = "Keyword " + ReadOnlyMessage.strFailed;
+                ret.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                 return ret;
             }
         }
 
-        public DC_Message UpdateKeyword(List<DC_Keyword> obj)
+        public DC_Message AddUpdateKeyword(List<DC_Keyword> obj)
         {
             DataContracts.DC_Message ret = new DataContracts.DC_Message();
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    
                     foreach (var item in obj)
                     {
-                        DataLayer.m_keyword objnew = new m_keyword();
-                        DataLayer.m_keyword_alias objnewAlias = new m_keyword_alias();
-                        objnew.Keyword = item.Keyword;
-                        objnew.Missing = item.Missing;
-                        objnew.Extra = item.Extra;
-                        objnew.Edit_Date = item.Edit_Date;
-                        objnew.Edit_User = item.Edit_User;
-                        objnew.Status = item.Status;
-                        
-                        objnewAlias.Value = item.AliasValue;
-                        objnewAlias.Status = item.AliasStatus;
-                        context.m_keyword_alias.Add(objnewAlias);
-                        context.SaveChanges();
+                        var search = context.m_keyword.Find(item.Keyword_Id);
+                        if (search != null)
+                        {
+                            search.Keyword = item.Keyword;
+                            search.Missing = item.Missing;
+                            search.Extra = item.Extra;
+                            search.Edit_Date = item.Edit_Date;
+                            search.Edit_User = item.Edit_User;
+                            search.Status = item.Status;
+                        }
+                        else
+                        {
+                            var ID = Guid.NewGuid();
+                            DataLayer.m_keyword objnew = new m_keyword();
+                            objnew.Keyword_Id = ID;
+                            objnew.Keyword = item.Keyword;
+                            objnew.Missing = item.Missing;
+                            objnew.Extra = item.Extra;
+                            objnew.Create_User = item.Create_User;
+                            objnew.Create_Date = item.Create_Date;
+                            objnew.Edit_Date = item.Edit_Date;
+                            objnew.Edit_User = item.Edit_User;
+                            objnew.Status = item.Status;
+                            context.m_keyword.Add(objnew);
+                        }
                     }
-
+                    context.SaveChanges();
                 }
-                ret.StatusMessage = "Success";
+                ret.StatusMessage = "Keyword " + ReadOnlyMessage.strUpdatedSuccessfully;
+                ret.StatusCode = ReadOnlyMessage.StatusCode.Success;
                 return ret;
             }
             catch
             {
-                ret.StatusMessage = "Failed";
+                ret.StatusMessage = "Keyword " + ReadOnlyMessage.strFailed;
+                ret.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                 return ret;
             }
         }
 
-        public List<DC_Keyword> SearchKeyword(DC_Keyword_RQ obj)
+        public List<DataContracts.Masters.DC_Keyword> SearchKeyword(DC_Keyword_RQ obj)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var Result = from k in context.m_keyword
-                                 join kat in context.m_keyword_alias on k.Keyword_Id equals kat.Keyword_Id into katt
-                                 from ka in katt.DefaultIfEmpty()
-                                 select new DC_Keyword
+                    var search = from ka in context.m_keyword
+                                 select ka;
+
+                    if (obj.Keyword_Id != null)
+                    {
+                        search = from r in search
+                                 where r.Keyword_Id == obj.Keyword_Id
+                                 select r;
+                    }
+                    
+
+                    if (!string.IsNullOrWhiteSpace(obj.systemWord))
+                    {
+                        search = from r in search
+                                 where r.Keyword.Trim().ToUpper() == obj.systemWord.Trim().ToUpper()
+                                 select r;
+                    }
+                    
+                    if (!string.IsNullOrWhiteSpace(obj.Status))
+                    {
+                        search = from r in search
+                                 where r.Status.Trim().ToUpper() == obj.Status.Trim().ToUpper()
+                                 select r;
+                    }
+                    
+                    int total = search.Count();
+                    int skip = (obj.PageNo ?? 0) * (obj.PageSize ?? 0);
+
+                    var result = from a in search
+                                 orderby a.Keyword
+                                 select new DataContracts.Masters.DC_Keyword
                                  {
-                                     Keyword_Id = k.Keyword_Id,
-                                     AliasCreate_Date = ka.Create_Date,
-                                     Create_Date = k.Create_Date,
-                                     AliasCreate_User = ka.Create_User,
-                                     Create_User = k.Create_User,
-                                     AliasEdit_Date = ka.Edit_Date,
-                                     Edit_Date = k.Edit_Date,
-                                     AliasEdit_User = ka.Edit_User,
-                                     AliasKeywordAlias_Id = ka.KeywordAlias_Id,
-                                     AliasStatus = ka.Status,
-                                     Edit_User = k.Edit_User,
-                                     Status = k.Status,
-                                     AliasValue = ka.Value,
-                                     Extra = k.Extra,
-                                     Keyword = k.Keyword,
-                                     Missing = k.Missing
+                                     Keyword_Id = a.Keyword_Id,
+                                     Keyword = a.Keyword,
+                                     Missing = a.Missing,
+                                     Extra = a.Extra,
+                                     Status = a.Status,
+                                     Create_Date = a.Create_Date,
+                                     Create_User = a.Create_User,
+                                     Edit_Date = a.Edit_Date,
+                                     Edit_User = a.Edit_User,
+                                     TotalRecords = total
                                  };
 
-                    if(obj.Keyword_Id != null)
+
+                    return result.Skip(skip).Take((obj.PageSize ?? total)).ToList();
+
+                    
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error While Searching", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+
+            }
+        }
+        
+        public Guid GetKeywordIDbyName(string Keyword)
+        {
+            Guid keyword_Id = Guid.Empty;
+
+            if(!string.IsNullOrWhiteSpace(Keyword))
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    keyword_Id = (from a in context.m_keyword
+                                  where a.Keyword.Trim().ToUpper() == Keyword.Trim().ToUpper()
+                                  select a.Keyword_Id).FirstOrDefault();
+                }
+            }
+
+            return keyword_Id;
+        }
+
+        public DC_Message AddUpdateKeywordAlias(List<DC_keyword_alias> obj)
+        {
+            DataContracts.DC_Message ret = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    List<DC_keyword_alias> newKeywordFromAlias = new List<DC_keyword_alias>();
+                    List<DC_Keyword> newKeywords = new List<DC_Keyword>();
+                    List<DC_Keyword> AllKeywords = new List<DC_Keyword>();
+
+                    // Extract new keywords to be added and call INSERT for keyword
+                    newKeywordFromAlias = obj.Where(a => !context.m_keyword.Any(p => p.Keyword.Trim().ToUpper() == a.Keyword.Trim().ToUpper())).ToList();
+                    foreach(DC_keyword_alias nka in newKeywordFromAlias)
                     {
-                        Result = from r in Result
+                        var KID = Guid.NewGuid();
+                        DC_Keyword newKeyword = new DC_Keyword();
+                        newKeyword.Keyword_Id = KID;
+                        newKeyword.Keyword = nka.Keyword;
+                        newKeyword.Missing = null;
+                        newKeyword.Extra = null;
+                        newKeyword.Status = "ACTIVE";
+                        newKeyword.Create_Date = nka.Create_Date;
+                        newKeyword.Create_User = nka.Create_User;
+                        newKeywords.Add(newKeyword);
+                    }
+                    DC_Message addkeyword = new DC_Message();
+                    addkeyword = AddUpdateKeyword(newKeywords);
+                    
+
+                    // START INSERTING ALIAS
+                    foreach (var item in obj)
+                    {
+                        var search = context.m_keyword_alias.Where(a => a.Keyword_Id == GetKeywordIDbyName(item.Keyword) && a.Value == item.Value);
+                        if (search.ToList().Count > 0)
+                        {
+                            var res = search.FirstOrDefault();
+                            var asearch = context.m_keyword_alias.Find(res.KeywordAlias_Id);
+
+                            asearch.Edit_Date = item.Edit_Date;
+                            asearch.Edit_User = item.Edit_User;
+                            asearch.Status = item.Status;
+                        }
+                        else
+                        {
+                            var ID = Guid.NewGuid();
+                            DataLayer.m_keyword_alias objnewAlias = new m_keyword_alias();
+                            objnewAlias.KeywordAlias_Id = ID;
+                            objnewAlias.Keyword_Id = GetKeywordIDbyName(item.Keyword);
+                            objnewAlias.Value = item.Value;
+                            objnewAlias.Create_Date = item.Create_Date;
+                            objnewAlias.Create_User = item.Create_User;
+                            objnewAlias.Status = item.Status;
+                            context.m_keyword_alias.Add(objnewAlias);
+                        }
+                        context.SaveChanges();
+                    }
+
+                }
+                ret.StatusMessage = "Keyword " + ReadOnlyMessage.strAddedSuccessfully;
+                ret.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                return ret;
+            }
+            catch
+            {
+                ret.StatusMessage = "Keyword " + ReadOnlyMessage.strFailed;
+                ret.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                return ret;
+            }
+        }
+        public List<DC_keyword_alias> SearchKeywordAlias(DC_Keyword_RQ obj)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from ka in context.m_keyword_alias
+                                 //join k in context.m_keyword on ka.Keyword_Id equals k.Keyword_Id
+                                 select ka;
+
+                    if (obj.Keyword_Id != null)
+                    {
+                        search = from r in search
                                  where r.Keyword_Id == obj.Keyword_Id
                                  select r;
                     }
 
                     if (obj.AliasKeywordAlias_Id != null)
                     {
-                        Result = from r in Result
-                                 where r.AliasKeywordAlias_Id == obj.AliasKeywordAlias_Id
+                        search = from r in search
+                                 where r.KeywordAlias_Id == obj.AliasKeywordAlias_Id
                                  select r;
                     }
 
-                    if (!string.IsNullOrWhiteSpace(obj.SystemWord))
+                    if (!string.IsNullOrWhiteSpace(obj.systemWord))
                     {
-                        Result = from r in Result
-                                 where r.Keyword.Trim().ToUpper().Contains(obj.SystemWord.Trim().ToUpper())
+                        search = from r in search
+                                 join k in context.m_keyword on r.Keyword_Id equals k.Keyword_Id
+                                 where k.Keyword.Trim().ToUpper() == obj.systemWord.Trim().ToUpper()
                                  select r;
                     }
 
                     if (!string.IsNullOrWhiteSpace(obj.Alias))
                     {
-                        Result = from r in Result
-                                 where r.AliasValue.Trim().ToUpper().Contains(obj.Alias.Trim().ToUpper())
+                        search = from r in search
+                                 where r.Value.Trim().ToUpper().Contains(obj.Alias.Trim().ToUpper())
                                  select r;
                     }
 
                     if (!string.IsNullOrWhiteSpace(obj.Status))
                     {
-                        Result = from r in Result
-                                 where r.Status.Trim().ToUpper()== obj.Status.Trim().ToUpper()
+                        search = from r in search
+                                 where r.Status.Trim().ToUpper() == obj.Status.Trim().ToUpper()
                                  select r;
                     }
 
-                    return Result.ToList();
+                    //var Result = from k in context.m_keyword
+                    //             join kat in context.m_keyword_alias on k.Keyword_Id equals kat.Keyword_Id into katt
+                    //             from ka in katt.DefaultIfEmpty()
+                    //             select new DC_Keyword
+                    //             {
+                    //                 Keyword_Id = k.Keyword_Id,
+                    //                 AliasCreate_Date = ka.Create_Date,
+                    //                 Create_Date = k.Create_Date,
+                    //                 AliasCreate_User = ka.Create_User,
+                    //                 Create_User = k.Create_User,
+                    //                 AliasEdit_Date = ka.Edit_Date,
+                    //                 Edit_Date = k.Edit_Date,
+                    //                 AliasEdit_User = ka.Edit_User,
+                    //                 AliasKeywordAlias_Id = ka.KeywordAlias_Id,
+                    //                 AliasStatus = ka.Status,
+                    //                 Edit_User = k.Edit_User,
+                    //                 Status = k.Status,
+                    //                 AliasValue = ka.Value,
+                    //                 Extra = k.Extra,
+                    //                 Keyword = k.Keyword,
+                    //                 Missing = k.Missing
+                    //             };
+
+
+                    int total = search.Count();
+                    int skip = (obj.PageNo ?? 0) * (obj.PageSize ?? 0);
+
+                    var result = from a in search
+                                 join k in context.m_keyword on a.Keyword_Id equals k.Keyword_Id
+                                 orderby k.Keyword, a.Value
+                                 select new DC_keyword_alias
+                                 {
+                                     KeywordAlias_Id = a.KeywordAlias_Id,
+                                     Keyword_Id = k.Keyword_Id,
+                                     Keyword = k.Keyword,
+                                     Value = a.Value,
+                                     Status = a.Status,
+                                     Create_Date = a.Create_Date,
+                                     Create_User = a.Create_User,
+                                     Edit_Date = a.Edit_Date,
+                                     Edit_User = a.Edit_User,
+                                     TotalRecords = total
+                                 };
+
+
+                    return result.Skip(skip).Take((obj.PageSize ?? total)).ToList();
+                    
 
                     //var search = from c in context.m_keyword
                     //             select c;
@@ -3924,47 +4137,47 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error While Searching", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
                 
             }
-            return null;
         }
-        public DC_Message SaveAliasForKeyword(List<DC_keyword_alias> _lst)
-        {
-            DC_Message _msg = new DC_Message();
-            using (ConsumerEntities context = new ConsumerEntities())
-            {
-                foreach (var item in _lst)
-                {
-                    //Check for exist one for Keyword with Alias
-                    bool Duplicate = (from a in context.m_keyword_alias where a.Keyword_Id == item.Keyword_Id && a.Value.ToLower() == item.Value.ToLower() select a).Count() > 0 ? true : false;
-                    if (!Duplicate)
-                    {
-                        m_keyword_alias _obj = new m_keyword_alias();
-                        _obj.Keyword_Id = item.Keyword_Id;
-                        _obj.KeywordAlias_Id = Guid.NewGuid();
-                        _obj.Create_Date = DateTime.Now;
-                        _obj.Create_User = item.Create_User;
-                        _obj.Status = item.Status;
-                        context.m_keyword_alias.Add(_obj);
-                    }
-                    else
-                    {
-                        var search = (from a in context.m_keyword_alias where a.Keyword_Id == item.Keyword_Id && a.Value.ToLower() == item.Value.ToLower() select a).FirstOrDefault();
-                        if (search != null)
-                        {
-                            search.Value = item.Value;
-                            search.Edit_Date = DateTime.Now;
-                            search.Edit_User = item.Create_User;
-                            search.Status = item.Status;
-                        }
-                    }
 
-                }
-                context.SaveChanges();
-                _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
-                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
-            }
-            return _msg;
+        //public DC_Message SaveAliasForKeyword(List<DC_keyword_alias> _lst)
+        //{
+        //    DC_Message _msg = new DC_Message();
+        //    using (ConsumerEntities context = new ConsumerEntities())
+        //    {
+        //        foreach (var item in _lst)
+        //        {
+        //            //Check for exist one for Keyword with Alias
+        //            bool Duplicate = (from a in context.m_keyword_alias where a.Keyword_Id == item.Keyword_Id && a.Value.ToLower() == item.Value.ToLower() select a).Count() > 0 ? true : false;
+        //            if (!Duplicate)
+        //            {
+        //                m_keyword_alias _obj = new m_keyword_alias();
+        //                _obj.Keyword_Id = item.Keyword_Id;
+        //                _obj.KeywordAlias_Id = Guid.NewGuid();
+        //                _obj.Create_Date = DateTime.Now;
+        //                _obj.Create_User = item.Create_User;
+        //                _obj.Status = item.Status;
+        //                context.m_keyword_alias.Add(_obj);
+        //            }
+        //            else
+        //            {
+        //                var search = (from a in context.m_keyword_alias where a.Keyword_Id == item.Keyword_Id && a.Value.ToLower() == item.Value.ToLower() select a).FirstOrDefault();
+        //                if (search != null)
+        //                {
+        //                    search.Value = item.Value;
+        //                    search.Edit_Date = DateTime.Now;
+        //                    search.Edit_User = item.Create_User;
+        //                    search.Status = item.Status;
+        //                }
+        //            }
 
-        }
+        //        }
+        //        context.SaveChanges();
+        //        _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+        //        _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+        //    }
+        //    return _msg;
+
+        //}
         #endregion
     }
 }
