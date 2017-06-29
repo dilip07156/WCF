@@ -476,6 +476,13 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
+        public IList<string> GetRoomCategoryMaster(DataContracts.DC_RoomCategoryMaster_RQ RC)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                return objBL.GetRoomCategoryMaster(RC);
+            }
+        }
         public bool AddAccomodationRoomInfo(DataContracts.DC_Accommodation_RoomInfo RI)
         {
             using (BL_Accomodation obj = new BL_Accomodation())

@@ -2380,7 +2380,30 @@ namespace DataLayer
                 return search;
             }
         }
-
+        public List<string> GetRoomCategoryMaster(DataContracts.DC_RoomCategoryMaster_RQ RC)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var RoomCategory = from a in context.Accommodation_RoomInfo
+                                     select a;
+                    if (!string.IsNullOrWhiteSpace(RC.RoomCategory))
+                    {
+                        RoomCategory = from a in RoomCategory
+                                       where a.RoomCategory.Contains(RC.RoomCategory)
+                                         select a;
+                    }
+                    var acco = (from a in RoomCategory
+                                 select a.RoomCategory).Distinct().ToList();
+                    return acco;
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Room Category list", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
         public bool AddAccomodationRoomInfo(DataContracts.DC_Accommodation_RoomInfo RI)
         {
             try
