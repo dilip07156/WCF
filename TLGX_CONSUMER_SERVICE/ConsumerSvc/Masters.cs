@@ -666,42 +666,36 @@ namespace ConsumerSvc
                 return obj.SaveKeyword(param);
             }
         }
-        public DC_Message UpdateKeyword(List<DC_Keyword> param)
+
+        public DC_Message AddUpdateKeyword(List<DC_Keyword> _obj)
         {
             using (BusinessLayer.BL_Masters obj = new BL_Masters())
             {
-                return obj.UpdateKeyword(param);
+                return obj.AddUpdateKeyword(_obj);
             }
         }
 
-        //public IList<DC_Keyword> SearchKeywordById(string Keyword_Id)
-        //{
-        //    using (BL_Masters objBL = new BL_Masters())
-        //    {
-        //        List<DC_Keyword> searchResults = new List<DC_Keyword>();
-        //        searchResults = objBL.SearchKeyWordById(Guid.Parse(Keyword_Id));
-
-        //        if (searchResults.Count == 0)
-        //        {
-        //            throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
-        //        }
-
-        //        return searchResults;
-        //    }
-        //}
         public List<DC_Keyword> SearchKeyword(DC_Keyword_RQ RQ)
         {
             using (BusinessLayer.BL_Masters obj = new BL_Masters())
             {
-                return obj.SearchKeyWord(RQ);
+                return obj.SearchKeyword(RQ);
             }
         }
-        
-        public DC_Message SaveAliasForKeyword(List<DC_keyword_alias> param)
+
+        public List<DC_keyword_alias> SearchKeywordAlias(DC_Keyword_RQ RQ)
         {
             using (BusinessLayer.BL_Masters obj = new BL_Masters())
             {
-                return obj.SaveAliasForKeyword(param);
+                return obj.SearchKeywordAlias(RQ);
+            }
+        }
+
+        public DC_Message AddUpdateKeywordAlias(List<DC_keyword_alias> RQ)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.AddUpdateKeywordAlias(RQ);
             }
         }
         #endregion

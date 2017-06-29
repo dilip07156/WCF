@@ -597,27 +597,35 @@ namespace BusinessLayer
             }
         }
 
-        public DC_Message UpdateKeyword(List<DC_Keyword> _obj)
+        public DC_Message AddUpdateKeyword(List<DC_Keyword> _obj)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
-                return obj.UpdateKeyword(_obj);
+                return obj.AddUpdateKeyword(_obj);
             }
         }
 
-        public List<DC_Keyword> SearchKeyWord(DC_Keyword_RQ RQ)
+        public List<DC_Keyword> SearchKeyword(DC_Keyword_RQ RQ)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
                 return obj.SearchKeyword(RQ);
             }
         }
-        
-        public DC_Message SaveAliasForKeyword(List<DC_keyword_alias> _obj)
+
+        public List<DC_keyword_alias> SearchKeywordAlias(DC_Keyword_RQ RQ)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
-                return obj.SaveAliasForKeyword(_obj);
+                return obj.SearchKeywordAlias(RQ);
+            }
+        }
+
+        public DC_Message AddUpdateKeywordAlias(List<DC_keyword_alias> RQ)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.AddUpdateKeywordAlias(RQ);
             }
         }
         #endregion
