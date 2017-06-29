@@ -281,7 +281,7 @@ namespace DataLayer
                     return prodMapList.ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation product mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -1426,7 +1426,7 @@ namespace DataLayer
                                                             && s.Code == c.CityCode && s.Name == c.CityName) ||
                                                         (!isCountryCodeCheck && !isCountryNameCheck && !isCodeCheck && isNameCheck && s.Name == c.CityName) ||
                                                         (!isCountryCodeCheck && !isCountryNameCheck && isCodeCheck && !isNameCheck && s.Code == c.CityCode) ||
-                                                        (!isCountryCodeCheck && !isCountryNameCheck && isCodeCheck && isNameCheck && s.Code == c.CityCode 
+                                                        (!isCountryCodeCheck && !isCountryNameCheck && isCodeCheck && isNameCheck && s.Code == c.CityCode
                                                             && s.Name == c.CityName) ||
                                                         (!isCountryCodeCheck && isCountryNameCheck && !isCodeCheck && !isNameCheck && s.CountryName == c.CountryName) ||
                                                         (!isCountryCodeCheck && isCountryNameCheck && !isCodeCheck && isNameCheck && s.CountryName == c.CountryName
@@ -1559,7 +1559,252 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    List<vwMappingStat> search;
+
+                    List<vwMappingStat> search = new List<vwMappingStat>();
+
+                    //if (SupplierID == Guid.Empty)
+                    //{
+                    //    //Country
+                    //    var resCountryList = (from m in context.m_CountryMapping
+                    //                          where (m.Status ?? "UNMAPPED") != "DELETE"
+                    //                          group m by (m.Status ?? "UNMAPPED") into g
+                    //                          select new vwMappingStat
+                    //                          {
+                    //                              supplier_id = Guid.Empty,
+                    //                              SupplierName = "ALL",
+                    //                              Status = g.Key,
+                    //                              MappinFor = "Country",
+                    //                              totalcount = g.Count()
+                    //                          }).ToList();
+                    //    search.AddRange(resCountryList);
+                    //    resCountryList = null;
+
+                    //    var resCountryOne = new vwMappingStat
+                    //    {
+                    //        supplier_id = Guid.Empty,
+                    //        SupplierName = "ALL",
+                    //        Status = "ALL",
+                    //        MappinFor = "Country",
+                    //        totalcount = (from m in context.m_CountryMapping
+                    //                      where (m.Status ?? "UNMAPPED") != "DELETE"
+                    //                      select m).Count()
+                    //    };
+
+                    //    search.Add(resCountryOne);
+                    //    resCountryOne = null;
+
+                    //    //City
+                    //    var resCityList = (from m in context.m_CityMapping
+                    //                       where (m.Status ?? "UNMAPPED") != "DELETE"
+                    //                       group m by (m.Status ?? "UNMAPPED") into g
+                    //                       select new vwMappingStat
+                    //                       {
+                    //                           supplier_id = Guid.Empty,
+                    //                           SupplierName = "ALL",
+                    //                           Status = g.Key,
+                    //                           MappinFor = "City",
+                    //                           totalcount = g.Count()
+                    //                       }).ToList();
+                    //    search.AddRange(resCityList);
+                    //    resCityList = null;
+
+                    //    var resCityOne = new vwMappingStat
+                    //    {
+                    //        supplier_id = Guid.Empty,
+                    //        SupplierName = "ALL",
+                    //        Status = "ALL",
+                    //        MappinFor = "City",
+                    //        totalcount = (from m in context.m_CityMapping
+                    //                      where (m.Status ?? "UNMAPPED") != "DELETE"
+                    //                      select m).Count()
+                    //    };
+
+                    //    search.Add(resCityOne);
+                    //    resCityOne = null;
+
+                    //    //Accommodation
+                    //    var resAccommodationList = (from m in context.Accommodation_ProductMapping
+                    //                                where (m.Status ?? "UNMAPPED") != "DELETE"
+                    //                                group m by (m.Status ?? "UNMAPPED") into g
+                    //                                select new vwMappingStat
+                    //                                {
+                    //                                    supplier_id = Guid.Empty,
+                    //                                    SupplierName = "ALL",
+                    //                                    Status = g.Key,
+                    //                                    MappinFor = "Product",
+                    //                                    totalcount = g.Count()
+                    //                                }).ToList();
+                    //    search.AddRange(resAccommodationList);
+                    //    resAccommodationList = null;
+
+                    //    var resAccommodationOne = new vwMappingStat
+                    //    {
+                    //        supplier_id = Guid.Empty,
+                    //        SupplierName = "ALL",
+                    //        Status = "ALL",
+                    //        MappinFor = "Product",
+                    //        totalcount = (from m in context.Accommodation_ProductMapping
+                    //                      where (m.Status ?? "UNMAPPED") != "DELETE"
+                    //                      select m).Count()
+                    //    };
+
+                    //    search.Add(resAccommodationOne);
+                    //    resAccommodationOne = null;
+
+                    //    //Activity
+                    //    var resActivityList = (from m in context.Activity_SupplierProductMapping
+                    //                           where (m.MappingStatus ?? "UNMAPPED") != "DELETE"
+                    //                           group m by (m.MappingStatus ?? "UNMAPPED") into g
+                    //                           select new vwMappingStat
+                    //                           {
+                    //                               supplier_id = Guid.Empty,
+                    //                               SupplierName = "ALL",
+                    //                               Status = g.Key,
+                    //                               MappinFor = "Activity",
+                    //                               totalcount = g.Count()
+                    //                           }).ToList();
+                    //    search.AddRange(resActivityList);
+                    //    resActivityList = null;
+
+                    //    var resActivityOne = new vwMappingStat
+                    //    {
+                    //        supplier_id = Guid.Empty,
+                    //        SupplierName = "ALL",
+                    //        Status = "ALL",
+                    //        MappinFor = "Activity",
+                    //        totalcount = (from m in context.Activity_SupplierProductMapping
+                    //                      where (m.MappingStatus ?? "UNMAPPED") != "DELETE"
+                    //                      select m).Count()
+                    //    };
+
+                    //    search.Add(resActivityOne);
+                    //    resActivityOne = null;
+                    //}
+                    //else //Individual Supplier (SupplierId is not Empty)
+                    //{
+                    //    //Country
+                    //    var resCountryList = (from m in context.m_CountryMapping
+                    //                          where (m.Status ?? "UNMAPPED") != "DELETE"
+                    //                          && m.Supplier_Id == SupplierID
+                    //                          group m by (m.Status ?? "UNMAPPED") into g
+                    //                          select new vwMappingStat
+                    //                          {
+                    //                              supplier_id = g.Select(m => m.Supplier_Id).FirstOrDefault() ?? Guid.Empty,
+                    //                              SupplierName = g.Select(m => m.SupplierName).FirstOrDefault(),
+                    //                              Status = g.Key,
+                    //                              MappinFor = "Country",
+                    //                              totalcount = g.Count()
+                    //                          }).ToList();
+                    //    search.AddRange(resCountryList);
+                    //    resCountryList = null;
+
+                    //    var resCountryOne = (from m in context.m_CountryMapping
+                    //                         where (m.Status ?? "UNMAPPED") != "DELETE"
+                    //                         && m.Supplier_Id == SupplierID
+                    //                         group m by new { Supplier_Id = m.Supplier_Id, Supplier_Name = m.SupplierName } into g
+                    //                         select new vwMappingStat
+                    //                         {
+                    //                             supplier_id = g.Key.Supplier_Id ?? Guid.Empty,
+                    //                             SupplierName = g.Key.Supplier_Name,
+                    //                             Status = "ALL",
+                    //                             MappinFor = "Country",
+                    //                             totalcount = g.Count()
+                    //                         }).FirstOrDefault();
+
+                    //    search.Add(resCountryOne);
+                    //    resCountryOne = null;
+
+                    //    //------------------------
+
+                    //    //City
+                    //    var resCityList = (from m in context.m_CityMapping
+                    //                       where (m.Status ?? "UNMAPPED") != "DELETE"
+                    //                       group m by (m.Status ?? "UNMAPPED") into g
+                    //                       select new vwMappingStat
+                    //                       {
+                    //                           supplier_id = Guid.Empty,
+                    //                           SupplierName = "ALL",
+                    //                           Status = g.Key,
+                    //                           MappinFor = "City",
+                    //                           totalcount = g.Count()
+                    //                       }).ToList();
+                    //    search.AddRange(resCityList);
+                    //    resCityList = null;
+
+                    //    var resCityOne = new vwMappingStat
+                    //    {
+                    //        supplier_id = Guid.Empty,
+                    //        SupplierName = "ALL",
+                    //        Status = "ALL",
+                    //        MappinFor = "City",
+                    //        totalcount = (from m in context.m_CityMapping
+                    //                      where (m.Status ?? "UNMAPPED") != "DELETE"
+                    //                      select m).Count()
+                    //    };
+
+                    //    search.Add(resCityOne);
+                    //    resCityOne = null;
+
+                    //    //Accommodation
+                    //    var resAccommodationList = (from m in context.Accommodation_ProductMapping
+                    //                                where (m.Status ?? "UNMAPPED") != "DELETE"
+                    //                                group m by (m.Status ?? "UNMAPPED") into g
+                    //                                select new vwMappingStat
+                    //                                {
+                    //                                    supplier_id = Guid.Empty,
+                    //                                    SupplierName = "ALL",
+                    //                                    Status = g.Key,
+                    //                                    MappinFor = "Product",
+                    //                                    totalcount = g.Count()
+                    //                                }).ToList();
+                    //    search.AddRange(resAccommodationList);
+                    //    resAccommodationList = null;
+
+                    //    var resAccommodationOne = new vwMappingStat
+                    //    {
+                    //        supplier_id = Guid.Empty,
+                    //        SupplierName = "ALL",
+                    //        Status = "ALL",
+                    //        MappinFor = "Product",
+                    //        totalcount = (from m in context.Accommodation_ProductMapping
+                    //                      where (m.Status ?? "UNMAPPED") != "DELETE"
+                    //                      select m).Count()
+                    //    };
+
+                    //    search.Add(resAccommodationOne);
+                    //    resAccommodationOne = null;
+
+                    //    //Activity
+                    //    var resActivityList = (from m in context.Activity_SupplierProductMapping
+                    //                           where (m.MappingStatus ?? "UNMAPPED") != "DELETE"
+                    //                           group m by (m.MappingStatus ?? "UNMAPPED") into g
+                    //                           select new vwMappingStat
+                    //                           {
+                    //                               supplier_id = Guid.Empty,
+                    //                               SupplierName = "ALL",
+                    //                               Status = g.Key,
+                    //                               MappinFor = "Activity",
+                    //                               totalcount = g.Count()
+                    //                           }).ToList();
+                    //    search.AddRange(resActivityList);
+                    //    resActivityList = null;
+
+                    //    var resActivityOne = new vwMappingStat
+                    //    {
+                    //        supplier_id = Guid.Empty,
+                    //        SupplierName = "ALL",
+                    //        Status = "ALL",
+                    //        MappinFor = "Activity",
+                    //        totalcount = (from m in context.Activity_SupplierProductMapping
+                    //                      where (m.MappingStatus ?? "UNMAPPED") != "DELETE"
+                    //                      select m).Count()
+                    //    };
+
+                    //    search.Add(resActivityOne);
+                    //    resActivityOne = null;
+                    //}
+
+
 
                     if (SupplierID != Guid.Empty)
                     {
@@ -1677,7 +1922,8 @@ namespace DataLayer
                 {
                     var search = context.vwMappingStats.Where(cat => (cat.SupplierName != "ALL") && (cat.SupplierName != null) && (cat.supplier_id != Guid.Empty) && (cat.Status == "UNMAPPED" || cat.Status == "REVIEW"))
                                                         .GroupBy(cat => new { cat.SupplierName, cat.supplier_id, cat.MappinFor })
-                                                        .Select(group => new {
+                                                        .Select(group => new
+                                                        {
                                                             SupplierName = group.Key.SupplierName,
                                                             SupplierId = group.Key.supplier_id,
                                                             Mappinfor = group.Key.MappinFor,
@@ -1695,7 +1941,7 @@ namespace DataLayer
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -1712,23 +1958,23 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     DateTime fd = Convert.ToDateTime(parm.Fromdate);
-                    DateTime td = Convert.ToDateTime(parm.ToDate); 
+                    DateTime td = Convert.ToDateTime(parm.ToDate);
                     var search = (from t in context.Accommodation_RuleInfo
-                                 join t1 in context.Accommodations on t.Accommodation_Id equals t1.Accommodation_Id
-                                 where (t.Create_Date >= fd && t.Edit_Date <= td)
-                                 select new
-                                 {
-                                     HotelID=t1.CompanyHotelID,
-                                     HotelName= t1.HotelName,
-                                     RuleName= t.RuleType,
-                                     Description= t.Description,
-                                     flag = t.IsInternal == true ? "YES" : "NO",
-                                     LupdateDate = t.Edit_Date == null ? t.Create_Date : t.Edit_Date,
-                                     LupdateBy = t.Edit_User == null ? t.Create_User : t.Edit_User
-                                 }).ToList();
-                    foreach(var item in search)
+                                  join t1 in context.Accommodations on t.Accommodation_Id equals t1.Accommodation_Id
+                                  where (t.Create_Date >= fd && t.Edit_Date <= td)
+                                  select new
+                                  {
+                                      HotelID = t1.CompanyHotelID,
+                                      HotelName = t1.HotelName,
+                                      RuleName = t.RuleType,
+                                      Description = t.Description,
+                                      flag = t.IsInternal == true ? "YES" : "NO",
+                                      LupdateDate = t.Edit_Date == null ? t.Create_Date : t.Edit_Date,
+                                      LupdateBy = t.Edit_User == null ? t.Create_User : t.Edit_User
+                                  }).ToList();
+                    foreach (var item in search)
                     {
-                        
+
                         DC_RollOffReportRule obj = new DC_RollOffReportRule();
                         obj.Hotelid = item.HotelID.Value;
                         obj.Hotelname = item.HotelName;
@@ -2114,14 +2360,14 @@ namespace DataLayer
                                       Create_User = a.Create_User,
                                       Edit_User = a.Edit_User,
                                       MapID = a.MapID
-                                  }).FirstOrDefault(); 
-                    if(result != null && !string.IsNullOrWhiteSpace(result.SupplierCountryName) && !string.IsNullOrWhiteSpace(result.SupplierCityName))
+                                  }).FirstOrDefault();
+                    if (result != null && !string.IsNullOrWhiteSpace(result.SupplierCountryName) && !string.IsNullOrWhiteSpace(result.SupplierCityName))
                     {
                         var resultCity = context.m_CityMapping.Where(a => (a.Supplier_Id == result.Supplier_ID) && (a.Status == "MAPPED")).ToList();
-                        if(resultCity != null && resultCity.Count > 0)
+                        if (resultCity != null && resultCity.Count > 0)
                         {
                             var citymaster = (from ct in resultCity where ct.CityName == result.SupplierCityName select ct).FirstOrDefault();
-                            if(citymaster != null)
+                            if (citymaster != null)
                             {
                                 var mastercityName = (from a in context.m_CityMaster where a.City_Id == citymaster.City_Id select a.Name).FirstOrDefault();
                                 if (mastercityName != null)
@@ -2356,7 +2602,7 @@ namespace DataLayer
                     var DistSupplier = context.Activity_SupplierProductMapping.GroupBy(x => x.SupplierName).Select(x => x.First()).ToList();
 
                     var prodMapSearch = from a in context.Activity_SupplierProductMapping select a;
-                                        //context.Activity_SupplierProductMapping.Where(a =>a.SupplierName.Contains(DistSupplier))
+                    //context.Activity_SupplierProductMapping.Where(a =>a.SupplierName.Contains(DistSupplier))
 
                     // 2. Fillter supplier with country name
                     // 3. Fillter supplier with city name
