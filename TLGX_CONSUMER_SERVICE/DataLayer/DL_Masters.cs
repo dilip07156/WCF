@@ -3796,7 +3796,7 @@ namespace DataLayer
                 {
                     foreach (var item in obj)
                     {
-                        var search = context.m_keyword.Find(item.Keyword_Id);
+                        var search = context.m_keyword.Find(item.Keyword);
                         if (search != null)
                         {
                             search.Keyword = item.Keyword;
