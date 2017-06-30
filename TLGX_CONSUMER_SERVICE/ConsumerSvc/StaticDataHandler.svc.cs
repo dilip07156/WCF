@@ -151,5 +151,38 @@ namespace ConsumerSvc
                 return objBL.UpdateCityMappingStatus(obj);
             }
         }
+
+
+        public List<DC_stg_SupplierProductMapping> GetSTGHotelData(DC_stg_SupplierProductMapping_RQ obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.GetSTGHotelData(obj);
+            }
+        }
+
+        public List<DC_Accomodation_ProductMapping> GetMappingHotelData(DC_Mapping_ProductSupplier_Search_RQ obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetProductSupplierMappingSearch(obj);
+            }
+        }
+
+        public bool UpdateHotelMapping(List<DataContracts.Mapping.DC_Accomodation_ProductMapping> CM)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.UpdateAccomodationProductMapping(CM);
+            }
+        }
+
+        public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.UpdateHotelMappingStatus(obj);
+            }
+        }
     }
 }

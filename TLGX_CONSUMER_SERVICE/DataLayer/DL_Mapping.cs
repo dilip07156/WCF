@@ -152,7 +152,10 @@ namespace DataLayer
             }
         }
 
-
+        public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
+        {
+            throw new NotImplementedException();
+        }
 
         public List<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetAccomodationProductMapping(int PageNo, int PageSize, Guid Accomodation_Id, string Status)
         {
