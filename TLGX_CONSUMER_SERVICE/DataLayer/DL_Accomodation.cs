@@ -2368,6 +2368,75 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation room info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+        public List<DataContracts.DC_Accommodation_RoomInfo> GetRoomDetailsByWithPagging(DC_Accommodation_RoomInfo_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = (from ar in context.Accommodation_RoomInfo
+                                  where ar.Accommodation_Id == RQ.Accommodation_Id
+                                  select ar);
+
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+                    var result = (from ar in search
+                                  select new DataContracts.DC_Accommodation_RoomInfo
+                                  {
+                                      Accommodation_Id = ar.Accommodation_Id,
+                                      Accommodation_RoomInfo_Id = ar.Accommodation_RoomInfo_Id,
+                                      AmenityTypes = ar.AmenityTypes,
+                                      BathRoomType = ar.BathRoomType,
+                                      BedType = ar.BedType,
+                                      Category = ar.Category,
+                                      CompanyName = ar.CompanyName,
+                                      CompanyRoomCategory = ar.CompanyRoomCategory,
+                                      Create_Date = ar.Create_Date,
+                                      Create_User = ar.Create_User,
+                                      Description = ar.Description,
+                                      Edit_Date = ar.Edit_Date,
+                                      Edit_User = ar.Edit_User,
+                                      FloorName = ar.FloorName,
+                                      FloorNumber = ar.FloorNumber,
+                                      Legacy_Htl_Id = ar.Legacy_Htl_Id,
+                                      MysteryRoom = ar.MysteryRoom,
+                                      NoOfInterconnectingRooms = ar.NoOfInterconnectingRooms,
+                                      NoOfRooms = ar.NoOfRooms,
+                                      RoomCategory = ar.RoomCategory,
+                                      RoomDecor = ar.RoomDecor,
+                                      RoomId = ar.RoomId,
+                                      RoomName = ar.RoomName,
+                                      RoomSize = ar.RoomSize,
+                                      RoomView = ar.RoomView,
+                                      Smoking = ar.Smoking,
+                                      IsActive = (ar.IsActive ?? true),
+                                      TotalRecords = total,
+                                      RoomFacilities = (from rf in context.Accommodation_RoomFacility
+                                                        where rf.Accommodation_Id == ar.Accommodation_Id
+                                                        && rf.Accommodation_RoomInfo_Id == ar.Accommodation_RoomInfo_Id
+                                                        select new DataContracts.DC_Accomodation_RoomFacilities
+                                                        {
+                                                            Accommodation_Id = rf.Accommodation_Id,
+                                                            Accommodation_RoomFacility_Id = rf.Accommodation_RoomFacility_Id,
+                                                            Accommodation_RoomInfo_Id = rf.Accommodation_RoomInfo_Id,
+                                                            AmenityName = rf.AmenityName,
+                                                            AmenityType = rf.AmenityType,
+                                                            Create_Date = rf.Create_Date,
+                                                            Create_User = rf.Create_User,
+                                                            Description = rf.Description,
+                                                            Edit_Date = rf.Edit_Date,
+                                                            Edit_user = rf.Edit_user
+                                                        }).ToList()
+                                  });
+                    return result.OrderBy(p => p.RoomName).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation room info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
         public List<DataContracts.DC_Accomodation_Category_DDL> GetAccomodationRoomInfo_RoomCategory(Guid Accomodation_Id)
         {
             using (ConsumerEntities context = new ConsumerEntities())
@@ -2556,7 +2625,7 @@ namespace DataLayer
                 //check Duplicate 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var isduplicate = context.Accommodation_RoomInfo.Where(x => x.Accommodation_Id == RQ.Accommodation_Id && x.Accommodation_RoomInfo_Id != RQ.Accommodation_RoomInfo_Id && x.RoomCategory.ToLower().Trim() == RQ.NewRoomCategory.ToLower().Trim()).Count() == 0 ? false : true;
+                    var isduplicate = context.Accommodation_RoomInfo.Where(x => x.Accommodation_Id == RQ.Accommodation_Id && x.RoomCategory.ToLower().Trim() == RQ.NewRoomCategory.ToLower().Trim()).Count() == 0 ? false : true;
                     if (isduplicate)
                     {
                         _msg.StatusMessage = ReadOnlyMessage.strAlreadyExist;
@@ -2566,7 +2635,7 @@ namespace DataLayer
                     {
                         //1. Get RoomInfo record to get copied
                         var roominfo = context.Accommodation_RoomInfo.Where(x => x.Accommodation_Id == RQ.Accommodation_Id && x.Accommodation_RoomInfo_Id == RQ.Accommodation_RoomInfo_Id).FirstOrDefault();
-                        
+
                         var newAccommodation_RoomInfo_Id = Guid.NewGuid();
                         //2. Insert the new one
                         if (roominfo != null)
@@ -2592,7 +2661,7 @@ namespace DataLayer
                             objNew.NoOfInterconnectingRooms = roominfo.NoOfInterconnectingRooms;
                             objNew.NoOfRooms = roominfo.NoOfRooms;
                             objNew.RoomDecor = roominfo.RoomDecor;
-                            objNew.RoomId = CommonFunctions.GenerateRoomId(Guid.Parse(RQ.Accommodation_Id.ToString()));
+                            objNew.RoomId = CommonFunctions.GenerateRoomId(RQ.Accommodation_Id);
                             objNew.RoomSize = roominfo.RoomSize;
                             objNew.RoomView = roominfo.RoomView;
                             objNew.Smoking = roominfo.Smoking;
@@ -2616,8 +2685,8 @@ namespace DataLayer
                                     objrf.Accommodation_RoomInfo_Id = newAccommodation_RoomInfo_Id;
                                     objrf.AmenityName = item.AmenityName;
                                     objrf.AmenityType = item.AmenityType;
-                                    objrf.Create_Date = item.Create_Date;
-                                    objrf.Create_User = item.Create_User;
+                                    objrf.Create_Date = DateTime.Now;
+                                    objrf.Create_User = RQ.Create_User;
                                     objrf.Description = item.Description;
                                     objrf.IsActive = item.IsActive;
                                     context.Accommodation_RoomFacility.Add(objrf);

@@ -107,7 +107,13 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
-
+        public List<DataContracts.DC_Accommodation_RoomInfo> GetRoomDetailsByWithPagging(DC_Accommodation_RoomInfo_RQ RQ)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                return objBL.GetRoomDetailsByWithPagging(RQ);
+            }
+        }
         public bool UpdateAccomodationGoogleInfo(DC_Accomodation AccomodationInfo)
         {
             using (BL_Accomodation objBL = new BL_Accomodation())

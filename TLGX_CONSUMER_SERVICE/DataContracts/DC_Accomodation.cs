@@ -3015,6 +3015,7 @@ namespace DataContracts
         Nullable<System.DateTime> _Edit_Date;
         List<DC_Accomodation_RoomFacilities> _RoomFacilities;
         bool _IsActive;
+        int? _TotalRecords;
 
         [DataMember]
         public Guid Accommodation_RoomInfo_Id
@@ -3407,6 +3408,29 @@ namespace DataContracts
                 _IsActive = value;
             }
         }
+        [DataMember]
+        public int? TotalRecords
+        {
+            get
+            {
+                return _TotalRecords;
+            }
+
+            set
+            {
+                _TotalRecords = value;
+            }
+        }
+    }
+    [DataContract]
+    public class DC_Accommodation_RoomInfo_RQ
+    {
+        [DataMember]
+        public Guid Accommodation_Id { get; set; }
+        [DataMember]
+        public int? PageNo;
+        [DataMember]
+        public int? PageSize;
     }
 
     [DataContract]
