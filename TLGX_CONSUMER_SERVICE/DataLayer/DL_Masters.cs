@@ -937,7 +937,7 @@ namespace DataLayer
                     if (search != null)
                     {
                         search.CountryName = param.CountryName;
-                        search.Code = param.Code;
+                        //search.Code = param.Code;
                         search.Country_Id = param.Country_Id;
                         search.Edit_Date = param.Edit_Date;
                         search.Edit_User = param.Edit_User;

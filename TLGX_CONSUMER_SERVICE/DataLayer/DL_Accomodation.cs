@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Data.SqlClient;
+using System.Text.RegularExpressions;
 
 namespace DataLayer
 {
@@ -2404,6 +2405,35 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Room Category list", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        public string GetNextRoomIdNumber(string codePrefix)
+        {
+            string ret = "000";
+
+            if (!string.IsNullOrWhiteSpace(codePrefix))
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var code = (from a in context.Accommodation_RoomInfo
+                                where a.RoomId.ToString().ToUpper().StartsWith(codePrefix.ToString().ToUpper() + "-")
+                                orderby a.RoomId descending
+                                //select CommonFunctions.ReturnNumbersFromString(a.Code)).FirstOrDefault();
+                                select a.RoomId).FirstOrDefault();
+
+                    if (!string.IsNullOrWhiteSpace(code))
+                    {
+                        code = code.Replace(codePrefix + "-", "");
+                        Match m = Regex.Match(code, @"\d+");
+                        int number = Convert.ToInt32(m.Value);
+                        number = number + 1;
+                        ret = CommonFunctions.NumberTo3CharString(number);
+                    }
+                }
+            }
+
+            return ret;
+        }
+
         public bool AddAccomodationRoomInfo(DataContracts.DC_Accommodation_RoomInfo RI)
         {
             try
@@ -2440,7 +2470,7 @@ namespace DataLayer
                     objNew.NoOfRooms = RI.NoOfRooms;
                     objNew.RoomCategory = RI.RoomCategory;
                     objNew.RoomDecor = RI.RoomDecor;
-                    objNew.RoomId = RI.RoomId;
+                    objNew.RoomId = CommonFunctions.GenerateRoomId(RI); //RI.RoomId;
                     objNew.RoomName = RI.RoomName;
                     objNew.RoomSize = RI.RoomSize;
                     objNew.RoomView = RI.RoomView;
@@ -2497,7 +2527,7 @@ namespace DataLayer
                             search.NoOfRooms = RI.NoOfRooms;
                             search.RoomCategory = RI.RoomCategory;
                             search.RoomDecor = RI.RoomDecor;
-                            search.RoomId = RI.RoomId;
+                            //search.RoomId = RI.RoomId;
                             search.RoomName = RI.RoomName;
                             search.RoomSize = RI.RoomSize;
                             search.RoomView = RI.RoomView;
