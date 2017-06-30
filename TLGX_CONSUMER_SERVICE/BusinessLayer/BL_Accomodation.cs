@@ -390,12 +390,18 @@ namespace BusinessLayer
                 return obj.AddAccomodationRoomInfo(RI);
             }
         }
-
         public bool UpdateAccomodationRoomInfo(DataContracts.DC_Accommodation_RoomInfo RI)
         {
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
             {
                 return obj.UpdateAccomodationRoomInfo(RI);
+            }
+        }
+        public DataContracts.DC_Message CopyAccomodationInfo(DataContracts.DC_Accomodation_CopyRoomDef RI)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.CopyAccomodationInfo(RI);
             }
         }
         #endregion
