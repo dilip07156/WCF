@@ -843,9 +843,9 @@ namespace DataLayer
                         int number = Convert.ToInt32(m.Value);
                         number = number + 1;
                         ret = CommonFunctions.NumberTo3CharString(number);
-                    }                        
+                    }
                 }
-            } 
+            }
 
             return ret;
         }
@@ -3775,7 +3775,7 @@ namespace DataLayer
                     }
 
                 }
-                ret.StatusMessage = "Keyword " +  ReadOnlyMessage.strAddedSuccessfully;
+                ret.StatusMessage = "Keyword " + ReadOnlyMessage.strAddedSuccessfully;
                 ret.StatusCode = ReadOnlyMessage.StatusCode.Success;
                 return ret;
             }
@@ -3855,7 +3855,7 @@ namespace DataLayer
                                  where r.Keyword_Id == obj.Keyword_Id
                                  select r;
                     }
-                    
+
 
                     if (!string.IsNullOrWhiteSpace(obj.systemWord))
                     {
@@ -3863,14 +3863,14 @@ namespace DataLayer
                                  where r.Keyword.Trim().ToUpper() == obj.systemWord.Trim().ToUpper()
                                  select r;
                     }
-                    
+
                     if (!string.IsNullOrWhiteSpace(obj.Status))
                     {
                         search = from r in search
                                  where r.Status.Trim().ToUpper() == obj.Status.Trim().ToUpper()
                                  select r;
                     }
-                    
+
                     int total = search.Count();
                     int skip = (obj.PageNo ?? 0) * (obj.PageSize ?? 0);
 
@@ -3893,7 +3893,7 @@ namespace DataLayer
 
                     return result.Skip(skip).Take((obj.PageSize ?? total)).ToList();
 
-                    
+
                 }
             }
             catch (Exception e)
@@ -3902,12 +3902,12 @@ namespace DataLayer
 
             }
         }
-        
+
         public Guid GetKeywordIDbyName(string Keyword)
         {
             Guid keyword_Id = Guid.Empty;
 
-            if(!string.IsNullOrWhiteSpace(Keyword))
+            if (!string.IsNullOrWhiteSpace(Keyword))
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
@@ -3933,7 +3933,7 @@ namespace DataLayer
 
                     // Extract new keywords to be added and call INSERT for keyword
                     newKeywordFromAlias = obj.Where(a => !context.m_keyword.Any(p => p.Keyword.Trim().ToUpper() == a.Keyword.Trim().ToUpper())).ToList();
-                    foreach(DC_keyword_alias nka in newKeywordFromAlias)
+                    foreach (DC_keyword_alias nka in newKeywordFromAlias)
                     {
                         var KID = Guid.NewGuid();
                         DC_Keyword newKeyword = new DC_Keyword();
@@ -3948,24 +3948,31 @@ namespace DataLayer
                     }
                     DC_Message addkeyword = new DC_Message();
                     addkeyword = AddUpdateKeyword(newKeywords);
-                    
+
 
                     // START INSERTING ALIAS
                     foreach (var item in obj)
                     {
                         item.Keyword_Id = GetKeywordIDbyName(item.Keyword);
-                        var search = context.m_keyword_alias.Where(a => a.Keyword_Id == item.Keyword_Id && a.Value == item.Value);
-                        if (search.ToList().Count > 0)
+                        //If exist then update else insert
+                        if (item.KeywordAlias_Id != Guid.Empty)
                         {
-                            var res = search.FirstOrDefault();
-                            var asearch = context.m_keyword_alias.Find(res.KeywordAlias_Id);
+                            var search1 = context.m_keyword_alias.Where(a => a.Keyword_Id == item.Keyword_Id && a.KeywordAlias_Id == item.KeywordAlias_Id);
+                            //var search = context.m_keyword_alias.Where(a => a.Keyword_Id == item.Keyword_Id && a.Value == item.Value);
+                            if (search1.ToList().Count > 0)
+                            {
+                                var asearch = search1.FirstOrDefault();
+                                // var asearch = context.m_keyword_alias.Find(res.KeywordAlias_Id);
+                                asearch.Value = item.Value;
+                                asearch.Edit_Date = item.Edit_Date;
+                                asearch.Edit_User = item.Edit_User;
+                                asearch.Status = item.Status;
+                            }
 
-                            asearch.Edit_Date = item.Edit_Date;
-                            asearch.Edit_User = item.Edit_User;
-                            asearch.Status = item.Status;
                         }
                         else
                         {
+
                             var ID = Guid.NewGuid();
                             DataLayer.m_keyword_alias objnewAlias = new m_keyword_alias();
                             objnewAlias.KeywordAlias_Id = ID;
@@ -3984,7 +3991,7 @@ namespace DataLayer
                 ret.StatusCode = ReadOnlyMessage.StatusCode.Success;
                 return ret;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ret.StatusMessage = "Keyword " + ReadOnlyMessage.strFailed;
                 ret.StatusCode = ReadOnlyMessage.StatusCode.Failed;
@@ -3998,7 +4005,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var search = from ka in context.m_keyword_alias
-                                 //join k in context.m_keyword on ka.Keyword_Id equals k.Keyword_Id
+                                     //join k in context.m_keyword on ka.Keyword_Id equals k.Keyword_Id
                                  select ka;
 
                     if (obj.Keyword_Id != null)
@@ -4083,7 +4090,7 @@ namespace DataLayer
 
 
                     return result.Skip(skip).Take((obj.PageSize ?? total)).ToList();
-                    
+
 
                     //var search = from c in context.m_keyword
                     //             select c;
@@ -4140,7 +4147,7 @@ namespace DataLayer
             catch (Exception e)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error While Searching", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
-                
+
             }
         }
 
