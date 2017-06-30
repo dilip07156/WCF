@@ -137,6 +137,12 @@ namespace DataLayer
                                      where a.Accommodation_Id == _guidAccomodationId
                                      select a;
                     }
+                    if (!string.IsNullOrWhiteSpace(RQ.Starrating))
+                    {
+                        accoSearch = from a in accoSearch
+                                     where a.HotelRating == RQ.Starrating
+                                     select a;
+                    }
 
                     int total;
 
@@ -159,6 +165,7 @@ namespace DataLayer
                                         City = a.city,
                                         Country = a.country,
                                         HotelBrand = a.Brand,
+                                        Starrating = a.HotelRating,
                                         HotelChain = a.Chain,
                                         HotelName = a.HotelName,
                                         Location = a.Location,
