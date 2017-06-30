@@ -167,15 +167,29 @@ namespace DataLayer
                                         TotalRecords = total,
                                         Google_Place_Id = a.Google_Place_Id,
                                         FullAddress = (a.StreetNumber ?? string.Empty) + ", " + (a.StreetName ?? string.Empty) + ", " + (a.Street3 ?? string.Empty) + ", " + (a.Street4 ?? string.Empty) + ", " + (a.Street5 ?? string.Empty) + ", " + (a.PostalCode ?? string.Empty) + ", " + (a.city ?? string.Empty) + ", " + (a.country ?? string.Empty),
-                                        MapCount = (
-                                            from am in context.Accommodation_ProductMapping
-                                            where am.Accommodation_Id == a.Accommodation_Id
-                                            select new { am.Accommodation_ProductMapping_Id }
-                                        ).Count(),
+                                        MapCount = 0,
+                                        //MapCount = (
+                                        //    from am in context.Accommodation_ProductMapping
+                                        //    where am.Accommodation_Id == a.Accommodation_Id
+                                        //    select new { am.Accommodation_ProductMapping_Id }
+                                        //).Count(),
                                         HotelNameWithCode = a.HotelName + " / " + a.CompanyHotelID.ToString()
-                                    }).Skip(skip).Take(RQ.PageSize);
+                                    }).Skip(skip).Take(RQ.PageSize).ToList();
 
-                    return accoList.ToList();
+                    if (!string.IsNullOrWhiteSpace(RQ.Searchfrom) && RQ.Searchfrom.ToLower().Trim() != "hotalsearch")
+                    {
+                        accoList = accoList.Select(c =>
+                        {
+                            c.MapCount = (context.Accommodation_ProductMapping
+                                            .Where(s => (s.Accommodation_Id == Guid.Parse(c.AccomodationId)))
+                                            .Select(s1 => s1.Accommodation_ProductMapping_Id)
+                                            .Count()
+                                            );
+                            return c;
+                        }).ToList();
+                    }
+
+                    return accoList;
                 }
             }
             catch

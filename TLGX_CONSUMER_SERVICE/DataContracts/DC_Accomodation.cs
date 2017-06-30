@@ -4524,6 +4524,7 @@ namespace DataContracts
         int _PageSize;
         string _Google_Place_Id;
         string _AccomodationId;
+        string _searchfrom;
         //[DataMember]
         //public string GroupOfCompanies
         //{
@@ -4771,6 +4772,19 @@ namespace DataContracts
             set
             {
                 _AccomodationId = value;
+            }
+        }
+        [DataMember]
+        public string Searchfrom
+        {
+            get
+            {
+                return _searchfrom;
+            }
+
+            set
+            {
+                _searchfrom = value;
             }
         }
     }
