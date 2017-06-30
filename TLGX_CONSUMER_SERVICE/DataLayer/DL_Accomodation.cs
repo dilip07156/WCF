@@ -2471,7 +2471,7 @@ namespace DataLayer
                     objNew.NoOfRooms = RI.NoOfRooms;
                     objNew.RoomCategory = RI.RoomCategory;
                     objNew.RoomDecor = RI.RoomDecor;
-                    objNew.RoomId = CommonFunctions.GenerateRoomId(RI); //RI.RoomId;
+                    objNew.RoomId = CommonFunctions.GenerateRoomId(Guid.Parse(RI.Accommodation_Id.ToString())); //RI.RoomId;
                     objNew.RoomName = RI.RoomName;
                     objNew.RoomSize = RI.RoomSize;
                     objNew.RoomView = RI.RoomView;
@@ -2566,6 +2566,7 @@ namespace DataLayer
                     {
                         //1. Get RoomInfo record to get copied
                         var roominfo = context.Accommodation_RoomInfo.Where(x => x.Accommodation_Id == RQ.Accommodation_Id && x.Accommodation_RoomInfo_Id == RQ.Accommodation_RoomInfo_Id).FirstOrDefault();
+                        
                         var newAccommodation_RoomInfo_Id = Guid.NewGuid();
                         //2. Insert the new one
                         if (roominfo != null)
@@ -2591,7 +2592,7 @@ namespace DataLayer
                             objNew.NoOfInterconnectingRooms = roominfo.NoOfInterconnectingRooms;
                             objNew.NoOfRooms = roominfo.NoOfRooms;
                             objNew.RoomDecor = roominfo.RoomDecor;
-                            objNew.RoomId = roominfo.RoomId;
+                            objNew.RoomId = CommonFunctions.GenerateRoomId(Guid.Parse(RQ.Accommodation_Id.ToString()));
                             objNew.RoomSize = roominfo.RoomSize;
                             objNew.RoomView = roominfo.RoomView;
                             objNew.Smoking = roominfo.Smoking;

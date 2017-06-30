@@ -75,7 +75,7 @@ namespace DataLayer
             return ret;
         }
 
-        public static string GenerateRoomId(DataContracts.DC_Accommodation_RoomInfo RI)
+        public static string GenerateRoomId(Guid Accommodation_Id)
         {
             string code = "";
             string accocode = "";
@@ -83,9 +83,9 @@ namespace DataLayer
             DataContracts.DC_Accomodation acco = new DataContracts.DC_Accomodation();
             DL_Accomodation dla = new DataLayer.DL_Accomodation();
 
-            if(RI.Accommodation_Id != null && RI.Accommodation_Id != Guid.Empty)
+            if(Accommodation_Id != null && Accommodation_Id != Guid.Empty)
             {
-                acco = dla.GetAccomodationShortInfo(Guid.Parse(RI.Accommodation_Id.ToString()));
+                acco = dla.GetAccomodationShortInfo(Guid.Parse(Accommodation_Id.ToString()));
                 if(acco != null)
                 {
                     if(acco.CompanyHotelID != null)
