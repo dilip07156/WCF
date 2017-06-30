@@ -498,6 +498,13 @@ namespace ConsumerSvc
                 return obj.UpdateAccomodationRoomInfo(RI);
             }
         }
+        public DataContracts.DC_Message CopyAccomodationInfo(DataContracts.DC_Accomodation_CopyRoomDef RI)
+        {
+            using (BL_Accomodation obj = new BL_Accomodation())
+            {
+                return obj.CopyAccomodationInfo(RI);
+            }
+        }
         #endregion
 
         #region Accomodation Room Facilities

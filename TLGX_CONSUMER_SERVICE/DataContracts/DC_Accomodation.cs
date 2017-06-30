@@ -5260,4 +5260,17 @@ namespace DataContracts
         [DataMember]
         public string RoomCategory { get; set; }
     }
+
+    [DataContract]
+    public class DC_Accomodation_CopyRoomDef
+    {
+        [DataMember]
+        public Guid Accommodation_Id { get; set; }
+        [DataMember]
+        public Guid Accommodation_RoomInfo_Id { get; set; }
+        [DataMember]
+        public string NewRoomCategory { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+    }
 }
