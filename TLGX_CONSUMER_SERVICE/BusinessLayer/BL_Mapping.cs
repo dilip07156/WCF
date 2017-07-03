@@ -226,6 +226,40 @@ namespace BusinessLayer
         }
 
         #endregion
+        #region rdlc reports
+        public List<DataContracts.Mapping.DC_supplierwiseUnmappedReport> GetsupplierwiseUnmappedDataReport(string SupplierID)
+        {
+            Guid gSupplier_Id;
+
+            if (!Guid.TryParse(SupplierID, out gSupplier_Id))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            else
+            {
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.GetsupplierwiseUnmappedDataReport(gSupplier_Id);
+                }
+            }
+        }
+        public List<DataContracts.Mapping.DC_UnmappedCountryReport> GetsupplierwiseUnmappedCountryReport(string SupplierID)
+        {
+            Guid gSupplier_Id;
+
+            if (!Guid.TryParse(SupplierID, out gSupplier_Id))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            else
+            {
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.GetsupplierwiseUnmappedCountryReport(gSupplier_Id);
+                }
+            }
+        }
+        #endregion
         #region Master Attribute Mapping
         public List<DataContracts.Mapping.DC_MasterAttributeMapping_RS> SearchMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping_RQ RQ)
         {

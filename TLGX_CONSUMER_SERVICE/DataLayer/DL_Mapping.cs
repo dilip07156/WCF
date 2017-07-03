@@ -1883,6 +1883,123 @@ namespace DataLayer
             return objLst;
         }
         #endregion
+        #region rdlc reports
+        public List<DataContracts.Mapping.DC_supplierwiseUnmappedReport> GetsupplierwiseUnmappedDataReport(Guid SupplierID)
+        {
+            List<DataContracts.Mapping.DC_supplierwiseUnmappedReport> _objList = new List<DC_supplierwiseUnmappedReport>();
+            DataContracts.Mapping.DC_supplierwiseUnmappedReport _obj = new DC_supplierwiseUnmappedReport();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (SupplierID != Guid.Empty)
+                    {
+                        var searchcountry = (from s in context.m_CountryMapping where s.Supplier_Id == SupplierID 
+                                      && (s.Status == "UNMAPPED" || s.Status == "REVIEW") select s).Take(15).ToList();
+                        var searchcity=(from s in context.m_CityMapping
+                                        where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
+                                        select s).ToList();
+                        var searchproduct = (from s in context.Accommodation_ProductMapping
+                                             where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
+                                          select s).ToList();
+                        var searchactivity = (from s in context.Activity_SupplierProductMapping
+                                              where s.Supplier_ID == SupplierID && (s.MappingStatus == "UNMAPPED" || s.MappingStatus == "REVIEW")
+                                              select s).ToList();
+                        List<DC_UnmappedCountryReport> _lstCountry = new List<DC_UnmappedCountryReport>();
+                        foreach( var item in searchcountry)
+                        {
+                            DC_UnmappedCountryReport objCo = new DC_UnmappedCountryReport();
+                            objCo.Countrycode = item.CountryCode;
+                            objCo.Contryname = item.CountryName;
+                            _lstCountry.Add(objCo);
+
+                        }
+                        _obj.Unmappedcountry = _lstCountry;
+                        List<DC_UnmappedCityReport> _lstCity = new List<DC_UnmappedCityReport>();
+                        foreach (var item in searchcity)
+                        {
+                            DC_UnmappedCityReport objcity = new DC_UnmappedCityReport();
+                            objcity.Countrycode = item.CountryCode;
+                            objcity.Countryname = item.CountryName;
+                            objcity.Citycode = item.CityCode;
+                            objcity.Cityname = item.CityName;
+                            _lstCity.Add(objcity);
+
+                        }
+                        _obj.Unmappedcity = _lstCity;
+
+                        List<DC_unmappedProductReport> _lstproduct = new List<DC_unmappedProductReport>();
+                        foreach (var item in searchproduct)
+                        {
+                            DC_unmappedProductReport objpro = new DC_unmappedProductReport();
+                            objpro.Hotelname = item.ProductName;
+                            objpro.Country = item.CountryName;
+                            objpro.City = item.CityName;
+                            objpro.Address = item.address;
+                            _lstproduct.Add(objpro);
+
+                        }
+                        _obj.Unmappedproduct = _lstproduct;
+
+                        List<DC_unmappedActivityReport> _lstactivity = new List<DC_unmappedActivityReport>();
+
+                        foreach (var item in searchactivity)
+                        {
+                            DC_unmappedActivityReport objact = new DC_unmappedActivityReport();
+                            objact.Activityname = item.SupplierProductName;
+                            objact.Country = item.SupplierCountryName;
+                            objact.City = item.SupplierCityName;
+                            objact.Address = item.Address;
+                            _lstactivity.Add(objact);
+                        }
+                        _obj.Unmappedactivity = _lstactivity;
+                        _objList.Add(_obj);
+
+                    }
+                }
+
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return _objList;
+        }
+        public List<DataContracts.Mapping.DC_UnmappedCountryReport> GetsupplierwiseUnmappedCountryReport(Guid SupplierID)
+        {
+            List<DataContracts.Mapping.DC_UnmappedCountryReport> _objList = new List<DC_UnmappedCountryReport>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (SupplierID != Guid.Empty)
+                    {
+                        var searchcountry = (from s in context.m_CountryMapping
+                                             where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
+                                             select s).Take(15).ToList();
+                       foreach (var item in searchcountry)
+                            {
+                                DC_UnmappedCountryReport objCo = new DC_UnmappedCountryReport();
+                                 objCo.Supplierid =  item.Supplier_Id.ToString();
+                                objCo.Countrycode = item.CountryCode;
+                                objCo.Contryname = item.CountryName;
+                                 _objList.Add(objCo);
+
+                            }
+
+                    }
+                }
+
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return _objList;
+
+        }
+        #endregion
+
         #region Master Attribute Mapping
         public List<DataContracts.Mapping.DC_MasterAttributeMapping_RS> SearchMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping_RQ RQ)
         {
