@@ -51,5 +51,6 @@ namespace DataLayer
         public string address_tx { get; set; }
         public string TelephoneNumber_tx { get; set; }
         public string StarRating { get; set; }
+        public string Google_Place_Id { get; set; }
     }
 }

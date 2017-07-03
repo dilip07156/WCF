@@ -124,6 +124,9 @@ namespace DataContracts.STG
         [DataMember]
         public int TotalRecords { get; set; }
 
+        [DataMember]
+        public string Google_Place_Id { get; set; }
+
 
     }
 
