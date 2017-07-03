@@ -154,7 +154,219 @@ namespace DataLayer
 
         public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
         {
-            throw new NotImplementedException();
+            List<DC_Accomodation_ProductMapping> CMS = obj.lstHotelMapping;
+            List<DC_SupplierImportAttributeValues> configs = obj.lstConfigs;
+            string configWhere = "";
+            string curSupplier = "";
+            Guid? curSupplier_Id = Guid.Empty;
+            configWhere = "";
+
+            curSupplier = CMS[0].SupplierName;
+            curSupplier_Id = CMS[0].Supplier_Id;
+
+            List<DC_Accomodation_ProductMapping> ret = new List<DC_Accomodation_ProductMapping>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var prodMapSearch = (from a in context.Accommodation_ProductMapping
+                                         where a.Accommodation_Id == null && a.Supplier_Id == curSupplier_Id
+                                         select a);
+
+                    bool isCountryCodeCheck = false;
+                    bool isCountryNameCheck = false;
+                    bool isCityCodeCheck = false;
+                    bool isCityNameCheck = false;
+                    bool isLatLongCheck = false;
+                    bool isCodeCheck = false;
+                    bool isNameCheck = false;
+                    bool isPlaceIdCheck = false;
+                    foreach (DC_SupplierImportAttributeValues config in configs)
+                    {
+                        configWhere = " " + configWhere + config.AttributeName + " == " + config.AttributeValue + " AND";
+                        //if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "COUNTRYCODE")
+                        //{
+                        //    isCountryCodeCheck = true;
+                        //    prodMapSearch = (from a in prodMapSearch
+                        //                     join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { cm.Supplier_Id, cm.CountryCode }
+                        //                     join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
+                        //                     join ac in context.Accommodations on m.Code equals ac.cou
+                        //                     where a.CountryCode == m.Code
+                        //                     select a);
+                        //}
+                        if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "COUNTRYNAME")
+                        {
+                            isCountryNameCheck = true;
+                            prodMapSearch = (from a in prodMapSearch
+                                             join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName } equals new { cm.Supplier_Id, cm.CountryName }
+                                             join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
+                                             join ac in context.Accommodations on m.Name.Trim().ToUpper() equals ac.country.Trim().ToUpper()
+                                             where a.CountryName.Trim().ToUpper() == m.Name.Trim().ToUpper()
+                                             select a);
+                        }
+                        //if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "CITYCODE")
+                        //{
+                        //    isCityCodeCheck = true;
+                        //    prodMapSearch = (from a in prodMapSearch
+                        //                     join ctm in context.m_CityMapping on new { a.Supplier_Id, a.CityCode } equals new { ctm.Supplier_Id, ctm.CityCode }
+                        //                     join c in context.m_CityMaster on ctm.City_Id equals c.City_Id
+                        //                     join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { cm.Supplier_Id, cm.CountryCode }
+                        //                     join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
+                        //                     select a);
+                        //}
+                        if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "CITYNAME")
+                        {
+                            isCityNameCheck = true;
+                            prodMapSearch = (from a in prodMapSearch
+                                             join ctm in context.m_CityMapping on new { a.Supplier_Id, a.CityName } equals new { ctm.Supplier_Id, ctm.CityName }
+                                             join c in context.m_CityMaster on ctm.City_Id equals c.City_Id
+                                             join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { cm.Supplier_Id, cm.CountryCode }
+                                             join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
+                                             join ac in context.Accommodations on c.Name.Trim().ToUpper() equals ac.city.Trim().ToUpper()
+                                             where a.CountryName.Trim().ToUpper() == m.Name.Trim().ToUpper() &&
+                                             a.CityName.Trim().ToUpper() == c.Name.Trim().ToUpper()
+                                             select a);
+                        }
+                        if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "CompanyHotelID".ToUpper())
+                        {
+                            isCodeCheck = true;
+                            prodMapSearch = (from a in prodMapSearch
+                                             join m in context.m_CountryMapping on a.CountryName.Trim().ToUpper() equals m.CountryName.Trim().ToUpper()
+                                             join mm in context.m_CountryMaster on m.Country_Id equals mm.Country_Id
+                                             join mc in context.m_CityMapping on a.CityName.Trim().ToUpper() equals mc.CityName.Trim().ToUpper()
+                                             join mmc in context.m_CityMaster on mc.City_Id equals mmc.City_Id
+                                             join ac in context.Accommodations on mmc.Name.Trim().ToUpper() equals ac.city.Trim().ToUpper()
+                                             where mm.Name.Trim().ToUpper() == ac.country.Trim().ToUpper()
+                                             && a.SupplierProductReference.Trim().ToUpper() == ac.CompanyHotelID.ToString()
+                                             select a);
+                        }
+                        if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "HotelName".ToUpper())
+                        {
+                            isNameCheck = true;
+                            prodMapSearch = (from a in prodMapSearch
+                                             join m in context.m_CountryMapping on a.CountryName.Trim().ToUpper() equals m.CountryName.Trim().ToUpper()
+                                             join mm in context.m_CountryMaster on m.Country_Id equals mm.Country_Id
+                                             join mc in context.m_CityMapping on a.CityName.Trim().ToUpper() equals mc.CityName.Trim().ToUpper()
+                                             join mmc in context.m_CityMaster on mc.City_Id equals mmc.City_Id
+                                             join ac in context.Accommodations on mmc.Name.Trim().ToUpper() equals ac.city.Trim().ToUpper()
+                                             where mm.Name.Trim().ToUpper() == ac.country.Trim().ToUpper()
+                                             && a.ProductName.Trim().ToUpper() == ac.HotelName.Trim().ToUpper()
+                                             select a);
+                        }
+                        if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "LATITUDE")
+                        {
+                            isLatLongCheck = true;
+                            prodMapSearch = (from a in prodMapSearch
+                                             join m in context.Accommodations on new { a.Latitude, a.Longitude } equals new { m.Latitude, m.Longitude }
+                                             select a);
+                        }
+                        if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "Google_Place_Id")
+                        {
+                            isPlaceIdCheck = true;
+                            prodMapSearch = (from a in prodMapSearch
+                                             join m in context.Accommodations on a.Google_Place_Id equals m.Google_Place_Id
+                                             select a);
+                        }
+                    }
+                    List<DC_Accomodation_ProductMapping> res = new List<DC_Accomodation_ProductMapping>();
+
+                    if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck)
+                    {
+                        res = (from a in prodMapSearch
+                               select new DataContracts.Mapping.DC_Accomodation_ProductMapping
+                               {
+                                   Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
+                                   Accommodation_Id = a.Accommodation_Id,
+                                   Address_tx = a.address_tx,
+                                   CityCode = a.CityCode,
+                                   CityName = a.CityName,
+                                   CountryCode = a.CountryCode,
+                                   CountryName = a.CountryName,
+                                   Create_Date = a.Create_Date,
+                                   Create_User = a.Create_User,
+                                   Edit_Date = a.Edit_Date,
+                                   Edit_User = a.Edit_User,
+                                   Email = a.Email,
+                                   Fax = a.Fax,
+                                   Latitude = a.Latitude,
+                                   Longitude = a.Longitude,
+                                   IsActive = (a.IsActive ?? true),
+                                   MapId = a.MapId,
+                                   PostCode = a.PostCode,
+                                   ProductName = a.ProductName,
+                                   Remarks = a.Remarks,
+                                   StarRating = a.StarRating,
+                                   StateCode = a.StateCode,
+                                   StateName = a.StateName,
+                                   Status = a.Status,
+                                   Street = a.Street,
+                                   Street2 = a.Street2,
+                                   Street3 = a.Street3,
+                                   Street4 = a.Street4,
+                                   SupplierId = a.SupplierId,
+                                   SupplierName = a.SupplierName,
+                                   SupplierProductReference = a.SupplierProductReference,
+                                   TelephoneNumber = a.TelephoneNumber,
+                                   TelephoneNumber_tx = a.TelephoneNumber_tx,
+                                   Website = a.Website
+                               }).ToList();
+
+                        res = res.Select(c =>
+                        {
+                            c.Accommodation_Id = (context.Accommodations
+                                            .Where(s => (
+                                                            ((isCountryNameCheck && s.country == c.CountryName) || (!isCountryNameCheck)) &&
+                                                            ((isCityNameCheck && s.city == c.CityName) || (!isCityNameCheck)) &&
+                                                            ((isCodeCheck && s.CompanyHotelID.ToString() == c.SupplierProductReference) || (!isCodeCheck)) &&
+                                                            ((isNameCheck && s.HotelName.Trim().ToUpper() == c.ProductName.Trim().ToUpper()) || (!isNameCheck)) &&
+                                                            ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck)) &&
+                                                            ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck))
+                                                        )
+                                                   )
+                                            .Select(s1 => s1.Accommodation_Id)
+                                            .FirstOrDefault()
+                                            );
+                            return c;
+                        }).ToList();
+
+                        res.RemoveAll(p => p.Accommodation_Id == Guid.Empty);
+                        res = res.Select(c =>
+                        {
+                            c.Status = ("REVIEW"); return c;
+                        }).ToList();
+
+                        if (UpdateAccomodationProductMapping(res))
+                        {
+                            if (curSupplier_Id != null)
+                            {
+                                DataContracts.Mapping.DC_Mapping_ProductSupplier_Search_RQ RQ = new DC_Mapping_ProductSupplier_Search_RQ();
+                                RQ.SupplierName = curSupplier;
+                                RQ.PageNo = 0;
+                                RQ.PageSize = int.MaxValue;
+                                RQ.Status = "UNMAPPED";
+                                res = GetProductSupplierMappingSearch(RQ);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (curSupplier_Id != null)
+                        {
+                            DataContracts.Mapping.DC_Mapping_ProductSupplier_Search_RQ RQ = new DC_Mapping_ProductSupplier_Search_RQ();
+                            RQ.SupplierName = curSupplier;
+                            RQ.PageNo = 0;
+                            RQ.PageSize = int.MaxValue;
+                            RQ.Status = "UNMAPPED";
+                            res = GetProductSupplierMappingSearch(RQ);
+                        }
+                    }
+                    return res;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating hotel mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
         }
 
         public List<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetAccomodationProductMapping(int PageNo, int PageSize, Guid Accomodation_Id, string Status)
@@ -1398,14 +1610,20 @@ namespace DataLayer
                         {
                             isCountryCodeCheck = true;
                             prodMapSearch = (from a in prodMapSearch
-                                             join m in context.m_CountryMaster on a.CountryCode equals m.Code
+                                                 //join m in context.m_CountryMaster on a.CountryCode equals m.Code
+                                                 //select a);
+                                             join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { cm.Supplier_Id, cm.CountryCode }
+                                             join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
                                              select a);
                         }
                         if (config.AttributeValue.Replace("m_CityMaster.", "").Trim().ToUpper() == "COUNTRYNAME")
                         {
                             isCountryNameCheck = true;
                             prodMapSearch = (from a in prodMapSearch
-                                             join m in context.m_CountryMaster on a.CountryName equals m.Name
+                                                 //join m in context.m_CountryMaster on a.CountryName equals m.Name
+                                                 //select a);
+                                             join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName } equals new { cm.Supplier_Id, cm.CountryName }
+                                             join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
                                              select a);
                         }
                         if (config.AttributeValue.Replace("m_CityMaster.", "").Trim().ToUpper() == "CODE")
@@ -1800,23 +2018,23 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     DateTime fd = Convert.ToDateTime(parm.Fromdate);
-                    DateTime td = Convert.ToDateTime(parm.ToDate);
+                    DateTime td = Convert.ToDateTime(parm.ToDate); 
                     var search = (from t in context.Accommodation_RuleInfo
-                                  join t1 in context.Accommodations on t.Accommodation_Id equals t1.Accommodation_Id
-                                  where (t.Create_Date >= fd && t.Edit_Date <= td)
-                                  select new
-                                  {
+                                 join t1 in context.Accommodations on t.Accommodation_Id equals t1.Accommodation_Id
+                                 where (t.Create_Date >= fd && t.Edit_Date <= td)
+                                 select new
+                                 {
                                       HotelID = t1.CompanyHotelID,
                                       HotelName = t1.HotelName,
                                       RuleName = t.RuleType,
                                       Description = t.Description,
-                                      flag = t.IsInternal == true ? "YES" : "NO",
-                                      LupdateDate = t.Edit_Date == null ? t.Create_Date : t.Edit_Date,
-                                      LupdateBy = t.Edit_User == null ? t.Create_User : t.Edit_User
-                                  }).ToList();
+                                     flag = t.IsInternal == true ? "YES" : "NO",
+                                     LupdateDate = t.Edit_Date == null ? t.Create_Date : t.Edit_Date,
+                                     LupdateBy = t.Edit_User == null ? t.Create_User : t.Edit_User
+                                 }).ToList();
                     foreach (var item in search)
                     {
-
+                        
                         DC_RollOffReportRule obj = new DC_RollOffReportRule();
                         obj.Hotelid = item.HotelID.Value;
                         obj.Hotelname = item.HotelName;
@@ -1857,7 +2075,7 @@ namespace DataLayer
                                       fromd = t.From,
                                       tod = t.To,
                                       reason = t.DeactivationReason,
-                                      // flag = t.IsInternal == true ? "YES" : "NO",
+                                     // flag = t.IsInternal == true ? "YES" : "NO",
                                       LupdateDate = t.Edit_Date == null ? t.Create_Date : t.Edit_Date,
                                       LupdateBy = t.Edit_User == null ? t.Create_User : t.Edit_User
                                   }).ToList();
@@ -1872,7 +2090,7 @@ namespace DataLayer
                         obj.Validfrom = Convert.ToString(item.fromd);
                         obj.Validto = Convert.ToString(item.tod);
                         obj.Reason = item.reason;
-                        // obj.Internal_Flag = item.flag;
+                       // obj.Internal_Flag = item.flag;
                         obj.LastupdateDate = Convert.ToString(item.LupdateDate);
                         obj.LastupdatedBy = item.LupdateBy;
                         objLst.Add(obj);
@@ -1887,6 +2105,158 @@ namespace DataLayer
             return objLst;
         }
         #endregion
+        #region rdlc reports
+        public List<DataContracts.Mapping.DC_supplierwiseUnmappedReport> GetsupplierwiseUnmappedDataReport(Guid SupplierID)
+        {
+            List<DataContracts.Mapping.DC_supplierwiseUnmappedReport> _objList = new List<DC_supplierwiseUnmappedReport>();
+            DataContracts.Mapping.DC_supplierwiseUnmappedReport _obj = new DC_supplierwiseUnmappedReport();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (SupplierID != Guid.Empty)
+                    {
+                        var searchcountry = (from s in context.m_CountryMapping where s.Supplier_Id == SupplierID 
+                                      && (s.Status == "UNMAPPED" || s.Status == "REVIEW") select s).ToList();
+                        var searchcity=(from s in context.m_CityMapping
+                                        where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
+                                        select s).ToList();
+                        var searchproduct = (from s in context.Accommodation_ProductMapping
+                                             where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
+                                          select s).ToList();
+                        var searchactivity = (from s in context.Activity_SupplierProductMapping
+                                              where s.Supplier_ID == SupplierID && (s.MappingStatus == "UNMAPPED" || s.MappingStatus == "REVIEW")
+                                              select s).ToList();
+                        List<DC_UnmappedCountryReport> _lstCountry = new List<DC_UnmappedCountryReport>();
+                        foreach( var item in searchcountry)
+                        {
+                            DC_UnmappedCountryReport objCo = new DC_UnmappedCountryReport();
+                            objCo.Countrycode = item.CountryCode;
+                            objCo.Contryname = item.CountryName;
+                            _lstCountry.Add(objCo);
+
+                        }
+                        _obj.Unmappedcountry = _lstCountry;
+                        List<DC_UnmappedCityReport> _lstCity = new List<DC_UnmappedCityReport>();
+                        foreach (var item in searchcity)
+                        {
+                            DC_UnmappedCityReport objcity = new DC_UnmappedCityReport();
+                            objcity.Countrycode = item.CountryCode;
+                            objcity.Countryname = item.CountryName;
+                            objcity.Citycode = item.CityCode;
+                            objcity.Cityname = item.CityName;
+                            _lstCity.Add(objcity);
+
+                        }
+                        _obj.Unmappedcity = _lstCity;
+
+                        List<DC_unmappedProductReport> _lstproduct = new List<DC_unmappedProductReport>();
+                        foreach (var item in searchproduct)
+                        {
+                            DC_unmappedProductReport objpro = new DC_unmappedProductReport();
+                            objpro.Hotelname = item.ProductName;
+                            objpro.Country = item.CountryName;
+                            objpro.City = item.CityName;
+                            objpro.Address = item.address;
+                            _lstproduct.Add(objpro);
+
+                        }
+                        _obj.Unmappedproduct = _lstproduct;
+
+                        List<DC_unmappedActivityReport> _lstactivity = new List<DC_unmappedActivityReport>();
+
+                        foreach (var item in searchactivity)
+                        {
+                            DC_unmappedActivityReport objact = new DC_unmappedActivityReport();
+                            objact.Activityname = item.SupplierProductName;
+                            objact.Country = item.SupplierCountryName;
+                            objact.City = item.SupplierCityName;
+                            objact.Address = item.Address;
+                            _lstactivity.Add(objact);
+                        }
+                        _obj.Unmappedactivity = _lstactivity;
+                        _objList.Add(_obj);
+
+                    }
+                }
+
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return _objList;
+        }
+        public List<DataContracts.Mapping.DC_UnmappedCountryReport> GetsupplierwiseUnmappedCountryReport(Guid SupplierID)
+        {
+            List<DataContracts.Mapping.DC_UnmappedCountryReport> _objList = new List<DC_UnmappedCountryReport>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (SupplierID != Guid.Empty)
+                    {
+                        var searchcountry = (from s in context.m_CountryMapping
+                                             where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
+                                             select s).ToList();
+                       foreach (var item in searchcountry)
+                            {
+                                DC_UnmappedCountryReport objCo = new DC_UnmappedCountryReport();
+                                 objCo.Supplierid =  item.Supplier_Id.ToString();
+                                objCo.Countrycode = item.CountryCode;
+                                objCo.Contryname = item.CountryName;
+                                 _objList.Add(objCo);
+
+                            }
+
+                    }
+                }
+
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return _objList;
+
+        }
+
+        public List<DataContracts.Mapping.DC_UnmappedCityReport> GetsupplierwiseUnmappedCityReport(Guid SupplierID)
+        {
+            List<DataContracts.Mapping.DC_UnmappedCityReport> _objList = new List<DC_UnmappedCityReport>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (SupplierID != Guid.Empty)
+                    {
+                        var searchcountry = (from s in context.m_CityMapping
+                                             where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
+                                             select s).ToList();
+                        foreach (var item in searchcountry)
+                        {
+                            DC_UnmappedCityReport objCi = new DC_UnmappedCityReport();
+                            objCi.Countrycode = item.CountryCode;
+                            objCi.Countryname = item.CountryName;
+                            objCi.Citycode = item.CityCode;
+                            objCi.Cityname = item.CityName;
+                            _objList.Add(objCi);
+
+                        }
+
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return _objList;
+
+        }
+        #endregion
+
         #region Master Attribute Mapping
         public List<DataContracts.Mapping.DC_MasterAttributeMapping_RS> SearchMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping_RQ RQ)
         {
@@ -2251,7 +2621,7 @@ namespace DataLayer
                                       Create_User = a.Create_User,
                                       Edit_User = a.Edit_User,
                                       MapID = a.MapID
-                                  }).FirstOrDefault();
+                                  }).FirstOrDefault(); 
                     if (result != null && !string.IsNullOrWhiteSpace(result.SupplierCountryName) && !string.IsNullOrWhiteSpace(result.SupplierCityName))
                     {
                         var resultCity = context.m_CityMapping.Where(a => (a.Supplier_Id == result.Supplier_ID) && (a.Status == "MAPPED")).ToList();

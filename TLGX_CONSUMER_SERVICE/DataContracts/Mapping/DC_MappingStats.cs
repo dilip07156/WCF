@@ -501,4 +501,248 @@ namespace DataContracts.Mapping
             }
         }
     }
+
+    #region rdlc reports
+    [DataContract]
+    public class DC_supplierwiseUnmappedReport
+    {
+        [DataMember]
+        public Guid _SupplierId { get; set; }
+        [DataMember]
+        public List<DC_UnmappedCountryReport> Unmappedcountry { get; set; }
+        [DataMember]
+        public List<DC_UnmappedCityReport> Unmappedcity { get; set; }
+        [DataMember]
+        public List<DC_unmappedProductReport> Unmappedproduct { get; set; }
+        [DataMember]
+        public List<DC_unmappedActivityReport> Unmappedactivity { get; set; }
+       
+    }
+    [DataContract]
+    public class DC_UnmappedCountryReport
+    {
+        string supplierid;
+        string _countrycode;
+        string _contryname;
+        [DataMember]
+        public string Countrycode
+        {
+            get
+            {
+                return _countrycode;
+            }
+
+            set
+            {
+                _countrycode = value;
+            }
+        }
+        [DataMember]
+        public string Contryname
+        {
+            get
+            {
+                return _contryname;
+            }
+
+            set
+            {
+                _contryname = value;
+            }
+        }
+
+        public string Supplierid
+        {
+            get
+            {
+                return supplierid;
+            }
+
+            set
+            {
+                supplierid = value;
+            }
+        }
+    }
+    [DataContract]
+    public class DC_UnmappedCityReport
+    {
+        string _countrycode;
+        string _countryname;
+        string _citycode;
+        string _cityname;
+        [DataMember]
+        public string Countrycode
+        {
+            get
+            {
+                return _countrycode;
+            }
+
+            set
+            {
+                _countrycode = value;
+            }
+        }
+        [DataMember]
+        public string Countryname
+        {
+            get
+            {
+                return _countryname;
+            }
+
+            set
+            {
+                _countryname = value;
+            }
+        }
+        [DataMember]
+        public string Citycode
+        {
+            get
+            {
+                return _citycode;
+            }
+
+            set
+            {
+                _citycode = value;
+            }
+        }
+        [DataMember]
+        public string Cityname
+        {
+            get
+            {
+                return _cityname;
+            }
+
+            set
+            {
+                _cityname = value;
+            }
+        }
+    }
+    [DataContract]
+    public class DC_unmappedProductReport
+    {
+        string _hotelname;
+        string _country;
+        string _city;
+        string _address;
+        [DataMember]
+        public string Hotelname
+        {
+            get
+            {
+                return _hotelname;
+            }
+
+            set
+            {
+                _hotelname = value;
+            }
+        }
+        [DataMember]
+        public string Country
+        {
+            get
+            {
+                return _country;
+            }
+
+            set
+            {
+                _country = value;
+            }
+        }
+        [DataMember]
+        public string City
+        {
+            get
+            {
+                return _city;
+            }
+
+            set
+            {
+                _city = value;
+            }
+        }
+        [DataMember]
+        public string Address
+        {
+            get
+            {
+                return _address;
+            }
+
+            set
+            {
+                _address = value;
+            }
+        }
+    }
+    [DataContract]
+    public class DC_unmappedActivityReport
+    {
+        string _activityname;
+        string _country;
+        string _city;
+        string _address;
+        [DataMember]
+        public string Activityname
+        {
+            get
+            {
+                return _activityname;
+            }
+
+            set
+            {
+                _activityname = value;
+            }
+        }
+        [DataMember]
+        public string Country
+        {
+            get
+            {
+                return _country;
+            }
+
+            set
+            {
+                _country = value;
+            }
+        }
+        [DataMember]
+        public string City
+        {
+            get
+            {
+                return _city;
+            }
+
+            set
+            {
+                _city = value;
+            }
+        }
+        [DataMember]
+        public string Address
+        {
+            get
+            {
+                return _address;
+            }
+
+            set
+            {
+                _address = value;
+            }
+        }
+    }
+    #endregion
 }
