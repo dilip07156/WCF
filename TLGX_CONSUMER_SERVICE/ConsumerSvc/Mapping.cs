@@ -202,8 +202,22 @@ namespace ConsumerSvc
                 return objBL.GetActivitySupplierProductMappingSearch(obj);
             }
         }
+        public List<DataContracts.Mapping.DC_Acitivity_SupplierProductMapping> GetActivitySupplierProductMappingSearchForMapping(DataContracts.Mapping.DC_Acitivity_SupplierProductMapping_Search_RQ obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetActivitySupplierProductMappingSearchForMapping(obj);
+            }
+        }
+        public bool IsMappedWithSupplier(string masterActivityID, string supplierID)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.IsMappedWithSupplier(masterActivityID, supplierID);
+            }
+        }
+        
 
-      
         public List<DataContracts.Mapping.DC_Acitivity_SupplierProductMappingForDDL> GetActivitySupplierProductMappingSearchForDDL(DataContracts.Mapping.DC_Acitivity_SupplierProductMapping_Search_RQ obj)
         {
             using (BL_Mapping objBL = new BL_Mapping())
