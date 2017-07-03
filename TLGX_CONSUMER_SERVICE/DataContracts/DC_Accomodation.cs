@@ -4525,6 +4525,7 @@ namespace DataContracts
         string _Google_Place_Id;
         string _AccomodationId;
         string _searchfrom;
+        string _starrating;
         //[DataMember]
         //public string GroupOfCompanies
         //{
@@ -4787,6 +4788,19 @@ namespace DataContracts
                 _searchfrom = value;
             }
         }
+        [DataMember]
+        public string Starrating
+        {
+            get
+            {
+                return _starrating;
+            }
+
+            set
+            {
+                _starrating = value;
+            }
+        }
     }
 
     [DataContract]
@@ -4814,6 +4828,7 @@ namespace DataContracts
         string _FullAddress;
         int? _MapCount;
         string _HotelNameWithCode;
+        string _starrating;
 
         [DataMember]
         public string Google_Place_Id
@@ -5036,6 +5051,19 @@ namespace DataContracts
             set
             {
                 _HotelNameWithCode = value;
+            }
+        }
+        [DataMember]
+        public string Starrating
+        {
+            get
+            {
+                return _starrating;
+            }
+
+            set
+            {
+                _starrating = value;
             }
         }
     }
