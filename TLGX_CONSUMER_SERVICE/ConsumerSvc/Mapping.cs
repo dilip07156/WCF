@@ -157,6 +157,14 @@ namespace ConsumerSvc
                 return objBL.GetsupplierwiseUnmappedCountryReport(SupplierID);
             }
         }
+
+        public IList<DataContracts.Mapping.DC_UnmappedCityReport> GetsupplierwiseUnmappedCityReport(string SupplierID)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetsupplierwiseUnmappedCityReport(SupplierID);
+            }
+        }
         #endregion
         #region Master Attribute Mapping
         public List<DataContracts.Mapping.DC_MasterAttributeMapping_RS> SearchMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping_RQ RQ)

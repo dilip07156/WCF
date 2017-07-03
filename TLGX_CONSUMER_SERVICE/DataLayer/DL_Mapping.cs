@@ -2117,7 +2117,7 @@ namespace DataLayer
                     if (SupplierID != Guid.Empty)
                     {
                         var searchcountry = (from s in context.m_CountryMapping where s.Supplier_Id == SupplierID 
-                                      && (s.Status == "UNMAPPED" || s.Status == "REVIEW") select s).Take(15).ToList();
+                                      && (s.Status == "UNMAPPED" || s.Status == "REVIEW") select s).ToList();
                         var searchcity=(from s in context.m_CityMapping
                                         where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
                                         select s).ToList();
@@ -2198,7 +2198,7 @@ namespace DataLayer
                     {
                         var searchcountry = (from s in context.m_CountryMapping
                                              where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
-                                             select s).Take(15).ToList();
+                                             select s).ToList();
                        foreach (var item in searchcountry)
                             {
                                 DC_UnmappedCountryReport objCo = new DC_UnmappedCountryReport();
@@ -2214,6 +2214,41 @@ namespace DataLayer
 
             }
             catch(Exception ex)
+            {
+
+            }
+            return _objList;
+
+        }
+
+        public List<DataContracts.Mapping.DC_UnmappedCityReport> GetsupplierwiseUnmappedCityReport(Guid SupplierID)
+        {
+            List<DataContracts.Mapping.DC_UnmappedCityReport> _objList = new List<DC_UnmappedCityReport>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (SupplierID != Guid.Empty)
+                    {
+                        var searchcountry = (from s in context.m_CityMapping
+                                             where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
+                                             select s).ToList();
+                        foreach (var item in searchcountry)
+                        {
+                            DC_UnmappedCityReport objCi = new DC_UnmappedCityReport();
+                            objCi.Countrycode = item.CountryCode;
+                            objCi.Countryname = item.CountryName;
+                            objCi.Citycode = item.CityCode;
+                            objCi.Cityname = item.CityName;
+                            _objList.Add(objCi);
+
+                        }
+
+                    }
+                }
+
+            }
+            catch (Exception ex)
             {
 
             }

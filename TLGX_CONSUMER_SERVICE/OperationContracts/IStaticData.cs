@@ -33,6 +33,7 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "Mapping/Statistics/GetDataForStatusReport", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         IList<DataContracts.Mapping.DC_RollOffReportStatus> getStatisticforStatusReport(DataContracts.Mapping.DC_RollOFParams parm);
+       
         #region rdlc reports
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
@@ -44,6 +45,9 @@ namespace OperationContracts
         [WebInvoke(Method = "GET", UriTemplate = "Mapping/Statistics/GetsupplierwiseUnmappedCountryReport/{SupplierID}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         IList<DataContracts.Mapping.DC_UnmappedCountryReport> GetsupplierwiseUnmappedCountryReport(string SupplierID);
 
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Mapping/Statistics/GetsupplierwiseUnmappedCityReport/{SupplierID}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Mapping.DC_UnmappedCityReport> GetsupplierwiseUnmappedCityReport(string SupplierID);
 
         #endregion
     }
