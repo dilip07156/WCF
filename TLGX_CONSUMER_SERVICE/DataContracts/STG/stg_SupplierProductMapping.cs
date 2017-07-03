@@ -120,5 +120,64 @@ namespace DataContracts.STG
 
         [DataMember]
         public string StarRating { get; set; }
+
+        [DataMember]
+        public int TotalRecords { get; set; }
+
+        [DataMember]
+        public string Google_Place_Id { get; set; }
+
+
+    }
+
+    [DataContract]
+    public class DC_stg_SupplierProductMapping_RQ
+    {
+        [DataMember]
+        public Nullable<System.Guid> stg_AccoMapping_Id { get; set; }
+
+        [DataMember]
+        public string ProductId { get; set; }
+
+        [DataMember]
+        public string ProductName { get; set; }
+
+        [DataMember]
+        public System.Guid Supplier_Id { get; set; }
+
+        [DataMember]
+        public string SupplierName { get; set; }
+
+        [DataMember]
+        public string CityCode { get; set; }
+
+        [DataMember]
+        public string CityName { get; set; }
+
+        [DataMember]
+        public string StateCode { get; set; }
+
+        [DataMember]
+        public string StateName { get; set; }
+
+        [DataMember]
+        public string CountryCode { get; set; }
+
+        [DataMember]
+        public string CountryName { get; set; }
+
+        [DataMember]
+        public int PageNo { get; set; }
+
+        [DataMember]
+        public int PageSize { get; set; }
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
+
+        [DataMember]
+        public string StarRating { get; set; }
     }
 }

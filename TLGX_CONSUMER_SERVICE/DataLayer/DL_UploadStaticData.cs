@@ -7,6 +7,7 @@ using System.ServiceModel;
 using DataContracts.Masters;
 using DataContracts;
 using System.Data;
+using DataContracts.STG;
 
 namespace DataLayer
 {
@@ -997,7 +998,6 @@ namespace DataLayer
             }
         }
 
-
         public List<DataContracts.STG.DC_stg_SupplierCityMapping> GetSTGCityData(DataContracts.STG.DC_stg_SupplierCityMapping_RQ RQ)
         {
             try
@@ -1111,7 +1111,6 @@ namespace DataLayer
                 });
             }
         }
-
 
         public DataContracts.DC_Message AddSTGCityData(List<DataContracts.STG.DC_stg_SupplierCityMapping> lstobj)
         {
@@ -1249,6 +1248,175 @@ namespace DataLayer
             }
 
         }
+
+        public List<DC_stg_SupplierProductMapping> GetSTGHotelData(DC_stg_SupplierProductMapping_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var stgSearch = from a in context.stg_SupplierProductMapping select a;
+
+                    if (RQ.stg_AccoMapping_Id.HasValue)
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.stg_AccoMapping_Id == RQ.stg_AccoMapping_Id
+                                    select a;
+                    }
+
+                    if (!(RQ.Supplier_Id == Guid.Empty))
+                    {
+                        stgSearch = from a in stgSearch
+                                    join s in context.Suppliers on a.SupplierName.Trim().TrimStart().ToUpper() equals s.Name.Trim().TrimStart().ToUpper()
+                                    where s.Supplier_Id == RQ.Supplier_Id
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierName.Trim().TrimStart().ToUpper() == RQ.SupplierName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+
+                    if (!string.IsNullOrWhiteSpace(RQ.CountryCode))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.CountryCode.Trim().TrimStart().ToUpper() == RQ.CountryCode.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.CountryName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.CountryName.Trim().TrimStart().ToUpper() == RQ.CountryName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.StateCode))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.StateCode.Trim().TrimStart().ToUpper() == RQ.StateCode.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.StateName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.StateName.Trim().TrimStart().ToUpper() == RQ.StateName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.CityCode))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.CityCode.Trim().TrimStart().ToUpper() == RQ.CityCode.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.CityName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.CityName.Trim().TrimStart().ToUpper() == RQ.CityName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.ProductId))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.ProductId.Trim().TrimStart().ToUpper() == RQ.ProductId.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.ProductName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.ProductName.Trim().TrimStart().ToUpper() == RQ.ProductName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.Latitude))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.Latitude.Trim().TrimStart().ToUpper() == RQ.Latitude.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.Longitude))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.Longitude.Trim().TrimStart().ToUpper() == RQ.Longitude.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.StarRating))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.StarRating.Trim().TrimStart().ToUpper() == RQ.StarRating.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+
+                    int total;
+
+                    total = stgSearch.Count();
+
+                    var skip = RQ.PageSize * RQ.PageNo;
+
+                    var stgResult = (from a in stgSearch
+                                     orderby a.SupplierName, a.CountryName
+                                     select new DataContracts.STG.DC_stg_SupplierProductMapping
+                                     {
+                                         stg_AccoMapping_Id = a.stg_AccoMapping_Id,
+                                         CityCode = a.CityCode,
+                                         CityName = a.CityName,
+                                         StateCode = a.StateCode,
+                                         StateName = a.StateName,
+                                         ActiveFrom = a.ActiveFrom,
+                                         ActiveTo = a.ActiveTo,
+                                         CountryCode = a.CountryCode,
+                                         CountryName = a.CountryName,
+                                         SupplierId = a.SupplierId,
+                                         SupplierName = a.SupplierName,
+                                         TotalRecords = total,
+                                         Latitude = a.Latitude,
+                                         Longitude = a.Longitude,
+                                         Address = a.Address,
+                                         Email = a.Email,
+                                         Fax = a.Fax,
+                                         InsertDate = a.InsertDate,
+                                         Location = a.Location,
+                                         PostalCode = a.PostalCode,
+                                         ProductId = a.ProductId,
+                                         ProductName = a.ProductName,
+                                         StarRating = a.StarRating,
+                                         Street2 = a.Street2,
+                                         Street3 = a.Street3,
+                                         Street4 = a.Street4,
+                                         Street5 = a.Street5,
+                                         StreetName = a.StreetName,
+                                         StreetNo = a.StreetNo,
+                                         TelephoneNumber = a.TelephoneNumber,
+                                         TX_COUNTRYNAME = a.TX_COUNTRYNAME,
+                                         Website = a.Website,
+                                         Action = a.Action,
+                                         ActionText = a.ActionText,
+                                         UpdateType = a.UpdateType
+                                     }
+                                        ).Skip(skip).Take(RQ.PageSize).ToList();
+
+                    return stgResult;
+
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while searching Supplier Data",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+        }
+
         #endregion
 
         #region Process Or Test Uploaded Files

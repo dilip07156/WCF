@@ -57,7 +57,7 @@ namespace DataContracts.Mapping
         int? _MapId;
         string _mstAcco_Id;
         string _mstHotelName;
-
+        string _Google_Place_Id;
 
 
         [DataMember]
@@ -682,6 +682,19 @@ namespace DataContracts.Mapping
             set
             {
                 _SystemFullAddress = value;
+            }
+        }
+        [DataMember]
+        public string Google_Place_Id
+        {
+            get
+            {
+                return _Google_Place_Id;
+            }
+
+            set
+            {
+                _Google_Place_Id = value;
             }
         }
     }

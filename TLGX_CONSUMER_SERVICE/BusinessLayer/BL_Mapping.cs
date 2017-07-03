@@ -84,6 +84,14 @@ namespace BusinessLayer
                 return objBL.UpdateAccomodationProductMapping(PM);
             }
         }
+
+        public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.UpdateHotelMappingStatus(obj);
+            }
+        }
         #endregion
 
         #region Supplier Room Type Mapping
@@ -154,13 +162,8 @@ namespace BusinessLayer
                 return objBL.UpdateCountryMappingStatus(obj);
             }
         }
-        public List<DC_CityMapping> UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
-        {
-            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
-            {
-                return objBL.UpdateCityMappingStatus(obj);
-            }
-        }
+
+        
         #endregion
 
         #region City Mapping
@@ -173,11 +176,19 @@ namespace BusinessLayer
             }
         }
 
+
         public bool UpdateCityMapping(List<DataContracts.Mapping.DC_CityMapping> CM)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
                 return objBL.UpdateCityMapping(CM);
+            }
+        }
+        public List<DC_CityMapping> UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.UpdateCityMappingStatus(obj);
             }
         }
         #endregion
