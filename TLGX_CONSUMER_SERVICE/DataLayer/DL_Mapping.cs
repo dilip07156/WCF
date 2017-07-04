@@ -2379,6 +2379,50 @@ namespace DataLayer
             return _objList;
 
         }
+        public List<DataContracts.Mapping.DC_supplierwisesummaryReport> GetsupplierwiseSummaryReport(Guid SupplierID)
+        {
+            List<DataContracts.Mapping.DC_supplierwisesummaryReport> _objList = new List<DC_supplierwisesummaryReport>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (SupplierID != Guid.Empty)
+                    {
+                        var searchasummary = context.vwMappingStats.
+                             Where(c=>c.supplier_id == SupplierID)
+                            .GroupBy(c => new { c.supplier_id,c.SupplierName,c.MappinFor})
+                            .Select(g => new
+                            {
+                                mapped = g.Where(c => c.Status == "Mapped").Sum(c=> c.totalcount),
+                                review = g.Where(c => c.Status == "Review").Sum(c => c.totalcount),
+                                unmapped = g.Where(c => c.Status == "unmapped").Sum(c => c.totalcount),
+                                suppliername = g.Key.SupplierName,
+                                mappingfor= g.Key.MappinFor
+                            }
+                            ).ToList();
+                        foreach (var item in searchasummary)
+                        {
+                            DC_supplierwisesummaryReport objsu = new DC_supplierwisesummaryReport();
+                            objsu.Mappingfor = item.mappingfor;
+                            objsu.Mapped = item.mapped.Value;
+                            objsu.Unmapped = item.unmapped.Value;
+                            objsu.Review = item.review.Value;
+                            objsu.Suppliername = item.suppliername;
+                            _objList.Add(objsu);
+
+                        }
+
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return _objList;
+
+        }
         #endregion
 
         #region Master Attribute Mapping
