@@ -2254,7 +2254,6 @@ namespace DataLayer
                        foreach (var item in searchcountry)
                             {
                                 DC_UnmappedCountryReport objCo = new DC_UnmappedCountryReport();
-                                //objCo.Supplierid = item.Supplier_Id.ToString();
                                 objCo.Countrycode = item.CountryCode;
                                 objCo.Contryname = item.CountryName;
                                  _objList.Add(objCo);
@@ -2330,6 +2329,42 @@ namespace DataLayer
                             objPi.SupplierName = item.SupplierName;
                             objPi.SupplierHotelId = item.SupplierProductReference;
                             _objList.Add(objPi);
+
+                        }
+
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return _objList;
+
+        }
+        public List<DataContracts.Mapping.DC_unmappedActivityReport> GetsupplierwiseUnmappedActivityReport(Guid SupplierID)
+        {
+            List<DataContracts.Mapping.DC_unmappedActivityReport> _objList = new List<DC_unmappedActivityReport>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (SupplierID != Guid.Empty)
+                    {
+                        var searchactivity = (from s in context.Activity_SupplierProductMapping
+                                             where s.Supplier_ID == SupplierID && (s.MappingStatus == "UNMAPPED" || s.MappingStatus == "REVIEW")
+                                             select s).ToList();
+                        foreach (var item in searchactivity)
+                        {
+                            DC_unmappedActivityReport objac = new DC_unmappedActivityReport();
+                            objac.Activityname = item.SupplierProductName;
+                            objac.Country = item.SupplierCountryName;
+                            objac.City = item.SupplierCityName;
+                            objac.Address = item.Address;
+                            objac.SupplierName = item.SupplierName;
+                            objac.SupplierActivityId = item.SupplierCode;
+                            _objList.Add(objac);
 
                         }
 
