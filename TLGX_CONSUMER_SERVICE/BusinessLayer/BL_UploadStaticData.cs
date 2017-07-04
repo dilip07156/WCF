@@ -7,6 +7,7 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using DataLayer;
 using System.Data;
+using DataContracts.STG;
 
 namespace BusinessLayer
 {
@@ -132,6 +133,7 @@ namespace BusinessLayer
                 return objBL.UpdateStaticDataFileDetailStatus(obj);
             }
         }
+
         #endregion
 
 
@@ -189,6 +191,13 @@ namespace BusinessLayer
             using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
             {
                 return objBL.GetSTGCityData(obj);
+            }
+        }
+        public List<DC_stg_SupplierProductMapping> GetSTGHotelData(DC_stg_SupplierProductMapping_RQ obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.GetSTGHotelData(obj);
             }
         }
         #endregion

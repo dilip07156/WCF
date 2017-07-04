@@ -288,6 +288,7 @@
           <Property Name="address_tx" Type="nvarchar(max)" />
           <Property Name="TelephoneNumber_tx" Type="nvarchar" MaxLength="225" />
           <Property Name="StarRating" Type="nvarchar" MaxLength="255" />
+          <Property Name="Google_Place_Id" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Accommodation_RoomFacility">
           <Key>
@@ -1318,6 +1319,7 @@
           <Property Name="StreetNo" Type="nvarchar" MaxLength="255" />
           <Property Name="TX_COUNTRYNAME" Type="nvarchar" MaxLength="255" />
           <Property Name="StarRating" Type="nvarchar" MaxLength="255" />
+          <Property Name="Google_Place_Id" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Supplier">
           <Key>
@@ -2034,6 +2036,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="address_tx" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TelephoneNumber_tx" Type="String" MaxLength="225" FixedLength="false" Unicode="true" />
           <Property Name="StarRating" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Google_Place_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_CityMapping">
           <Key>
@@ -3121,6 +3124,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="StreetNo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="TX_COUNTRYNAME" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="StarRating" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Google_Place_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_keyword">
           <Key>
@@ -3478,6 +3482,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="Accommodation_ProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_ProductMapping">
               <MappingFragment StoreEntitySet="Accommodation_ProductMapping">
+                <ScalarProperty Name="Google_Place_Id" ColumnName="Google_Place_Id" />
                 <ScalarProperty Name="StarRating" ColumnName="StarRating" />
                 <ScalarProperty Name="TelephoneNumber_tx" ColumnName="TelephoneNumber_tx" />
                 <ScalarProperty Name="address_tx" ColumnName="address_tx" />
@@ -4590,6 +4595,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="stg_SupplierProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierProductMapping">
               <MappingFragment StoreEntitySet="stg_SupplierProductMapping">
+                <ScalarProperty Name="Google_Place_Id" ColumnName="Google_Place_Id" />
                 <ScalarProperty Name="StarRating" ColumnName="StarRating" />
                 <ScalarProperty Name="TX_COUNTRYNAME" ColumnName="TX_COUNTRYNAME" />
                 <ScalarProperty Name="StreetNo" ColumnName="StreetNo" />

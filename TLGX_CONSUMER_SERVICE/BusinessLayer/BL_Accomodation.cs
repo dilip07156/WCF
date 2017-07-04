@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataContracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -62,7 +63,14 @@ namespace BusinessLayer
                 return obj.GetAccomodationInfo(Accomodation_Id);
             }
         }
+        public List<DataContracts.DC_Accommodation_RoomInfo> GetRoomDetailsByWithPagging(DC_Accommodation_RoomInfo_RQ RQ)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.GetRoomDetailsByWithPagging(RQ);
+            }
 
+        }
         public bool UpdateAccomodationGoogleInfo(DataContracts.DC_Accomodation AccomodationInfo)
         {
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())

@@ -3015,6 +3015,7 @@ namespace DataContracts
         Nullable<System.DateTime> _Edit_Date;
         List<DC_Accomodation_RoomFacilities> _RoomFacilities;
         bool _IsActive;
+        int? _TotalRecords;
 
         [DataMember]
         public Guid Accommodation_RoomInfo_Id
@@ -3407,6 +3408,29 @@ namespace DataContracts
                 _IsActive = value;
             }
         }
+        [DataMember]
+        public int? TotalRecords
+        {
+            get
+            {
+                return _TotalRecords;
+            }
+
+            set
+            {
+                _TotalRecords = value;
+            }
+        }
+    }
+    [DataContract]
+    public class DC_Accommodation_RoomInfo_RQ
+    {
+        [DataMember]
+        public Guid Accommodation_Id { get; set; }
+        [DataMember]
+        public int? PageNo;
+        [DataMember]
+        public int? PageSize;
     }
 
     [DataContract]
@@ -4500,6 +4524,8 @@ namespace DataContracts
         int _PageSize;
         string _Google_Place_Id;
         string _AccomodationId;
+        string _searchfrom;
+        string _starrating;
         //[DataMember]
         //public string GroupOfCompanies
         //{
@@ -4749,6 +4775,32 @@ namespace DataContracts
                 _AccomodationId = value;
             }
         }
+        [DataMember]
+        public string Searchfrom
+        {
+            get
+            {
+                return _searchfrom;
+            }
+
+            set
+            {
+                _searchfrom = value;
+            }
+        }
+        [DataMember]
+        public string Starrating
+        {
+            get
+            {
+                return _starrating;
+            }
+
+            set
+            {
+                _starrating = value;
+            }
+        }
     }
 
     [DataContract]
@@ -4776,6 +4828,7 @@ namespace DataContracts
         string _FullAddress;
         int? _MapCount;
         string _HotelNameWithCode;
+        string _starrating;
 
         [DataMember]
         public string Google_Place_Id
@@ -4998,6 +5051,19 @@ namespace DataContracts
             set
             {
                 _HotelNameWithCode = value;
+            }
+        }
+        [DataMember]
+        public string Starrating
+        {
+            get
+            {
+                return _starrating;
+            }
+
+            set
+            {
+                _starrating = value;
             }
         }
     }

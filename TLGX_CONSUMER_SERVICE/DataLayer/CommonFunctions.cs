@@ -75,6 +75,30 @@ namespace DataLayer
             return ret;
         }
 
+        public static string GenerateRoomId(Guid Accommodation_Id)
+        {
+            string code = "";
+            string accocode = "";
+            string num = "";
+            DataContracts.DC_Accomodation acco = new DataContracts.DC_Accomodation();
+            DL_Accomodation dla = new DataLayer.DL_Accomodation();
+
+            if(Accommodation_Id != null && Accommodation_Id != Guid.Empty)
+            {
+                acco = dla.GetAccomodationShortInfo(Guid.Parse(Accommodation_Id.ToString()));
+                if(acco != null)
+                {
+                    if(acco.CompanyHotelID != null)
+                    {
+                        accocode = acco.CompanyHotelID.ToString();
+                        num = dla.GetNextRoomIdNumber(accocode);
+                        code = accocode + "-" + num;
+                    }
+                }
+            }
+
+            return code;
+        }
         public static string GenerateCityCode(DataContracts.Masters.DC_City param)
         {
             string code = "";
