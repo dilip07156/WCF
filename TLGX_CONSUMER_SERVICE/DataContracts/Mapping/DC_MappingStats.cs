@@ -521,7 +521,7 @@ namespace DataContracts.Mapping
     [DataContract]
     public class DC_UnmappedCountryReport
     {
-        string supplierid;
+        
         string _countrycode;
         string _contryname;
         [DataMember]
@@ -548,19 +548,6 @@ namespace DataContracts.Mapping
             set
             {
                 _contryname = value;
-            }
-        }
-
-        public string Supplierid
-        {
-            get
-            {
-                return supplierid;
-            }
-
-            set
-            {
-                supplierid = value;
             }
         }
     }
@@ -631,6 +618,8 @@ namespace DataContracts.Mapping
         string _country;
         string _city;
         string _address;
+        string _supplierName;
+        string _supplierHotelId;
         [DataMember]
         public string Hotelname
         {
@@ -683,6 +672,32 @@ namespace DataContracts.Mapping
                 _address = value;
             }
         }
+        [DataMember]
+        public string SupplierName
+        {
+            get
+            {
+                return _supplierName;
+            }
+
+            set
+            {
+                _supplierName = value;
+            }
+        }
+        [DataMember]
+        public string SupplierHotelId
+        {
+            get
+            {
+                return _supplierHotelId;
+            }
+
+            set
+            {
+                _supplierHotelId = value;
+            }
+        }
     }
     [DataContract]
     public class DC_unmappedActivityReport
@@ -691,6 +706,8 @@ namespace DataContracts.Mapping
         string _country;
         string _city;
         string _address;
+        string _supplierName;
+        string _supplierActivityId;
         [DataMember]
         public string Activityname
         {
@@ -741,6 +758,32 @@ namespace DataContracts.Mapping
             set
             {
                 _address = value;
+            }
+        }
+        [DataMember]
+        public string SupplierName
+        {
+            get
+            {
+                return _supplierName;
+            }
+
+            set
+            {
+                _supplierName = value;
+            }
+        }
+        [DataMember]
+        public string SupplierActivityId
+        {
+            get
+            {
+                return _supplierActivityId;
+            }
+
+            set
+            {
+                _supplierActivityId = value;
             }
         }
     }

@@ -2202,7 +2202,6 @@ namespace DataLayer
                        foreach (var item in searchcountry)
                             {
                                 DC_UnmappedCountryReport objCo = new DC_UnmappedCountryReport();
-                                 objCo.Supplierid =  item.Supplier_Id.ToString();
                                 objCo.Countrycode = item.CountryCode;
                                 objCo.Contryname = item.CountryName;
                                  _objList.Add(objCo);
@@ -2230,10 +2229,10 @@ namespace DataLayer
                 {
                     if (SupplierID != Guid.Empty)
                     {
-                        var searchcountry = (from s in context.m_CityMapping
+                        var searchcity = (from s in context.m_CityMapping
                                              where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
                                              select s).ToList();
-                        foreach (var item in searchcountry)
+                        foreach (var item in searchcity)
                         {
                             DC_UnmappedCityReport objCi = new DC_UnmappedCityReport();
                             objCi.Countrycode = item.CountryCode;
@@ -2241,6 +2240,43 @@ namespace DataLayer
                             objCi.Citycode = item.CityCode;
                             objCi.Cityname = item.CityName;
                             _objList.Add(objCi);
+
+                        }
+
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return _objList;
+
+        }
+       
+        public List<DataContracts.Mapping.DC_unmappedProductReport> GetsupplierwiseUnmappedProductReport(Guid SupplierID)
+        {
+            List<DataContracts.Mapping.DC_unmappedProductReport> _objList = new List<DC_unmappedProductReport>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (SupplierID != Guid.Empty)
+                    {
+                        var searchproduct = (from s in context.Accommodation_ProductMapping
+                                             where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
+                                             select s).ToList();
+                        foreach (var item in searchproduct)
+                        {
+                            DC_unmappedProductReport objPi = new DC_unmappedProductReport();
+                            objPi.Hotelname = item.ProductName;
+                            objPi.Country = item.CountryName;
+                            objPi.City = item.CityName;
+                            objPi.Address = item.address;
+                            objPi.SupplierName = item.SupplierName;
+                            objPi.SupplierHotelId = item.SupplierProductReference;
+                            _objList.Add(objPi);
 
                         }
 
