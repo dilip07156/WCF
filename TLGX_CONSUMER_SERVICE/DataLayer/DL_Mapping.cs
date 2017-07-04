@@ -2254,7 +2254,7 @@ namespace DataLayer
                        foreach (var item in searchcountry)
                             {
                                 DC_UnmappedCountryReport objCo = new DC_UnmappedCountryReport();
-                            objCo.Supplierid = item.Supplier_Id.ToString();
+                                //objCo.Supplierid = item.Supplier_Id.ToString();
                                 objCo.Countrycode = item.CountryCode;
                                 objCo.Contryname = item.CountryName;
                                  _objList.Add(objCo);
