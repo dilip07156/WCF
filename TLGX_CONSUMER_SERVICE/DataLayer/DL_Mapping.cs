@@ -824,6 +824,46 @@ namespace DataLayer
 
                             context.SaveChanges();
                         }
+                        else
+                        {
+                            DataLayer.Accommodation_ProductMapping objNew = new Accommodation_ProductMapping();
+                            objNew.Accommodation_ProductMapping_Id = PM.Accommodation_ProductMapping_Id;
+                            objNew.Accommodation_Id = PM.Accommodation_Id;
+                            objNew.CityCode = PM.CityCode;
+                            objNew.CityName = PM.CityName;
+                            objNew.CountryCode = PM.CountryCode;
+                            objNew.CountryName = PM.CountryName;
+                            objNew.Create_Date = PM.Create_Date;
+                            objNew.Create_User = PM.Create_User;
+                            objNew.Email = PM.Email;
+                            objNew.Fax = PM.Fax;
+                            objNew.Google_Place_Id = PM.Google_Place_Id;
+                            objNew.IsActive = PM.IsActive;
+                            objNew.Latitude = PM.Latitude;
+                            objNew.Longitude = PM.Longitude;
+                            objNew.PostCode = PM.PostCode;
+                            objNew.ProductName = PM.ProductName;
+                            objNew.Remarks = PM.Remarks;
+                            objNew.StarRating = PM.StarRating;
+                            objNew.StateCode = PM.StateCode;
+                            objNew.StateName = PM.StateName;
+                            objNew.Status = PM.Status;
+                            objNew.Street = PM.Street;
+                            objNew.Street2 = PM.Street2;
+                            objNew.Street3 = PM.Street3;
+                            objNew.Street4 = PM.Street4;
+                            objNew.SupplierId = PM.SupplierId;
+                            objNew.SupplierName = PM.SupplierName;
+                            objNew.SupplierProductReference = PM.SupplierProductReference;
+                            objNew.Supplier_Id = PM.Supplier_Id;
+                            objNew.TelephoneNumber = PM.TelephoneNumber;
+                            objNew.Website = PM.Website;
+                            
+                            context.Accommodation_ProductMapping.Add(objNew);
+                            context.SaveChanges();
+
+                            context.USP_UpdateMapID("product");
+                        }
 
 
                     }
