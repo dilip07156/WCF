@@ -262,7 +262,8 @@ namespace DataContracts.Mapping
         public string StatusExcept { get; set; }
         [DataMember]
         public string KeyWord { get; set; }
-
+        [DataMember]
+        public string SearchFor { get; set; }
 
     }
     [DataContract]

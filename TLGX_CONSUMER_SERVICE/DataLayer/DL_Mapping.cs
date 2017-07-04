@@ -2018,23 +2018,23 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     DateTime fd = Convert.ToDateTime(parm.Fromdate);
-                    DateTime td = Convert.ToDateTime(parm.ToDate);
+                    DateTime td = Convert.ToDateTime(parm.ToDate); 
                     var search = (from t in context.Accommodation_RuleInfo
-                                  join t1 in context.Accommodations on t.Accommodation_Id equals t1.Accommodation_Id
-                                  where (t.Create_Date >= fd && t.Edit_Date <= td)
-                                  select new
-                                  {
+                                 join t1 in context.Accommodations on t.Accommodation_Id equals t1.Accommodation_Id
+                                 where (t.Create_Date >= fd && t.Edit_Date <= td)
+                                 select new
+                                 {
                                       HotelID = t1.CompanyHotelID,
                                       HotelName = t1.HotelName,
                                       RuleName = t.RuleType,
                                       Description = t.Description,
-                                      flag = t.IsInternal == true ? "YES" : "NO",
-                                      LupdateDate = t.Edit_Date == null ? t.Create_Date : t.Edit_Date,
-                                      LupdateBy = t.Edit_User == null ? t.Create_User : t.Edit_User
-                                  }).ToList();
+                                     flag = t.IsInternal == true ? "YES" : "NO",
+                                     LupdateDate = t.Edit_Date == null ? t.Create_Date : t.Edit_Date,
+                                     LupdateBy = t.Edit_User == null ? t.Create_User : t.Edit_User
+                                 }).ToList();
                     foreach (var item in search)
                     {
-
+                        
                         DC_RollOffReportRule obj = new DC_RollOffReportRule();
                         obj.Hotelid = item.HotelID.Value;
                         obj.Hotelname = item.HotelName;
@@ -2075,7 +2075,7 @@ namespace DataLayer
                                       fromd = t.From,
                                       tod = t.To,
                                       reason = t.DeactivationReason,
-                                      // flag = t.IsInternal == true ? "YES" : "NO",
+                                     // flag = t.IsInternal == true ? "YES" : "NO",
                                       LupdateDate = t.Edit_Date == null ? t.Create_Date : t.Edit_Date,
                                       LupdateBy = t.Edit_User == null ? t.Create_User : t.Edit_User
                                   }).ToList();
@@ -2090,7 +2090,7 @@ namespace DataLayer
                         obj.Validfrom = Convert.ToString(item.fromd);
                         obj.Validto = Convert.ToString(item.tod);
                         obj.Reason = item.reason;
-                        // obj.Internal_Flag = item.flag;
+                       // obj.Internal_Flag = item.flag;
                         obj.LastupdateDate = Convert.ToString(item.LupdateDate);
                         obj.LastupdatedBy = item.LupdateBy;
                         objLst.Add(obj);
@@ -2657,7 +2657,7 @@ namespace DataLayer
                                       Create_User = a.Create_User,
                                       Edit_User = a.Edit_User,
                                       MapID = a.MapID
-                                  }).FirstOrDefault();
+                                  }).FirstOrDefault(); 
                     if (result != null && !string.IsNullOrWhiteSpace(result.SupplierCountryName) && !string.IsNullOrWhiteSpace(result.SupplierCityName))
                     {
                         var resultCity = context.m_CityMapping.Where(a => (a.Supplier_Id == result.Supplier_ID) && (a.Status == "MAPPED")).ToList();
@@ -2727,6 +2727,14 @@ namespace DataLayer
                                         where mct.Name == obj.SystemCityName
                                         select a;
                     }
+                    //if (!string.IsNullOrWhiteSpace(obj.SearchFor) &&  obj.SearchFor.ToLower() == "activitymapping")
+                    //{
+                    //    //Get Supplier name 
+                    //    var result = GetActivitySupplierProductMappingSearchForDDL(new DC_Acitivity_SupplierProductMapping_Search_RQ() { SupplierCountryName = obj.SupplierCountryName, SupplierCityName = obj.SupplierCityName});
+                    //    prodMapSearch = from a in prodMapSearch
+                    //                    join lstsupplier in result on a.Supplier_ID equals lstsupplier.Supplier_ID
+                    //                    select a;
+                    //}
 
                     if (!string.IsNullOrWhiteSpace(obj.MappingStatus))
                     {
@@ -2889,24 +2897,32 @@ namespace DataLayer
             }
         }
 
-        public List<DataContracts.Mapping.DC_Acitivity_SupplierProductMappingForDDL> GetActivitySupplierProductMappingSearchForDDL(DataContracts.Mapping.DC_Acitivity_SupplierProductMapping_Search_RQ obj)
+        public List<DataContracts.Mapping.DC_Acitivity_SupplierProductMapping> GetActivitySupplierProductMappingSearchForMapping(DataContracts.Mapping.DC_Acitivity_SupplierProductMapping_Search_RQ obj)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    // 1. Distinct Supplier form activity supplier product mapping
-                    var DistSupplier = context.Activity_SupplierProductMapping.GroupBy(x => x.SupplierName).Select(x => x.First()).ToList();
+                    var prodMapSearch = from a in context.Activity_SupplierProductMapping select a; //where a.Accommodation_Id == null 
 
-                    var prodMapSearch = from a in context.Activity_SupplierProductMapping select a;
-                    //context.Activity_SupplierProductMapping.Where(a =>a.SupplierName.Contains(DistSupplier))
-
-                    // 2. Fillter supplier with country name
-                    // 3. Fillter supplier with city name
-
-
-
-
+                    if (obj.ActivitySupplierProductMappling_Id != Guid.Empty)
+                    {
+                        prodMapSearch = from a in prodMapSearch
+                                        where a.ActivitySupplierProductMapping_Id == obj.ActivitySupplierProductMappling_Id
+                                        select a;
+                    }
+                    if (obj.Activity_ID != Guid.Empty)
+                    {
+                        prodMapSearch = from a in prodMapSearch
+                                        where a.Activity_ID == obj.Activity_ID
+                                        select a;
+                    }
+                    if (obj.Supplier_ID != Guid.Empty)
+                    {
+                        prodMapSearch = from a in prodMapSearch
+                                        where a.Supplier_ID == obj.Supplier_ID
+                                        select a;
+                    }
                     if (!string.IsNullOrWhiteSpace(obj.SystemCountryName))
                     {
                         var distCountryMapping = (from a in context.m_CountryMapping select new { a.Country_Id, a.CountryName }).Distinct();
@@ -2927,12 +2943,59 @@ namespace DataLayer
                                         select a;
                     }
 
+                    if (!string.IsNullOrWhiteSpace(obj.MappingStatus))
+                    {
+                        prodMapSearch = from a in prodMapSearch
+                                        where a.MappingStatus.ToLower().Trim() == obj.MappingStatus.ToLower().Trim()
+                                        select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(obj.SupplierName))
+                    {
+                        prodMapSearch = from a in prodMapSearch
+                                        where a.SupplierName == obj.SupplierName
+                                        select a;
+                    }
+
+
+                    if (!string.IsNullOrWhiteSpace(obj.SupplierCountryName))
+                    {
+                        prodMapSearch = from a in prodMapSearch
+                                        where a.SupplierCountryName.ToLower().Trim() == obj.SupplierCountryName.ToLower().Trim()
+                                        select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(obj.SupplierCityName))
+                    {
+
+                        prodMapSearch = from a in prodMapSearch
+                                        where a.SupplierCityName.ToLower().Trim() == obj.SupplierCityName.ToLower().Trim()
+                                        select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(obj.SupplierProductName))
+                    {
+                        prodMapSearch = from a in prodMapSearch
+                                        where a.SupplierProductName.Contains(obj.SupplierProductName)
+                                        select a;
+                    }
+                    //Bykeyword
+                    if (!string.IsNullOrWhiteSpace(obj.KeyWord))
+                    {
+                        prodMapSearch = from a in prodMapSearch
+                                        where a.SupplierProductName.Contains(obj.KeyWord) || a.Inclusions.Contains(obj.KeyWord) || a.Exclusions.Contains(obj.KeyWord)
+                                        select a;
+                    }
+
                     if (obj.StatusExcept != null)
                     {
                         prodMapSearch = from a in prodMapSearch
                                         where a.MappingStatus.ToUpper() != obj.StatusExcept.ToUpper()
                                         select a;
                     }
+                    prodMapSearch = from a in prodMapSearch
+                                    join sup in context.Suppliers on a.Supplier_ID equals sup.Supplier_Id
+                                    select a;
 
                     int total;
 
@@ -2940,7 +3003,161 @@ namespace DataLayer
 
                     var skip = obj.PageSize * obj.PageNo;
 
-                    var prodMapList = prodMapSearch.ToList();
+                    var prodMap = (from a in prodMapSearch
+                                   join act in context.Activities on a.Activity_ID equals act.Acivity_Id into ja
+                                   from jda in ja.DefaultIfEmpty()
+                                   orderby a.SupplierName
+                                   select new DataContracts.Mapping.DC_Acitivity_SupplierProductMapping
+                                   {
+                                       Activity_ID = a.Activity_ID,
+                                       Supplier_ID = a.Supplier_ID,
+                                       ActivitySupplierProductMapping_Id = a.ActivitySupplierProductMapping_Id,
+                                       SupplierCode = a.SupplierCode,
+                                       SupplierName = a.SupplierName,
+                                       SuplierProductCode = a.SuplierProductCode,
+                                       SupplierProductType = a.SupplierProductType,
+                                       SupplierType = a.SupplierType,
+                                       SupplierLocationId = a.SupplierLocationId,
+                                       SupplierLocationName = a.SupplierLocationName,
+                                       SupplierCountryName = a.SupplierCountryName,
+                                       SupplierCityName = a.SupplierCityName,
+                                       SupplierCountryCode = a.SupplierCountryCode,
+                                       SupplierCityCode = a.SupplierCityCode,
+                                       SupplierStateName = a.SupplierStateName,
+                                       SupplierStateCode = a.SupplierStateCode,
+                                       SupplierCityIATACode = a.SupplierCityIATACode,
+                                       Duration = a.Duration,
+                                       SupplierProductName = a.SupplierProductName,
+                                       SupplierDataLangaugeCode = a.SupplierDataLangaugeCode,
+                                       Introduction = a.Introduction,
+                                       Conditions = a.Conditions,
+                                       Inclusions = a.Inclusions,
+                                       Exclusions = a.Exclusions,
+                                       AdditionalInformation = a.AdditionalInformation,
+                                       DeparturePoint = a.DeparturePoint,
+                                       TicketingDetails = a.TicketingDetails,
+                                       Currency = a.Currency,
+                                       DepartureTime = a.DepartureTime,
+                                       DepartureDate = a.DepartureDate,
+                                       DateFrom = a.DateFrom,
+                                       DateTo = a.DateTo,
+                                       BlockOutDateFrom = a.BlockOutDateFrom,
+                                       BlockOutDateTo = a.BlockOutDateTo,
+                                       OptionTitle = a.OptionTitle,
+                                       OptionCode = a.OptionCode,
+                                       OptionDescription = a.OptionDescription,
+                                       TourActivityLangauageCode = a.TourActivityLangauageCode,
+                                       ProductDescription = a.ProductDescription,
+                                       TourActivityLanguage = a.TourActivityLanguage,
+                                       ImgURL = a.ImgURL,
+                                       ProductValidFor = a.ProductValidFor,
+                                       Address = a.Address,
+                                       Latitude = a.Latitude,
+                                       Longitude = a.Longitude,
+                                       DayPattern = a.DayPattern,
+                                       Theme = a.Theme,
+                                       Distance = a.Distance,
+                                       SupplierTourType = a.SupplierTourType,
+                                       MappingStatus = a.MappingStatus,
+                                       Create_Date = a.Create_Date,
+                                       Edit_Date = a.Edit_Date,
+                                       Create_User = a.Create_User,
+                                       Edit_User = a.Edit_User,
+                                       MapID = a.MapID,
+                                       ourRef = jda.CommonProductID,
+                                       SystemCountryName = jda.Country,
+                                       SystemCityName = jda.City,
+                                       CKIS_Master = jda.Product_Name,
+                                       TotalCount = total
+                                   }).Skip(skip ?? 0).Take(obj.PageSize ?? total);
+
+                    var prodMapList = prodMap.ToList();
+
+                    if (!string.IsNullOrWhiteSpace(obj.MappingStatus))
+                    {
+                        foreach (var item in prodMapList)
+                        {
+                            if (obj.MappingStatus.ToUpper().Trim() == "UNMAPPED" && !string.IsNullOrWhiteSpace(item.SupplierProductName))
+                            {
+                                if (item.SupplierCityName != null && item.SupplierCountryName != null)
+                                {
+                                    var _supplierProductName = item.SupplierProductName.Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("activity", "");
+                                    var searchActivity = context.Activities.Where(a => a.Country.ToUpper().Trim() == item.SupplierCountryName.ToUpper().Trim() && a.City.ToUpper().Trim() == item.SupplierCityName.ToUpper().Trim() && a.Product_Name.Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("activity", "").ToUpper().Trim() == _supplierProductName.ToUpper().Trim()).FirstOrDefault();
+                                    if (searchActivity == null)
+                                    {
+                                        searchActivity = context.Activities.Where(a => a.Country.ToUpper().Trim() == item.SupplierCountryName.ToUpper().Trim() && a.City.ToUpper().Trim() == item.SupplierCityName.ToUpper().Trim() && a.Product_Name.Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("activity", "").ToUpper().Trim().Contains(_supplierProductName.ToUpper().Trim())).FirstOrDefault();
+                                    }
+
+                                    if (searchActivity != null)
+                                    {
+                                        item.CKIS_Master = searchActivity.Product_Name;
+                                        item.Activity_ID = searchActivity.Acivity_Id;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return prodMapList;
+
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation product mapping by supplier search", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public bool IsMappedWithSupplier(Guid masterActivityID, Guid supplierID)
+        {
+            bool isMapped = false;
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (supplierID != Guid.Empty && masterActivityID != Guid.Empty)
+                    {
+                        var result = context.Activity_SupplierProductMapping.Where(x => x.Supplier_ID == supplierID && x.MappingStatus.ToLower() == "mapped" && x.Activity_ID == masterActivityID).Select(x=> x.ActivitySupplierProductMapping_Id).ToList();
+                        if (result != null && result.Count > 0)
+                        {
+                            isMapped = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return isMapped;
+        }
+
+        public List<DataContracts.Mapping.DC_Acitivity_SupplierProductMappingForDDL> GetActivitySupplierProductMappingSearchForDDL(DataContracts.Mapping.DC_Acitivity_SupplierProductMapping_Search_RQ obj)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    var prodMapSearch = from a in context.Activity_SupplierProductMapping select a;
+
+                    if (!string.IsNullOrWhiteSpace(obj.SystemCountryName))
+                    {
+                        var distCountryMapping = (from a in context.m_CountryMapping select new { a.Country_Id, a.CountryName, a.Supplier_Id }).Distinct();
+                        prodMapSearch = from a in prodMapSearch
+                                        join mas in distCountryMapping on a.SupplierCountryName.ToLower().Trim() equals mas.CountryName.ToLower().Trim()
+                                        join mct in context.m_CountryMaster on mas.Country_Id equals mct.Country_Id
+                                        join sup in context.Suppliers on a.Supplier_ID equals sup.Supplier_Id
+                                        where mct.Name == obj.SystemCountryName
+                                        select a;
+                    }
+                    var result = prodMapSearch.GroupBy(x => x.Supplier_ID).Select(x => x.FirstOrDefault());
+
+                    int total;
+
+                    total = result.Count();
+
+                    var skip = obj.PageSize * obj.PageNo;
+
+                    var prodMapList = result.ToList();
 
                     var prodMap = (from a in prodMapList
                                    orderby a.SupplierName
