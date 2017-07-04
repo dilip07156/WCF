@@ -2838,16 +2838,16 @@ namespace DataLayer
                     var search = from a in context.Activities
                                  select a;
 
-                    //excluding supplier tagged activity
+                    ////excluding supplier tagged activity
 
-                    if (!string.IsNullOrWhiteSpace(RQ.Supplier_Id))
-                    {
-                        Guid _Suppier_Id = Guid.Parse(RQ.Supplier_Id);
-                        if (_Suppier_Id != Guid.Empty)
-                        {
-                            search = search.Where(i => !(from ab in context.Activity_SupplierProductMapping where ab.Supplier_ID == _Suppier_Id && ab.MappingStatus == "MAPPED" && ab.Activity_ID != null select ab.Activity_ID).Contains(i.Acivity_Id));
-                        }
-                    }
+                    //if (!string.IsNullOrWhiteSpace(RQ.Supplier_Id))
+                    //{
+                    //    Guid _Suppier_Id = Guid.Parse(RQ.Supplier_Id);
+                    //    if (_Suppier_Id != Guid.Empty)
+                    //    {
+                    //        search = search.Where(i => !(from ab in context.Activity_SupplierProductMapping where ab.Supplier_ID == _Suppier_Id && ab.MappingStatus == "MAPPED" && ab.Activity_ID != null select ab.Activity_ID).Contains(i.Acivity_Id));
+                    //    }
+                    //}
                     if (RQ.Activity_Id != null)
                     {
                         search = from a in search
