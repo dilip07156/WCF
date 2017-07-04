@@ -1526,12 +1526,22 @@ namespace DataLayer
                                                MasterCountryName = jd.Name,
                                                MasterCityCode = ctld.Code,
                                                Master_CityName = ctld.Name,
+                                               MasterStateName = ctld.StateName,
                                                StateCode = a.StateCode,
                                                StateName = a.StateName,
                                                Latitude = a.Latitude,
                                                Longitude = a.Longitude
-
                                            }).Skip(skip).Take(param.PageSize).ToList();
+
+                        //CityMapList = CityMapList.Select(c =>
+                        //{
+                        //    c.MasterStateName = (context.m_States
+                        //                    .Where(s => (s.Country_Id == c.Country_Id))
+                        //                    .Select(s => s.StateName)
+                        //                    .FirstOrDefault()
+                        //                    );
+                        //    return c;
+                        //}).ToList();
 
                         if (!string.IsNullOrWhiteSpace(param.Status))
                         {
@@ -2018,23 +2028,23 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     DateTime fd = Convert.ToDateTime(parm.Fromdate);
-                    DateTime td = Convert.ToDateTime(parm.ToDate); 
+                    DateTime td = Convert.ToDateTime(parm.ToDate);
                     var search = (from t in context.Accommodation_RuleInfo
-                                 join t1 in context.Accommodations on t.Accommodation_Id equals t1.Accommodation_Id
-                                 where (t.Create_Date >= fd && t.Edit_Date <= td)
-                                 select new
-                                 {
+                                  join t1 in context.Accommodations on t.Accommodation_Id equals t1.Accommodation_Id
+                                  where (t.Create_Date >= fd && t.Edit_Date <= td)
+                                  select new
+                                  {
                                       HotelID = t1.CompanyHotelID,
                                       HotelName = t1.HotelName,
                                       RuleName = t.RuleType,
                                       Description = t.Description,
-                                     flag = t.IsInternal == true ? "YES" : "NO",
-                                     LupdateDate = t.Edit_Date == null ? t.Create_Date : t.Edit_Date,
-                                     LupdateBy = t.Edit_User == null ? t.Create_User : t.Edit_User
-                                 }).ToList();
+                                      flag = t.IsInternal == true ? "YES" : "NO",
+                                      LupdateDate = t.Edit_Date == null ? t.Create_Date : t.Edit_Date,
+                                      LupdateBy = t.Edit_User == null ? t.Create_User : t.Edit_User
+                                  }).ToList();
                     foreach (var item in search)
                     {
-                        
+
                         DC_RollOffReportRule obj = new DC_RollOffReportRule();
                         obj.Hotelid = item.HotelID.Value;
                         obj.Hotelname = item.HotelName;
@@ -2075,7 +2085,7 @@ namespace DataLayer
                                       fromd = t.From,
                                       tod = t.To,
                                       reason = t.DeactivationReason,
-                                     // flag = t.IsInternal == true ? "YES" : "NO",
+                                      // flag = t.IsInternal == true ? "YES" : "NO",
                                       LupdateDate = t.Edit_Date == null ? t.Create_Date : t.Edit_Date,
                                       LupdateBy = t.Edit_User == null ? t.Create_User : t.Edit_User
                                   }).ToList();
@@ -2090,7 +2100,7 @@ namespace DataLayer
                         obj.Validfrom = Convert.ToString(item.fromd);
                         obj.Validto = Convert.ToString(item.tod);
                         obj.Reason = item.reason;
-                       // obj.Internal_Flag = item.flag;
+                        // obj.Internal_Flag = item.flag;
                         obj.LastupdateDate = Convert.ToString(item.LupdateDate);
                         obj.LastupdatedBy = item.LupdateBy;
                         objLst.Add(obj);
@@ -2116,19 +2126,21 @@ namespace DataLayer
                 {
                     if (SupplierID != Guid.Empty)
                     {
-                        var searchcountry = (from s in context.m_CountryMapping where s.Supplier_Id == SupplierID 
-                                      && (s.Status == "UNMAPPED" || s.Status == "REVIEW") select s).ToList();
-                        var searchcity=(from s in context.m_CityMapping
-                                        where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
-                                        select s).ToList();
+                        var searchcountry = (from s in context.m_CountryMapping
+                                             where s.Supplier_Id == SupplierID
+   && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
+                                             select s).ToList();
+                        var searchcity = (from s in context.m_CityMapping
+                                          where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
+                                          select s).ToList();
                         var searchproduct = (from s in context.Accommodation_ProductMapping
                                              where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
-                                          select s).ToList();
+                                             select s).ToList();
                         var searchactivity = (from s in context.Activity_SupplierProductMapping
                                               where s.Supplier_ID == SupplierID && (s.MappingStatus == "UNMAPPED" || s.MappingStatus == "REVIEW")
                                               select s).ToList();
                         List<DC_UnmappedCountryReport> _lstCountry = new List<DC_UnmappedCountryReport>();
-                        foreach( var item in searchcountry)
+                        foreach (var item in searchcountry)
                         {
                             DC_UnmappedCountryReport objCo = new DC_UnmappedCountryReport();
                             objCo.Countrycode = item.CountryCode;
@@ -2181,7 +2193,7 @@ namespace DataLayer
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -2199,21 +2211,21 @@ namespace DataLayer
                         var searchcountry = (from s in context.m_CountryMapping
                                              where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
                                              select s).ToList();
-                       foreach (var item in searchcountry)
-                            {
-                                DC_UnmappedCountryReport objCo = new DC_UnmappedCountryReport();
-                                 objCo.Supplierid =  item.Supplier_Id.ToString();
-                                objCo.Countrycode = item.CountryCode;
-                                objCo.Contryname = item.CountryName;
-                                 _objList.Add(objCo);
+                        foreach (var item in searchcountry)
+                        {
+                            DC_UnmappedCountryReport objCo = new DC_UnmappedCountryReport();
+                            objCo.Supplierid = item.Supplier_Id.ToString();
+                            objCo.Countrycode = item.CountryCode;
+                            objCo.Contryname = item.CountryName;
+                            _objList.Add(objCo);
 
-                            }
+                        }
 
                     }
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -2621,7 +2633,7 @@ namespace DataLayer
                                       Create_User = a.Create_User,
                                       Edit_User = a.Edit_User,
                                       MapID = a.MapID
-                                  }).FirstOrDefault(); 
+                                  }).FirstOrDefault();
                     if (result != null && !string.IsNullOrWhiteSpace(result.SupplierCountryName) && !string.IsNullOrWhiteSpace(result.SupplierCityName))
                     {
                         var resultCity = context.m_CityMapping.Where(a => (a.Supplier_Id == result.Supplier_ID) && (a.Status == "MAPPED")).ToList();
@@ -3079,7 +3091,7 @@ namespace DataLayer
                 {
                     if (supplierID != Guid.Empty && masterActivityID != Guid.Empty)
                     {
-                        var result = context.Activity_SupplierProductMapping.Where(x => x.Supplier_ID == supplierID && x.MappingStatus.ToLower() == "mapped" && x.Activity_ID == masterActivityID).Select(x=> x.ActivitySupplierProductMapping_Id).ToList();
+                        var result = context.Activity_SupplierProductMapping.Where(x => x.Supplier_ID == supplierID && x.MappingStatus.ToLower() == "mapped" && x.Activity_ID == masterActivityID).Select(x => x.ActivitySupplierProductMapping_Id).ToList();
                         if (result != null && result.Count > 0)
                         {
                             isMapped = true;
