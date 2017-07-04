@@ -53,6 +53,10 @@ namespace OperationContracts
         [WebInvoke(Method = "GET", UriTemplate = "Mapping/Statistics/GetsupplierwiseUnmappedProductReport/{SupplierID}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         IList<DataContracts.Mapping.DC_unmappedProductReport> GetsupplierwiseUnmappedProductReport(string SupplierID);
 
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Mapping/Statistics/GetsupplierwiseUnmappedActivityReport/{SupplierID}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Mapping.DC_unmappedActivityReport> GetsupplierwiseUnmappedActivityReport(string SupplierID);
+
         #endregion
     }
 }
