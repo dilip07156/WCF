@@ -38,36 +38,18 @@ namespace DataContracts.Masters
         public string Status { get; set; }
 
         [DataMember]
+        public Nullable<bool> Attribute { get; set; }
+
+        [DataMember]
+        public int Sequence { get; set; }
+
+        [DataMember]
         public int TotalRecords { get; set; }
 
+        [DataMember]
+        public List<DC_keyword_alias> Alias { get; set; }
+
     }
-    //public class DC_Keyword_Alias
-    //{
-    //    [DataMember]
-    //    public System.Guid KeywordAlias_Id { get; set; }
-
-    //    [DataMember]
-    //    public Nullable<System.Guid> Keyword_Id { get; set; }
-
-    //    [DataMember]
-    //    public string Value { get; set; }
-
-    //    [DataMember]
-    //    public Nullable<System.DateTime> Create_Date { get; set; }
-
-    //    [DataMember]
-    //    public string Create_User { get; set; }
-
-    //    [DataMember]
-    //    public Nullable<System.DateTime> Edit_Date { get; set; }
-
-    //    [DataMember]
-    //    public string Edit_User { get; set; }
-
-    //    [DataMember]
-    //    public string Status { get; set; }
-        
-    //}
 
     [DataContract]
     public class DC_Keyword_RQ
@@ -75,17 +57,21 @@ namespace DataContracts.Masters
         [DataMember]
         public System.Guid? Keyword_Id { get; set; }
         [DataMember]
-        public System.Guid? AliasKeywordAlias_Id { get; set; }
-        [DataMember]
         public string systemWord { get; set; }
         [DataMember]
         public string Alias { get; set; }
         [DataMember]
+        public bool Attribute { get; set; }
+        [DataMember]
         public string Status { get; set; }
         [DataMember]
-        public Nullable<int> PageNo { get; set; }
+        public int PageNo { get; set; }
         [DataMember]
-        public Nullable<int> PageSize { get; set; }
+        public int PageSize { get; set; }
+        //[DataMember]
+        //public int AliasPageNo { get; set; }
+        //[DataMember]
+        //public int AliasPageSize { get; set; }
 
     }
 
@@ -96,8 +82,6 @@ namespace DataContracts.Masters
         public Guid KeywordAlias_Id { get; set; }
         [DataMember]
         public Guid Keyword_Id { get; set; }
-        [DataMember]
-        public string Keyword { get; set; }
         [DataMember]
         public string Value { get; set; }
         [DataMember]
@@ -110,7 +94,8 @@ namespace DataContracts.Masters
         public string Edit_User { get; set; }
         [DataMember]
         public string Status { get; set; }
-
+        [DataMember]
+        public int Sequence { get; set; }
         [DataMember]
         public int TotalRecords { get; set; }
     }

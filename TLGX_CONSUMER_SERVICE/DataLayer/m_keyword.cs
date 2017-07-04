@@ -23,5 +23,7 @@ namespace DataLayer
         public Nullable<System.DateTime> Edit_Date { get; set; }
         public string Edit_User { get; set; }
         public string Status { get; set; }
+        public Nullable<bool> Attribute { get; set; }
+        public Nullable<int> Sequence { get; set; }
     }
 }

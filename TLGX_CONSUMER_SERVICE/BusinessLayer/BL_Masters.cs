@@ -589,15 +589,7 @@ namespace BusinessLayer
         #endregion
 
         #region Keyword
-        public DC_Message SaveKeyword(List<DC_Keyword> _obj)
-        {
-            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
-            {
-                return obj.SaveKeyword(_obj);
-            }
-        }
-
-        public DC_Message AddUpdateKeyword(List<DC_Keyword> _obj)
+        public DC_Message AddUpdateKeyword(DC_Keyword _obj)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
@@ -621,13 +613,6 @@ namespace BusinessLayer
             }
         }
 
-        public DC_Message AddUpdateKeywordAlias(List<DC_keyword_alias> RQ)
-        {
-            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
-            {
-                return obj.AddUpdateKeywordAlias(RQ);
-            }
-        }
         #endregion
     }
 }
