@@ -1492,12 +1492,27 @@ namespace DataLayer
                                         || c.Name.ToUpper().Contains(param.SupplierCountryName.ToUpper())
                                         )
                                         select a;
+                        if(param.IsExact)
+                        {
+                            prodMapSearch = from a in prodMapSearch
+                                            join c in context.m_CountryMaster on a.Country_Id equals c.Country_Id
+                                            where (a.CountryName.ToUpper()==param.SupplierCityName.ToUpper()
+                                            ||c.Name.ToUpper()==param.SupplierCountryName.ToUpper()
+                                            )
+                                            select a;
+                        }
                     }
                     if (!string.IsNullOrWhiteSpace(param.SupplierCityName))
                     {
                         prodMapSearch = from a in prodMapSearch
                                         where a.CityName.Contains(param.SupplierCityName)
                                         select a;
+                        if(param.IsExact)
+                        {
+                            prodMapSearch = from a in prodMapSearch
+                                            where a.CityName == param.SupplierCityName
+                                            select a;
+                        }
                     }
 
 
