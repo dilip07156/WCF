@@ -234,7 +234,7 @@ namespace DataContracts.Mapping
         //    }
         //}
     }
-
+    #region roll_off_reports
     [DataContract]
     public class DC_RollOffReportRule
     {
@@ -470,6 +470,136 @@ namespace DataContracts.Mapping
         }
     }
     [DataContract]
+    public class DC_RollOffReportUpdate
+    {
+        int _hotelid;
+        string _hotelname;
+        string _hotelupdate;
+        string _descriptionsource;
+        string _internal_Flag;
+        string _validfrom;
+        string _validto;
+        string _lastupdatedBy;
+        string _lastupdateDate;
+        [DataMember]
+        public int Hotelid
+        {
+            get
+            {
+                return _hotelid;
+            }
+
+            set
+            {
+                _hotelid = value;
+            }
+        }
+        [DataMember]
+        public string Hotelname
+        {
+            get
+            {
+                return _hotelname;
+            }
+
+            set
+            {
+                _hotelname = value;
+            }
+        }
+        [DataMember]
+        public string Hotelupdate
+        {
+            get
+            {
+                return _hotelupdate;
+            }
+
+            set
+            {
+                _hotelupdate = value;
+            }
+        }
+        [DataMember]
+        public string Descriptionsource
+        {
+            get
+            {
+                return _descriptionsource;
+            }
+
+            set
+            {
+                _descriptionsource = value;
+            }
+        }
+        [DataMember]
+        public string Internal_Flag
+        {
+            get
+            {
+                return _internal_Flag;
+            }
+
+            set
+            {
+                _internal_Flag = value;
+            }
+        }
+        [DataMember]
+        public string Validfrom
+        {
+            get
+            {
+                return _validfrom;
+            }
+
+            set
+            {
+                _validfrom = value;
+            }
+        }
+        [DataMember]
+        public string Validto
+        {
+            get
+            {
+                return _validto;
+            }
+
+            set
+            {
+                _validto = value;
+            }
+        }
+        [DataMember]
+        public string LastupdatedBy
+        {
+            get
+            {
+                return _lastupdatedBy;
+            }
+
+            set
+            {
+                _lastupdatedBy = value;
+            }
+        }
+        [DataMember]
+        public string LastupdateDate
+        {
+            get
+            {
+                return _lastupdateDate;
+            }
+
+            set
+            {
+                _lastupdateDate = value;
+            }
+        }
+    }
+    [DataContract]
     public class DC_RollOFParams
     {
         string _fromdate;
@@ -501,7 +631,7 @@ namespace DataContracts.Mapping
             }
         }
     }
-
+#endregion
     #region rdlc reports
     [DataContract]
     public class DC_supplierwiseUnmappedReport
