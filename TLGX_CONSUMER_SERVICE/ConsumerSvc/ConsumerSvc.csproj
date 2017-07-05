@@ -108,6 +108,7 @@
   <ItemGroup>
     <Content Include="packages.config" />
     <None Include="Properties\PublishProfiles\MDM_SVC_DEV.pubxml" />
+    <None Include="Properties\PublishProfiles\MDM_SVC_PREPROD.pubxml" />
     <None Include="Properties\PublishProfiles\MDM_SVC_UAT.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
