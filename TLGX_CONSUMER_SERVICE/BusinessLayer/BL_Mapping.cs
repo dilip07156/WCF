@@ -235,7 +235,13 @@ namespace BusinessLayer
                 return objBL.getStatisticforStatusReport(param);
             }
         }
-
+        public List<DataContracts.Mapping.DC_RollOffReportUpdate> getStatisticforUpdateReport(DataContracts.Mapping.DC_RollOFParams param)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.getStatisticforUpdateReport(param);
+            }
+        }
         #endregion
         #region rdlc reports
         public List<DataContracts.Mapping.DC_supplierwiseUnmappedReport> GetsupplierwiseUnmappedDataReport(string SupplierID)
