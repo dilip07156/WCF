@@ -427,13 +427,8 @@ namespace OperationContracts
         #region Keyword
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "POST", UriTemplate = "Master/Keyword/Add", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DC_Message SaveKeyword(List<DC_Keyword> param);
-
-        [OperationContract]
-        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "Master/Keyword/AddUpdate", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DC_Message AddUpdateKeyword(List<DC_Keyword> param);
+        DC_Message AddUpdateKeyword(DC_Keyword param);
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
@@ -444,12 +439,6 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "Master/Keyword/Alias/Get", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         List<DC_keyword_alias> SearchKeywordAlias(DC_Keyword_RQ RQ);
-
-        [OperationContract]
-        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "POST", UriTemplate = "Master/Keyword/Alias/AddUpdate", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DC_Message AddUpdateKeywordAlias(List<DC_keyword_alias> param);
-        
         #endregion
 
     }

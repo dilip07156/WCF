@@ -395,7 +395,7 @@ namespace DataContracts.Mapping
         string _SupplierCityName;
         string _StatusExcept;
         string _ResultSet;
-
+        bool _IsExact;
 
 
         [DataMember]
@@ -597,6 +597,20 @@ namespace DataContracts.Mapping
             set
             {
                 _ResultSet = value;
+            }
+        }
+
+        [DataMember]
+        public bool IsExact
+        {
+            get
+            {
+                return _IsExact;
+            }
+
+            set
+            {
+                _IsExact = value;
             }
         }
     }

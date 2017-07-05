@@ -19,6 +19,10 @@ namespace DataContracts
         public static string strUpdatedSuccessfully = " has been updated successfully.";
         [DataMember]
         public static string strFailed = "Service Request Failed";
+        [DataMember]
+        public static string strDeleted = " has been deleted successfully.";
+        [DataMember]
+        public static string strUnDeleted = " has been un deleted successfully.";
 
         public enum StatusCode
         {
