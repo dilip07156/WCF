@@ -141,6 +141,13 @@ namespace ConsumerSvc
                 return objBL.getStatisticforStatusReport(param);
             }
         }
+        public IList<DataContracts.Mapping.DC_RollOffReportUpdate> getStatisticforUpdateReport(DataContracts.Mapping.DC_RollOFParams param)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.getStatisticforUpdateReport(param);
+            }
+        }
         #endregion
         #region rdlc reports
         public IList<DataContracts.Mapping.DC_supplierwiseUnmappedReport> GetsupplierwiseUnmappedDataReport(string SupplierID)
