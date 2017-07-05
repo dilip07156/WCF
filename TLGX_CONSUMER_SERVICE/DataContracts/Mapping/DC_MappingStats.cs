@@ -787,5 +787,79 @@ namespace DataContracts.Mapping
             }
         }
     }
+    [DataContract]
+    public class DC_supplierwisesummaryReport
+    {
+        string _mappingfor;
+        int _unmapped;
+        int _mapped;
+        int _review;
+        string _suppliername;
+        [DataMember]
+        public string Mappingfor
+        {
+            get
+            {
+                return _mappingfor;
+            }
+
+            set
+            {
+                _mappingfor = value;
+            }
+        }
+        [DataMember]
+        public int Unmapped
+        {
+            get
+            {
+                return _unmapped;
+            }
+
+            set
+            {
+                _unmapped = value;
+            }
+        }
+        [DataMember]
+        public int Mapped
+        {
+            get
+            {
+                return _mapped;
+            }
+
+            set
+            {
+                _mapped = value;
+            }
+        }
+        [DataMember]
+        public int Review
+        {
+            get
+            {
+                return _review;
+            }
+
+            set
+            {
+                _review = value;
+            }
+        }
+        [DataMember]
+        public string Suppliername
+        {
+            get
+            {
+                return _suppliername;
+            }
+
+            set
+            {
+                _suppliername = value;
+            }
+        }
+    }
     #endregion
 }
