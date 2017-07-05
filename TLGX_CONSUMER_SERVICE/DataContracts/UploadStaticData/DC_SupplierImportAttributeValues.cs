@@ -74,6 +74,9 @@ namespace DataContracts.UploadStaticData
         public string AttributeName { get; set; }
 
         [DataMember]
+        public string AttributeValue { get; set; }
+
+        [DataMember]
         public string Status { get; set; }
 
         [DataMember]

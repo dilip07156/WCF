@@ -353,6 +353,13 @@ namespace DataLayer
                                         select a;
                     }
 
+                    if (!string.IsNullOrWhiteSpace(RQ.AttributeValue))
+                    {
+                        AttrMapSearch = from a in AttrMapSearch
+                                        where a.AttributeValue.Trim().TrimStart().ToUpper() == RQ.AttributeValue.Trim().TrimStart().ToUpper()
+                                        select a;
+                    }
+
                     if (!string.IsNullOrWhiteSpace(RQ.Status))
                     {
                         AttrMapSearch = from a in AttrMapSearch
