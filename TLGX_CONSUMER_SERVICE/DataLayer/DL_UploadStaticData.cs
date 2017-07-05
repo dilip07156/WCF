@@ -879,21 +879,27 @@ namespace DataLayer
                         context.SaveChanges();
                         foreach (DataContracts.STG.DC_stg_SupplierCountryMapping obj in lstobj)
                         {
-                            DataLayer.stg_SupplierCountryMapping objNew = new DataLayer.stg_SupplierCountryMapping();
-                            objNew.stg_Country_Id = obj.stg_Country_Id;
-                            objNew.SupplierId = obj.SupplierId;
-                            objNew.SupplierName = obj.SupplierName;
-                            objNew.CountryCode = obj.CountryCode;
-                            objNew.CountryName = obj.CountryName;
-                            objNew.InsertDate = obj.InsertDate;
-                            objNew.ActiveFrom = obj.ActiveFrom;
-                            objNew.ActiveTo = obj.ActiveTo;
-                            objNew.Action = obj.Action;
-                            objNew.UpdateType = obj.UpdateType;
-                            objNew.ActionText = obj.ActionText;
-                            objNew.Latitude = obj.Latitude;
-                            objNew.Longitude = obj.Longitude;
-                            context.stg_SupplierCountryMapping.Add(objNew);
+                            var search = (from a in context.stg_SupplierCountryMapping
+                                          where a.CountryCode.Trim().ToUpper() == obj.CountryCode.Trim().ToUpper() && a.CountryName.Trim().ToUpper() == obj.CountryName.Trim().ToUpper()
+                                          select a).FirstOrDefault();
+                            if (search == null)
+                            {
+                                DataLayer.stg_SupplierCountryMapping objNew = new DataLayer.stg_SupplierCountryMapping();
+                                objNew.stg_Country_Id = obj.stg_Country_Id;
+                                objNew.SupplierId = obj.SupplierId;
+                                objNew.SupplierName = obj.SupplierName;
+                                objNew.CountryCode = obj.CountryCode;
+                                objNew.CountryName = obj.CountryName;
+                                objNew.InsertDate = obj.InsertDate;
+                                objNew.ActiveFrom = obj.ActiveFrom;
+                                objNew.ActiveTo = obj.ActiveTo;
+                                objNew.Action = obj.Action;
+                                objNew.UpdateType = obj.UpdateType;
+                                objNew.ActionText = obj.ActionText;
+                                objNew.Latitude = obj.Latitude;
+                                objNew.Longitude = obj.Longitude;
+                                context.stg_SupplierCountryMapping.Add(objNew);
+                            }
                         }
                             context.SaveChanges();
                         dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
