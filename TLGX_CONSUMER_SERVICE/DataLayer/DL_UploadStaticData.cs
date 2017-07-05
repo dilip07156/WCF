@@ -880,7 +880,8 @@ namespace DataLayer
                         foreach (DataContracts.STG.DC_stg_SupplierCountryMapping obj in lstobj)
                         {
                             var search = (from a in context.stg_SupplierCountryMapping
-                                          where a.CountryCode.Trim().ToUpper() == obj.CountryCode.Trim().ToUpper() && a.CountryName.Trim().ToUpper() == obj.CountryName.Trim().ToUpper()
+                                          where ((a.CountryCode != null && a.CountryCode.Trim().ToUpper() == obj.CountryCode.Trim().ToUpper()) || a.CountryCode == null )
+                                          && a.CountryName.Trim().ToUpper() == obj.CountryName.Trim().ToUpper()
                                           select a).FirstOrDefault();
                             if (search == null)
                             {
@@ -899,9 +900,9 @@ namespace DataLayer
                                 objNew.Latitude = obj.Latitude;
                                 objNew.Longitude = obj.Longitude;
                                 context.stg_SupplierCountryMapping.Add(objNew);
+                                context.SaveChanges();
                             }
                         }
-                            context.SaveChanges();
                         dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
                         dc.StatusMessage = "Country Static Data " + ReadOnlyMessage.strAddedSuccessfully;
                     }
