@@ -1704,40 +1704,42 @@ namespace DataLayer
                         {
                             isCountryCodeCheck = true;
                             prodMapSearch = (from a in prodMapSearch
-                                                 //join m in context.m_CountryMaster on a.CountryCode equals m.Code
-                                                 //select a);
-                                             join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { cm.Supplier_Id, cm.CountryCode }
-                                             join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
+                                             join m in context.m_CountryMapping on a.Supplier_Id equals m.Supplier_Id
+                                             where a.CountryCode.Trim().ToUpper() == m.CountryCode.Trim().ToUpper()
                                              select a);
+                                            //join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { cm.Supplier_Id, cm.CountryCode }
+                                            //join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
+                                            //select a);
                         }
                         if (config.AttributeValue.Replace("m_CityMaster.", "").Trim().ToUpper() == "COUNTRYNAME")
                         {
                             isCountryNameCheck = true;
                             prodMapSearch = (from a in prodMapSearch
-                                                 //join m in context.m_CountryMaster on a.CountryName equals m.Name
-                                                 //select a);
-                                             join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName } equals new { cm.Supplier_Id, cm.CountryName }
-                                             join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
+                                                 join m in context.m_CountryMapping on a.Supplier_Id equals m.Supplier_Id
+                                                 where a.CountryName.Trim().ToUpper() == m.CountryName.Trim().ToUpper()
                                              select a);
+                                             //join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName } equals new { cm.Supplier_Id, cm.CountryName }
+                                             //join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
+                                             //select a);
                         }
                         if (config.AttributeValue.Replace("m_CityMaster.", "").Trim().ToUpper() == "CODE")
                         {
                             isCodeCheck = true;
                             prodMapSearch = (from a in prodMapSearch
-                                             join m in context.m_CityMaster on a.CityCode equals m.Code
                                              join mc in context.m_CountryMaster on a.Country_Id equals mc.Country_Id
+                                             join m in context.m_CityMaster on mc.Country_Id  equals m.Country_Id  
                                              //join mc in context.m_CountryMaster on m.Country_Id equals mc.Country_Id
                                              //join cm in context.m_CountryMapping on new { a.Country_Id, a.Supplier_Id } equals new { cm.Country_Id, cm.Supplier_Id }
-                                             where mc.Country_Id == m.Country_Id
+                                             where a.CityCode == m.Code
                                              select a);
                         }
                         if (config.AttributeValue.Replace("m_CityMaster.", "").Trim().ToUpper() == "NAME")
                         {
                             isNameCheck = true;
                             prodMapSearch = (from a in prodMapSearch
-                                             join m in context.m_CityMaster on a.CityName equals m.Name
                                              join mc in context.m_CountryMaster on a.Country_Id equals mc.Country_Id
-                                             where mc.Country_Id == m.Country_Id
+                                             join m in context.m_CityMaster on mc.Country_Id equals m.Country_Id // a.CityName equals m.Name
+                                             where a.CityName.Trim().ToUpper() == m.Name
                                              select a);
                         }
                         if (config.AttributeValue.Replace("m_CityMaster.", "").Trim().ToUpper() == "LATITUDE")
@@ -1914,6 +1916,7 @@ namespace DataLayer
                         }
                         else
                         {
+
                             DataLayer.m_CityMapping objNew = new m_CityMapping();
                             objNew.CityMapping_Id = CM.CityMapping_Id;
                             objNew.City_Id = CM.City_Id;

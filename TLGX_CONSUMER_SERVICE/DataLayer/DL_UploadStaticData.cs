@@ -1145,27 +1145,35 @@ namespace DataLayer
                         context.SaveChanges();
                         foreach (DataContracts.STG.DC_stg_SupplierCityMapping obj in lstobj)
                         {
-                            DataLayer.stg_SupplierCityMapping objNew = new DataLayer.stg_SupplierCityMapping();
-                            objNew.stg_City_Id = obj.stg_City_Id;
-                            objNew.SupplierId = obj.SupplierId;
-                            objNew.SupplierName = obj.SupplierName;
-                            objNew.CountryCode = obj.CountryCode;
-                            objNew.CountryName = obj.CountryName;
-                            objNew.Insert_Date = obj.Insert_Date;
-                            objNew.CityCode = obj.CityCode;
-                            objNew.CityName = obj.CityName;
-                            objNew.StateCode = obj.StateCode;
-                            objNew.StateName = obj.StateName;
-                            objNew.ActiveFrom = obj.ActiveFrom;
-                            objNew.ActiveTo = obj.ActiveTo;
-                            objNew.Action = obj.Action;
-                            objNew.UpdateType = obj.UpdateType;
-                            objNew.ActionText = obj.ActionText;
-                            objNew.Latitude = obj.Latitude;
-                            objNew.Longitude = obj.Longitude;
-                            context.stg_SupplierCityMapping.Add(objNew);
+                            var search = (from a in context.stg_SupplierCityMapping
+                                          where ((a.CityCode != null && a.CityCode.Trim().ToUpper() == obj.CityCode.Trim().ToUpper()) || a.CityCode == null)
+                                          && a.CityName.Trim().ToUpper() == obj.CityName.Trim().ToUpper()
+                                          && a.CountryName.Trim().ToUpper() == obj.CountryName.Trim().ToUpper()
+                                          select a).FirstOrDefault();
+                            if (search == null)
+                            {
+                                DataLayer.stg_SupplierCityMapping objNew = new DataLayer.stg_SupplierCityMapping();
+                                objNew.stg_City_Id = obj.stg_City_Id;
+                                objNew.SupplierId = obj.SupplierId;
+                                objNew.SupplierName = obj.SupplierName;
+                                objNew.CountryCode = obj.CountryCode;
+                                objNew.CountryName = obj.CountryName;
+                                objNew.Insert_Date = obj.Insert_Date;
+                                objNew.CityCode = obj.CityCode;
+                                objNew.CityName = obj.CityName;
+                                objNew.StateCode = obj.StateCode;
+                                objNew.StateName = obj.StateName;
+                                objNew.ActiveFrom = obj.ActiveFrom;
+                                objNew.ActiveTo = obj.ActiveTo;
+                                objNew.Action = obj.Action;
+                                objNew.UpdateType = obj.UpdateType;
+                                objNew.ActionText = obj.ActionText;
+                                objNew.Latitude = obj.Latitude;
+                                objNew.Longitude = obj.Longitude;
+                                context.stg_SupplierCityMapping.Add(objNew);
+                                context.SaveChanges();
+                            }
                         }
-                            context.SaveChanges();
                         dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
                         dc.StatusMessage = "City Static Data " + ReadOnlyMessage.strAddedSuccessfully;
                     }
