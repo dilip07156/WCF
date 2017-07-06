@@ -760,7 +760,8 @@ namespace DataLayer
                                        }).Skip(skip).Take(obj.PageSize);
 
                     var result = prodMapList.ToList();
-                    if (obj.CalledFromTLGX == null || obj.CalledFromTLGX != "TLGX")
+                    //if (obj.CalledFromTLGX == null || obj.CalledFromTLGX != "TLGX")
+                    if (string.IsNullOrWhiteSpace(obj.CalledFromTLGX))
                     {
                         if (!string.IsNullOrWhiteSpace(obj.Status) && !string.IsNullOrWhiteSpace(obj.CityName) && obj.Status.ToLower().Trim() == "unmapped")
                         {
@@ -1625,7 +1626,8 @@ namespace DataLayer
                         //    return c;
                         //}).ToList();
 
-                        if (param.CalledFromTLGX == null || (param.CalledFromTLGX != "TLGX"))
+                        //if (param.CalledFromTLGX == null || (param.CalledFromTLGX.ToString() != "TLGX"))
+                        if (string.IsNullOrWhiteSpace(param.CalledFromTLGX))
                         {
                             if (!string.IsNullOrWhiteSpace(param.Status))
                             {
