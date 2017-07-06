@@ -1143,10 +1143,14 @@ namespace DataLayer
                                           select y).ToList();
                         context.stg_SupplierCityMapping.RemoveRange(oldRecords);
                         context.SaveChanges();
-                        foreach (DataContracts.STG.DC_stg_SupplierCityMapping obj in lstobj)
+                        List<DataContracts.STG.DC_stg_SupplierCityMapping> dstobj = new List<DC_stg_SupplierCityMapping>();
+                        dstobj = lstobj.Where(a => a.CityName != null).Distinct().ToList();
+
+                        foreach (DataContracts.STG.DC_stg_SupplierCityMapping obj in dstobj)
                         {
                             var search = (from a in context.stg_SupplierCityMapping
-                                          where ((a.CityCode != null && a.CityCode.Trim().ToUpper() == obj.CityCode.Trim().ToUpper()) || a.CityCode == null)
+                                          where a.SupplierName.Trim().ToUpper() == mySupplier.Trim().ToUpper()
+                                          && ((a.CityCode != null && a.CityCode.Trim().ToUpper() == obj.CityCode.Trim().ToUpper()) || a.CityCode == null)
                                           && a.CityName.Trim().ToUpper() == obj.CityName.Trim().ToUpper()
                                           && a.CountryName.Trim().ToUpper() == obj.CountryName.Trim().ToUpper()
                                           select a).FirstOrDefault();
