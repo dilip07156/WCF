@@ -353,6 +353,13 @@ namespace DataLayer
                                         select a;
                     }
 
+                    if (!string.IsNullOrWhiteSpace(RQ.AttributeValue))
+                    {
+                        AttrMapSearch = from a in AttrMapSearch
+                                        where a.AttributeValue.Trim().TrimStart().ToUpper() == RQ.AttributeValue.Trim().TrimStart().ToUpper()
+                                        select a;
+                    }
+
                     if (!string.IsNullOrWhiteSpace(RQ.Status))
                     {
                         AttrMapSearch = from a in AttrMapSearch
@@ -879,23 +886,30 @@ namespace DataLayer
                         context.SaveChanges();
                         foreach (DataContracts.STG.DC_stg_SupplierCountryMapping obj in lstobj)
                         {
-                            DataLayer.stg_SupplierCountryMapping objNew = new DataLayer.stg_SupplierCountryMapping();
-                            objNew.stg_Country_Id = obj.stg_Country_Id;
-                            objNew.SupplierId = obj.SupplierId;
-                            objNew.SupplierName = obj.SupplierName;
-                            objNew.CountryCode = obj.CountryCode;
-                            objNew.CountryName = obj.CountryName;
-                            objNew.InsertDate = obj.InsertDate;
-                            objNew.ActiveFrom = obj.ActiveFrom;
-                            objNew.ActiveTo = obj.ActiveTo;
-                            objNew.Action = obj.Action;
-                            objNew.UpdateType = obj.UpdateType;
-                            objNew.ActionText = obj.ActionText;
-                            objNew.Latitude = obj.Latitude;
-                            objNew.Longitude = obj.Longitude;
-                            context.stg_SupplierCountryMapping.Add(objNew);
+                            var search = (from a in context.stg_SupplierCountryMapping
+                                          where ((a.CountryCode != null && a.CountryCode.Trim().ToUpper() == obj.CountryCode.Trim().ToUpper()) || a.CountryCode == null )
+                                          && a.CountryName.Trim().ToUpper() == obj.CountryName.Trim().ToUpper()
+                                          select a).FirstOrDefault();
+                            if (search == null)
+                            {
+                                DataLayer.stg_SupplierCountryMapping objNew = new DataLayer.stg_SupplierCountryMapping();
+                                objNew.stg_Country_Id = obj.stg_Country_Id;
+                                objNew.SupplierId = obj.SupplierId;
+                                objNew.SupplierName = obj.SupplierName;
+                                objNew.CountryCode = obj.CountryCode;
+                                objNew.CountryName = obj.CountryName;
+                                objNew.InsertDate = obj.InsertDate;
+                                objNew.ActiveFrom = obj.ActiveFrom;
+                                objNew.ActiveTo = obj.ActiveTo;
+                                objNew.Action = obj.Action;
+                                objNew.UpdateType = obj.UpdateType;
+                                objNew.ActionText = obj.ActionText;
+                                objNew.Latitude = obj.Latitude;
+                                objNew.Longitude = obj.Longitude;
+                                context.stg_SupplierCountryMapping.Add(objNew);
+                                context.SaveChanges();
+                            }
                         }
-                            context.SaveChanges();
                         dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
                         dc.StatusMessage = "Country Static Data " + ReadOnlyMessage.strAddedSuccessfully;
                     }
@@ -1129,29 +1143,41 @@ namespace DataLayer
                                           select y).ToList();
                         context.stg_SupplierCityMapping.RemoveRange(oldRecords);
                         context.SaveChanges();
-                        foreach (DataContracts.STG.DC_stg_SupplierCityMapping obj in lstobj)
+                        List<DataContracts.STG.DC_stg_SupplierCityMapping> dstobj = new List<DC_stg_SupplierCityMapping>();
+                        dstobj = lstobj.Where(a => a.CityName != null).Distinct().ToList();
+
+                        foreach (DataContracts.STG.DC_stg_SupplierCityMapping obj in dstobj)
                         {
-                            DataLayer.stg_SupplierCityMapping objNew = new DataLayer.stg_SupplierCityMapping();
-                            objNew.stg_City_Id = obj.stg_City_Id;
-                            objNew.SupplierId = obj.SupplierId;
-                            objNew.SupplierName = obj.SupplierName;
-                            objNew.CountryCode = obj.CountryCode;
-                            objNew.CountryName = obj.CountryName;
-                            objNew.Insert_Date = obj.Insert_Date;
-                            objNew.CityCode = obj.CityCode;
-                            objNew.CityName = obj.CityName;
-                            objNew.StateCode = obj.StateCode;
-                            objNew.StateName = obj.StateName;
-                            objNew.ActiveFrom = obj.ActiveFrom;
-                            objNew.ActiveTo = obj.ActiveTo;
-                            objNew.Action = obj.Action;
-                            objNew.UpdateType = obj.UpdateType;
-                            objNew.ActionText = obj.ActionText;
-                            objNew.Latitude = obj.Latitude;
-                            objNew.Longitude = obj.Longitude;
-                            context.stg_SupplierCityMapping.Add(objNew);
+                            var search = (from a in context.stg_SupplierCityMapping
+                                          where a.SupplierName.Trim().ToUpper() == mySupplier.Trim().ToUpper()
+                                          && ((a.CityCode != null && a.CityCode.Trim().ToUpper() == obj.CityCode.Trim().ToUpper()) || a.CityCode == null)
+                                          && a.CityName.Trim().ToUpper() == obj.CityName.Trim().ToUpper()
+                                          && a.CountryName.Trim().ToUpper() == obj.CountryName.Trim().ToUpper()
+                                          select a).FirstOrDefault();
+                            if (search == null)
+                            {
+                                DataLayer.stg_SupplierCityMapping objNew = new DataLayer.stg_SupplierCityMapping();
+                                objNew.stg_City_Id = obj.stg_City_Id;
+                                objNew.SupplierId = obj.SupplierId;
+                                objNew.SupplierName = obj.SupplierName;
+                                objNew.CountryCode = obj.CountryCode;
+                                objNew.CountryName = obj.CountryName;
+                                objNew.Insert_Date = obj.Insert_Date;
+                                objNew.CityCode = obj.CityCode;
+                                objNew.CityName = obj.CityName;
+                                objNew.StateCode = obj.StateCode;
+                                objNew.StateName = obj.StateName;
+                                objNew.ActiveFrom = obj.ActiveFrom;
+                                objNew.ActiveTo = obj.ActiveTo;
+                                objNew.Action = obj.Action;
+                                objNew.UpdateType = obj.UpdateType;
+                                objNew.ActionText = obj.ActionText;
+                                objNew.Latitude = obj.Latitude;
+                                objNew.Longitude = obj.Longitude;
+                                context.stg_SupplierCityMapping.Add(objNew);
+                                context.SaveChanges();
+                            }
                         }
-                            context.SaveChanges();
                         dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
                         dc.StatusMessage = "City Static Data " + ReadOnlyMessage.strAddedSuccessfully;
                     }
