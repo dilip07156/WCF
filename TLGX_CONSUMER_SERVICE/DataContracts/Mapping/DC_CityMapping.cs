@@ -401,6 +401,9 @@ namespace DataContracts.Mapping
 
 
         [DataMember]
+        public string CalledFromTLGX { get; set; }
+
+        [DataMember]
         public string Latitude { get; set; }
 
         [DataMember]

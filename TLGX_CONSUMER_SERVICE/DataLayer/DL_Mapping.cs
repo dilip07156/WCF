@@ -12,7 +12,6 @@ namespace DataLayer
 {
     public class DL_Mapping : IDisposable
     {
-        public static bool isFrom = true;
         public void Dispose()
         {
         }
@@ -366,7 +365,7 @@ namespace DataLayer
                                 RQ.PageNo = 0;
                                 RQ.PageSize = int.MaxValue;
                                 RQ.Status = "UNMAPPED";
-                                isFrom = false;
+                                RQ.CalledFromTLGX = "TLGX";
                                 res = GetProductSupplierMappingSearch(RQ);
                             }
                         }
@@ -380,7 +379,7 @@ namespace DataLayer
                             RQ.PageNo = 0;
                             RQ.PageSize = int.MaxValue;
                             RQ.Status = "UNMAPPED";
-                            isFrom = false;
+                            RQ.CalledFromTLGX = "TLGX";
                             res = GetProductSupplierMappingSearch(RQ);
                         }
                     }
@@ -761,7 +760,7 @@ namespace DataLayer
                                        }).Skip(skip).Take(obj.PageSize);
 
                     var result = prodMapList.ToList();
-                    if (isFrom)
+                    if (obj.CalledFromTLGX == null || obj.CalledFromTLGX != "TLGX")
                     {
                         if (!string.IsNullOrWhiteSpace(obj.Status) && !string.IsNullOrWhiteSpace(obj.CityName) && obj.Status.ToLower().Trim() == "unmapped")
                         {
@@ -793,8 +792,6 @@ namespace DataLayer
                             }
                         }
                     }
-                    else
-                        isFrom = true;
                     return result;
 
                 }
@@ -1628,7 +1625,7 @@ namespace DataLayer
                         //    return c;
                         //}).ToList();
 
-                        if (isFrom)
+                        if (param.CalledFromTLGX == null || (param.CalledFromTLGX != "TLGX"))
                         {
                             if (!string.IsNullOrWhiteSpace(param.Status))
                             {
@@ -1663,8 +1660,6 @@ namespace DataLayer
                                 }
                             }
                         }
-                        else
-                            isFrom = true;
                         return CityMapList;
                     }
                 }
@@ -1851,7 +1846,7 @@ namespace DataLayer
                                 RQ.PageNo = 0;
                                 RQ.PageSize = int.MaxValue;
                                 RQ.Status = "UNMAPPED";
-                                isFrom = false;
+                                RQ.CalledFromTLGX = "TLGX";
                                 res = GetCityMapping(RQ);
                             }
                         }
@@ -1865,7 +1860,7 @@ namespace DataLayer
                             RQ.PageNo = 0;
                             RQ.PageSize = int.MaxValue;
                             RQ.Status = "UNMAPPED";
-                            isFrom = false;
+                            RQ.CalledFromTLGX = "TLGX";
                             res = GetCityMapping(RQ);
                         }
                     }
