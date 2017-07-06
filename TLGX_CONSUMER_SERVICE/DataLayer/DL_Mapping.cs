@@ -1896,7 +1896,7 @@ namespace DataLayer
                         try
                         {
 
-                            var search = (from a in context.m_CityMapping.AsNoTracking()
+                            var search = (from a in context.m_CityMapping
                                           where a.CityMapping_Id == CM.CityMapping_Id
                                           select a).FirstOrDefault();
                             if (search != null)
@@ -1922,6 +1922,7 @@ namespace DataLayer
                                 if (CM.StateName != null)
                                     search.StateName = CM.StateName;
                                 //}
+                                context.SaveChanges();
 
                                 //context.SaveChanges();
                             }
@@ -1947,7 +1948,7 @@ namespace DataLayer
                                 objNew.Latitude = CM.Latitude;
                                 objNew.Longitude = CM.Longitude;
                                 // objNew.Country_Id = CM.Country_Id;
-                                objNew.Country_Id = (from a in context.m_CountryMapping.AsNoTracking()
+                                objNew.Country_Id = (from a in context.m_CountryMapping
                                                      where a.CountryName == CM.CountryName && a.Supplier_Id == CM.Supplier_Id
                                                      select a.Country_Id).FirstOrDefault();
                                 context.m_CityMapping.Add(objNew);
