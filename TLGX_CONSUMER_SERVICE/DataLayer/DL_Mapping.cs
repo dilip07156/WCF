@@ -2166,7 +2166,7 @@ namespace DataLayer
                     DateTime td = Convert.ToDateTime(parm.ToDate);
                     var search = (from t in context.Accommodation_Status
                                   join t1 in context.Accommodations on t.Accommodation_Id equals t1.Accommodation_Id
-                                  where (t.Create_Date >= fd && t.Edit_Date <= td)
+                                  where (t.From >= fd && t.To <= td)
                                   select new
                                   {
                                       HotelID = t1.CompanyHotelID,
@@ -2216,7 +2216,7 @@ namespace DataLayer
                     DateTime td = Convert.ToDateTime(parm.ToDate);
                     var search = (from t in context.Accommodation_HotelUpdates
                                   join t1 in context.Accommodations on t.Accommodation_Id equals t1.Accommodation_Id
-                                  where (t.Create_Date >= fd && t.Edit_Date <= td)
+                                  where (t.FromDate >= fd && t.ToDate <= td)
                                   select new
                                   {
                                       HotelID = t1.CompanyHotelID,
