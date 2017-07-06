@@ -887,7 +887,7 @@ namespace DataLayer
                         foreach (DataContracts.STG.DC_stg_SupplierCountryMapping obj in lstobj)
                         {
                             var search = (from a in context.stg_SupplierCountryMapping
-                                          where ((a.CountryCode != null && a.CountryCode.Trim().ToUpper() == obj.CountryCode.Trim().ToUpper()) || a.CountryCode == null )
+                                          where ((a.CountryCode != null && a.CountryCode.Trim().ToUpper() == obj.CountryCode.Trim().ToUpper()) || a.CountryCode == null)
                                           && a.CountryName.Trim().ToUpper() == obj.CountryName.Trim().ToUpper()
                                           select a).FirstOrDefault();
                             if (search == null)
@@ -1144,7 +1144,8 @@ namespace DataLayer
                         context.stg_SupplierCityMapping.RemoveRange(oldRecords);
                         context.SaveChanges();
                         List<DataContracts.STG.DC_stg_SupplierCityMapping> dstobj = new List<DC_stg_SupplierCityMapping>();
-                        dstobj = lstobj.Where(a => a.CityName != null).Distinct().ToList();
+                        dstobj = lstobj.GroupBy(a => new { a.CityCode, a.CityName, a.CountryCode, a.CountryName, a.StateCode, a.StateName }).Select(grp => grp.First()).ToList();
+                                    
 
                         foreach (DataContracts.STG.DC_stg_SupplierCityMapping obj in dstobj)
                         {
@@ -1156,26 +1157,26 @@ namespace DataLayer
                             //              select a).FirstOrDefault();
                             //if (search == null)
                             //{
-                                DataLayer.stg_SupplierCityMapping objNew = new DataLayer.stg_SupplierCityMapping();
-                                objNew.stg_City_Id = Guid.NewGuid(); //obj.stg_City_Id;
-                                objNew.SupplierId = obj.SupplierId;
-                                objNew.SupplierName = obj.SupplierName;
-                                objNew.CountryCode = obj.CountryCode;
-                                objNew.CountryName = obj.CountryName;
-                                objNew.Insert_Date = obj.Insert_Date;
-                                objNew.CityCode = obj.CityCode;
-                                objNew.CityName = obj.CityName;
-                                objNew.StateCode = obj.StateCode;
-                                objNew.StateName = obj.StateName;
-                                objNew.ActiveFrom = obj.ActiveFrom;
-                                objNew.ActiveTo = obj.ActiveTo;
-                                objNew.Action = obj.Action;
-                                objNew.UpdateType = obj.UpdateType;
-                                objNew.ActionText = obj.ActionText;
-                                objNew.Latitude = obj.Latitude;
-                                objNew.Longitude = obj.Longitude;
-                                context.stg_SupplierCityMapping.Add(objNew);
-                                
+                            DataLayer.stg_SupplierCityMapping objNew = new DataLayer.stg_SupplierCityMapping();
+                            objNew.stg_City_Id = Guid.NewGuid(); //obj.stg_City_Id;
+                            objNew.SupplierId = obj.SupplierId;
+                            objNew.SupplierName = obj.SupplierName;
+                            objNew.CountryCode = obj.CountryCode;
+                            objNew.CountryName = obj.CountryName;
+                            objNew.Insert_Date = obj.Insert_Date;
+                            objNew.CityCode = obj.CityCode;
+                            objNew.CityName = obj.CityName;
+                            objNew.StateCode = obj.StateCode;
+                            objNew.StateName = obj.StateName;
+                            objNew.ActiveFrom = obj.ActiveFrom;
+                            objNew.ActiveTo = obj.ActiveTo;
+                            objNew.Action = obj.Action;
+                            objNew.UpdateType = obj.UpdateType;
+                            objNew.ActionText = obj.ActionText;
+                            objNew.Latitude = obj.Latitude;
+                            objNew.Longitude = obj.Longitude;
+                            context.stg_SupplierCityMapping.Add(objNew);
+
                             //}
                         }
                         context.SaveChanges();
@@ -1255,7 +1256,7 @@ namespace DataLayer
                             objNew.StarRating = obj.StarRating;
                             context.stg_SupplierProductMapping.Add(objNew);
                         }
-                            context.SaveChanges();
+                        context.SaveChanges();
                         dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
                         dc.StatusMessage = "Product Static Data " + ReadOnlyMessage.strAddedSuccessfully;
                     }
