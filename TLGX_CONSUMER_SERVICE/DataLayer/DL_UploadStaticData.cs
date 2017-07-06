@@ -1148,16 +1148,16 @@ namespace DataLayer
 
                         foreach (DataContracts.STG.DC_stg_SupplierCityMapping obj in dstobj)
                         {
-                            var search = (from a in context.stg_SupplierCityMapping
-                                          where a.SupplierName.Trim().ToUpper() == mySupplier.Trim().ToUpper()
-                                          && ((a.CityCode != null && a.CityCode.Trim().ToUpper() == obj.CityCode.Trim().ToUpper()) || a.CityCode == null)
-                                          && a.CityName.Trim().ToUpper() == obj.CityName.Trim().ToUpper()
-                                          && a.CountryName.Trim().ToUpper() == obj.CountryName.Trim().ToUpper()
-                                          select a).FirstOrDefault();
-                            if (search == null)
-                            {
+                            //var search = (from a in context.stg_SupplierCityMapping
+                            //              where a.SupplierName.Trim().ToUpper() == mySupplier.Trim().ToUpper()
+                            //              && ((a.CityCode != null && a.CityCode.Trim().ToUpper() == obj.CityCode.Trim().ToUpper()) || a.CityCode == null)
+                            //              && a.CityName.Trim().ToUpper() == obj.CityName.Trim().ToUpper()
+                            //              && a.CountryName.Trim().ToUpper() == obj.CountryName.Trim().ToUpper()
+                            //              select a).FirstOrDefault();
+                            //if (search == null)
+                            //{
                                 DataLayer.stg_SupplierCityMapping objNew = new DataLayer.stg_SupplierCityMapping();
-                                objNew.stg_City_Id = obj.stg_City_Id;
+                                objNew.stg_City_Id = Guid.NewGuid(); //obj.stg_City_Id;
                                 objNew.SupplierId = obj.SupplierId;
                                 objNew.SupplierName = obj.SupplierName;
                                 objNew.CountryCode = obj.CountryCode;
@@ -1175,9 +1175,10 @@ namespace DataLayer
                                 objNew.Latitude = obj.Latitude;
                                 objNew.Longitude = obj.Longitude;
                                 context.stg_SupplierCityMapping.Add(objNew);
-                                context.SaveChanges();
-                            }
+                                
+                            //}
                         }
+                        context.SaveChanges();
                         dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
                         dc.StatusMessage = "City Static Data " + ReadOnlyMessage.strAddedSuccessfully;
                     }

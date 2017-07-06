@@ -19,7 +19,7 @@ namespace DataContracts.STG
     public class DC_stg_SupplierCityMapping
     {
         [DataMember]
-        public System.Guid stg_City_Id { get; set; }
+        public Nullable<System.Guid> stg_City_Id { get; set; }
 
         [DataMember]
         public string SupplierId { get; set; }

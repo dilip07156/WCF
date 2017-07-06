@@ -1594,6 +1594,7 @@ namespace DataLayer
                                                City_Id = a.City_Id,
                                                CityCode = a.CityCode,
                                                CityName = a.CityName,
+                                               oldCityName= a.CityName,
                                                Country_Id = a.Country_Id,
                                                Create_Date = a.Create_Date,
                                                Create_User = a.Create_User,
