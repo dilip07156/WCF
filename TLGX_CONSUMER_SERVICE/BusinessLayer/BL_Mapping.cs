@@ -324,7 +324,16 @@ namespace BusinessLayer
                 }
             }
         }
-        public List<DataContracts.Mapping.DC_supplierwisesummaryReport> GetsupplierwiseSummaryReport(string SupplierID)
+        public List<DataContracts.Mapping.DC_supplierwisesummaryReport> GetsupplierwiseSummaryReport()
+        {
+            
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.GetsupplierwiseSummaryReport();
+                }
+            
+        }
+        public List<DataContracts.Mapping.DC_supplierwiseunmappedsummaryReport> GetsupplierwiseUnmappedSummaryReport(string SupplierID)
         {
             Guid gSupplier_Id;
 
@@ -336,7 +345,7 @@ namespace BusinessLayer
             {
                 using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
                 {
-                    return objBL.GetsupplierwiseSummaryReport(gSupplier_Id);
+                    return objBL.GetsupplierwiseUnmappedSummaryReport(gSupplier_Id);
                 }
             }
         }

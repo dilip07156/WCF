@@ -36,6 +36,8 @@ namespace DataContracts.Mapping
         string _StateCode;
         string _StateName;
 
+        [DataMember]
+        public string oldCityName { get; set; }
 
         [DataMember]
         public string Latitude { get; set; }
@@ -397,6 +399,9 @@ namespace DataContracts.Mapping
         string _ResultSet;
         bool _IsExact;
 
+
+        [DataMember]
+        public string CalledFromTLGX { get; set; }
 
         [DataMember]
         public string Latitude { get; set; }

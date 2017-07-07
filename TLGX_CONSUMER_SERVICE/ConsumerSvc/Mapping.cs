@@ -186,11 +186,18 @@ namespace ConsumerSvc
                 return objBL.GetsupplierwiseUnmappedActivityReport(SupplierID);
             }
         }
-        public IList<DataContracts.Mapping.DC_supplierwisesummaryReport> GetsupplierwiseSummaryReport(string SupplierID)
+        public IList<DataContracts.Mapping.DC_supplierwisesummaryReport> GetsupplierwiseSummaryReport()
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
-                return objBL.GetsupplierwiseSummaryReport(SupplierID);
+                return objBL.GetsupplierwiseSummaryReport();
+            }
+        }
+        public IList<DataContracts.Mapping.DC_supplierwiseunmappedsummaryReport> GetsupplierwiseUnmappedSummaryReport(string SupplierID)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetsupplierwiseUnmappedSummaryReport(SupplierID);
             }
         }
 
