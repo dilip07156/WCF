@@ -2207,7 +2207,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(RQ.StatusCode))
                     {
                         search = from sup in search
-                                 where sup.StatusCode == RQ.StatusCode
+                                 where sup.StatusCode.Trim().Substring(0,3).ToUpper() == RQ.StatusCode.Trim().Substring(0, 3).ToUpper()
                                  select sup;
                     }
 

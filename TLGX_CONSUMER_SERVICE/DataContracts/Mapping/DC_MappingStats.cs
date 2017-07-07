@@ -920,63 +920,12 @@ namespace DataContracts.Mapping
     [DataContract]
     public class DC_supplierwisesummaryReport
     {
-        string _mappingfor;
-        int _unmapped;
-        int _mapped;
-        int _review;
+        int _city;
+        int _product;
+        int _hotelrooom;
+        int _activity;
+        int _country;
         string _suppliername;
-        [DataMember]
-        public string Mappingfor
-        {
-            get
-            {
-                return _mappingfor;
-            }
-
-            set
-            {
-                _mappingfor = value;
-            }
-        }
-        [DataMember]
-        public int Unmapped
-        {
-            get
-            {
-                return _unmapped;
-            }
-
-            set
-            {
-                _unmapped = value;
-            }
-        }
-        [DataMember]
-        public int Mapped
-        {
-            get
-            {
-                return _mapped;
-            }
-
-            set
-            {
-                _mapped = value;
-            }
-        }
-        [DataMember]
-        public int Review
-        {
-            get
-            {
-                return _review;
-            }
-
-            set
-            {
-                _review = value;
-            }
-        }
         [DataMember]
         public string Suppliername
         {
@@ -988,6 +937,131 @@ namespace DataContracts.Mapping
             set
             {
                 _suppliername = value;
+            }
+        }
+        [DataMember]
+        public int City
+        {
+            get
+            {
+                return _city;
+            }
+
+            set
+            {
+                _city = value;
+            }
+        }
+        [DataMember]
+        public int Product
+        {
+            get
+            {
+                return _product;
+            }
+
+            set
+            {
+                _product = value;
+            }
+        }
+        [DataMember]
+        public int Hotelrooom
+        {
+            get
+            {
+                return _hotelrooom;
+            }
+
+            set
+            {
+                _hotelrooom = value;
+            }
+        }
+        [DataMember]
+        public int Activity
+        {
+            get
+            {
+                return _activity;
+            }
+
+            set
+            {
+                _activity = value;
+            }
+        }
+        [DataMember]
+        public int Country
+        {
+            get
+            {
+                return _country;
+            }
+
+            set
+            {
+                _country = value;
+            }
+        }
+    }
+    [DataContract]
+    public class DC_supplierwiseunmappedsummaryReport
+    {
+        string _suppliername;
+        string _countryname;
+        string _cityname;
+        int _noofproducts;
+        [DataMember]
+        public string Suppliername
+        {
+            get
+            {
+                return _suppliername;
+            }
+
+            set
+            {
+                _suppliername = value;
+            }
+        }
+        [DataMember]
+        public string Countryname
+        {
+            get
+            {
+                return _countryname;
+            }
+
+            set
+            {
+                _countryname = value;
+            }
+        }
+        [DataMember]
+        public string Cityname
+        {
+            get
+            {
+                return _cityname;
+            }
+
+            set
+            {
+                _cityname = value;
+            }
+        }
+        [DataMember]
+        public int Noofproducts
+        {
+            get
+            {
+                return _noofproducts;
+            }
+
+            set
+            {
+                _noofproducts = value;
             }
         }
     }

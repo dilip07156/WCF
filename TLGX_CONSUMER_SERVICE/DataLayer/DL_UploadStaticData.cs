@@ -1217,7 +1217,10 @@ namespace DataLayer
                                           select y).ToList();
                         context.stg_SupplierProductMapping.RemoveRange(oldRecords);
                         context.SaveChanges();
-                        foreach (DataContracts.STG.DC_stg_SupplierProductMapping obj in lstobj)
+                        List<DataContracts.STG.DC_stg_SupplierProductMapping> dstobj = new List<DC_stg_SupplierProductMapping>();
+                        dstobj = lstobj.GroupBy(a => new { a.CityCode, a.CityName, a.CountryCode, a.CountryName, a.StateCode, a.StateName, a.ProductId, a.ProductName, a.PostalCode }).Select(grp => grp.First()).ToList();
+
+                        foreach (DataContracts.STG.DC_stg_SupplierProductMapping obj in dstobj)
                         {
                             DataLayer.stg_SupplierProductMapping objNew = new DataLayer.stg_SupplierProductMapping();
                             objNew.stg_AccoMapping_Id = obj.stg_AccoMapping_Id;
@@ -1233,12 +1236,12 @@ namespace DataLayer
                             objNew.CityName = obj.CityName;
                             objNew.Location = obj.Location;
                             objNew.InsertDate = obj.InsertDate;
-                            obj.StreetName = obj.StreetName;
-                            obj.Street2 = obj.Street2;
-                            obj.PostalCode = obj.PostalCode;
-                            obj.Street3 = obj.Street3;
-                            obj.Street4 = obj.Street4;
-                            obj.Street5 = obj.Street5;
+                            objNew.StreetName = obj.StreetName;
+                            objNew.Street2 = obj.Street2;
+                            objNew.PostalCode = obj.PostalCode;
+                            objNew.Street3 = obj.Street3;
+                            objNew.Street4 = obj.Street4;
+                            objNew.Street5 = obj.Street5;
                             objNew.StateCode = obj.StateCode;
                             objNew.StateName = obj.StateName;
                             objNew.Latitude = obj.Latitude;

@@ -92,6 +92,13 @@ namespace BusinessLayer
                 return objBL.UpdateHotelMappingStatus(obj);
             }
         }
+        public List<DC_Accomodation_ProductMapping> GetMappingHotelData(DC_Mapping_ProductSupplier_Search_RQ obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetMappingHotelData(obj);
+            }
+        }
         #endregion
 
         #region Supplier Room Type Mapping
@@ -154,6 +161,7 @@ namespace BusinessLayer
                 return objBL.UpdateCountryMapping(CM);
             }
         }
+
 
         public List<DC_CountryMapping> UpdateCountryMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
         {
@@ -324,7 +332,16 @@ namespace BusinessLayer
                 }
             }
         }
-        public List<DataContracts.Mapping.DC_supplierwisesummaryReport> GetsupplierwiseSummaryReport(string SupplierID)
+        public List<DataContracts.Mapping.DC_supplierwisesummaryReport> GetsupplierwiseSummaryReport()
+        {
+            
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.GetsupplierwiseSummaryReport();
+                }
+            
+        }
+        public List<DataContracts.Mapping.DC_supplierwiseunmappedsummaryReport> GetsupplierwiseUnmappedSummaryReport(string SupplierID)
         {
             Guid gSupplier_Id;
 
@@ -336,7 +353,7 @@ namespace BusinessLayer
             {
                 using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
                 {
-                    return objBL.GetsupplierwiseSummaryReport(gSupplier_Id);
+                    return objBL.GetsupplierwiseUnmappedSummaryReport(gSupplier_Id);
                 }
             }
         }
