@@ -12,7 +12,6 @@ namespace DataLayer
 {
     public class DL_Mapping : IDisposable
     {
-        public static bool isFrom = true;
         public void Dispose()
         {
         }
@@ -366,7 +365,7 @@ namespace DataLayer
                                 RQ.PageNo = 0;
                                 RQ.PageSize = int.MaxValue;
                                 RQ.Status = "UNMAPPED";
-                                isFrom = false;
+                                RQ.CalledFromTLGX = "TLGX";
                                 res = GetProductSupplierMappingSearch(RQ);
                             }
                         }
@@ -380,7 +379,7 @@ namespace DataLayer
                             RQ.PageNo = 0;
                             RQ.PageSize = int.MaxValue;
                             RQ.Status = "UNMAPPED";
-                            isFrom = false;
+                            RQ.CalledFromTLGX = "TLGX";
                             res = GetProductSupplierMappingSearch(RQ);
                         }
                     }
@@ -761,7 +760,8 @@ namespace DataLayer
                                        }).Skip(skip).Take(obj.PageSize);
 
                     var result = prodMapList.ToList();
-                    if (isFrom)
+                    //if (obj.CalledFromTLGX == null || obj.CalledFromTLGX != "TLGX")
+                    if (string.IsNullOrWhiteSpace(obj.CalledFromTLGX))
                     {
                         if (!string.IsNullOrWhiteSpace(obj.Status) && !string.IsNullOrWhiteSpace(obj.CityName) && obj.Status.ToLower().Trim() == "unmapped")
                         {
@@ -793,8 +793,6 @@ namespace DataLayer
                             }
                         }
                     }
-                    else
-                        isFrom = true;
                     return result;
 
                 }
@@ -1594,6 +1592,7 @@ namespace DataLayer
                                                City_Id = a.City_Id,
                                                CityCode = a.CityCode,
                                                CityName = a.CityName,
+                                               oldCityName = a.CityName,
                                                Country_Id = a.Country_Id,
                                                Create_Date = a.Create_Date,
                                                Create_User = a.Create_User,
@@ -1604,8 +1603,8 @@ namespace DataLayer
                                                Status = a.Status,
                                                TotalRecords = total,
                                                SupplierName = s.Name,
-                                               CountryCode = jd.Code,
-                                               CountryName = jd.Name,
+                                               CountryCode = a.CountryCode,
+                                               CountryName = a.CountryName,
                                                MasterCountryCode = jd.Code,
                                                MasterCountryName = jd.Name,
                                                MasterCityCode = ctld.Code,
@@ -1627,6 +1626,9 @@ namespace DataLayer
                         //    return c;
                         //}).ToList();
 
+                        //if (param.CalledFromTLGX == null || (param.CalledFromTLGX.ToString() != "TLGX"))
+                        if (string.IsNullOrWhiteSpace(param.CalledFromTLGX))
+                        {
                         if (!string.IsNullOrWhiteSpace(param.Status))
                         {
 
@@ -1658,6 +1660,7 @@ namespace DataLayer
                                     }
                                 }
                             }
+                        }
                         }
                         return CityMapList;
                     }
@@ -1727,7 +1730,7 @@ namespace DataLayer
                             isCodeCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join mc in context.m_CountryMaster on a.Country_Id equals mc.Country_Id
-                                             join m in context.m_CityMaster on mc.Country_Id  equals m.Country_Id  
+                                             join m in context.m_CityMaster on mc.Country_Id equals m.Country_Id
                                              //join mc in context.m_CountryMaster on m.Country_Id equals mc.Country_Id
                                              //join cm in context.m_CountryMapping on new { a.Country_Id, a.Supplier_Id } equals new { cm.Country_Id, cm.Supplier_Id }
                                              where a.CityCode == m.Code
@@ -1845,6 +1848,7 @@ namespace DataLayer
                                 RQ.PageNo = 0;
                                 RQ.PageSize = int.MaxValue;
                                 RQ.Status = "UNMAPPED";
+                                RQ.CalledFromTLGX = "TLGX";
                                 res = GetCityMapping(RQ);
                             }
                         }
@@ -1858,6 +1862,7 @@ namespace DataLayer
                             RQ.PageNo = 0;
                             RQ.PageSize = int.MaxValue;
                             RQ.Status = "UNMAPPED";
+                            RQ.CalledFromTLGX = "TLGX";
                             res = GetCityMapping(RQ);
                         }
                     }
@@ -1874,6 +1879,10 @@ namespace DataLayer
         public bool UpdateCityMapping(List<DataContracts.Mapping.DC_CityMapping> obj)
         {
             bool ret = false;
+            if (obj.Count > 0)
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
             foreach (var CM in obj)
             {
                 if (CM.CityMapping_Id == null || CM.Supplier_Id == null)
@@ -1883,8 +1892,7 @@ namespace DataLayer
 
                 try
                 {
-                    using (ConsumerEntities context = new ConsumerEntities())
-                    {
+
                         var search = (from a in context.m_CityMapping
                                       where a.CityMapping_Id == CM.CityMapping_Id
                                       select a).FirstOrDefault();
@@ -1911,8 +1919,9 @@ namespace DataLayer
                             if (CM.StateName != null)
                                 search.StateName = CM.StateName;
                             //}
+                                context.SaveChanges();
 
-                            context.SaveChanges();
+                                //context.SaveChanges();
                         }
                         else
                         {
@@ -1940,19 +1949,27 @@ namespace DataLayer
                                                  where a.CountryName == CM.CountryName && a.Supplier_Id == CM.Supplier_Id
                                                  select a.Country_Id).FirstOrDefault();
                             context.m_CityMapping.Add(objNew);
-                            context.SaveChanges();
-
-                            context.USP_UpdateMapID("city");
                         }
 
                         ret = true;
-                    }
+
+
                 }
                 catch
                 {
+                            ret = false;
                     throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating city mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
                 }
             }
+                    if (ret)
+                    {
+                        context.SaveChanges();
+                        context.USP_UpdateMapID("city");
+                    }
+                }
+            }
+            else
+                ret = true;
             return ret;
         }
         #endregion

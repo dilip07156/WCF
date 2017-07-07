@@ -728,6 +728,9 @@ namespace DataContracts.Mapping
         string _TelephoneNumber_tx;
 
 
+        [DataMember]
+        public string CalledFromTLGX { get; set; }
+
 
         [DataMember]
         public string StarRating { get; set; }
