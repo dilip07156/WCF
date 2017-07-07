@@ -339,6 +339,14 @@ namespace BusinessLayer
             }
         }
 
+        public DC_Message AddUpldatePlaces(DC_GooglePlaceNearByWithAccoID objplaces)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.AddUpldatePlaces(objplaces);
+            }
+        }
+
         #endregion
 
         #region Accomodation Pax Occupancy
