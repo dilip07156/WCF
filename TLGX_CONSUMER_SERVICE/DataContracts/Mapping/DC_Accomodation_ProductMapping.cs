@@ -59,6 +59,8 @@ namespace DataContracts.Mapping
         string _mstHotelName;
         string _Google_Place_Id;
 
+        [DataMember]
+        public string oldProductName { get; set; }
 
         [DataMember]
         public string StarRating { get; set; }
