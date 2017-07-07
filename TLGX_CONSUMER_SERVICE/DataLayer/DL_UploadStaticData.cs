@@ -1217,7 +1217,10 @@ namespace DataLayer
                                           select y).ToList();
                         context.stg_SupplierProductMapping.RemoveRange(oldRecords);
                         context.SaveChanges();
-                        foreach (DataContracts.STG.DC_stg_SupplierProductMapping obj in lstobj)
+                        List<DataContracts.STG.DC_stg_SupplierProductMapping> dstobj = new List<DC_stg_SupplierProductMapping>();
+                        dstobj = lstobj.GroupBy(a => new { a.CityCode, a.CityName, a.CountryCode, a.CountryName, a.StateCode, a.StateName, a.ProductId, a.ProductName, a.PostalCode }).Select(grp => grp.First()).ToList();
+
+                        foreach (DataContracts.STG.DC_stg_SupplierProductMapping obj in dstobj)
                         {
                             DataLayer.stg_SupplierProductMapping objNew = new DataLayer.stg_SupplierProductMapping();
                             objNew.stg_AccoMapping_Id = obj.stg_AccoMapping_Id;
