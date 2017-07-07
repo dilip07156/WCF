@@ -2477,35 +2477,86 @@ namespace DataLayer
             return _objList;
 
         }
-        public List<DataContracts.Mapping.DC_supplierwisesummaryReport> GetsupplierwiseSummaryReport(Guid SupplierID)
+        public List<DataContracts.Mapping.DC_supplierwisesummaryReport> GetsupplierwiseSummaryReport()
         {
             List<DataContracts.Mapping.DC_supplierwisesummaryReport> _objList = new List<DC_supplierwisesummaryReport>();
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if (SupplierID != Guid.Empty)
-                    {
+                   
                         var searchasummary = context.vwMappingStats.
-                             Where(c=>c.supplier_id == SupplierID)
-                            .GroupBy(c => new { c.supplier_id,c.SupplierName,c.MappinFor,c.totalcount})
+                             Where(c=>c.SupplierName!="ALL" && c.SupplierName!=null && (c.Status == "UNMAPPED" || c.Status == "REVIEW") &&c.supplier_id!=Guid.Empty)
+                            .GroupBy(c => new { c.supplier_id,c.SupplierName})
                             .Select(g => new
                             {
-                                mapped = g.Where(c => c.Status == "Mapped").Sum(c=> c.totalcount),
-                                review = g.Where(c => c.Status == "Review").Sum(c => c.totalcount),
-                                unmapped = g.Where(c => c.Status == "unmapped").Sum(c => c.totalcount),
+                                Country = g.Where(c => c.MappinFor == "Country").Sum(c=> c.totalcount),
+                                City = g.Where(c => c.MappinFor == "City").Sum(c => c.totalcount),
+                                Product = g.Where(c => c.MappinFor == "Product").Sum(c => c.totalcount),
+                                hotelroom = g.Where(c => c.MappinFor == "HotelRum").Sum(c => c.totalcount),
+                                activity = g.Where(c => c.MappinFor == "Activity").Sum(c => c.totalcount),
                                 suppliername = g.Key.SupplierName,
-                                mappingfor= g.Key.MappinFor
                             }
                             ).ToList();
                         foreach (var item in searchasummary)
                         {
                             DC_supplierwisesummaryReport objsu = new DC_supplierwisesummaryReport();
-                            objsu.Mappingfor = item.mappingfor;
-                            objsu.Mapped = item.mapped.Value;
-                            objsu.Unmapped = item.unmapped.Value;
-                            objsu.Review = item.review.Value;
+                            objsu.Country = item.Country.GetValueOrDefault();
+                            objsu.City = item.City.GetValueOrDefault();
+                            objsu.Product = item.Product.GetValueOrDefault();
+                            objsu.Activity = item.activity.GetValueOrDefault();
+                            objsu.Hotelrooom = item.hotelroom.GetValueOrDefault();
+                             objsu.Suppliername = item.suppliername;
+                            _objList.Add(objsu);
+
+                        }
+
+                    }
+                
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return _objList;
+
+        }
+        public List<DataContracts.Mapping.DC_supplierwiseunmappedsummaryReport> GetsupplierwiseUnmappedSummaryReport(Guid SupplierID)
+        {
+            List<DataContracts.Mapping.DC_supplierwiseunmappedsummaryReport> _objList = new List<DC_supplierwiseunmappedsummaryReport>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (SupplierID != Guid.Empty)
+                    {
+                        var searchasummary = (from t1 in context.m_CountryMapping
+                                              join t2 in context.m_CityMapping
+                                                     on new { t1.Supplier_Id, t1.Country_Id, t1.CountryName }
+                                                     equals new { t2.Supplier_Id, t2.Country_Id, t2.CountryName }
+                                              join t3 in context.Accommodation_ProductMapping
+                                                      on new { t1.Supplier_Id, t2.CityName }
+                                                      equals new { t3.Supplier_Id, t3.CityName }
+                                              where (t1.Supplier_Id == SupplierID && (t1.Status == "UNMAPPED" || t1.Status == "Review") && t1.SupplierName != null)
+                                              group t3 by new {t1.Supplier_Id,t1.SupplierName,t1.CountryName,t2.CityName} into g
+                                              select new
+                                              {
+                                                  suppliername= g.Key.SupplierName,
+                                                  countryname=g.Key.CountryName,
+                                                  cityname=g.Key.CityName,
+                                                  noofproduct =g.Count(t3=> t3.Accommodation_ProductMapping_Id !=null)
+
+                                              }
+
+                                          ).ToList();
+                        foreach (var item in searchasummary)
+                        {
+                            DC_supplierwiseunmappedsummaryReport objsu = new DC_supplierwiseunmappedsummaryReport();
                             objsu.Suppliername = item.suppliername;
+                            objsu.Countryname = item.countryname;
+                            objsu.Cityname = item.cityname;
+                            objsu.Noofproducts = item.noofproduct;
                             _objList.Add(objsu);
 
                         }
@@ -2519,7 +2570,6 @@ namespace DataLayer
 
             }
             return _objList;
-
         }
         #endregion
 
