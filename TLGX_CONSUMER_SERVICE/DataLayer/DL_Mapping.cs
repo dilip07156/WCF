@@ -2781,12 +2781,12 @@ namespace DataLayer
                     {
                         var searchasummary = (from t1 in context.m_CountryMapping
                                               join t2 in context.m_CityMapping
-                                                     on new { t1.Supplier_Id, t1.Country_Id, t1.CountryName }
-                                                     equals new { t2.Supplier_Id, t2.Country_Id, t2.CountryName }
+                                                     on new { t1.Supplier_Id, t1.Country_Id}
+                                                     equals new { t2.Supplier_Id, t2.Country_Id }
                                               join t3 in context.Accommodation_ProductMapping
-                                                      on new { t1.Supplier_Id, t2.CityName }
-                                                      equals new { t3.Supplier_Id, t3.CityName }
-                                              where (t1.Supplier_Id == SupplierID && (t1.Status == "UNMAPPED" || t1.Status == "Review") && t1.SupplierName != null)
+                                                      on new { t1.Supplier_Id, t2.City_Id }
+                                                      equals new { t3.Supplier_Id, t3.City_Id }
+                                              where (t1.Supplier_Id == SupplierID && (t1.Status.ToUpper() == "UNMAPPED" || t1.Status.ToUpper() == "REVIEW") && t1.SupplierName != null)
                                               group t3 by new {t1.Supplier_Id,t1.SupplierName,t1.CountryName,t2.CityName} into g
                                               select new
                                               {
@@ -2794,7 +2794,6 @@ namespace DataLayer
                                                   countryname=g.Key.CountryName,
                                                   cityname=g.Key.CityName,
                                                   noofproduct =g.Count(t3=> t3.Accommodation_ProductMapping_Id !=null)
-
                                               }
 
                                           ).ToList();
