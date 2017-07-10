@@ -100,6 +100,7 @@ namespace DataLayer
         public virtual DbSet<stg_SupplierProductMapping> stg_SupplierProductMapping { get; set; }
         public virtual DbSet<m_keyword> m_keyword { get; set; }
         public virtual DbSet<m_keyword_alias> m_keyword_alias { get; set; }
+        public virtual DbSet<Place> Places { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

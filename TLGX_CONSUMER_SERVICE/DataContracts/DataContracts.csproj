@@ -58,6 +58,7 @@
     <Compile Include="DC_Masters.cs" />
     <Compile Include="DC_Master_City.cs" />
     <Compile Include="DC_Master_Country.cs" />
+    <Compile Include="DC_GooglePlaceNearBy.cs" />
     <Compile Include="Mapping\DC_Acitivity_SupplierProductMapping.cs" />
     <Compile Include="Mapping\DC_MasterAttributeMapping.cs" />
     <Compile Include="Mapping\DC_MasterAttributeValueMapping.cs" />

@@ -69,6 +69,7 @@ namespace DataContracts
         string _LEGACY_STATE;
         int? _Legacy_HTL_ID;
         string _Google_Place_Id;
+        string _fullAddress;
         List<DC_Accommodation_Contact> _Accomodation_Contact;
         List<DC_Accommodation_Descriptions> _Accommodation_Descriptions;
         List<DC_Accommodation_HotelUpdates> _Accommodation_HotelUpdates;
@@ -1091,7 +1092,19 @@ namespace DataContracts
                 _Accomodation_ClassificationAttributes = value;
             }
         }
+        [DataMember]
+        public string FullAddress
+        {
+            get
+            {
+                return _fullAddress;
+            }
 
+            set
+            {
+                _fullAddress = value;
+            }
+        }
     }
 
     [DataContract]
@@ -5338,5 +5351,34 @@ namespace DataContracts
         public string NewRoomCategory { get; set; }
         [DataMember]
         public string Create_User { get; set; }
+    }
+
+    [DataContract]
+    public class DC_Places
+    {
+        [DataMember]
+        public Guid Place_Id { get; set; }
+        [DataMember]
+        public string Place_Category { get; set; }
+        [DataMember]
+        public string Name { get; set; }
+        [DataMember]
+        public string Formatted_Address { get; set; }
+        [DataMember]
+        public string Latitude { get; set; }
+        [DataMember]
+        public string Longitude { get; set; }
+        [DataMember]
+        public string Google_Place_Id { get; set; }
+        [DataMember]
+        public string Google_Rating { get; set; }
+        [DataMember]
+        public string Google_Reference { get; set; }
+        [DataMember]
+        public string Google_PlaceTypes { get; set; }
+        [DataMember]
+        public string Google_Icon { get; set; }
+        [DataMember]
+        public string Google_FullObjext { get; set; }
     }
 }

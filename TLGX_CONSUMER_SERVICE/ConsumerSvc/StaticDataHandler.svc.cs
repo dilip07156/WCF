@@ -165,7 +165,8 @@ namespace ConsumerSvc
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
-                return objBL.GetProductSupplierMappingSearch(obj);
+                //return objBL.GetProductSupplierMappingSearch(obj);
+                return objBL.GetMappingHotelData(obj);
             }
         }
 
