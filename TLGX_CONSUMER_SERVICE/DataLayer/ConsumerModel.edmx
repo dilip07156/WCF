@@ -1179,6 +1179,23 @@
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
           <Property Name="IsActive" Type="bit" />
         </EntityType>
+        <EntityType Name="Places">
+          <Key>
+            <PropertyRef Name="Place_Id" />
+          </Key>
+          <Property Name="Place_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Place_Category" Type="nvarchar" MaxLength="255" />
+          <Property Name="Name" Type="nvarchar" MaxLength="2550" />
+          <Property Name="Formatted_Address" Type="nvarchar(max)" />
+          <Property Name="Latitude" Type="float" />
+          <Property Name="Longitude" Type="float" />
+          <Property Name="Google_Place_Id" Type="nvarchar" MaxLength="255" />
+          <Property Name="Google_Rating" Type="float" />
+          <Property Name="Google_Reference" Type="nvarchar" MaxLength="255" />
+          <Property Name="Google_PlaceTypes" Type="nvarchar" MaxLength="255" />
+          <Property Name="Google_Icon" Type="nvarchar" MaxLength="255" />
+          <Property Name="Google_FullObjext" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="Schedule_NextOccurance">
           <Key>
             <PropertyRef Name="Schedule_ID" />
@@ -1570,6 +1587,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySet Name="m_WorkflowSteps" EntityType="Self.m_WorkflowSteps" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Media_Attributes" EntityType="Self.Media_Attributes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Organisation_Company" EntityType="Self.Organisation_Company" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Places" EntityType="Self.Places" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule_NextOccurance" EntityType="Self.Schedule_NextOccurance" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SiteMap" EntityType="Self.SiteMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierCityMapping" EntityType="Self.stg_SupplierCityMapping" Schema="dbo" store:Type="Tables" />
@@ -1702,6 +1720,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySet Name="stg_SupplierProductMapping" EntityType="ConsumerModel.stg_SupplierProductMapping" />
           <EntitySet Name="m_keyword" EntityType="ConsumerModel.m_keyword" />
           <EntitySet Name="m_keyword_alias" EntityType="ConsumerModel.m_keyword_alias" />
+          <EntitySet Name="Places" EntityType="ConsumerModel.Place" />
         </EntityContainer>
         <EntityType Name="Accommodation_Contact">
           <Key>
@@ -3175,6 +3194,23 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Sequence" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Place">
+          <Key>
+            <PropertyRef Name="Place_Id" />
+          </Key>
+          <Property Name="Place_Id" Type="Guid" Nullable="false" />
+          <Property Name="Place_Category" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="2550" FixedLength="false" Unicode="true" />
+          <Property Name="Formatted_Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="Double" />
+          <Property Name="Longitude" Type="Double" />
+          <Property Name="Google_Place_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Google_Rating" Type="Double" />
+          <Property Name="Google_Reference" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Google_PlaceTypes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Google_Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Google_FullObjext" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -4692,6 +4728,24 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
                 <ScalarProperty Name="Value" ColumnName="Value" />
                 <ScalarProperty Name="Keyword_Id" ColumnName="Keyword_Id" />
                 <ScalarProperty Name="KeywordAlias_Id" ColumnName="KeywordAlias_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Places">
+            <EntityTypeMapping TypeName="ConsumerModel.Place">
+              <MappingFragment StoreEntitySet="Places">
+                <ScalarProperty Name="Google_FullObjext" ColumnName="Google_FullObjext" />
+                <ScalarProperty Name="Google_Icon" ColumnName="Google_Icon" />
+                <ScalarProperty Name="Google_PlaceTypes" ColumnName="Google_PlaceTypes" />
+                <ScalarProperty Name="Google_Reference" ColumnName="Google_Reference" />
+                <ScalarProperty Name="Google_Rating" ColumnName="Google_Rating" />
+                <ScalarProperty Name="Google_Place_Id" ColumnName="Google_Place_Id" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="Formatted_Address" ColumnName="Formatted_Address" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Place_Category" ColumnName="Place_Category" />
+                <ScalarProperty Name="Place_Id" ColumnName="Place_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

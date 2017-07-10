@@ -8,6 +8,8 @@ using System.ServiceModel.Web;
 using System.Data.SqlClient;
 using DataContracts;
 using System.Text.RegularExpressions;
+using System.Device.Location;
+using System.Globalization;
 
 namespace DataLayer
 {
@@ -900,6 +902,7 @@ namespace DataLayer
                                    Town = a.Town,
                                    YearBuilt = a.YearBuilt,
                                    Google_Place_Id = a.Google_Place_Id,
+                                   FullAddress = a.FullAddress,
                                    Accomodation_Contact = (from ac in context.Accommodation_Contact
                                                            where ac.Accommodation_Id == a.Accommodation_Id
                                                            select new DataContracts.DC_Accommodation_Contact
@@ -2169,6 +2172,135 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation near by places", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        public String ConvertListToString<T>(List<T> _lst)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in _lst)
+            {
+                sb.Append(item + ",");
+            }
+            return sb.ToString().TrimEnd(',');
+        }
+        public DC_Message AddUpldatePlaces(DC_GooglePlaceNearByWithAccoID _objPlaces)
+        {
+            DC_Message _msg = new DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (_objPlaces.GooglePlaceNearBy != null && _objPlaces.GooglePlaceNearBy.Count > 0)
+                    {
+                        //Get accomodation Details
+
+                        foreach (var item in _objPlaces.GooglePlaceNearBy)
+                        {
+                            //check duplicate
+                            bool isdupicate = context.Places.Where(p => p.Google_Place_Id == item.place_id).Count() > 0 ? true : false;
+                            var placeID = Guid.NewGuid();
+                            if (!isdupicate)
+                            {
+                                Place _newplace = new Place();
+                                _newplace.Place_Id = placeID;
+                                _newplace.Place_Category = ConvertListToString(item.types.ToList()).Replace('_', ' ');
+                                _newplace.Name = item.name;
+                                _newplace.Formatted_Address = item.vicinity;
+                                _newplace.Latitude = item.geometry.location.lat;
+                                _newplace.Longitude = item.geometry.location.lng;
+                                _newplace.Google_Place_Id = item.place_id;
+                                _newplace.Google_Rating = item.rating;
+                                _newplace.Google_Reference = item.reference;
+                                _newplace.Google_PlaceTypes = ConvertListToString(item.types.ToList());
+                                _newplace.Google_Icon = item.icon;
+                                _newplace.Google_FullObjext = Newtonsoft.Json.JsonConvert.SerializeObject(item);
+                                context.Places.Add(_newplace);
+                                context.SaveChanges();
+                            }
+                            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+                            string PlaceCategory = textInfo.ToTitleCase(_objPlaces.PlaceCategory);
+                            AddUpdateAccomodationNearByPlaces(_objPlaces.Accomodation_Id, PlaceCategory, _objPlaces.CreatedBy, placeID, item);
+                        }
+
+                    }
+                    _msg.StatusMessage = "Places has been added successfully";
+                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return _msg;
+
+        }
+
+        public Double GetDistance(Guid acco_id, DC_GooglePlaceNearBy _objnearbyplace)
+        {
+            Double _distance = 0.00;
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var result = context.Accommodations.Where(a => a.Accommodation_Id == acco_id).FirstOrDefault();
+                    if(result != null)
+                    {
+                        var sCoord = new GeoCoordinate(Convert.ToDouble(result.Latitude), Convert.ToDouble(result.Longitude));
+                        var eCoord = new GeoCoordinate(_objnearbyplace.geometry.location.lat, _objnearbyplace.geometry.location.lng);
+                        _distance = Math.Round((sCoord.GetDistanceTo(eCoord)/1000),2);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+           
+            return _distance;
+        }
+        private void AddUpdateAccomodationNearByPlaces(Guid accomodation_Id, string placeCategory,string CreatedUser, Guid placeID, DC_GooglePlaceNearBy item)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    //Check duplicate 
+                    var result = context.Accommodation_NearbyPlaces.Where(p => p.Accomodation_Id == accomodation_Id).Where(p => p.Place_Id == placeID).Where(p => p.PlaceCategory == placeCategory).FirstOrDefault();
+                    if (result == null)
+                    {
+                        Accommodation_NearbyPlaces _objnearbyplace = new Accommodation_NearbyPlaces();
+                        _objnearbyplace.Accommodation_NearbyPlace_Id = Guid.NewGuid();
+                        _objnearbyplace.Accomodation_Id = accomodation_Id;
+                        _objnearbyplace.PlaceName = item.name;
+                        _objnearbyplace.DistanceFromProperty = Convert.ToString(GetDistance(accomodation_Id, item));
+                        _objnearbyplace.PlaceCategory = placeCategory;
+                        _objnearbyplace.DistanceUnit = "Kilometers";
+                        _objnearbyplace.PlaceType = ConvertListToString(item.types.ToList()).Replace('_', ' ');
+
+                        _objnearbyplace.Create_Date = DateTime.Now;
+                        _objnearbyplace.Create_User = CreatedUser;
+                        _objnearbyplace.IsActive = true;
+                        _objnearbyplace.Place_Id = placeID;
+                        _objnearbyplace.Legacy_Htl_Id = result.Legacy_Htl_Id;
+                        context.Accommodation_NearbyPlaces.Add(_objnearbyplace);
+                    }
+                    else //Update their status isActive true
+                    {
+                        result.IsActive = true;
+                        result.Edit_Date = DateTime.Now;
+                        result.Edit_User = CreatedUser;
+                    }
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         #endregion
 
         #region Accomodation PaxOccupancy

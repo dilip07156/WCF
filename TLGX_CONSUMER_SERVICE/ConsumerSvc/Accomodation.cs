@@ -418,6 +418,14 @@ namespace ConsumerSvc
             }
         }
 
+        public DC_Message AddUpldatePlaces(DC_GooglePlaceNearByWithAccoID objPlaces)
+        {
+            using (BL_Accomodation obj = new BL_Accomodation())
+            {
+                return obj.AddUpldatePlaces(objPlaces);
+            }
+        }
+
         #endregion
 
         #region Accomodation Pax Occupancy

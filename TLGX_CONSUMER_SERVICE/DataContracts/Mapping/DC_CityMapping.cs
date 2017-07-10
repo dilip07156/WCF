@@ -35,6 +35,7 @@ namespace DataContracts.Mapping
         string _Remarks;
         string _StateCode;
         string _StateName;
+        string _StateNameWithCode;
 
         [DataMember]
         public string oldCityName { get; set; }
@@ -378,6 +379,20 @@ namespace DataContracts.Mapping
                 _MasterStateName = value;
             }
         }
+
+        [DataMember]
+        public string StateNameWithCode
+        {
+            get
+            {
+                return _StateNameWithCode;
+            }
+
+            set
+            {
+                _StateNameWithCode = value;
+            }
+        }
     }
 
     [DataContract]
@@ -398,6 +413,7 @@ namespace DataContracts.Mapping
         string _StatusExcept;
         string _ResultSet;
         bool _IsExact;
+        string _StateNameWithCode;
 
 
         [DataMember]
@@ -616,6 +632,20 @@ namespace DataContracts.Mapping
             set
             {
                 _IsExact = value;
+            }
+        }
+
+        [DataMember]
+        public string StateNameWithCode
+        {
+            get
+            {
+                return _StateNameWithCode;
+            }
+
+            set
+            {
+                _StateNameWithCode = value;
             }
         }
     }
