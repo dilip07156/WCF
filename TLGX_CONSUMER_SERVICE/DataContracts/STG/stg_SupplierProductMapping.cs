@@ -127,6 +127,16 @@ namespace DataContracts.STG
         [DataMember]
         public string Google_Place_Id { get; set; }
 
+        [DataMember]
+        public Nullable<System.Guid> Country_Id { get; set; }
+
+        [DataMember]
+        public Nullable<System.Guid> City_Id { get; set; }
+
+
+        [DataMember]
+        public Nullable<System.Guid> Supplier_Id { get; set; }
+
 
     }
 

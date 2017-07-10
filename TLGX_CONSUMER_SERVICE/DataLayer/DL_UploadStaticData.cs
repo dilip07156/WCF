@@ -1209,6 +1209,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     string mySupplier = lstobj[0].SupplierName;
+                    Guid? mySupplier_Id = lstobj[0].Supplier_Id;
 
                     if (!string.IsNullOrWhiteSpace(mySupplier))
                     {
@@ -1219,6 +1220,14 @@ namespace DataLayer
                         context.SaveChanges();
                         List<DataContracts.STG.DC_stg_SupplierProductMapping> dstobj = new List<DC_stg_SupplierProductMapping>();
                         dstobj = lstobj.GroupBy(a => new { a.CityCode, a.CityName, a.CountryCode, a.CountryName, a.StateCode, a.StateName, a.ProductId, a.ProductName, a.PostalCode }).Select(grp => grp.First()).ToList();
+                        
+                        var geo = (from g in context.m_CityMapping
+                                   join d in dstobj on new { g.Supplier_Id, g.CityName } equals new { d.Supplier_Id, d.CityName }
+                                   select new
+                                   {
+                                       g.City_Id, g.Country_Id, g.CityName, g.CountryName
+                                   }
+                                  ).Distinct().ToList();
 
                         foreach (DataContracts.STG.DC_stg_SupplierProductMapping obj in dstobj)
                         {
@@ -1257,6 +1266,9 @@ namespace DataLayer
                             objNew.UpdateType = obj.UpdateType;
                             objNew.ActionText = obj.ActionText;
                             objNew.StarRating = obj.StarRating;
+                            objNew.Country_Id = (geo.Where(s => s.CountryName == obj.CountryName).Select(s1 => s1.Country_Id).FirstOrDefault());
+                            objNew.City_Id = (geo.Where(s => s.CityName == obj.CityName).Select(s1 => s1.City_Id).FirstOrDefault());
+                            objNew.Supplier_Id = obj.Supplier_Id;
                             context.stg_SupplierProductMapping.Add(objNew);
                         }
                         context.SaveChanges();
@@ -1430,7 +1442,11 @@ namespace DataLayer
                                          Website = a.Website,
                                          Action = a.Action,
                                          ActionText = a.ActionText,
-                                         UpdateType = a.UpdateType
+                                         UpdateType = a.UpdateType,
+                                         Country_Id = a.Country_Id,
+                                         City_Id = a.City_Id,
+                                         Google_Place_Id = a.Google_Place_Id,
+                                         Supplier_Id = a.Supplier_Id
                                      }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 

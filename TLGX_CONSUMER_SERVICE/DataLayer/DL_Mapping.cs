@@ -699,11 +699,11 @@ namespace DataLayer
 
                     int total;
 
-                    total = prodMapSearch.Count();
+                    //total = prodMapSearch.Count();
 
-                    var skip = obj.PageSize * obj.PageNo;
+                    //var skip = obj.PageSize * obj.PageNo;
 
-                    var canPage = skip < total;
+                    //var canPage = skip < total;
 
                     var prodMapList = (from a in prodMapSearch
                                        select new DataContracts.Mapping.DC_Accomodation_ProductMapping
@@ -738,14 +738,13 @@ namespace DataLayer
                                            Create_User = a.Create_User,
                                            Edit_Date = a.Edit_Date,
                                            Edit_User = a.Edit_User,
-                                           IsActive = (a.IsActive ?? true),
-                                           TotalRecords = total,
+                                           IsActive = (a.IsActive ?? true),                                           
                                            ProductId = a.SupplierProductReference,
                                            Remarks = a.Remarks,
                                            MapId = a.MapId,
                                            StarRating = a.StarRating
 
-                                       }).Skip(skip).Take(obj.PageSize);
+                                       });//.Skip(skip).Take(obj.PageSize);
 
                     var result = prodMapList.ToList();
 

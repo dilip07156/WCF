@@ -217,6 +217,7 @@
           <Property Name="Edit_User" Type="varchar" MaxLength="50" />
           <Property Name="Edit_Date" Type="datetime" />
           <Property Name="IsActive" Type="bit" />
+          <Property Name="Place_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Accommodation_PaxOccupancy">
           <Key>
@@ -289,6 +290,8 @@
           <Property Name="TelephoneNumber_tx" Type="nvarchar" MaxLength="225" />
           <Property Name="StarRating" Type="nvarchar" MaxLength="255" />
           <Property Name="Google_Place_Id" Type="nvarchar" MaxLength="255" />
+          <Property Name="Country_Id" Type="uniqueidentifier" />
+          <Property Name="City_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Accommodation_RoomFacility">
           <Key>
@@ -855,6 +858,8 @@
           <Property Name="actionType" Type="varchar" MaxLength="10" />
           <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
           <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="ContinentCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="ContinentName" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="m_CountryMaster">
           <Key>
@@ -1241,6 +1246,8 @@
           <Property Name="ActionText" Type="nvarchar" MaxLength="255" />
           <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
           <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="ContinentCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="ContinentName" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="stg_SupplierHotelRoomMapping">
           <Key>
@@ -1320,6 +1327,9 @@
           <Property Name="TX_COUNTRYNAME" Type="nvarchar" MaxLength="255" />
           <Property Name="StarRating" Type="nvarchar" MaxLength="255" />
           <Property Name="Google_Place_Id" Type="nvarchar" MaxLength="255" />
+          <Property Name="Country_Id" Type="uniqueidentifier" />
+          <Property Name="City_Id" Type="uniqueidentifier" />
+          <Property Name="Supplier_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Supplier">
           <Key>
@@ -1806,6 +1816,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Place_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="Accommodation_PaxOccupancy">
           <Key>
@@ -2037,6 +2048,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="TelephoneNumber_tx" Type="String" MaxLength="225" FixedLength="false" Unicode="true" />
           <Property Name="StarRating" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Google_Place_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Country_Id" Type="Guid" />
+          <Property Name="City_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="m_CityMapping">
           <Key>
@@ -2084,6 +2097,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="actionType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ContinentCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ContinentName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_Activity_Master">
           <Key>
@@ -3046,6 +3061,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="ActionText" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ContinentCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ContinentName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="stg_SupplierHotelRoomMapping">
           <Key>
@@ -3125,6 +3142,9 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="TX_COUNTRYNAME" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="StarRating" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Google_Place_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Country_Id" Type="Guid" />
+          <Property Name="City_Id" Type="Guid" />
+          <Property Name="Supplier_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="m_keyword">
           <Key>
@@ -3265,6 +3285,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="Accommodation_NearbyPlaces">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_NearbyPlaces">
               <MappingFragment StoreEntitySet="Accommodation_NearbyPlaces">
+                <ScalarProperty Name="Place_Id" ColumnName="Place_Id" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
                 <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
@@ -3482,6 +3503,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="Accommodation_ProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_ProductMapping">
               <MappingFragment StoreEntitySet="Accommodation_ProductMapping">
+                <ScalarProperty Name="City_Id" ColumnName="City_Id" />
+                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
                 <ScalarProperty Name="Google_Place_Id" ColumnName="Google_Place_Id" />
                 <ScalarProperty Name="StarRating" ColumnName="StarRating" />
                 <ScalarProperty Name="TelephoneNumber_tx" ColumnName="TelephoneNumber_tx" />
@@ -3553,6 +3576,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="m_CountryMapping">
             <EntityTypeMapping TypeName="ConsumerModel.m_CountryMapping">
               <MappingFragment StoreEntitySet="m_CountryMapping">
+                <ScalarProperty Name="ContinentName" ColumnName="ContinentName" />
+                <ScalarProperty Name="ContinentCode" ColumnName="ContinentCode" />
                 <ScalarProperty Name="Longitude" ColumnName="Longitude" />
                 <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="actionType" ColumnName="actionType" />
@@ -4536,6 +4561,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="stg_SupplierCountryMapping">
             <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierCountryMapping">
               <MappingFragment StoreEntitySet="stg_SupplierCountryMapping">
+                <ScalarProperty Name="ContinentName" ColumnName="ContinentName" />
+                <ScalarProperty Name="ContinentCode" ColumnName="ContinentCode" />
                 <ScalarProperty Name="Longitude" ColumnName="Longitude" />
                 <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="ActionText" ColumnName="ActionText" />
@@ -4595,6 +4622,9 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="stg_SupplierProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierProductMapping">
               <MappingFragment StoreEntitySet="stg_SupplierProductMapping">
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="City_Id" ColumnName="City_Id" />
+                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
                 <ScalarProperty Name="Google_Place_Id" ColumnName="Google_Place_Id" />
                 <ScalarProperty Name="StarRating" ColumnName="StarRating" />
                 <ScalarProperty Name="TX_COUNTRYNAME" ColumnName="TX_COUNTRYNAME" />
