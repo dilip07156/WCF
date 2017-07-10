@@ -152,6 +152,114 @@ namespace DataLayer
             }
         }
 
+
+        public bool HotelMappingMatch(DataContracts.Masters.DC_Supplier obj)
+        {
+            bool ret = false;
+
+            if (obj != null)
+            {
+                string CurSupplierName = obj.Name;
+                Guid CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
+
+                DL_UploadStaticData staticdata = new DL_UploadStaticData();
+                List<DataContracts.STG.DC_stg_SupplierProductMapping> clsSTGHotel = new List<DataContracts.STG.DC_stg_SupplierProductMapping>();
+                List<DataContracts.STG.DC_stg_SupplierProductMapping> clsSTGHotelInsert = new List<DataContracts.STG.DC_stg_SupplierProductMapping>();
+                List<DC_Accomodation_ProductMapping> clsMappingHotel = new List<DC_Accomodation_ProductMapping>();
+
+                DataContracts.STG.DC_stg_SupplierProductMapping_RQ RQ = new DataContracts.STG.DC_stg_SupplierProductMapping_RQ();
+                RQ.SupplierName = CurSupplierName;
+                RQ.PageNo = 0;
+                RQ.PageSize = int.MaxValue;
+                clsSTGHotel = staticdata.GetSTGHotelData(RQ);
+
+                DC_Mapping_ProductSupplier_Search_RQ RQM = new DC_Mapping_ProductSupplier_Search_RQ();
+                if (CurSupplier_Id != Guid.Empty)
+                    RQM.SupplierName = CurSupplierName;
+                RQM.PageNo = 0;
+                RQM.PageSize = int.MaxValue;
+                RQM.CalledFromTLGX = "TLGX";
+                clsMappingHotel = GetMappingHotelData(RQM);
+
+                clsMappingHotel = clsMappingHotel.Select(c =>
+                {
+                    c.ProductName = (clsSTGHotel
+                    .Where(s => s.ProductId == c.SupplierProductReference)
+                    .Select(s1 => s1.ProductName)
+                    .FirstOrDefault()
+                    ) ?? c.ProductName;
+                    c.Edit_Date = DateTime.Now;
+                    c.Edit_User = "TLGX_DataHandler";
+                    return c;
+                }).ToList();
+
+                clsSTGHotelInsert = clsSTGHotel.Where(p => !clsMappingHotel.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
+                 && (
+                    (((p2.ProductName ?? string.Empty).ToString().Trim().ToUpper() == (p.ProductName ?? string.Empty).ToString().Trim().ToUpper()))
+                    && (((p2.PostCode ?? string.Empty).ToString().Trim().ToUpper() == (p.PostalCode ?? string.Empty).ToString().Trim().ToUpper()))
+                    && (((p2.StateName ?? string.Empty).ToString().Trim().ToUpper() == (p.StateName ?? string.Empty).ToString().Trim().ToUpper()))
+                    && (((p2.Country_Id ?? Guid.Empty) == (p.Country_Id ?? Guid.Empty)))
+                    && (((p2.City_Id ?? Guid.Empty) == (p.City_Id ?? Guid.Empty)))
+                ))).ToList();
+
+                clsSTGHotel.RemoveAll(p => clsSTGHotelInsert.Any(p2 => (p2.stg_AccoMapping_Id == p.stg_AccoMapping_Id)));
+
+                clsMappingHotel.RemoveAll(p => p.ProductName == p.oldProductName);
+
+                clsMappingHotel.InsertRange(clsMappingHotel.Count, clsSTGHotelInsert.Select
+                    (g => new DC_Accomodation_ProductMapping
+                    {
+                        Accommodation_ProductMapping_Id = Guid.NewGuid(),
+                        Accommodation_Id = null,
+                        SupplierProductReference = g.ProductId,
+                        ProductName = g.ProductName,
+                        ProductId = g.ProductId,
+
+                        Country_Id = g.Country_Id,
+                        City_Id = g.City_Id,
+                        CountryName = g.CountryName,
+                        CountryCode = g.CountryCode,
+                        CityCode = g.CityCode,
+                        CityName = g.CityName,
+                        StateCode = g.StateCode,
+                        StateName = g.StateName,
+
+                        Supplier_Id = CurSupplier_Id,
+                        SupplierName = g.SupplierName,
+                        Status = "UNMAPPED",
+                        Create_Date = DateTime.Now,
+                        Create_User = "TLGX_DataHandler",
+                        Edit_Date = null,
+                        Edit_User = null,
+                        MapId = null,
+                        Latitude = g.Latitude,
+                        Longitude = g.Longitude,
+                        Email = g.Email,
+                        Fax = g.Fax,
+                        Google_Place_Id = g.Google_Place_Id,
+                        PostCode = g.PostalCode,
+                        Street = (g.Address ?? (g.StreetNo + " " + g.StreetName)),
+                        Street2 = (g.Address == null ? g.Street2 : (g.StreetNo + " " + g.StreetName + " " + g.Street2)),
+                        Street3 = g.Street3,
+                        Street4 = g.Street4,
+                        StarRating = g.StarRating,
+                        SupplierId = g.SupplierId,
+                        TelephoneNumber = g.TelephoneNumber,
+                        Website = g.Website,
+                        Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
+
+
+                }));
+
+                if (clsMappingHotel.Count > 0)
+                {
+                    ret = UpdateAccomodationProductMapping(clsMappingHotel);
+                }
+
+            }
+            return ret;
+        }
+
         public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
         {
             List<DC_Accomodation_ProductMapping> CMS = obj.lstHotelMapping;
