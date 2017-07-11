@@ -370,22 +370,6 @@
     <None Include="log4net.config" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
-    <None Include="Service References\DHSVC\DataHandlerService.wsdl" />
-    <None Include="Service References\DHSVC\DataHandlerService.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\DHSVC\DataHandlerService1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\DHSVC\DataHandlerService2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\DHSVC\DataHandlerService3.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\DHSVC\DataHandlerService4.xsd">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ConsumerModel.Context.tt">
@@ -398,8 +382,19 @@
       <DependentUpon>ConsumerModel.edmx</DependentUpon>
       <LastGenOutput>ConsumerModel.cs</LastGenOutput>
     </Content>
-    <None Include="Service References\DHSVC\DataLayer.DHSVC.DC_Status.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
+    <None Include="Service References\DHSVC\DataHandlerService1.disco" />
+    <None Include="Service References\DHSVC\DataHandlerService1.wsdl" />
+    <None Include="Service References\DHSVC\DataHandlerService5.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DHSVC\DataHandlerService51.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DHSVC\DataHandlerService52.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DHSVC\DataHandlerService53.xsd">
+      <SubType>Designer</SubType>
     </None>
     <None Include="Service References\DHSVC\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
@@ -407,7 +402,6 @@
     </None>
     <None Include="Service References\DHSVC\configuration.svcinfo" />
     <None Include="Service References\DHSVC\configuration91.svcinfo" />
-    <None Include="Service References\DHSVC\DataHandlerService.disco" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
