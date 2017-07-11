@@ -1484,6 +1484,7 @@ namespace DataLayer
                 file.PROCESS_USER = obj.PROCESS_USER;
                 file.Entity = obj.Entity;
                 file.STATUS = obj.STATUS;
+                file.Supplier = obj.Supplier;
 
                 object result = null;
                 DHSVCProxy.PostData(ProxyFor.DataHandler, System.Configuration.ConfigurationManager.AppSettings["Data_Handler_Process_File"], file, file.GetType(), typeof(void), out result);
