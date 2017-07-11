@@ -3674,7 +3674,7 @@ namespace DataLayer
                         myCA.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
                         context.m_CityArea.Add(myCA);
                     }
-                    else if (obj.Option.ToUpper() == "Update")
+                    else if (obj.Option.ToUpper() == "UPDATE")
                     {
                         var xD = (from myCa in context.m_CityArea
                                   where myCa.CityArea_Id == obj.CityArea_Id
