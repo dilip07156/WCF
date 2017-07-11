@@ -516,9 +516,23 @@ namespace DataLayer
 
                     if (Status.Trim().ToUpper() != "ALL")
                     {
-                        prodMapSearch = from a in prodMapSearch
-                                        where (a.Status ?? "UNMAPPED") == Status
-                                        select a;
+                        if(Status.Trim().IndexOf(',') >= 0)
+                        {
+                            string[] brkStatus = Status.Split(',');
+
+                            foreach(string stat in brkStatus)
+                            {
+                                prodMapSearch = from a in prodMapSearch
+                                                where (a.Status ?? "UNMAPPED") == stat.Trim().ToUpper()
+                                                select a;
+                            }
+                        }
+                        else
+                        {
+                            prodMapSearch = from a in prodMapSearch
+                                            where (a.Status ?? "UNMAPPED") == Status.Trim().ToUpper()
+                                            select a;
+                        }
                     }
 
                     int total;
