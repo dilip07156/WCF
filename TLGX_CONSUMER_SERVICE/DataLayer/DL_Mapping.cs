@@ -515,16 +515,16 @@ namespace DataLayer
                                         select a;
                     }
 
-                    if (obj.Status.Trim().ToUpper() != null)
+                    if (obj.Status != null)
                     {
                         prodMapSearch = from a in prodMapSearch
-                                        where (a.Status ?? "UNMAPPED") == obj.Status.Trim().ToUpper()
+                                        where (a.Status.Trim().ToUpper() ?? "UNMAPPED") == obj.Status.Trim().ToUpper()
                                         select a;
                     }
-                    if (obj.StatusExcept.Trim().ToUpper() != null)
+                    if (obj.StatusExcept != null)
                     {
                         prodMapSearch = from a in prodMapSearch
-                                        where (a.Status ?? "UNMAPPED") != obj.StatusExcept
+                                        where (a.Status.Trim().ToUpper() ?? "UNMAPPED") != obj.StatusExcept.Trim().ToUpper()
                                         select a;
                     }
 
