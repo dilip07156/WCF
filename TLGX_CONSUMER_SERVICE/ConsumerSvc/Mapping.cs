@@ -30,11 +30,12 @@ namespace ConsumerSvc
                 return objBL.GetAccomodationProductMappingById(Accommodation_ProductMapping_Id);
             }
         }
-        public IList<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetAccomodationProductMapping(string PageNo, string PageSize, string Accomodation_Id, string Status)
+        //public IList<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetAccomodationProductMapping(string PageNo, string PageSize, string Accomodation_Id, string Status)
+        public IList<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetAccomodationProductMapping(DataContracts.Mapping.DC_Mapping_ProductSupplier_Search_RQ obj)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
-                return objBL.GetAccomodationProductMapping(PageNo, PageSize, Accomodation_Id, Status);
+                return objBL.GetAccomodationProductMapping(obj);
             }
         }
 

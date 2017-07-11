@@ -49,23 +49,24 @@ namespace BusinessLayer
 
         }
 
-        public List<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetAccomodationProductMapping(string PageNo, string PageSize, string Accomodation_Id, string Status)
+        //public List<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetAccomodationProductMapping(string PageNo, string PageSize, string Accomodation_Id, string Status)
+        public IList<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetAccomodationProductMapping(DataContracts.Mapping.DC_Mapping_ProductSupplier_Search_RQ obj)
         {
             int iPageNo;
             int iPageSize;
             Guid gAccomodation_Id;
 
-            if (!int.TryParse(PageNo, out iPageNo) || !int.TryParse(PageSize, out iPageSize) || !Guid.TryParse(Accomodation_Id, out gAccomodation_Id))
-            {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
-            }
-            else
-            {
+            //if (!int.TryParse(PageNo, out iPageNo) || !int.TryParse(PageSize, out iPageSize) || !Guid.TryParse(Accomodation_Id, out gAccomodation_Id))
+            //{
+            //    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            //}
+            //else
+            //{
                 using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
                 {
-                    return objBL.GetAccomodationProductMapping(iPageNo, iPageSize, gAccomodation_Id, Status);
+                    return objBL.GetAccomodationProductMapping(obj);
                 }
-            }
+            //}
 
         }
 
