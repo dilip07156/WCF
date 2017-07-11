@@ -1486,10 +1486,9 @@ namespace DataLayer
                 file.STATUS = obj.STATUS;
 
                 object result = null;
-                DHSVCProxy.PostData(ProxyFor.DataHandler, System.Configuration.ConfigurationManager.AppSettings["Data_Handler_Process_File"], file, file.GetType(), typeof(DHSVC.DC_Status), out result);
-                DHSVC.DC_Status status = result as DHSVC.DC_Status;
+                DHSVCProxy.PostData(ProxyFor.DataHandler, System.Configuration.ConfigurationManager.AppSettings["Data_Handler_Process_File"], file, file.GetType(), typeof(void), out result);
 
-                return new DC_Message { StatusMessage = status.Message };
+                return new DC_Message { StatusMessage = "File has been processed." };
             }
             catch (Exception e)
             {
