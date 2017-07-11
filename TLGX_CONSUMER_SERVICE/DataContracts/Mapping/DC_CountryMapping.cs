@@ -447,6 +447,9 @@ namespace DataContracts.Mapping
         [DataMember]
         public List<DC_Accomodation_ProductMapping> lstHotelMapping { get; set; }
 
+        [DataMember]
+        public DataContracts.Masters.DC_Supplier SupplierDetail { get; set; }
+
 
         [DataMember]
         public List<DataContracts.UploadStaticData.DC_SupplierImportAttributeValues> lstConfigs { get; set; }
