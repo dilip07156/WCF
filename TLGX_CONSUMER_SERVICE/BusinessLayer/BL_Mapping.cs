@@ -92,6 +92,14 @@ namespace BusinessLayer
                 return objBL.UpdateHotelMappingStatus(obj);
             }
         }
+
+        public bool HotelMappingMatch(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.HotelMappingMatch(obj);
+            }
+        }
         public List<DC_Accomodation_ProductMapping> GetMappingHotelData(DC_Mapping_ProductSupplier_Search_RQ obj)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())

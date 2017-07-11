@@ -887,7 +887,8 @@ namespace DataLayer
                         foreach (DataContracts.STG.DC_stg_SupplierCountryMapping obj in lstobj)
                         {
                             var search = (from a in context.stg_SupplierCountryMapping
-                                          where ((a.CountryCode != null && a.CountryCode.Trim().ToUpper() == obj.CountryCode.Trim().ToUpper()) || a.CountryCode == null)
+                                          where a.SupplierName.Trim().ToUpper() == mySupplier.Trim().ToUpper()
+                                          && ((a.CountryCode != null && a.CountryCode.Trim().ToUpper() == obj.CountryCode.Trim().ToUpper()) || a.CountryCode == null)
                                           && a.CountryName.Trim().ToUpper() == obj.CountryName.Trim().ToUpper()
                                           select a).FirstOrDefault();
                             if (search == null)
@@ -1220,12 +1221,16 @@ namespace DataLayer
                         context.SaveChanges();
                         List<DataContracts.STG.DC_stg_SupplierProductMapping> dstobj = new List<DC_stg_SupplierProductMapping>();
                         dstobj = lstobj.GroupBy(a => new { a.CityCode, a.CityName, a.CountryCode, a.CountryName, a.StateCode, a.StateName, a.ProductId, a.ProductName, a.PostalCode }).Select(grp => grp.First()).ToList();
-                        
+
                         var geo = (from g in context.m_CityMapping
-                                   join d in dstobj on new { g.Supplier_Id, g.CityName } equals new { d.Supplier_Id, d.CityName }
+                                   //join d in dstobj on new { g.Supplier_Id, g.CityName } equals new { d.Supplier_Id, d.CityName }
+                                   where g.Supplier_Id == mySupplier_Id
                                    select new
                                    {
-                                       g.City_Id, g.Country_Id, g.CityName, g.CountryName
+                                       g.City_Id,//City_Id = Guid.Parse(g.City_Id.ToString()),
+                                       g.CityName, //Name = g.CityName,
+                                       g.Country_Id,//Country_Id = Guid.Parse(g.Country_Id.ToString()),
+                                       g.CountryName,//CountryName = g.CountryName
                                    }
                                   ).Distinct().ToList();
 

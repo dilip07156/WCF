@@ -182,7 +182,9 @@ namespace DataLayer
                                         //    where am.Accommodation_Id == a.Accommodation_Id
                                         //    select new { am.Accommodation_ProductMapping_Id }
                                         //).Count(),
-                                        HotelNameWithCode = a.HotelName + " / " + a.CompanyHotelID.ToString()
+                                        HotelNameWithCode = a.HotelName + " / " + a.CompanyHotelID.ToString(),
+                                        Country_Id = a.Country_Id,
+                                        City_Id = a.City_Id
                                     }).Skip(skip).Take(RQ.PageSize).ToList();
 
                     if (!string.IsNullOrWhiteSpace(RQ.Searchfrom) && RQ.Searchfrom.ToLower().Trim() != "hotalsearch")
@@ -357,7 +359,9 @@ namespace DataLayer
                                     TotalRooms = a.TotalRooms,
                                     Town = a.Town,
                                     YearBuilt = a.YearBuilt,
-                                    Google_Place_Id = a.Google_Place_Id
+                                    Google_Place_Id = a.Google_Place_Id,
+                                    Country_Id = a.Country_Id,
+                                    City_Id = a.City_Id
 
                                     //,
                                     //Accommodation_Descriptions = null,
@@ -399,6 +403,8 @@ namespace DataLayer
                                    City_ISO = a.City_ISO,
                                    CompanyHotelID = a.CompanyHotelID,
                                    Country = a.country,
+                                   Country_Id = a.Country_Id,
+                                   City_Id = a.City_Id,
                                    Country_ISO = a.Country_ISO,
                                    HotelName = a.HotelName,
                                    HotelRating = a.HotelRating,
@@ -456,6 +462,8 @@ namespace DataLayer
                                    CheckOutTime = a.CheckOutTime,
                                    City = a.city,
                                    City_ISO = a.City_ISO,
+                                   Country_Id = a.Country_Id,
+                                   City_Id = a.City_Id,
                                    CompanyHotelID = a.CompanyHotelID,
                                    CompanyName = a.CompanyName,
                                    CompanyRating = a.CompanyRating,
@@ -861,6 +869,8 @@ namespace DataLayer
                                    CompanyRecommended = (a.CompanyRecommended ?? false),
                                    Country = a.country,
                                    Country_ISO = a.Country_ISO,
+                                   Country_Id = a.Country_Id,
+                                   City_Id = a.City_Id,
                                    Create_Date = a.Create_Date,
                                    Create_User = a.Create_User,
                                    DisplayName = a.DisplayName,
@@ -1008,7 +1018,8 @@ namespace DataLayer
                         search.PostalCode = AccomodationDetails.PostalCode;
                         search.ProductCategory = AccomodationDetails.ProductCategory;
                         search.ProductCategorySubType = AccomodationDetails.ProductCategorySubType;
-
+                        search.Country_Id = AccomodationDetails.Country_Id;
+                        search.City_Id = AccomodationDetails.City_Id;
                         //Check Ratting changes
                         if (search.HotelRating != AccomodationDetails.HotelRating)
                             search.RatingDate = DateTime.Today.Date;
@@ -1116,6 +1127,9 @@ namespace DataLayer
                     newAcco.Town = AccomodationDetails.Town;
                     newAcco.YearBuilt = AccomodationDetails.YearBuilt;
                     newAcco.Google_Place_Id = AccomodationDetails.Google_Place_Id;
+                    newAcco.Country_Id = AccomodationDetails.Country_Id;
+                    newAcco.City_Id = AccomodationDetails.City_Id;
+
                     context.Accommodations.Add(newAcco);
 
                     context.SaveChanges();

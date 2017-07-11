@@ -85,6 +85,13 @@ namespace DataContracts
         List<Masters.DC_DynamicAttributes> _Accomodation_DynamicAttributes;
         List<DC_Accomodation_ClassificationAttributes> _Accomodation_ClassificationAttributes;
 
+
+        [DataMember]
+        public Nullable<System.Guid> Country_Id { get; set; }
+
+        [DataMember]
+        public Nullable<System.Guid> City_Id { get; set; }
+
         [DataMember]
         public Guid Accommodation_Id
         {
@@ -4842,6 +4849,13 @@ namespace DataContracts
         int? _MapCount;
         string _HotelNameWithCode;
         string _starrating;
+
+
+        [DataMember]
+        public Nullable<System.Guid> Country_Id { get; set; }
+
+        [DataMember]
+        public Nullable<System.Guid> City_Id { get; set; }
 
         [DataMember]
         public string Google_Place_Id
