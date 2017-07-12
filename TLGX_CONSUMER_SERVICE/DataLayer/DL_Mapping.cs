@@ -2516,7 +2516,11 @@ namespace DataLayer
                         obj.RuleName = item.RuleName;
                         obj.Description = item.Description;
                         obj.Internal_Flag = item.flag;
-                        obj.LastupdateDate = Convert.ToString(item.LupdateDate);
+                        if (item.LupdateDate != null)
+                        {
+                            obj.LastupdateDate = item.LupdateDate.Value.ToString("dd/MM/yyyy");
+                        }
+                        else { obj.LastupdateDate = ""; }
                         obj.LastupdatedBy = item.LupdateBy;
                         objLst.Add(obj);
                     }
@@ -2562,18 +2566,30 @@ namespace DataLayer
                         obj.Hotelname = item.HotelName;
                         obj.Companymarket = item.market;
                         obj.Status = item.status;
-                        obj.Validfrom = Convert.ToString(item.fromd);
-                        obj.Validto = Convert.ToString(item.tod);
+
+                        if (item.fromd != null) {
+                            obj.Validfrom = item.fromd.Value.ToString("dd/MM/yyyy");
+                        }
+                        else { obj.Validfrom = ""; }
+                        if (item.tod != null) { 
+                            obj.Validto = item.tod.Value.ToString("dd/MM/yyyy");
+                        }
+                        else { obj.Validto = ""; }
+                        if (item.LupdateDate != null) { 
+                            obj.LastupdateDate = item.LupdateDate.Value.ToString("dd/MM/yyyy");
+                        }
+                        else { obj.LastupdateDate = ""; }   
+                        //obj.Validto = item.tod.Value.ToString("dd/MM/yyyy") ?? "";
+                        //obj.LastupdateDate = item.LupdateDate.Value.ToString("dd/MM/yyyy") ?? "";
                         obj.Reason = item.reason;
                         // obj.Internal_Flag = item.flag;
-                        obj.LastupdateDate = Convert.ToString(item.LupdateDate);
                         obj.LastupdatedBy = item.LupdateBy;
                         objLst.Add(obj);
                     }
                 }
 
             }
-            catch
+            catch( Exception ex)
             {
 
             }
@@ -2611,10 +2627,25 @@ namespace DataLayer
                         obj.Hotelname = item.HotelName;
                         obj.Hotelupdate = item.HotelUpdate;
                         obj.Descriptionsource = item.source;
-                        obj.Validfrom = Convert.ToString(item.fromd);
-                        obj.Validto = Convert.ToString(item.tod);
+                        if (item.fromd != null)
+                        {
+                            obj.Validfrom = item.fromd.Value.ToString("dd/MM/yyyy");
+                        }
+                        else { obj.Validfrom = ""; }
+                        if (item.tod != null)
+                        {
+                            obj.Validto = item.tod.Value.ToString("dd/MM/yyyy");
+                        }
+                        else { obj.Validto = ""; }
+                        if (item.LupdateDate != null)
+                        {
+                            obj.LastupdateDate = item.LupdateDate.Value.ToString("dd/MM/yyyy");
+                        }
+                        else { obj.LastupdateDate = ""; }
+                        // obj.Validfrom = Convert.ToString(item.fromd);
+                        // obj.Validto = Convert.ToString(item.tod);
                         obj.Internal_Flag = item.flag;
-                        obj.LastupdateDate = Convert.ToString(item.LupdateDate);
+                       // obj.LastupdateDate = Convert.ToString(item.LupdateDate);
                         obj.LastupdatedBy = item.LupdateBy;
                         objLst.Add(obj);
                     }
