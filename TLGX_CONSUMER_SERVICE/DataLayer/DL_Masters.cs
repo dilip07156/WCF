@@ -936,7 +936,7 @@ namespace DataLayer
                     var search = context.m_CityMaster.Find(param.City_Id);
                     if (search != null)
                     {
-                        search.CountryName = param.CountryName;
+                        //search.CountryName = param.CountryName; //Commented, because inserting null value from city Manager.
                         //search.Code = param.Code;
                         search.Country_Id = param.Country_Id;
                         search.Edit_Date = param.Edit_Date;
@@ -945,8 +945,8 @@ namespace DataLayer
                         search.Name = param.Name;
                         search.StateCode = param.StateCode;
                         search.StateName = param.StateName;
-                        search.State_Id = param.State_Id;
-                        search.Status = param.Status;
+                        //search.State_Id = param.State_Id;
+                        //search.Status = param.Status;
 
                         context.SaveChanges();
                     }
