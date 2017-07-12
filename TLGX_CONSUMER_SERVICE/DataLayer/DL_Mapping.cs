@@ -2037,110 +2037,113 @@ namespace DataLayer
 
             if (obj != null)
             {
-                string CurSupplierName = obj.Name;
-                Guid CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
+               
+                    string CurSupplierName = obj.Name;
+                    Guid CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
 
-                DL_UploadStaticData staticdata = new DL_UploadStaticData();
-                List<DataContracts.STG.DC_stg_SupplierCityMapping> clsSTGCity = new List<DataContracts.STG.DC_stg_SupplierCityMapping>();
-                List<DataContracts.STG.DC_stg_SupplierCityMapping> clsSTGCityInsert = new List<DataContracts.STG.DC_stg_SupplierCityMapping>();
-                List<DC_CityMapping> clsMappingCity = new List<DC_CityMapping>();
+                    DL_UploadStaticData staticdata = new DL_UploadStaticData();
+                    List<DataContracts.STG.DC_stg_SupplierCityMapping> clsSTGCity = new List<DataContracts.STG.DC_stg_SupplierCityMapping>();
+                    List<DataContracts.STG.DC_stg_SupplierCityMapping> clsSTGCityInsert = new List<DataContracts.STG.DC_stg_SupplierCityMapping>();
+                    List<DC_CityMapping> clsMappingCity = new List<DC_CityMapping>();
 
-                DataContracts.STG.DC_stg_SupplierCityMapping_RQ RQ = new DataContracts.STG.DC_stg_SupplierCityMapping_RQ();
-                RQ.SupplierName = CurSupplierName;
-                RQ.PageNo = 0;
-                RQ.PageSize = int.MaxValue;
-                clsSTGCity = staticdata.GetSTGCityData(RQ);
+                    DataContracts.STG.DC_stg_SupplierCityMapping_RQ RQ = new DataContracts.STG.DC_stg_SupplierCityMapping_RQ();
+                    RQ.SupplierName = CurSupplierName;
+                    RQ.PageNo = 0;
+                    RQ.PageSize = int.MaxValue;
+                    clsSTGCity = staticdata.GetSTGCityData(RQ);
 
-                DC_CityMapping_RQ RQCity = new DC_CityMapping_RQ();
-                if (CurSupplier_Id != Guid.Empty)
-                    RQCity.Supplier_Id = CurSupplier_Id;
-                RQCity.PageNo = 0;
-                RQCity.PageSize = int.MaxValue;
-                RQCity.CalledFromTLGX = "TLGX";
-                //RQ.Status = "ALL";
-                clsMappingCity = GetCityMapping(RQCity);
+                    DC_CityMapping_RQ RQCity = new DC_CityMapping_RQ();
+                    if (CurSupplier_Id != Guid.Empty)
+                        RQCity.Supplier_Id = CurSupplier_Id;
+                    RQCity.PageNo = 0;
+                    RQCity.PageSize = int.MaxValue;
+                    RQCity.CalledFromTLGX = "TLGX";
+                    //RQ.Status = "ALL";
+                    clsMappingCity = GetCityMapping(RQCity);
 
-                clsSTGCityInsert = clsSTGCity.Where(p => !clsMappingCity.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
-                && (
-                    (((p2.StateName ?? string.Empty).ToString().Trim().ToUpper() == (p.StateName ?? string.Empty).ToString().Trim().ToUpper()))
-                    && (((p2.CountryCode ?? string.Empty).ToString().Trim().ToUpper() == (p.CountryCode ?? string.Empty).ToString().Trim().ToUpper()))
-                    && (((p2.CountryName ?? string.Empty).ToString().Trim().ToUpper() == (p.CountryName ?? string.Empty).ToString().Trim().ToUpper()))
-                    && (((p2.CityName ?? string.Empty).ToString().Trim().ToUpper() == (p.CityName ?? string.Empty).ToString().Trim().ToUpper()))
-                ))).ToList();
+                    clsSTGCityInsert = clsSTGCity.Where(p => !clsMappingCity.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
+                    && (
+                        (((p2.StateName ?? string.Empty).ToString().Trim().ToUpper() == (p.StateName ?? string.Empty).ToString().Trim().ToUpper()))
+                        && (((p2.CountryCode ?? string.Empty).ToString().Trim().ToUpper() == (p.CountryCode ?? string.Empty).ToString().Trim().ToUpper()))
+                        && (((p2.CountryName ?? string.Empty).ToString().Trim().ToUpper() == (p.CountryName ?? string.Empty).ToString().Trim().ToUpper()))
+                        && (((p2.CityName ?? string.Empty).ToString().Trim().ToUpper() == (p.CityName ?? string.Empty).ToString().Trim().ToUpper()))
+                    ))).ToList();
 
-                #region "Commented Code"
-                //(p.CityCode != null && p.CityName != null && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper() && p2.CityCode == p.CityCode) 
-                //|| (p.CityCode == null && p.CityName != null && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper())
-                //|| (p.CityCode != null && p.CityName == null && p2.CityCode == p.CityCode)
+                    #region "Commented Code"
+                    //(p.CityCode != null && p.CityName != null && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper() && p2.CityCode == p.CityCode) 
+                    //|| (p.CityCode == null && p.CityName != null && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper())
+                    //|| (p.CityCode != null && p.CityName == null && p2.CityCode == p.CityCode)
 
-                //&& (
-                //    (p.CityCode != null && p.CountryCode == null && p2.CityCode == p.CityCode)
-                //    || (p.CityCode != null && p.CountryCode != null && p2.CountryCode == p.CountryCode && p2.CityCode == p.CityCode)
-                //    || (p.CityCode == null && p.CountryCode == null && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper())
-                //    || (p.CityCode == null && p.CountryCode != null && p2.CountryCode == p.CountryCode && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper())
+                    //&& (
+                    //    (p.CityCode != null && p.CountryCode == null && p2.CityCode == p.CityCode)
+                    //    || (p.CityCode != null && p.CountryCode != null && p2.CountryCode == p.CountryCode && p2.CityCode == p.CityCode)
+                    //    || (p.CityCode == null && p.CountryCode == null && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper())
+                    //    || (p.CityCode == null && p.CountryCode != null && p2.CountryCode == p.CountryCode && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper())
 
-                //    || (p.CityCode != null && p.CountryCode == null && p.CountryName == null && p2.CityCode == p.CityCode)
-                //    || (p.CityCode != null && p.CountryCode == null && p.CountryName != null && p2.CountryName == p.CountryName && p2.CityCode == p.CityCode)
-                //    || (p.CityCode == null && p.CountryCode == null && p.CountryName == null && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper())
-                //    || (p.CityCode == null && p.CountryCode == null && p.CountryName != null && p2.CountryName.ToString().Trim().ToUpper() == p.CountryName.ToString().Trim().ToUpper() && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper())
+                    //    || (p.CityCode != null && p.CountryCode == null && p.CountryName == null && p2.CityCode == p.CityCode)
+                    //    || (p.CityCode != null && p.CountryCode == null && p.CountryName != null && p2.CountryName == p.CountryName && p2.CityCode == p.CityCode)
+                    //    || (p.CityCode == null && p.CountryCode == null && p.CountryName == null && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper())
+                    //    || (p.CityCode == null && p.CountryCode == null && p.CountryName != null && p2.CountryName.ToString().Trim().ToUpper() == p.CountryName.ToString().Trim().ToUpper() && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper())
 
-                //    || (p.CityCode != null && p.CountryCode != null && p.CountryName == null && p2.CountryCode == p.CountryCode && p2.CityCode == p.CityCode)
-                //    || (p.CityCode != null && p.CountryCode != null && p.CountryName != null && p2.CountryCode == p.CountryCode && p2.CountryName == p.CountryName && p2.CityCode == p.CityCode)
-                //    || (p.CityCode == null && p.CountryCode != null && p.CountryName == null && p2.CountryCode == p.CountryCode && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper())
-                //    || (p.CityCode == null && p.CountryCode != null && p.CountryName != null && p2.CountryCode == p.CountryCode && p2.CountryName.ToString().Trim().ToUpper() == p.CountryName.ToString().Trim().ToUpper() && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper())
+                    //    || (p.CityCode != null && p.CountryCode != null && p.CountryName == null && p2.CountryCode == p.CountryCode && p2.CityCode == p.CityCode)
+                    //    || (p.CityCode != null && p.CountryCode != null && p.CountryName != null && p2.CountryCode == p.CountryCode && p2.CountryName == p.CountryName && p2.CityCode == p.CityCode)
+                    //    || (p.CityCode == null && p.CountryCode != null && p.CountryName == null && p2.CountryCode == p.CountryCode && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper())
+                    //    || (p.CityCode == null && p.CountryCode != null && p.CountryName != null && p2.CountryCode == p.CountryCode && p2.CountryName.ToString().Trim().ToUpper() == p.CountryName.ToString().Trim().ToUpper() && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper())
 
-                //   ))).ToList();
+                    //   ))).ToList();
 
-                #endregion
+                    #endregion
 
-                clsSTGCity.RemoveAll(p => clsSTGCityInsert.Any(p2 => (p2.stg_City_Id == p.stg_City_Id)));
+                    clsSTGCity.RemoveAll(p => clsSTGCityInsert.Any(p2 => (p2.stg_City_Id == p.stg_City_Id)));
 
-                clsMappingCity = clsMappingCity.Select(c =>
-                {
-                    c.CityName = (clsSTGCity
-                    .Where(s => s.CityCode == c.CityCode)
-                    .Select(s1 => s1.CityName)
-                    .FirstOrDefault()
-                    );
-                    c.Edit_Date = DateTime.Now;
-                    c.Edit_User = "TLGX_DataHandler";
-                    return c;
-                }).ToList();
-
-                //clsMappingCity = clsMappingCity.Where(a => a.oldCityName != a.CityName).ToList();
-                clsMappingCity.RemoveAll(p => p.CityName == p.oldCityName);
-
-
-                clsMappingCity.InsertRange(clsMappingCity.Count, clsSTGCityInsert.Select
-                    (g => new DC_CityMapping
+                    clsMappingCity = clsMappingCity.Select(c =>
                     {
-                        CityMapping_Id = Guid.NewGuid(),
-                        City_Id = null,
-                        CityCode = g.CityCode,
-                        CityName = g.CityName,
-                        Country_Id = null,
-                        Supplier_Id = CurSupplier_Id,
-                        SupplierName = g.SupplierName,
-                        CountryName = g.CountryName,
-                        CountryCode = g.CountryCode,
-                        Status = "UNMAPPED",
-                        Create_Date = DateTime.Now,
-                        Create_User = "TLGX_DataHandler",
-                        Edit_Date = null,
-                        Edit_User = null,
-                        MapID = null,
-                        Latitude = g.Latitude,
-                        Longitude = g.Longitude,
-                        Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
-                }));
+                        c.CityName = (clsSTGCity
+                        .Where(s => s.CityCode == c.CityCode)
+                        .Select(s1 => s1.CityName)
+                        .FirstOrDefault()
+                        );
+                        c.Edit_Date = DateTime.Now;
+                        c.Edit_User = "TLGX_DataHandler";
+                        return c;
+                    }).ToList();
 
-                if (clsMappingCity.Count > 0)
-                {
-                    ret = UpdateCityMapping(clsMappingCity);
+                    //clsMappingCity = clsMappingCity.Where(a => a.oldCityName != a.CityName).ToList();
+                    clsMappingCity.RemoveAll(p => p.CityName == p.oldCityName);
+
+
+                    clsMappingCity.InsertRange(clsMappingCity.Count, clsSTGCityInsert.Select
+                        (g => new DC_CityMapping
+                        {
+                            CityMapping_Id = Guid.NewGuid(),
+                            City_Id = null,
+                            CityCode = g.CityCode,
+                            CityName = g.CityName,
+                            Country_Id = null,
+                            Supplier_Id = CurSupplier_Id,
+                            SupplierName = g.SupplierName,
+                            CountryName = g.CountryName,
+                            CountryCode = g.CountryCode,
+                            Status = "UNMAPPED",
+                            Create_Date = DateTime.Now,
+                            Create_User = "TLGX_DataHandler",
+                            Edit_Date = null,
+                            Edit_User = null,
+                            MapID = null,
+                            Latitude = g.Latitude,
+                            Longitude = g.Longitude,
+                            oldCityName = g.CityName,
+                            Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
+
+                    }));
+
+                    if (clsMappingCity.Count > 0)
+                    {
+                        ret = UpdateCityMapping(clsMappingCity);
+                    }
+                    else
+                        ret = true;
                 }
-                else
-                    ret = true;
-            }
 
             return ret;
         }
