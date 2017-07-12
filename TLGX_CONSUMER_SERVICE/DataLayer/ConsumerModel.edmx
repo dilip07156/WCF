@@ -943,6 +943,7 @@
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="Sequence" Type="int" />
+          <Property Name="NoOfHits" Type="int" />
         </EntityType>
         <EntityType Name="m_masterattribute">
           <Key>
@@ -1247,6 +1248,8 @@
           <Property Name="ActionText" Type="nvarchar" MaxLength="255" />
           <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
           <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="Country_Id" Type="uniqueidentifier" />
+          <Property Name="Supplier_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="stg_SupplierCountryMapping">
           <Key>
@@ -3066,6 +3069,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="ActionText" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Country_Id" Type="Guid" />
+          <Property Name="Supplier_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="stg_SupplierCountryMapping">
           <Key>
@@ -3198,6 +3203,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Sequence" Type="Int32" />
+          <Property Name="NoOfHits" Type="Int32" />
         </EntityType>
         <EntityType Name="Place">
           <Key>
@@ -4580,6 +4586,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="stg_SupplierCityMapping">
             <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierCityMapping">
               <MappingFragment StoreEntitySet="stg_SupplierCityMapping">
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
                 <ScalarProperty Name="Longitude" ColumnName="Longitude" />
                 <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="ActionText" ColumnName="ActionText" />
@@ -4725,6 +4733,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="m_keyword_alias">
             <EntityTypeMapping TypeName="ConsumerModel.m_keyword_alias">
               <MappingFragment StoreEntitySet="m_keyword_alias">
+                <ScalarProperty Name="NoOfHits" ColumnName="NoOfHits" />
                 <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />

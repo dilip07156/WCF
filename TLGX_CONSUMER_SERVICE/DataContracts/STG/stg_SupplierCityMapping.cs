@@ -70,6 +70,12 @@ namespace DataContracts.STG
 
         [DataMember]
         public string Longitude { get; set; }
+
+        [DataMember]
+        public Nullable<System.Guid> Country_Id { get; set; }
+
+        [DataMember]
+        public Nullable<System.Guid> Supplier_Id { get; set; }
     }
 
     [DataContract]

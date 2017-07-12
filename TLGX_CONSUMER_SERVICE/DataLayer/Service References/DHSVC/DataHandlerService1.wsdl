@@ -6,7 +6,6 @@
       <xsd:import schemaLocation="http://10.21.32.196:8002/DataHandlerService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import schemaLocation="http://10.21.32.196:8002/DataHandlerService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/TLGX_DataHandler_WcfService.DataContracts" />
       <xsd:import schemaLocation="http://10.21.32.196:8002/DataHandlerService.svc?xsd=xsd3" />
-      <xsd:import schemaLocation="http://10.21.32.196:8002/DataHandlerService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System.Net" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IDataHandlerService_StaticFileUploadProcessFile_InputMessage">

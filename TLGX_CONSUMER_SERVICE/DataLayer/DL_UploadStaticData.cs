@@ -1109,7 +1109,9 @@ namespace DataLayer
                                          SupplierName = a.SupplierName,
                                          TotalRecords = total,
                                          Latitude = a.Latitude,
-                                         Longitude = a.Longitude
+                                         Longitude = a.Longitude,
+                                         Country_Id = a.Country_Id,
+                                         Supplier_Id = a.Supplier_Id
                                      }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 
@@ -1136,7 +1138,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     string mySupplier = lstobj[0].SupplierName;
-
+                    Guid? mySupplier_Id = lstobj[0].Supplier_Id;
                     if (!string.IsNullOrWhiteSpace(mySupplier))
                     {
                         var oldRecords = (from y in context.stg_SupplierCityMapping
@@ -1146,7 +1148,17 @@ namespace DataLayer
                         context.SaveChanges();
                         List<DataContracts.STG.DC_stg_SupplierCityMapping> dstobj = new List<DC_stg_SupplierCityMapping>();
                         dstobj = lstobj.GroupBy(a => new { a.CityCode, a.CityName, a.CountryCode, a.CountryName, a.StateCode, a.StateName }).Select(grp => grp.First()).ToList();
-                                    
+
+                        var geo = (from g in context.m_CountryMapping
+                                       //join d in dstobj on new { g.Supplier_Id, g.CityName } equals new { d.Supplier_Id, d.CityName }
+                                   where g.Supplier_Id == mySupplier_Id
+                                   select new
+                                   {
+                                       g.Country_Id,//Country_Id = Guid.Parse(g.Country_Id.ToString()),
+                                       g.CountryName,//CountryName = g.CountryName
+                                       g.CountryCode
+                                   }
+                                 ).Distinct().ToList();
 
                         foreach (DataContracts.STG.DC_stg_SupplierCityMapping obj in dstobj)
                         {
@@ -1176,6 +1188,10 @@ namespace DataLayer
                             objNew.ActionText = obj.ActionText;
                             objNew.Latitude = obj.Latitude;
                             objNew.Longitude = obj.Longitude;
+                            objNew.Country_Id = 
+                                ((geo.Where(s => s.CountryName == obj.CountryName).Select(s1 => s1.Country_Id).FirstOrDefault())) ??
+                                (geo.Where(s => s.CountryCode == obj.CountryCode).Select(s1 => s1.Country_Id).FirstOrDefault());
+                            objNew.Supplier_Id = mySupplier_Id;
                             context.stg_SupplierCityMapping.Add(objNew);
 
                             //}

@@ -2304,8 +2304,11 @@ namespace DataLayer
                                 objNew.Latitude = CM.Latitude;
                                 objNew.Longitude = CM.Longitude;
                                 // objNew.Country_Id = CM.Country_Id;
-                                objNew.Country_Id = (from a in context.m_CountryMapping
-                                                     where a.CountryName == CM.CountryName && a.Supplier_Id == CM.Supplier_Id
+                                objNew.Country_Id = (from a in context.m_CountryMapping.AsNoTracking()
+                                                     where 
+                                                     ((CM.CountryName !=null && a.CountryName == CM.CountryName) || CM.CountryName == null)
+                                                     && ((CM.CountryCode != null && a.CountryCode == CM.CountryCode) || CM.CountryCode == null)
+                                                     && a.Supplier_Id == CM.Supplier_Id
                                                      select a.Country_Id).FirstOrDefault();
                                 context.m_CityMapping.Add(objNew);
                             }
