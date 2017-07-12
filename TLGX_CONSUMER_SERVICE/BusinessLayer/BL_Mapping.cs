@@ -211,6 +211,14 @@ namespace BusinessLayer
                 return objBL.UpdateCityMappingStatus(obj);
             }
         }
+
+        public bool CityMappingMatch(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.CityMappingMatch(obj);
+            }
+        }
         #endregion
 
         #region Mapping Stats
