@@ -260,8 +260,10 @@ namespace DataLayer
             return ret;
         }
 
-        public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
+        //public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
+        public bool UpdateHotelMappingStatus(DC_MappingMatch obj)
         {
+            bool retrn = false;
             //List<DC_Accomodation_ProductMapping> CMS = obj.lstHotelMapping;
             DataContracts.Masters.DC_Supplier supdata = new DataContracts.Masters.DC_Supplier();
             supdata = obj.SupplierDetail;
@@ -283,6 +285,7 @@ namespace DataLayer
                 {
                     var prodMapSearch = (from a in context.Accommodation_ProductMapping.AsNoTracking()
                                          where a.Accommodation_Id == null && a.Supplier_Id == curSupplier_Id
+                                         && a.Status.Trim().ToUpper() == "UNMAPPED"
                                          select a).ToList();
 
                     bool isCountryCodeCheck = false;
@@ -465,33 +468,35 @@ namespace DataLayer
 
                         if (UpdateAccomodationProductMapping(res))
                         {
-                            if (curSupplier_Id != null)
-                            {
-                                DataContracts.Mapping.DC_Mapping_ProductSupplier_Search_RQ RQ = new DC_Mapping_ProductSupplier_Search_RQ();
-                                RQ.SupplierName = curSupplier;
-                                RQ.PageNo = 0;
-                                RQ.PageSize = int.MaxValue;
-                                RQ.Status = "UNMAPPED";
-                                RQ.CalledFromTLGX = "TLGX";
-                                res = GetProductSupplierMappingSearch(RQ);
-                            }
+                            retrn = true;
+                            //if (curSupplier_Id != null)
+                            //{
+                            //    DataContracts.Mapping.DC_Mapping_ProductSupplier_Search_RQ RQ = new DC_Mapping_ProductSupplier_Search_RQ();
+                            //    RQ.SupplierName = curSupplier;
+                            //    RQ.PageNo = 0;
+                            //    RQ.PageSize = int.MaxValue;
+                            //    RQ.Status = "UNMAPPED";
+                            //    RQ.CalledFromTLGX = "TLGX";
+                            //    res = GetProductSupplierMappingSearch(RQ);
+                            //}
                         }
                     }
                     else
                     {
-                        if (curSupplier_Id != null)
-                        {
-                            DataContracts.Mapping.DC_Mapping_ProductSupplier_Search_RQ RQ = new DC_Mapping_ProductSupplier_Search_RQ();
-                            RQ.SupplierName = curSupplier;
-                            RQ.PageNo = 0;
-                            RQ.PageSize = int.MaxValue;
-                            RQ.Status = "UNMAPPED";
-                            RQ.CalledFromTLGX = "TLGX";
-                            res = GetProductSupplierMappingSearch(RQ);
-                        }
+                        retrn = false;
+                        //if (curSupplier_Id != null)
+                        //{
+                        //    DataContracts.Mapping.DC_Mapping_ProductSupplier_Search_RQ RQ = new DC_Mapping_ProductSupplier_Search_RQ();
+                        //    RQ.SupplierName = curSupplier;
+                        //    RQ.PageNo = 0;
+                        //    RQ.PageSize = int.MaxValue;
+                        //    RQ.Status = "UNMAPPED";
+                        //    RQ.CalledFromTLGX = "TLGX";
+                        //    res = GetProductSupplierMappingSearch(RQ);
+                        //}
                     }
-                    return res;
                 }
+                return retrn;
             }
             catch (Exception e)
             {
@@ -2026,11 +2031,13 @@ namespace DataLayer
             }
         }
 
-        public List<DC_CityMapping> UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
+        //public List<DC_CityMapping> UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
+        public bool UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
         {
+            bool retrn = false;
             DataContracts.Masters.DC_Supplier supdata = new DataContracts.Masters.DC_Supplier();
             supdata = obj.SupplierDetail;
-            List<DC_CityMapping> CMS = obj.lstCityMapping;
+            //List<DC_CityMapping> CMS = obj.lstCityMapping;
             List<DC_SupplierImportAttributeValues> configs = obj.lstConfigs;
             string configWhere = "";
             string curSupplier = "";
@@ -2050,6 +2057,7 @@ namespace DataLayer
                     var prodMapSearch = (from a in context.m_CityMapping
                                              //join p in CMS on m_CountryMapping.CountryMapping_Id equals p.CountryMapping_Id
                                          where a.City_Id == null && a.Supplier_Id == curSupplier_Id
+                                         && a.Status == "UNMAPPED"
                                          select a);
                     bool isCountryCodeCheck = false;
                     bool isCountryNameCheck = false;
@@ -2199,34 +2207,36 @@ namespace DataLayer
 
                         if (UpdateCityMapping(res))
                         {
-                            if (curSupplier_Id != null)
-                            {
-                                DataContracts.Mapping.DC_CityMapping_RQ RQ = new DC_CityMapping_RQ();
-                                RQ.Supplier_Id = curSupplier_Id;
-                                RQ.PageNo = 0;
-                                RQ.PageSize = int.MaxValue;
-                                RQ.Status = "UNMAPPED";
-                                RQ.CalledFromTLGX = "TLGX";
-                                res = GetCityMapping(RQ);
-                            }
+                            retrn = true;
+                            //if (curSupplier_Id != null)
+                            //{
+                            //    DataContracts.Mapping.DC_CityMapping_RQ RQ = new DC_CityMapping_RQ();
+                            //    RQ.Supplier_Id = curSupplier_Id;
+                            //    RQ.PageNo = 0;
+                            //    RQ.PageSize = int.MaxValue;
+                            //    RQ.Status = "UNMAPPED";
+                            //    RQ.CalledFromTLGX = "TLGX";
+                            //    res = GetCityMapping(RQ);
+                            //}
                         }
                     }
                     else
                     {
-                        if (curSupplier_Id != null)
-                        {
-                            DataContracts.Mapping.DC_CityMapping_RQ RQ = new DC_CityMapping_RQ();
-                            RQ.Supplier_Id = curSupplier_Id;
-                            RQ.PageNo = 0;
-                            RQ.PageSize = int.MaxValue;
-                            RQ.Status = "UNMAPPED";
-                            RQ.CalledFromTLGX = "TLGX";
-                            res = GetCityMapping(RQ);
-                        }
+                        retrn = true;
+                        //if (curSupplier_Id != null)
+                        //{
+                        //    DataContracts.Mapping.DC_CityMapping_RQ RQ = new DC_CityMapping_RQ();
+                        //    RQ.Supplier_Id = curSupplier_Id;
+                        //    RQ.PageNo = 0;
+                        //    RQ.PageSize = int.MaxValue;
+                        //    RQ.Status = "UNMAPPED";
+                        //    RQ.CalledFromTLGX = "TLGX";
+                        //    res = GetCityMapping(RQ);
+                        //}
                     }
-                    return res;
+                    //return res;
                 }
-
+                return retrn;
             }
             catch (Exception e)
             {

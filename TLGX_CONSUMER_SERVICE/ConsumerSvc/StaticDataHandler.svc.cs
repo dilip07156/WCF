@@ -144,7 +144,8 @@ namespace ConsumerSvc
             }
         }
 
-        public List<DC_CityMapping> UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
+        //public List<DC_CityMapping> UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
+        public bool UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
@@ -178,7 +179,8 @@ namespace ConsumerSvc
             }
         }
 
-        public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
+        //public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
+        public bool UpdateHotelMappingStatus(DC_MappingMatch obj)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
