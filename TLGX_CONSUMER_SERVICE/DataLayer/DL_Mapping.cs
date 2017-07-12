@@ -1925,7 +1925,6 @@ namespace DataLayer
                                            select new DataContracts.Mapping.DC_CityMapping
                                            {
                                                CityName = a.CityName,
-                                               StateNameWithCode = a.StateName + "(" + a.StateCode + ")",
                                                TotalRecords = total
                                            }).Distinct().OrderBy(o => o.CityName).Skip(skip).Take(param.PageSize);
                         return prodMapList.ToList();
@@ -1964,11 +1963,11 @@ namespace DataLayer
                                                MasterCityCode = ctld.Code,
                                                Master_CityName = ctld.Name,
                                                MasterStateName = ctld.StateName,
+                                               MasterStateCode=ctld.StateCode,
                                                StateCode = a.StateCode,
                                                StateName = a.StateName,
                                                Latitude = a.Latitude,
-                                               Longitude = a.Longitude,
-                                               StateNameWithCode = a.StateName + "(" + a.StateCode + ")"
+                                               Longitude = a.Longitude
                                            }).Skip(skip).Take(param.PageSize).ToList();
 
                         //CityMapList = CityMapList.Select(c =>

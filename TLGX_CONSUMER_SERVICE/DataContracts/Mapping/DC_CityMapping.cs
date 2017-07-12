@@ -29,6 +29,7 @@ namespace DataContracts.Mapping
         string _CountryName;
         string _MasterCountryCode;
         string _MasterStateName;
+        string _MasterStateCode;
         string _MasterCountryName;
         string _MasterCityCode;
         string _Master_CityName;
@@ -391,6 +392,19 @@ namespace DataContracts.Mapping
             set
             {
                 _StateNameWithCode = value;
+            }
+        }
+        [DataMember]
+        public string MasterStateCode
+        {
+            get
+            {
+                return _MasterStateCode;
+            }
+
+            set
+            {
+                _MasterStateCode = value;
             }
         }
     }
