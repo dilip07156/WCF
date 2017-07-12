@@ -2396,10 +2396,10 @@ namespace DataLayer
                                 search.Edit_Date = CM.Edit_Date;
                                 search.Edit_User = CM.Edit_User;
                                 search.Remarks = CM.Remarks;
-                                if (CM.StateCode != null)
-                                    search.StateCode = CM.StateCode;
-                                if (CM.StateName != null)
-                                    search.StateName = CM.StateName;
+                                //if (CM.StateCode != null)
+                                //    search.StateCode = CM.StateCode;
+                                //if (CM.StateName != null)
+                                //    search.StateName = CM.StateName;
                                 //}
                                 context.SaveChanges();
 
