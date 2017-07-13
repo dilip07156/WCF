@@ -42,6 +42,9 @@ namespace DataLayer.DHSVC {
         private string SavedFilePathField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string SupplierField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Guid SupplierImportFile_IdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -131,6 +134,19 @@ namespace DataLayer.DHSVC {
                 if ((object.ReferenceEquals(this.SavedFilePathField, value) != true)) {
                     this.SavedFilePathField = value;
                     this.RaisePropertyChanged("SavedFilePath");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Supplier {
+            get {
+                return this.SupplierField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SupplierField, value) != true)) {
+                    this.SupplierField = value;
+                    this.RaisePropertyChanged("Supplier");
                 }
             }
         }

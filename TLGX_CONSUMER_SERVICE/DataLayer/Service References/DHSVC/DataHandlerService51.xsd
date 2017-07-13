@@ -21,6 +21,7 @@
       <xs:element minOccurs="0" name="PROCESS_USER" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="STATUS" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="SavedFilePath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Supplier" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="SupplierImportFile_Id" type="ser:guid" />
       <xs:element minOccurs="0" name="Supplier_Id" type="ser:guid" />
     </xs:sequence>
