@@ -1374,6 +1374,38 @@ namespace DataLayer
                 });
             }
         }
+
+        public void DataHandler_RoomName_Attributes_Update(DC_SupplierRoomName_Details SRNDetails)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (SRNDetails.AttributeList != null && SRNDetails.RoomTypeMap_Id != null)
+                    {
+                        context.SupplierRoomTypeMapping_AttributeList.AddRange((from a in SRNDetails.AttributeList
+                                                                                select new SupplierRoomTypeMapping_AttributeList
+                                                                                {
+                                                                                    RoomTypeMapAttribute_Id = Guid.NewGuid(),
+                                                                                    RoomTypeMap_Id = SRNDetails.RoomTypeMap_Id,
+                                                                                    SupplierRoomTypeAttribute = a.SupplierRoomTypeAttribute,
+                                                                                    SystemAttributeKeyword = a.SystemAttributeKeyword,
+                                                                                    SystemAttributeKeyword_Id = a.SystemAttributeKeywordID
+                                                                                }).ToList());
+                        context.SaveChanges();
+                    }
+
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while inserting supplier room type mapping attribute list",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+        }
         #endregion
 
         #region Country Mapping
@@ -2061,11 +2093,24 @@ namespace DataLayer
                     //RQ.Status = "ALL";
                     clsMappingCity = GetCityMapping(RQCity);
 
-                    clsSTGCityInsert = clsSTGCity.Where(p => !clsMappingCity.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
+                    clsMappingCity = clsMappingCity.Select(c =>
+                    {
+                        c.CityName = (clsSTGCity
+                        .Where(s => s.CityCode == c.CityCode)
+                        .Select(s1 => s1.CityName)
+                        .FirstOrDefault()
+                        ) ?? c.CityName;
+                        c.Edit_Date = DateTime.Now;
+                        c.Edit_User = "TLGX_DataHandler";
+                        return c;
+                    }).ToList();
+
+                clsSTGCityInsert = clsSTGCity.Where(p => !clsMappingCity.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                     && (
                         (((p2.StateName ?? string.Empty).ToString().Trim().ToUpper() == (p.StateName ?? string.Empty).ToString().Trim().ToUpper()))
-                        && (((p2.CountryCode ?? string.Empty).ToString().Trim().ToUpper() == (p.CountryCode ?? string.Empty).ToString().Trim().ToUpper()))
-                        && (((p2.CountryName ?? string.Empty).ToString().Trim().ToUpper() == (p.CountryName ?? string.Empty).ToString().Trim().ToUpper()))
+                        //&& (((p2.CountryCode ?? string.Empty).ToString().Trim().ToUpper() == (p.CountryCode ?? string.Empty).ToString().Trim().ToUpper()))
+                        //&& (((p2.CountryName ?? string.Empty).ToString().Trim().ToUpper() == (p.CountryName ?? string.Empty).ToString().Trim().ToUpper()))
+                        && (p2.Country_Id == p.Country_Id)
                         && (((p2.CityName ?? string.Empty).ToString().Trim().ToUpper() == (p.CityName ?? string.Empty).ToString().Trim().ToUpper()))
                     ))).ToList();
 
@@ -2096,17 +2141,7 @@ namespace DataLayer
 
                     clsSTGCity.RemoveAll(p => clsSTGCityInsert.Any(p2 => (p2.stg_City_Id == p.stg_City_Id)));
 
-                    clsMappingCity = clsMappingCity.Select(c =>
-                    {
-                        c.CityName = (clsSTGCity
-                        .Where(s => s.CityCode == c.CityCode)
-                        .Select(s1 => s1.CityName)
-                        .FirstOrDefault()
-                        );
-                        c.Edit_Date = DateTime.Now;
-                        c.Edit_User = "TLGX_DataHandler";
-                        return c;
-                    }).ToList();
+                   
 
                     //clsMappingCity = clsMappingCity.Where(a => a.oldCityName != a.CityName).ToList();
                     clsMappingCity.RemoveAll(p => p.CityName == p.oldCityName);
@@ -2614,6 +2649,7 @@ namespace DataLayer
         }
 
         #endregion
+
         #region roll_off_reports
         public List<DataContracts.Mapping.DC_RollOffReportRule> getStatisticforRuleReport(DataContracts.Mapping.DC_RollOFParams parm)
         {
@@ -2789,6 +2825,7 @@ namespace DataLayer
             return objLst;
         }
         #endregion
+
         #region rdlc reports
         public List<DataContracts.Mapping.DC_supplierwiseUnmappedReport> GetsupplierwiseUnmappedDataReport(Guid SupplierID)
         {

@@ -613,6 +613,14 @@ namespace BusinessLayer
             }
         }
 
+        public void DataHandler_Keyword_Update_NoOfHits(List<DC_keyword_alias> NoOfHits)
+        {
+            using (DataLayer.DL_Masters objDL = new DataLayer.DL_Masters())
+            {
+                objDL.DataHandler_Keyword_Update_NoOfHits(NoOfHits);
+            }
+        }
+
         #endregion
     }
 }
