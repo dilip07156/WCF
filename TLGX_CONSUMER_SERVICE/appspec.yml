@@ -1,5 +1,9 @@
-version: 0.0
+version: 1.0
 os: windows
 files:
-  - source: \TLGX_CONSUMER_SERVICE\ConsumerSvc
+  - source: .\TLGX_CONSUMER_SERVICE\ConsumerSvc
     destination: D:\QAS_WCF_SITE\Consumer
+hooks:
+  BeforeInstall:
+    - location: .\AWS_SCRIPTS\STOP_IIS.BAT
+    - location: .\AWS_SCRIPTS\START_IIS.BAT
