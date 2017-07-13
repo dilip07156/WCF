@@ -927,12 +927,22 @@ namespace DataLayer
             }
         }
 
-        public bool UpdateCityMaster(DataContracts.Masters.DC_City param)
+        public DC_Message UpdateCityMaster(DataContracts.Masters.DC_City param)
         {
+            DC_Message _objMsg = new DC_Message();
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    var isduplicate = (from attr in context.m_CityMaster
+                                       where attr.Name == param.Name 
+                                       select attr).Count() == 0 ? false : true;
+                    if (isduplicate)
+                    {
+                        _objMsg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
+                        _objMsg.StatusMessage = param.Name + ReadOnlyMessage.strAlreadyExist;
+                        return _objMsg;
+                    }
                     var search = context.m_CityMaster.Find(param.City_Id);
                     if (search != null)
                     {
@@ -947,11 +957,19 @@ namespace DataLayer
                         search.StateName = param.StateName;
                         //search.State_Id = param.State_Id;
                         //search.Status = param.Status;
-
-                        context.SaveChanges();
+                        
                     }
-                    return true;
+                    else
+                    {
+                        _objMsg.StatusMessage = ReadOnlyMessage.strFailed;
+                        _objMsg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        return _objMsg;
+                    }
+                    context.SaveChanges();
+                    _objMsg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                    _objMsg.StatusCode = ReadOnlyMessage.StatusCode.Success;
                 }
+                return _objMsg;
             }
             catch
             {
