@@ -927,12 +927,22 @@ namespace DataLayer
             }
         }
 
-        public bool UpdateCityMaster(DataContracts.Masters.DC_City param)
+        public DC_Message UpdateCityMaster(DataContracts.Masters.DC_City param)
         {
+            DC_Message _objMsg = new DC_Message();
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    var isduplicate = (from attr in context.m_CityMaster
+                                       where attr.Name == param.Name 
+                                       select attr).Count() == 0 ? false : true;
+                    if (isduplicate)
+                    {
+                        _objMsg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
+                        _objMsg.StatusMessage = param.Name + ReadOnlyMessage.strAlreadyExist;
+                        return _objMsg;
+                    }
                     var search = context.m_CityMaster.Find(param.City_Id);
                     if (search != null)
                     {
@@ -947,11 +957,19 @@ namespace DataLayer
                         search.StateName = param.StateName;
                         //search.State_Id = param.State_Id;
                         //search.Status = param.Status;
-
-                        context.SaveChanges();
+                        
                     }
-                    return true;
+                    else
+                    {
+                        _objMsg.StatusMessage = ReadOnlyMessage.strFailed;
+                        _objMsg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        return _objMsg;
+                    }
+                    context.SaveChanges();
+                    _objMsg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                    _objMsg.StatusCode = ReadOnlyMessage.StatusCode.Success;
                 }
+                return _objMsg;
             }
             catch
             {
@@ -3898,7 +3916,7 @@ namespace DataLayer
                                  select r;
                     }
 
-                    if(obj.Attribute != null)
+                    if (obj.Attribute != null)
                     {
                         search = from r in search
                                  where (r.Attribute ?? false) == obj.Attribute
@@ -3910,7 +3928,7 @@ namespace DataLayer
 
                     var searchAlias = from a in context.m_keyword_alias
                                       select a;
-                    if(!string.IsNullOrWhiteSpace(obj.Alias))
+                    if (!string.IsNullOrWhiteSpace(obj.Alias))
                     {
                         searchAlias = from a in searchAlias
                                       where a.Value == obj.Alias
@@ -3954,7 +3972,8 @@ namespace DataLayer
                                                   Status = al.Status,
                                                   Value = al.Value,
                                                   Sequence = al.Sequence ?? 0,
-                                                  NoOfHits = al.NoOfHits ?? 0
+                                                  NoOfHits = al.NoOfHits ?? 0,
+                                                  NewHits = 0
                                               }).ToList()
                                  };
 
@@ -4027,9 +4046,9 @@ namespace DataLayer
                     foreach (var item in NoOfHits)
                     {
                         var KeywordAliasItem = context.m_keyword_alias.Find(item.KeywordAlias_Id);
-                        if(KeywordAliasItem != null)
+                        if (KeywordAliasItem != null)
                         {
-                            KeywordAliasItem.NoOfHits = item.NoOfHits;
+                            KeywordAliasItem.NoOfHits = KeywordAliasItem.NoOfHits + item.NewHits;
                         }
                     }
                     context.SaveChanges();

@@ -109,7 +109,7 @@ namespace OperationContracts
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "Master/City/Update", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        bool UpdateCityMaster(DataContracts.Masters.DC_City obj);
+        DataContracts.DC_Message UpdateCityMaster(DataContracts.Masters.DC_City obj);
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]

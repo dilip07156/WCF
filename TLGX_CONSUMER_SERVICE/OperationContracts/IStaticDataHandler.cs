@@ -148,7 +148,7 @@ namespace OperationContracts
         #region Keyword Replace and Attribute Extraction
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "POST", UriTemplate = "DataHandler/Keyword/Get/AllActive", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        [WebInvoke(Method = "GET", UriTemplate = "DataHandler/Keyword/Get/AllActive", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         List<DataContracts.Masters.DC_Keyword> DataHandler_Keyword_Get();
 
         [OperationContract]

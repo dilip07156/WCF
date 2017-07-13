@@ -89,7 +89,7 @@ namespace BusinessLayer
             }
         }
 
-        public bool UpdateCityMaster(DataContracts.Masters.DC_City param)
+        public DataContracts.DC_Message UpdateCityMaster(DataContracts.Masters.DC_City param)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {

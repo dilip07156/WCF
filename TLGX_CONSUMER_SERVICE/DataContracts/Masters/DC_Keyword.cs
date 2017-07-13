@@ -103,6 +103,8 @@ namespace DataContracts.Masters
         public int TotalRecords { get; set; }
         [DataMember]
         public int NoOfHits { get; set; }
+        [DataMember]
+        public int NewHits { get; set; }
     }
 
 }
