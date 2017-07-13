@@ -2093,7 +2093,19 @@ namespace DataLayer
                     //RQ.Status = "ALL";
                     clsMappingCity = GetCityMapping(RQCity);
 
-                    clsSTGCityInsert = clsSTGCity.Where(p => !clsMappingCity.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
+                    clsMappingCity = clsMappingCity.Select(c =>
+                    {
+                        c.CityName = (clsSTGCity
+                        .Where(s => s.CityCode == c.CityCode)
+                        .Select(s1 => s1.CityName)
+                        .FirstOrDefault()
+                        ) ?? c.CityName;
+                        c.Edit_Date = DateTime.Now;
+                        c.Edit_User = "TLGX_DataHandler";
+                        return c;
+                    }).ToList();
+
+                clsSTGCityInsert = clsSTGCity.Where(p => !clsMappingCity.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                     && (
                         (((p2.StateName ?? string.Empty).ToString().Trim().ToUpper() == (p.StateName ?? string.Empty).ToString().Trim().ToUpper()))
                         //&& (((p2.CountryCode ?? string.Empty).ToString().Trim().ToUpper() == (p.CountryCode ?? string.Empty).ToString().Trim().ToUpper()))
@@ -2129,17 +2141,7 @@ namespace DataLayer
 
                     clsSTGCity.RemoveAll(p => clsSTGCityInsert.Any(p2 => (p2.stg_City_Id == p.stg_City_Id)));
 
-                    clsMappingCity = clsMappingCity.Select(c =>
-                    {
-                        c.CityName = (clsSTGCity
-                        .Where(s => s.CityCode == c.CityCode)
-                        .Select(s1 => s1.CityName)
-                        .FirstOrDefault()
-                        );
-                        c.Edit_Date = DateTime.Now;
-                        c.Edit_User = "TLGX_DataHandler";
-                        return c;
-                    }).ToList();
+                   
 
                     //clsMappingCity = clsMappingCity.Where(a => a.oldCityName != a.CityName).ToList();
                     clsMappingCity.RemoveAll(p => p.CityName == p.oldCityName);
