@@ -1,0 +1,5 @@
+version: 0.0
+os: windows
+files:
+  - source: \TLGX_CONSUMER_SERVICE\ConsumerSvc
+    destination: D:\QAS_WCF_SITE\Consumer
