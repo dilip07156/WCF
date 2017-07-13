@@ -1245,8 +1245,10 @@ namespace DataLayer
                                    {
                                        g.City_Id,//City_Id = Guid.Parse(g.City_Id.ToString()),
                                        g.CityName, //Name = g.CityName,
+                                       g.CityCode,
                                        g.Country_Id,//Country_Id = Guid.Parse(g.Country_Id.ToString()),
                                        g.CountryName,//CountryName = g.CountryName
+                                       g.CountryCode
                                    }
                                   ).Distinct().ToList();
 
@@ -1287,8 +1289,12 @@ namespace DataLayer
                             objNew.UpdateType = obj.UpdateType;
                             objNew.ActionText = obj.ActionText;
                             objNew.StarRating = obj.StarRating;
-                            objNew.Country_Id = (geo.Where(s => s.CountryName == obj.CountryName).Select(s1 => s1.Country_Id).FirstOrDefault());
-                            objNew.City_Id = (geo.Where(s => s.CityName == obj.CityName).Select(s1 => s1.City_Id).FirstOrDefault());
+                            objNew.Country_Id =
+                                ((geo.Where(s => s.CountryName == obj.CountryName).Select(s1 => s1.Country_Id).FirstOrDefault())) ??
+                                (geo.Where(s => s.CountryCode == obj.CountryCode).Select(s1 => s1.Country_Id).FirstOrDefault());
+                            objNew.City_Id =
+                                ((geo.Where(s => s.CityName == obj.CityName).Select(s1 => s1.City_Id).FirstOrDefault())) ??
+                                (geo.Where(s => s.CityCode == obj.CityCode).Select(s1 => s1.City_Id).FirstOrDefault());
                             objNew.Supplier_Id = obj.Supplier_Id;
                             context.stg_SupplierProductMapping.Add(objNew);
                         }
