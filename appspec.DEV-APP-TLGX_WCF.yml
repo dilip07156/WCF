@@ -1,0 +1,9 @@
+version: 1.0
+os: windows
+files:
+  - source: .\TLGX_CONSUMER_SERVICE\ConsumerSvc
+    destination: D:\QAS_WCF_SITE\Consumer
+hooks:
+  BeforeInstall:
+    - location: .\STOP_IIS.BAT
+    - location: .\START_IIS.BAT
