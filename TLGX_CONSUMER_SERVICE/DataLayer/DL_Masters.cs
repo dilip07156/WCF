@@ -3898,7 +3898,7 @@ namespace DataLayer
                                  select r;
                     }
 
-                    if(obj.Attribute != null)
+                    if (obj.Attribute != null)
                     {
                         search = from r in search
                                  where (r.Attribute ?? false) == obj.Attribute
@@ -3910,7 +3910,7 @@ namespace DataLayer
 
                     var searchAlias = from a in context.m_keyword_alias
                                       select a;
-                    if(!string.IsNullOrWhiteSpace(obj.Alias))
+                    if (!string.IsNullOrWhiteSpace(obj.Alias))
                     {
                         searchAlias = from a in searchAlias
                                       where a.Value == obj.Alias
@@ -3954,7 +3954,8 @@ namespace DataLayer
                                                   Status = al.Status,
                                                   Value = al.Value,
                                                   Sequence = al.Sequence ?? 0,
-                                                  NoOfHits = al.NoOfHits ?? 0
+                                                  NoOfHits = al.NoOfHits ?? 0,
+                                                  NewHits = 0
                                               }).ToList()
                                  };
 
@@ -4027,9 +4028,9 @@ namespace DataLayer
                     foreach (var item in NoOfHits)
                     {
                         var KeywordAliasItem = context.m_keyword_alias.Find(item.KeywordAlias_Id);
-                        if(KeywordAliasItem != null)
+                        if (KeywordAliasItem != null)
                         {
-                            KeywordAliasItem.NoOfHits = item.NoOfHits;
+                            KeywordAliasItem.NoOfHits = KeywordAliasItem.NoOfHits + item.NewHits;
                         }
                     }
                     context.SaveChanges();
