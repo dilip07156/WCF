@@ -2096,8 +2096,9 @@ namespace DataLayer
                     clsSTGCityInsert = clsSTGCity.Where(p => !clsMappingCity.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                     && (
                         (((p2.StateName ?? string.Empty).ToString().Trim().ToUpper() == (p.StateName ?? string.Empty).ToString().Trim().ToUpper()))
-                        && (((p2.CountryCode ?? string.Empty).ToString().Trim().ToUpper() == (p.CountryCode ?? string.Empty).ToString().Trim().ToUpper()))
-                        && (((p2.CountryName ?? string.Empty).ToString().Trim().ToUpper() == (p.CountryName ?? string.Empty).ToString().Trim().ToUpper()))
+                        //&& (((p2.CountryCode ?? string.Empty).ToString().Trim().ToUpper() == (p.CountryCode ?? string.Empty).ToString().Trim().ToUpper()))
+                        //&& (((p2.CountryName ?? string.Empty).ToString().Trim().ToUpper() == (p.CountryName ?? string.Empty).ToString().Trim().ToUpper()))
+                        && (p2.Country_Id == p.Country_Id)
                         && (((p2.CityName ?? string.Empty).ToString().Trim().ToUpper() == (p.CityName ?? string.Empty).ToString().Trim().ToUpper()))
                     ))).ToList();
 
