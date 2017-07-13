@@ -1449,6 +1449,16 @@
           <Property Name="PROCESS_DATE" Type="datetime" />
           <Property Name="PROCESS_USER" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="SupplierRoomTypeMapping_AttributeList">
+          <Key>
+            <PropertyRef Name="RoomTypeMapAttribute_Id" />
+          </Key>
+          <Property Name="RoomTypeMapAttribute_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="RoomTypeMap_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SupplierRoomTypeAttribute" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="SystemAttributeKeyword" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="SystemAttributeKeyword_Id" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
         <EntityType Name="UserEntity">
           <Key>
             <PropertyRef Name="ID" />
@@ -1605,6 +1615,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySet Name="Supplier_Schedule" EntityType="Self.Supplier_Schedule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFile_ErrorLog" EntityType="Self.SupplierImportFile_ErrorLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFileDetails" EntityType="Self.SupplierImportFileDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierRoomTypeMapping_AttributeList" EntityType="Self.SupplierRoomTypeMapping_AttributeList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserEntity" EntityType="Self.UserEntity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="vwMappingStats" EntityType="Self.vwMappingStats" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1726,6 +1737,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySet Name="m_keyword" EntityType="ConsumerModel.m_keyword" />
           <EntitySet Name="m_keyword_alias" EntityType="ConsumerModel.m_keyword_alias" />
           <EntitySet Name="Places" EntityType="ConsumerModel.Place" />
+          <EntitySet Name="SupplierRoomTypeMapping_AttributeList" EntityType="ConsumerModel.SupplierRoomTypeMapping_AttributeList" />
         </EntityContainer>
         <EntityType Name="Accommodation_Contact">
           <Key>
@@ -3221,6 +3233,16 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Google_PlaceTypes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Google_Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Google_FullObjext" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SupplierRoomTypeMapping_AttributeList">
+          <Key>
+            <PropertyRef Name="RoomTypeMapAttribute_Id" />
+          </Key>
+          <Property Name="RoomTypeMapAttribute_Id" Type="Guid" Nullable="false" />
+          <Property Name="RoomTypeMap_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierRoomTypeAttribute" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SystemAttributeKeyword" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SystemAttributeKeyword_Id" Type="Guid" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -4761,6 +4783,17 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Place_Category" ColumnName="Place_Category" />
                 <ScalarProperty Name="Place_Id" ColumnName="Place_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplierRoomTypeMapping_AttributeList">
+            <EntityTypeMapping TypeName="ConsumerModel.SupplierRoomTypeMapping_AttributeList">
+              <MappingFragment StoreEntitySet="SupplierRoomTypeMapping_AttributeList">
+                <ScalarProperty Name="SystemAttributeKeyword_Id" ColumnName="SystemAttributeKeyword_Id" />
+                <ScalarProperty Name="SystemAttributeKeyword" ColumnName="SystemAttributeKeyword" />
+                <ScalarProperty Name="SupplierRoomTypeAttribute" ColumnName="SupplierRoomTypeAttribute" />
+                <ScalarProperty Name="RoomTypeMap_Id" ColumnName="RoomTypeMap_Id" />
+                <ScalarProperty Name="RoomTypeMapAttribute_Id" ColumnName="RoomTypeMapAttribute_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

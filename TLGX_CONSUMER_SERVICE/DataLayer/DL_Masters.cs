@@ -2225,7 +2225,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(RQ.StatusCode))
                     {
                         search = from sup in search
-                                 where sup.StatusCode.Trim().Substring(0,3).ToUpper() == RQ.StatusCode.Trim().Substring(0, 3).ToUpper()
+                                 where sup.StatusCode.Trim().Substring(0, 3).ToUpper() == RQ.StatusCode.Trim().Substring(0, 3).ToUpper()
                                  select sup;
                     }
 
@@ -3861,10 +3861,10 @@ namespace DataLayer
                             }
                         }
                     }
-                    
+
                     context.SaveChanges();
                 }
-                
+
                 ret.StatusCode = ReadOnlyMessage.StatusCode.Success;
                 return ret;
             }
@@ -3880,6 +3880,16 @@ namespace DataLayer
         {
             try
             {
+                if (obj == null)
+                {
+                    obj = new DC_Keyword_RQ();
+                    obj.PageNo = 0;
+                    obj.PageSize = int.MaxValue;
+                    obj.Status = "ACTIVE";
+                    obj.AliasStatus = "ACTIVE";
+                    obj.Attribute = null;
+                }
+
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var search = from ka in context.m_keyword
@@ -3906,12 +3916,31 @@ namespace DataLayer
                                  select r;
                     }
 
-                    search = from r in search
-                             where (r.Attribute ?? false) == obj.Attribute
-                             select r;
+                    if (obj.Attribute != null)
+                    {
+                        search = from r in search
+                                 where (r.Attribute ?? false) == obj.Attribute
+                                 select r;
+                    }
 
                     int total = search.Count();
                     int skip = obj.PageNo * obj.PageSize;
+
+                    var searchAlias = from a in context.m_keyword_alias
+                                      select a;
+                    if (!string.IsNullOrWhiteSpace(obj.Alias))
+                    {
+                        searchAlias = from a in searchAlias
+                                      where a.Value == obj.Alias
+                                      select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(obj.AliasStatus))
+                    {
+                        searchAlias = from a in searchAlias
+                                      where a.Status == obj.AliasStatus
+                                      select a;
+                    }
 
                     var result = from a in search
                                  orderby a.Sequence ?? 0, a.Keyword
@@ -3929,9 +3958,8 @@ namespace DataLayer
                                      TotalRecords = total,
                                      Attribute = a.Attribute ?? false,
                                      Sequence = a.Sequence ?? 0,
-                                     Alias = (from al in context.m_keyword_alias
-                                              where al.Keyword_Id == a.Keyword_Id //&&
-                                              //(string.IsNullOrWhiteSpace(obj.Alias) == true ? al.Status == al.Status : al.Status.Trim().ToUpper() == obj.Alias.Trim().ToUpper())
+                                     Alias = (from al in searchAlias
+                                              where al.Keyword_Id == a.Keyword_Id
                                               orderby (al.Sequence ?? 0), al.Value
                                               select new DC_keyword_alias
                                               {
@@ -3943,7 +3971,9 @@ namespace DataLayer
                                                   Edit_User = al.Edit_User,
                                                   Status = al.Status,
                                                   Value = al.Value,
-                                                  Sequence = al.Sequence ?? 0
+                                                  Sequence = al.Sequence ?? 0,
+                                                  NoOfHits = al.NoOfHits ?? 0,
+                                                  NewHits = 0
                                               }).ToList()
                                  };
 
@@ -3959,7 +3989,7 @@ namespace DataLayer
 
             }
         }
-        
+
         public List<DC_keyword_alias> SearchKeywordAlias(DC_Keyword_RQ obj)
         {
             try
@@ -4003,6 +4033,30 @@ namespace DataLayer
             catch (Exception e)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error While Searching", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+
+            }
+        }
+
+        public void DataHandler_Keyword_Update_NoOfHits(List<DC_keyword_alias> NoOfHits)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    foreach (var item in NoOfHits)
+                    {
+                        var KeywordAliasItem = context.m_keyword_alias.Find(item.KeywordAlias_Id);
+                        if (KeywordAliasItem != null)
+                        {
+                            KeywordAliasItem.NoOfHits = KeywordAliasItem.NoOfHits + item.NewHits;
+                        }
+                    }
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error While Updating Keyword Alias Number Of Hits", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
 
             }
         }

@@ -141,6 +141,25 @@ namespace OperationContracts
         bool UpdateHotelMappingStatus(DataContracts.Mapping.DC_MappingMatch obj);
         //List<DataContracts.Mapping.DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DataContracts.Mapping.DC_MappingMatch obj);
 
+
+
+        #endregion
+
+        #region Keyword Replace and Attribute Extraction
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "DataHandler/Keyword/Get/AllActive", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DataContracts.Masters.DC_Keyword> DataHandler_Keyword_Get();
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "DataHandler/Keyword/Update/NoOfHits", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        void DataHandler_Keyword_Update_NoOfHits(List<DataContracts.Masters.DC_keyword_alias> NoOfHits);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "DataHandler/SupplierRoomName/Attributes/Update", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        void DataHandler_RoomName_Attributes_Update(DataContracts.Mapping.DC_SupplierRoomName_Details SRNDetails);
         #endregion
     }
 }

@@ -7,6 +7,7 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using DataContracts.Mapping;
 using DataContracts.UploadStaticData;
+using DataLayer;
 
 namespace BusinessLayer
 {
@@ -140,6 +141,13 @@ namespace BusinessLayer
             }
         }
 
+        public void DataHandler_RoomName_Attributes_Update(DC_SupplierRoomName_Details SRNDetails)
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                objDL.DataHandler_RoomName_Attributes_Update(SRNDetails);
+            }
+        }
 
         #endregion
 
