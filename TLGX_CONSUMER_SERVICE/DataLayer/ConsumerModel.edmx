@@ -1451,8 +1451,9 @@
         </EntityType>
         <EntityType Name="SupplierRoomTypeMapping_AttributeList">
           <Key>
-            <PropertyRef Name="RoomTypeMap_Id" />
+            <PropertyRef Name="RoomTypeMapAttribute_Id" />
           </Key>
+          <Property Name="RoomTypeMapAttribute_Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="RoomTypeMap_Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="SupplierRoomTypeAttribute" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="SystemAttributeKeyword" Type="nvarchar" MaxLength="255" Nullable="false" />
@@ -3235,8 +3236,9 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
         </EntityType>
         <EntityType Name="SupplierRoomTypeMapping_AttributeList">
           <Key>
-            <PropertyRef Name="RoomTypeMap_Id" />
+            <PropertyRef Name="RoomTypeMapAttribute_Id" />
           </Key>
+          <Property Name="RoomTypeMapAttribute_Id" Type="Guid" Nullable="false" />
           <Property Name="RoomTypeMap_Id" Type="Guid" Nullable="false" />
           <Property Name="SupplierRoomTypeAttribute" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="SystemAttributeKeyword" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -4791,6 +4793,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
                 <ScalarProperty Name="SystemAttributeKeyword" ColumnName="SystemAttributeKeyword" />
                 <ScalarProperty Name="SupplierRoomTypeAttribute" ColumnName="SupplierRoomTypeAttribute" />
                 <ScalarProperty Name="RoomTypeMap_Id" ColumnName="RoomTypeMap_Id" />
+                <ScalarProperty Name="RoomTypeMapAttribute_Id" ColumnName="RoomTypeMapAttribute_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -1386,6 +1386,7 @@ namespace DataLayer
                         context.SupplierRoomTypeMapping_AttributeList.AddRange((from a in SRNDetails.AttributeList
                                                                                 select new SupplierRoomTypeMapping_AttributeList
                                                                                 {
+                                                                                    RoomTypeMapAttribute_Id = Guid.NewGuid(),
                                                                                     RoomTypeMap_Id = SRNDetails.RoomTypeMap_Id,
                                                                                     SupplierRoomTypeAttribute = a.SupplierRoomTypeAttribute,
                                                                                     SystemAttributeKeyword = a.SystemAttributeKeyword,
@@ -2645,6 +2646,7 @@ namespace DataLayer
         }
 
         #endregion
+
         #region roll_off_reports
         public List<DataContracts.Mapping.DC_RollOffReportRule> getStatisticforRuleReport(DataContracts.Mapping.DC_RollOFParams parm)
         {
@@ -2820,6 +2822,7 @@ namespace DataLayer
             return objLst;
         }
         #endregion
+
         #region rdlc reports
         public List<DataContracts.Mapping.DC_supplierwiseUnmappedReport> GetsupplierwiseUnmappedDataReport(Guid SupplierID)
         {

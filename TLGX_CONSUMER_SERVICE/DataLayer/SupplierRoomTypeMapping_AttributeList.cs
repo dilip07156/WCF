@@ -14,6 +14,7 @@ namespace DataLayer
     
     public partial class SupplierRoomTypeMapping_AttributeList
     {
+        public System.Guid RoomTypeMapAttribute_Id { get; set; }
         public System.Guid RoomTypeMap_Id { get; set; }
         public string SupplierRoomTypeAttribute { get; set; }
         public string SystemAttributeKeyword { get; set; }

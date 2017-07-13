@@ -196,6 +196,14 @@ namespace ConsumerSvc
             }
         }
 
+        public bool CityMappingMatch(DC_Supplier sup)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.CityMappingMatch(sup);
+            }
+        }
+
         public List<DC_Keyword> DataHandler_Keyword_Get()
         {
             using (BL_Masters objBL = new BL_Masters())
@@ -216,7 +224,7 @@ namespace ConsumerSvc
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
-                return objBL.DataHandler_RoomName_Attributes_Update(SRNDetails);
+                objBL.DataHandler_RoomName_Attributes_Update(SRNDetails);
             }
         }
     }

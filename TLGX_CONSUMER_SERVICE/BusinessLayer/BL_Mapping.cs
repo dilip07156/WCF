@@ -145,7 +145,7 @@ namespace BusinessLayer
         {
             using (DL_Mapping objDL = new DL_Mapping())
             {
-                return objDL.DataHandler_RoomName_Attributes_Update(SRNDetails);
+                objDL.DataHandler_RoomName_Attributes_Update(SRNDetails);
             }
         }
 
