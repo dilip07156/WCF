@@ -1374,6 +1374,37 @@ namespace DataLayer
                 });
             }
         }
+
+        public void DataHandler_RoomName_Attributes_Update(DC_SupplierRoomName_Details SRNDetails)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (SRNDetails.AttributeList != null && SRNDetails.RoomTypeMap_Id != null)
+                    {
+                        context.SupplierRoomTypeMapping_AttributeList.AddRange((from a in SRNDetails.AttributeList
+                                                                                select new SupplierRoomTypeMapping_AttributeList
+                                                                                {
+                                                                                    RoomTypeMap_Id = SRNDetails.RoomTypeMap_Id,
+                                                                                    SupplierRoomTypeAttribute = a.SupplierRoomTypeAttribute,
+                                                                                    SystemAttributeKeyword = a.SystemAttributeKeyword,
+                                                                                    SystemAttributeKeyword_Id = a.SystemAttributeKeywordID
+                                                                                }).ToList());
+                        context.SaveChanges();
+                    }
+
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while inserting supplier room type mapping attribute list",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+        }
         #endregion
 
         #region Country Mapping
@@ -2400,10 +2431,10 @@ namespace DataLayer
                                 search.Edit_Date = CM.Edit_Date;
                                 search.Edit_User = CM.Edit_User;
                                 search.Remarks = CM.Remarks;
-                                if (CM.StateCode != null)
-                                    search.StateCode = CM.StateCode;
-                                if (CM.StateName != null)
-                                    search.StateName = CM.StateName;
+                                //if (CM.StateCode != null)
+                                //    search.StateCode = CM.StateCode;
+                                //if (CM.StateName != null)
+                                //    search.StateName = CM.StateName;
                                 //}
                                 context.SaveChanges();
 

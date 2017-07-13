@@ -61,13 +61,16 @@ namespace DataContracts.Masters
         [DataMember]
         public string Alias { get; set; }
         [DataMember]
-        public bool Attribute { get; set; }
+        public bool? Attribute { get; set; }
         [DataMember]
         public string Status { get; set; }
         [DataMember]
         public int PageNo { get; set; }
         [DataMember]
         public int PageSize { get; set; }
+
+        [DataMember]
+        public string AliasStatus { get; set; }
         //[DataMember]
         //public int AliasPageNo { get; set; }
         //[DataMember]
@@ -98,6 +101,8 @@ namespace DataContracts.Masters
         public int Sequence { get; set; }
         [DataMember]
         public int TotalRecords { get; set; }
+        [DataMember]
+        public int NoOfHits { get; set; }
     }
 
 }

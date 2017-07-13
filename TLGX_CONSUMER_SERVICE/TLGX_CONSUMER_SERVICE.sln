@@ -15,6 +15,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer", "DataLayer\Data
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperationContracts", "OperationContracts\OperationContracts.csproj", "{96642C6B-18D1-4929-AA78-BFA3BB9BF56F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AWS SCRIPTS", "AWS SCRIPTS", "{85606EDA-FB36-4AC6-AB3B-0379DB4C9E9C}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\AWS_SCRIPTS\START_IIS.bat = ..\..\AWS_SCRIPTS\START_IIS.bat
+		..\..\AWS_SCRIPTS\STOP_IIS.bat = ..\..\AWS_SCRIPTS\STOP_IIS.bat
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
