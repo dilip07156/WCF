@@ -1239,6 +1239,7 @@ namespace DataLayer
                         dstobj = lstobj.GroupBy(a => new { a.CityCode, a.CityName, a.CountryCode, a.CountryName, a.StateCode, a.StateName, a.ProductId, a.ProductName, a.PostalCode }).Select(grp => grp.First()).ToList();
 
                         var geo = (from g in context.m_CityMapping
+                                   join c in context.m_CountryMapping on new { g.Supplier_Id, g.Country_Id } equals new { c.Supplier_Id, c.Country_Id }
                                    //join d in dstobj on new { g.Supplier_Id, g.CityName } equals new { d.Supplier_Id, d.CityName }
                                    where g.Supplier_Id == mySupplier_Id
                                    select new
@@ -1246,9 +1247,9 @@ namespace DataLayer
                                        g.City_Id,//City_Id = Guid.Parse(g.City_Id.ToString()),
                                        g.CityName, //Name = g.CityName,
                                        g.CityCode,
-                                       g.Country_Id,//Country_Id = Guid.Parse(g.Country_Id.ToString()),
-                                       g.CountryName,//CountryName = g.CountryName
-                                       g.CountryCode
+                                       c.Country_Id,//Country_Id = Guid.Parse(g.Country_Id.ToString()),
+                                       c.CountryName,//CountryName = g.CountryName
+                                       c.CountryCode
                                    }
                                   ).Distinct().ToList();
 
