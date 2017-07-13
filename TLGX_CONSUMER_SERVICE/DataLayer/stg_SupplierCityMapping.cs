@@ -31,5 +31,7 @@ namespace DataLayer
         public string ActionText { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
+        public Nullable<System.Guid> Country_Id { get; set; }
+        public Nullable<System.Guid> Supplier_Id { get; set; }
     }
 }

@@ -338,6 +338,9 @@
     <Compile Include="SupplierImportFile_ErrorLog.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="SupplierRoomTypeMapping_AttributeList.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Supplier_Market.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>

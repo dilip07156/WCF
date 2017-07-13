@@ -62,6 +62,7 @@
     <Compile Include="Mapping\DC_Acitivity_SupplierProductMapping.cs" />
     <Compile Include="Mapping\DC_MasterAttributeMapping.cs" />
     <Compile Include="Mapping\DC_MasterAttributeValueMapping.cs" />
+    <Compile Include="Mapping\DC_Supplier_RoomType_AttributeList.cs" />
     <Compile Include="Masters\DC_Activity.cs" />
     <Compile Include="Masters\DC_GenericMasterDetails_ByIDOrName.cs" />
     <Compile Include="Masters\DC_Keyword.cs" />
