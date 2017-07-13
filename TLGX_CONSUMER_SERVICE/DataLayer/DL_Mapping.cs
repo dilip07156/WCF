@@ -155,7 +155,7 @@ namespace DataLayer
 
         public bool HotelMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
-            bool ret = false;
+            bool ret = true;
 
             if (obj != null)
             {

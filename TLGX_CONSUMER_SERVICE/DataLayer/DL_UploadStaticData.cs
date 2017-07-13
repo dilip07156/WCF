@@ -1264,7 +1264,8 @@ namespace DataLayer
                             objNew.Address = obj.Address;
                             objNew.TelephoneNumber = obj.TelephoneNumber;
                             objNew.CountryCode = obj.CountryCode;
-                            objNew.CountryName = obj.CountryName;
+                            objNew.CountryName = obj.CountryName ??
+                                (geo.Where(s => s.CountryCode == obj.CountryCode).Select(s1 => s1.CountryName).FirstOrDefault());
                             objNew.CityCode = obj.CityCode;
                             objNew.CityName = obj.CityName;
                             objNew.Location = obj.Location;
