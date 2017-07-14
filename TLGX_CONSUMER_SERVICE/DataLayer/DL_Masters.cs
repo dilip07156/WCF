@@ -934,10 +934,9 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var isduplicate = (from attr in context.m_CityMaster
-                                       where attr.Name == param.Name 
-                                       select attr).Count() == 0 ? false : true;
-                    if (isduplicate)
+                    bool isDuplicate = context.m_CityMaster.Where(a => a.City_Id != param.City_Id && a.Name == param.Name && a.Country_Id == param.Country_Id && a.State_Id == param.State_Id).Count() > 0 ? true : false;
+
+                    if (isDuplicate)
                     {
                         _objMsg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
                         _objMsg.StatusMessage = param.Name + ReadOnlyMessage.strAlreadyExist;
