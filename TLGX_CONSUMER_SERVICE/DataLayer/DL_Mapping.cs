@@ -2775,7 +2775,6 @@ namespace DataLayer
             return _objList;
 
         }
-
         public List<DataContracts.Mapping.DC_UnmappedCityReport> GetsupplierwiseUnmappedCityReport(Guid SupplierID)
         {
             List<DataContracts.Mapping.DC_UnmappedCityReport> _objList = new List<DC_UnmappedCityReport>();
@@ -2937,31 +2936,28 @@ namespace DataLayer
                 {
                     if (SupplierID != Guid.Empty)
                     {
-                        var searchasummary = (from t1 in context.m_CountryMapping
-                                              join t2 in context.m_CityMapping
-                                                     on new { t1.Supplier_Id, t1.Country_Id }
-                                                     equals new { t2.Supplier_Id, t2.Country_Id }
-                                              join t3 in context.Accommodation_ProductMapping
-                                                      on new { t1.Supplier_Id, t2.City_Id }
-                                                      equals new { t3.Supplier_Id, t3.City_Id }
-                                              where (t1.Supplier_Id == SupplierID && (t1.Status.ToUpper() == "UNMAPPED" || t1.Status.ToUpper() == "REVIEW") && t1.SupplierName != null)
-                                              group t3 by new { t1.Supplier_Id, t1.SupplierName, t1.CountryName, t2.CityName } into g
+                        var searchasummary = (
+                                              from  t2 in context.m_CityMapping
+                                              join t3 in context.m_CountryMapping on t2.Country_Id equals t3.Country_Id 
+                                              join t4 in context.Accommodation_ProductMapping on new { t2.CountryName, t2.CityName } equals new             { t4.CountryName, t4.CityName }
+                                              where t2.Supplier_Id == SupplierID && (t2.Status == "UNMAPPED" || t2.Status == "REVIEW") &&
+                                              (t4.Status == "UNMAPEED" || t4.Status == "REVIEW")
+                                              group t4 by new { t4.SupplierName,t4.CountryName,t4.CityName } into g
                                               select new
                                               {
                                                   suppliername = g.Key.SupplierName,
                                                   countryname = g.Key.CountryName,
-                                                  cityname = g.Key.CityName,
-                                                  noofproduct = g.Count(t3 => t3.Accommodation_ProductMapping_Id != null)
-                                              }
+                                                  cityname=g.Key.CityName,
+                                                  noofproducts = g.Count(t4 => t4.Accommodation_ProductMapping_Id != null)
+                                              }).ToList();
 
-                                          ).ToList();
                         foreach (var item in searchasummary)
                         {
                             DC_supplierwiseunmappedsummaryReport objsu = new DC_supplierwiseunmappedsummaryReport();
                             objsu.Suppliername = item.suppliername;
-                            objsu.Countryname = item.countryname;
+                            objsu.Noofproducts = item.noofproducts;
                             objsu.Cityname = item.cityname;
-                            objsu.Noofproducts = item.noofproduct;
+                            objsu.Countryname = item.countryname;
                             _objList.Add(objsu);
 
                         }
