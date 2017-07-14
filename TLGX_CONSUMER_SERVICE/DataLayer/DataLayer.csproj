@@ -338,6 +338,9 @@
     <Compile Include="SupplierImportFile_ErrorLog.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="SupplierRoomTypeMapping_AttributeList.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Supplier_Market.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
@@ -382,9 +385,6 @@
       <DependentUpon>ConsumerModel.edmx</DependentUpon>
       <LastGenOutput>ConsumerModel.cs</LastGenOutput>
     </Content>
-    <None Include="Service References\DHSVC\DataHandlerService.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Service References\DHSVC\DataHandlerService1.disco" />
     <None Include="Service References\DHSVC\DataHandlerService1.wsdl" />
     <None Include="Service References\DHSVC\DataHandlerService5.xsd">
@@ -398,9 +398,6 @@
     </None>
     <None Include="Service References\DHSVC\DataHandlerService53.xsd">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\DHSVC\DataLayer.DHSVC.DC_Status.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\DHSVC\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>

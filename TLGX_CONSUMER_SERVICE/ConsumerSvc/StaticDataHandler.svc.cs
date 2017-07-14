@@ -144,7 +144,8 @@ namespace ConsumerSvc
             }
         }
 
-        public List<DC_CityMapping> UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
+        //public List<DC_CityMapping> UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
+        public bool UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
@@ -178,7 +179,8 @@ namespace ConsumerSvc
             }
         }
 
-        public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
+        //public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
+        public bool UpdateHotelMappingStatus(DC_MappingMatch obj)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
@@ -191,6 +193,38 @@ namespace ConsumerSvc
             using (BL_Mapping objBL = new BL_Mapping())
             {
                 return objBL.HotelMappingMatch(sup);
+            }
+        }
+
+        public bool CityMappingMatch(DC_Supplier sup)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.CityMappingMatch(sup);
+            }
+        }
+
+        public List<DC_Keyword> DataHandler_Keyword_Get()
+        {
+            using (BL_Masters objBL = new BL_Masters())
+            {
+                return objBL.SearchKeyword(null);
+            }
+        }
+
+        public void DataHandler_Keyword_Update_NoOfHits(List<DC_keyword_alias> NoOfHits)
+        {
+            using (BL_Masters objBL = new BL_Masters())
+            {
+                objBL.DataHandler_Keyword_Update_NoOfHits(NoOfHits);
+            }
+        }
+        
+        public void DataHandler_RoomName_Attributes_Update(DC_SupplierRoomName_Details SRNDetails)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                objBL.DataHandler_RoomName_Attributes_Update(SRNDetails);
             }
         }
     }

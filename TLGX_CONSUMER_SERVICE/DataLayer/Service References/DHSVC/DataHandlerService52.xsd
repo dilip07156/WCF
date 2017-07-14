@@ -10,15 +10,13 @@
   </xs:element>
   <xs:element name="StaticFileUploadProcessFileResponse">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/TLGX_DataHandler_WcfService.DataContracts" minOccurs="0" name="StaticFileUploadProcessFileResult" nillable="true" type="q2:DC_Status" />
-      </xs:sequence>
+      <xs:sequence />
     </xs:complexType>
   </xs:element>
   <xs:element name="StaticFileUpload_TestFile_Read">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/TLGX_DataHandler_WcfService.DataContracts" minOccurs="0" name="obj" nillable="true" type="q3:DC_SupplierImportFileDetails_TestProcess" />
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/TLGX_DataHandler_WcfService.DataContracts" minOccurs="0" name="obj" nillable="true" type="q2:DC_SupplierImportFileDetails_TestProcess" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -44,7 +42,7 @@
   <xs:element name="StaticFileUpload_TestFile_Transform">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/TLGX_DataHandler_WcfService.DataContracts" minOccurs="0" name="obj" nillable="true" type="q4:DC_SupplierImportFileDetails_TestProcess" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/TLGX_DataHandler_WcfService.DataContracts" minOccurs="0" name="obj" nillable="true" type="q3:DC_SupplierImportFileDetails_TestProcess" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

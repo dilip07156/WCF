@@ -136,7 +136,7 @@ namespace ConsumerSvc
             }
         }
 
-        public bool UpdateCityMaster(DataContracts.Masters.DC_City param)
+        public DataContracts.DC_Message UpdateCityMaster(DataContracts.Masters.DC_City param)
         {
             using (BusinessLayer.BL_Masters obj = new BL_Masters())
             {

@@ -89,7 +89,7 @@ namespace BusinessLayer
             }
         }
 
-        public bool UpdateCityMaster(DataContracts.Masters.DC_City param)
+        public DataContracts.DC_Message UpdateCityMaster(DataContracts.Masters.DC_City param)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
@@ -610,6 +610,14 @@ namespace BusinessLayer
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
                 return obj.SearchKeywordAlias(RQ);
+            }
+        }
+
+        public void DataHandler_Keyword_Update_NoOfHits(List<DC_keyword_alias> NoOfHits)
+        {
+            using (DataLayer.DL_Masters objDL = new DataLayer.DL_Masters())
+            {
+                objDL.DataHandler_Keyword_Update_NoOfHits(NoOfHits);
             }
         }
 

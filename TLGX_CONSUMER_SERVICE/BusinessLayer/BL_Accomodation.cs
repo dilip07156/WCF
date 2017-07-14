@@ -322,6 +322,13 @@ namespace BusinessLayer
                 return obj.GetAccomodationNearbyPlaces(Accomodation_Id, DataKey_Id);
             }
         }
+        public List<DataContracts.DC_Accommodation_NearbyPlaces> GetNearbyPlacesDetailsWithPaging(Guid Accomodation_Id, Guid DataKey_Id, Int32 pageSize, Int32 pageindex)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.GetNearbyPlacesDetailsWithPaging(Accomodation_Id, DataKey_Id,pageSize,pageindex);
+            }
+        }
 
         public bool AddAccomodationNearbyPlaces(DataContracts.DC_Accommodation_NearbyPlaces NP)
         {

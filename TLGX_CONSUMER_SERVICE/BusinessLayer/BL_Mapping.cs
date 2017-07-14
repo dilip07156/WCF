@@ -7,6 +7,7 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using DataContracts.Mapping;
 using DataContracts.UploadStaticData;
+using DataLayer;
 
 namespace BusinessLayer
 {
@@ -86,7 +87,8 @@ namespace BusinessLayer
             }
         }
 
-        public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
+        //public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
+        public bool UpdateHotelMappingStatus(DC_MappingMatch obj)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
@@ -139,6 +141,13 @@ namespace BusinessLayer
             }
         }
 
+        public void DataHandler_RoomName_Attributes_Update(DC_SupplierRoomName_Details SRNDetails)
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                objDL.DataHandler_RoomName_Attributes_Update(SRNDetails);
+            }
+        }
 
         #endregion
 
@@ -201,11 +210,21 @@ namespace BusinessLayer
                 return objBL.UpdateCityMapping(CM);
             }
         }
-        public List<DC_CityMapping> UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
+
+        //public List<DC_CityMapping> UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
+        public bool UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
                 return objBL.UpdateCityMappingStatus(obj);
+            }
+        }
+
+        public bool CityMappingMatch(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.CityMappingMatch(obj);
             }
         }
         #endregion
