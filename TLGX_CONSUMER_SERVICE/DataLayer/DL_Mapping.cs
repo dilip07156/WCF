@@ -388,7 +388,7 @@ namespace DataLayer
                                              where m.Latitude != null && a.Latitude != null && m.Longitude != null && a.Longitude != null
                                              select a).Distinct().ToList();
                         }
-                        if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "Google_Place_Id")
+                        if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "GOOGLE_PLACE_ID")
                         {
                             isPlaceIdCheck = true;
                             prodMapSearch = (from a in prodMapSearch
@@ -399,7 +399,7 @@ namespace DataLayer
                     }
                     List<DC_Accomodation_ProductMapping> res = new List<DC_Accomodation_ProductMapping>();
 
-                    if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck)
+                    if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isPlaceIdCheck)
                     {
                         res = (from a in prodMapSearch
                                select new DataContracts.Mapping.DC_Accomodation_ProductMapping
