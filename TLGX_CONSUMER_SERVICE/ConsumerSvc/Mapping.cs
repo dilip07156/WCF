@@ -72,6 +72,17 @@ namespace ConsumerSvc
                 return objBL.UpdateAccomodationSupplierRoomTypeMapping(obj);
             }
         }
+
+        public List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS> AccomodationSupplierRoomTypeMapping_Search(DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRQ obj)
+        {
+            return new List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS>();
+        }
+
+        public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_UpdateMap(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_Update> obj)
+        {
+            return new DC_Message();
+        }
+
         #endregion
 
         #region Country Mapping
@@ -127,6 +138,7 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
         #region roll_off_reports
         public IList<DataContracts.Mapping.DC_RollOffReportRule> getStatisticforRuleReport(DataContracts.Mapping.DC_RollOFParams param)
         {
@@ -150,6 +162,7 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
         #region rdlc reports
         public IList<DataContracts.Mapping.DC_supplierwiseUnmappedReport> GetsupplierwiseUnmappedDataReport(string SupplierID)
         {
@@ -203,6 +216,7 @@ namespace ConsumerSvc
         }
 
         #endregion
+
         #region Master Attribute Mapping
         public List<DataContracts.Mapping.DC_MasterAttributeMapping_RS> SearchMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping_RQ RQ)
         {

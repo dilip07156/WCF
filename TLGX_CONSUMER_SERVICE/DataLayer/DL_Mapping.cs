@@ -1383,8 +1383,8 @@ namespace DataLayer
                 {
                     if (SRNDetails.AttributeList != null && SRNDetails.RoomTypeMap_Id != null)
                     {
-                        context.SupplierRoomTypeMapping_AttributeList.AddRange((from a in SRNDetails.AttributeList
-                                                                                select new SupplierRoomTypeMapping_AttributeList
+                        context.Accommodation_SupplierRoomTypeAttributes.AddRange((from a in SRNDetails.AttributeList
+                                                                                select new Accommodation_SupplierRoomTypeAttributes
                                                                                 {
                                                                                     RoomTypeMapAttribute_Id = Guid.NewGuid(),
                                                                                     RoomTypeMap_Id = SRNDetails.RoomTypeMap_Id,
