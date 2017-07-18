@@ -131,7 +131,11 @@ namespace DataLayer
                     }
 
                     cityname = RemoveSpecialChars(RemoveVowels(param.Name.ToUpper()));
-                    cityname = cityname.Substring(0, 4);
+                    int citynamelength = cityname.Length;
+                    if (citynamelength > 4)
+                        cityname = cityname.Substring(0, 4);
+                    else
+                        cityname = cityname.Substring(0, citynamelength);
                     num = dlm.GetNextCityCodeNumber(countrycode + "-" + cityname);
                     code = countrycode + "-" + cityname + num;
                 }
