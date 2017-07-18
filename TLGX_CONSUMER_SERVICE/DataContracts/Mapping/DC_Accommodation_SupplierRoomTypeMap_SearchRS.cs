@@ -69,13 +69,13 @@ namespace DataContracts.Mapping
         [DataMember]
         public string Accommodation_RoomInfo_Name { get; set; }
         [DataMember]
-        public List<SupplierRoomTypeAttributes> RoomTypeAttributes { get; set; }
+        public List<DC_SupplierRoomTypeAttributes> RoomTypeAttributes { get; set; }
         [DataMember]
         public int TotalRecords { get; set; }
     }
 
     [DataContract]
-    public class SupplierRoomTypeAttributes
+    public class DC_SupplierRoomTypeAttributes
     {
         [DataMember]
         public System.Guid Accommodation_SupplierRoomTypeMapAttribute_Id { get; set; }

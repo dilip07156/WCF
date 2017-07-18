@@ -14,10 +14,10 @@ namespace DataContracts.Mapping
         public Guid? Supplier_Id { get; set; }
 
         [DataMember]
-        public string Country { get; set; }
+        public Guid? Country { get; set; }
 
         [DataMember]
-        public string City { get; set; }
+        public Guid? City { get; set; }
 
         [DataMember]
         public string MappingType { get; set; }
