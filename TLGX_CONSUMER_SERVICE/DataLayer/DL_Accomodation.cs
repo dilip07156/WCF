@@ -2099,6 +2099,47 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation nearby places", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+        public List<DataContracts.DC_Accommodation_NearbyPlaces> GetNearbyPlacesDetailsWithPaging(Guid Accomodation_Id, Guid DataKey_Id, Int32 pageSize, Int32 pageindex)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = (from an in context.Accommodation_NearbyPlaces
+                                  where an.Accomodation_Id == Accomodation_Id
+                                  && an.Accommodation_NearbyPlace_Id == (DataKey_Id == Guid.Empty ? an.Accommodation_NearbyPlace_Id : DataKey_Id)
+                                  select an);
+
+                    int total = search.Count();
+                    int skip = pageindex * pageSize;
+
+                    var result = (from an in search
+                                  select new DataContracts.DC_Accommodation_NearbyPlaces
+                                  {
+                                      Accommodation_NearbyPlace_Id = an.Accommodation_NearbyPlace_Id,
+                                      Accomodation_Id = an.Accomodation_Id,
+                                      Create_Date = an.Create_Date,
+                                      Create_User = an.Create_User,
+                                      Description = an.Description,
+                                      DistanceFromProperty = an.DistanceFromProperty,
+                                      DistanceUnit = an.DistanceUnit,
+                                      Edit_Date = an.Edit_Date,
+                                      Edit_User = an.Edit_User,
+                                      Legacy_Htl_Id = an.Legacy_Htl_Id,
+                                      PlaceCategory = an.PlaceCategory,
+                                      PlaceName = an.PlaceName,
+                                      PlaceType = an.PlaceType,
+                                      IsActive = (an.IsActive ?? true),
+                                      TotalRecords = total
+                                  });
+                    return result.OrderBy(p => p.PlaceName).Skip(skip).Take((total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation nearby places", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
 
         public bool AddAccomodationNearbyPlaces(DataContracts.DC_Accommodation_NearbyPlaces NP)
         {
@@ -2256,11 +2297,11 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var result = context.Accommodations.Where(a => a.Accommodation_Id == acco_id).FirstOrDefault();
-                    if(result != null)
+                    if (result != null)
                     {
                         var sCoord = new GeoCoordinate(Convert.ToDouble(result.Latitude), Convert.ToDouble(result.Longitude));
                         var eCoord = new GeoCoordinate(_objnearbyplace.geometry.location.lat, _objnearbyplace.geometry.location.lng);
-                        _distance = Math.Round((sCoord.GetDistanceTo(eCoord)/1000),2);
+                        _distance = Math.Round((sCoord.GetDistanceTo(eCoord) / 1000), 2);
                     }
                 }
             }
@@ -2269,10 +2310,10 @@ namespace DataLayer
 
                 throw;
             }
-           
+
             return _distance;
         }
-        private void AddUpdateAccomodationNearByPlaces(Guid accomodation_Id, string placeCategory,string CreatedUser, Guid placeID, DC_GooglePlaceNearBy item)
+        private void AddUpdateAccomodationNearByPlaces(Guid accomodation_Id, string placeCategory, string CreatedUser, Guid placeID, DC_GooglePlaceNearBy item)
         {
             try
             {
@@ -2281,6 +2322,10 @@ namespace DataLayer
 
                     //Check duplicate 
                     var result = context.Accommodation_NearbyPlaces.Where(p => p.Accomodation_Id == accomodation_Id).Where(p => p.Place_Id == placeID).Where(p => p.PlaceCategory == placeCategory).FirstOrDefault();
+                    var acco = context.Accommodations.Where(a => a.Accommodation_Id == accomodation_Id).FirstOrDefault();
+                    int? Legacy_Htl_Id = null;
+                    if (acco != null)
+                        Legacy_Htl_Id = acco.Legacy_HTL_ID;
                     if (result == null)
                     {
                         Accommodation_NearbyPlaces _objnearbyplace = new Accommodation_NearbyPlaces();
@@ -2289,14 +2334,14 @@ namespace DataLayer
                         _objnearbyplace.PlaceName = item.name;
                         _objnearbyplace.DistanceFromProperty = Convert.ToString(GetDistance(accomodation_Id, item));
                         _objnearbyplace.PlaceCategory = placeCategory;
-                        _objnearbyplace.DistanceUnit = "Kilometers";
+                        _objnearbyplace.DistanceUnit = "Kilometres";
                         _objnearbyplace.PlaceType = ConvertListToString(item.types.ToList()).Replace('_', ' ');
 
                         _objnearbyplace.Create_Date = DateTime.Now;
                         _objnearbyplace.Create_User = CreatedUser;
                         _objnearbyplace.IsActive = true;
                         _objnearbyplace.Place_Id = placeID;
-                        _objnearbyplace.Legacy_Htl_Id = result.Legacy_Htl_Id;
+                        _objnearbyplace.Legacy_Htl_Id = Legacy_Htl_Id;
                         context.Accommodation_NearbyPlaces.Add(_objnearbyplace);
                     }
                     else //Update their status isActive true

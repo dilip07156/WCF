@@ -144,6 +144,9 @@
     <Compile Include="Accommodation_Status.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Accommodation_SupplierRoomTypeAttributes.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Accommodation_SupplierRoomTypeMapping.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
@@ -336,9 +339,6 @@
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="SupplierImportFile_ErrorLog.cs">
-      <DependentUpon>ConsumerModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SupplierRoomTypeMapping_AttributeList.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Supplier_Market.cs">

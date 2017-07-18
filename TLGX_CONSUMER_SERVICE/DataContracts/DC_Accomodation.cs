@@ -1716,6 +1716,7 @@ namespace DataContracts
         string _Edit_User;
         Nullable<System.DateTime> _Edit_Date;
         bool _IsActive;
+        int? _TotalRecords;
 
         [DataMember]
         public Guid Accommodation_NearbyPlace_Id
@@ -1910,6 +1911,19 @@ namespace DataContracts
             set
             {
                 _IsActive = value;
+            }
+        }
+        [DataMember]
+        public int? TotalRecords
+        {
+            get
+            {
+                return _TotalRecords;
+            }
+
+            set
+            {
+                _TotalRecords = value;
             }
         }
     }

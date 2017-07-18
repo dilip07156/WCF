@@ -59,6 +59,9 @@
     <Compile Include="DC_Master_City.cs" />
     <Compile Include="DC_Master_Country.cs" />
     <Compile Include="DC_GooglePlaceNearBy.cs" />
+    <Compile Include="Mapping\DC_Accommodation_SupplierRoomTypeMap_SearchRS.cs" />
+    <Compile Include="Mapping\DC_Accommodation_SupplierRoomTypeMap_SearchRQ.cs" />
+    <Compile Include="Mapping\DC_Accommodation_SupplierRoomTypeMap_Update.cs" />
     <Compile Include="Mapping\DC_Acitivity_SupplierProductMapping.cs" />
     <Compile Include="Mapping\DC_MasterAttributeMapping.cs" />
     <Compile Include="Mapping\DC_MasterAttributeValueMapping.cs" />

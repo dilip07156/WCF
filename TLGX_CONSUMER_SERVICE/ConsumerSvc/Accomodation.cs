@@ -401,6 +401,20 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
+        public IList<DC_Accommodation_NearbyPlaces> GetNearbyPlacesDetailsWithPaging(string Accomodation_Id, string DataKey_Id, string pageSize, string pageindex)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                List<DC_Accommodation_NearbyPlaces> searchResults = new List<DC_Accommodation_NearbyPlaces>();
+                searchResults = objBL.GetNearbyPlacesDetailsWithPaging(Guid.Parse(Accomodation_Id), Guid.Parse(DataKey_Id),Convert.ToInt32(pageSize),Convert.ToInt32(pageindex));
+
+                if (searchResults == null)
+                {
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                }
+                return searchResults;
+            }
+        }
 
         public bool AddAccomodationNearbyPlaces(DataContracts.DC_Accommodation_NearbyPlaces NP)
         {
