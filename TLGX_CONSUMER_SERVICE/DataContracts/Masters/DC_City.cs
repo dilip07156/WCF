@@ -250,6 +250,8 @@ namespace DataContracts.Masters
     {
         Guid? _Country_Id;
         string _Country_Name;
+        Guid? _State_Id;
+        string _State_Name;
         Guid? _City_Id;
         string _City_Name;
         int? _PageNo;
@@ -373,6 +375,34 @@ namespace DataContracts.Masters
             set
             {
                 _status = value;
+            }
+        }
+
+        [DataMember]
+        public Guid? State_Id
+        {
+            get
+            {
+                return _State_Id;
+            }
+
+            set
+            {
+                _State_Id = value;
+            }
+        }
+
+        [DataMember]
+        public string State_Name
+        {
+            get
+            {
+                return _State_Name;
+            }
+
+            set
+            {
+                _State_Name = value;
             }
         }
     }
