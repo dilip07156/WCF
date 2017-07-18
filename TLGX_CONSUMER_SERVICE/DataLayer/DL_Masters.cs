@@ -910,6 +910,7 @@ namespace DataLayer
                         objNew.CountryName = param.CountryName;
                         objNew.Code = CommonFunctions.GenerateCityCode(param); //param.Code;
                         objNew.Country_Id = param.Country_Id;
+                        objNew.CountryCode = param.CountryCode;
                         objNew.Create_Date = param.Create_Date;
                         objNew.Create_User = param.Create_User;
                         objNew.Google_PlaceId = param.Google_PlaceId;

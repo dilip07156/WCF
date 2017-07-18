@@ -16,6 +16,7 @@ namespace DataContracts.Masters
         string _Code;
         string _CountryName;
         System.Guid _Country_Id;
+        string _CountryCode;
         Nullable<System.DateTime> _Create_Date;
         string _Create_User;
         Nullable<System.DateTime> _Edit_Date;
@@ -241,6 +242,20 @@ namespace DataContracts.Masters
             set
             {
                 _TotalRecords = value;
+            }
+        }
+
+        [DataMember]
+        public string CountryCode
+        {
+            get
+            {
+                return _CountryCode;
+            }
+
+            set
+            {
+                _CountryCode = value;
             }
         }
     }
