@@ -1505,7 +1505,7 @@ namespace DataLayer
                     return roomTypeSearchList.ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation product supplier mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -1513,7 +1513,32 @@ namespace DataLayer
 
         public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_UpdateMap(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_Update> obj)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    foreach (DC_Accommodation_SupplierRoomTypeMap_Update item in obj)
+                    {
+                        if (item.Accommodation_RoomInfo_Id != null && item.Accommodation_SupplierRoomTypeMapping_Id != null && !string.IsNullOrWhiteSpace(item.Status))
+                        {
+                            var accoSuppRoomTypeMap = context.Accommodation_SupplierRoomTypeMapping.Find(item.Accommodation_SupplierRoomTypeMapping_Id);
+                            if (accoSuppRoomTypeMap != null)
+                            {
+                                accoSuppRoomTypeMap.Accommodation_RoomInfo_Id = item.Accommodation_RoomInfo_Id;
+                                accoSuppRoomTypeMap.MappingStatus = item.Status;
+                                accoSuppRoomTypeMap.Edit_Date = DateTime.Now;
+                                accoSuppRoomTypeMap.Edit_User = item.Edit_User;
+                            }
+                        }
+                    }
+                    context.SaveChangesAsync();
+                }
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "All Valid Records are successfully updated." };
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation product supplier mapping" + ex.Message, ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
         }
 
         #endregion

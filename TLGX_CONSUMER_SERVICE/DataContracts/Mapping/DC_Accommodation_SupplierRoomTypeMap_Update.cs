@@ -15,6 +15,8 @@ namespace DataContracts.Mapping
         [DataMember]
         public string Status { get; set; }
         [DataMember]
-        public Nullable<System.Guid> Accommodation_RoomInfo_Id { get; set; }
+        public System.Guid Accommodation_RoomInfo_Id { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
     }
 }
