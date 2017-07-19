@@ -1519,19 +1519,53 @@ namespace DataLayer
                 {
                     foreach (DC_Accommodation_SupplierRoomTypeMap_Update item in obj)
                     {
-                        if (item.Accommodation_RoomInfo_Id != null && item.Accommodation_SupplierRoomTypeMapping_Id != null && !string.IsNullOrWhiteSpace(item.Status))
+                        //if (item.Accommodation_RoomInfo_Id != null && item.Accommodation_SupplierRoomTypeMapping_Id != null && !string.IsNullOrWhiteSpace(item.Status))
+                        if (item.Accommodation_SupplierRoomTypeMapping_Id != null && !string.IsNullOrWhiteSpace(item.Status))
                         {
                             var accoSuppRoomTypeMap = context.Accommodation_SupplierRoomTypeMapping.Find(item.Accommodation_SupplierRoomTypeMapping_Id);
+                            var acco = context.Accommodations.Find(item.Accommodation_Id);
+                            Guid _newid = Guid.NewGuid();
+                            //item.Status -- ADD
+                            if (item.Status.ToUpper() == "ADD")
+                            {
+                                if (acco != null && accoSuppRoomTypeMap != null)
+                                {
+                                    Accommodation_RoomInfo _newObj = new Accommodation_RoomInfo();
+                                    _newObj.Accommodation_RoomInfo_Id = _newid;
+                                    _newObj.Accommodation_Id = acco.Accommodation_Id;
+                                    _newObj.Legacy_Htl_Id = acco.CompanyHotelID;
+                                    _newObj.RoomId = CommonFunctions.GenerateRoomId(Guid.Parse(item.Accommodation_Id.ToString()));
+                                    _newObj.NoOfRooms = accoSuppRoomTypeMap.Quantity;
+                                    _newObj.Description = accoSuppRoomTypeMap.SupplierRoomName;
+                                    _newObj.RoomCategory = item.RoomCategory;
+                                    _newObj.Create_User = item.Edit_User;
+                                    _newObj.Create_Date = DateTime.Now;
+                                    _newObj.IsActive = true;
+                                    context.Accommodation_RoomInfo.Add(_newObj);
+                                    item.Status = "Mapped";
+
+                                    //RoomTypeAttributes has value
+                                    //if (item.RoomTypeAttributes.Count > 0)
+                                    //{
+                                    //    //Add 
+                                    //}
+                                }
+                            }
+
+                            //item.Status -- Mapped/Review/UnMapped
                             if (accoSuppRoomTypeMap != null)
                             {
-                                accoSuppRoomTypeMap.Accommodation_RoomInfo_Id = item.Accommodation_RoomInfo_Id;
+                                accoSuppRoomTypeMap.Accommodation_RoomInfo_Id = (item.Accommodation_RoomInfo_Id.HasValue ? item.Accommodation_RoomInfo_Id.Value : _newid);
                                 accoSuppRoomTypeMap.MappingStatus = item.Status;
                                 accoSuppRoomTypeMap.Edit_Date = DateTime.Now;
                                 accoSuppRoomTypeMap.Edit_User = item.Edit_User;
                             }
+
+
                         }
+                        context.SaveChanges();
                     }
-                    context.SaveChangesAsync();
+                   
                 }
                 return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "All Valid Records are successfully updated." };
             }
