@@ -16,6 +16,7 @@ namespace DataContracts.Masters
         string _Code;
         string _CountryName;
         System.Guid _Country_Id;
+        string _CountryCode;
         Nullable<System.DateTime> _Create_Date;
         string _Create_User;
         Nullable<System.DateTime> _Edit_Date;
@@ -243,6 +244,20 @@ namespace DataContracts.Masters
                 _TotalRecords = value;
             }
         }
+
+        [DataMember]
+        public string CountryCode
+        {
+            get
+            {
+                return _CountryCode;
+            }
+
+            set
+            {
+                _CountryCode = value;
+            }
+        }
     }
 
     [DataContract]
@@ -250,6 +265,8 @@ namespace DataContracts.Masters
     {
         Guid? _Country_Id;
         string _Country_Name;
+        Guid? _State_Id;
+        string _State_Name;
         Guid? _City_Id;
         string _City_Name;
         int? _PageNo;
@@ -373,6 +390,34 @@ namespace DataContracts.Masters
             set
             {
                 _status = value;
+            }
+        }
+
+        [DataMember]
+        public Guid? State_Id
+        {
+            get
+            {
+                return _State_Id;
+            }
+
+            set
+            {
+                _State_Id = value;
+            }
+        }
+
+        [DataMember]
+        public string State_Name
+        {
+            get
+            {
+                return _State_Name;
+            }
+
+            set
+            {
+                _State_Name = value;
             }
         }
     }

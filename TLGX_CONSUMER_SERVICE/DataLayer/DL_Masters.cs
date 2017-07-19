@@ -757,6 +757,20 @@ namespace DataLayer
                                  select a;
                     }
 
+                    if(RQ.State_Id!=null)
+                    {
+                        search = from a in search
+                                 where a.State_Id == RQ.State_Id
+                                 select a;
+                    }
+
+                    if(!String.IsNullOrWhiteSpace(RQ.State_Name))
+                    {
+                        search = from a in search
+                                 where a.StateName == RQ.State_Name
+                                 select a;
+                    }
+
                     if (RQ.City_Id != null)
                     {
                         search = from a in search
@@ -869,6 +883,7 @@ namespace DataLayer
                 }
                 DataContracts.Masters.DC_City_Search_RQ RQ = new DataContracts.Masters.DC_City_Search_RQ();
                 RQ.City_Name = param.Name;
+                RQ.State_Id = param.State_Id;
                 RQ.Country_Id = param.Country_Id;
                 List<DataContracts.Masters.DC_City> existCity = GetCityMaster(RQ);
 
@@ -895,6 +910,7 @@ namespace DataLayer
                         objNew.CountryName = param.CountryName;
                         objNew.Code = CommonFunctions.GenerateCityCode(param); //param.Code;
                         objNew.Country_Id = param.Country_Id;
+                        objNew.CountryCode = param.CountryCode;
                         objNew.Create_Date = param.Create_Date;
                         objNew.Create_User = param.Create_User;
                         objNew.Google_PlaceId = param.Google_PlaceId;

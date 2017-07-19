@@ -12,7 +12,7 @@ namespace DataLayer
     using System;
     using System.Collections.Generic;
     
-    public partial class SupplierRoomTypeMapping_AttributeList
+    public partial class Accommodation_SupplierRoomTypeAttributes
     {
         public System.Guid RoomTypeMapAttribute_Id { get; set; }
         public System.Guid RoomTypeMap_Id { get; set; }

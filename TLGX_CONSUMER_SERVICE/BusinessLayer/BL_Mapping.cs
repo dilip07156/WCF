@@ -149,6 +149,22 @@ namespace BusinessLayer
             }
         }
 
+        public List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS> AccomodationSupplierRoomTypeMapping_Search(DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRQ obj)
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                return objDL.AccomodationSupplierRoomTypeMapping_Search(obj);
+            }
+        }
+
+        public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_UpdateMap(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_Update> obj)
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                return objDL.AccomodationSupplierRoomTypeMapping_UpdateMap(obj);
+            }
+        }
+
         #endregion
 
         #region Country Mapping
