@@ -313,5 +313,15 @@ namespace ConsumerSvc
 
 
         #endregion
+        #region hotel report
+        public IList<DataContracts.Mapping.DC_newHotelsReport> getNewHotelsAddedReport(DataContracts.Mapping.DC_RollOFParams param)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.getNewHotelsAddedReport(param);
+            }
+        }
+
+        #endregion
     }
 }

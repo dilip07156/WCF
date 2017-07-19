@@ -539,5 +539,14 @@ namespace BusinessLayer
 
 
         #endregion
+        #region hotel report
+        public List<DataContracts.Mapping.DC_newHotelsReport> getNewHotelsAddedReport(DataContracts.Mapping.DC_RollOFParams param)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.getNewHotelsAddedReport(param);
+            }
+        }
+        #endregion
     }
 }

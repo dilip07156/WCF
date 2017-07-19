@@ -1066,4 +1066,94 @@ namespace DataContracts.Mapping
         }
     }
     #endregion
+    #region hotel report
+    [DataContract]
+    public class DC_newHotelsReport
+    {
+        int _hotelid;
+        string _hotelname;
+        string _country;
+        string _city;
+        string _createdate;
+        string _createdby;
+        [DataMember]
+        public int Hotelid
+        {
+            get
+            {
+                return _hotelid;
+            }
+
+            set
+            {
+                _hotelid = value;
+            }
+        }
+        [DataMember]
+        public string Hotelname
+        {
+            get
+            {
+                return _hotelname;
+            }
+
+            set
+            {
+                _hotelname = value;
+            }
+        }
+        [DataMember]
+        public string Country
+        {
+            get
+            {
+                return _country;
+            }
+
+            set
+            {
+                _country = value;
+            }
+        }
+        [DataMember]
+        public string City
+        {
+            get
+            {
+                return _city;
+            }
+
+            set
+            {
+                _city = value;
+            }
+        }
+        [DataMember]
+        public string Createdate
+        {
+            get
+            {
+                return _createdate;
+            }
+
+            set
+            {
+                _createdate = value;
+            }
+        }
+        [DataMember]
+        public string Createdby
+        {
+            get
+            {
+                return _createdby;
+            }
+
+            set
+            {
+                _createdby = value;
+            }
+        }
+    }
+    #endregion
 }

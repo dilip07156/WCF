@@ -4250,5 +4250,55 @@ namespace DataLayer
             return _msg;
         }
         #endregion
+        #region hotel report
+        public List<DataContracts.Mapping.DC_newHotelsReport> getNewHotelsAddedReport(DataContracts.Mapping.DC_RollOFParams parm)
+        {
+            List<DataContracts.Mapping.DC_newHotelsReport> objLst = new List<DC_newHotelsReport>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    DateTime fd = Convert.ToDateTime(parm.Fromdate);
+                    DateTime td = Convert.ToDateTime(parm.ToDate);
+                    var search = (from t in context.Accommodations
+                                  where (t.Create_Date>= fd && t.Create_Date<=td)
+                                  select new
+                                  {
+                                      HotelID = t.CompanyHotelID,
+                                      HotelName = t.HotelName,
+                                      country= t.country,
+                                      city = t.city,
+                                      createdate = t.Create_Date,
+                                      createby = t.Create_User
+                                      
+                                  }).ToList();
+                    foreach (var item in search)
+                    {
+
+                        DC_newHotelsReport obj = new DC_newHotelsReport();
+                        obj.Hotelid = item.HotelID.Value;
+                        obj.Hotelname = item.HotelName;
+                        obj.Country = item.country;
+                        obj.City = item.city;
+
+                        if (item.createdate != null)
+                        {
+                            obj.Createdate = item.createdate.Value.ToString("dd/MM/yyyy");
+                        }
+                        else { obj.Createdate = ""; }
+                        obj.Createdby = item.createby;
+                        objLst.Add(obj);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return objLst;
+        }
+
+        #endregion
     }
 }
