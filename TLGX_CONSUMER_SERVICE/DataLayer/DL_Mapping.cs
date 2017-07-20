@@ -1424,6 +1424,7 @@ namespace DataLayer
                                          && country.Country_Id == (obj.Country ?? country.Country_Id)
                                          && city.City_Id == (obj.City ?? city.City_Id)
                                          && asrtm.MappingStatus == (obj.Status ?? asrtm.MappingStatus)
+                                         && acco.HotelName.Contains(obj.ProductName ?? acco.HotelName)
                                          select new DC_Accommodation_SupplierRoomTypeMap_SearchRS
                                          {
                                              Accommodation_Id = asrtm.Accommodation_Id,
