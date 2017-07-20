@@ -1443,7 +1443,7 @@ namespace DataLayer
                                              Quantity = asrtm.Quantity,
                                              RatePlan = asrtm.RatePlan,
                                              RatePlanCode = asrtm.RatePlanCode,
-                                             RoomTypeAttributes = (context.Accommodation_SupplierRoomTypeAttributes.Where(w => w.RoomTypeMap_Id == asrtm.Accommodation_SupplierRoomTypeMapping_Id).Select(s => new DC_SupplierRoomTypeAttributes { Accommodation_SupplierRoomTypeMapAttribute_Id = s.RoomTypeMapAttribute_Id, Accommodation_SupplierRoomTypeMap_Id = s.RoomTypeMap_Id, SupplierRoomTypeAttribute = s.SupplierRoomTypeAttribute, SystemAttributeKeyword = s.SystemAttributeKeyword, SystemAttributeKeyword_Id = s.SystemAttributeKeyword_Id }).ToList()),
+                                             RoomTypeAttributes = (context.Accommodation_SupplierRoomTypeAttributes.Where(w => w.RoomTypeMap_Id == asrtm.Accommodation_SupplierRoomTypeMapping_Id).Select(s => new DC_SupplierRoomTypeAttributes { Accommodation_SupplierRoomTypeMapAttribute_Id = s.RoomTypeMapAttribute_Id, Accommodation_SupplierRoomTypeMap_Id = s.RoomTypeMap_Id, SupplierRoomTypeAttribute = s.SupplierRoomTypeAttribute, SystemAttributeKeyword = s.SystemAttributeKeyword, SystemAttributeKeyword_Id = s.SystemAttributeKeyword_Id, IconClass = context.m_keyword.Find(s.SystemAttributeKeyword_Id).Icon }).ToList()),
                                              SupplierName = sup.Code,
                                              SupplierProductId = asrtm.SupplierProductId,
                                              SupplierProductName = asrtm.SupplierProductName,
@@ -1565,7 +1565,7 @@ namespace DataLayer
                         }
                         context.SaveChanges();
                     }
-                   
+
                 }
                 return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "All Valid Records are successfully updated." };
             }
@@ -4433,16 +4433,16 @@ namespace DataLayer
                     DateTime fd = Convert.ToDateTime(parm.Fromdate);
                     DateTime td = Convert.ToDateTime(parm.ToDate);
                     var search = (from t in context.Accommodations
-                                  where (t.Create_Date>= fd && t.Create_Date<=td)
+                                  where (t.Create_Date >= fd && t.Create_Date <= td)
                                   select new
                                   {
                                       HotelID = t.CompanyHotelID,
                                       HotelName = t.HotelName,
-                                      country= t.country,
+                                      country = t.country,
                                       city = t.city,
                                       createdate = t.Create_Date,
                                       createby = t.Create_User
-                                      
+
                                   }).ToList();
                     foreach (var item in search)
                     {
