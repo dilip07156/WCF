@@ -31,5 +31,8 @@ namespace DataContracts.Mapping
         [DataMember]
         public int PageSize { get; set; }
 
+        [DataMember]
+        public string ProductName { get; set; }
+
     }
 }

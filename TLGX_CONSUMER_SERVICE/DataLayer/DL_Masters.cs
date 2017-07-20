@@ -3796,6 +3796,7 @@ namespace DataLayer
                             keyword.Edit_User = item.Edit_User;
                             keyword.Sequence = item.Sequence;
                             keyword.Status = item.Status;
+                            keyword.Icon = item.Icon;
 
                             ret.StatusMessage = "Keyword " + ReadOnlyMessage.strUpdatedSuccessfully;
                         }
@@ -3812,8 +3813,9 @@ namespace DataLayer
                             Keyword_Id = item.Keyword_Id,
                             Extra = item.Extra,
                             Missing = item.Missing,
-                            Status = item.Status
-                        };
+                            Status = item.Status,
+                            Icon = item.Icon
+                    };
                         context.m_keyword.Add(newKeyword);
 
                         ret.StatusMessage = "Keyword " + ReadOnlyMessage.strAddedSuccessfully;
@@ -3973,6 +3975,7 @@ namespace DataLayer
                                      TotalRecords = total,
                                      Attribute = a.Attribute ?? false,
                                      Sequence = a.Sequence ?? 0,
+                                     Icon = a.Icon,
                                      Alias = (from al in searchAlias
                                               where al.Keyword_Id == a.Keyword_Id
                                               orderby (al.Sequence ?? 0), al.Value
