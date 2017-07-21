@@ -1594,11 +1594,12 @@ namespace DataLayer
                 {
                     asrtmd = (from a in context.Accommodation_SupplierRoomTypeMapping
                               orderby a.Accommodation_SupplierRoomTypeMapping_Id
+                              where a.Edit_User != "TTFU"
                               select new DC_SupplierRoomName_Details
                               {
                                   RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
                                   SupplierRoomName = a.SupplierRoomName
-                              }).ToList();
+                              }).Skip(0).Take(10000).ToList();
                 }
 
                 List<DC_SupplierRoomName_AttributeList> AttributeList;
@@ -1706,6 +1707,8 @@ namespace DataLayer
                             srnm.TX_RoomName = srn.TX_SupplierRoomName;
                             srnm.Tx_StrippedName = srn.TX_SupplierRoomName_Stripped;
                             srnm.Tx_ReorderedName = srn.TX_SupplierRoomName_Stripped_ReOrdered;
+                            srnm.Edit_Date = DateTime.Now;
+                            srnm.Edit_User = "TTFU";
                         }
 
                         context.SaveChanges();
