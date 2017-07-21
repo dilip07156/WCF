@@ -1576,6 +1576,162 @@ namespace DataLayer
             }
         }
 
+        public void AccomodationSupplierRoomTypeMapping_TTFUALL()
+        {
+            try
+            {
+                //Get All Keywords
+                List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
+                using (DL_Masters objDL = new DL_Masters())
+                {
+                    Keywords = objDL.SearchKeyword(null);
+                }
+                List<DataContracts.Masters.DC_Keyword> Attributes = Keywords.Where(w => w.Attribute == true).ToList();
+
+                //Get All Supplier Room Type Name
+                List<DC_SupplierRoomName_Details> asrtmd;
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    asrtmd = (from a in context.Accommodation_SupplierRoomTypeMapping
+                              orderby a.Accommodation_SupplierRoomTypeMapping_Id
+                              select new DC_SupplierRoomName_Details
+                              {
+                                  RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                                  SupplierRoomName = a.SupplierRoomName
+                              }).ToList();
+                }
+
+                List<DC_SupplierRoomName_AttributeList> AttributeList;
+                foreach (DC_SupplierRoomName_Details srn in asrtmd)
+                {
+                    AttributeList = new List<DC_SupplierRoomName_AttributeList>();
+
+                    string BaseRoomName = srn.SupplierRoomName;
+
+                    //To Upper
+                    BaseRoomName = BaseRoomName.ToUpper();
+
+                    //Replace Multiple whitespaces into One Whitespace
+                    BaseRoomName = System.Text.RegularExpressions.Regex.Replace(BaseRoomName, @"\s{2,}", " ");
+
+                    //trim both end
+                    BaseRoomName = BaseRoomName.Trim();
+
+                    //Replace the braces
+                    BaseRoomName = BaseRoomName.Replace('{', '(');
+                    BaseRoomName = BaseRoomName.Replace('}', ')');
+                    BaseRoomName = BaseRoomName.Replace('[', '(');
+                    BaseRoomName = BaseRoomName.Replace(']', ')');
+
+                    BaseRoomName = BaseRoomName.Replace("( ", "(");
+                    BaseRoomName = BaseRoomName.Replace(" )", ")");
+
+                    //Take only alpha characters
+                    string RoomName_AlphabetsWithSpaceOnly = string.Empty;
+                    foreach (char c in BaseRoomName)
+                    {
+                        if ((Convert.ToInt16(c) >= 65 && Convert.ToInt16(c) <= 90) || (Convert.ToInt16(c) >= 97 && Convert.ToInt16(c) <= 122) || Convert.ToInt16(c) == 32)
+                        {
+                            RoomName_AlphabetsWithSpaceOnly = RoomName_AlphabetsWithSpaceOnly + c;
+                        }
+                    }
+
+                    //Split words and replace keywords
+                    string[] roomWords = RoomName_AlphabetsWithSpaceOnly.Split(' ');
+
+                    foreach (string word in roomWords)
+                    {
+                        DataContracts.Masters.DC_Keyword keywordSearch = Keywords.Where(k => k.Alias.Any(a => a.Value.ToUpper() == word.ToUpper()) && k.Attribute == false).FirstOrDefault();
+
+                        if (keywordSearch != null)
+                        {
+                            BaseRoomName = BaseRoomName.Replace(word, keywordSearch.Keyword);
+                        }
+
+                        keywordSearch = null;
+                    }
+
+                    //Transformed Supplier RoomName
+                    srn.TX_SupplierRoomName = BaseRoomName;
+
+                    //Attribute Extraction
+
+
+                    foreach (var Attribute in Attributes)
+                    {
+                        var aliases = Attribute.Alias.OrderByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
+                        foreach (var alias in aliases)
+                        {
+                            if (BaseRoomName.Contains(alias.Value.ToUpper()))
+                            {
+                                AttributeList.Add(new DC_SupplierRoomName_AttributeList
+                                {
+                                    SystemAttributeKeywordID = Attribute.Keyword_Id,
+                                    SupplierRoomTypeAttribute = alias.Value,
+                                    SystemAttributeKeyword = Attribute.Keyword
+                                });
+
+                                BaseRoomName = BaseRoomName.Replace(alias.Value.ToUpper(), string.Empty);
+                                BaseRoomName = BaseRoomName.Replace("()", string.Empty);
+                                BaseRoomName = BaseRoomName.Trim();
+
+                                alias.NewHits += 1;
+
+                                break;
+                            }
+                        }
+                    }
+
+                    //Value assignment
+                    srn.TX_SupplierRoomName_Stripped = BaseRoomName;
+                    srn.TX_SupplierRoomName_Stripped_ReOrdered = BaseRoomName;
+                    srn.AttributeList = AttributeList.ToList();
+
+                    //Update Room Name Stripped and Attributes
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        context.Accommodation_SupplierRoomTypeAttributes.AddRange((from a in srn.AttributeList
+                                                                                   select new Accommodation_SupplierRoomTypeAttributes
+                                                                                   {
+                                                                                       RoomTypeMapAttribute_Id = Guid.NewGuid(),
+                                                                                       RoomTypeMap_Id = srn.RoomTypeMap_Id,
+                                                                                       SupplierRoomTypeAttribute = a.SupplierRoomTypeAttribute,
+                                                                                       SystemAttributeKeyword = a.SystemAttributeKeyword,
+                                                                                       SystemAttributeKeyword_Id = a.SystemAttributeKeywordID
+                                                                                   }).ToList());
+
+                        var srnm = context.Accommodation_SupplierRoomTypeMapping.Find(srn.RoomTypeMap_Id);
+                        if (srnm != null)
+                        {
+                            srnm.TX_RoomName = srn.TX_SupplierRoomName;
+                            srnm.Tx_StrippedName = srn.TX_SupplierRoomName_Stripped;
+                            srnm.Tx_ReorderedName = srn.TX_SupplierRoomName_Stripped_ReOrdered;
+                        }
+
+                        context.SaveChanges();
+
+                    }
+                }
+
+                //Update No Of Hits
+                var updatableAliases = (from k in Keywords
+                                        from ka in k.Alias
+                                        where ka.NewHits != 0
+                                        select ka).ToList();
+                if (updatableAliases.Count > 0)
+                {
+                    using (DL_Masters objDL = new DL_Masters())
+                    {
+                        objDL.DataHandler_Keyword_Update_NoOfHits(updatableAliases);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while TTFU ALL", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
         #endregion
 
         #region Country Mapping
@@ -4423,6 +4579,7 @@ namespace DataLayer
             return _msg;
         }
         #endregion
+
         #region hotel report
         public List<DataContracts.Mapping.DC_newHotelsReport> getNewHotelsAddedReport(DataContracts.Mapping.DC_RollOFParams parm)
         {

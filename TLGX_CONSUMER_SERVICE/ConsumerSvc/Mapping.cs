@@ -89,6 +89,14 @@ namespace ConsumerSvc
             }
         }
 
+        public void AccomodationSupplierRoomTypeMapping_TTFUALL()
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                objBL.AccomodationSupplierRoomTypeMapping_TTFUALL();
+            }
+        }
+
         #endregion
 
         #region Country Mapping

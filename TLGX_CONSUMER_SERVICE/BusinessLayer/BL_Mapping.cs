@@ -165,6 +165,14 @@ namespace BusinessLayer
             }
         }
 
+        public void AccomodationSupplierRoomTypeMapping_TTFUALL()
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                objDL.AccomodationSupplierRoomTypeMapping_TTFUALL();
+            }
+        }
+
         #endregion
 
         #region Country Mapping
