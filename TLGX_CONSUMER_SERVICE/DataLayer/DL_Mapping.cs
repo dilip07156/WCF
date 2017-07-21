@@ -3432,28 +3432,31 @@ namespace DataLayer
                 {
                     if (SupplierID != Guid.Empty)
                     {
-                        var searchasummary = (
-                                              from t2 in context.m_CityMapping
-                                              join t3 in context.m_CountryMapping on t2.Country_Id equals t3.Country_Id
-                                              join t4 in context.Accommodation_ProductMapping on new { t2.CountryName, t2.CityName } equals new { t4.CountryName, t4.CityName }
-                                              where t2.Supplier_Id == SupplierID && (t2.Status == "UNMAPPED" || t2.Status == "REVIEW") &&
-                                              (t4.Status == "UNMAPEED" || t4.Status == "REVIEW")
-                                              group t4 by new { t4.SupplierName, t4.CountryName, t4.CityName } into g
-                                              select new
+                        var searchasummary = (from cm in context.m_CountryMapping
+                                              join ctm in context.m_CityMapping on
+                                                  new { cm.CountryName, cm.Supplier_Id } equals new { ctm.CountryName, ctm.Supplier_Id }
+                                              let prod = (from apm in context.Accommodation_ProductMapping
+                                                          where (apm.Status == "UNMAPPED" || apm.Status == "REVIEW") &&
+                                                          apm.CityName == ctm.CityName && apm.CountryName == cm.CountryName
+                                                          && apm.Supplier_Id == ctm.Supplier_Id
+                                                          select apm
+                                                    ).Count()
+                                              where (ctm.Status == "UNMAPPED" || ctm.Status == "REVIEW")
+                                                     && ctm.Supplier_Id == SupplierID
+                                              select new DC_supplierwiseunmappedsummaryReport
                                               {
-                                                  suppliername = g.Key.SupplierName,
-                                                  countryname = g.Key.CountryName,
-                                                  cityname = g.Key.CityName,
-                                                  noofproducts = g.Count(t4 => t4.Accommodation_ProductMapping_Id != null)
-                                              }).ToList();
-
+                                                  Suppliername = cm.SupplierName,
+                                                  Noofproducts = prod,
+                                                  Cityname = ctm.CityName,
+                                                  Countryname = cm.CountryName
+                                              }).Distinct().ToList();
                         foreach (var item in searchasummary)
                         {
                             DC_supplierwiseunmappedsummaryReport objsu = new DC_supplierwiseunmappedsummaryReport();
-                            objsu.Suppliername = item.suppliername;
-                            objsu.Noofproducts = item.noofproducts;
-                            objsu.Cityname = item.cityname;
-                            objsu.Countryname = item.countryname;
+                            objsu.Suppliername = item.Suppliername;
+                            objsu.Noofproducts = item.Noofproducts;
+                            objsu.Cityname = item.Cityname;
+                            objsu.Countryname = item.Countryname;
                             _objList.Add(objsu);
 
                         }
