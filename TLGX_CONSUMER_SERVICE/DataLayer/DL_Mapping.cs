@@ -1595,15 +1595,20 @@ namespace DataLayer
                 {
                     if (Acco_RoomTypeMap_Ids != null)
                     {
-                        asrtmd = (from a in context.Accommodation_SupplierRoomTypeMapping
-                                  join b in Acco_RoomTypeMap_Ids on a.Accommodation_SupplierRoomTypeMapping_Id equals b.Acco_RoomTypeMap_Id
-                                  orderby a.Accommodation_SupplierRoomTypeMapping_Id
-                                  select new DC_SupplierRoomName_Details
-                                  {
-                                      RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
-                                      SupplierRoomName = a.SupplierRoomName,
-                                  }).ToList();
 
+                        
+
+                        var MapIdsFilter = (from a in Acco_RoomTypeMap_Ids select a.Acco_RoomTypeMap_Id).ToList();
+
+                        asrtmd = context.Accommodation_SupplierRoomTypeMapping
+                                     .Where(w => MapIdsFilter.Contains(w.Accommodation_SupplierRoomTypeMapping_Id))
+                                     .OrderBy(o => o.Accommodation_SupplierRoomTypeMapping_Id)
+                                     .Select(s => new DC_SupplierRoomName_Details
+                                     {
+                                         RoomTypeMap_Id = s.Accommodation_SupplierRoomTypeMapping_Id,
+                                         SupplierRoomName = s.SupplierRoomName
+                                     }).ToList();
+                        
                         if (asrtmd.Count > 0)
                         {
                             Edit_User = Acco_RoomTypeMap_Ids[0].Edit_User;
@@ -1612,7 +1617,7 @@ namespace DataLayer
                         {
                             Edit_User = "TTFU SYSTEM";
                         }
-                        
+
                     }
                     else
                     {
@@ -4629,7 +4634,7 @@ namespace DataLayer
                     DateTime fd = Convert.ToDateTime(parm.Fromdate);
                     DateTime td = Convert.ToDateTime(parm.ToDate);
                     var search = (from t in context.Accommodations
-                                  where (t.Create_Date >= fd && t.Create_Date <= td) &&( t.InsertFrom ==true)
+                                  where (t.Create_Date >= fd && t.Create_Date <= td) && (t.InsertFrom == true)
                                   select new
                                   {
                                       HotelID = t.CompanyHotelID,
