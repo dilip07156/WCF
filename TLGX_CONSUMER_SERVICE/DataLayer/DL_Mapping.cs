@@ -4629,7 +4629,7 @@ namespace DataLayer
                     DateTime fd = Convert.ToDateTime(parm.Fromdate);
                     DateTime td = Convert.ToDateTime(parm.ToDate);
                     var search = (from t in context.Accommodations
-                                  where (t.Create_Date >= fd && t.Create_Date <= td)
+                                  where (t.Create_Date >= fd && t.Create_Date <= td) &&( t.InsertFrom ==true)
                                   select new
                                   {
                                       HotelID = t.CompanyHotelID,
