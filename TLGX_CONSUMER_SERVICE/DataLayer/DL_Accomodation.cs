@@ -146,6 +146,13 @@ namespace DataLayer
                                      select a;
                     }
 
+                    if (RQ.InsertFrom != null)
+                    {
+                        accoSearch = from a in accoSearch
+                                     where (a.InsertFrom ?? false) == RQ.InsertFrom
+                                     select a;
+                    }
+
                     int total;
 
                     total = accoSearch.Count();
@@ -184,7 +191,8 @@ namespace DataLayer
                                         //).Count(),
                                         HotelNameWithCode = a.HotelName + " / " + a.CompanyHotelID.ToString(),
                                         Country_Id = a.Country_Id,
-                                        City_Id = a.City_Id
+                                        City_Id = a.City_Id,
+                                        InsertFrom = a.InsertFrom
                                     }).Skip(skip).Take(RQ.PageSize).ToList();
 
                     if (!string.IsNullOrWhiteSpace(RQ.Searchfrom) && RQ.Searchfrom.ToLower().Trim() != "hotalsearch")
@@ -266,6 +274,12 @@ namespace DataLayer
                                          where a.Brand.Contains(RQ.Brand)
                                          select a;
                         }
+                    }
+                    if (RQ.InsertFrom != null)
+                    {
+                        accoSearch = from a in accoSearch
+                                     where (a.InsertFrom ?? false) == RQ.InsertFrom
+                                     select a;
                     }
 
                     var acco = (from a in accoSearch
@@ -361,7 +375,8 @@ namespace DataLayer
                                     YearBuilt = a.YearBuilt,
                                     Google_Place_Id = a.Google_Place_Id,
                                     Country_Id = a.Country_Id,
-                                    City_Id = a.City_Id
+                                    City_Id = a.City_Id,
+                                    InsertFrom = a.InsertFrom
 
                                     //,
                                     //Accommodation_Descriptions = null,
@@ -410,6 +425,7 @@ namespace DataLayer
                                    HotelRating = a.HotelRating,
                                    IsActive = (a.IsActive ?? true),
                                    StreetName = a.StreetName,
+                                   InsertFrom = a.InsertFrom,
                                    Accomodation_Contact = (from ac in context.Accommodation_Contact
                                                            where ac.Accommodation_Id == a.Accommodation_Id
                                                            select new DataContracts.DC_Accommodation_Contact
@@ -511,6 +527,7 @@ namespace DataLayer
                                    Town = a.Town,
                                    YearBuilt = a.YearBuilt,
                                    Google_Place_Id = a.Google_Place_Id,
+                                   InsertFrom = a.InsertFrom,
                                    Accommodation_Descriptions = (from ad in context.Accommodation_Descriptions
                                                                  where ad.Accommodation_Id == a.Accommodation_Id
                                                                  select new DataContracts.DC_Accommodation_Descriptions
@@ -913,6 +930,7 @@ namespace DataLayer
                                    YearBuilt = a.YearBuilt,
                                    Google_Place_Id = a.Google_Place_Id,
                                    FullAddress = a.FullAddress,
+                                   InsertFrom = a.InsertFrom,
                                    Accomodation_Contact = (from ac in context.Accommodation_Contact
                                                            where ac.Accommodation_Id == a.Accommodation_Id
                                                            select new DataContracts.DC_Accommodation_Contact
@@ -1041,7 +1059,7 @@ namespace DataLayer
                         search.Town = AccomodationDetails.Town;
                         search.YearBuilt = AccomodationDetails.YearBuilt;
                         search.Google_Place_Id = AccomodationDetails.Google_Place_Id;
-
+                        search.InsertFrom = AccomodationDetails.InsertFrom;
                         context.SaveChanges();
 
                     }
@@ -1129,7 +1147,7 @@ namespace DataLayer
                     newAcco.Google_Place_Id = AccomodationDetails.Google_Place_Id;
                     newAcco.Country_Id = AccomodationDetails.Country_Id;
                     newAcco.City_Id = AccomodationDetails.City_Id;
-
+                    newAcco.InsertFrom = AccomodationDetails.InsertFrom;
                     context.Accommodations.Add(newAcco);
 
                     context.SaveChanges();

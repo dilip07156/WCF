@@ -83,8 +83,10 @@ namespace DataContracts
         List<DC_Accommodation_RouteInfo> _Accommodation_RouteInfo;
         List<DC_Accommodation_Status> _Accomodation_Status;
         List<Masters.DC_DynamicAttributes> _Accomodation_DynamicAttributes;
-        List<DC_Accomodation_ClassificationAttributes> _Accomodation_ClassificationAttributes;
+        List<DC_Accomodation_ClassificationAttributes> _Accomodation_ClassificationAttributes;        
 
+        [DataMember]
+        public Nullable<bool> InsertFrom { get; set; }
 
         [DataMember]
         public Nullable<System.Guid> Country_Id { get; set; }
@@ -4602,6 +4604,9 @@ namespace DataContracts
         //    }
         //}
 
+        [DataMember]
+        public Nullable<bool> InsertFrom { get; set; }
+
         [DataMember(IsRequired = true)]
         public string ProductCategory
         {
@@ -4864,6 +4869,8 @@ namespace DataContracts
         string _HotelNameWithCode;
         string _starrating;
 
+        [DataMember]
+        public Nullable<bool> InsertFrom { get; set; }
 
         [DataMember]
         public Nullable<System.Guid> Country_Id { get; set; }

@@ -75,5 +75,6 @@ namespace DataLayer
         public string FullAddress { get; set; }
         public Nullable<System.Guid> Country_Id { get; set; }
         public Nullable<System.Guid> City_Id { get; set; }
+        public Nullable<bool> InsertFrom { get; set; }
     }
 }
