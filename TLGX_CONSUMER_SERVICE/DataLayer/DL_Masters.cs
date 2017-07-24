@@ -2237,6 +2237,13 @@ namespace DataLayer
                                  where pro.ProductCategorySubType == RQ.CategorySubType_ID
                                  select sup;
                     }
+
+                    if(!string.IsNullOrWhiteSpace(RQ.SupplierType))
+                    {
+                        search = from sup in search
+                                 where sup.SupplierType == RQ.SupplierType
+                                 select sup;
+                    }
                     if (!string.IsNullOrWhiteSpace(RQ.StatusCode))
                     {
                         search = from sup in search

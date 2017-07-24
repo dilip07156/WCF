@@ -229,6 +229,7 @@ namespace DataContracts.Masters
         string _Name;
         string _Code;
         string _ProductCategory_ID;
+        string _SupplierType;
         string _CategorySubType_ID;
         string _StatusCode;
         int? _PageNo;
@@ -338,6 +339,20 @@ namespace DataContracts.Masters
             set
             {
                 _PageSize = value;
+            }
+        }
+
+        [DataMember]
+        public string SupplierType
+        {
+            get
+            {
+                return _SupplierType;
+            }
+
+            set
+            {
+                _SupplierType = value;
             }
         }
         #endregion
