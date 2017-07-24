@@ -165,11 +165,11 @@ namespace BusinessLayer
             }
         }
 
-        public void AccomodationSupplierRoomTypeMapping_TTFUALL()
+        public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_TTFUALL(List<DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
         {
             using (DL_Mapping objDL = new DL_Mapping())
             {
-                objDL.AccomodationSupplierRoomTypeMapping_TTFUALL();
+                return objDL.AccomodationSupplierRoomTypeMapping_TTFUALL(Acco_RoomTypeMap_Ids);
             }
         }
 
