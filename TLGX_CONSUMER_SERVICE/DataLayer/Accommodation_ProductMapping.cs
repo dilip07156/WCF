@@ -50,5 +50,9 @@ namespace DataLayer
         public string address { get; set; }
         public string address_tx { get; set; }
         public string TelephoneNumber_tx { get; set; }
+        public string StarRating { get; set; }
+        public string Google_Place_Id { get; set; }
+        public Nullable<System.Guid> Country_Id { get; set; }
+        public Nullable<System.Guid> City_Id { get; set; }
     }
 }

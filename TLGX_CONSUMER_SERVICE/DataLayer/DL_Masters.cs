@@ -116,7 +116,9 @@ namespace DataLayer
                                      MARC = a.MARC,
                                      Status = a.Status,
                                      WMO = a.WMO,
-                                     TotalRecords = total
+                                     TotalRecords = total,
+                                     Latitude = a.Latitude,
+                                     Longitude = a.Longitude
                                  };
 
                     return result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
@@ -176,7 +178,8 @@ namespace DataLayer
                         objNew.Status = param.Status;
                         objNew.WMO = param.WMO;
                         objNew.Country_Id = param.Country_Id;
-
+                        objNew.Latitude = param.Latitude;
+                        objNew.Longitude = param.Longitude;
                         context.m_CountryMaster.Add(objNew);
                     }
                     else if (param.Action == "Update")
@@ -271,7 +274,8 @@ namespace DataLayer
                     objNew.MARC = param.MARC;
                     objNew.Status = param.Status;
                     objNew.WMO = param.WMO;
-
+                    objNew.Latitude = param.Latitude;
+                    objNew.Longitude = param.Longitude;
                     context.m_CountryMaster.Add(objNew);
                     context.SaveChanges();
 
@@ -464,6 +468,7 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Country Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
 
         public List<State_AlphaPage> GetStatesAlphaPaging(DC_State_Search_RQ RQ)
         {
@@ -752,6 +757,20 @@ namespace DataLayer
                                  select a;
                     }
 
+                    if(RQ.State_Id!=null)
+                    {
+                        search = from a in search
+                                 where a.State_Id == RQ.State_Id
+                                 select a;
+                    }
+
+                    if(!String.IsNullOrWhiteSpace(RQ.State_Name))
+                    {
+                        search = from a in search
+                                 where a.StateName == RQ.State_Name
+                                 select a;
+                    }
+
                     if (RQ.City_Id != null)
                     {
                         search = from a in search
@@ -802,7 +821,9 @@ namespace DataLayer
                                      StateName = a.StateName,
                                      State_Id = a.State_Id,
                                      Status = a.Status,
-                                     TotalRecords = total
+                                     TotalRecords = total,
+                                     Latitude = a.Latitude,
+                                     Longitude = a.Longitude
                                  };
 
                     return result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
@@ -836,9 +857,9 @@ namespace DataLayer
                         int number = Convert.ToInt32(m.Value);
                         number = number + 1;
                         ret = CommonFunctions.NumberTo3CharString(number);
-                    }                        
+                    }
                 }
-            } 
+            }
 
             return ret;
         }
@@ -862,6 +883,7 @@ namespace DataLayer
                 }
                 DataContracts.Masters.DC_City_Search_RQ RQ = new DataContracts.Masters.DC_City_Search_RQ();
                 RQ.City_Name = param.Name;
+                RQ.State_Id = param.State_Id;
                 RQ.Country_Id = param.Country_Id;
                 List<DataContracts.Masters.DC_City> existCity = GetCityMaster(RQ);
 
@@ -888,6 +910,7 @@ namespace DataLayer
                         objNew.CountryName = param.CountryName;
                         objNew.Code = CommonFunctions.GenerateCityCode(param); //param.Code;
                         objNew.Country_Id = param.Country_Id;
+                        objNew.CountryCode = param.CountryCode;
                         objNew.Create_Date = param.Create_Date;
                         objNew.Create_User = param.Create_User;
                         objNew.Google_PlaceId = param.Google_PlaceId;
@@ -896,7 +919,8 @@ namespace DataLayer
                         objNew.StateName = param.StateName;
                         objNew.State_Id = param.State_Id;
                         objNew.Status = param.Status;
-
+                        objNew.Latitude = param.Latitude;
+                        objNew.Longitude = param.Longitude;
                         context.m_CityMaster.Add(objNew);
                         context.SaveChanges();
 
@@ -919,17 +943,26 @@ namespace DataLayer
             }
         }
 
-        public bool UpdateCityMaster(DataContracts.Masters.DC_City param)
+        public DC_Message UpdateCityMaster(DataContracts.Masters.DC_City param)
         {
+            DC_Message _objMsg = new DC_Message();
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    bool isDuplicate = context.m_CityMaster.Where(a => a.City_Id != param.City_Id && a.Name == param.Name && a.Country_Id == param.Country_Id && a.State_Id == param.State_Id).Count() > 0 ? true : false;
+
+                    if (isDuplicate)
+                    {
+                        _objMsg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
+                        _objMsg.StatusMessage = param.Name + ReadOnlyMessage.strAlreadyExist;
+                        return _objMsg;
+                    }
                     var search = context.m_CityMaster.Find(param.City_Id);
                     if (search != null)
                     {
-                        search.CountryName = param.CountryName;
-                        search.Code = param.Code;
+                        //search.CountryName = param.CountryName; //Commented, because inserting null value from city Manager.
+                        //search.Code = param.Code;
                         search.Country_Id = param.Country_Id;
                         search.Edit_Date = param.Edit_Date;
                         search.Edit_User = param.Edit_User;
@@ -937,13 +970,21 @@ namespace DataLayer
                         search.Name = param.Name;
                         search.StateCode = param.StateCode;
                         search.StateName = param.StateName;
-                        search.State_Id = param.State_Id;
-                        search.Status = param.Status;
-
-                        context.SaveChanges();
+                        //search.State_Id = param.State_Id;
+                        //search.Status = param.Status;
+                        
                     }
-                    return true;
+                    else
+                    {
+                        _objMsg.StatusMessage = ReadOnlyMessage.strFailed;
+                        _objMsg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        return _objMsg;
+                    }
+                    context.SaveChanges();
+                    _objMsg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                    _objMsg.StatusCode = ReadOnlyMessage.StatusCode.Success;
                 }
+                return _objMsg;
             }
             catch
             {
@@ -2199,7 +2240,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(RQ.StatusCode))
                     {
                         search = from sup in search
-                                 where sup.StatusCode == RQ.StatusCode
+                                 where sup.StatusCode.Trim().Substring(0, 3).ToUpper() == RQ.StatusCode.Trim().Substring(0, 3).ToUpper()
                                  select sup;
                     }
 
@@ -2830,16 +2871,16 @@ namespace DataLayer
                     var search = from a in context.Activities
                                  select a;
 
-                    //excluding supplier tagged activity
+                    ////excluding supplier tagged activity
 
-                    if (!string.IsNullOrWhiteSpace(RQ.Supplier_Id))
-                    {
-                        Guid _Suppier_Id = Guid.Parse(RQ.Supplier_Id);
-                        if (_Suppier_Id != Guid.Empty)
-                        {
-                            search = search.Where(i => !(from ab in context.Activity_SupplierProductMapping where ab.Supplier_ID == _Suppier_Id && ab.MappingStatus == "MAPPED" && ab.Activity_ID != null select ab.Activity_ID).Contains(i.Acivity_Id));
-                        }
-                    }
+                    //if (!string.IsNullOrWhiteSpace(RQ.Supplier_Id))
+                    //{
+                    //    Guid _Suppier_Id = Guid.Parse(RQ.Supplier_Id);
+                    //    if (_Suppier_Id != Guid.Empty)
+                    //    {
+                    //        search = search.Where(i => !(from ab in context.Activity_SupplierProductMapping where ab.Supplier_ID == _Suppier_Id && ab.MappingStatus == "MAPPED" && ab.Activity_ID != null select ab.Activity_ID).Contains(i.Acivity_Id));
+                    //    }
+                    //}
                     if (RQ.Activity_Id != null)
                     {
                         search = from a in search
@@ -3666,7 +3707,7 @@ namespace DataLayer
                         myCA.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
                         context.m_CityArea.Add(myCA);
                     }
-                    else if (obj.Option.ToUpper() == "Update")
+                    else if (obj.Option.ToUpper() == "UPDATE")
                     {
                         var xD = (from myCa in context.m_CityArea
                                   where myCa.CityArea_Id == obj.CityArea_Id
@@ -3714,257 +3755,330 @@ namespace DataLayer
         #endregion
 
         #region Keyword
-        public DC_Message SaveKeyword(List<DC_Keyword> obj)
-        {
-            DataContracts.DC_Message ret = new DataContracts.DC_Message();
-            try
-            {
-
-                //obj.Keyword_Id = Guid.NewGuid();
-                //obj.AliasKeywordAlias_Id = Guid.NewGuid();
-                //DataContracts.Masters.DC_Keyword_RQ RQ = new DataContracts.Masters.DC_Keyword_RQ();
-                //RQ.SystemWord = obj.Keyword;
-                //RQ.Alias = obj.AliasValue;
-                //RQ.Status = obj.Status;
-
-                using (ConsumerEntities context = new ConsumerEntities())
-                {
-                    var ID = Guid.NewGuid();
-                    foreach (var item in obj)
-                    {
-                        DataLayer.m_keyword objnew = new m_keyword();
-                        DataLayer.m_keyword_alias objnewAlias = new m_keyword_alias();
-                        objnew.Keyword_Id = ID;
-                        objnew.Keyword = item.Keyword;
-                        objnew.Missing = item.Missing;
-                        objnew.Extra = item.Extra;
-                        objnew.Create_User = item.Create_User;
-                        objnew.Create_Date = item.Create_Date;
-                        objnew.Edit_Date = item.Edit_Date;
-                        objnew.Edit_User = item.Edit_User;
-                        objnew.Status = item.Status;
-                        objnewAlias.KeywordAlias_Id = Guid.NewGuid();
-                        objnewAlias.Keyword_Id = ID;
-                        objnewAlias.Value = item.AliasValue;
-                        objnewAlias.Create_Date = item.AliasCreate_Date;
-                        objnewAlias.Create_User = item.AliasCreate_User;
-                        objnewAlias.Status = item.AliasStatus;
-                        context.m_keyword.Add(objnew);
-                        context.m_keyword_alias.Add(objnewAlias);
-                        context.SaveChanges();
-                    }
-
-                }
-                ret.StatusMessage = "Success";
-                return ret;
-            }
-            catch
-            {
-                ret.StatusMessage = "Failed";
-                return ret;
-            }
-        }
-
-        public DC_Message UpdateKeyword(List<DC_Keyword> obj)
+        public DC_Message AddUpdateKeyword(DC_Keyword item)
         {
             DataContracts.DC_Message ret = new DataContracts.DC_Message();
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    
-                    foreach (var item in obj)
+
+                    var searchKeywordDuplicate = context.m_keyword.Where(a => a.Keyword == item.Keyword && a.Keyword_Id != item.Keyword_Id).FirstOrDefault();
+                    if (searchKeywordDuplicate != null)
                     {
-                        DataLayer.m_keyword objnew = new m_keyword();
-                        DataLayer.m_keyword_alias objnewAlias = new m_keyword_alias();
-                        objnew.Keyword = item.Keyword;
-                        objnew.Missing = item.Missing;
-                        objnew.Extra = item.Extra;
-                        objnew.Edit_Date = item.Edit_Date;
-                        objnew.Edit_User = item.Edit_User;
-                        objnew.Status = item.Status;
-                        
-                        objnewAlias.Value = item.AliasValue;
-                        objnewAlias.Status = item.AliasStatus;
-                        context.m_keyword_alias.Add(objnewAlias);
-                        context.SaveChanges();
+                        ret.StatusMessage = "Keyword: " + item.Keyword + " already exists.";
+                        ret.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
+                        return ret;
                     }
 
+                    var keyword = context.m_keyword.Find(item.Keyword_Id);
+                    if (keyword != null) //Update Keyword
+                    {
+                        if (keyword.Status != item.Status)
+                        {
+                            keyword.Status = item.Status;
+                            keyword.Edit_Date = DateTime.Now;
+                            keyword.Edit_User = item.Edit_User;
+                            if (item.Status == "INACTIVE")
+                            {
+                                ret.StatusMessage = "Keyword" + ReadOnlyMessage.strDeleted;
+                            }
+                            else
+                            {
+                                ret.StatusMessage = "Keyword" + ReadOnlyMessage.strUnDeleted;
+                            }
+                        }
+                        else
+                        {
+                            keyword.Keyword = item.Keyword;
+                            keyword.Attribute = item.Attribute;
+                            keyword.Edit_Date = DateTime.Now;
+                            keyword.Edit_User = item.Edit_User;
+                            keyword.Sequence = item.Sequence;
+                            keyword.Status = item.Status;
+                            keyword.Icon = item.Icon;
+
+                            ret.StatusMessage = "Keyword " + ReadOnlyMessage.strUpdatedSuccessfully;
+                        }
+                    }
+                    else //insert keyword
+                    {
+                        m_keyword newKeyword = new m_keyword
+                        {
+                            Attribute = item.Attribute,
+                            Sequence = item.Sequence,
+                            Create_Date = DateTime.Now,
+                            Create_User = item.Create_User,
+                            Keyword = item.Keyword,
+                            Keyword_Id = item.Keyword_Id,
+                            Extra = item.Extra,
+                            Missing = item.Missing,
+                            Status = item.Status,
+                            Icon = item.Icon
+                    };
+                        context.m_keyword.Add(newKeyword);
+
+                        ret.StatusMessage = "Keyword " + ReadOnlyMessage.strAddedSuccessfully;
+                    }
+
+                    if (item.Alias != null)
+                    {
+                        foreach (var alias in item.Alias)
+                        {
+                            var searchKeywordAliasDuplicate = context.m_keyword_alias.Where(a => a.Value == alias.Value && a.Keyword_Id != alias.Keyword_Id).FirstOrDefault();
+                            if (searchKeywordAliasDuplicate != null)
+                            {
+                                ret.StatusMessage = "Keyword Alias: " + alias.Value + " already exists.";
+                                ret.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
+                                return ret;
+                            }
+
+                            var keywordAlias = context.m_keyword_alias.Find(alias.KeywordAlias_Id);
+                            if (keywordAlias != null) //update alias
+                            {
+                                if (keywordAlias.Status != alias.Status)
+                                {
+                                    keywordAlias.Status = alias.Status;
+                                    keywordAlias.Edit_Date = DateTime.Now;
+                                    keywordAlias.Edit_User = alias.Edit_User;
+                                    if (alias.Status == "INACTIVE")
+                                    {
+                                        ret.StatusMessage = "Keyword Alias" + ReadOnlyMessage.strDeleted;
+                                    }
+                                    else
+                                    {
+                                        ret.StatusMessage = "Keyword Alias" + ReadOnlyMessage.strUnDeleted;
+                                    }
+                                }
+                                else
+                                {
+                                    keywordAlias.Value = alias.Value;
+                                    keywordAlias.Sequence = alias.Sequence;
+                                    keywordAlias.Edit_Date = DateTime.Now;
+                                    keywordAlias.Edit_User = alias.Edit_User;
+                                    keywordAlias.Status = alias.Status;
+                                    ret.StatusMessage = "Keyword Alias" + ReadOnlyMessage.strUpdatedSuccessfully;
+                                }
+                            }
+                            else//add alias
+                            {
+                                m_keyword_alias newKeywordalias = new m_keyword_alias
+                                {
+                                    KeywordAlias_Id = alias.KeywordAlias_Id,
+                                    Value = alias.Value,
+                                    Sequence = alias.Sequence,
+                                    Create_Date = DateTime.Now,
+                                    Create_User = alias.Create_User,
+                                    Keyword_Id = alias.Keyword_Id,
+                                    Status = alias.Status
+                                };
+                                context.m_keyword_alias.Add(newKeywordalias);
+
+                                ret.StatusMessage = "Keyword Alias" + ReadOnlyMessage.strAddedSuccessfully;
+                            }
+                        }
+                    }
+
+                    context.SaveChanges();
                 }
-                ret.StatusMessage = "Success";
+
+                ret.StatusCode = ReadOnlyMessage.StatusCode.Success;
                 return ret;
             }
             catch
             {
-                ret.StatusMessage = "Failed";
+                ret.StatusMessage = "Keyword " + ReadOnlyMessage.strFailed;
+                ret.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                 return ret;
             }
         }
 
-        public List<DC_Keyword> SearchKeyword(DC_Keyword_RQ obj)
+        public List<DataContracts.Masters.DC_Keyword> SearchKeyword(DC_Keyword_RQ obj)
         {
             try
             {
+                if (obj == null)
+                {
+                    obj = new DC_Keyword_RQ();
+                    obj.PageNo = 0;
+                    obj.PageSize = int.MaxValue;
+                    obj.Status = "ACTIVE";
+                    obj.AliasStatus = "ACTIVE";
+                    obj.Attribute = null;
+                }
+
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var Result = from k in context.m_keyword
-                                 join kat in context.m_keyword_alias on k.Keyword_Id equals kat.Keyword_Id into katt
-                                 from ka in katt.DefaultIfEmpty()
-                                 select new DC_Keyword
-                                 {
-                                     Keyword_Id = k.Keyword_Id,
-                                     AliasCreate_Date = ka.Create_Date,
-                                     Create_Date = k.Create_Date,
-                                     AliasCreate_User = ka.Create_User,
-                                     Create_User = k.Create_User,
-                                     AliasEdit_Date = ka.Edit_Date,
-                                     Edit_Date = k.Edit_Date,
-                                     AliasEdit_User = ka.Edit_User,
-                                     AliasKeywordAlias_Id = ka.KeywordAlias_Id,
-                                     AliasStatus = ka.Status,
-                                     Edit_User = k.Edit_User,
-                                     Status = k.Status,
-                                     AliasValue = ka.Value,
-                                     Extra = k.Extra,
-                                     Keyword = k.Keyword,
-                                     Missing = k.Missing
-                                 };
+                    var search = from ka in context.m_keyword
+                                 select ka;
 
-                    if(obj.Keyword_Id != null)
+                    if (obj.Keyword_Id != null)
                     {
-                        Result = from r in Result
+                        search = from r in search
                                  where r.Keyword_Id == obj.Keyword_Id
                                  select r;
                     }
 
-                    if (obj.AliasKeywordAlias_Id != null)
+                    if (!string.IsNullOrWhiteSpace(obj.systemWord))
                     {
-                        Result = from r in Result
-                                 where r.AliasKeywordAlias_Id == obj.AliasKeywordAlias_Id
-                                 select r;
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(obj.SystemWord))
-                    {
-                        Result = from r in Result
-                                 where r.Keyword.Trim().ToUpper().Contains(obj.SystemWord.Trim().ToUpper())
-                                 select r;
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(obj.Alias))
-                    {
-                        Result = from r in Result
-                                 where r.AliasValue.Trim().ToUpper().Contains(obj.Alias.Trim().ToUpper())
+                        search = from r in search
+                                 where r.Keyword.Trim().ToUpper() == obj.systemWord.Trim().ToUpper()
                                  select r;
                     }
 
                     if (!string.IsNullOrWhiteSpace(obj.Status))
                     {
-                        Result = from r in Result
-                                 where r.Status.Trim().ToUpper()== obj.Status.Trim().ToUpper()
+                        search = from r in search
+                                 where r.Status.Trim().ToUpper() == obj.Status.Trim().ToUpper()
                                  select r;
                     }
 
-                    return Result.ToList();
+                    if (obj.Attribute != null)
+                    {
+                        search = from r in search
+                                 where (r.Attribute ?? false) == obj.Attribute
+                                 select r;
+                    }
 
-                    //var search = from c in context.m_keyword
-                    //             select c;
+                    int total = search.Count();
+                    int skip = obj.PageNo * obj.PageSize;
 
-                    //if (obj.Keyword_Id.HasValue)
-                    //{
-                    //    if (obj.Keyword_Id.Value != Guid.Empty)
-                    //    {
-                    //        Guid _keywordID = Guid.Parse(obj.Keyword_Id.ToString());
-                    //        search = from a in search
-                    //                 where a.Keyword_Id == _keywordID
-                    //                 select a;
-                    //    }
-                    //}
-                    //if (obj.AliasKeywordAlias_Id.HasValue)
-                    //{
-                    //    if (obj.AliasKeywordAlias_Id.Value != Guid.Empty)
-                    //    {
-                    //        Guid _AliasKeywordAliasID = Guid.Parse(obj.AliasKeywordAlias_Id.ToString());
-                    //        search = from a in search
-                    //                 join b in context.m_keyword_alias on a.Keyword_Id equals b.Keyword_Id
-                    //                 where b.KeywordAlias_Id == _AliasKeywordAliasID
-                    //                 select a;
-                    //    }
-                    //}
+                    var searchAlias = from a in context.m_keyword_alias
+                                      select a;
+                    if (!string.IsNullOrWhiteSpace(obj.Alias))
+                    {
+                        searchAlias = from a in searchAlias
+                                      where a.Value == obj.Alias
+                                      select a;
+                    }
 
-                    //if (!string.IsNullOrWhiteSpace(obj.SystemWord))
-                    //{
-                    //    search = from a in search
-                    //             where a.Keyword == obj.SystemWord
-                    //             select a;
-                    //}
-                    //if (!string.IsNullOrWhiteSpace(obj.Alias))
-                    //{
-                    //    search = from a in search
-                    //             join b in context.m_keyword_alias on a.Keyword_Id equals b.Keyword_Id
-                    //             where b.Value == obj.Alias
-                    //             select a;
-                    //}
+                    if (!string.IsNullOrWhiteSpace(obj.AliasStatus))
+                    {
+                        searchAlias = from a in searchAlias
+                                      where a.Status == obj.AliasStatus
+                                      select a;
+                    }
 
-                    //var SearchedKeyword = (from a in search
-                    //                       join b in context.m_keyword_alias on a.Keyword_Id equals b.Keyword_Id
-                    //                       select new DC_Keyword
-                    //                       {
-                    //                           Keyword_Id = a.Keyword_Id,
-                    //                           AliasKeywordAlias_Id = b.KeywordAlias_Id,
-                    //                           Keyword = a.Keyword,
-                    //                           AliasValue = b.Value,
-                    //                           AliasStatus = b.Status,
-                    //                       }).ToList();
-                    //return SearchedKeyword;
+                    var result = from a in search
+                                 orderby a.Sequence ?? 0, a.Keyword
+                                 select new DataContracts.Masters.DC_Keyword
+                                 {
+                                     Keyword_Id = a.Keyword_Id,
+                                     Keyword = a.Keyword,
+                                     Missing = a.Missing,
+                                     Extra = a.Extra,
+                                     Status = a.Status,
+                                     Create_Date = a.Create_Date,
+                                     Create_User = a.Create_User,
+                                     Edit_Date = a.Edit_Date,
+                                     Edit_User = a.Edit_User,
+                                     TotalRecords = total,
+                                     Attribute = a.Attribute ?? false,
+                                     Sequence = a.Sequence ?? 0,
+                                     Icon = a.Icon,
+                                     Alias = (from al in searchAlias
+                                              where al.Keyword_Id == a.Keyword_Id
+                                              orderby (al.Sequence ?? 0), al.Value
+                                              select new DC_keyword_alias
+                                              {
+                                                  KeywordAlias_Id = al.KeywordAlias_Id,
+                                                  Keyword_Id = a.Keyword_Id,
+                                                  Create_Date = al.Create_Date,
+                                                  Create_User = al.Create_User,
+                                                  Edit_Date = al.Edit_Date,
+                                                  Edit_User = al.Edit_User,
+                                                  Status = al.Status,
+                                                  Value = al.Value,
+                                                  Sequence = al.Sequence ?? 0,
+                                                  NoOfHits = al.NoOfHits ?? 0,
+                                                  NewHits = 0
+                                              }).ToList()
+                                 };
+
+
+                    return result.Skip(skip).Take(obj.PageSize).ToList();
+
+
                 }
             }
             catch (Exception e)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error While Searching", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
-                
+
             }
-            return null;
         }
-        public DC_Message SaveAliasForKeyword(List<DC_keyword_alias> _lst)
+
+        public List<DC_keyword_alias> SearchKeywordAlias(DC_Keyword_RQ obj)
         {
-            DC_Message _msg = new DC_Message();
-            using (ConsumerEntities context = new ConsumerEntities())
+            try
             {
-                foreach (var item in _lst)
+                using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    //Check for exist one for Keyword with Alias
-                    bool Duplicate = (from a in context.m_keyword_alias where a.Keyword_Id == item.Keyword_Id && a.Value.ToLower() == item.Value.ToLower() select a).Count() > 0 ? true : false;
-                    if (!Duplicate)
+                    var search = from ka in context.m_keyword_alias
+                                 where ka.Keyword_Id == obj.Keyword_Id
+                                 select ka;
+
+                    if (!string.IsNullOrWhiteSpace(obj.Alias))
                     {
-                        m_keyword_alias _obj = new m_keyword_alias();
-                        _obj.Keyword_Id = item.Keyword_Id;
-                        _obj.KeywordAlias_Id = Guid.NewGuid();
-                        _obj.Create_Date = DateTime.Now;
-                        _obj.Create_User = item.Create_User;
-                        _obj.Status = item.Status;
-                        context.m_keyword_alias.Add(_obj);
+                        search = from r in search
+                                 where r.Value.Trim().ToUpper().Contains(obj.Alias.Trim().ToUpper())
+                                 select r;
                     }
-                    else
+
+                    int total = search.Count();
+                    int skip = obj.PageNo * obj.PageSize;
+
+                    var result = from a in search
+                                 orderby a.Sequence ?? 0, a.Value
+                                 select new DataContracts.Masters.DC_keyword_alias
+                                 {
+                                     Keyword_Id = a.Keyword_Id ?? Guid.Empty,
+                                     Status = a.Status,
+                                     Create_Date = a.Create_Date,
+                                     Create_User = a.Create_User,
+                                     Edit_Date = a.Edit_Date,
+                                     Edit_User = a.Edit_User,
+                                     TotalRecords = total,
+                                     Sequence = a.Sequence ?? 0,
+                                     KeywordAlias_Id = a.KeywordAlias_Id,
+                                     Value = a.Value
+                                 };
+
+
+                    return result.Skip(skip).Take(obj.PageSize).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error While Searching", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+
+            }
+        }
+
+        public void DataHandler_Keyword_Update_NoOfHits(List<DC_keyword_alias> NoOfHits)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    foreach (var item in NoOfHits)
                     {
-                        var search = (from a in context.m_keyword_alias where a.Keyword_Id == item.Keyword_Id && a.Value.ToLower() == item.Value.ToLower() select a).FirstOrDefault();
-                        if (search != null)
+                        var KeywordAliasItem = context.m_keyword_alias.Find(item.KeywordAlias_Id);
+                        if (KeywordAliasItem != null)
                         {
-                            search.Value = item.Value;
-                            search.Edit_Date = DateTime.Now;
-                            search.Edit_User = item.Create_User;
-                            search.Status = item.Status;
+                            KeywordAliasItem.NoOfHits = KeywordAliasItem.NoOfHits + item.NewHits;
                         }
                     }
-
+                    context.SaveChanges();
                 }
-                context.SaveChanges();
-                _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
-                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
             }
-            return _msg;
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error While Updating Keyword Alias Number Of Hits", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
 
+            }
         }
+
         #endregion
     }
 }

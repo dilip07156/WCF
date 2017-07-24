@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Data.SqlClient;
+using DataContracts;
+using System.Text.RegularExpressions;
+using System.Device.Location;
+using System.Globalization;
 
 namespace DataLayer
 {
@@ -135,6 +139,19 @@ namespace DataLayer
                                      where a.Accommodation_Id == _guidAccomodationId
                                      select a;
                     }
+                    if (!string.IsNullOrWhiteSpace(RQ.Starrating))
+                    {
+                        accoSearch = from a in accoSearch
+                                     where a.HotelRating == RQ.Starrating
+                                     select a;
+                    }
+
+                    if (RQ.InsertFrom != null)
+                    {
+                        accoSearch = from a in accoSearch
+                                     where (a.InsertFrom ?? false) == RQ.InsertFrom
+                                     select a;
+                    }
 
                     int total;
 
@@ -157,6 +174,7 @@ namespace DataLayer
                                         City = a.city,
                                         Country = a.country,
                                         HotelBrand = a.Brand,
+                                        Starrating = a.HotelRating,
                                         HotelChain = a.Chain,
                                         HotelName = a.HotelName,
                                         Location = a.Location,
@@ -165,15 +183,32 @@ namespace DataLayer
                                         TotalRecords = total,
                                         Google_Place_Id = a.Google_Place_Id,
                                         FullAddress = (a.StreetNumber ?? string.Empty) + ", " + (a.StreetName ?? string.Empty) + ", " + (a.Street3 ?? string.Empty) + ", " + (a.Street4 ?? string.Empty) + ", " + (a.Street5 ?? string.Empty) + ", " + (a.PostalCode ?? string.Empty) + ", " + (a.city ?? string.Empty) + ", " + (a.country ?? string.Empty),
-                                        MapCount = (
-                                            from am in context.Accommodation_ProductMapping
-                                            where am.Accommodation_Id == a.Accommodation_Id
-                                            select new { am.Accommodation_ProductMapping_Id }
-                                        ).Count(),
-                                        HotelNameWithCode = a.HotelName + " / " + a.CompanyHotelID.ToString()
-                                    }).Skip(skip).Take(RQ.PageSize);
+                                        MapCount = 0,
+                                        //MapCount = (
+                                        //    from am in context.Accommodation_ProductMapping
+                                        //    where am.Accommodation_Id == a.Accommodation_Id
+                                        //    select new { am.Accommodation_ProductMapping_Id }
+                                        //).Count(),
+                                        HotelNameWithCode = a.HotelName + " / " + a.CompanyHotelID.ToString(),
+                                        Country_Id = a.Country_Id,
+                                        City_Id = a.City_Id,
+                                        InsertFrom = a.InsertFrom
+                                    }).Skip(skip).Take(RQ.PageSize).ToList();
 
-                    return accoList.ToList();
+                    if (!string.IsNullOrWhiteSpace(RQ.Searchfrom) && RQ.Searchfrom.ToLower().Trim() != "hotalsearch")
+                    {
+                        accoList = accoList.Select(c =>
+                        {
+                            c.MapCount = (context.Accommodation_ProductMapping
+                                            .Where(s => (s.Accommodation_Id == Guid.Parse(c.AccomodationId)))
+                                            .Select(s1 => s1.Accommodation_ProductMapping_Id)
+                                            .Count()
+                                            );
+                            return c;
+                        }).ToList();
+                    }
+
+                    return accoList;
                 }
             }
             catch
@@ -239,6 +274,12 @@ namespace DataLayer
                                          where a.Brand.Contains(RQ.Brand)
                                          select a;
                         }
+                    }
+                    if (RQ.InsertFrom != null)
+                    {
+                        accoSearch = from a in accoSearch
+                                     where (a.InsertFrom ?? false) == RQ.InsertFrom
+                                     select a;
                     }
 
                     var acco = (from a in accoSearch
@@ -332,7 +373,10 @@ namespace DataLayer
                                     TotalRooms = a.TotalRooms,
                                     Town = a.Town,
                                     YearBuilt = a.YearBuilt,
-                                    Google_Place_Id = a.Google_Place_Id
+                                    Google_Place_Id = a.Google_Place_Id,
+                                    Country_Id = a.Country_Id,
+                                    City_Id = a.City_Id,
+                                    InsertFrom = a.InsertFrom
 
                                     //,
                                     //Accommodation_Descriptions = null,
@@ -374,11 +418,14 @@ namespace DataLayer
                                    City_ISO = a.City_ISO,
                                    CompanyHotelID = a.CompanyHotelID,
                                    Country = a.country,
+                                   Country_Id = a.Country_Id,
+                                   City_Id = a.City_Id,
                                    Country_ISO = a.Country_ISO,
                                    HotelName = a.HotelName,
                                    HotelRating = a.HotelRating,
                                    IsActive = (a.IsActive ?? true),
                                    StreetName = a.StreetName,
+                                   InsertFrom = a.InsertFrom,
                                    Accomodation_Contact = (from ac in context.Accommodation_Contact
                                                            where ac.Accommodation_Id == a.Accommodation_Id
                                                            select new DataContracts.DC_Accommodation_Contact
@@ -431,6 +478,8 @@ namespace DataLayer
                                    CheckOutTime = a.CheckOutTime,
                                    City = a.city,
                                    City_ISO = a.City_ISO,
+                                   Country_Id = a.Country_Id,
+                                   City_Id = a.City_Id,
                                    CompanyHotelID = a.CompanyHotelID,
                                    CompanyName = a.CompanyName,
                                    CompanyRating = a.CompanyRating,
@@ -478,6 +527,7 @@ namespace DataLayer
                                    Town = a.Town,
                                    YearBuilt = a.YearBuilt,
                                    Google_Place_Id = a.Google_Place_Id,
+                                   InsertFrom = a.InsertFrom,
                                    Accommodation_Descriptions = (from ad in context.Accommodation_Descriptions
                                                                  where ad.Accommodation_Id == a.Accommodation_Id
                                                                  select new DataContracts.DC_Accommodation_Descriptions
@@ -836,6 +886,8 @@ namespace DataLayer
                                    CompanyRecommended = (a.CompanyRecommended ?? false),
                                    Country = a.country,
                                    Country_ISO = a.Country_ISO,
+                                   Country_Id = a.Country_Id,
+                                   City_Id = a.City_Id,
                                    Create_Date = a.Create_Date,
                                    Create_User = a.Create_User,
                                    DisplayName = a.DisplayName,
@@ -877,6 +929,8 @@ namespace DataLayer
                                    Town = a.Town,
                                    YearBuilt = a.YearBuilt,
                                    Google_Place_Id = a.Google_Place_Id,
+                                   FullAddress = a.FullAddress,
+                                   InsertFrom = a.InsertFrom,
                                    Accomodation_Contact = (from ac in context.Accommodation_Contact
                                                            where ac.Accommodation_Id == a.Accommodation_Id
                                                            select new DataContracts.DC_Accommodation_Contact
@@ -982,7 +1036,8 @@ namespace DataLayer
                         search.PostalCode = AccomodationDetails.PostalCode;
                         search.ProductCategory = AccomodationDetails.ProductCategory;
                         search.ProductCategorySubType = AccomodationDetails.ProductCategorySubType;
-
+                        search.Country_Id = AccomodationDetails.Country_Id;
+                        search.City_Id = AccomodationDetails.City_Id;
                         //Check Ratting changes
                         if (search.HotelRating != AccomodationDetails.HotelRating)
                             search.RatingDate = DateTime.Today.Date;
@@ -1004,7 +1059,7 @@ namespace DataLayer
                         search.Town = AccomodationDetails.Town;
                         search.YearBuilt = AccomodationDetails.YearBuilt;
                         search.Google_Place_Id = AccomodationDetails.Google_Place_Id;
-
+                        search.InsertFrom = AccomodationDetails.InsertFrom;
                         context.SaveChanges();
 
                     }
@@ -1090,6 +1145,9 @@ namespace DataLayer
                     newAcco.Town = AccomodationDetails.Town;
                     newAcco.YearBuilt = AccomodationDetails.YearBuilt;
                     newAcco.Google_Place_Id = AccomodationDetails.Google_Place_Id;
+                    newAcco.Country_Id = AccomodationDetails.Country_Id;
+                    newAcco.City_Id = AccomodationDetails.City_Id;
+                    newAcco.InsertFrom = AccomodationDetails.InsertFrom;
                     context.Accommodations.Add(newAcco);
 
                     context.SaveChanges();
@@ -2059,6 +2117,47 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation nearby places", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+        public List<DataContracts.DC_Accommodation_NearbyPlaces> GetNearbyPlacesDetailsWithPaging(Guid Accomodation_Id, Guid DataKey_Id, Int32 pageSize, Int32 pageindex)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = (from an in context.Accommodation_NearbyPlaces
+                                  where an.Accomodation_Id == Accomodation_Id
+                                  && an.Accommodation_NearbyPlace_Id == (DataKey_Id == Guid.Empty ? an.Accommodation_NearbyPlace_Id : DataKey_Id)
+                                  select an);
+
+                    int total = search.Count();
+                    int skip = pageindex * pageSize;
+
+                    var result = (from an in search
+                                  select new DataContracts.DC_Accommodation_NearbyPlaces
+                                  {
+                                      Accommodation_NearbyPlace_Id = an.Accommodation_NearbyPlace_Id,
+                                      Accomodation_Id = an.Accomodation_Id,
+                                      Create_Date = an.Create_Date,
+                                      Create_User = an.Create_User,
+                                      Description = an.Description,
+                                      DistanceFromProperty = an.DistanceFromProperty,
+                                      DistanceUnit = an.DistanceUnit,
+                                      Edit_Date = an.Edit_Date,
+                                      Edit_User = an.Edit_User,
+                                      Legacy_Htl_Id = an.Legacy_Htl_Id,
+                                      PlaceCategory = an.PlaceCategory,
+                                      PlaceName = an.PlaceName,
+                                      PlaceType = an.PlaceType,
+                                      IsActive = (an.IsActive ?? true),
+                                      TotalRecords = total
+                                  });
+                    return result.OrderBy(p => p.PlaceName).Skip(skip).Take((total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation nearby places", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
 
         public bool AddAccomodationNearbyPlaces(DataContracts.DC_Accommodation_NearbyPlaces NP)
         {
@@ -2146,6 +2245,139 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation near by places", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        public String ConvertListToString<T>(List<T> _lst)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in _lst)
+            {
+                sb.Append(item + ",");
+            }
+            return sb.ToString().TrimEnd(',');
+        }
+        public DC_Message AddUpldatePlaces(DC_GooglePlaceNearByWithAccoID _objPlaces)
+        {
+            DC_Message _msg = new DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (_objPlaces.GooglePlaceNearBy != null && _objPlaces.GooglePlaceNearBy.Count > 0)
+                    {
+                        //Get accomodation Details
+
+                        foreach (var item in _objPlaces.GooglePlaceNearBy)
+                        {
+                            //check duplicate
+                            bool isdupicate = context.Places.Where(p => p.Google_Place_Id == item.place_id).Count() > 0 ? true : false;
+                            var placeID = Guid.NewGuid();
+                            if (!isdupicate)
+                            {
+                                Place _newplace = new Place();
+                                _newplace.Place_Id = placeID;
+                                _newplace.Place_Category = ConvertListToString(item.types.ToList()).Replace('_', ' ');
+                                _newplace.Name = item.name;
+                                _newplace.Formatted_Address = item.vicinity;
+                                _newplace.Latitude = item.geometry.location.lat;
+                                _newplace.Longitude = item.geometry.location.lng;
+                                _newplace.Google_Place_Id = item.place_id;
+                                _newplace.Google_Rating = item.rating;
+                                _newplace.Google_Reference = item.reference;
+                                _newplace.Google_PlaceTypes = ConvertListToString(item.types.ToList());
+                                _newplace.Google_Icon = item.icon;
+                                _newplace.Google_FullObjext = Newtonsoft.Json.JsonConvert.SerializeObject(item);
+                                context.Places.Add(_newplace);
+                                context.SaveChanges();
+                            }
+                            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+                            string PlaceCategory = textInfo.ToTitleCase(_objPlaces.PlaceCategory);
+                            AddUpdateAccomodationNearByPlaces(_objPlaces.Accomodation_Id, PlaceCategory, _objPlaces.CreatedBy, placeID, item);
+                        }
+
+                    }
+                    _msg.StatusMessage = "Places has been added successfully";
+                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return _msg;
+
+        }
+
+        public Double GetDistance(Guid acco_id, DC_GooglePlaceNearBy _objnearbyplace)
+        {
+            Double _distance = 0.00;
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var result = context.Accommodations.Where(a => a.Accommodation_Id == acco_id).FirstOrDefault();
+                    if (result != null)
+                    {
+                        var sCoord = new GeoCoordinate(Convert.ToDouble(result.Latitude), Convert.ToDouble(result.Longitude));
+                        var eCoord = new GeoCoordinate(_objnearbyplace.geometry.location.lat, _objnearbyplace.geometry.location.lng);
+                        _distance = Math.Round((sCoord.GetDistanceTo(eCoord) / 1000), 2);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return _distance;
+        }
+        private void AddUpdateAccomodationNearByPlaces(Guid accomodation_Id, string placeCategory, string CreatedUser, Guid placeID, DC_GooglePlaceNearBy item)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    //Check duplicate 
+                    var result = context.Accommodation_NearbyPlaces.Where(p => p.Accomodation_Id == accomodation_Id).Where(p => p.Place_Id == placeID).Where(p => p.PlaceCategory == placeCategory).FirstOrDefault();
+                    var acco = context.Accommodations.Where(a => a.Accommodation_Id == accomodation_Id).FirstOrDefault();
+                    int? Legacy_Htl_Id = null;
+                    if (acco != null)
+                        Legacy_Htl_Id = acco.Legacy_HTL_ID;
+                    if (result == null)
+                    {
+                        Accommodation_NearbyPlaces _objnearbyplace = new Accommodation_NearbyPlaces();
+                        _objnearbyplace.Accommodation_NearbyPlace_Id = Guid.NewGuid();
+                        _objnearbyplace.Accomodation_Id = accomodation_Id;
+                        _objnearbyplace.PlaceName = item.name;
+                        _objnearbyplace.DistanceFromProperty = Convert.ToString(GetDistance(accomodation_Id, item));
+                        _objnearbyplace.PlaceCategory = placeCategory;
+                        _objnearbyplace.DistanceUnit = "Kilometres";
+                        _objnearbyplace.PlaceType = ConvertListToString(item.types.ToList()).Replace('_', ' ');
+
+                        _objnearbyplace.Create_Date = DateTime.Now;
+                        _objnearbyplace.Create_User = CreatedUser;
+                        _objnearbyplace.IsActive = true;
+                        _objnearbyplace.Place_Id = placeID;
+                        _objnearbyplace.Legacy_Htl_Id = Legacy_Htl_Id;
+                        context.Accommodation_NearbyPlaces.Add(_objnearbyplace);
+                    }
+                    else //Update their status isActive true
+                    {
+                        result.IsActive = true;
+                        result.Edit_Date = DateTime.Now;
+                        result.Edit_User = CreatedUser;
+                    }
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         #endregion
 
         #region Accomodation PaxOccupancy
@@ -2366,19 +2598,140 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation room info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+        public List<DataContracts.DC_Accommodation_RoomInfo> GetRoomDetailsByWithPagging(DC_Accommodation_RoomInfo_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = (from ar in context.Accommodation_RoomInfo
+                                  where ar.Accommodation_Id == RQ.Accommodation_Id
+                                  select ar);
+
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+                    var result = (from ar in search
+                                  select new DataContracts.DC_Accommodation_RoomInfo
+                                  {
+                                      Accommodation_Id = ar.Accommodation_Id,
+                                      Accommodation_RoomInfo_Id = ar.Accommodation_RoomInfo_Id,
+                                      AmenityTypes = ar.AmenityTypes,
+                                      BathRoomType = ar.BathRoomType,
+                                      BedType = ar.BedType,
+                                      Category = ar.Category,
+                                      CompanyName = ar.CompanyName,
+                                      CompanyRoomCategory = ar.CompanyRoomCategory,
+                                      Create_Date = ar.Create_Date,
+                                      Create_User = ar.Create_User,
+                                      Description = ar.Description,
+                                      Edit_Date = ar.Edit_Date,
+                                      Edit_User = ar.Edit_User,
+                                      FloorName = ar.FloorName,
+                                      FloorNumber = ar.FloorNumber,
+                                      Legacy_Htl_Id = ar.Legacy_Htl_Id,
+                                      MysteryRoom = ar.MysteryRoom,
+                                      NoOfInterconnectingRooms = ar.NoOfInterconnectingRooms,
+                                      NoOfRooms = ar.NoOfRooms,
+                                      RoomCategory = ar.RoomCategory,
+                                      RoomDecor = ar.RoomDecor,
+                                      RoomId = ar.RoomId,
+                                      RoomName = ar.RoomName,
+                                      RoomSize = ar.RoomSize,
+                                      RoomView = ar.RoomView,
+                                      Smoking = ar.Smoking,
+                                      IsActive = (ar.IsActive ?? true),
+                                      TotalRecords = total,
+                                      RoomFacilities = (from rf in context.Accommodation_RoomFacility
+                                                        where rf.Accommodation_Id == ar.Accommodation_Id
+                                                        && rf.Accommodation_RoomInfo_Id == ar.Accommodation_RoomInfo_Id
+                                                        select new DataContracts.DC_Accomodation_RoomFacilities
+                                                        {
+                                                            Accommodation_Id = rf.Accommodation_Id,
+                                                            Accommodation_RoomFacility_Id = rf.Accommodation_RoomFacility_Id,
+                                                            Accommodation_RoomInfo_Id = rf.Accommodation_RoomInfo_Id,
+                                                            AmenityName = rf.AmenityName,
+                                                            AmenityType = rf.AmenityType,
+                                                            Create_Date = rf.Create_Date,
+                                                            Create_User = rf.Create_User,
+                                                            Description = rf.Description,
+                                                            Edit_Date = rf.Edit_Date,
+                                                            Edit_user = rf.Edit_user
+                                                        }).ToList()
+                                  });
+                    return result.OrderBy(p => p.RoomName).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation room info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
         public List<DataContracts.DC_Accomodation_Category_DDL> GetAccomodationRoomInfo_RoomCategory(Guid Accomodation_Id)
         {
             using (ConsumerEntities context = new ConsumerEntities())
             {
                 var search = (from ar in context.Accommodation_RoomInfo
-                             where ar.Accommodation_Id == Accomodation_Id
-                             select new DataContracts.DC_Accomodation_Category_DDL
-                             {
-                                 Accommodation_RoomInfo_Id = ar.Accommodation_RoomInfo_Id,
-                                 RoomCategory = ar.RoomCategory
-                             }).ToList();
+                              where ar.Accommodation_Id == Accomodation_Id
+                              select new DataContracts.DC_Accomodation_Category_DDL
+                              {
+                                  Accommodation_RoomInfo_Id = ar.Accommodation_RoomInfo_Id,
+                                  RoomCategory = ar.RoomCategory
+                              }).ToList();
                 return search;
             }
+        }
+        public List<string> GetRoomCategoryMaster(DataContracts.DC_RoomCategoryMaster_RQ RC)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var RoomCategory = from a in context.Accommodation_RoomInfo
+                                       select a;
+                    if (!string.IsNullOrWhiteSpace(RC.RoomCategory))
+                    {
+                        RoomCategory = from a in RoomCategory
+                                       where a.RoomCategory.Contains(RC.RoomCategory)
+                                       select a;
+                    }
+                    var acco = (from a in RoomCategory
+                                select a.RoomCategory).Distinct().ToList();
+                    return acco;
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Room Category list", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public string GetNextRoomIdNumber(string codePrefix)
+        {
+            string ret = "000";
+
+            if (!string.IsNullOrWhiteSpace(codePrefix))
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var code = (from a in context.Accommodation_RoomInfo
+                                where a.RoomId.ToString().ToUpper().StartsWith(codePrefix.ToString().ToUpper() + "-")
+                                orderby a.RoomId descending
+                                //select CommonFunctions.ReturnNumbersFromString(a.Code)).FirstOrDefault();
+                                select a.RoomId).FirstOrDefault();
+
+                    if (!string.IsNullOrWhiteSpace(code))
+                    {
+                        code = code.Replace(codePrefix + "-", "");
+                        Match m = Regex.Match(code, @"\d+");
+                        int number = Convert.ToInt32(m.Value);
+                        number = number + 1;
+                        ret = CommonFunctions.NumberTo3CharString(number);
+                    }
+                }
+            }
+
+            return ret;
         }
 
         public bool AddAccomodationRoomInfo(DataContracts.DC_Accommodation_RoomInfo RI)
@@ -2417,7 +2770,7 @@ namespace DataLayer
                     objNew.NoOfRooms = RI.NoOfRooms;
                     objNew.RoomCategory = RI.RoomCategory;
                     objNew.RoomDecor = RI.RoomDecor;
-                    objNew.RoomId = RI.RoomId;
+                    objNew.RoomId = CommonFunctions.GenerateRoomId(Guid.Parse(RI.Accommodation_Id.ToString())); //RI.RoomId;
                     objNew.RoomName = RI.RoomName;
                     objNew.RoomSize = RI.RoomSize;
                     objNew.RoomView = RI.RoomView;
@@ -2474,7 +2827,7 @@ namespace DataLayer
                             search.NoOfRooms = RI.NoOfRooms;
                             search.RoomCategory = RI.RoomCategory;
                             search.RoomDecor = RI.RoomDecor;
-                            search.RoomId = RI.RoomId;
+                            //search.RoomId = RI.RoomId;
                             search.RoomName = RI.RoomName;
                             search.RoomSize = RI.RoomSize;
                             search.RoomView = RI.RoomView;
@@ -2492,6 +2845,96 @@ namespace DataLayer
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation room info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
+        }
+
+        public DataContracts.DC_Message CopyAccomodationInfo(DataContracts.DC_Accomodation_CopyRoomDef RQ)
+        {
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                //check Duplicate 
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var isduplicate = context.Accommodation_RoomInfo.Where(x => x.Accommodation_Id == RQ.Accommodation_Id && x.RoomCategory.ToLower().Trim() == RQ.NewRoomCategory.ToLower().Trim()).Count() == 0 ? false : true;
+                    if (isduplicate)
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strAlreadyExist;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
+                    }
+                    else
+                    {
+                        //1. Get RoomInfo record to get copied
+                        var roominfo = context.Accommodation_RoomInfo.Where(x => x.Accommodation_Id == RQ.Accommodation_Id && x.Accommodation_RoomInfo_Id == RQ.Accommodation_RoomInfo_Id).FirstOrDefault();
+
+                        var newAccommodation_RoomInfo_Id = Guid.NewGuid();
+                        //2. Insert the new one
+                        if (roominfo != null)
+                        {
+                            Accommodation_RoomInfo objNew = new Accommodation_RoomInfo();
+
+                            objNew.Accommodation_RoomInfo_Id = newAccommodation_RoomInfo_Id;
+                            objNew.Accommodation_Id = RQ.Accommodation_Id;
+                            objNew.Create_Date = DateTime.Now;
+                            objNew.Create_User = RQ.Create_User;
+                            objNew.Description = roominfo.Description;
+                            objNew.AmenityTypes = roominfo.AmenityTypes;
+                            objNew.BathRoomType = roominfo.BathRoomType;
+                            objNew.BedType = roominfo.BedType;
+                            objNew.Category = roominfo.Category;
+                            objNew.CompanyRoomCategory = roominfo.CompanyRoomCategory;
+                            objNew.RoomCategory = RQ.NewRoomCategory;
+                            objNew.RoomName = roominfo.RoomName;
+                            objNew.CompanyName = roominfo.CompanyName;
+                            objNew.FloorName = roominfo.FloorName;
+                            objNew.FloorNumber = roominfo.FloorNumber;
+                            objNew.MysteryRoom = roominfo.MysteryRoom;
+                            objNew.NoOfInterconnectingRooms = roominfo.NoOfInterconnectingRooms;
+                            objNew.NoOfRooms = roominfo.NoOfRooms;
+                            objNew.RoomDecor = roominfo.RoomDecor;
+                            objNew.RoomId = CommonFunctions.GenerateRoomId(RQ.Accommodation_Id);
+                            objNew.RoomSize = roominfo.RoomSize;
+                            objNew.RoomView = roominfo.RoomView;
+                            objNew.Smoking = roominfo.Smoking;
+                            objNew.Legacy_Htl_Id = roominfo.Legacy_Htl_Id;
+                            objNew.IsActive = roominfo.IsActive;
+
+                            context.Accommodation_RoomInfo.Add(objNew);
+
+
+                            //3. Get Accommodation_RoomFacility for the roominfo
+                            var rf = context.Accommodation_RoomFacility.Where(x => x.Accommodation_Id == RQ.Accommodation_Id && x.Accommodation_RoomInfo_Id == RQ.Accommodation_RoomInfo_Id).ToList();
+
+                            //4. Insert 
+                            if (rf != null && rf.Count > 0)
+                            {
+                                foreach (var item in rf)
+                                {
+                                    Accommodation_RoomFacility objrf = new Accommodation_RoomFacility();
+                                    objrf.Accommodation_Id = RQ.Accommodation_Id;
+                                    objrf.Accommodation_RoomFacility_Id = Guid.NewGuid();
+                                    objrf.Accommodation_RoomInfo_Id = newAccommodation_RoomInfo_Id;
+                                    objrf.AmenityName = item.AmenityName;
+                                    objrf.AmenityType = item.AmenityType;
+                                    objrf.Create_Date = DateTime.Now;
+                                    objrf.Create_User = RQ.Create_User;
+                                    objrf.Description = item.Description;
+                                    objrf.IsActive = item.IsActive;
+                                    context.Accommodation_RoomFacility.Add(objrf);
+                                }
+                            }
+                        }
+                        context.SaveChanges();
+                        _msg.StatusMessage = "Room Info has been copied successfully";
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return _msg;
         }
         #endregion
 

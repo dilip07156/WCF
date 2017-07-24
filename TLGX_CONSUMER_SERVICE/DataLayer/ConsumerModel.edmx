@@ -68,6 +68,9 @@
           <Property Name="Legacy_HTL_ID" Type="int" />
           <Property Name="Google_Place_Id" Type="nvarchar" MaxLength="255" />
           <Property Name="FullAddress" Type="nvarchar(max)" />
+          <Property Name="Country_Id" Type="uniqueidentifier" />
+          <Property Name="City_Id" Type="uniqueidentifier" />
+          <Property Name="InsertFrom" Type="bit" />
         </EntityType>
         <EntityType Name="Accommodation_ClassificationAttributes">
           <Key>
@@ -217,6 +220,7 @@
           <Property Name="Edit_User" Type="varchar" MaxLength="50" />
           <Property Name="Edit_Date" Type="datetime" />
           <Property Name="IsActive" Type="bit" />
+          <Property Name="Place_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Accommodation_PaxOccupancy">
           <Key>
@@ -287,6 +291,10 @@
           <Property Name="address" Type="nvarchar(max)" />
           <Property Name="address_tx" Type="nvarchar(max)" />
           <Property Name="TelephoneNumber_tx" Type="nvarchar" MaxLength="225" />
+          <Property Name="StarRating" Type="nvarchar" MaxLength="255" />
+          <Property Name="Google_Place_Id" Type="nvarchar" MaxLength="255" />
+          <Property Name="Country_Id" Type="uniqueidentifier" />
+          <Property Name="City_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Accommodation_RoomFacility">
           <Key>
@@ -395,6 +403,16 @@
           <Property Name="Edit_User" Type="varchar" MaxLength="50" />
           <Property Name="Edit_Date" Type="datetime" />
         </EntityType>
+        <EntityType Name="Accommodation_SupplierRoomTypeAttributes">
+          <Key>
+            <PropertyRef Name="RoomTypeMapAttribute_Id" />
+          </Key>
+          <Property Name="RoomTypeMapAttribute_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="RoomTypeMap_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SupplierRoomTypeAttribute" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="SystemAttributeKeyword" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="SystemAttributeKeyword_Id" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
         <EntityType Name="Accommodation_SupplierRoomTypeMapping">
           <Key>
             <PropertyRef Name="Accommodation_SupplierRoomTypeMapping_Id" />
@@ -417,33 +435,16 @@
           <Property Name="MaxChild" Type="int" />
           <Property Name="MaxInfants" Type="int" />
           <Property Name="MaxGuestOccupancy" Type="int" />
-          <Property Name="ExtraBed" Type="nvarchar" MaxLength="50" />
           <Property Name="Quantity" Type="int" />
-          <Property Name="BeddingConfig" Type="nvarchar" MaxLength="255" />
-          <Property Name="BedTypeCode" Type="nvarchar" MaxLength="50" />
           <Property Name="RatePlan" Type="nvarchar" MaxLength="50" />
           <Property Name="RatePlanCode" Type="nvarchar" MaxLength="50" />
           <Property Name="SupplierProductName" Type="nvarchar" MaxLength="255" />
           <Property Name="SupplierProductId" Type="nvarchar" MaxLength="255" />
-          <Property Name="Tx_SoleUse" Type="bit" />
-          <Property Name="Tx_Wifi" Type="bit" />
-          <Property Name="Tx_NonRefundable" Type="bit" />
-          <Property Name="Tx_Offer" Type="bit" />
-          <Property Name="Tx_RoomOnly" Type="bit" />
-          <Property Name="Tx_Breakfast" Type="bit" />
-          <Property Name="Tx_BreakfastExcluded" Type="bit" />
-          <Property Name="Tx_NoSmoking" Type="bit" />
-          <Property Name="TX_Smoking" Type="bit" />
-          <Property Name="Tx_AirCon" Type="bit" />
-          <Property Name="Tx_NonAirCon" Type="bit" />
-          <Property Name="Tx_Rate" Type="bit" />
-          <Property Name="Tx_RateDetail" Type="nvarchar" MaxLength="50" />
           <Property Name="Tx_StrippedName" Type="nvarchar" MaxLength="255" />
-          <Property Name="TX_AllInclusive" Type="bit" />
-          <Property Name="Tx_Halfboard" Type="bit" />
           <Property Name="Tx_ReorderedName" Type="nvarchar" MaxLength="255" />
-          <Property Name="Tx_Facilities" Type="nvarchar" MaxLength="255" />
-          <Property Name="Tx_BedType" Type="bit" />
+          <Property Name="MappingStatus" Type="nvarchar" MaxLength="10" />
+          <Property Name="MapId" Type="int" />
+          <Property Name="Accommodation_RoomInfo_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Activity">
           <Key>
@@ -557,6 +558,14 @@
           <Property Name="Create_User" Type="nvarchar" MaxLength="100" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="100" />
           <Property Name="MapID" Type="int" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="TotalActivities" Type="int" />
+          <Property Name="PhysicalIntensity" Type="nvarchar" MaxLength="255" />
+          <Property Name="PassengerNumbers" Type="nvarchar" MaxLength="255" />
+          <Property Name="DurationLength" Type="nvarchar" MaxLength="255" />
+          <Property Name="Timing" Type="nvarchar" MaxLength="255" />
+          <Property Name="Session" Type="nvarchar" MaxLength="255" />
+          <Property Name="Specials" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Applications">
           <Key>
@@ -798,6 +807,8 @@
           <Property Name="CountryCode" Type="nvarchar" MaxLength="255" />
           <Property Name="StateCode" Type="nvarchar" MaxLength="255" />
           <Property Name="StateName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="m_CityMaster">
           <Key>
@@ -818,6 +829,8 @@
           <Property Name="StateName" Type="nvarchar" MaxLength="255" />
           <Property Name="StateCode" Type="nvarchar" MaxLength="10" />
           <Property Name="Google_PlaceId" Type="nvarchar" MaxLength="255" />
+          <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="m_CountryMapping">
           <Key>
@@ -837,6 +850,10 @@
           <Property Name="MapID" Type="int" />
           <Property Name="Remarks" Type="nvarchar(max)" />
           <Property Name="actionType" Type="varchar" MaxLength="10" />
+          <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="ContinentCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="ContinentName" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="m_CountryMaster">
           <Key>
@@ -871,6 +888,8 @@
           <Property Name="ISO3166-1-Geoname ID" Type="nvarchar" MaxLength="255" />
           <Property Name="ISO3166-1-EDGAR" Type="nvarchar" MaxLength="255" />
           <Property Name="GooglePlaceID" Type="nvarchar" MaxLength="255" />
+          <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="m_EntityType">
           <Key>
@@ -900,6 +919,9 @@
           <Property Name="Edit_Date" Type="datetime" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="Attribute" Type="bit" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="Icon" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="m_keyword_alias">
           <Key>
@@ -913,6 +935,8 @@
           <Property Name="Edit_Date" Type="datetime" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="NoOfHits" Type="int" />
         </EntityType>
         <EntityType Name="m_masterattribute">
           <Key>
@@ -1151,6 +1175,23 @@
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
           <Property Name="IsActive" Type="bit" />
         </EntityType>
+        <EntityType Name="Places">
+          <Key>
+            <PropertyRef Name="Place_Id" />
+          </Key>
+          <Property Name="Place_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Place_Category" Type="nvarchar" MaxLength="255" />
+          <Property Name="Name" Type="nvarchar" MaxLength="2550" />
+          <Property Name="Formatted_Address" Type="nvarchar(max)" />
+          <Property Name="Latitude" Type="float" />
+          <Property Name="Longitude" Type="float" />
+          <Property Name="Google_Place_Id" Type="nvarchar" MaxLength="255" />
+          <Property Name="Google_Rating" Type="float" />
+          <Property Name="Google_Reference" Type="nvarchar" MaxLength="255" />
+          <Property Name="Google_PlaceTypes" Type="nvarchar" MaxLength="255" />
+          <Property Name="Google_Icon" Type="nvarchar" MaxLength="255" />
+          <Property Name="Google_FullObjext" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="Schedule_NextOccurance">
           <Key>
             <PropertyRef Name="Schedule_ID" />
@@ -1198,6 +1239,10 @@
           <Property Name="Insert_Date" Type="datetime" />
           <Property Name="Action" Type="nvarchar" MaxLength="255" />
           <Property Name="ActionText" Type="nvarchar" MaxLength="255" />
+          <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="Country_Id" Type="uniqueidentifier" />
+          <Property Name="Supplier_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="stg_SupplierCountryMapping">
           <Key>
@@ -1214,6 +1259,10 @@
           <Property Name="UpdateType" Type="nvarchar" MaxLength="255" />
           <Property Name="InsertDate" Type="datetime" />
           <Property Name="ActionText" Type="nvarchar" MaxLength="255" />
+          <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="ContinentCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="ContinentName" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="stg_SupplierHotelRoomMapping">
           <Key>
@@ -1291,6 +1340,11 @@
           <Property Name="Website" Type="nvarchar" MaxLength="255" />
           <Property Name="StreetNo" Type="nvarchar" MaxLength="255" />
           <Property Name="TX_COUNTRYNAME" Type="nvarchar" MaxLength="255" />
+          <Property Name="StarRating" Type="nvarchar" MaxLength="255" />
+          <Property Name="Google_Place_Id" Type="nvarchar" MaxLength="255" />
+          <Property Name="Country_Id" Type="uniqueidentifier" />
+          <Property Name="City_Id" Type="uniqueidentifier" />
+          <Property Name="Supplier_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Supplier">
           <Key>
@@ -1387,6 +1441,7 @@
           <Property Name="CREATE_USER" Type="nvarchar" MaxLength="255" />
           <Property Name="PROCESS_DATE" Type="datetime" />
           <Property Name="PROCESS_USER" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsActive" Type="bit" />
         </EntityType>
         <EntityType Name="UserEntity">
           <Key>
@@ -1407,8 +1462,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           </Key>
           <Property Name="supplier_id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
-          <Property Name="Status" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="MappinFor" Type="varchar" MaxLength="7" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="MappinFor" Type="varchar" MaxLength="8" Nullable="false" />
           <Property Name="totalcount" Type="int" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
@@ -1487,6 +1542,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySet Name="Accommodation_RouteInfo" EntityType="Self.Accommodation_RouteInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Accommodation_RuleInfo" EntityType="Self.Accommodation_RuleInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Accommodation_Status" EntityType="Self.Accommodation_Status" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="Self.Accommodation_SupplierRoomTypeAttributes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Accommodation_SupplierRoomTypeMapping" EntityType="Self.Accommodation_SupplierRoomTypeMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity" EntityType="Self.Activity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_Content" EntityType="Self.Activity_Content" Schema="dbo" store:Type="Tables" />
@@ -1531,6 +1587,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySet Name="m_WorkflowSteps" EntityType="Self.m_WorkflowSteps" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Media_Attributes" EntityType="Self.Media_Attributes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Organisation_Company" EntityType="Self.Organisation_Company" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Places" EntityType="Self.Places" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule_NextOccurance" EntityType="Self.Schedule_NextOccurance" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SiteMap" EntityType="Self.SiteMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierCityMapping" EntityType="Self.stg_SupplierCityMapping" Schema="dbo" store:Type="Tables" />
@@ -1651,7 +1708,6 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySet Name="m_MasterAttributeValueMapping" EntityType="ConsumerModel.m_MasterAttributeValueMapping" />
           <EntitySet Name="Activities" EntityType="ConsumerModel.Activity" />
           <EntitySet Name="Activity_Content" EntityType="ConsumerModel.Activity_Content" />
-          <EntitySet Name="Accommodation_SupplierRoomTypeMapping" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" />
           <EntitySet Name="m_SupplierImportAttributes" EntityType="ConsumerModel.m_SupplierImportAttributes" />
           <EntitySet Name="m_SupplierImportAttributeValues" EntityType="ConsumerModel.m_SupplierImportAttributeValues" />
           <EntitySet Name="SupplierImportFile_ErrorLog" EntityType="ConsumerModel.SupplierImportFile_ErrorLog" />
@@ -1663,6 +1719,9 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySet Name="stg_SupplierProductMapping" EntityType="ConsumerModel.stg_SupplierProductMapping" />
           <EntitySet Name="m_keyword" EntityType="ConsumerModel.m_keyword" />
           <EntitySet Name="m_keyword_alias" EntityType="ConsumerModel.m_keyword_alias" />
+          <EntitySet Name="Places" EntityType="ConsumerModel.Place" />
+          <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
+          <EntitySet Name="Accommodation_SupplierRoomTypeMapping" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" />
         </EntityContainer>
         <EntityType Name="Accommodation_Contact">
           <Key>
@@ -1777,6 +1836,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Place_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="Accommodation_PaxOccupancy">
           <Key>
@@ -2006,6 +2066,10 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="address_tx" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TelephoneNumber_tx" Type="String" MaxLength="225" FixedLength="false" Unicode="true" />
+          <Property Name="StarRating" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Google_Place_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Country_Id" Type="Guid" />
+          <Property Name="City_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="m_CityMapping">
           <Key>
@@ -2030,6 +2094,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="CountryCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="StateCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="StateName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_CountryMapping">
           <Key>
@@ -2049,6 +2115,10 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="MapID" Type="Int32" />
           <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="actionType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ContinentCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ContinentName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_Activity_Master">
           <Key>
@@ -2341,6 +2411,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="StateCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Google_PlaceId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="CountryCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_CountryMaster">
           <Key>
@@ -2375,6 +2447,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="ISO3166_1_Geoname_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ISO3166_1_EDGAR" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="GooglePlaceID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_States">
           <Key>
@@ -2453,6 +2527,9 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Legacy_HTL_ID" Type="Int32" />
           <Property Name="Google_Place_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="FullAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Country_Id" Type="Guid" />
+          <Property Name="City_Id" Type="Guid" />
+          <Property Name="InsertFrom" Type="Boolean" />
         </EntityType>
         <EntityType Name="GoogleGeoCode">
           <Key>
@@ -2537,8 +2614,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           </Key>
           <Property Name="supplier_id" Type="Guid" Nullable="false" />
           <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="totalcount" Type="Int32" />
         </EntityType>
         <EntityType Name="SiteMap">
@@ -2789,56 +2866,6 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="IsInternal" Type="Boolean" />
         </EntityType>
-        <EntityType Name="Accommodation_SupplierRoomTypeMapping">
-          <Key>
-            <PropertyRef Name="Accommodation_SupplierRoomTypeMapping_Id" />
-          </Key>
-          <Property Name="Accommodation_SupplierRoomTypeMapping_Id" Type="Guid" Nullable="false" />
-          <Property Name="Accommodation_Id" Type="Guid" />
-          <Property Name="Supplier_Id" Type="Guid" />
-          <Property Name="SupplierName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierRoomId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierRoomTypeCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierRoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="TX_RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierRoomCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierRoomCategoryId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="0" />
-          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="0" />
-          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="MaxAdults" Type="Int32" />
-          <Property Name="MaxChild" Type="Int32" />
-          <Property Name="MaxInfants" Type="Int32" />
-          <Property Name="MaxGuestOccupancy" Type="Int32" />
-          <Property Name="ExtraBed" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Quantity" Type="Int32" />
-          <Property Name="BeddingConfig" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="BedTypeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="RatePlan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="RatePlanCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierProductName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierProductId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Tx_SoleUse" Type="Boolean" />
-          <Property Name="Tx_Wifi" Type="Boolean" />
-          <Property Name="Tx_NonRefundable" Type="Boolean" />
-          <Property Name="Tx_Offer" Type="Boolean" />
-          <Property Name="Tx_RoomOnly" Type="Boolean" />
-          <Property Name="Tx_Breakfast" Type="Boolean" />
-          <Property Name="Tx_BreakfastExcluded" Type="Boolean" />
-          <Property Name="Tx_NoSmoking" Type="Boolean" />
-          <Property Name="TX_Smoking" Type="Boolean" />
-          <Property Name="Tx_AirCon" Type="Boolean" />
-          <Property Name="Tx_NonAirCon" Type="Boolean" />
-          <Property Name="Tx_Rate" Type="Boolean" />
-          <Property Name="Tx_RateDetail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Tx_StrippedName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="TX_AllInclusive" Type="Boolean" />
-          <Property Name="Tx_Halfboard" Type="Boolean" />
-          <Property Name="Tx_ReorderedName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Tx_Facilities" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Tx_BedType" Type="Boolean" />
-        </EntityType>
         <EntityType Name="m_SupplierImportAttributes">
           <Key>
             <PropertyRef Name="SupplierImportAttribute_Id" />
@@ -2897,6 +2924,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="CREATE_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="PROCESS_DATE" Type="DateTime" Precision="3" />
           <Property Name="PROCESS_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
         </EntityType>
         <EntityType Name="Activity_SupplierProductMapping">
           <Key>
@@ -2957,6 +2985,14 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Create_User" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Edit_User" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="MapID" Type="Int32" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="TotalActivities" Type="Int32" />
+          <Property Name="PhysicalIntensity" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PassengerNumbers" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DurationLength" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Timing" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Session" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Specials" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="stg_SupplierCityMapping">
           <Key>
@@ -2977,6 +3013,10 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Insert_Date" Type="DateTime" Precision="3" />
           <Property Name="Action" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ActionText" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Country_Id" Type="Guid" />
+          <Property Name="Supplier_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="stg_SupplierCountryMapping">
           <Key>
@@ -2993,6 +3033,10 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="UpdateType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="InsertDate" Type="DateTime" Precision="3" />
           <Property Name="ActionText" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ContinentCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ContinentName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="stg_SupplierHotelRoomMapping">
           <Key>
@@ -3070,6 +3114,11 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Website" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="StreetNo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="TX_COUNTRYNAME" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="StarRating" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Google_Place_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Country_Id" Type="Guid" />
+          <Property Name="City_Id" Type="Guid" />
+          <Property Name="Supplier_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="m_keyword">
           <Key>
@@ -3084,6 +3133,9 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Attribute" Type="Boolean" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_keyword_alias">
           <Key>
@@ -3097,6 +3149,68 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="NoOfHits" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Place">
+          <Key>
+            <PropertyRef Name="Place_Id" />
+          </Key>
+          <Property Name="Place_Id" Type="Guid" Nullable="false" />
+          <Property Name="Place_Category" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="2550" FixedLength="false" Unicode="true" />
+          <Property Name="Formatted_Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="Double" />
+          <Property Name="Longitude" Type="Double" />
+          <Property Name="Google_Place_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Google_Rating" Type="Double" />
+          <Property Name="Google_Reference" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Google_PlaceTypes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Google_Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Google_FullObjext" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Accommodation_SupplierRoomTypeAttributes">
+          <Key>
+            <PropertyRef Name="RoomTypeMapAttribute_Id" />
+          </Key>
+          <Property Name="RoomTypeMapAttribute_Id" Type="Guid" Nullable="false" />
+          <Property Name="RoomTypeMap_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierRoomTypeAttribute" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SystemAttributeKeyword" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SystemAttributeKeyword_Id" Type="Guid" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Accommodation_SupplierRoomTypeMapping">
+          <Key>
+            <PropertyRef Name="Accommodation_SupplierRoomTypeMapping_Id" />
+          </Key>
+          <Property Name="Accommodation_SupplierRoomTypeMapping_Id" Type="Guid" Nullable="false" />
+          <Property Name="Accommodation_Id" Type="Guid" />
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="SupplierName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierRoomId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierRoomTypeCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierRoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TX_RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierRoomCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierRoomCategoryId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="0" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="0" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="MaxAdults" Type="Int32" />
+          <Property Name="MaxChild" Type="Int32" />
+          <Property Name="MaxInfants" Type="Int32" />
+          <Property Name="MaxGuestOccupancy" Type="Int32" />
+          <Property Name="Quantity" Type="Int32" />
+          <Property Name="RatePlan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RatePlanCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierProductName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierProductId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Tx_StrippedName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Tx_ReorderedName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="MappingStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MapId" Type="Int32" />
+          <Property Name="Accommodation_RoomInfo_Id" Type="Guid" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3207,6 +3321,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="Accommodation_NearbyPlaces">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_NearbyPlaces">
               <MappingFragment StoreEntitySet="Accommodation_NearbyPlaces">
+                <ScalarProperty Name="Place_Id" ColumnName="Place_Id" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
                 <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
@@ -3424,6 +3539,10 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="Accommodation_ProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_ProductMapping">
               <MappingFragment StoreEntitySet="Accommodation_ProductMapping">
+                <ScalarProperty Name="City_Id" ColumnName="City_Id" />
+                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
+                <ScalarProperty Name="Google_Place_Id" ColumnName="Google_Place_Id" />
+                <ScalarProperty Name="StarRating" ColumnName="StarRating" />
                 <ScalarProperty Name="TelephoneNumber_tx" ColumnName="TelephoneNumber_tx" />
                 <ScalarProperty Name="address_tx" ColumnName="address_tx" />
                 <ScalarProperty Name="address" ColumnName="address" />
@@ -3466,6 +3585,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="m_CityMapping">
             <EntityTypeMapping TypeName="ConsumerModel.m_CityMapping">
               <MappingFragment StoreEntitySet="m_CityMapping">
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="StateName" ColumnName="StateName" />
                 <ScalarProperty Name="StateCode" ColumnName="StateCode" />
                 <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
@@ -3491,6 +3612,10 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="m_CountryMapping">
             <EntityTypeMapping TypeName="ConsumerModel.m_CountryMapping">
               <MappingFragment StoreEntitySet="m_CountryMapping">
+                <ScalarProperty Name="ContinentName" ColumnName="ContinentName" />
+                <ScalarProperty Name="ContinentCode" ColumnName="ContinentCode" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="actionType" ColumnName="actionType" />
                 <ScalarProperty Name="Remarks" ColumnName="Remarks" />
                 <ScalarProperty Name="MapID" ColumnName="MapID" />
@@ -3768,6 +3893,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="m_CityMaster">
             <EntityTypeMapping TypeName="ConsumerModel.m_CityMaster">
               <MappingFragment StoreEntitySet="m_CityMaster">
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
                 <ScalarProperty Name="Google_PlaceId" ColumnName="Google_PlaceId" />
                 <ScalarProperty Name="StateCode" ColumnName="StateCode" />
@@ -3789,6 +3916,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="m_CountryMaster">
             <EntityTypeMapping TypeName="ConsumerModel.m_CountryMaster">
               <MappingFragment StoreEntitySet="m_CountryMaster">
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="GooglePlaceID" ColumnName="GooglePlaceID" />
                 <ScalarProperty Name="ISO3166_1_EDGAR" ColumnName="ISO3166-1-EDGAR" />
                 <ScalarProperty Name="ISO3166_1_Geoname_ID" ColumnName="ISO3166-1-Geoname ID" />
@@ -3839,6 +3968,9 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="Accommodations">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation">
               <MappingFragment StoreEntitySet="Accommodation">
+                <ScalarProperty Name="InsertFrom" ColumnName="InsertFrom" />
+                <ScalarProperty Name="City_Id" ColumnName="City_Id" />
+                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
                 <ScalarProperty Name="FullAddress" ColumnName="FullAddress" />
                 <ScalarProperty Name="Google_Place_Id" ColumnName="Google_Place_Id" />
                 <ScalarProperty Name="Legacy_HTL_ID" ColumnName="Legacy_HTL_ID" />
@@ -4257,57 +4389,6 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Accommodation_SupplierRoomTypeMapping">
-            <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeMapping">
-              <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeMapping">
-                <ScalarProperty Name="Tx_BedType" ColumnName="Tx_BedType" />
-                <ScalarProperty Name="Tx_Facilities" ColumnName="Tx_Facilities" />
-                <ScalarProperty Name="Tx_ReorderedName" ColumnName="Tx_ReorderedName" />
-                <ScalarProperty Name="Tx_Halfboard" ColumnName="Tx_Halfboard" />
-                <ScalarProperty Name="TX_AllInclusive" ColumnName="TX_AllInclusive" />
-                <ScalarProperty Name="Tx_StrippedName" ColumnName="Tx_StrippedName" />
-                <ScalarProperty Name="Tx_RateDetail" ColumnName="Tx_RateDetail" />
-                <ScalarProperty Name="Tx_Rate" ColumnName="Tx_Rate" />
-                <ScalarProperty Name="Tx_NonAirCon" ColumnName="Tx_NonAirCon" />
-                <ScalarProperty Name="Tx_AirCon" ColumnName="Tx_AirCon" />
-                <ScalarProperty Name="TX_Smoking" ColumnName="TX_Smoking" />
-                <ScalarProperty Name="Tx_NoSmoking" ColumnName="Tx_NoSmoking" />
-                <ScalarProperty Name="Tx_BreakfastExcluded" ColumnName="Tx_BreakfastExcluded" />
-                <ScalarProperty Name="Tx_Breakfast" ColumnName="Tx_Breakfast" />
-                <ScalarProperty Name="Tx_RoomOnly" ColumnName="Tx_RoomOnly" />
-                <ScalarProperty Name="Tx_Offer" ColumnName="Tx_Offer" />
-                <ScalarProperty Name="Tx_NonRefundable" ColumnName="Tx_NonRefundable" />
-                <ScalarProperty Name="Tx_Wifi" ColumnName="Tx_Wifi" />
-                <ScalarProperty Name="Tx_SoleUse" ColumnName="Tx_SoleUse" />
-                <ScalarProperty Name="SupplierProductId" ColumnName="SupplierProductId" />
-                <ScalarProperty Name="SupplierProductName" ColumnName="SupplierProductName" />
-                <ScalarProperty Name="RatePlanCode" ColumnName="RatePlanCode" />
-                <ScalarProperty Name="RatePlan" ColumnName="RatePlan" />
-                <ScalarProperty Name="BedTypeCode" ColumnName="BedTypeCode" />
-                <ScalarProperty Name="BeddingConfig" ColumnName="BeddingConfig" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="ExtraBed" ColumnName="ExtraBed" />
-                <ScalarProperty Name="MaxGuestOccupancy" ColumnName="MaxGuestOccupancy" />
-                <ScalarProperty Name="MaxInfants" ColumnName="MaxInfants" />
-                <ScalarProperty Name="MaxChild" ColumnName="MaxChild" />
-                <ScalarProperty Name="MaxAdults" ColumnName="MaxAdults" />
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="SupplierRoomCategoryId" ColumnName="SupplierRoomCategoryId" />
-                <ScalarProperty Name="SupplierRoomCategory" ColumnName="SupplierRoomCategory" />
-                <ScalarProperty Name="TX_RoomName" ColumnName="TX_RoomName" />
-                <ScalarProperty Name="SupplierRoomName" ColumnName="SupplierRoomName" />
-                <ScalarProperty Name="SupplierRoomTypeCode" ColumnName="SupplierRoomTypeCode" />
-                <ScalarProperty Name="SupplierRoomId" ColumnName="SupplierRoomId" />
-                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
-                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
-                <ScalarProperty Name="Accommodation_Id" ColumnName="Accommodation_Id" />
-                <ScalarProperty Name="Accommodation_SupplierRoomTypeMapping_Id" ColumnName="Accommodation_SupplierRoomTypeMapping_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="m_SupplierImportAttributes">
             <EntityTypeMapping TypeName="ConsumerModel.m_SupplierImportAttributes">
               <MappingFragment StoreEntitySet="m_SupplierImportAttributes">
@@ -4357,6 +4438,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="SupplierImportFileDetails">
             <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFileDetail">
               <MappingFragment StoreEntitySet="SupplierImportFileDetails">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="PROCESS_USER" ColumnName="PROCESS_USER" />
                 <ScalarProperty Name="PROCESS_DATE" ColumnName="PROCESS_DATE" />
                 <ScalarProperty Name="CREATE_USER" ColumnName="CREATE_USER" />
@@ -4374,6 +4456,14 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="Activity_SupplierProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_SupplierProductMapping">
               <MappingFragment StoreEntitySet="Activity_SupplierProductMapping">
+                <ScalarProperty Name="Specials" ColumnName="Specials" />
+                <ScalarProperty Name="Session" ColumnName="Session" />
+                <ScalarProperty Name="Timing" ColumnName="Timing" />
+                <ScalarProperty Name="DurationLength" ColumnName="DurationLength" />
+                <ScalarProperty Name="PassengerNumbers" ColumnName="PassengerNumbers" />
+                <ScalarProperty Name="PhysicalIntensity" ColumnName="PhysicalIntensity" />
+                <ScalarProperty Name="TotalActivities" ColumnName="TotalActivities" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
                 <ScalarProperty Name="MapID" ColumnName="MapID" />
                 <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
                 <ScalarProperty Name="Create_User" ColumnName="Create_User" />
@@ -4435,6 +4525,10 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="stg_SupplierCityMapping">
             <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierCityMapping">
               <MappingFragment StoreEntitySet="stg_SupplierCityMapping">
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="ActionText" ColumnName="ActionText" />
                 <ScalarProperty Name="Action" ColumnName="Action" />
                 <ScalarProperty Name="Insert_Date" ColumnName="Insert_Date" />
@@ -4456,6 +4550,10 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="stg_SupplierCountryMapping">
             <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierCountryMapping">
               <MappingFragment StoreEntitySet="stg_SupplierCountryMapping">
+                <ScalarProperty Name="ContinentName" ColumnName="ContinentName" />
+                <ScalarProperty Name="ContinentCode" ColumnName="ContinentCode" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="ActionText" ColumnName="ActionText" />
                 <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
                 <ScalarProperty Name="UpdateType" ColumnName="UpdateType" />
@@ -4513,6 +4611,11 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="stg_SupplierProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierProductMapping">
               <MappingFragment StoreEntitySet="stg_SupplierProductMapping">
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="City_Id" ColumnName="City_Id" />
+                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
+                <ScalarProperty Name="Google_Place_Id" ColumnName="Google_Place_Id" />
+                <ScalarProperty Name="StarRating" ColumnName="StarRating" />
                 <ScalarProperty Name="TX_COUNTRYNAME" ColumnName="TX_COUNTRYNAME" />
                 <ScalarProperty Name="StreetNo" ColumnName="StreetNo" />
                 <ScalarProperty Name="Website" ColumnName="Website" />
@@ -4552,6 +4655,9 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="m_keyword">
             <EntityTypeMapping TypeName="ConsumerModel.m_keyword">
               <MappingFragment StoreEntitySet="m_keyword">
+                <ScalarProperty Name="Icon" ColumnName="Icon" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Attribute" ColumnName="Attribute" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
                 <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
@@ -4567,6 +4673,8 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="m_keyword_alias">
             <EntityTypeMapping TypeName="ConsumerModel.m_keyword_alias">
               <MappingFragment StoreEntitySet="m_keyword_alias">
+                <ScalarProperty Name="NoOfHits" ColumnName="NoOfHits" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
                 <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
@@ -4575,6 +4683,69 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
                 <ScalarProperty Name="Value" ColumnName="Value" />
                 <ScalarProperty Name="Keyword_Id" ColumnName="Keyword_Id" />
                 <ScalarProperty Name="KeywordAlias_Id" ColumnName="KeywordAlias_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Places">
+            <EntityTypeMapping TypeName="ConsumerModel.Place">
+              <MappingFragment StoreEntitySet="Places">
+                <ScalarProperty Name="Google_FullObjext" ColumnName="Google_FullObjext" />
+                <ScalarProperty Name="Google_Icon" ColumnName="Google_Icon" />
+                <ScalarProperty Name="Google_PlaceTypes" ColumnName="Google_PlaceTypes" />
+                <ScalarProperty Name="Google_Reference" ColumnName="Google_Reference" />
+                <ScalarProperty Name="Google_Rating" ColumnName="Google_Rating" />
+                <ScalarProperty Name="Google_Place_Id" ColumnName="Google_Place_Id" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="Formatted_Address" ColumnName="Formatted_Address" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Place_Category" ColumnName="Place_Category" />
+                <ScalarProperty Name="Place_Id" ColumnName="Place_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Accommodation_SupplierRoomTypeAttributes">
+            <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeAttributes">
+              <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeAttributes">
+                <ScalarProperty Name="SystemAttributeKeyword_Id" ColumnName="SystemAttributeKeyword_Id" />
+                <ScalarProperty Name="SystemAttributeKeyword" ColumnName="SystemAttributeKeyword" />
+                <ScalarProperty Name="SupplierRoomTypeAttribute" ColumnName="SupplierRoomTypeAttribute" />
+                <ScalarProperty Name="RoomTypeMap_Id" ColumnName="RoomTypeMap_Id" />
+                <ScalarProperty Name="RoomTypeMapAttribute_Id" ColumnName="RoomTypeMapAttribute_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Accommodation_SupplierRoomTypeMapping">
+            <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeMapping">
+              <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeMapping">
+                <ScalarProperty Name="Accommodation_RoomInfo_Id" ColumnName="Accommodation_RoomInfo_Id" />
+                <ScalarProperty Name="MapId" ColumnName="MapId" />
+                <ScalarProperty Name="MappingStatus" ColumnName="MappingStatus" />
+                <ScalarProperty Name="Tx_ReorderedName" ColumnName="Tx_ReorderedName" />
+                <ScalarProperty Name="Tx_StrippedName" ColumnName="Tx_StrippedName" />
+                <ScalarProperty Name="SupplierProductId" ColumnName="SupplierProductId" />
+                <ScalarProperty Name="SupplierProductName" ColumnName="SupplierProductName" />
+                <ScalarProperty Name="RatePlanCode" ColumnName="RatePlanCode" />
+                <ScalarProperty Name="RatePlan" ColumnName="RatePlan" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="MaxGuestOccupancy" ColumnName="MaxGuestOccupancy" />
+                <ScalarProperty Name="MaxInfants" ColumnName="MaxInfants" />
+                <ScalarProperty Name="MaxChild" ColumnName="MaxChild" />
+                <ScalarProperty Name="MaxAdults" ColumnName="MaxAdults" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="SupplierRoomCategoryId" ColumnName="SupplierRoomCategoryId" />
+                <ScalarProperty Name="SupplierRoomCategory" ColumnName="SupplierRoomCategory" />
+                <ScalarProperty Name="TX_RoomName" ColumnName="TX_RoomName" />
+                <ScalarProperty Name="SupplierRoomName" ColumnName="SupplierRoomName" />
+                <ScalarProperty Name="SupplierRoomTypeCode" ColumnName="SupplierRoomTypeCode" />
+                <ScalarProperty Name="SupplierRoomId" ColumnName="SupplierRoomId" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="Accommodation_Id" ColumnName="Accommodation_Id" />
+                <ScalarProperty Name="Accommodation_SupplierRoomTypeMapping_Id" ColumnName="Accommodation_SupplierRoomTypeMapping_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

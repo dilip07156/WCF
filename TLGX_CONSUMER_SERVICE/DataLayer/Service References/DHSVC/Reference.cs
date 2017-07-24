@@ -42,6 +42,9 @@ namespace DataLayer.DHSVC {
         private string SavedFilePathField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string SupplierField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Guid SupplierImportFile_IdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -136,6 +139,19 @@ namespace DataLayer.DHSVC {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Supplier {
+            get {
+                return this.SupplierField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SupplierField, value) != true)) {
+                    this.SupplierField = value;
+                    this.RaisePropertyChanged("Supplier");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public System.Guid SupplierImportFile_Id {
             get {
                 return this.SupplierImportFile_IdField;
@@ -171,77 +187,15 @@ namespace DataLayer.DHSVC {
         }
     }
     
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="DC_Status", Namespace="http://schemas.datacontract.org/2004/07/TLGX_DataHandler_WcfService.DataContracts" +
-        "")]
-    [System.SerializableAttribute()]
-    public partial class DC_Status : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string MessageField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Net.HttpStatusCode StatusCodeField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Message {
-            get {
-                return this.MessageField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
-                    this.MessageField = value;
-                    this.RaisePropertyChanged("Message");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Net.HttpStatusCode StatusCode {
-            get {
-                return this.StatusCodeField;
-            }
-            set {
-                if ((this.StatusCodeField.Equals(value) != true)) {
-                    this.StatusCodeField = value;
-                    this.RaisePropertyChanged("StatusCode");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="DHSVC.IDataHandlerService")]
     public interface IDataHandlerService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataHandlerService/StaticFileUploadProcessFile", ReplyAction="http://tempuri.org/IDataHandlerService/StaticFileUploadProcessFileResponse")]
-        DataLayer.DHSVC.DC_Status StaticFileUploadProcessFile(DataLayer.DHSVC.DC_SupplierImportFileDetails_TestProcess obj);
+        void StaticFileUploadProcessFile(DataLayer.DHSVC.DC_SupplierImportFileDetails_TestProcess obj);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataHandlerService/StaticFileUploadProcessFile", ReplyAction="http://tempuri.org/IDataHandlerService/StaticFileUploadProcessFileResponse")]
-        System.Threading.Tasks.Task<DataLayer.DHSVC.DC_Status> StaticFileUploadProcessFileAsync(DataLayer.DHSVC.DC_SupplierImportFileDetails_TestProcess obj);
+        System.Threading.Tasks.Task StaticFileUploadProcessFileAsync(DataLayer.DHSVC.DC_SupplierImportFileDetails_TestProcess obj);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataHandlerService/StaticFileUpload_TestFile_Read", ReplyAction="http://tempuri.org/IDataHandlerService/StaticFileUpload_TestFile_ReadResponse")]
         System.Data.DataSet StaticFileUpload_TestFile_Read(DataLayer.DHSVC.DC_SupplierImportFileDetails_TestProcess obj);
@@ -285,11 +239,11 @@ namespace DataLayer.DHSVC {
                 base(binding, remoteAddress) {
         }
         
-        public DataLayer.DHSVC.DC_Status StaticFileUploadProcessFile(DataLayer.DHSVC.DC_SupplierImportFileDetails_TestProcess obj) {
-            return base.Channel.StaticFileUploadProcessFile(obj);
+        public void StaticFileUploadProcessFile(DataLayer.DHSVC.DC_SupplierImportFileDetails_TestProcess obj) {
+            base.Channel.StaticFileUploadProcessFile(obj);
         }
         
-        public System.Threading.Tasks.Task<DataLayer.DHSVC.DC_Status> StaticFileUploadProcessFileAsync(DataLayer.DHSVC.DC_SupplierImportFileDetails_TestProcess obj) {
+        public System.Threading.Tasks.Task StaticFileUploadProcessFileAsync(DataLayer.DHSVC.DC_SupplierImportFileDetails_TestProcess obj) {
             return base.Channel.StaticFileUploadProcessFileAsync(obj);
         }
         

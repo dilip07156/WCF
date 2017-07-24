@@ -16,6 +16,7 @@ namespace DataContracts.Masters
         string _Code;
         string _CountryName;
         System.Guid _Country_Id;
+        string _CountryCode;
         Nullable<System.DateTime> _Create_Date;
         string _Create_User;
         Nullable<System.DateTime> _Edit_Date;
@@ -27,6 +28,13 @@ namespace DataContracts.Masters
         string _Google_PlaceId;
         int _TotalRecords;
 
+
+
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
         [DataMember]
         public Guid City_Id
         {
@@ -236,6 +244,20 @@ namespace DataContracts.Masters
                 _TotalRecords = value;
             }
         }
+
+        [DataMember]
+        public string CountryCode
+        {
+            get
+            {
+                return _CountryCode;
+            }
+
+            set
+            {
+                _CountryCode = value;
+            }
+        }
     }
 
     [DataContract]
@@ -243,12 +265,22 @@ namespace DataContracts.Masters
     {
         Guid? _Country_Id;
         string _Country_Name;
+        Guid? _State_Id;
+        string _State_Name;
         Guid? _City_Id;
         string _City_Name;
         int? _PageNo;
         int? _PageSize;
         string _AlphaPageIndex;
         string _status;
+
+
+
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
 
         [DataMember]
         public Guid? Country_Id
@@ -358,6 +390,34 @@ namespace DataContracts.Masters
             set
             {
                 _status = value;
+            }
+        }
+
+        [DataMember]
+        public Guid? State_Id
+        {
+            get
+            {
+                return _State_Id;
+            }
+
+            set
+            {
+                _State_Id = value;
+            }
+        }
+
+        [DataMember]
+        public string State_Name
+        {
+            get
+            {
+                return _State_Name;
+            }
+
+            set
+            {
+                _State_Name = value;
             }
         }
     }

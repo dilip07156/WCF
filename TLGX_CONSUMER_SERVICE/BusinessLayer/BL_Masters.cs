@@ -89,7 +89,7 @@ namespace BusinessLayer
             }
         }
 
-        public bool UpdateCityMaster(DataContracts.Masters.DC_City param)
+        public DataContracts.DC_Message UpdateCityMaster(DataContracts.Masters.DC_City param)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
@@ -589,37 +589,38 @@ namespace BusinessLayer
         #endregion
 
         #region Keyword
-        public DC_Message SaveKeyword(List<DC_Keyword> _obj)
+        public DC_Message AddUpdateKeyword(DC_Keyword _obj)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
-                return obj.SaveKeyword(_obj);
+                return obj.AddUpdateKeyword(_obj);
             }
         }
 
-        public DC_Message UpdateKeyword(List<DC_Keyword> _obj)
-        {
-            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
-            {
-                return obj.UpdateKeyword(_obj);
-            }
-        }
-
-        public List<DC_Keyword> SearchKeyWord(DC_Keyword_RQ RQ)
+        public List<DC_Keyword> SearchKeyword(DC_Keyword_RQ RQ)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
                 return obj.SearchKeyword(RQ);
             }
         }
-        
-        public DC_Message SaveAliasForKeyword(List<DC_keyword_alias> _obj)
+
+        public List<DC_keyword_alias> SearchKeywordAlias(DC_Keyword_RQ RQ)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
-                return obj.SaveAliasForKeyword(_obj);
+                return obj.SearchKeywordAlias(RQ);
             }
         }
+
+        public void DataHandler_Keyword_Update_NoOfHits(List<DC_keyword_alias> NoOfHits)
+        {
+            using (DataLayer.DL_Masters objDL = new DataLayer.DL_Masters())
+            {
+                objDL.DataHandler_Keyword_Update_NoOfHits(NoOfHits);
+            }
+        }
+
         #endregion
     }
 }

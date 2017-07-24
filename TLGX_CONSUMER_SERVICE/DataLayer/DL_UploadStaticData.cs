@@ -7,6 +7,7 @@ using System.ServiceModel;
 using DataContracts.Masters;
 using DataContracts;
 using System.Data;
+using DataContracts.STG;
 
 namespace DataLayer
 {
@@ -349,6 +350,13 @@ namespace DataLayer
                     {
                         AttrMapSearch = from a in AttrMapSearch
                                         where a.AttributeName.Trim().TrimStart().ToUpper() == RQ.AttributeName.Trim().TrimStart().ToUpper()
+                                        select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.AttributeValue))
+                    {
+                        AttrMapSearch = from a in AttrMapSearch
+                                        where a.AttributeValue.Trim().TrimStart().ToUpper() == RQ.AttributeValue.Trim().TrimStart().ToUpper()
                                         select a;
                     }
 
@@ -878,21 +886,31 @@ namespace DataLayer
                         context.SaveChanges();
                         foreach (DataContracts.STG.DC_stg_SupplierCountryMapping obj in lstobj)
                         {
-                            DataLayer.stg_SupplierCountryMapping objNew = new DataLayer.stg_SupplierCountryMapping();
-                            objNew.stg_Country_Id = obj.stg_Country_Id;
-                            objNew.SupplierId = obj.SupplierId;
-                            objNew.SupplierName = obj.SupplierName;
-                            objNew.CountryCode = obj.CountryCode;
-                            objNew.CountryName = obj.CountryName;
-                            objNew.InsertDate = obj.InsertDate;
-                            objNew.ActiveFrom = obj.ActiveFrom;
-                            objNew.ActiveTo = obj.ActiveTo;
-                            objNew.Action = obj.Action;
-                            objNew.UpdateType = obj.UpdateType;
-                            objNew.ActionText = obj.ActionText;
-                            context.stg_SupplierCountryMapping.Add(objNew);
+                            var search = (from a in context.stg_SupplierCountryMapping
+                                          where a.SupplierName.Trim().ToUpper() == mySupplier.Trim().ToUpper()
+                                          && ((a.CountryCode != null && a.CountryCode.Trim().ToUpper() == obj.CountryCode.Trim().ToUpper()) || a.CountryCode == null)
+                                          && a.CountryName.Trim().ToUpper() == obj.CountryName.Trim().ToUpper()
+                                          select a).FirstOrDefault();
+                            if (search == null)
+                            {
+                                DataLayer.stg_SupplierCountryMapping objNew = new DataLayer.stg_SupplierCountryMapping();
+                                objNew.stg_Country_Id = obj.stg_Country_Id;
+                                objNew.SupplierId = obj.SupplierId;
+                                objNew.SupplierName = obj.SupplierName;
+                                objNew.CountryCode = obj.CountryCode;
+                                objNew.CountryName = obj.CountryName;
+                                objNew.InsertDate = obj.InsertDate;
+                                objNew.ActiveFrom = obj.ActiveFrom;
+                                objNew.ActiveTo = obj.ActiveTo;
+                                objNew.Action = obj.Action;
+                                objNew.UpdateType = obj.UpdateType;
+                                objNew.ActionText = obj.ActionText;
+                                objNew.Latitude = obj.Latitude;
+                                objNew.Longitude = obj.Longitude;
+                                context.stg_SupplierCountryMapping.Add(objNew);
+                                context.SaveChanges();
+                            }
                         }
-                            context.SaveChanges();
                         dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
                         dc.StatusMessage = "Country Static Data " + ReadOnlyMessage.strAddedSuccessfully;
                     }
@@ -975,7 +993,9 @@ namespace DataLayer
                                          InsertDate = a.InsertDate,
                                          SupplierId = a.SupplierId,
                                          SupplierName = a.SupplierName,
-                                         TotalRecords = total
+                                         TotalRecords = total,
+                                         Latitude = a.Latitude,
+                                         Longitude = a.Longitude
                                      }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 
@@ -992,7 +1012,6 @@ namespace DataLayer
                 });
             }
         }
-
 
         public List<DataContracts.STG.DC_stg_SupplierCityMapping> GetSTGCityData(DataContracts.STG.DC_stg_SupplierCityMapping_RQ RQ)
         {
@@ -1088,7 +1107,11 @@ namespace DataLayer
                                          CountryName = a.CountryName,
                                          SupplierId = a.SupplierId,
                                          SupplierName = a.SupplierName,
-                                         TotalRecords = total
+                                         TotalRecords = total,
+                                         Latitude = a.Latitude,
+                                         Longitude = a.Longitude,
+                                         Country_Id = a.Country_Id,
+                                         Supplier_Id = a.Supplier_Id
                                      }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 
@@ -1106,7 +1129,6 @@ namespace DataLayer
             }
         }
 
-
         public DataContracts.DC_Message AddSTGCityData(List<DataContracts.STG.DC_stg_SupplierCityMapping> lstobj)
         {
             DataContracts.DC_Message dc = new DataContracts.DC_Message();
@@ -1116,7 +1138,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     string mySupplier = lstobj[0].SupplierName;
-
+                    Guid? mySupplier_Id = lstobj[0].Supplier_Id;
                     if (!string.IsNullOrWhiteSpace(mySupplier))
                     {
                         var oldRecords = (from y in context.stg_SupplierCityMapping
@@ -1124,10 +1146,32 @@ namespace DataLayer
                                           select y).ToList();
                         context.stg_SupplierCityMapping.RemoveRange(oldRecords);
                         context.SaveChanges();
-                        foreach (DataContracts.STG.DC_stg_SupplierCityMapping obj in lstobj)
+                        List<DataContracts.STG.DC_stg_SupplierCityMapping> dstobj = new List<DC_stg_SupplierCityMapping>();
+                        dstobj = lstobj.GroupBy(a => new { a.CityCode, a.CityName, a.CountryCode, a.CountryName, a.StateCode, a.StateName }).Select(grp => grp.First()).ToList();
+
+                        var geo = (from g in context.m_CountryMapping
+                                       //join d in dstobj on new { g.Supplier_Id, g.CityName } equals new { d.Supplier_Id, d.CityName }
+                                   where g.Supplier_Id == mySupplier_Id
+                                   select new
+                                   {
+                                       g.Country_Id,//Country_Id = Guid.Parse(g.Country_Id.ToString()),
+                                       g.CountryName,//CountryName = g.CountryName
+                                       g.CountryCode
+                                   }
+                                 ).Distinct().ToList();
+
+                        foreach (DataContracts.STG.DC_stg_SupplierCityMapping obj in dstobj)
                         {
+                            //var search = (from a in context.stg_SupplierCityMapping
+                            //              where a.SupplierName.Trim().ToUpper() == mySupplier.Trim().ToUpper()
+                            //              && ((a.CityCode != null && a.CityCode.Trim().ToUpper() == obj.CityCode.Trim().ToUpper()) || a.CityCode == null)
+                            //              && a.CityName.Trim().ToUpper() == obj.CityName.Trim().ToUpper()
+                            //              && a.CountryName.Trim().ToUpper() == obj.CountryName.Trim().ToUpper()
+                            //              select a).FirstOrDefault();
+                            //if (search == null)
+                            //{
                             DataLayer.stg_SupplierCityMapping objNew = new DataLayer.stg_SupplierCityMapping();
-                            objNew.stg_City_Id = obj.stg_City_Id;
+                            objNew.stg_City_Id = Guid.NewGuid(); //obj.stg_City_Id;
                             objNew.SupplierId = obj.SupplierId;
                             objNew.SupplierName = obj.SupplierName;
                             objNew.CountryCode = obj.CountryCode;
@@ -1142,9 +1186,17 @@ namespace DataLayer
                             objNew.Action = obj.Action;
                             objNew.UpdateType = obj.UpdateType;
                             objNew.ActionText = obj.ActionText;
+                            objNew.Latitude = obj.Latitude;
+                            objNew.Longitude = obj.Longitude;
+                            objNew.Country_Id = 
+                                ((geo.Where(s => s.CountryName == obj.CountryName).Select(s1 => s1.Country_Id).FirstOrDefault())) ??
+                                (geo.Where(s => s.CountryCode == obj.CountryCode).Select(s1 => s1.Country_Id).FirstOrDefault());
+                            objNew.Supplier_Id = mySupplier_Id;
                             context.stg_SupplierCityMapping.Add(objNew);
+
+                            //}
                         }
-                            context.SaveChanges();
+                        context.SaveChanges();
                         dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
                         dc.StatusMessage = "City Static Data " + ReadOnlyMessage.strAddedSuccessfully;
                     }
@@ -1174,6 +1226,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     string mySupplier = lstobj[0].SupplierName;
+                    Guid? mySupplier_Id = lstobj[0].Supplier_Id;
 
                     if (!string.IsNullOrWhiteSpace(mySupplier))
                     {
@@ -1182,7 +1235,25 @@ namespace DataLayer
                                           select y).ToList();
                         context.stg_SupplierProductMapping.RemoveRange(oldRecords);
                         context.SaveChanges();
-                        foreach (DataContracts.STG.DC_stg_SupplierProductMapping obj in lstobj)
+                        List<DataContracts.STG.DC_stg_SupplierProductMapping> dstobj = new List<DC_stg_SupplierProductMapping>();
+                        dstobj = lstobj.GroupBy(a => new { a.CityCode, a.CityName, a.CountryCode, a.CountryName, a.StateCode, a.StateName, a.ProductId, a.ProductName, a.PostalCode }).Select(grp => grp.First()).ToList();
+
+                        var geo = (from g in context.m_CityMapping
+                                   join c in context.m_CountryMapping on new { g.Supplier_Id, g.Country_Id } equals new { c.Supplier_Id, c.Country_Id }
+                                   //join d in dstobj on new { g.Supplier_Id, g.CityName } equals new { d.Supplier_Id, d.CityName }
+                                   where g.Supplier_Id == mySupplier_Id
+                                   select new
+                                   {
+                                       g.City_Id,//City_Id = Guid.Parse(g.City_Id.ToString()),
+                                       g.CityName, //Name = g.CityName,
+                                       g.CityCode,
+                                       c.Country_Id,//Country_Id = Guid.Parse(g.Country_Id.ToString()),
+                                       c.CountryName,//CountryName = g.CountryName
+                                       c.CountryCode
+                                   }
+                                  ).Distinct().ToList();
+
+                        foreach (DataContracts.STG.DC_stg_SupplierProductMapping obj in dstobj)
                         {
                             DataLayer.stg_SupplierProductMapping objNew = new DataLayer.stg_SupplierProductMapping();
                             objNew.stg_AccoMapping_Id = obj.stg_AccoMapping_Id;
@@ -1193,17 +1264,18 @@ namespace DataLayer
                             objNew.Address = obj.Address;
                             objNew.TelephoneNumber = obj.TelephoneNumber;
                             objNew.CountryCode = obj.CountryCode;
-                            objNew.CountryName = obj.CountryName;
+                            objNew.CountryName = obj.CountryName ??
+                                (geo.Where(s => s.CountryCode == obj.CountryCode).Select(s1 => s1.CountryName).FirstOrDefault());
                             objNew.CityCode = obj.CityCode;
                             objNew.CityName = obj.CityName;
                             objNew.Location = obj.Location;
                             objNew.InsertDate = obj.InsertDate;
-                            obj.StreetName = obj.StreetName;
-                            obj.Street2 = obj.Street2;
-                            obj.PostalCode = obj.PostalCode;
-                            obj.Street3 = obj.Street3;
-                            obj.Street4 = obj.Street4;
-                            obj.Street5 = obj.Street5;
+                            objNew.StreetName = obj.StreetName;
+                            objNew.Street2 = obj.Street2;
+                            objNew.PostalCode = obj.PostalCode;
+                            objNew.Street3 = obj.Street3;
+                            objNew.Street4 = obj.Street4;
+                            objNew.Street5 = obj.Street5;
                             objNew.StateCode = obj.StateCode;
                             objNew.StateName = obj.StateName;
                             objNew.Latitude = obj.Latitude;
@@ -1218,10 +1290,17 @@ namespace DataLayer
                             objNew.Action = obj.Action;
                             objNew.UpdateType = obj.UpdateType;
                             objNew.ActionText = obj.ActionText;
-
+                            objNew.StarRating = obj.StarRating;
+                            objNew.Country_Id =
+                                ((geo.Where(s => s.CountryName == obj.CountryName).Select(s1 => s1.Country_Id).FirstOrDefault())) ??
+                                (geo.Where(s => s.CountryCode == obj.CountryCode).Select(s1 => s1.Country_Id).FirstOrDefault());
+                            objNew.City_Id =
+                                ((geo.Where(s => s.CityName == obj.CityName).Select(s1 => s1.City_Id).FirstOrDefault())) ??
+                                (geo.Where(s => s.CityCode == obj.CityCode).Select(s1 => s1.City_Id).FirstOrDefault());
+                            objNew.Supplier_Id = obj.Supplier_Id;
                             context.stg_SupplierProductMapping.Add(objNew);
                         }
-                            context.SaveChanges();
+                        context.SaveChanges();
                         dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
                         dc.StatusMessage = "Product Static Data " + ReadOnlyMessage.strAddedSuccessfully;
                     }
@@ -1241,6 +1320,179 @@ namespace DataLayer
             }
 
         }
+
+        public List<DC_stg_SupplierProductMapping> GetSTGHotelData(DC_stg_SupplierProductMapping_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var stgSearch = from a in context.stg_SupplierProductMapping select a;
+
+                    if (RQ.stg_AccoMapping_Id.HasValue)
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.stg_AccoMapping_Id == RQ.stg_AccoMapping_Id
+                                    select a;
+                    }
+
+                    if (!(RQ.Supplier_Id == Guid.Empty))
+                    {
+                        stgSearch = from a in stgSearch
+                                    join s in context.Suppliers on a.SupplierName.Trim().TrimStart().ToUpper() equals s.Name.Trim().TrimStart().ToUpper()
+                                    where s.Supplier_Id == RQ.Supplier_Id
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierName.Trim().TrimStart().ToUpper() == RQ.SupplierName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+
+                    if (!string.IsNullOrWhiteSpace(RQ.CountryCode))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.CountryCode.Trim().TrimStart().ToUpper() == RQ.CountryCode.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.CountryName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.CountryName.Trim().TrimStart().ToUpper() == RQ.CountryName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.StateCode))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.StateCode.Trim().TrimStart().ToUpper() == RQ.StateCode.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.StateName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.StateName.Trim().TrimStart().ToUpper() == RQ.StateName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.CityCode))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.CityCode.Trim().TrimStart().ToUpper() == RQ.CityCode.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.CityName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.CityName.Trim().TrimStart().ToUpper() == RQ.CityName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.ProductId))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.ProductId.Trim().TrimStart().ToUpper() == RQ.ProductId.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.ProductName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.ProductName.Trim().TrimStart().ToUpper() == RQ.ProductName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.Latitude))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.Latitude.Trim().TrimStart().ToUpper() == RQ.Latitude.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.Longitude))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.Longitude.Trim().TrimStart().ToUpper() == RQ.Longitude.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.StarRating))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.StarRating.Trim().TrimStart().ToUpper() == RQ.StarRating.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+
+                    int total;
+
+                    total = stgSearch.Count();
+
+                    var skip = RQ.PageSize * RQ.PageNo;
+
+                    var stgResult = (from a in stgSearch
+                                     orderby a.SupplierName, a.CountryName
+                                     select new DataContracts.STG.DC_stg_SupplierProductMapping
+                                     {
+                                         stg_AccoMapping_Id = a.stg_AccoMapping_Id,
+                                         CityCode = a.CityCode,
+                                         CityName = a.CityName,
+                                         StateCode = a.StateCode,
+                                         StateName = a.StateName,
+                                         ActiveFrom = a.ActiveFrom,
+                                         ActiveTo = a.ActiveTo,
+                                         CountryCode = a.CountryCode,
+                                         CountryName = a.CountryName,
+                                         SupplierId = a.SupplierId,
+                                         SupplierName = a.SupplierName,
+                                         TotalRecords = total,
+                                         Latitude = a.Latitude,
+                                         Longitude = a.Longitude,
+                                         Address = a.Address,
+                                         Email = a.Email,
+                                         Fax = a.Fax,
+                                         InsertDate = a.InsertDate,
+                                         Location = a.Location,
+                                         PostalCode = a.PostalCode,
+                                         ProductId = a.ProductId,
+                                         ProductName = a.ProductName,
+                                         StarRating = a.StarRating,
+                                         Street2 = a.Street2,
+                                         Street3 = a.Street3,
+                                         Street4 = a.Street4,
+                                         Street5 = a.Street5,
+                                         StreetName = a.StreetName,
+                                         StreetNo = a.StreetNo,
+                                         TelephoneNumber = a.TelephoneNumber,
+                                         TX_COUNTRYNAME = a.TX_COUNTRYNAME,
+                                         Website = a.Website,
+                                         Action = a.Action,
+                                         ActionText = a.ActionText,
+                                         UpdateType = a.UpdateType,
+                                         Country_Id = a.Country_Id,
+                                         City_Id = a.City_Id,
+                                         Google_Place_Id = a.Google_Place_Id,
+                                         Supplier_Id = a.Supplier_Id
+                                     }
+                                        ).Skip(skip).Take(RQ.PageSize).ToList();
+
+                    return stgResult;
+
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while searching Supplier Data",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+        }
+
         #endregion
 
         #region Process Or Test Uploaded Files
@@ -1256,12 +1508,12 @@ namespace DataLayer
                 file.PROCESS_USER = obj.PROCESS_USER;
                 file.Entity = obj.Entity;
                 file.STATUS = obj.STATUS;
+                file.Supplier = obj.Supplier;
 
                 object result = null;
-                DHSVCProxy.PostData(ProxyFor.DataHandler, System.Configuration.ConfigurationManager.AppSettings["Data_Handler_Process_File"], file, file.GetType(), typeof(DHSVC.DC_Status), out result);
-                DHSVC.DC_Status status = result as DHSVC.DC_Status;
+                DHSVCProxy.PostData(ProxyFor.DataHandler, System.Configuration.ConfigurationManager.AppSettings["Data_Handler_Process_File"], file, file.GetType(), typeof(void), out result);
 
-                return new DC_Message { StatusMessage = status.Message };
+                return new DC_Message { StatusMessage = "File has been processed." };
             }
             catch (Exception e)
             {

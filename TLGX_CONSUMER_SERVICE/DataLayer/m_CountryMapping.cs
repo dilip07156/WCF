@@ -28,5 +28,9 @@ namespace DataLayer
         public Nullable<int> MapID { get; set; }
         public string Remarks { get; set; }
         public string actionType { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
+        public string ContinentCode { get; set; }
+        public string ContinentName { get; set; }
     }
 }

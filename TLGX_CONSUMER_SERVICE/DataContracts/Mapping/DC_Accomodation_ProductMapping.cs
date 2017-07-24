@@ -57,7 +57,20 @@ namespace DataContracts.Mapping
         int? _MapId;
         string _mstAcco_Id;
         string _mstHotelName;
+        string _Google_Place_Id;
 
+
+        [DataMember]
+        public Nullable<System.Guid> Country_Id { get; set; }
+
+        [DataMember]
+        public Nullable<System.Guid> City_Id { get; set; }
+
+        [DataMember]
+        public string oldProductName { get; set; }
+
+        [DataMember]
+        public string StarRating { get; set; }
         [DataMember]
         public Guid Accommodation_ProductMapping_Id
         {
@@ -680,6 +693,19 @@ namespace DataContracts.Mapping
                 _SystemFullAddress = value;
             }
         }
+        [DataMember]
+        public string Google_Place_Id
+        {
+            get
+            {
+                return _Google_Place_Id;
+            }
+
+            set
+            {
+                _Google_Place_Id = value;
+            }
+        }
     }
 
     [DataContract]
@@ -709,6 +735,17 @@ namespace DataContracts.Mapping
         string _source;
         string _address_tx;
         string _TelephoneNumber_tx;
+
+        [DataMember]
+        public Nullable<System.Guid> Accommodation_Id { get; set; }
+
+
+        [DataMember]
+        public string CalledFromTLGX { get; set; }
+
+
+        [DataMember]
+        public string StarRating { get; set; }
 
         [DataMember]
         public string SupplierId

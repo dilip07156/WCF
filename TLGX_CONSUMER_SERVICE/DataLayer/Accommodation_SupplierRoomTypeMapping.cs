@@ -32,32 +32,15 @@ namespace DataLayer
         public Nullable<int> MaxChild { get; set; }
         public Nullable<int> MaxInfants { get; set; }
         public Nullable<int> MaxGuestOccupancy { get; set; }
-        public string ExtraBed { get; set; }
         public Nullable<int> Quantity { get; set; }
-        public string BeddingConfig { get; set; }
-        public string BedTypeCode { get; set; }
         public string RatePlan { get; set; }
         public string RatePlanCode { get; set; }
         public string SupplierProductName { get; set; }
         public string SupplierProductId { get; set; }
-        public Nullable<bool> Tx_SoleUse { get; set; }
-        public Nullable<bool> Tx_Wifi { get; set; }
-        public Nullable<bool> Tx_NonRefundable { get; set; }
-        public Nullable<bool> Tx_Offer { get; set; }
-        public Nullable<bool> Tx_RoomOnly { get; set; }
-        public Nullable<bool> Tx_Breakfast { get; set; }
-        public Nullable<bool> Tx_BreakfastExcluded { get; set; }
-        public Nullable<bool> Tx_NoSmoking { get; set; }
-        public Nullable<bool> TX_Smoking { get; set; }
-        public Nullable<bool> Tx_AirCon { get; set; }
-        public Nullable<bool> Tx_NonAirCon { get; set; }
-        public Nullable<bool> Tx_Rate { get; set; }
-        public string Tx_RateDetail { get; set; }
         public string Tx_StrippedName { get; set; }
-        public Nullable<bool> TX_AllInclusive { get; set; }
-        public Nullable<bool> Tx_Halfboard { get; set; }
         public string Tx_ReorderedName { get; set; }
-        public string Tx_Facilities { get; set; }
-        public Nullable<bool> Tx_BedType { get; set; }
+        public string MappingStatus { get; set; }
+        public Nullable<int> MapId { get; set; }
+        public Nullable<System.Guid> Accommodation_RoomInfo_Id { get; set; }
     }
 }

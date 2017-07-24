@@ -19,7 +19,7 @@ namespace DataContracts.STG
     public class DC_stg_SupplierCityMapping
     {
         [DataMember]
-        public System.Guid stg_City_Id { get; set; }
+        public Nullable<System.Guid> stg_City_Id { get; set; }
 
         [DataMember]
         public string SupplierId { get; set; }
@@ -65,6 +65,17 @@ namespace DataContracts.STG
 
         [DataMember]
         public int TotalRecords { get; set; }
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
+
+        [DataMember]
+        public Nullable<System.Guid> Country_Id { get; set; }
+
+        [DataMember]
+        public Nullable<System.Guid> Supplier_Id { get; set; }
     }
 
     [DataContract]
@@ -102,5 +113,10 @@ namespace DataContracts.STG
 
         [DataMember]
         public int PageSize { get; set; }
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
     }
 }

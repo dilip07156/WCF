@@ -234,7 +234,7 @@ namespace DataContracts.Mapping
         //    }
         //}
     }
-
+    #region roll_off_reports
     [DataContract]
     public class DC_RollOffReportRule
     {
@@ -339,7 +339,267 @@ namespace DataContracts.Mapping
             }
         }
     }
+    [DataContract]
+    public class DC_RollOffReportStatus
+    {
+        int _hotelid;
+        string _hotelname;
+        string _companymarket;
+        string _status;
+        string _validfrom;
+        string _validto;
+        string _reason;
+        string _lastupdatedBy;
+        string _lastupdateDate;
+        [DataMember]
+        public int Hotelid
+        {
+            get
+            {
+                return _hotelid;
+            }
 
+            set
+            {
+                _hotelid = value;
+            }
+        }
+        [DataMember]
+        public string Hotelname
+        {
+            get
+            {
+                return _hotelname;
+            }
+
+            set
+            {
+                _hotelname = value;
+            }
+        }
+        [DataMember]
+        public string Companymarket
+        {
+            get
+            {
+                return _companymarket;
+            }
+
+            set
+            {
+                _companymarket = value;
+            }
+        }
+        [DataMember]
+        public string Status
+        {
+            get
+            {
+                return _status;
+            }
+
+            set
+            {
+                _status = value;
+            }
+        }
+        [DataMember]
+        public string Validfrom
+        {
+            get
+            {
+                return _validfrom;
+            }
+
+            set
+            {
+                _validfrom = value;
+            }
+        }
+        [DataMember]
+        public string Validto
+        {
+            get
+            {
+                return _validto;
+            }
+
+            set
+            {
+                _validto = value;
+            }
+        }
+        [DataMember]
+        public string Reason
+        {
+            get
+            {
+                return _reason;
+            }
+
+            set
+            {
+                _reason = value;
+            }
+        }
+        [DataMember]
+        public string LastupdatedBy
+        {
+            get
+            {
+                return _lastupdatedBy;
+            }
+
+            set
+            {
+                _lastupdatedBy = value;
+            }
+        }
+        [DataMember]
+        public string LastupdateDate
+        {
+            get
+            {
+                return _lastupdateDate;
+            }
+
+            set
+            {
+                _lastupdateDate = value;
+            }
+        }
+    }
+    [DataContract]
+    public class DC_RollOffReportUpdate
+    {
+        int _hotelid;
+        string _hotelname;
+        string _hotelupdate;
+        string _descriptionsource;
+        string _internal_Flag;
+        string _validfrom;
+        string _validto;
+        string _lastupdatedBy;
+        string _lastupdateDate;
+        [DataMember]
+        public int Hotelid
+        {
+            get
+            {
+                return _hotelid;
+            }
+
+            set
+            {
+                _hotelid = value;
+            }
+        }
+        [DataMember]
+        public string Hotelname
+        {
+            get
+            {
+                return _hotelname;
+            }
+
+            set
+            {
+                _hotelname = value;
+            }
+        }
+        [DataMember]
+        public string Hotelupdate
+        {
+            get
+            {
+                return _hotelupdate;
+            }
+
+            set
+            {
+                _hotelupdate = value;
+            }
+        }
+        [DataMember]
+        public string Descriptionsource
+        {
+            get
+            {
+                return _descriptionsource;
+            }
+
+            set
+            {
+                _descriptionsource = value;
+            }
+        }
+        [DataMember]
+        public string Internal_Flag
+        {
+            get
+            {
+                return _internal_Flag;
+            }
+
+            set
+            {
+                _internal_Flag = value;
+            }
+        }
+        [DataMember]
+        public string Validfrom
+        {
+            get
+            {
+                return _validfrom;
+            }
+
+            set
+            {
+                _validfrom = value;
+            }
+        }
+        [DataMember]
+        public string Validto
+        {
+            get
+            {
+                return _validto;
+            }
+
+            set
+            {
+                _validto = value;
+            }
+        }
+        [DataMember]
+        public string LastupdatedBy
+        {
+            get
+            {
+                return _lastupdatedBy;
+            }
+
+            set
+            {
+                _lastupdatedBy = value;
+            }
+        }
+        [DataMember]
+        public string LastupdateDate
+        {
+            get
+            {
+                return _lastupdateDate;
+            }
+
+            set
+            {
+                _lastupdateDate = value;
+            }
+        }
+    }
+    [DataContract]
     public class DC_RollOFParams
     {
         string _fromdate;
@@ -371,4 +631,529 @@ namespace DataContracts.Mapping
             }
         }
     }
+#endregion
+    #region rdlc reports
+    [DataContract]
+    public class DC_supplierwiseUnmappedReport
+    {
+        [DataMember]
+        public Guid _SupplierId { get; set; }
+        [DataMember]
+        public List<DC_UnmappedCountryReport> Unmappedcountry { get; set; }
+        [DataMember]
+        public List<DC_UnmappedCityReport> Unmappedcity { get; set; }
+        [DataMember]
+        public List<DC_unmappedProductReport> Unmappedproduct { get; set; }
+        [DataMember]
+        public List<DC_unmappedActivityReport> Unmappedactivity { get; set; }
+       
+    }
+    [DataContract]
+    public class DC_UnmappedCountryReport
+    {
+        
+        string _countrycode;
+        string _contryname;
+        [DataMember]
+        public string Countrycode
+        {
+            get
+            {
+                return _countrycode;
+            }
+
+            set
+            {
+                _countrycode = value;
+            }
+        }
+        [DataMember]
+        public string Contryname
+        {
+            get
+            {
+                return _contryname;
+            }
+
+            set
+            {
+                _contryname = value;
+            }
+        }
+    }
+    [DataContract]
+    public class DC_UnmappedCityReport
+    {
+        string _countrycode;
+        string _countryname;
+        string _citycode;
+        string _cityname;
+        [DataMember]
+        public string Countrycode
+        {
+            get
+            {
+                return _countrycode;
+            }
+
+            set
+            {
+                _countrycode = value;
+            }
+        }
+        [DataMember]
+        public string Countryname
+        {
+            get
+            {
+                return _countryname;
+            }
+
+            set
+            {
+                _countryname = value;
+            }
+        }
+        [DataMember]
+        public string Citycode
+        {
+            get
+            {
+                return _citycode;
+            }
+
+            set
+            {
+                _citycode = value;
+            }
+        }
+        [DataMember]
+        public string Cityname
+        {
+            get
+            {
+                return _cityname;
+            }
+
+            set
+            {
+                _cityname = value;
+            }
+        }
+    }
+    [DataContract]
+    public class DC_unmappedProductReport
+    {
+        string _hotelname;
+        string _country;
+        string _city;
+        string _address;
+        string _supplierName;
+        string _supplierHotelId;
+        [DataMember]
+        public string Hotelname
+        {
+            get
+            {
+                return _hotelname;
+            }
+
+            set
+            {
+                _hotelname = value;
+            }
+        }
+        [DataMember]
+        public string Country
+        {
+            get
+            {
+                return _country;
+            }
+
+            set
+            {
+                _country = value;
+            }
+        }
+        [DataMember]
+        public string City
+        {
+            get
+            {
+                return _city;
+            }
+
+            set
+            {
+                _city = value;
+            }
+        }
+        [DataMember]
+        public string Address
+        {
+            get
+            {
+                return _address;
+            }
+
+            set
+            {
+                _address = value;
+            }
+        }
+        [DataMember]
+        public string SupplierName
+        {
+            get
+            {
+                return _supplierName;
+            }
+
+            set
+            {
+                _supplierName = value;
+            }
+        }
+        [DataMember]
+        public string SupplierHotelId
+        {
+            get
+            {
+                return _supplierHotelId;
+            }
+
+            set
+            {
+                _supplierHotelId = value;
+            }
+        }
+    }
+    [DataContract]
+    public class DC_unmappedActivityReport
+    {
+        string _activityname;
+        string _country;
+        string _city;
+        string _address;
+        string _supplierName;
+        string _supplierActivityId;
+        [DataMember]
+        public string Activityname
+        {
+            get
+            {
+                return _activityname;
+            }
+
+            set
+            {
+                _activityname = value;
+            }
+        }
+        [DataMember]
+        public string Country
+        {
+            get
+            {
+                return _country;
+            }
+
+            set
+            {
+                _country = value;
+            }
+        }
+        [DataMember]
+        public string City
+        {
+            get
+            {
+                return _city;
+            }
+
+            set
+            {
+                _city = value;
+            }
+        }
+        [DataMember]
+        public string Address
+        {
+            get
+            {
+                return _address;
+            }
+
+            set
+            {
+                _address = value;
+            }
+        }
+        [DataMember]
+        public string SupplierName
+        {
+            get
+            {
+                return _supplierName;
+            }
+
+            set
+            {
+                _supplierName = value;
+            }
+        }
+        [DataMember]
+        public string SupplierActivityId
+        {
+            get
+            {
+                return _supplierActivityId;
+            }
+
+            set
+            {
+                _supplierActivityId = value;
+            }
+        }
+    }
+    [DataContract]
+    public class DC_supplierwisesummaryReport
+    {
+        int _city;
+        int _product;
+        int _hotelrooom;
+        int _activity;
+        int _country;
+        string _suppliername;
+        [DataMember]
+        public string Suppliername
+        {
+            get
+            {
+                return _suppliername;
+            }
+
+            set
+            {
+                _suppliername = value;
+            }
+        }
+        [DataMember]
+        public int City
+        {
+            get
+            {
+                return _city;
+            }
+
+            set
+            {
+                _city = value;
+            }
+        }
+        [DataMember]
+        public int Product
+        {
+            get
+            {
+                return _product;
+            }
+
+            set
+            {
+                _product = value;
+            }
+        }
+        [DataMember]
+        public int Hotelrooom
+        {
+            get
+            {
+                return _hotelrooom;
+            }
+
+            set
+            {
+                _hotelrooom = value;
+            }
+        }
+        [DataMember]
+        public int Activity
+        {
+            get
+            {
+                return _activity;
+            }
+
+            set
+            {
+                _activity = value;
+            }
+        }
+        [DataMember]
+        public int Country
+        {
+            get
+            {
+                return _country;
+            }
+
+            set
+            {
+                _country = value;
+            }
+        }
+    }
+    [DataContract]
+    public class DC_supplierwiseunmappedsummaryReport
+    {
+        string _suppliername;
+        string _countryname;
+        string _cityname;
+        int _noofproducts;
+        [DataMember]
+        public string Suppliername
+        {
+            get
+            {
+                return _suppliername;
+            }
+
+            set
+            {
+                _suppliername = value;
+            }
+        }
+        [DataMember]
+        public string Countryname
+        {
+            get
+            {
+                return _countryname;
+            }
+
+            set
+            {
+                _countryname = value;
+            }
+        }
+        [DataMember]
+        public string Cityname
+        {
+            get
+            {
+                return _cityname;
+            }
+
+            set
+            {
+                _cityname = value;
+            }
+        }
+        [DataMember]
+        public int Noofproducts
+        {
+            get
+            {
+                return _noofproducts;
+            }
+
+            set
+            {
+                _noofproducts = value;
+            }
+        }
+    }
+    #endregion
+    #region hotel report
+    [DataContract]
+    public class DC_newHotelsReport
+    {
+        int _hotelid;
+        string _hotelname;
+        string _country;
+        string _city;
+        string _createdate;
+        string _createdby;
+        [DataMember]
+        public int Hotelid
+        {
+            get
+            {
+                return _hotelid;
+            }
+
+            set
+            {
+                _hotelid = value;
+            }
+        }
+        [DataMember]
+        public string Hotelname
+        {
+            get
+            {
+                return _hotelname;
+            }
+
+            set
+            {
+                _hotelname = value;
+            }
+        }
+        [DataMember]
+        public string Country
+        {
+            get
+            {
+                return _country;
+            }
+
+            set
+            {
+                _country = value;
+            }
+        }
+        [DataMember]
+        public string City
+        {
+            get
+            {
+                return _city;
+            }
+
+            set
+            {
+                _city = value;
+            }
+        }
+        [DataMember]
+        public string Createdate
+        {
+            get
+            {
+                return _createdate;
+            }
+
+            set
+            {
+                _createdate = value;
+            }
+        }
+        [DataMember]
+        public string Createdby
+        {
+            get
+            {
+                return _createdby;
+            }
+
+            set
+            {
+                _createdby = value;
+            }
+        }
+    }
+    #endregion
 }

@@ -32,6 +32,12 @@ namespace DataContracts.Mapping
 
 
         [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
+
+        [DataMember]
         public Guid CountryMapping_Id
         {
             get
@@ -295,6 +301,13 @@ namespace DataContracts.Mapping
         string _StatusExcept;
         string _SystemCountryName;
 
+
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
+
         [DataMember]
         public Guid? Supplier_Id
         {
@@ -430,6 +443,12 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public List<DC_CityMapping> lstCityMapping { get; set; }
+
+        [DataMember]
+        public List<DC_Accomodation_ProductMapping> lstHotelMapping { get; set; }
+
+        [DataMember]
+        public DataContracts.Masters.DC_Supplier SupplierDetail { get; set; }
 
 
         [DataMember]

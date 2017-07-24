@@ -7,6 +7,7 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using DataContracts.Mapping;
 using DataContracts.UploadStaticData;
+using DataLayer;
 
 namespace BusinessLayer
 {
@@ -49,23 +50,24 @@ namespace BusinessLayer
 
         }
 
-        public List<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetAccomodationProductMapping(string PageNo, string PageSize, string Accomodation_Id, string Status)
+        //public List<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetAccomodationProductMapping(string PageNo, string PageSize, string Accomodation_Id, string Status)
+        public IList<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetAccomodationProductMapping(DataContracts.Mapping.DC_Mapping_ProductSupplier_Search_RQ obj)
         {
             int iPageNo;
             int iPageSize;
             Guid gAccomodation_Id;
 
-            if (!int.TryParse(PageNo, out iPageNo) || !int.TryParse(PageSize, out iPageSize) || !Guid.TryParse(Accomodation_Id, out gAccomodation_Id))
-            {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
-            }
-            else
-            {
+            //if (!int.TryParse(PageNo, out iPageNo) || !int.TryParse(PageSize, out iPageSize) || !Guid.TryParse(Accomodation_Id, out gAccomodation_Id))
+            //{
+            //    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            //}
+            //else
+            //{
                 using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
                 {
-                    return objBL.GetAccomodationProductMapping(iPageNo, iPageSize, gAccomodation_Id, Status);
+                    return objBL.GetAccomodationProductMapping(obj);
                 }
-            }
+            //}
 
         }
 
@@ -82,6 +84,30 @@ namespace BusinessLayer
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
                 return objBL.UpdateAccomodationProductMapping(PM);
+            }
+        }
+
+        //public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
+        public bool UpdateHotelMappingStatus(DC_MappingMatch obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.UpdateHotelMappingStatus(obj);
+            }
+        }
+
+        public bool HotelMappingMatch(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.HotelMappingMatch(obj);
+            }
+        }
+        public List<DC_Accomodation_ProductMapping> GetMappingHotelData(DC_Mapping_ProductSupplier_Search_RQ obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetMappingHotelData(obj);
             }
         }
         #endregion
@@ -115,7 +141,38 @@ namespace BusinessLayer
             }
         }
 
-      
+        public void DataHandler_RoomName_Attributes_Update(DC_SupplierRoomName_Details SRNDetails)
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                objDL.DataHandler_RoomName_Attributes_Update(SRNDetails);
+            }
+        }
+
+        public List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS> AccomodationSupplierRoomTypeMapping_Search(DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRQ obj)
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                return objDL.AccomodationSupplierRoomTypeMapping_Search(obj);
+            }
+        }
+
+        public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_UpdateMap(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_Update> obj)
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                return objDL.AccomodationSupplierRoomTypeMapping_UpdateMap(obj);
+            }
+        }
+
+        public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_TTFUALL(List<DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                return objDL.AccomodationSupplierRoomTypeMapping_TTFUALL(Acco_RoomTypeMap_Ids);
+            }
+        }
+
         #endregion
 
         #region Country Mapping
@@ -147,6 +204,7 @@ namespace BusinessLayer
             }
         }
 
+
         public List<DC_CountryMapping> UpdateCountryMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
@@ -154,13 +212,8 @@ namespace BusinessLayer
                 return objBL.UpdateCountryMappingStatus(obj);
             }
         }
-        public List<DC_CityMapping> UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
-        {
-            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
-            {
-                return objBL.UpdateCityMappingStatus(obj);
-            }
-        }
+
+
         #endregion
 
         #region City Mapping
@@ -173,11 +226,29 @@ namespace BusinessLayer
             }
         }
 
+
         public bool UpdateCityMapping(List<DataContracts.Mapping.DC_CityMapping> CM)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
                 return objBL.UpdateCityMapping(CM);
+            }
+        }
+
+        //public List<DC_CityMapping> UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
+        public bool UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.UpdateCityMappingStatus(obj);
+            }
+        }
+
+        public bool CityMappingMatch(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.CityMappingMatch(obj);
             }
         }
         #endregion
@@ -212,12 +283,132 @@ namespace BusinessLayer
         #region roll_off_reports
         public List<DataContracts.Mapping.DC_RollOffReportRule> getStatisticforRuleReport(DataContracts.Mapping.DC_RollOFParams param)
         {
-            using(DataLayer.DL_Mapping objBL= new DataLayer.DL_Mapping())
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
                 return objBL.getStatisticforRuleReport(param);
             }
         }
+        public List<DataContracts.Mapping.DC_RollOffReportStatus> getStatisticforStatusReport(DataContracts.Mapping.DC_RollOFParams param)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.getStatisticforStatusReport(param);
+            }
+        }
+        public List<DataContracts.Mapping.DC_RollOffReportUpdate> getStatisticforUpdateReport(DataContracts.Mapping.DC_RollOFParams param)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.getStatisticforUpdateReport(param);
+            }
+        }
+        #endregion
+        #region rdlc reports
+        public List<DataContracts.Mapping.DC_supplierwiseUnmappedReport> GetsupplierwiseUnmappedDataReport(string SupplierID)
+        {
+            Guid gSupplier_Id;
 
+            if (!Guid.TryParse(SupplierID, out gSupplier_Id))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            else
+            {
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.GetsupplierwiseUnmappedDataReport(gSupplier_Id);
+                }
+            }
+        }
+        public List<DataContracts.Mapping.DC_UnmappedCountryReport> GetsupplierwiseUnmappedCountryReport(string SupplierID)
+        {
+            Guid gSupplier_Id;
+
+            if (!Guid.TryParse(SupplierID, out gSupplier_Id))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            else
+            {
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.GetsupplierwiseUnmappedCountryReport(gSupplier_Id);
+                }
+            }
+        }
+        public List<DataContracts.Mapping.DC_UnmappedCityReport> GetsupplierwiseUnmappedCityReport(string SupplierID)
+        {
+            Guid gSupplier_Id;
+
+            if (!Guid.TryParse(SupplierID, out gSupplier_Id))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            else
+            {
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.GetsupplierwiseUnmappedCityReport(gSupplier_Id);
+                }
+            }
+        }
+        public List<DataContracts.Mapping.DC_unmappedProductReport> GetsupplierwiseUnmappedProductReport(string SupplierID)
+        {
+            Guid gSupplier_Id;
+
+            if (!Guid.TryParse(SupplierID, out gSupplier_Id))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            else
+            {
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.GetsupplierwiseUnmappedProductReport(gSupplier_Id);
+                }
+            }
+        }
+        public List<DataContracts.Mapping.DC_unmappedActivityReport> GetsupplierwiseUnmappedActivityReport(string SupplierID)
+        {
+            Guid gSupplier_Id;
+
+            if (!Guid.TryParse(SupplierID, out gSupplier_Id))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            else
+            {
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.GetsupplierwiseUnmappedActivityReport(gSupplier_Id);
+                }
+            }
+        }
+        public List<DataContracts.Mapping.DC_supplierwisesummaryReport> GetsupplierwiseSummaryReport()
+        {
+            
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.GetsupplierwiseSummaryReport();
+                }
+            
+        }
+        public List<DataContracts.Mapping.DC_supplierwiseunmappedsummaryReport> GetsupplierwiseUnmappedSummaryReport(string SupplierID)
+        {
+            Guid gSupplier_Id;
+
+            if (!Guid.TryParse(SupplierID, out gSupplier_Id))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            else
+            {
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.GetsupplierwiseUnmappedSummaryReport(gSupplier_Id);
+                }
+            }
+        }
         #endregion
         #region Master Attribute Mapping
         public List<DataContracts.Mapping.DC_MasterAttributeMapping_RS> SearchMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping_RQ RQ)
@@ -296,6 +487,31 @@ namespace BusinessLayer
                 return objBL.GetActivitySupplierProductMappingSearch(obj);
             }
         }
+        public List<DataContracts.Mapping.DC_Acitivity_SupplierProductMapping> GetActivitySupplierProductMappingSearchForMapping(DataContracts.Mapping.DC_Acitivity_SupplierProductMapping_Search_RQ obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetActivitySupplierProductMappingSearchForMapping(obj);
+            }
+
+        }
+        public bool IsMappedWithSupplier(string masterActivityID, string supplierID)
+        {
+            Guid gmasterActivityID;
+            Guid gsupplierID;
+
+            if (!Guid.TryParse(masterActivityID, out gmasterActivityID) || !Guid.TryParse(supplierID, out gsupplierID))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            else
+            {
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.IsMappedWithSupplier(gmasterActivityID, gsupplierID);
+                }
+            }
+        }
         public List<DataContracts.Mapping.DC_Acitivity_SupplierProductMappingForDDL> GetActivitySupplierProductMappingSearchForDDL(DataContracts.Mapping.DC_Acitivity_SupplierProductMapping_Search_RQ obj)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
@@ -346,6 +562,15 @@ namespace BusinessLayer
 
 
 
+        #endregion
+        #region hotel report
+        public List<DataContracts.Mapping.DC_newHotelsReport> getNewHotelsAddedReport(DataContracts.Mapping.DC_RollOFParams param)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.getNewHotelsAddedReport(param);
+            }
+        }
         #endregion
     }
 }

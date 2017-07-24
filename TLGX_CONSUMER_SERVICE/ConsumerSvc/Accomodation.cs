@@ -107,7 +107,13 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
-
+        public List<DataContracts.DC_Accommodation_RoomInfo> GetRoomDetailsByWithPagging(DC_Accommodation_RoomInfo_RQ RQ)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                return objBL.GetRoomDetailsByWithPagging(RQ);
+            }
+        }
         public bool UpdateAccomodationGoogleInfo(DC_Accomodation AccomodationInfo)
         {
             using (BL_Accomodation objBL = new BL_Accomodation())
@@ -395,6 +401,20 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
+        public IList<DC_Accommodation_NearbyPlaces> GetNearbyPlacesDetailsWithPaging(string Accomodation_Id, string DataKey_Id, string pageSize, string pageindex)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                List<DC_Accommodation_NearbyPlaces> searchResults = new List<DC_Accommodation_NearbyPlaces>();
+                searchResults = objBL.GetNearbyPlacesDetailsWithPaging(Guid.Parse(Accomodation_Id), Guid.Parse(DataKey_Id),Convert.ToInt32(pageSize),Convert.ToInt32(pageindex));
+
+                if (searchResults == null)
+                {
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                }
+                return searchResults;
+            }
+        }
 
         public bool AddAccomodationNearbyPlaces(DataContracts.DC_Accommodation_NearbyPlaces NP)
         {
@@ -409,6 +429,14 @@ namespace ConsumerSvc
             using (BL_Accomodation obj = new BL_Accomodation())
             {
                 return obj.UpdateAccomodationNearbyPlaces(NP);
+            }
+        }
+
+        public DC_Message AddUpldatePlaces(DC_GooglePlaceNearByWithAccoID objPlaces)
+        {
+            using (BL_Accomodation obj = new BL_Accomodation())
+            {
+                return obj.AddUpldatePlaces(objPlaces);
             }
         }
 
@@ -476,6 +504,13 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
+        public IList<string> GetRoomCategoryMaster(DataContracts.DC_RoomCategoryMaster_RQ RC)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                return objBL.GetRoomCategoryMaster(RC);
+            }
+        }
         public bool AddAccomodationRoomInfo(DataContracts.DC_Accommodation_RoomInfo RI)
         {
             using (BL_Accomodation obj = new BL_Accomodation())
@@ -489,6 +524,13 @@ namespace ConsumerSvc
             using (BL_Accomodation obj = new BL_Accomodation())
             {
                 return obj.UpdateAccomodationRoomInfo(RI);
+            }
+        }
+        public DataContracts.DC_Message CopyAccomodationInfo(DataContracts.DC_Accomodation_CopyRoomDef RI)
+        {
+            using (BL_Accomodation obj = new BL_Accomodation())
+            {
+                return obj.CopyAccomodationInfo(RI);
             }
         }
         #endregion

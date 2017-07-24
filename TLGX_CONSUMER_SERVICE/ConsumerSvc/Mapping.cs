@@ -30,11 +30,12 @@ namespace ConsumerSvc
                 return objBL.GetAccomodationProductMappingById(Accommodation_ProductMapping_Id);
             }
         }
-        public IList<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetAccomodationProductMapping(string PageNo, string PageSize, string Accomodation_Id, string Status)
+        //public IList<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetAccomodationProductMapping(string PageNo, string PageSize, string Accomodation_Id, string Status)
+        public IList<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetAccomodationProductMapping(DataContracts.Mapping.DC_Mapping_ProductSupplier_Search_RQ obj)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
-                return objBL.GetAccomodationProductMapping(PageNo, PageSize, Accomodation_Id, Status);
+                return objBL.GetAccomodationProductMapping(obj);
             }
         }
 
@@ -71,6 +72,31 @@ namespace ConsumerSvc
                 return objBL.UpdateAccomodationSupplierRoomTypeMapping(obj);
             }
         }
+
+        public List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS> AccomodationSupplierRoomTypeMapping_Search(DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRQ obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.AccomodationSupplierRoomTypeMapping_Search(obj);
+            }
+        }
+
+        public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_UpdateMap(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_Update> obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.AccomodationSupplierRoomTypeMapping_UpdateMap(obj);
+            }
+        }
+
+        public DC_Message AccomodationSupplierRoomTypeMapping_TTFUALL(List<DataContracts.Mapping.DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.AccomodationSupplierRoomTypeMapping_TTFUALL(Acco_RoomTypeMap_Ids);
+            }
+        }
+
         #endregion
 
         #region Country Mapping
@@ -126,6 +152,7 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
         #region roll_off_reports
         public IList<DataContracts.Mapping.DC_RollOffReportRule> getStatisticforRuleReport(DataContracts.Mapping.DC_RollOFParams param)
         {
@@ -134,7 +161,76 @@ namespace ConsumerSvc
                 return objBL.getStatisticforRuleReport(param);
             }
         }
+        public IList<DataContracts.Mapping.DC_RollOffReportStatus> getStatisticforStatusReport(DataContracts.Mapping.DC_RollOFParams param)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.getStatisticforStatusReport(param);
+            }
+        }
+        public IList<DataContracts.Mapping.DC_RollOffReportUpdate> getStatisticforUpdateReport(DataContracts.Mapping.DC_RollOFParams param)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.getStatisticforUpdateReport(param);
+            }
+        }
         #endregion
+
+        #region rdlc reports
+        public IList<DataContracts.Mapping.DC_supplierwiseUnmappedReport> GetsupplierwiseUnmappedDataReport(string SupplierID)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetsupplierwiseUnmappedDataReport(SupplierID);
+            }
+        }
+        public IList<DataContracts.Mapping.DC_UnmappedCountryReport> GetsupplierwiseUnmappedCountryReport(string SupplierID)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetsupplierwiseUnmappedCountryReport(SupplierID);
+            }
+        }
+
+        public IList<DataContracts.Mapping.DC_UnmappedCityReport> GetsupplierwiseUnmappedCityReport(string SupplierID)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetsupplierwiseUnmappedCityReport(SupplierID);
+            }
+        }
+        public IList<DataContracts.Mapping.DC_unmappedProductReport> GetsupplierwiseUnmappedProductReport(string SupplierID)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetsupplierwiseUnmappedProductReport(SupplierID);
+            }
+        }
+        public IList<DataContracts.Mapping.DC_unmappedActivityReport> GetsupplierwiseUnmappedActivityReport(string SupplierID)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetsupplierwiseUnmappedActivityReport(SupplierID);
+            }
+        }
+        public IList<DataContracts.Mapping.DC_supplierwisesummaryReport> GetsupplierwiseSummaryReport()
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetsupplierwiseSummaryReport();
+            }
+        }
+        public IList<DataContracts.Mapping.DC_supplierwiseunmappedsummaryReport> GetsupplierwiseUnmappedSummaryReport(string SupplierID)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetsupplierwiseUnmappedSummaryReport(SupplierID);
+            }
+        }
+
+        #endregion
+
         #region Master Attribute Mapping
         public List<DataContracts.Mapping.DC_MasterAttributeMapping_RS> SearchMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping_RQ RQ)
         {
@@ -195,8 +291,22 @@ namespace ConsumerSvc
                 return objBL.GetActivitySupplierProductMappingSearch(obj);
             }
         }
+        public List<DataContracts.Mapping.DC_Acitivity_SupplierProductMapping> GetActivitySupplierProductMappingSearchForMapping(DataContracts.Mapping.DC_Acitivity_SupplierProductMapping_Search_RQ obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetActivitySupplierProductMappingSearchForMapping(obj);
+            }
+        }
+        public bool IsMappedWithSupplier(string masterActivityID, string supplierID)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.IsMappedWithSupplier(masterActivityID, supplierID);
+            }
+        }
+        
 
-      
         public List<DataContracts.Mapping.DC_Acitivity_SupplierProductMappingForDDL> GetActivitySupplierProductMappingSearchForDDL(DataContracts.Mapping.DC_Acitivity_SupplierProductMapping_Search_RQ obj)
         {
             using (BL_Mapping objBL = new BL_Mapping())
@@ -229,6 +339,16 @@ namespace ConsumerSvc
             }
         }
 
+
+        #endregion
+        #region hotel report
+        public IList<DataContracts.Mapping.DC_newHotelsReport> getNewHotelsAddedReport(DataContracts.Mapping.DC_RollOFParams param)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.getNewHotelsAddedReport(param);
+            }
+        }
 
         #endregion
     }

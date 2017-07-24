@@ -28,12 +28,24 @@ namespace DataContracts.Mapping
         string _CountryCode;
         string _CountryName;
         string _MasterCountryCode;
+        string _MasterStateName;
+        string _MasterStateCode;
         string _MasterCountryName;
         string _MasterCityCode;
         string _Master_CityName;
         string _Remarks;
         string _StateCode;
         string _StateName;
+        string _StateNameWithCode;
+
+        [DataMember]
+        public string oldCityName { get; set; }
+
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
 
         [DataMember]
         public Guid CityMapping_Id
@@ -355,6 +367,46 @@ namespace DataContracts.Mapping
                 _StateName = value;
             }
         }
+        [DataMember]
+        public string MasterStateName
+        {
+            get
+            {
+                return _MasterStateName;
+            }
+
+            set
+            {
+                _MasterStateName = value;
+            }
+        }
+
+        [DataMember]
+        public string StateNameWithCode
+        {
+            get
+            {
+                return _StateNameWithCode;
+            }
+
+            set
+            {
+                _StateNameWithCode = value;
+            }
+        }
+        [DataMember]
+        public string MasterStateCode
+        {
+            get
+            {
+                return _MasterStateCode;
+            }
+
+            set
+            {
+                _MasterStateCode = value;
+            }
+        }
     }
 
     [DataContract]
@@ -374,6 +426,18 @@ namespace DataContracts.Mapping
         string _SupplierCityName;
         string _StatusExcept;
         string _ResultSet;
+        bool _IsExact;
+        string _StateNameWithCode;
+
+
+        [DataMember]
+        public string CalledFromTLGX { get; set; }
+
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
 
         [DataMember]
         public Guid? Country_Id
@@ -568,6 +632,34 @@ namespace DataContracts.Mapping
             set
             {
                 _ResultSet = value;
+            }
+        }
+
+        [DataMember]
+        public bool IsExact
+        {
+            get
+            {
+                return _IsExact;
+            }
+
+            set
+            {
+                _IsExact = value;
+            }
+        }
+
+        [DataMember]
+        public string StateNameWithCode
+        {
+            get
+            {
+                return _StateNameWithCode;
+            }
+
+            set
+            {
+                _StateNameWithCode = value;
             }
         }
     }

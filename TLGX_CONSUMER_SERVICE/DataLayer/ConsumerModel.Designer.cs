@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'D:\TLGX_Mapping\MDM\TLGX_CONSUMER_SERVICE\DataLayer\ConsumerModel.edmx'. 
+﻿// T4 code generation is enabled for model 'D:\TLGX_Mapper\TLGX_MDM\tlgx_consumer_wcf\TLGX_CONSUMER_SERVICE\DataLayer\ConsumerModel.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

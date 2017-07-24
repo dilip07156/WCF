@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataContracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -62,7 +63,14 @@ namespace BusinessLayer
                 return obj.GetAccomodationInfo(Accomodation_Id);
             }
         }
+        public List<DataContracts.DC_Accommodation_RoomInfo> GetRoomDetailsByWithPagging(DC_Accommodation_RoomInfo_RQ RQ)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.GetRoomDetailsByWithPagging(RQ);
+            }
 
+        }
         public bool UpdateAccomodationGoogleInfo(DataContracts.DC_Accomodation AccomodationInfo)
         {
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
@@ -314,6 +322,13 @@ namespace BusinessLayer
                 return obj.GetAccomodationNearbyPlaces(Accomodation_Id, DataKey_Id);
             }
         }
+        public List<DataContracts.DC_Accommodation_NearbyPlaces> GetNearbyPlacesDetailsWithPaging(Guid Accomodation_Id, Guid DataKey_Id, Int32 pageSize, Int32 pageindex)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.GetNearbyPlacesDetailsWithPaging(Accomodation_Id, DataKey_Id,pageSize,pageindex);
+            }
+        }
 
         public bool AddAccomodationNearbyPlaces(DataContracts.DC_Accommodation_NearbyPlaces NP)
         {
@@ -328,6 +343,14 @@ namespace BusinessLayer
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
             {
                 return obj.UpdateAccomodationNearbyPlaces(NP);
+            }
+        }
+
+        public DC_Message AddUpldatePlaces(DC_GooglePlaceNearByWithAccoID objplaces)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.AddUpldatePlaces(objplaces);
             }
         }
 
@@ -375,6 +398,14 @@ namespace BusinessLayer
             }
 
         }
+        public List<string> GetRoomCategoryMaster(DataContracts.DC_RoomCategoryMaster_RQ RC)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.GetRoomCategoryMaster(RC);
+            }
+
+        }
         public bool AddAccomodationRoomInfo(DataContracts.DC_Accommodation_RoomInfo RI)
         {
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
@@ -382,12 +413,18 @@ namespace BusinessLayer
                 return obj.AddAccomodationRoomInfo(RI);
             }
         }
-
         public bool UpdateAccomodationRoomInfo(DataContracts.DC_Accommodation_RoomInfo RI)
         {
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
             {
                 return obj.UpdateAccomodationRoomInfo(RI);
+            }
+        }
+        public DataContracts.DC_Message CopyAccomodationInfo(DataContracts.DC_Accomodation_CopyRoomDef RI)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.CopyAccomodationInfo(RI);
             }
         }
         #endregion
