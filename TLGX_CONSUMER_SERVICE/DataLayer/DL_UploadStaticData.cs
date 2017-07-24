@@ -605,6 +605,13 @@ namespace DataLayer
                                      select a;
                     }
 
+                    if(RQ.From_Date.HasValue && RQ.TO_Date.HasValue)
+                    {
+                        FileSearch = from a in FileSearch
+                                     where a.CREATE_DATE >= RQ.From_Date && a.CREATE_DATE <=  RQ.TO_Date
+                                     select a;
+                    }
+
                     if (!string.IsNullOrWhiteSpace(RQ.StatusExcept))
                     {
                         FileSearch = from a in FileSearch
@@ -637,6 +644,7 @@ namespace DataLayer
                                                 CREATE_USER = a.CREATE_USER,
                                                 PROCESS_DATE = a.PROCESS_DATE,
                                                 PROCESS_USER = a.PROCESS_USER,
+                                                IsActive= a.IsActive,
                                                 TotalRecords = total
                                             }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
@@ -724,6 +732,7 @@ namespace DataLayer
                                 search.STATUS = obj.STATUS;
                                 search.PROCESS_DATE = obj.PROCESS_DATE;
                                 search.PROCESS_USER = obj.PROCESS_USER;
+                                search.IsActive = obj.IsActive;
                             }
                             context.SaveChanges();
                             dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
@@ -758,6 +767,7 @@ namespace DataLayer
                         search.STATUS = obj.STATUS;
                         search.PROCESS_USER = obj.PROCESS_USER;
                         search.PROCESS_DATE = obj.PROCESS_DATE;
+                        search.IsActive = obj.IsActive;
                     }
                     context.SaveChanges();
                     dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
