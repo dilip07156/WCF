@@ -1576,7 +1576,7 @@ namespace DataLayer
             }
         }
 
-        public void AccomodationSupplierRoomTypeMapping_TTFUALL()
+        public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_TTFUALL(List<DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
         {
             try
             {
@@ -1590,16 +1590,42 @@ namespace DataLayer
 
                 //Get All Supplier Room Type Name
                 List<DC_SupplierRoomName_Details> asrtmd;
+                string Edit_User = string.Empty;
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    asrtmd = (from a in context.Accommodation_SupplierRoomTypeMapping
-                              orderby a.Accommodation_SupplierRoomTypeMapping_Id
-                              where a.Edit_User != "TTFU"
-                              select new DC_SupplierRoomName_Details
-                              {
-                                  RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
-                                  SupplierRoomName = a.SupplierRoomName
-                              }).Skip(0).Take(10000).ToList();
+                    if (Acco_RoomTypeMap_Ids != null)
+                    {
+                        asrtmd = (from a in context.Accommodation_SupplierRoomTypeMapping
+                                  join b in Acco_RoomTypeMap_Ids on a.Accommodation_SupplierRoomTypeMapping_Id equals b.Acco_RoomTypeMap_Id
+                                  orderby a.Accommodation_SupplierRoomTypeMapping_Id
+                                  select new DC_SupplierRoomName_Details
+                                  {
+                                      RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                                      SupplierRoomName = a.SupplierRoomName,
+                                  }).ToList();
+
+                        if (asrtmd.Count > 0)
+                        {
+                            Edit_User = Acco_RoomTypeMap_Ids[0].Edit_User;
+                        }
+                        else
+                        {
+                            Edit_User = "TTFU SYSTEM";
+                        }
+                        
+                    }
+                    else
+                    {
+                        asrtmd = (from a in context.Accommodation_SupplierRoomTypeMapping
+                                  orderby a.Accommodation_SupplierRoomTypeMapping_Id
+                                  select new DC_SupplierRoomName_Details
+                                  {
+                                      RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                                      SupplierRoomName = a.SupplierRoomName
+                                  }).ToList();
+
+                        Edit_User = "TTFU SYSTEM";
+                    }
                 }
 
                 List<DC_SupplierRoomName_AttributeList> AttributeList;
@@ -1691,6 +1717,9 @@ namespace DataLayer
                     //Update Room Name Stripped and Attributes
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
+                        //Remove Existing Attribute List Records
+                        context.Accommodation_SupplierRoomTypeAttributes.RemoveRange(context.Accommodation_SupplierRoomTypeAttributes.Where(w => w.RoomTypeMap_Id == srn.RoomTypeMap_Id));
+
                         context.Accommodation_SupplierRoomTypeAttributes.AddRange((from a in srn.AttributeList
                                                                                    select new Accommodation_SupplierRoomTypeAttributes
                                                                                    {
@@ -1708,7 +1737,7 @@ namespace DataLayer
                             srnm.Tx_StrippedName = srn.TX_SupplierRoomName_Stripped;
                             srnm.Tx_ReorderedName = srn.TX_SupplierRoomName_Stripped_ReOrdered;
                             srnm.Edit_Date = DateTime.Now;
-                            srnm.Edit_User = "TTFU";
+                            srnm.Edit_User = Edit_User;
                         }
 
                         context.SaveChanges();
@@ -1728,10 +1757,13 @@ namespace DataLayer
                         objDL.DataHandler_Keyword_Update_NoOfHits(updatableAliases);
                     }
                 }
+
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword Replace and Attribute Extraction has been done." };
+
             }
             catch (Exception ex)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while TTFU ALL", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while TTFU", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
 

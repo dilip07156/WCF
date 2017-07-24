@@ -89,11 +89,11 @@ namespace ConsumerSvc
             }
         }
 
-        public void AccomodationSupplierRoomTypeMapping_TTFUALL()
+        public DC_Message AccomodationSupplierRoomTypeMapping_TTFUALL(List<DataContracts.Mapping.DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
-                objBL.AccomodationSupplierRoomTypeMapping_TTFUALL();
+                return objBL.AccomodationSupplierRoomTypeMapping_TTFUALL(Acco_RoomTypeMap_Ids);
             }
         }
 
