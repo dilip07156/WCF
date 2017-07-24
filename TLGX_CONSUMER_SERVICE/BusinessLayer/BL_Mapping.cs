@@ -165,6 +165,14 @@ namespace BusinessLayer
             }
         }
 
+        public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_TTFUALL(List<DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                return objDL.AccomodationSupplierRoomTypeMapping_TTFUALL(Acco_RoomTypeMap_Ids);
+            }
+        }
+
         #endregion
 
         #region Country Mapping
@@ -554,6 +562,15 @@ namespace BusinessLayer
 
 
 
+        #endregion
+        #region hotel report
+        public List<DataContracts.Mapping.DC_newHotelsReport> getNewHotelsAddedReport(DataContracts.Mapping.DC_RollOFParams param)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.getNewHotelsAddedReport(param);
+            }
+        }
         #endregion
     }
 }

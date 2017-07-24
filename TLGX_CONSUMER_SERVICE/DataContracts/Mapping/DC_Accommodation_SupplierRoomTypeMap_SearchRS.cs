@@ -87,6 +87,8 @@ namespace DataContracts.Mapping
         public string SystemAttributeKeyword { get; set; }
         [DataMember]
         public System.Guid SystemAttributeKeyword_Id { get; set; }
+        [DataMember]
+        public string IconClass { get; set; }
     }
 
 }

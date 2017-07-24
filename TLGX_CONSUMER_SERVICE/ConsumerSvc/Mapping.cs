@@ -89,6 +89,14 @@ namespace ConsumerSvc
             }
         }
 
+        public DC_Message AccomodationSupplierRoomTypeMapping_TTFUALL(List<DataContracts.Mapping.DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.AccomodationSupplierRoomTypeMapping_TTFUALL(Acco_RoomTypeMap_Ids);
+            }
+        }
+
         #endregion
 
         #region Country Mapping
@@ -331,6 +339,16 @@ namespace ConsumerSvc
             }
         }
 
+
+        #endregion
+        #region hotel report
+        public IList<DataContracts.Mapping.DC_newHotelsReport> getNewHotelsAddedReport(DataContracts.Mapping.DC_RollOFParams param)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.getNewHotelsAddedReport(param);
+            }
+        }
 
         #endregion
     }

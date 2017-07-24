@@ -44,6 +44,9 @@ namespace DataContracts.Masters
         public int Sequence { get; set; }
 
         [DataMember]
+        public string Icon { get; set; }
+
+        [DataMember]
         public int TotalRecords { get; set; }
 
         [DataMember]

@@ -17,7 +17,7 @@
         <EntityTypeShape EntityType="ConsumerModel.m_EntityType" Width="1.5" PointX="0.75" PointY="8.75" />
         <EntityTypeShape EntityType="ConsumerModel.Counter" Width="1.5" PointX="3.375" PointY="8.75" />
       </Diagram>
-      <Diagram DiagramId="71315cf0089e483d98a8ea653619edde" Name="Accomodation" ZoomLevel="46" >
+      <Diagram DiagramId="71315cf0089e483d98a8ea653619edde" Name="Accomodation" ZoomLevel="44" >
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_Contact" Width="1.875" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_Facility" Width="1.875" PointX="2.75" PointY="4.75" />
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_HealthAndSafety" Width="1.875" PointX="4.75" PointY="4.75" />
