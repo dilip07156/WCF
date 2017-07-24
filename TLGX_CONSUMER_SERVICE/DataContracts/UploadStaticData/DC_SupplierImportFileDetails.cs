@@ -43,6 +43,9 @@ namespace DataContracts.UploadStaticData
 
         [DataMember]
         public int TotalRecords { get; set; }
+
+        [DataMember]
+        public bool? IsActive { get; set; }
     }
 
     [DataContract]
@@ -71,5 +74,11 @@ namespace DataContracts.UploadStaticData
 
         [DataMember]
         public int PageSize { get; set; }
+
+        [DataMember]
+        public Nullable<System.DateTime> From_Date { get; set; }
+
+        [DataMember]
+        public Nullable<System.DateTime> TO_Date { get; set; }
     }
 }

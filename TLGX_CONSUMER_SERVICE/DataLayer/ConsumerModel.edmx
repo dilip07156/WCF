@@ -920,6 +920,7 @@
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="Attribute" Type="bit" />
           <Property Name="Sequence" Type="int" />
+          <Property Name="Icon" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="m_keyword_alias">
           <Key>
@@ -1439,6 +1440,7 @@
           <Property Name="CREATE_USER" Type="nvarchar" MaxLength="255" />
           <Property Name="PROCESS_DATE" Type="datetime" />
           <Property Name="PROCESS_USER" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsActive" Type="bit" />
         </EntityType>
         <EntityType Name="UserEntity">
           <Key>
@@ -2920,6 +2922,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="CREATE_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="PROCESS_DATE" Type="DateTime" Precision="3" />
           <Property Name="PROCESS_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
         </EntityType>
         <EntityType Name="Activity_SupplierProductMapping">
           <Key>
@@ -3130,6 +3133,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Attribute" Type="Boolean" />
           <Property Name="Sequence" Type="Int32" />
+          <Property Name="Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_keyword_alias">
           <Key>
@@ -4431,6 +4435,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="SupplierImportFileDetails">
             <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFileDetail">
               <MappingFragment StoreEntitySet="SupplierImportFileDetails">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="PROCESS_USER" ColumnName="PROCESS_USER" />
                 <ScalarProperty Name="PROCESS_DATE" ColumnName="PROCESS_DATE" />
                 <ScalarProperty Name="CREATE_USER" ColumnName="CREATE_USER" />
@@ -4647,6 +4652,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="m_keyword">
             <EntityTypeMapping TypeName="ConsumerModel.m_keyword">
               <MappingFragment StoreEntitySet="m_keyword">
+                <ScalarProperty Name="Icon" ColumnName="Icon" />
                 <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="Attribute" ColumnName="Attribute" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
