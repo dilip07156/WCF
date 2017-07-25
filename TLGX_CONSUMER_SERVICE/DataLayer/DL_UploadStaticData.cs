@@ -1350,11 +1350,61 @@ namespace DataLayer
                         context.stg_SupplierHotelRoomMapping.RemoveRange(oldRecords);
                         context.SaveChanges();
                         List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> dstobj = new List<DC_stg_SupplierHotelRoomMapping>();
-                       // dstobj = lstobj.GroupBy(a => new { a.CityCode, a.CityName, a.CountryCode, a.CountryName, a.StateCode, a.StateName, a.ProductId, a.ProductName, a.PostalCode }).Select(grp => grp.First()).ToList();
+                        dstobj = lstobj.GroupBy(a => new { a.RoomName, a.SupplierID, a.SupplierName, a.SupplierProductId, a.SupplierProductName, a.SupplierRoomCategory, a.SupplierRoomTypeCode  }).Select(grp => grp.First()).ToList();
 
+                        foreach (DataContracts.STG.DC_stg_SupplierHotelRoomMapping obj in dstobj)
+                        {
+                            DataLayer.stg_SupplierHotelRoomMapping objNew = new DataLayer.stg_SupplierHotelRoomMapping()
+                            {
+                                stg_SupplierHotelRoomMapping_Id = obj.stg_SupplierHotelRoomMapping_Id,
+                                Amenities = obj.Amenities,
+                                BathRoomType = obj.BathRoomType,
+                                SupplierRoomTypeCode = obj.SupplierRoomTypeCode,
+                                SupplierRoomCategory = obj.SupplierRoomCategory,
+                                BeddingConfig = obj.BeddingConfig,
+                                Bedrooms = obj.Bedrooms,
+                                BedTypeCode = obj.BedTypeCode,
+                                ChildAge = obj.ChildAge,
+                                ExtraBed= obj.ExtraBed,
+                                FloorName = obj.FloorName,
+                                FloorNumber = obj.FloorNumber,
+                                MaxAdults = obj.MaxAdults,
+                                MaxChild = obj.MaxChild,
+                                MaxGuestOccupancy = obj.MaxGuestOccupancy,
+                                MaxInfant = obj.MaxInfant,
+                                PromotionalVendorCode = obj.PromotionalVendorCode,
+                                Quantity = obj.Quantity,
+                                RatePlan = obj.RatePlan,
+                                RatePlanCode = obj.RatePlanCode,
+                                RoomDescription = obj.RoomDescription,
+                                RoomLocationCode = obj.RoomLocationCode,
+                                RoomName = obj.RoomName,
+                                RoomSize = obj.RoomSize,
+                                RoomViewCode = obj.RoomViewCode,
+                                Smoking = obj.Smoking,
+                                SupplierID = obj.SupplierID,
+                                SupplierName = obj.SupplierName,
+                                SupplierProductId = obj.SupplierProductId,
+                                SupplierProductName = obj.SupplierProductName,
+                                SupplierProvider = obj.SupplierProvider,
+                                SupplierRoomCategoryId = obj.SupplierRoomCategoryId,
+                                SupplierRoomId= obj.SupplierRoomId,
+                                Supplier_Id = obj.Supplier_Id,
+                                TX_RoomName = obj.TX_RoomName                                 
+                            };
+                            context.stg_SupplierHotelRoomMapping.Add(objNew);
+                        }
+                        context.SaveChanges();
+                        dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        dc.StatusMessage = "Product Static Data " + ReadOnlyMessage.strAddedSuccessfully;
+                    }
+                    else
+                    {
+                        dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        dc.StatusMessage = "Supplier Not Found";
                     }
                 }
-                    return dc;
+                return dc;
             }
             catch (Exception e)
             {
