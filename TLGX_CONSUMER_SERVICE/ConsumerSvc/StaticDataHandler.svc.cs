@@ -227,5 +227,21 @@ namespace ConsumerSvc
                 objBL.DataHandler_RoomName_Attributes_Update(SRNDetails);
             }
         }
+
+        public List<DC_stg_SupplierHotelRoomMapping> GetSTGRoomTypeData(DC_stg_SupplierHotelRoomMapping_RQ obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.GetSTGRoomTypeData(obj);
+            }
+        }
+
+        public DC_Message AddSTGRoomTypeData(List<DC_stg_SupplierHotelRoomMapping> obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.AddSTGRoomTypeData(obj);
+            }
+        }
     }
 }

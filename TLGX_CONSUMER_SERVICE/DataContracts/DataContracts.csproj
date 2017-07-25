@@ -92,6 +92,7 @@
     <Compile Include="Schedulers\DC_Supplier_Schedule.cs" />
     <Compile Include="STG\stg_SupplierCityMapping.cs" />
     <Compile Include="STG\stg_SupplierCountryMapping.cs" />
+    <Compile Include="STG\stg_SupplierHotelRoomMapping.cs" />
     <Compile Include="STG\stg_SupplierProductMapping.cs" />
     <Compile Include="UploadStaticData\DC_SupplierImportAttributes.cs" />
     <Compile Include="UploadStaticData\DC_SupplierImportAttributeValues.cs" />

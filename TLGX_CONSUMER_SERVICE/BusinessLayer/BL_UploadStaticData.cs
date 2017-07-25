@@ -178,6 +178,15 @@ namespace BusinessLayer
                 return objBL.AddSTGProductData(obj);
             }
         }
+
+        public DataContracts.DC_Message AddSTGRoomTypeData(List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.AddSTGRoomTypeData(obj);
+            }
+        }
+
         public List<DataContracts.STG.DC_stg_SupplierCountryMapping> GetSTGCountryData(DataContracts.STG.DC_stg_SupplierCountryMapping_RQ obj)
         {
             using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
@@ -198,6 +207,13 @@ namespace BusinessLayer
             using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
             {
                 return objBL.GetSTGHotelData(obj);
+            }
+        }
+        public List<DC_stg_SupplierHotelRoomMapping> GetSTGRoomTypeData(DC_stg_SupplierHotelRoomMapping_RQ obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.GetSTGRoomTypeData(obj);
             }
         }
         #endregion

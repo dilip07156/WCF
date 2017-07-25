@@ -445,6 +445,7 @@
           <Property Name="MappingStatus" Type="nvarchar" MaxLength="10" />
           <Property Name="MapId" Type="int" />
           <Property Name="Accommodation_RoomInfo_Id" Type="uniqueidentifier" />
+          <Property Name="stg_SupplierHotelRoomMapping_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Activity">
           <Key>
@@ -1302,6 +1303,7 @@
           <Property Name="RatePlan" Type="nvarchar" MaxLength="50" />
           <Property Name="RatePlanCode" Type="nvarchar" MaxLength="50" />
           <Property Name="TX_RoomName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Supplier_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="stg_SupplierProductMapping">
           <Key>
@@ -1453,7 +1455,7 @@
           <Property Name="EntityTypeID" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwMappingStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwMappingStats">
           <Key>
             <PropertyRef Name="Status" />
@@ -3076,6 +3078,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="RatePlan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="RatePlanCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TX_RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Supplier_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="stg_SupplierProductMapping">
           <Key>
@@ -3211,6 +3214,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="MappingStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="MapId" Type="Int32" />
           <Property Name="Accommodation_RoomInfo_Id" Type="Guid" />
+          <Property Name="stg_SupplierHotelRoomMapping_Id" Type="Guid" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -4571,6 +4575,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="stg_SupplierHotelRoomMapping">
             <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierHotelRoomMapping">
               <MappingFragment StoreEntitySet="stg_SupplierHotelRoomMapping">
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
                 <ScalarProperty Name="TX_RoomName" ColumnName="TX_RoomName" />
                 <ScalarProperty Name="RatePlanCode" ColumnName="RatePlanCode" />
                 <ScalarProperty Name="RatePlan" ColumnName="RatePlan" />
@@ -4718,6 +4723,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="Accommodation_SupplierRoomTypeMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeMapping">
               <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeMapping">
+                <ScalarProperty Name="stg_SupplierHotelRoomMapping_Id" ColumnName="stg_SupplierHotelRoomMapping_Id" />
                 <ScalarProperty Name="Accommodation_RoomInfo_Id" ColumnName="Accommodation_RoomInfo_Id" />
                 <ScalarProperty Name="MapId" ColumnName="MapId" />
                 <ScalarProperty Name="MappingStatus" ColumnName="MappingStatus" />
