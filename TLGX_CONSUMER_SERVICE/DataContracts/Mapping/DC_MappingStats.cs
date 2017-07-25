@@ -238,7 +238,7 @@ namespace DataContracts.Mapping
     [DataContract]
     public class DC_RollOffReportRule
     {
-        
+
         int _hotelid;
         string _hotelname;
         string _ruleName;
@@ -246,7 +246,7 @@ namespace DataContracts.Mapping
         string _internal_Flag;
         string _lastupdatedBy;
         string _lastupdateDate;
-    
+
         [DataMember]
         public int Hotelid
         {
@@ -631,7 +631,7 @@ namespace DataContracts.Mapping
             }
         }
     }
-#endregion
+    #endregion
     #region rdlc reports
     [DataContract]
     public class DC_supplierwiseUnmappedReport
@@ -646,12 +646,12 @@ namespace DataContracts.Mapping
         public List<DC_unmappedProductReport> Unmappedproduct { get; set; }
         [DataMember]
         public List<DC_unmappedActivityReport> Unmappedactivity { get; set; }
-       
+
     }
     [DataContract]
     public class DC_UnmappedCountryReport
     {
-        
+
         string _countrycode;
         string _contryname;
         [DataMember]
@@ -1156,4 +1156,94 @@ namespace DataContracts.Mapping
         }
     }
     #endregion
+    #region velocity dash
+    [DataContract]
+    public class DC_VelocityDashboard
+    {
+        Guid _SupplierId;
+        string _SupplierName;
+        string _MappinFor;
+        int _totalcount;
+        string _userName;
+        string _status;
+        [DataMember]
+        public Guid SupplierId
+        {
+            get
+            {
+                return _SupplierId;
+            }
+
+            set
+            {
+                _SupplierId = value;
+            }
+        }
+        [DataMember]
+        public string SupplierName
+        {
+            get
+            {
+                return _SupplierName;
+            }
+
+            set
+            {
+                _SupplierName = value;
+            }
+        }
+        [DataMember]
+        public string MappinFor
+        {
+            get
+            {
+                return _MappinFor;
+            }
+
+            set
+            {
+                _MappinFor = value;
+            }
+        }
+        [DataMember]
+        public int Totalcount
+        {
+            get
+            {
+                return _totalcount;
+            }
+
+            set
+            {
+                _totalcount = value;
+            }
+        }
+        [DataMember]
+        public string UserName
+        {
+            get
+            {
+                return _userName;
+            }
+
+            set
+            {
+                _userName = value;
+            }
+        }
+        [DataMember]
+        public string Status
+        {
+            get
+            {
+                return _status;
+            }
+
+            set
+            {
+                _status = value;
+            }
+        }
+    }
 }
+#endregion

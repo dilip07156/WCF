@@ -644,7 +644,7 @@ namespace DataLayer
                                                 CREATE_USER = a.CREATE_USER,
                                                 PROCESS_DATE = a.PROCESS_DATE,
                                                 PROCESS_USER = a.PROCESS_USER,
-                                                IsActive= a.IsActive,
+                                                IsActive= a.IsActive ?? true,
                                                 TotalRecords = total
                                             }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();

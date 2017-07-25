@@ -572,5 +572,23 @@ namespace BusinessLayer
             }
         }
         #endregion
+        #region velocity Dashboard
+        public List<DataContracts.Mapping.DC_VelocityDashboard> GetVelocityDashboard(string SupplierID)
+        {
+            Guid gSupplier_Id;
+
+            if (!Guid.TryParse(SupplierID, out gSupplier_Id))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            else
+            {
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.GetVelocityDashboard(gSupplier_Id);
+                }
+            }
+        }
+        #endregion
     }
 }
