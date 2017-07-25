@@ -48,5 +48,6 @@ namespace DataLayer
         public string RatePlan { get; set; }
         public string RatePlanCode { get; set; }
         public string TX_RoomName { get; set; }
+        public Nullable<System.Guid> Supplier_Id { get; set; }
     }
 }

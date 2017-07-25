@@ -644,7 +644,7 @@ namespace DataLayer
                                                 CREATE_USER = a.CREATE_USER,
                                                 PROCESS_DATE = a.PROCESS_DATE,
                                                 PROCESS_USER = a.PROCESS_USER,
-                                                IsActive= a.IsActive,
+                                                IsActive= a.IsActive ?? true,
                                                 TotalRecords = total
                                             }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
@@ -1331,6 +1331,89 @@ namespace DataLayer
 
         }
 
+        public DataContracts.DC_Message AddSTGRoomTypeData(List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> lstobj)
+        {
+            DataContracts.DC_Message dc = new DataContracts.DC_Message();
+
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    string mySupplier = lstobj[0].SupplierName;
+                    Guid? mySupplier_Id = lstobj[0].Supplier_Id;
+
+                    if (!string.IsNullOrWhiteSpace(mySupplier))
+                    {
+                        var oldRecords = (from y in context.stg_SupplierHotelRoomMapping
+                                          where y.SupplierName.Trim().ToUpper() == mySupplier.Trim().ToUpper()
+                                          select y).ToList();
+                        context.stg_SupplierHotelRoomMapping.RemoveRange(oldRecords);
+                        context.SaveChanges();
+                        List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> dstobj = new List<DC_stg_SupplierHotelRoomMapping>();
+                        dstobj = lstobj.GroupBy(a => new { a.RoomName, a.SupplierID, a.SupplierName, a.SupplierProductId, a.SupplierProductName, a.SupplierRoomCategory, a.SupplierRoomTypeCode  }).Select(grp => grp.First()).ToList();
+
+                        foreach (DataContracts.STG.DC_stg_SupplierHotelRoomMapping obj in dstobj)
+                        {
+                            DataLayer.stg_SupplierHotelRoomMapping objNew = new DataLayer.stg_SupplierHotelRoomMapping()
+                            {
+                                stg_SupplierHotelRoomMapping_Id = obj.stg_SupplierHotelRoomMapping_Id,
+                                Amenities = obj.Amenities,
+                                BathRoomType = obj.BathRoomType,
+                                SupplierRoomTypeCode = obj.SupplierRoomTypeCode,
+                                SupplierRoomCategory = obj.SupplierRoomCategory,
+                                BeddingConfig = obj.BeddingConfig,
+                                Bedrooms = obj.Bedrooms,
+                                BedTypeCode = obj.BedTypeCode,
+                                ChildAge = obj.ChildAge,
+                                ExtraBed= obj.ExtraBed,
+                                FloorName = obj.FloorName,
+                                FloorNumber = obj.FloorNumber,
+                                MaxAdults = obj.MaxAdults,
+                                MaxChild = obj.MaxChild,
+                                MaxGuestOccupancy = obj.MaxGuestOccupancy,
+                                MaxInfant = obj.MaxInfant,
+                                PromotionalVendorCode = obj.PromotionalVendorCode,
+                                Quantity = obj.Quantity,
+                                RatePlan = obj.RatePlan,
+                                RatePlanCode = obj.RatePlanCode,
+                                RoomDescription = obj.RoomDescription,
+                                RoomLocationCode = obj.RoomLocationCode,
+                                RoomName = obj.RoomName,
+                                RoomSize = obj.RoomSize,
+                                RoomViewCode = obj.RoomViewCode,
+                                Smoking = obj.Smoking,
+                                SupplierID = obj.SupplierID,
+                                SupplierName = obj.SupplierName,
+                                SupplierProductId = obj.SupplierProductId,
+                                SupplierProductName = obj.SupplierProductName,
+                                SupplierProvider = obj.SupplierProvider,
+                                SupplierRoomCategoryId = obj.SupplierRoomCategoryId,
+                                SupplierRoomId= obj.SupplierRoomId,
+                                Supplier_Id = obj.Supplier_Id,
+                                TX_RoomName = obj.TX_RoomName                                 
+                            };
+                            context.stg_SupplierHotelRoomMapping.Add(objNew);
+                        }
+                        context.SaveChanges();
+                        dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        dc.StatusMessage = "Product Static Data " + ReadOnlyMessage.strAddedSuccessfully;
+                    }
+                    else
+                    {
+                        dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        dc.StatusMessage = "Supplier Not Found";
+                    }
+                }
+                return dc;
+            }
+            catch (Exception e)
+            {
+                dc.StatusMessage = ReadOnlyMessage.strFailed;
+                dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                return dc;
+            }
+        }
+
         public List<DC_stg_SupplierProductMapping> GetSTGHotelData(DC_stg_SupplierProductMapping_RQ RQ)
         {
             try
@@ -1503,6 +1586,144 @@ namespace DataLayer
             }
         }
 
+        public List<DC_stg_SupplierHotelRoomMapping> GetSTGRoomTypeData(DC_stg_SupplierHotelRoomMapping_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var stgSearch = from a in context.stg_SupplierHotelRoomMapping select a;
+
+                    if (RQ.stg_SupplierHotelRoomMapping_Id.HasValue)
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.stg_SupplierHotelRoomMapping_Id == RQ.stg_SupplierHotelRoomMapping_Id
+                                    select a;
+                    }
+
+                    if (!(RQ.Supplier_Id == Guid.Empty))
+                    {
+                        stgSearch = from a in stgSearch
+                                    join s in context.Suppliers on a.SupplierName.Trim().TrimStart().ToUpper() equals s.Name.Trim().TrimStart().ToUpper()
+                                    where s.Supplier_Id == RQ.Supplier_Id
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierName.Trim().TrimStart().ToUpper() == RQ.SupplierName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierID))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierID.Trim().TrimStart().ToUpper() == RQ.SupplierID.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierProductId))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierProductId.Trim().TrimStart().ToUpper() == RQ.SupplierProductId.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierProductName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierProductName.Trim().TrimStart().ToUpper() == RQ.SupplierProductName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierRoomId))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierRoomId.Trim().TrimStart().ToUpper() == RQ.SupplierRoomId.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierRoomTypeCode))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierRoomTypeCode.Trim().TrimStart().ToUpper() == RQ.SupplierRoomTypeCode.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.RoomName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.RoomName.Trim().TrimStart().ToUpper() == RQ.RoomName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierRoomCategory))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierRoomCategory.Trim().TrimStart().ToUpper() == RQ.SupplierRoomCategory.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.RoomName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierRoomCategoryId.Trim().TrimStart().ToUpper() == RQ.SupplierRoomCategoryId.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    int total;
+
+                    total = stgSearch.Count();
+
+                    var skip = RQ.PageSize * RQ.PageNo;
+
+                    var stgResult = (from a in stgSearch
+                                     orderby a.SupplierName
+                                     select new DataContracts.STG.DC_stg_SupplierHotelRoomMapping
+                                     {
+                                         Amenities = a.Amenities,
+                                         BathRoomType = a.BathRoomType,
+                                         SupplierID = a.SupplierID,
+                                         stg_SupplierHotelRoomMapping_Id = a.stg_SupplierHotelRoomMapping_Id,
+                                         BeddingConfig = a.BeddingConfig,
+                                         Bedrooms= a.Bedrooms,
+                                         BedTypeCode=a.BedTypeCode,
+                                         ChildAge = a.ChildAge,
+                                         ExtraBed = a.ExtraBed,
+                                         FloorName = a.FloorName,
+                                         FloorNumber= a.FloorNumber,
+                                         MaxAdults= a.MaxAdults,
+                                         MaxChild = a.MaxChild,
+                                         MaxGuestOccupancy =a.MaxGuestOccupancy,
+                                         MaxInfant = a.MaxInfant,
+                                         PromotionalVendorCode = a.PromotionalVendorCode,
+                                         Quantity= a.Quantity,
+                                         RatePlan = a.RatePlan,
+                                         RatePlanCode=a.RatePlanCode,
+                                         RoomDescription = a.RoomDescription,
+                                         RoomLocationCode = a.RoomLocationCode,
+                                         RoomName = a.RoomName,
+                                         RoomSize = a.RoomSize,
+                                         RoomViewCode = a.RoomViewCode,
+                                         Smoking = a.Smoking,
+                                         SupplierName = a.SupplierName,
+                                         SupplierProductId = a.SupplierProductId,
+                                         SupplierProductName = a.SupplierProductName,
+                                         SupplierProvider = a.SupplierProvider,
+                                         SupplierRoomCategory = a.SupplierRoomCategory,
+                                         SupplierRoomCategoryId = a.SupplierRoomCategoryId,
+                                         SupplierRoomId = a.SupplierRoomId,
+                                         SupplierRoomTypeCode = a.SupplierRoomTypeCode,
+                                         Supplier_Id = a.Supplier_Id,
+                                         TX_RoomName = a.TX_RoomName
+                                     }
+                                        ).Skip(skip).Take(RQ.PageSize).ToList();
+
+                    return stgResult;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while searching Supplier Data",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+        }
         #endregion
 
         #region Process Or Test Uploaded Files

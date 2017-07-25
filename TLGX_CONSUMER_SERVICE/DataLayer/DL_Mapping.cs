@@ -4706,5 +4706,40 @@ namespace DataLayer
         }
 
         #endregion
+        #region velocity Dashboard
+        public List<DataContracts.Mapping.DC_VelocityDashboard> GetVelocityDashboard(Guid SupplierID)
+        {
+            List<DataContracts.Mapping.DC_VelocityDashboard> _objList = new List<DC_VelocityDashboard>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                     var searchcity = (from s in context.vwUserwisemappedStats
+                                          where s.supplier_id == SupplierID 
+                                          select s).ToList();
+                        foreach (var item in searchcity)
+                        {
+                            DC_VelocityDashboard objCi = new DC_VelocityDashboard();
+                            objCi.SupplierId = item.supplier_id.Value;
+                            objCi.SupplierName = item.SupplierName;
+                            objCi.UserName = item.Username;
+                            objCi.Status = item.Status;
+                            objCi.MappinFor = item.MappinFor;
+                            objCi.Totalcount = item.totalcount.Value;
+                            
+                            _objList.Add(objCi);
+
+                        }
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return _objList;
+
+        }
+        #endregion
     }
 }
