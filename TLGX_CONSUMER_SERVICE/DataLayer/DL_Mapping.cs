@@ -1424,7 +1424,7 @@ namespace DataLayer
                                          && country.Country_Id == (obj.Country ?? country.Country_Id)
                                          && city.City_Id == (obj.City ?? city.City_Id)
                                          && asrtm.MappingStatus == (obj.Status ?? asrtm.MappingStatus)
-                                         && acco.HotelName.Contains(obj.ProductName ?? acco.HotelName)
+                                         && acco.HotelName == (obj.ProductName ?? acco.HotelName)
                                          select new DC_Accommodation_SupplierRoomTypeMap_SearchRS
                                          {
                                              Accommodation_Id = asrtm.Accommodation_Id,
@@ -1503,12 +1503,45 @@ namespace DataLayer
                                                   Tx_StrippedName = a.Tx_StrippedName
                                               }).Skip(skip).Take(obj.PageSize);
 
-                    return roomTypeSearchList.ToList();
+                    var result = roomTypeSearchList.ToList();
+
+                    //if (!string.IsNullOrWhiteSpace(obj.Status))
+                    //{
+                        DL_Accomodation _dlAcco = new DL_Accomodation();
+                        foreach (var item in result)
+                        {
+                            if (string.IsNullOrWhiteSpace(item.Accommodation_RoomInfo_Name))
+                            {
+                                if (!string.IsNullOrWhiteSpace(item.Tx_StrippedName))
+                                {
+                                    Guid acco_id = item.Accommodation_Id.HasValue ? item.Accommodation_Id.Value : Guid.Empty;
+                                    var resultRoomCategory = _dlAcco.GetAccomodationRoomInfo_RoomCategory(acco_id);
+                                    if (resultRoomCategory != null && resultRoomCategory.Count > 0)
+                                    {
+                                        foreach (var itemroomcat in resultRoomCategory)
+                                        {
+                                            if (itemroomcat.RoomCategory.ToLower() == item.Tx_StrippedName.ToLower())
+                                            {
+                                                item.Accommodation_RoomInfo_Id = itemroomcat.Accommodation_RoomInfo_Id;
+                                                item.Accommodation_RoomInfo_Name = itemroomcat.RoomCategory;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    //}
+
+                    return result;
                 }
             }
             catch (Exception ex)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation product supplier mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while searching accomodation product supplier mapping",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
             }
         }
 
@@ -1596,7 +1629,7 @@ namespace DataLayer
                     if (Acco_RoomTypeMap_Ids != null)
                     {
 
-                        
+
 
                         var MapIdsFilter = (from a in Acco_RoomTypeMap_Ids select a.Acco_RoomTypeMap_Id).ToList();
 
@@ -1608,7 +1641,7 @@ namespace DataLayer
                                          RoomTypeMap_Id = s.Accommodation_SupplierRoomTypeMapping_Id,
                                          SupplierRoomName = s.SupplierRoomName
                                      }).ToList();
-                        
+
                         if (asrtmd.Count > 0)
                         {
                             Edit_User = Acco_RoomTypeMap_Ids[0].Edit_User;
@@ -2536,7 +2569,7 @@ namespace DataLayer
                         oldCityName = g.CityName,
                         Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
 
-                    }));
+            }));
 
                 if (clsMappingCity.Count > 0)
                 {
@@ -3208,7 +3241,7 @@ namespace DataLayer
                     {
                         var searchcountry = (from s in context.m_CountryMapping
                                              where s.Supplier_Id == SupplierID
-   && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
+        && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
                                              select s).ToList();
                         var searchcity = (from s in context.m_CityMapping
                                           where s.Supplier_Id == SupplierID && (s.Status == "UNMAPPED" || s.Status == "REVIEW")
