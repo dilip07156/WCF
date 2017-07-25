@@ -1473,10 +1473,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwMappingStats' does not have
 warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwUserwisemappedStats">
           <Key>
-            <PropertyRef Name="Status" />
-            <PropertyRef Name="MappinFor" />
+            <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="uniqueidentifier" />
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="supplier_id" Type="uniqueidentifier" />
           <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
           <Property Name="Username" Type="nvarchar" MaxLength="255" />
@@ -3247,10 +3246,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
         </EntityType>
         <EntityType Name="vwUserwisemappedStat">
           <Key>
-            <PropertyRef Name="Status" />
-            <PropertyRef Name="MappinFor" />
+            <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Guid" />
+          <Property Name="ID" Type="Guid" Nullable="false" />
           <Property Name="supplier_id" Type="Guid" />
           <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
