@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="e642f146ce78487cbc5fadc8604f597a" Name="WorkFlow_Masters">
+      <Diagram DiagramId="e642f146ce78487cbc5fadc8604f597a" Name="WorkFlow_Masters" ZoomLevel="99">
         <EntityTypeShape EntityType="ConsumerModel.m_Activity_Master" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.m_Approval_RoleMaster" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.m_Approval_StatusFlow" Width="1.5" PointX="4.75" PointY="0.75" />
@@ -84,6 +84,7 @@
       </Diagram>
       <Diagram DiagramId="dd7305d7f2f340ddb587fd72c40ae548" Name="Mapping Static Data" >
         <EntityTypeShape EntityType="ConsumerModel.vwMappingStat" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.vwUserwisemappedStat" Width="1.5" PointX="3.375" PointY="0.75" />
       </Diagram>
       <Diagram DiagramId="33089e75a83142f0a8f1044a69f7561b" Name="Schedules" >
         <EntityTypeShape EntityType="ConsumerModel.m_FrequencyType" Width="1.5" PointX="0.75" PointY="0.75" />

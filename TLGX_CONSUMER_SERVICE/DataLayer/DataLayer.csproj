@@ -356,6 +356,9 @@
     <Compile Include="vwMappingStat.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="vwUserwisemappedStat.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="ConsumerModel.edmx">
