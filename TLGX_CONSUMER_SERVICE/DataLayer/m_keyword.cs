@@ -26,5 +26,6 @@ namespace DataLayer
         public Nullable<bool> Attribute { get; set; }
         public Nullable<int> Sequence { get; set; }
         public string Icon { get; set; }
+        public string EntityFor { get; set; }
     }
 }

@@ -47,6 +47,9 @@ namespace DataContracts.Masters
         public string Icon { get; set; }
 
         [DataMember]
+        public string EntityFor { get; set; }
+
+        [DataMember]
         public int TotalRecords { get; set; }
 
         [DataMember]

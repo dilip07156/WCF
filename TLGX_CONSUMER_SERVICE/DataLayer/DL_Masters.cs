@@ -3107,6 +3107,7 @@ namespace DataLayer
             }
         }
         #endregion
+
         #region Common Funciton to Get Codes by Entity Type
         public string GetCodeById(string objName, Guid obj_Id)
         {
@@ -3633,7 +3634,6 @@ namespace DataLayer
 
         #endregion
 
-
         #region City Area and Location
         public bool SaveCityAreaLocation(DC_CityAreaLocation obj)
         {
@@ -3804,6 +3804,7 @@ namespace DataLayer
                             keyword.Sequence = item.Sequence;
                             keyword.Status = item.Status;
                             keyword.Icon = item.Icon;
+                            keyword.EntityFor = item.EntityFor;
 
                             ret.StatusMessage = "Keyword " + ReadOnlyMessage.strUpdatedSuccessfully;
                         }
@@ -3821,7 +3822,8 @@ namespace DataLayer
                             Extra = item.Extra,
                             Missing = item.Missing,
                             Status = item.Status,
-                            Icon = item.Icon
+                            Icon = item.Icon,
+                            EntityFor = item.EntityFor
                     };
                         context.m_keyword.Add(newKeyword);
 

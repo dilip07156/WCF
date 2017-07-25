@@ -923,6 +923,7 @@
           <Property Name="Attribute" Type="bit" />
           <Property Name="Sequence" Type="int" />
           <Property Name="Icon" Type="nvarchar" MaxLength="255" />
+          <Property Name="EntityFor" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="m_keyword_alias">
           <Key>
@@ -1468,6 +1469,21 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwMappingStats' does not have
           <Property Name="MappinFor" Type="varchar" MaxLength="8" Nullable="false" />
           <Property Name="totalcount" Type="int" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vwUserwisemappedStats">
+          <Key>
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="MappinFor" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" />
+          <Property Name="supplier_id" Type="uniqueidentifier" />
+          <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Username" Type="nvarchar" MaxLength="255" />
+          <Property Name="Status" Type="varchar" MaxLength="13" Nullable="false" />
+          <Property Name="MappinFor" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="totalcount" Type="int" />
+        </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1612,6 +1628,17 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwMappingStats' does not have
     [vwMappingStats].[totalcount] AS [totalcount]
     FROM [dbo].[vwMappingStats] AS [vwMappingStats]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="vwUserwisemappedStats" EntityType="Self.vwUserwisemappedStats" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vwUserwisemappedStats].[ID] AS [ID], 
+    [vwUserwisemappedStats].[supplier_id] AS [supplier_id], 
+    [vwUserwisemappedStats].[SupplierName] AS [SupplierName], 
+    [vwUserwisemappedStats].[Username] AS [Username], 
+    [vwUserwisemappedStats].[Status] AS [Status], 
+    [vwUserwisemappedStats].[MappinFor] AS [MappinFor], 
+    [vwUserwisemappedStats].[totalcount] AS [totalcount]
+    FROM [dbo].[vwUserwisemappedStats] AS [vwUserwisemappedStats]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
@@ -1724,6 +1751,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwMappingStats' does not have
           <EntitySet Name="Places" EntityType="ConsumerModel.Place" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
           <EntitySet Name="Accommodation_SupplierRoomTypeMapping" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" />
+          <EntitySet Name="vwUserwisemappedStats" EntityType="ConsumerModel.vwUserwisemappedStat" />
         </EntityContainer>
         <EntityType Name="Accommodation_Contact">
           <Key>
@@ -3139,6 +3167,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwMappingStats' does not have
           <Property Name="Attribute" Type="Boolean" />
           <Property Name="Sequence" Type="Int32" />
           <Property Name="Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EntityFor" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_keyword_alias">
           <Key>
@@ -3215,6 +3244,19 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwMappingStats' does not have
           <Property Name="MapId" Type="Int32" />
           <Property Name="Accommodation_RoomInfo_Id" Type="Guid" />
           <Property Name="stg_SupplierHotelRoomMapping_Id" Type="Guid" />
+        </EntityType>
+        <EntityType Name="vwUserwisemappedStat">
+          <Key>
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="MappinFor" />
+          </Key>
+          <Property Name="ID" Type="Guid" />
+          <Property Name="supplier_id" Type="Guid" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="13" FixedLength="false" Unicode="false" />
+          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="totalcount" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -4660,6 +4702,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwMappingStats' does not have
           <EntitySetMapping Name="m_keyword">
             <EntityTypeMapping TypeName="ConsumerModel.m_keyword">
               <MappingFragment StoreEntitySet="m_keyword">
+                <ScalarProperty Name="EntityFor" ColumnName="EntityFor" />
                 <ScalarProperty Name="Icon" ColumnName="Icon" />
                 <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="Attribute" ColumnName="Attribute" />
@@ -4752,6 +4795,19 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwMappingStats' does not have
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
                 <ScalarProperty Name="Accommodation_Id" ColumnName="Accommodation_Id" />
                 <ScalarProperty Name="Accommodation_SupplierRoomTypeMapping_Id" ColumnName="Accommodation_SupplierRoomTypeMapping_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwUserwisemappedStats">
+            <EntityTypeMapping TypeName="ConsumerModel.vwUserwisemappedStat">
+              <MappingFragment StoreEntitySet="vwUserwisemappedStats">
+                <ScalarProperty Name="totalcount" ColumnName="totalcount" />
+                <ScalarProperty Name="MappinFor" ColumnName="MappinFor" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="supplier_id" ColumnName="supplier_id" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
