@@ -4076,7 +4076,7 @@ namespace DataLayer
                         var KeywordAliasItem = context.m_keyword_alias.Find(item.KeywordAlias_Id);
                         if (KeywordAliasItem != null)
                         {
-                            KeywordAliasItem.NoOfHits = KeywordAliasItem.NoOfHits + item.NewHits;
+                            KeywordAliasItem.NoOfHits = (KeywordAliasItem.NoOfHits ?? 0) + item.NewHits;
                         }
                     }
                     context.SaveChanges();

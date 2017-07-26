@@ -1628,9 +1628,6 @@ namespace DataLayer
                 {
                     if (Acco_RoomTypeMap_Ids != null)
                     {
-
-
-
                         var MapIdsFilter = (from a in Acco_RoomTypeMap_Ids select a.Acco_RoomTypeMap_Id).ToList();
 
                         asrtmd = context.Accommodation_SupplierRoomTypeMapping
@@ -1648,7 +1645,7 @@ namespace DataLayer
                         }
                         else
                         {
-                            Edit_User = "TTFU SYSTEM";
+                            Edit_User = "TTFU BY SYSTEM";
                         }
 
                     }
@@ -1662,26 +1659,26 @@ namespace DataLayer
                                       SupplierRoomName = a.SupplierRoomName
                                   }).ToList();
 
-                        Edit_User = "TTFU SYSTEM";
+                        Edit_User = "TTFU BY SYSTEM";
                     }
                 }
 
                 List<DC_SupplierRoomName_AttributeList> AttributeList;
                 foreach (DC_SupplierRoomName_Details srn in asrtmd)
                 {
+                    
                     AttributeList = new List<DC_SupplierRoomName_AttributeList>();
 
                     string BaseRoomName = srn.SupplierRoomName;
 
+                    #region PRE TTFU
+
+                    //HTML Decode
+                    BaseRoomName = System.Web.HttpUtility.HtmlDecode(BaseRoomName);
+
                     //To Upper
                     BaseRoomName = BaseRoomName.ToUpper();
-
-                    //Replace Multiple whitespaces into One Whitespace
-                    BaseRoomName = System.Text.RegularExpressions.Regex.Replace(BaseRoomName, @"\s{2,}", " ");
-
-                    //trim both end
-                    BaseRoomName = BaseRoomName.Trim();
-
+                    
                     //Replace the braces
                     BaseRoomName = BaseRoomName.Replace('{', '(');
                     BaseRoomName = BaseRoomName.Replace('}', ')');
@@ -1690,6 +1687,15 @@ namespace DataLayer
 
                     BaseRoomName = BaseRoomName.Replace("( ", "(");
                     BaseRoomName = BaseRoomName.Replace(" )", ")");
+
+                    //Necessary Replace
+                    BaseRoomName = BaseRoomName.Replace("/", " OR ");
+
+                    //Replace Multiple whitespaces into One Whitespace
+                    BaseRoomName = System.Text.RegularExpressions.Regex.Replace(BaseRoomName, @"\s{2,}", " ");
+
+                    //trim both end
+                    BaseRoomName = BaseRoomName.Trim();
 
                     //Take only alpha characters
                     string RoomName_AlphabetsWithSpaceOnly = string.Empty;
@@ -1720,8 +1726,6 @@ namespace DataLayer
                     srn.TX_SupplierRoomName = BaseRoomName;
 
                     //Attribute Extraction
-
-
                     foreach (var Attribute in Attributes)
                     {
                         var aliases = Attribute.Alias.OrderByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
@@ -1746,6 +1750,32 @@ namespace DataLayer
                             }
                         }
                     }
+
+                    #endregion
+
+                    #region POST TTFU
+                    //Replace UnNecessary chars
+                    BaseRoomName = BaseRoomName.Replace('<', ' ');
+                    BaseRoomName = BaseRoomName.Replace('>', ' ');
+                    BaseRoomName = BaseRoomName.Replace('?', ' ');
+                    BaseRoomName = BaseRoomName.Replace('#', ' ');
+                    BaseRoomName = BaseRoomName.Replace('!', ' ');
+                    BaseRoomName = BaseRoomName.Replace('@', ' ');
+                    BaseRoomName = BaseRoomName.Replace("&", " AND ");
+                    BaseRoomName = BaseRoomName.Replace("+", " INCLUDING ");
+                    BaseRoomName = BaseRoomName.Replace('(', ' ');
+                    BaseRoomName = BaseRoomName.Replace(')', ' ');
+                    BaseRoomName = BaseRoomName.Replace('-', ' ');
+                    BaseRoomName = BaseRoomName.Replace(',', ' ');
+                    BaseRoomName = BaseRoomName.Replace('.', ' ');
+                    BaseRoomName = BaseRoomName.Replace('"', ' ');
+
+                    //Replace Multiple whitespaces into One Whitespace
+                    BaseRoomName = System.Text.RegularExpressions.Regex.Replace(BaseRoomName, @"\s{2,}", " ");
+
+                    //trim both end
+                    BaseRoomName = BaseRoomName.Trim();
+                    #endregion
 
                     //Value assignment
                     srn.TX_SupplierRoomName_Stripped = BaseRoomName;

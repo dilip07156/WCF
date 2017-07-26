@@ -243,5 +243,20 @@ namespace ConsumerSvc
                 return objBL.AddSTGRoomTypeData(obj);
             }
         }
+
+        public DataContracts.DC_Message DataHandler_AccomodationSupplierRoomTypeMapping_TTFU(List<DataContracts.Mapping.DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
+        {
+            if (Acco_RoomTypeMap_Ids == null)
+            {
+                return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Parameter Is Null" };
+            }
+            else
+            {
+                using (BL_Mapping objBL = new BL_Mapping())
+                {
+                    return objBL.AccomodationSupplierRoomTypeMapping_TTFUALL(Acco_RoomTypeMap_Ids);
+                }
+            }
+        }
     }
 }
