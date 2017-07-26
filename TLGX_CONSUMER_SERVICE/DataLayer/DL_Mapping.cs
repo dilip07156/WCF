@@ -1689,7 +1689,7 @@ namespace DataLayer
                     BaseRoomName = BaseRoomName.Replace(" )", ")");
 
                     //Necessary Replace
-                    BaseRoomName = BaseRoomName.Replace("/", " OR ");
+                    //BaseRoomName = BaseRoomName.Replace("/", " OR ");
 
                     //Replace Multiple whitespaces into One Whitespace
                     BaseRoomName = System.Text.RegularExpressions.Regex.Replace(BaseRoomName, @"\s{2,}", " ");
@@ -1762,7 +1762,7 @@ namespace DataLayer
                     BaseRoomName = BaseRoomName.Replace('!', ' ');
                     BaseRoomName = BaseRoomName.Replace('@', ' ');
                     BaseRoomName = BaseRoomName.Replace("&", " AND ");
-                    BaseRoomName = BaseRoomName.Replace("+", " INCLUDING ");
+                    //BaseRoomName = BaseRoomName.Replace("+", " INCLUDING ");
                     BaseRoomName = BaseRoomName.Replace('(', ' ');
                     BaseRoomName = BaseRoomName.Replace(')', ' ');
                     BaseRoomName = BaseRoomName.Replace('-', ' ');
