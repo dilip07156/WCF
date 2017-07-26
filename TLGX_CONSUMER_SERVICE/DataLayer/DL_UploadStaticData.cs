@@ -785,7 +785,7 @@ namespace DataLayer
         }
         #endregion
 
-        #region "Error Log"
+        #region "Logging"
         public DataContracts.DC_Message AddStaticDataUploadErrorLog(DataContracts.UploadStaticData.DC_SupplierImportFile_ErrorLog obj)
         {
             DataContracts.DC_Message dc = new DataContracts.DC_Message();
@@ -870,6 +870,189 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
                 {
                     ErrorMessage = "Error while searching Error Attributes",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+        }
+
+        public DataContracts.DC_Message AddStaticDataUploadProcessLog(DataContracts.UploadStaticData.DC_SupplierImportFile_Progress obj)
+        {
+            DataContracts.DC_Message dc = new DataContracts.DC_Message();
+
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    DataLayer.SupplierImportFile_Progress objNew = new DataLayer.SupplierImportFile_Progress()
+                    {
+                        SupplierImportFileProgress_Id = obj.SupplierImportFileProgress_Id,
+                        SupplierImportFile_Id = obj.SupplierImportFile_Id,
+                        PercentageValue =obj.PercentageValue,
+                        Status = obj.Status,
+                        Step = obj.Step
+                    };
+                    context.SupplierImportFile_Progress.Add(objNew);
+                    context.SaveChanges();
+                    dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                    dc.StatusMessage = "Process Log " + ReadOnlyMessage.strAddedSuccessfully;
+                }
+                return dc;
+            }
+            catch (Exception e)
+            {
+                dc.StatusMessage = ReadOnlyMessage.strFailed;
+                dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                return dc;
+            }
+        }
+
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_Progress> GetStaticDataUploadProcessLog(DataContracts.UploadStaticData.DC_SupplierImportFile_Progress_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var ProgLogSearch = from a in context.SupplierImportFile_Progress select a;
+
+                    if (RQ.SupplierImportFileProgress_Id.HasValue)
+                    {
+                        ProgLogSearch = from a in ProgLogSearch
+                                        where a.SupplierImportFileProgress_Id == RQ.SupplierImportFileProgress_Id
+                                        select a;
+                    }
+                    if (RQ.SupplierImportFile_Id.HasValue)
+                    {
+                        ProgLogSearch = from a in ProgLogSearch
+                                        where a.SupplierImportFile_Id == RQ.SupplierImportFile_Id
+                                        select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.Step))
+                    {
+                        ProgLogSearch = from a in ProgLogSearch
+                                        where a.Step.Trim().ToUpper() == RQ.Step.Trim().ToUpper()
+                                        select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.Status))
+                    {
+                        ProgLogSearch = from a in ProgLogSearch
+                                        where a.Status.Trim().ToUpper() == RQ.Status.Trim().ToUpper()
+                                        select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.StatusExcept))
+                    {
+                        ProgLogSearch = from a in ProgLogSearch
+                                        where a.Status.Trim().ToUpper() != RQ.StatusExcept.Trim().ToUpper()
+                                        select a;
+                    }
+
+                    var total = ProgLogSearch.Count();
+
+                    var skip = RQ.PageSize * RQ.PageNo;
+
+                    var ProgLogResult = (from a in ProgLogSearch
+                                         select new DataContracts.UploadStaticData.DC_SupplierImportFile_Progress
+                                         {
+                                             SupplierImportFileProgress_Id = a.SupplierImportFileProgress_Id,
+                                             SupplierImportFile_Id = a.SupplierImportFile_Id,
+                                             Step = a.Step,
+                                             Status = a.Status,
+                                             PercentageValue = a.PercentageValue,
+                                             TotalCount = total
+                                         }).Skip(skip ?? 0).Take(RQ.PageSize ?? total).ToList();
+
+                    return ProgLogResult;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while searching Progress Log",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+        }
+        public DataContracts.DC_Message AddStaticDataUploadVerboseLog(DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog obj)
+        {
+            DataContracts.DC_Message dc = new DataContracts.DC_Message();
+
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    DataLayer.SupplierImportFile_VerboseLog objNew = new DataLayer.SupplierImportFile_VerboseLog()
+                    {
+                        SupplierImportFile_VerboseLog_Id = obj.SupplierImportFile_VerboseLog_Id,
+                        SupplierImportFile_Id = obj.SupplierImportFile_Id,
+                        Message = obj.Message,
+                        Step= obj.Step,
+                        TimeStamp = obj.TimeStamp
+                    };
+                    context.SupplierImportFile_VerboseLog.Add(objNew);
+                    context.SaveChanges();
+                    dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                    dc.StatusMessage = "Verbose Log " + ReadOnlyMessage.strAddedSuccessfully;
+                }
+                return dc;
+            }
+            catch (Exception e)
+            {
+                dc.StatusMessage = ReadOnlyMessage.strFailed;
+                dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                return dc;
+            }
+        }
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog> GetStaticDataUploadVerboseLog(DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var ProgLogSearch = from a in context.SupplierImportFile_VerboseLog select a;
+
+                    if (RQ.SupplierImportFile_VerboseLog_Id.HasValue)
+                    {
+                        ProgLogSearch = from a in ProgLogSearch
+                                        where a.SupplierImportFile_VerboseLog_Id == RQ.SupplierImportFile_VerboseLog_Id
+                                        select a;
+                    }
+                    if (RQ.SupplierImportFile_Id.HasValue)
+                    {
+                        ProgLogSearch = from a in ProgLogSearch
+                                        where a.SupplierImportFile_Id == RQ.SupplierImportFile_Id
+                                        select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.Step))
+                    {
+                        ProgLogSearch = from a in ProgLogSearch
+                                        where a.Step.Trim().ToUpper() == RQ.Step.Trim().ToUpper()
+                                        select a;
+                    }
+
+                    var total = ProgLogSearch.Count();
+
+                    var skip = RQ.PageSize * RQ.PageNo;
+
+                    var ProgLogResult = (from a in ProgLogSearch
+                                         orderby a.TimeStamp 
+                                         select new DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog
+                                         {
+                                             SupplierImportFile_VerboseLog_Id = a.SupplierImportFile_VerboseLog_Id,
+                                             SupplierImportFile_Id= a.SupplierImportFile_Id,
+                                             Step = a.Step,
+                                             Message = a.Message,
+                                             TimeStamp = a.TimeStamp ?? DateTime.Now,
+                                             TotalCount = total
+                                         }).Skip(skip ?? 0).Take(RQ.PageSize ?? total).ToList();
+
+                    return ProgLogResult;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while searching Progress Log",
                     ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
                 });
             }

@@ -258,5 +258,21 @@ namespace ConsumerSvc
                 }
             }
         }
+
+        public DC_Message AddStaticDataUploadProcessLog(DC_SupplierImportFile_Progress obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.AddStaticDataUploadProcessLog(obj);
+            }
+        }
+
+        public DC_Message AddStaticDataUploadVerboseLog(DC_SupplierImportFile_VerboseLog obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.AddStaticDataUploadVerboseLog(obj);
+            }
+        }
     }
 }

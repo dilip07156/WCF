@@ -118,7 +118,7 @@ namespace ConsumerSvc
         #endregion
 
 
-        #region "Error Log"
+        #region "Logging"
         public DataContracts.DC_Message AddStaticDataUploadErrorLog(DataContracts.UploadStaticData.DC_SupplierImportFile_ErrorLog obj)
         {
             using (BL_UploadStaticData objBL = new BL_UploadStaticData())
@@ -131,6 +131,20 @@ namespace ConsumerSvc
             using (BL_UploadStaticData objBL = new BL_UploadStaticData())
             {
                 return objBL.GetStaticDataUploadErrorLog(obj);
+            }
+        }
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_Progress> GetStaticDataUploadProcessLog(DataContracts.UploadStaticData.DC_SupplierImportFile_Progress_RQ obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.GetStaticDataUploadProcessLog(obj);
+            }
+        }
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog> GetStaticDataUploadVerboseLog(DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog_RQ obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.GetStaticDataUploadVerboseLog(obj);
             }
         }
 
