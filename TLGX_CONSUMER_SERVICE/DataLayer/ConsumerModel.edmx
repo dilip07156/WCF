@@ -1429,6 +1429,26 @@
           <Property Name="Error_DATE" Type="datetime" />
           <Property Name="Error_USER" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="SupplierImportFile_Progress">
+          <Key>
+            <PropertyRef Name="SupplierImportFileProgress_Id" />
+          </Key>
+          <Property Name="SupplierImportFileProgress_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SupplierImportFile_Id" Type="uniqueidentifier" />
+          <Property Name="Step" Type="nvarchar" MaxLength="255" />
+          <Property Name="PercentageValue" Type="int" />
+          <Property Name="Status" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="SupplierImportFile_VerboseLog">
+          <Key>
+            <PropertyRef Name="SupplierImportFile_VerboseLog_Id" />
+          </Key>
+          <Property Name="SupplierImportFile_VerboseLog_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SupplierImportFile_Id" Type="uniqueidentifier" />
+          <Property Name="Step" Type="nvarchar" MaxLength="255" />
+          <Property Name="Message" Type="nvarchar(max)" />
+          <Property Name="TimeStamp" Type="datetime" />
+        </EntityType>
         <EntityType Name="SupplierImportFileDetails">
           <Key>
             <PropertyRef Name="SupplierImportFile_Id" />
@@ -1473,6 +1493,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwMappingStats' does not have
 warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwUserwisemappedStats">
           <Key>
+            
+            
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
@@ -1616,6 +1638,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Supplier_ProductCategory" EntityType="Self.Supplier_ProductCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier_Schedule" EntityType="Self.Supplier_Schedule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFile_ErrorLog" EntityType="Self.SupplierImportFile_ErrorLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierImportFile_Progress" EntityType="Self.SupplierImportFile_Progress" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierImportFile_VerboseLog" EntityType="Self.SupplierImportFile_VerboseLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFileDetails" EntityType="Self.SupplierImportFileDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserEntity" EntityType="Self.UserEntity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="vwMappingStats" EntityType="Self.vwMappingStats" store:Type="Views" store:Schema="dbo">
@@ -1751,6 +1775,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
           <EntitySet Name="Accommodation_SupplierRoomTypeMapping" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" />
           <EntitySet Name="vwUserwisemappedStats" EntityType="ConsumerModel.vwUserwisemappedStat" />
+          <EntitySet Name="SupplierImportFile_Progress" EntityType="ConsumerModel.SupplierImportFile_Progress" />
+          <EntitySet Name="SupplierImportFile_VerboseLog" EntityType="ConsumerModel.SupplierImportFile_VerboseLog" />
         </EntityContainer>
         <EntityType Name="Accommodation_Contact">
           <Key>
@@ -3255,6 +3281,26 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Status" Type="String" Nullable="false" MaxLength="13" FixedLength="false" Unicode="false" />
           <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="totalcount" Type="Int32" />
+        </EntityType>
+        <EntityType Name="SupplierImportFile_Progress">
+          <Key>
+            <PropertyRef Name="SupplierImportFileProgress_Id" />
+          </Key>
+          <Property Name="SupplierImportFileProgress_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierImportFile_Id" Type="Guid" />
+          <Property Name="Step" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PercentageValue" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SupplierImportFile_VerboseLog">
+          <Key>
+            <PropertyRef Name="SupplierImportFile_VerboseLog_Id" />
+          </Key>
+          <Property Name="SupplierImportFile_VerboseLog_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierImportFile_Id" Type="Guid" />
+          <Property Name="Step" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TimeStamp" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -4806,6 +4852,28 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
                 <ScalarProperty Name="supplier_id" ColumnName="supplier_id" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplierImportFile_Progress">
+            <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFile_Progress">
+              <MappingFragment StoreEntitySet="SupplierImportFile_Progress">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="PercentageValue" ColumnName="PercentageValue" />
+                <ScalarProperty Name="Step" ColumnName="Step" />
+                <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
+                <ScalarProperty Name="SupplierImportFileProgress_Id" ColumnName="SupplierImportFileProgress_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplierImportFile_VerboseLog">
+            <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFile_VerboseLog">
+              <MappingFragment StoreEntitySet="SupplierImportFile_VerboseLog">
+                <ScalarProperty Name="TimeStamp" ColumnName="TimeStamp" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="Step" ColumnName="Step" />
+                <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
+                <ScalarProperty Name="SupplierImportFile_VerboseLog_Id" ColumnName="SupplierImportFile_VerboseLog_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
