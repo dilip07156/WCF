@@ -161,7 +161,10 @@ namespace OperationContracts
         bool UpdateHotelMappingStatus(DataContracts.Mapping.DC_MappingMatch obj);
         //List<DataContracts.Mapping.DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DataContracts.Mapping.DC_MappingMatch obj);
 
-
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "DataHandler/Mapping/RoomType/Match", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        bool RoomTypeMappingMatch(DataContracts.Masters.DC_Supplier sup);
 
         #endregion
 

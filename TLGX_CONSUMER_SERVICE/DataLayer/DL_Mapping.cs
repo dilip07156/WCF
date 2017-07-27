@@ -1375,6 +1375,104 @@ namespace DataLayer
             }
         }
 
+        public bool RoomTypeMappingMatch(DataContracts.Masters.DC_Supplier obj)
+        {
+            bool ret = true;
+
+            if (obj != null)
+            {
+                string CurSupplierName = obj.Name;
+                Guid CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
+
+                DL_UploadStaticData staticdata = new DL_UploadStaticData();
+                List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> clsSTGHotel = new List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping>();
+                List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> clsSTGHotelInsert = new List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping>();
+                List<DC_Accommodation_SupplierRoomTypeMap_SearchRS> clsMappingHotel = new List<DC_Accommodation_SupplierRoomTypeMap_SearchRS>();
+
+                DataContracts.STG.DC_stg_SupplierHotelRoomMapping_RQ RQ = new DataContracts.STG.DC_stg_SupplierHotelRoomMapping_RQ();
+                RQ.SupplierName = CurSupplierName;
+                RQ.PageNo = 0;
+                RQ.PageSize = int.MaxValue;
+                clsSTGHotel = staticdata.GetSTGRoomTypeData(RQ);
+
+                DC_Accommodation_SupplierRoomTypeMap_SearchRQ RQM = new DC_Accommodation_SupplierRoomTypeMap_SearchRQ();
+                if (CurSupplier_Id != Guid.Empty)
+                    RQM.Supplier_Id = CurSupplier_Id;
+                if (!string.IsNullOrWhiteSpace(CurSupplierName))
+                    RQM.SupplierName = CurSupplierName;
+                RQM.PageNo = 0;
+                RQM.PageSize = int.MaxValue;
+                RQM.CalledFromTLGX = "TLGX";
+                clsMappingHotel = SupplierRoomTypeMapping_Search(RQM);
+
+                clsMappingHotel = clsMappingHotel.Select(c =>
+                {
+                    c.SupplierRoomName = (clsSTGHotel
+                    .Where(s => s.SupplierProductId == c.SupplierProductId && s.SupplierRoomTypeCode == c.SupplierRoomTypeCode && s.SupplierRoomId == c.SupplierRoomId)
+                    .Select(s1 => s1.RoomName)
+                    .FirstOrDefault()
+                    ) ?? c.SupplierRoomName;
+                    //c.Edit_Date = DateTime.Now;
+                    //c.Edit_User = "TLGX_DataHandler";
+                    return c;
+                }).ToList();
+
+                clsSTGHotelInsert = clsSTGHotel.Where(p => !clsMappingHotel.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
+                 && (
+                    (((p2.SupplierProductName ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierProductName ?? string.Empty).ToString().Trim().ToUpper()))
+                    && (((p2.SupplierProductId ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierProductId ?? string.Empty).ToString().Trim().ToUpper()))
+                    && (((p2.SupplierRoomTypeCode ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierRoomTypeCode ?? string.Empty).ToString().Trim().ToUpper()))
+                    && (((p2.SupplierRoomId ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierRoomId ?? string.Empty).ToString().Trim().ToUpper()))
+                    && (((p2.SupplierRoomName ?? string.Empty).ToString().Trim().ToUpper() == (p.RoomName ?? string.Empty).ToString().Trim().ToUpper()))
+                    && (((p2.SupplierRoomCategoryId ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierRoomCategoryId ?? string.Empty).ToString().Trim().ToUpper()))
+                ))).ToList();
+
+                clsSTGHotel.RemoveAll(p => clsSTGHotelInsert.Any(p2 => (p2.stg_SupplierHotelRoomMapping_Id == p.stg_SupplierHotelRoomMapping_Id)));
+
+                clsMappingHotel.RemoveAll(p => p.SupplierRoomName == p.SupplierRoomName);
+
+                clsMappingHotel.InsertRange(clsMappingHotel.Count, clsSTGHotelInsert.Select
+                    (g => new DC_Accommodation_SupplierRoomTypeMap_SearchRS
+                    {
+                        Accommodation_SupplierRoomTypeMapping_Id = Guid.NewGuid(),
+                        SupplierRoomName = g.RoomName,
+                        OldSupplierRoomName = g.RoomName,
+                        SupplierRoomCategoryId = g.SupplierRoomCategoryId,
+                        Accommodation_Id = null,
+                        Accommodation_RoomInfo_Id = null,
+                        Accommodation_RoomInfo_Name = null,
+                        CommonProductId = null,
+                        Location = null,
+                        MapId = null,
+                        MappingStatus = "UNMAPPED",
+                        MaxAdults = g.MaxAdults,
+                        MaxChild = g.MaxChild,
+                        MaxGuestOccupancy = g.MaxGuestOccupancy,
+                        MaxInfants = g.MaxInfant,
+                        ProductName = null,
+                        Quantity = (!string.IsNullOrWhiteSpace(g.Quantity)) ? Convert.ToInt32(g.Quantity) : 0,
+                        RatePlan = g.RatePlan,
+                        RatePlanCode = g.RatePlanCode,
+                        RoomTypeAttributes = null,
+                        SupplierName = g.SupplierName,
+                        SupplierProductId = g.SupplierProductId,
+                        SupplierProductName = g.SupplierProductName,
+                        SupplierRoomCategory = g.SupplierRoomCategory,
+                        SupplierRoomId = g.SupplierRoomId,
+                        SupplierRoomTypeCode = g.SupplierRoomTypeCode,
+                        Supplier_Id = g.Supplier_Id,
+                        stg_SupplierHotelRoomMapping_Id = g.stg_SupplierHotelRoomMapping_Id
+                    }));
+
+                if (clsMappingHotel.Count > 0)
+                {
+                    ret = SupplierRoomTypeMapping_Insert(clsMappingHotel);
+                }
+            }
+
+            return ret;
+        }
+
         public void DataHandler_RoomName_Attributes_Update(DC_SupplierRoomName_Details SRNDetails)
         {
             try
@@ -1407,6 +1505,59 @@ namespace DataLayer
             }
         }
 
+        public List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS> SupplierRoomTypeMapping_Search(DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRQ obj)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var roomTypeSearch = from a in context.Accommodation_SupplierRoomTypeMapping
+                                         where a.Supplier_Id == (obj.Supplier_Id ?? a.Supplier_Id)
+                                         && a.SupplierName.Trim().ToUpper() == (obj.SupplierName.Trim().ToUpper() ?? a.SupplierName.Trim().ToUpper())
+                                         select new DC_Accommodation_SupplierRoomTypeMap_SearchRS
+                                         {
+                                             Accommodation_Id = a.Accommodation_Id,
+                                             SupplierName = a.SupplierName,
+                                             Accommodation_RoomInfo_Id = a.Accommodation_RoomInfo_Id,
+                                             Accommodation_RoomInfo_Name = a.SupplierRoomName,
+                                             SupplierRoomName = a.SupplierRoomName,
+                                             OldSupplierRoomName = a.SupplierRoomName,
+                                             Accommodation_SupplierRoomTypeMapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                                             SupplierProductId = a.SupplierProductId,
+                                             MaxAdults = a.MaxAdults,
+                                             MaxChild = a.MaxChild,
+                                             MapId = a.MapId,
+                                             MappingStatus = a.MappingStatus,
+                                             MaxGuestOccupancy = a.MaxGuestOccupancy,
+                                             MaxInfants = a.MaxInfants,
+                                             Quantity = a.Quantity,
+                                             SupplierRoomCategory = a.SupplierRoomCategory,
+                                             RatePlan = a.RatePlan,
+                                             RatePlanCode = a.RatePlanCode,
+                                             SupplierProductName = a.SupplierProductName,
+                                             SupplierRoomCategoryId = a.SupplierRoomCategoryId,
+                                             SupplierRoomId = a.SupplierRoomId,
+                                             SupplierRoomTypeCode = a.SupplierRoomTypeCode,
+                                             Supplier_Id = a.Supplier_Id,
+                                             Tx_ReorderedName = a.Tx_ReorderedName,
+                                             TX_RoomName = a.TX_RoomName,
+                                             Tx_StrippedName = a.Tx_StrippedName
+                                         };
+                    var result = roomTypeSearch.ToList();
+
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while searching product supplier mapping",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+        }
+
         public List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS> AccomodationSupplierRoomTypeMapping_Search(DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRQ obj)
         {
             try
@@ -1421,6 +1572,7 @@ namespace DataLayer
                                          join accori in context.Accommodation_RoomInfo on new { AccoId = acco.Accommodation_Id, AccoRIId = asrtm.Accommodation_RoomInfo_Id ?? Guid.Empty } equals new { AccoId = accori.Accommodation_Id ?? Guid.Empty, AccoRIId = accori.Accommodation_RoomInfo_Id } into accoritemp
                                          from accorinew in accoritemp.DefaultIfEmpty()
                                          where sup.Supplier_Id == (obj.Supplier_Id ?? sup.Supplier_Id)
+                                         && sup.Name.Trim().ToUpper() == (obj.SupplierName.Trim().ToUpper() ?? sup.Name.Trim().ToUpper())
                                          && country.Country_Id == (obj.Country ?? country.Country_Id)
                                          && city.City_Id == (obj.City ?? city.City_Id)
                                          && asrtm.MappingStatus == (obj.Status ?? asrtm.MappingStatus)
@@ -1507,6 +1659,8 @@ namespace DataLayer
 
                     //if (!string.IsNullOrWhiteSpace(obj.Status))
                     //{
+                    if (string.IsNullOrWhiteSpace(obj.CalledFromTLGX))
+                    {
                         DL_Accomodation _dlAcco = new DL_Accomodation();
                         foreach (var item in result)
                         {
@@ -1530,6 +1684,7 @@ namespace DataLayer
                                 }
                             }
                         }
+                    }
                     //}
 
                     return result;
@@ -1609,6 +1764,73 @@ namespace DataLayer
             }
         }
 
+        public bool SupplierRoomTypeMapping_Insert(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS> lstobj)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    foreach (DC_Accommodation_SupplierRoomTypeMap_SearchRS obj in lstobj)
+                    {
+                        if (obj.Accommodation_SupplierRoomTypeMapping_Id == null)
+                        {
+                            continue;
+                        }
+
+                        var search = (from a in context.Accommodation_SupplierRoomTypeMapping
+                                      where a.Accommodation_SupplierRoomTypeMapping_Id == obj.Accommodation_SupplierRoomTypeMapping_Id
+                                      select a).FirstOrDefault();
+                        if (search == null)
+                        {
+                            DataLayer.Accommodation_SupplierRoomTypeMapping objNew = new DataLayer.Accommodation_SupplierRoomTypeMapping()
+                            {
+                                Accommodation_SupplierRoomTypeMapping_Id = obj.Accommodation_SupplierRoomTypeMapping_Id,
+                                Accommodation_Id = (context.Accommodation_ProductMapping.Where(w => w.SupplierProductReference == obj.SupplierProductId).Select(a => a.Accommodation_Id).FirstOrDefault()),
+                                Accommodation_RoomInfo_Id = null,
+                                SupplierProductId = obj.SupplierProductId,
+                                Create_Date = DateTime.Now,
+                                Create_User = "TLGX",
+                                Edit_Date = null,
+                                Edit_User = null,
+                                MapId = null,
+                                MappingStatus = obj.MappingStatus,
+                                MaxAdults = obj.MaxAdults,
+                                MaxChild = obj.MaxChild,
+                                MaxGuestOccupancy = obj.MaxGuestOccupancy,
+                                MaxInfants = obj.MaxInfants,
+                                Quantity = obj.Quantity,
+                                RatePlan = obj.RatePlan,
+                                RatePlanCode = obj.RatePlanCode,
+                                stg_SupplierHotelRoomMapping_Id = obj.stg_SupplierHotelRoomMapping_Id,
+                                SupplierName = obj.SupplierName,
+                                SupplierProductName = obj.SupplierProductName,
+                                SupplierRoomCategory = obj.SupplierRoomCategory,
+                                SupplierRoomCategoryId = obj.SupplierRoomCategoryId,
+                                SupplierRoomId = obj.SupplierRoomId,
+                                SupplierRoomName= obj.SupplierRoomName,
+                                SupplierRoomTypeCode= obj.SupplierRoomTypeCode,
+                                Supplier_Id = obj.Supplier_Id,
+                                Tx_ReorderedName=null,
+                                TX_RoomName =null,
+                                Tx_StrippedName = null
+                            };
+                        }
+                    }
+                    context.SaveChanges();
+                }
+                return true;
+            }
+            catch
+            {
+                //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                //{
+                //    ErrorMessage = "Error while updating accomodation product supplier mapping",
+                //    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                //});
+                return false;
+            }
+        }
+
         public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_TTFUALL(List<DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
         {
             try
@@ -1669,7 +1891,7 @@ namespace DataLayer
                 List<DC_SupplierRoomName_AttributeList> AttributeList;
                 foreach (DC_SupplierRoomName_Details srn in asrtmd)
                 {
-                    
+
                     AttributeList = new List<DC_SupplierRoomName_AttributeList>();
 
                     string BaseRoomName = srn.SupplierRoomName;
@@ -1681,7 +1903,7 @@ namespace DataLayer
 
                     //To Upper
                     BaseRoomName = BaseRoomName.ToUpper();
-                    
+
                     //Replace the braces
                     BaseRoomName = BaseRoomName.Replace('{', '(');
                     BaseRoomName = BaseRoomName.Replace('}', ')');
@@ -2632,7 +2854,7 @@ namespace DataLayer
                         oldCityName = g.CityName,
                         Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
 
-            }));
+                    }));
 
                 if (clsMappingCity.Count > 0)
                 {
@@ -4777,22 +4999,22 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                     var searchcity = (from s in context.vwUserwisemappedStats
-                                          where s.supplier_id == SupplierID 
-                                          select s).ToList();
-                        foreach (var item in searchcity)
-                        {
-                            DC_VelocityDashboard objCi = new DC_VelocityDashboard();
-                            objCi.SupplierId = item.supplier_id.Value;
-                            objCi.SupplierName = item.SupplierName;
-                            objCi.UserName = item.Username;
-                            objCi.Status = item.Status;
-                            objCi.MappinFor = item.MappinFor;
-                            objCi.Totalcount = item.totalcount.Value;
-                            
-                            _objList.Add(objCi);
+                    var searchcity = (from s in context.vwUserwisemappedStats
+                                      where s.supplier_id == SupplierID
+                                      select s).ToList();
+                    foreach (var item in searchcity)
+                    {
+                        DC_VelocityDashboard objCi = new DC_VelocityDashboard();
+                        objCi.SupplierId = item.supplier_id.Value;
+                        objCi.SupplierName = item.SupplierName;
+                        objCi.UserName = item.Username;
+                        objCi.Status = item.Status;
+                        objCi.MappinFor = item.MappinFor;
+                        objCi.Totalcount = item.totalcount.Value;
 
-                        }
+                        _objList.Add(objCi);
+
+                    }
                 }
 
             }

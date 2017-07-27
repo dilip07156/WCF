@@ -196,6 +196,14 @@ namespace ConsumerSvc
             }
         }
 
+        public bool RoomTypeMappingMatch(DC_Supplier sup)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.RoomTypeMappingMatch(sup);
+            }
+        }
+
         public bool CityMappingMatch(DC_Supplier sup)
         {
             using (BL_Mapping objBL = new BL_Mapping())
