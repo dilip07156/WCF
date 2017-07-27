@@ -1158,14 +1158,11 @@ namespace DataContracts.Mapping
     #endregion
     #region velocity dash
     [DataContract]
-    public class DC_VelocityDashboard
+    public class DC_VelocityMappingStats
     {
         Guid _SupplierId;
         string _SupplierName;
-        string _MappinFor;
-        int _totalcount;
-        string _userName;
-        string _status;
+        List<DC_VelocityMappingStatsFor> _MappingStatsFor;
         [DataMember]
         public Guid SupplierId
         {
@@ -1193,16 +1190,35 @@ namespace DataContracts.Mapping
             }
         }
         [DataMember]
-        public string MappinFor
+        public List<DC_VelocityMappingStatsFor> MappingStatsFor
         {
             get
             {
-                return _MappinFor;
+                return _MappingStatsFor;
             }
 
             set
             {
-                _MappinFor = value;
+                _MappingStatsFor = value;
+            }
+        }
+    }
+    [DataContract]
+    public class DC_VelocityMappingdata
+    {
+        string _username;
+        int _totalcount;
+        [DataMember]
+        public string Username
+        {
+            get
+            {
+                return _username;
+            }
+
+            set
+            {
+                _username = value;
             }
         }
         [DataMember]
@@ -1218,30 +1234,50 @@ namespace DataContracts.Mapping
                 _totalcount = value;
             }
         }
+    }
+    [DataContract]
+    public class DC_VelocityMappingStatsFor
+    {
+         string _MappingFor;
+        List<DC_VelocityMappingdata> _MappingData;
         [DataMember]
-        public string UserName
+        public string MappingFor
         {
             get
             {
-                return _userName;
+                return _MappingFor;
             }
 
             set
             {
-                _userName = value;
+                _MappingFor = value;
+            }
+        }
+        public int total;
+        [DataMember]
+        public List<DC_VelocityMappingdata> MappingData
+        {
+            get
+            {
+                return _MappingData;
+            }
+
+            set
+            {
+                _MappingData = value;
             }
         }
         [DataMember]
-        public string Status
+        public int Total
         {
             get
             {
-                return _status;
+                return total;
             }
 
             set
             {
-                _status = value;
+                total = value;
             }
         }
     }

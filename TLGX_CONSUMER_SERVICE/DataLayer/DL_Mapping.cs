@@ -1507,29 +1507,29 @@ namespace DataLayer
 
                     //if (!string.IsNullOrWhiteSpace(obj.Status))
                     //{
-                        DL_Accomodation _dlAcco = new DL_Accomodation();
-                        foreach (var item in result)
+                    DL_Accomodation _dlAcco = new DL_Accomodation();
+                    foreach (var item in result)
+                    {
+                        if (string.IsNullOrWhiteSpace(item.Accommodation_RoomInfo_Name))
                         {
-                            if (string.IsNullOrWhiteSpace(item.Accommodation_RoomInfo_Name))
+                            if (!string.IsNullOrWhiteSpace(item.Tx_StrippedName))
                             {
-                                if (!string.IsNullOrWhiteSpace(item.Tx_StrippedName))
+                                Guid acco_id = item.Accommodation_Id.HasValue ? item.Accommodation_Id.Value : Guid.Empty;
+                                var resultRoomCategory = _dlAcco.GetAccomodationRoomInfo_RoomCategory(acco_id);
+                                if (resultRoomCategory != null && resultRoomCategory.Count > 0)
                                 {
-                                    Guid acco_id = item.Accommodation_Id.HasValue ? item.Accommodation_Id.Value : Guid.Empty;
-                                    var resultRoomCategory = _dlAcco.GetAccomodationRoomInfo_RoomCategory(acco_id);
-                                    if (resultRoomCategory != null && resultRoomCategory.Count > 0)
+                                    foreach (var itemroomcat in resultRoomCategory)
                                     {
-                                        foreach (var itemroomcat in resultRoomCategory)
+                                        if (itemroomcat.RoomCategory.ToLower() == item.Tx_StrippedName.ToLower())
                                         {
-                                            if (itemroomcat.RoomCategory.ToLower() == item.Tx_StrippedName.ToLower())
-                                            {
-                                                item.Accommodation_RoomInfo_Id = itemroomcat.Accommodation_RoomInfo_Id;
-                                                item.Accommodation_RoomInfo_Name = itemroomcat.RoomCategory;
-                                            }
+                                            item.Accommodation_RoomInfo_Id = itemroomcat.Accommodation_RoomInfo_Id;
+                                            item.Accommodation_RoomInfo_Name = itemroomcat.RoomCategory;
                                         }
                                     }
                                 }
                             }
                         }
+                    }
                     //}
 
                     return result;
@@ -2569,7 +2569,7 @@ namespace DataLayer
                         oldCityName = g.CityName,
                         Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
 
-            }));
+                    }));
 
                 if (clsMappingCity.Count > 0)
                 {
@@ -4707,38 +4707,46 @@ namespace DataLayer
 
         #endregion
         #region velocity Dashboard
-        public List<DataContracts.Mapping.DC_VelocityDashboard> GetVelocityDashboard(Guid SupplierID)
+        public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(Guid SupplierID)
         {
-            List<DataContracts.Mapping.DC_VelocityDashboard> _objList = new List<DC_VelocityDashboard>();
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                     var searchcity = (from s in context.vwUserwisemappedStats
-                                          where s.supplier_id == SupplierID 
-                                          select s).ToList();
-                        foreach (var item in searchcity)
-                        {
-                            DC_VelocityDashboard objCi = new DC_VelocityDashboard();
-                            objCi.SupplierId = item.supplier_id.Value;
-                            objCi.SupplierName = item.SupplierName;
-                            objCi.UserName = item.Username;
-                            objCi.Status = item.Status;
-                            objCi.MappinFor = item.MappinFor;
-                            objCi.Totalcount = item.totalcount.Value;
-                            
-                            _objList.Add(objCi);
+                    List<vwUserwisemappedStat> search;
+                    search = (from s in context.vwUserwisemappedStats
+                              where s.supplier_id == SupplierID && s.SupplierName != null
+                              select s ).ToList();
+                    List<DataContracts.Mapping.DC_VelocityMappingStats> returnObj = new List<DataContracts.Mapping.DC_VelocityMappingStats>();
+                    DataContracts.Mapping.DC_VelocityMappingStats newmapstats = new DataContracts.Mapping.DC_VelocityMappingStats();
+                    newmapstats.SupplierId = SupplierID;
+                    newmapstats.SupplierName = (from s in context.vwUserwisemappedStats where s.supplier_id == SupplierID select                                                s.SupplierName).FirstOrDefault().ToString();
+                    List<DataContracts.Mapping.DC_VelocityMappingStatsFor> newmapstatsforList = new List<DataContracts.Mapping.DC_VelocityMappingStatsFor>();
 
-                        }
+                    var MapForList = (from s in search select s.MappinFor).ToList().Distinct();
+
+                    foreach (var mapfor in MapForList)
+                    {
+                        DataContracts.Mapping.DC_VelocityMappingStatsFor newmapstatsfor = new DataContracts.Mapping.DC_VelocityMappingStatsFor();
+
+                        newmapstatsfor.MappingFor = mapfor;
+                        newmapstatsfor.MappingData = (from s in search
+                                                      where s.MappinFor == mapfor
+                                                      orderby s.MappinFor
+                                                      select new DataContracts.Mapping.DC_VelocityMappingdata { Username = s.Username, Totalcount = (s.totalcount ?? 0) }).ToList();
+                        newmapstatsforList.Add(newmapstatsfor);
+                    }
+
+                    newmapstats.MappingStatsFor = newmapstatsforList;
+                    returnObj.Add(newmapstats);
+                    return returnObj;
                 }
 
             }
             catch (Exception ex)
             {
-
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching  Velocity mapping statistics", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
-            return _objList;
-
         }
         #endregion
     }
