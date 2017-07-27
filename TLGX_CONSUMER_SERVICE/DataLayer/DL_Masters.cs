@@ -4051,7 +4051,9 @@ namespace DataLayer
                                      TotalRecords = total,
                                      Sequence = a.Sequence ?? 0,
                                      KeywordAlias_Id = a.KeywordAlias_Id,
-                                     Value = a.Value
+                                     Value = a.Value,
+                                     NoOfHits = a.NoOfHits ?? 0,
+                                     NewHits = 0
                                  };
 
 

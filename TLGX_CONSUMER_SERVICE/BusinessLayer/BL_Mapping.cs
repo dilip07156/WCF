@@ -581,7 +581,7 @@ namespace BusinessLayer
         }
         #endregion
         #region velocity Dashboard
-        public List<DataContracts.Mapping.DC_VelocityDashboard> GetVelocityDashboard(string SupplierID)
+        public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(string SupplierID)
         {
             Guid gSupplier_Id;
 

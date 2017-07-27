@@ -4992,38 +4992,46 @@ namespace DataLayer
 
         #endregion
         #region velocity Dashboard
-        public List<DataContracts.Mapping.DC_VelocityDashboard> GetVelocityDashboard(Guid SupplierID)
+        public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(Guid SupplierID)
         {
-            List<DataContracts.Mapping.DC_VelocityDashboard> _objList = new List<DC_VelocityDashboard>();
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var searchcity = (from s in context.vwUserwisemappedStats
-                                      where s.supplier_id == SupplierID
-                                      select s).ToList();
-                    foreach (var item in searchcity)
+                    List<vwUserwisemappedStat> search;
+                    search = (from s in context.vwUserwisemappedStats
+                              where s.supplier_id == SupplierID && s.SupplierName != null
+                              select s ).ToList();
+                    List<DataContracts.Mapping.DC_VelocityMappingStats> returnObj = new List<DataContracts.Mapping.DC_VelocityMappingStats>();
+                    DataContracts.Mapping.DC_VelocityMappingStats newmapstats = new DataContracts.Mapping.DC_VelocityMappingStats();
+                    newmapstats.SupplierId = SupplierID;
+                    newmapstats.SupplierName = (from s in context.vwUserwisemappedStats where s.supplier_id == SupplierID select                                                s.SupplierName).FirstOrDefault().ToString();
+                    List<DataContracts.Mapping.DC_VelocityMappingStatsFor> newmapstatsforList = new List<DataContracts.Mapping.DC_VelocityMappingStatsFor>();
+
+                    var MapForList = (from s in search select s.MappinFor).ToList().Distinct();
+
+                    foreach (var mapfor in MapForList)
                     {
-                        DC_VelocityDashboard objCi = new DC_VelocityDashboard();
-                        objCi.SupplierId = item.supplier_id.Value;
-                        objCi.SupplierName = item.SupplierName;
-                        objCi.UserName = item.Username;
-                        objCi.Status = item.Status;
-                        objCi.MappinFor = item.MappinFor;
-                        objCi.Totalcount = item.totalcount.Value;
+                        DataContracts.Mapping.DC_VelocityMappingStatsFor newmapstatsfor = new DataContracts.Mapping.DC_VelocityMappingStatsFor();
 
-                        _objList.Add(objCi);
-
+                        newmapstatsfor.MappingFor = mapfor;
+                        newmapstatsfor.MappingData = (from s in search
+                                                      where s.MappinFor == mapfor
+                                                      orderby s.MappinFor
+                                                      select new DataContracts.Mapping.DC_VelocityMappingdata { Username = s.Username, Totalcount = (s.totalcount ?? 0) }).ToList();
+                        newmapstatsforList.Add(newmapstatsfor);
                     }
+
+                    newmapstats.MappingStatsFor = newmapstatsforList;
+                    returnObj.Add(newmapstats);
+                    return returnObj;
                 }
 
             }
             catch (Exception ex)
             {
-
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching  Velocity mapping statistics", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
-            return _objList;
-
         }
         #endregion
     }
