@@ -1817,6 +1817,7 @@ namespace DataLayer
                         }
                     }
                     context.SaveChanges();
+                    context.USP_UpdateMapID("roomtype");
                 }
                 return true;
             }
