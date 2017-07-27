@@ -103,6 +103,8 @@ namespace DataLayer
         public virtual DbSet<Accommodation_SupplierRoomTypeAttributes> Accommodation_SupplierRoomTypeAttributes { get; set; }
         public virtual DbSet<Accommodation_SupplierRoomTypeMapping> Accommodation_SupplierRoomTypeMapping { get; set; }
         public virtual DbSet<vwUserwisemappedStat> vwUserwisemappedStats { get; set; }
+        public virtual DbSet<SupplierImportFile_Progress> SupplierImportFile_Progress { get; set; }
+        public virtual DbSet<SupplierImportFile_VerboseLog> SupplierImportFile_VerboseLog { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

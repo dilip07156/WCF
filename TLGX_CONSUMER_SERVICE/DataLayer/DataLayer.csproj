@@ -341,6 +341,12 @@
     <Compile Include="SupplierImportFile_ErrorLog.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="SupplierImportFile_Progress.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SupplierImportFile_VerboseLog.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Supplier_Market.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>

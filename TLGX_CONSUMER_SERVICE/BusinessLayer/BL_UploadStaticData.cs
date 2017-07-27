@@ -137,7 +137,7 @@ namespace BusinessLayer
         #endregion
 
 
-        #region "Error Log"
+        #region "Logging"
         public DataContracts.DC_Message AddStaticDataUploadErrorLog(DataContracts.UploadStaticData.DC_SupplierImportFile_ErrorLog obj)
         {
             using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
@@ -151,6 +151,35 @@ namespace BusinessLayer
             using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
             {
                 return objBL.GetStaticDataUploadErrorLog(obj);
+            }
+        }
+
+        public DataContracts.DC_Message AddStaticDataUploadProcessLog(DataContracts.UploadStaticData.DC_SupplierImportFile_Progress obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.AddStaticDataUploadProcessLog(obj);
+            }
+        }
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_Progress> GetStaticDataUploadProcessLog(DataContracts.UploadStaticData.DC_SupplierImportFile_Progress_RQ obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.GetStaticDataUploadProcessLog(obj);
+            }
+        }
+        public DataContracts.DC_Message AddStaticDataUploadVerboseLog(DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.AddStaticDataUploadVerboseLog(obj);
+            }
+        }
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog> GetStaticDataUploadVerboseLog(DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog_RQ obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.GetStaticDataUploadVerboseLog(obj);
             }
         }
         #endregion

@@ -3985,6 +3985,7 @@ namespace DataLayer
                                      Attribute = a.Attribute ?? false,
                                      Sequence = a.Sequence ?? 0,
                                      Icon = a.Icon,
+                                     EntityFor = a.EntityFor,
                                      Alias = (from al in searchAlias
                                               where al.Keyword_Id == a.Keyword_Id
                                               orderby (al.Sequence ?? 0), al.Value
@@ -4075,7 +4076,7 @@ namespace DataLayer
                         var KeywordAliasItem = context.m_keyword_alias.Find(item.KeywordAlias_Id);
                         if (KeywordAliasItem != null)
                         {
-                            KeywordAliasItem.NoOfHits = KeywordAliasItem.NoOfHits + item.NewHits;
+                            KeywordAliasItem.NoOfHits = (KeywordAliasItem.NoOfHits ?? 0) + item.NewHits;
                         }
                     }
                     context.SaveChanges();

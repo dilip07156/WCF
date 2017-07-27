@@ -99,6 +99,8 @@
     <Compile Include="UploadStaticData\DC_SupplierImportFileDetails.cs" />
     <Compile Include="UploadStaticData\DC_SupplierImportFileDetails_TestProcess.cs" />
     <Compile Include="UploadStaticData\DC_SupplierImportFile_ErrorLog.cs" />
+    <Compile Include="UploadStaticData\DC_SupplierImportFile_Progress.cs" />
+    <Compile Include="UploadStaticData\DC_SupplierImportFile_VerboseLog.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

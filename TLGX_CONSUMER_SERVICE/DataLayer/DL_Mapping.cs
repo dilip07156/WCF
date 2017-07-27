@@ -1613,7 +1613,7 @@ namespace DataLayer
         {
             try
             {
-                //Get All Keywords
+                #region Get All Keywords & Room Names
                 List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
                 using (DL_Masters objDL = new DL_Masters())
                 {
@@ -1628,9 +1628,6 @@ namespace DataLayer
                 {
                     if (Acco_RoomTypeMap_Ids != null)
                     {
-
-
-
                         var MapIdsFilter = (from a in Acco_RoomTypeMap_Ids select a.Acco_RoomTypeMap_Id).ToList();
 
                         asrtmd = context.Accommodation_SupplierRoomTypeMapping
@@ -1648,7 +1645,7 @@ namespace DataLayer
                         }
                         else
                         {
-                            Edit_User = "TTFU SYSTEM";
+                            Edit_User = "TTFU BY SYSTEM";
                         }
 
                     }
@@ -1662,26 +1659,29 @@ namespace DataLayer
                                       SupplierRoomName = a.SupplierRoomName
                                   }).ToList();
 
-                        Edit_User = "TTFU SYSTEM";
+                        Edit_User = "TTFU BY SYSTEM";
                     }
                 }
+
+
+                #endregion
 
                 List<DC_SupplierRoomName_AttributeList> AttributeList;
                 foreach (DC_SupplierRoomName_Details srn in asrtmd)
                 {
+                    
                     AttributeList = new List<DC_SupplierRoomName_AttributeList>();
 
                     string BaseRoomName = srn.SupplierRoomName;
 
+                    #region PRE TTFU
+
+                    //HTML Decode
+                    BaseRoomName = System.Web.HttpUtility.HtmlDecode(BaseRoomName);
+
                     //To Upper
                     BaseRoomName = BaseRoomName.ToUpper();
-
-                    //Replace Multiple whitespaces into One Whitespace
-                    BaseRoomName = System.Text.RegularExpressions.Regex.Replace(BaseRoomName, @"\s{2,}", " ");
-
-                    //trim both end
-                    BaseRoomName = BaseRoomName.Trim();
-
+                    
                     //Replace the braces
                     BaseRoomName = BaseRoomName.Replace('{', '(');
                     BaseRoomName = BaseRoomName.Replace('}', ')');
@@ -1691,18 +1691,49 @@ namespace DataLayer
                     BaseRoomName = BaseRoomName.Replace("( ", "(");
                     BaseRoomName = BaseRoomName.Replace(" )", ")");
 
+                    //Necessary Replace
+                    //BaseRoomName = BaseRoomName.Replace("/", " OR ");
+
+                    //Replace Multiple whitespaces into One Whitespace
+                    BaseRoomName = System.Text.RegularExpressions.Regex.Replace(BaseRoomName, @"\s{2,}", " ");
+
+                    //trim both end
+                    BaseRoomName = BaseRoomName.Trim();
+
                     //Take only alpha characters
-                    string RoomName_AlphabetsWithSpaceOnly = string.Empty;
+                    string RoomName_ValidChars = string.Empty;
                     foreach (char c in BaseRoomName)
                     {
-                        if ((Convert.ToInt16(c) >= 65 && Convert.ToInt16(c) <= 90) || (Convert.ToInt16(c) >= 97 && Convert.ToInt16(c) <= 122) || Convert.ToInt16(c) == 32)
+                        if ((Convert.ToInt16(c) >= 32 && Convert.ToInt16(c) <= 196))// || (Convert.ToInt16(c) >= 97 && Convert.ToInt16(c) <= 122) || Convert.ToInt16(c) == 32)
                         {
-                            RoomName_AlphabetsWithSpaceOnly = RoomName_AlphabetsWithSpaceOnly + c;
+                            RoomName_ValidChars = RoomName_ValidChars + c;
+                        }
+                    }
+
+                    BaseRoomName = RoomName_ValidChars;
+
+                    //Check for Spaced Keyword and Replace
+                    List<DataContracts.Masters.DC_Keyword> SpacedKeywords = Keywords.Where(w => w.Attribute == false && w.Alias.Any(a => a.Value.Contains(' '))).ToList();
+                    foreach (DataContracts.Masters.DC_Keyword spacedkey in SpacedKeywords)
+                    {
+                        var spacedAliases = spacedkey.Alias.Where(w => w.Value.Contains(' ')).OrderBy(o => o.Sequence).OrderByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
+                        foreach (var alias in spacedAliases)
+                        {
+                            if (BaseRoomName.Contains(alias.Value.ToUpper()))
+                            {
+                                BaseRoomName = BaseRoomName.Replace(alias.Value.ToUpper(), spacedkey.Keyword);
+                                BaseRoomName = BaseRoomName.Replace("()", string.Empty);
+                                BaseRoomName = BaseRoomName.Trim();
+
+                                alias.NewHits += 1;
+
+                                break;
+                            }
                         }
                     }
 
                     //Split words and replace keywords
-                    string[] roomWords = RoomName_AlphabetsWithSpaceOnly.Split(' ');
+                    string[] roomWords = BaseRoomName.Split(' ');
 
                     foreach (string word in roomWords)
                     {
@@ -1711,6 +1742,8 @@ namespace DataLayer
                         if (keywordSearch != null)
                         {
                             BaseRoomName = BaseRoomName.Replace(word, keywordSearch.Keyword);
+                            var foundAlias = keywordSearch.Alias.Where(w => w.Value.ToUpper() == word.ToUpper()).FirstOrDefault();
+                            foundAlias.NoOfHits += 1;
                         }
 
                         keywordSearch = null;
@@ -1720,11 +1753,9 @@ namespace DataLayer
                     srn.TX_SupplierRoomName = BaseRoomName;
 
                     //Attribute Extraction
-
-
                     foreach (var Attribute in Attributes)
                     {
-                        var aliases = Attribute.Alias.OrderByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
+                        var aliases = Attribute.Alias.OrderBy(o => o.Sequence).OrderByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
                         foreach (var alias in aliases)
                         {
                             if (BaseRoomName.Contains(alias.Value.ToUpper()))
@@ -1747,6 +1778,33 @@ namespace DataLayer
                         }
                     }
 
+                    #endregion
+
+                    #region POST TTFU
+                    //Replace UnNecessary chars
+                    BaseRoomName = BaseRoomName.Replace('<', ' ');
+                    BaseRoomName = BaseRoomName.Replace('>', ' ');
+                    BaseRoomName = BaseRoomName.Replace('?', ' ');
+                    BaseRoomName = BaseRoomName.Replace('#', ' ');
+                    BaseRoomName = BaseRoomName.Replace('!', ' ');
+                    BaseRoomName = BaseRoomName.Replace('@', ' ');
+                    BaseRoomName = BaseRoomName.Replace("&", " AND ");
+                    //BaseRoomName = BaseRoomName.Replace("+", " INCLUDING ");
+                    BaseRoomName = BaseRoomName.Replace('(', ' ');
+                    BaseRoomName = BaseRoomName.Replace(')', ' ');
+                    BaseRoomName = BaseRoomName.Replace('-', ' ');
+                    BaseRoomName = BaseRoomName.Replace(',', ' ');
+                    BaseRoomName = BaseRoomName.Replace('.', ' ');
+                    BaseRoomName = BaseRoomName.Replace('"', ' ');
+
+                    //Replace Multiple whitespaces into One Whitespace
+                    BaseRoomName = System.Text.RegularExpressions.Regex.Replace(BaseRoomName, @"\s{2,}", " ");
+
+                    //trim both end
+                    BaseRoomName = BaseRoomName.Trim();
+                    #endregion
+
+                    #region UpdateToDB
                     //Value assignment
                     srn.TX_SupplierRoomName_Stripped = BaseRoomName;
                     srn.TX_SupplierRoomName_Stripped_ReOrdered = BaseRoomName;
@@ -1781,9 +1839,12 @@ namespace DataLayer
                         context.SaveChanges();
 
                     }
+
+                    #endregion
                 }
 
-                //Update No Of Hits
+
+                #region Update No Of Hits
                 var updatableAliases = (from k in Keywords
                                         from ka in k.Alias
                                         where ka.NewHits != 0
@@ -1795,6 +1856,8 @@ namespace DataLayer
                         objDL.DataHandler_Keyword_Update_NoOfHits(updatableAliases);
                     }
                 }
+
+                #endregion
 
                 return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword Replace and Attribute Extraction has been done." };
 
