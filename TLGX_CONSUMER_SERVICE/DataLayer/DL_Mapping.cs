@@ -1832,6 +1832,24 @@ namespace DataLayer
             }
         }
 
+        public List<DC_SupplierRoomType_TTFU_RQ> GetRoomTypeMapping_For_TTFU(DataContracts.Masters.DC_Supplier obj)
+        {
+                string CurSupplierName = obj.Name;
+                Guid CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var res = (from a in context.Accommodation_SupplierRoomTypeMapping
+                               join s in context.stg_SupplierHotelRoomMapping on a.stg_SupplierHotelRoomMapping_Id equals s.stg_SupplierHotelRoomMapping_Id
+                               select new DC_SupplierRoomType_TTFU_RQ
+                               {
+                                   Acco_RoomTypeMap_Id = Guid.Parse(a.stg_SupplierHotelRoomMapping_Id.ToString()),
+                                   Edit_User = a.Edit_User
+                               }).ToList();
+                    return res;
+                }
+        }
+
         public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_TTFUALL(List<DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
         {
             try

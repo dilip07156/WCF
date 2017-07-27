@@ -180,7 +180,15 @@ namespace BusinessLayer
                 return objBL.RoomTypeMappingMatch(obj);
             }
         }
-        
+
+        public List<DC_SupplierRoomType_TTFU_RQ> GetRoomTypeMapping_For_TTFU(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetRoomTypeMapping_For_TTFU(obj);
+            }
+        }
+
         #endregion
 
         #region Country Mapping

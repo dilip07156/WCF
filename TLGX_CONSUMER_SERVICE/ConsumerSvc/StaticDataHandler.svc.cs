@@ -204,6 +204,14 @@ namespace ConsumerSvc
             }
         }
 
+        public List<DC_SupplierRoomType_TTFU_RQ> GetRoomTypeMapping_For_TTFU(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetRoomTypeMapping_For_TTFU(obj);
+            }
+        }
+
         public bool CityMappingMatch(DC_Supplier sup)
         {
             using (BL_Mapping objBL = new BL_Mapping())

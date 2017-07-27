@@ -95,5 +95,6 @@ namespace DataContracts.Mapping
         [DataMember]
         public string IconClass { get; set; }
     }
+    
 
 }

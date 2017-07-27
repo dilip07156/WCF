@@ -166,6 +166,11 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "DataHandler/Mapping/RoomType/Match", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool RoomTypeMappingMatch(DataContracts.Masters.DC_Supplier sup);
 
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "DataHandler/Mapping/RoomType/GetForTTFU", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DataContracts.Mapping.DC_SupplierRoomType_TTFU_RQ> GetRoomTypeMapping_For_TTFU(DataContracts.Masters.DC_Supplier obj);
+
         #endregion
 
         #region Keyword Replace and Attribute Extraction
