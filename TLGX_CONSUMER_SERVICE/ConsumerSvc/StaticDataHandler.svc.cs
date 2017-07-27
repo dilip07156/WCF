@@ -188,6 +188,14 @@ namespace ConsumerSvc
             }
         }
 
+        public bool UpdateRoomTypeMappingStatus(DC_MappingMatch obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.UpdateRoomTypeMappingStatus(obj);
+            }
+        }
+
         public bool HotelMappingMatch(DC_Supplier sup)
         {
             using (BL_Mapping objBL = new BL_Mapping())

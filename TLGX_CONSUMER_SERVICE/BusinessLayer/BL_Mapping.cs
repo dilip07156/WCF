@@ -189,6 +189,14 @@ namespace BusinessLayer
             }
         }
 
+        public bool UpdateRoomTypeMappingStatus(DC_MappingMatch obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.UpdateRoomTypeMappingStatus(obj);
+            }
+        }
+
         #endregion
 
         #region Country Mapping
