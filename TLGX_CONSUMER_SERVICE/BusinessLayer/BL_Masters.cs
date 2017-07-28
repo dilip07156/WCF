@@ -267,6 +267,14 @@ namespace BusinessLayer
                 return obj.GetAllAttributeAndValuesByFOR(_obj);
             }
         }
+        public IList<DataContracts.Masters.DC_MasterAttribute> GetAllAttributeAndValuesByParentAttributeValue(DataContracts.Masters.DC_MasterAttribute _obj)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetAllAttributeAndValuesByParentAttributeValue(_obj);
+            }
+        }
+        
         public IList<DataContracts.Masters.DC_MasterAttribute> GetAllAttributeAndValues(DataContracts.Masters.DC_MasterAttribute _obj)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
