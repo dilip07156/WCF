@@ -14,6 +14,9 @@ namespace DataContracts.Mapping
         public Guid? Supplier_Id { get; set; }
 
         [DataMember]
+        public string SupplierName { get; set; }
+
+        [DataMember]
         public Guid? Country { get; set; }
 
         [DataMember]
@@ -33,6 +36,9 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public string ProductName { get; set; }
+
+        [DataMember]
+        public string CalledFromTLGX { get; set; }
 
     }
 }

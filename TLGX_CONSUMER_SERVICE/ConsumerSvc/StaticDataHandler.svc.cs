@@ -188,11 +188,35 @@ namespace ConsumerSvc
             }
         }
 
+        public bool UpdateRoomTypeMappingStatus(DC_MappingMatch obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.UpdateRoomTypeMappingStatus(obj);
+            }
+        }
+
         public bool HotelMappingMatch(DC_Supplier sup)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
                 return objBL.HotelMappingMatch(sup);
+            }
+        }
+
+        public bool RoomTypeMappingMatch(DC_Supplier sup)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.RoomTypeMappingMatch(sup);
+            }
+        }
+
+        public List<DC_SupplierRoomType_TTFU_RQ> GetRoomTypeMapping_For_TTFU(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetRoomTypeMapping_For_TTFU(obj);
             }
         }
 

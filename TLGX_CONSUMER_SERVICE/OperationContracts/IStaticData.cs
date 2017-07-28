@@ -82,7 +82,7 @@ namespace OperationContracts
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "GET", UriTemplate = "Mapping/Statistics/GetVelocityDashboard/{SupplierID}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        IList<DataContracts.Mapping.DC_VelocityDashboard> GetVelocityDashboard(string SupplierID);
+        IList<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(string SupplierID);
         #endregion
     }
 }
