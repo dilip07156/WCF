@@ -1558,7 +1558,7 @@ namespace DataLayer
 
                 clsSTGHotel.RemoveAll(p => clsSTGHotelInsert.Any(p2 => (p2.stg_SupplierHotelRoomMapping_Id == p.stg_SupplierHotelRoomMapping_Id)));
 
-                clsMappingHotel.RemoveAll(p => p.SupplierRoomName == p.SupplierRoomName);
+                clsMappingHotel.RemoveAll(p => p.SupplierRoomName == p.OldSupplierRoomName && p.stg_SupplierHotelRoomMapping_Id == p.Oldstg_SupplierHotelRoomMapping_Id);
 
                 clsMappingHotel.InsertRange(clsMappingHotel.Count, clsSTGHotelInsert.Select
                     (g => new DC_Accommodation_SupplierRoomTypeMap_SearchRS
@@ -1670,7 +1670,9 @@ namespace DataLayer
                                              Supplier_Id = a.Supplier_Id,
                                              Tx_ReorderedName = a.Tx_ReorderedName,
                                              TX_RoomName = a.TX_RoomName,
-                                             Tx_StrippedName = a.Tx_StrippedName
+                                             Tx_StrippedName = a.Tx_StrippedName,
+                                             stg_SupplierHotelRoomMapping_Id =a.stg_SupplierHotelRoomMapping_Id,
+                                             Oldstg_SupplierHotelRoomMapping_Id =a.stg_SupplierHotelRoomMapping_Id
                                          };
                     var result = roomTypeSearch.ToList();
 
