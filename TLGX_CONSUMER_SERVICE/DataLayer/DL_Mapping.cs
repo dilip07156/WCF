@@ -1671,7 +1671,7 @@ namespace DataLayer
                                              Tx_ReorderedName = a.Tx_ReorderedName,
                                              TX_RoomName = a.TX_RoomName,
                                              Tx_StrippedName = a.Tx_StrippedName,
-                                             RoomDescription = a.RoomDescription
+                                             RoomDescription = a.RoomDescription,
                                              stg_SupplierHotelRoomMapping_Id = a.stg_SupplierHotelRoomMapping_Id,
                                              Oldstg_SupplierHotelRoomMapping_Id = a.stg_SupplierHotelRoomMapping_Id
                                          };
