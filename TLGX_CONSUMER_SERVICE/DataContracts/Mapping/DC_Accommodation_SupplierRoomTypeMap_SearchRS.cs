@@ -79,6 +79,10 @@ namespace DataContracts.Mapping
         public Nullable<System.Guid> stg_SupplierHotelRoomMapping_Id { get; set; }
 
         [DataMember]
+        public string RoomDescription { get; set; }
+
+
+        [DataMember]
         public Nullable<System.Guid> Oldstg_SupplierHotelRoomMapping_Id { get; set; }
     }
 

@@ -1671,8 +1671,9 @@ namespace DataLayer
                                              Tx_ReorderedName = a.Tx_ReorderedName,
                                              TX_RoomName = a.TX_RoomName,
                                              Tx_StrippedName = a.Tx_StrippedName,
-                                             stg_SupplierHotelRoomMapping_Id =a.stg_SupplierHotelRoomMapping_Id,
-                                             Oldstg_SupplierHotelRoomMapping_Id =a.stg_SupplierHotelRoomMapping_Id
+                                             RoomDescription = a.RoomDescription
+                                             stg_SupplierHotelRoomMapping_Id = a.stg_SupplierHotelRoomMapping_Id,
+                                             Oldstg_SupplierHotelRoomMapping_Id = a.stg_SupplierHotelRoomMapping_Id
                                          };
                     var result = roomTypeSearch.ToList();
 
@@ -1740,7 +1741,8 @@ namespace DataLayer
                                              TotalRecords = 0,
                                              Tx_ReorderedName = asrtm.Tx_ReorderedName,
                                              TX_RoomName = asrtm.TX_RoomName,
-                                             Tx_StrippedName = asrtm.Tx_StrippedName
+                                             Tx_StrippedName = asrtm.Tx_StrippedName,
+                                             RoomDescription = asrtm.RoomDescription
                                          };
 
                     int total;
@@ -1783,7 +1785,8 @@ namespace DataLayer
                                                   TotalRecords = total,
                                                   Tx_ReorderedName = a.Tx_ReorderedName,
                                                   TX_RoomName = a.TX_RoomName,
-                                                  Tx_StrippedName = a.Tx_StrippedName
+                                                  Tx_StrippedName = a.Tx_StrippedName,
+                                                  RoomDescription = a.RoomDescription
                                               }).Skip(skip).Take(obj.PageSize);
 
                     var result = roomTypeSearchList.ToList();

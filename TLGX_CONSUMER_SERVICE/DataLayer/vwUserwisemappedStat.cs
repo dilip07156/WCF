@@ -21,5 +21,7 @@ namespace DataLayer
         public string Status { get; set; }
         public string MappinFor { get; set; }
         public Nullable<int> totalcount { get; set; }
+        public int Sequence { get; set; }
+        public Nullable<System.DateTime> EditDate { get; set; }
     }
 }
