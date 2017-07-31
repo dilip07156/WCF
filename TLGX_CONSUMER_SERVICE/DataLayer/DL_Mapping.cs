@@ -1956,16 +1956,16 @@ namespace DataLayer
                             search.MappingStatus = obj.MappingStatus;
                             search.Edit_Date = DateTime.Now;
                             search.Edit_User = "TLGX";
-                            search.stg_SupplierHotelRoomMapping_Id = null;
+                            search.stg_SupplierHotelRoomMapping_Id = obj.stg_SupplierHotelRoomMapping_Id;
                             context.SaveChanges();
                         }
                     }
                     context.SaveChanges();
-                    context.USP_UpdateMapID("roomtype");
+                    //context.USP_UpdateMapID("roomtype");
                 }
                 return true;
             }
-            catch
+            catch(Exception e)
             {
                 //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
                 //{
