@@ -1987,7 +1987,7 @@ namespace DataLayer
                            join s in context.stg_SupplierHotelRoomMapping on a.stg_SupplierHotelRoomMapping_Id equals s.stg_SupplierHotelRoomMapping_Id
                            select new DC_SupplierRoomType_TTFU_RQ
                            {
-                               Acco_RoomTypeMap_Id = Guid.Parse(a.stg_SupplierHotelRoomMapping_Id.ToString()),
+                               Acco_RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
                                Edit_User = a.Edit_User
                            }).ToList();
                 return res;
