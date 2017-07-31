@@ -1538,6 +1538,11 @@ namespace DataLayer
                     ) ?? c.SupplierRoomName;
                     //c.Edit_Date = DateTime.Now;
                     //c.Edit_User = "TLGX_DataHandler";
+                    c.stg_SupplierHotelRoomMapping_Id = (clsSTGHotel
+                    .Where(s => s.SupplierProductId == c.SupplierProductId && s.SupplierRoomTypeCode == c.SupplierRoomTypeCode && s.SupplierRoomId == c.SupplierRoomId)
+                    .Select(s1 => s1.stg_SupplierHotelRoomMapping_Id)
+                    .FirstOrDefault()
+                    ); //?? c.stg_SupplierHotelRoomMapping_Id;
                     return c;
                 }).ToList();
 
