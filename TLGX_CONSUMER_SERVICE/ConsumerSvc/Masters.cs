@@ -334,6 +334,14 @@ namespace ConsumerSvc
                 return obj.GetAllAttributeAndValuesByFOR(_obj);
             }
         }
+        public IList<DataContracts.Masters.DC_MasterAttribute> GetAllAttributeAndValuesByParentAttributeValue(DataContracts.Masters.DC_MasterAttribute _obj)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetAllAttributeAndValuesByParentAttributeValue(_obj);
+            }
+        }
+        
         public IList<DataContracts.Masters.DC_MasterAttribute> GetAllAttributeAndValues(DataContracts.Masters.DC_MasterAttribute _obj)
         {
             using (BusinessLayer.BL_Masters obj = new BL_Masters())
