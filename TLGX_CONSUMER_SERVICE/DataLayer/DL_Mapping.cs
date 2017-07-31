@@ -1514,6 +1514,7 @@ namespace DataLayer
 
                 DataContracts.STG.DC_stg_SupplierHotelRoomMapping_RQ RQ = new DataContracts.STG.DC_stg_SupplierHotelRoomMapping_RQ();
                 RQ.SupplierName = CurSupplierName;
+                RQ.Supplier_Id = CurSupplier_Id;
                 RQ.PageNo = 0;
                 RQ.PageSize = int.MaxValue;
                 clsSTGHotel = staticdata.GetSTGRoomTypeData(RQ);
@@ -1537,6 +1538,11 @@ namespace DataLayer
                     ) ?? c.SupplierRoomName;
                     //c.Edit_Date = DateTime.Now;
                     //c.Edit_User = "TLGX_DataHandler";
+                    c.stg_SupplierHotelRoomMapping_Id = (clsSTGHotel
+                    .Where(s => s.SupplierProductId == c.SupplierProductId && s.SupplierRoomTypeCode == c.SupplierRoomTypeCode && s.SupplierRoomId == c.SupplierRoomId)
+                    .Select(s1 => s1.stg_SupplierHotelRoomMapping_Id)
+                    .FirstOrDefault()
+                    ); //?? c.stg_SupplierHotelRoomMapping_Id;
                     return c;
                 }).ToList();
 
@@ -1941,6 +1947,7 @@ namespace DataLayer
                                 TX_RoomName = null,
                                 Tx_StrippedName = null
                             };
+                            context.Accommodation_SupplierRoomTypeMapping.Add(objNew);
                         }
                         else
                         {
