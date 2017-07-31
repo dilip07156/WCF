@@ -1514,6 +1514,7 @@ namespace DataLayer
 
                 DataContracts.STG.DC_stg_SupplierHotelRoomMapping_RQ RQ = new DataContracts.STG.DC_stg_SupplierHotelRoomMapping_RQ();
                 RQ.SupplierName = CurSupplierName;
+                RQ.Supplier_Id = CurSupplier_Id;
                 RQ.PageNo = 0;
                 RQ.PageSize = int.MaxValue;
                 clsSTGHotel = staticdata.GetSTGRoomTypeData(RQ);
@@ -1937,6 +1938,7 @@ namespace DataLayer
                                 TX_RoomName = null,
                                 Tx_StrippedName = null
                             };
+                            context.Accommodation_SupplierRoomTypeMapping.Add(objNew);
                         }
                         else
                         {
