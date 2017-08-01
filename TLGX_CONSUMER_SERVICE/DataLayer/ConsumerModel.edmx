@@ -1498,11 +1498,10 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
         <EntityType Name="vwUserwisemappedStats">
           <Key>
             <PropertyRef Name="Sequence" />
-            
-            
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="MappinFor" />
           </Key>
-          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ID" Type="uniqueidentifier" />
           <Property Name="supplier_id" Type="uniqueidentifier" />
           <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
           <Property Name="Username" Type="nvarchar" MaxLength="255" />
@@ -1783,7 +1782,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Places" EntityType="ConsumerModel.Place" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
           <EntitySet Name="Accommodation_SupplierRoomTypeMapping" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" />
-          <EntitySet Name="vwUserwisemappedStats" EntityType="ConsumerModel.vwUserwisemappedStat" />
           <EntitySet Name="SupplierImportFile_Progress" EntityType="ConsumerModel.SupplierImportFile_Progress" />
           <EntitySet Name="SupplierImportFile_VerboseLog" EntityType="ConsumerModel.SupplierImportFile_VerboseLog" />
           <EntitySet Name="vwUserwisemappedStats" EntityType="ConsumerModel.vwUserwisemappedStat" />
@@ -3281,18 +3279,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="stg_SupplierHotelRoomMapping_Id" Type="Guid" />
           <Property Name="RoomDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="vwUserwisemappedStat">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="supplier_id" Type="Guid" />
-          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" Nullable="false" MaxLength="13" FixedLength="false" Unicode="false" />
-          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
-          <Property Name="totalcount" Type="Int32" />
-        </EntityType>
         <EntityType Name="SupplierImportFile_Progress">
           <Key>
             <PropertyRef Name="SupplierImportFileProgress_Id" />
@@ -3318,17 +3304,19 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
         </EntityType>
         <EntityType Name="vwUserwisemappedStat">
           <Key>
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="Sequence" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="MappinFor" />
           </Key>
-          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ID" Type="Guid" />
           <Property Name="supplier_id" Type="Guid" />
           <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Sequence" Type="Int32" Nullable="false" />
-          <Property Name="Status" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="totalcount" Type="Int32" />
-          <Property Name="EditDate" Type="DateTime" Precision="3" />
+          <Property Name="EditDate" Type="DateTime" Precision="0" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -4868,19 +4856,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
                 <ScalarProperty Name="Accommodation_Id" ColumnName="Accommodation_Id" />
                 <ScalarProperty Name="Accommodation_SupplierRoomTypeMapping_Id" ColumnName="Accommodation_SupplierRoomTypeMapping_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="vwUserwisemappedStats">
-            <EntityTypeMapping TypeName="ConsumerModel.vwUserwisemappedStat">
-              <MappingFragment StoreEntitySet="vwUserwisemappedStats">
-                <ScalarProperty Name="totalcount" ColumnName="totalcount" />
-                <ScalarProperty Name="MappinFor" ColumnName="MappinFor" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
-                <ScalarProperty Name="supplier_id" ColumnName="supplier_id" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

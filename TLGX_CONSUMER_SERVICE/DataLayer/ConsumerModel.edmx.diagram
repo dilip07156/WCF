@@ -83,7 +83,7 @@
         <EntityTypeShape EntityType="ConsumerModel.GoogleGeoCode" Width="1.5" PointX="0.75" PointY="0.75" />
       </Diagram>
       <Diagram DiagramId="dd7305d7f2f340ddb587fd72c40ae548" Name="Mapping Static Data" >
-        <EntityTypeShape EntityType="ConsumerModel.vwMappingStat" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.vwMappingStat" Width="1.5" PointX="1.5" PointY="1.125" />
         <EntityTypeShape EntityType="ConsumerModel.vwUserwisemappedStat" Width="1.5" PointX="3.375" PointY="0.75" />
       </Diagram>
       <Diagram DiagramId="33089e75a83142f0a8f1044a69f7561b" Name="Schedules" >
