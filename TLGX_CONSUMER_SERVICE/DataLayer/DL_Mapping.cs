@@ -1669,7 +1669,7 @@ namespace DataLayer
                 List<DC_SupplierRoomName_AttributeList> AttributeList;
                 foreach (DC_SupplierRoomName_Details srn in asrtmd)
                 {
-                    
+
                     AttributeList = new List<DC_SupplierRoomName_AttributeList>();
 
                     string BaseRoomName = srn.SupplierRoomName;
@@ -1681,7 +1681,7 @@ namespace DataLayer
 
                     //To Upper
                     BaseRoomName = BaseRoomName.ToUpper();
-                    
+
                     //Replace the braces
                     BaseRoomName = BaseRoomName.Replace('{', '(');
                     BaseRoomName = BaseRoomName.Replace('}', ')');
@@ -3530,7 +3530,7 @@ namespace DataLayer
                             Country = g.Where(c => c.MappinFor == "Country").Sum(c => c.totalcount),
                             City = g.Where(c => c.MappinFor == "City").Sum(c => c.totalcount),
                             Product = g.Where(c => c.MappinFor == "Product").Sum(c => c.totalcount),
-                            hotelroom = g.Where(c => c.MappinFor == "HotelRum").Sum(c => c.totalcount),
+                            hotelroom = g.Where(c => c.MappinFor == "HotelRoom").Sum(c => c.totalcount),
                             activity = g.Where(c => c.MappinFor == "Activity").Sum(c => c.totalcount),
                             suppliername = g.Key.SupplierName,
                         }
@@ -4770,33 +4770,63 @@ namespace DataLayer
 
         #endregion
         #region velocity Dashboard
-        public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(Guid SupplierID)
+        public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(DataContracts.Mapping.DC_RollOFParams parm)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    List<vwUserwisemappedStat> search;
-                    search = (from s in context.vwUserwisemappedStats
-                              where s.supplier_id == SupplierID && s.SupplierName != null
-                              select s ).ToList();
+                    DateTime fd = Convert.ToDateTime(parm.Fromdate);
+                    DateTime td = Convert.ToDateTime(parm.ToDate);
+                    //List<vwUserwisemappedStat> search;
+                    var search = (from p in context.vwUserwisemappedStats
+                                  where p.supplier_id == parm.SupplierID && p.SupplierName != null && (p.EditDate >= fd && p.EditDate <= td)
+                                  group p by new { p.supplier_id, p.Username, p.MappinFor, p.Sequence, p.Status, p.SupplierName } into g
+                                  select new
+                                  {
+                                      supplierid = g.Key.supplier_id,
+                                      SupplierName = g.Key.SupplierName,
+                                      Username = g.Key.Username,
+                                      totalcount = (g.Sum(x => x.totalcount) ?? 0),
+                                      MappinFor = g.Key.MappinFor,
+                                      Sequence = g.Key.Sequence,
+                                      Status = g.Key.Status
+                                  }).ToList();
                     List<DataContracts.Mapping.DC_VelocityMappingStats> returnObj = new List<DataContracts.Mapping.DC_VelocityMappingStats>();
                     DataContracts.Mapping.DC_VelocityMappingStats newmapstats = new DataContracts.Mapping.DC_VelocityMappingStats();
-                    newmapstats.SupplierId = SupplierID;
-                    newmapstats.SupplierName = (from s in context.vwUserwisemappedStats where s.supplier_id == SupplierID select                                                s.SupplierName).FirstOrDefault().ToString();
+                    newmapstats.SupplierId = parm.SupplierID;
+                    var res_supplierName = (from s in context.vwUserwisemappedStats where s.supplier_id == parm.SupplierID select s).FirstOrDefault();
+                    if (res_supplierName != null)
+                        newmapstats.SupplierName = Convert.ToString(res_supplierName.SupplierName);
                     List<DataContracts.Mapping.DC_VelocityMappingStatsFor> newmapstatsforList = new List<DataContracts.Mapping.DC_VelocityMappingStatsFor>();
 
-                    var MapForList = (from s in search select s.MappinFor).ToList().Distinct();
+                    var MapForList = "City,Country,Product,Activity,HotelRoom".Split(','); //(from s in search select s.MappinFor).ToList().Distinct();
 
                     foreach (var mapfor in MapForList)
                     {
                         DataContracts.Mapping.DC_VelocityMappingStatsFor newmapstatsfor = new DataContracts.Mapping.DC_VelocityMappingStatsFor();
 
                         newmapstatsfor.MappingFor = mapfor;
+                        var unMappedDataCount = (context.vwMappingStats
+                                                    .Where(cat => (cat.supplier_id == parm.SupplierID) && (cat.Status == "UNMAPPED" || cat.Status == "REVIEW") && (cat.MappinFor == mapfor))
+                           .GroupBy(cat => new { cat.SupplierName, cat.supplier_id })
+                                                        .Select(group => new
+                                                        {
+                                                            totalcount = group.Sum(x => x.totalcount)
+                                                        })).FirstOrDefault();
+                        if(unMappedDataCount != null)
+                        {
+                            newmapstatsfor.Unmappeddata = unMappedDataCount.totalcount ?? 0;
+                        }
+                        else
+                        {
+                            newmapstatsfor.Unmappeddata = 0;
+                        }
+
                         newmapstatsfor.MappingData = (from s in search
                                                       where s.MappinFor == mapfor
-                                                      orderby s.MappinFor
-                                                      select new DataContracts.Mapping.DC_VelocityMappingdata { Username = s.Username, Totalcount = (s.totalcount ?? 0) }).ToList();
+                                                      orderby s.MappinFor,s.Sequence
+                                                      select new DataContracts.Mapping.DC_VelocityMappingdata { Username = s.Username, Sequence = s.Sequence, Totalcount = (s.totalcount) }).ToList();
                         newmapstatsforList.Add(newmapstatsfor);
                     }
 

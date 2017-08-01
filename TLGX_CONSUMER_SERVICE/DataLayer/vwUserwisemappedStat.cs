@@ -18,8 +18,10 @@ namespace DataLayer
         public Nullable<System.Guid> supplier_id { get; set; }
         public string SupplierName { get; set; }
         public string Username { get; set; }
+        public int Sequence { get; set; }
         public string Status { get; set; }
         public string MappinFor { get; set; }
         public Nullable<int> totalcount { get; set; }
+        public Nullable<System.DateTime> EditDate { get; set; }
     }
 }
