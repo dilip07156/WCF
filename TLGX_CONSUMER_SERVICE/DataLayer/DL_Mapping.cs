@@ -12,6 +12,8 @@ namespace DataLayer
 {
     public class DL_Mapping : IDisposable
     {
+        public DL_UploadStaticData USD = new DL_UploadStaticData();
+        DC_SupplierImportFile_Progress PLog = new DC_SupplierImportFile_Progress();
         public void Dispose()
         {
         }
@@ -156,7 +158,10 @@ namespace DataLayer
         public bool HotelMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             bool ret = true;
-
+            PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
+            PLog.SupplierImportFile_Id = obj.File_Id;
+            PLog.Step = "MAP";
+            PLog.Status = "MAPPING";
             if (obj != null)
             {
                 string CurSupplierName = obj.Name;
@@ -172,6 +177,8 @@ namespace DataLayer
                 RQ.PageNo = 0;
                 RQ.PageSize = int.MaxValue;
                 clsSTGHotel = staticdata.GetSTGHotelData(RQ);
+                PLog.PercentageValue = 15;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 DC_Mapping_ProductSupplier_Search_RQ RQM = new DC_Mapping_ProductSupplier_Search_RQ();
                 if (CurSupplier_Id != Guid.Empty)
@@ -180,6 +187,8 @@ namespace DataLayer
                 RQM.PageSize = int.MaxValue;
                 RQM.CalledFromTLGX = "TLGX";
                 clsMappingHotel = GetMappingHotelData(RQM);
+                PLog.PercentageValue = 26;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsMappingHotel = clsMappingHotel.Select(c =>
                 {
@@ -192,6 +201,8 @@ namespace DataLayer
                     c.Edit_User = "TLGX_DataHandler";
                     return c;
                 }).ToList();
+                PLog.PercentageValue = 37;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsSTGHotelInsert = clsSTGHotel.Where(p => !clsMappingHotel.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                  && (
@@ -201,10 +212,14 @@ namespace DataLayer
                     && (((p2.Country_Id ?? Guid.Empty) == (p.Country_Id ?? Guid.Empty)))
                     && (((p2.City_Id ?? Guid.Empty) == (p.City_Id ?? Guid.Empty)))
                 ))).ToList();
+                PLog.PercentageValue = 48;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsSTGHotel.RemoveAll(p => clsSTGHotelInsert.Any(p2 => (p2.stg_AccoMapping_Id == p.stg_AccoMapping_Id)));
 
                 clsMappingHotel.RemoveAll(p => p.ProductName == p.oldProductName);
+                PLog.PercentageValue = 53;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsMappingHotel.InsertRange(clsMappingHotel.Count, clsSTGHotelInsert.Select
                     (g => new DC_Accomodation_ProductMapping
@@ -251,12 +266,16 @@ namespace DataLayer
 
                     }));
 
+                PLog.PercentageValue = 58;
+                USD.AddStaticDataUploadProcessLog(PLog);
                 if (clsMappingHotel.Count > 0)
                 {
                     ret = UpdateAccomodationProductMapping(clsMappingHotel);
                 }
 
             }
+            PLog.PercentageValue = 100;
+            USD.AddStaticDataUploadProcessLog(PLog);
             return ret;
         }
 
@@ -1501,7 +1520,10 @@ namespace DataLayer
         public bool RoomTypeMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             bool ret = true;
-
+            PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
+            PLog.SupplierImportFile_Id = obj.File_Id;
+            PLog.Step = "MAP";
+            PLog.Status = "MAPPING";
             if (obj != null)
             {
                 string CurSupplierName = obj.Name;
@@ -1518,6 +1540,8 @@ namespace DataLayer
                 RQ.PageNo = 0;
                 RQ.PageSize = int.MaxValue;
                 clsSTGHotel = staticdata.GetSTGRoomTypeData(RQ);
+                PLog.PercentageValue = 15;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 DC_Accommodation_SupplierRoomTypeMap_SearchRQ RQM = new DC_Accommodation_SupplierRoomTypeMap_SearchRQ();
                 if (CurSupplier_Id != Guid.Empty)
@@ -1528,6 +1552,8 @@ namespace DataLayer
                 RQM.PageSize = int.MaxValue;
                 RQM.CalledFromTLGX = "TLGX";
                 clsMappingHotel = SupplierRoomTypeMapping_Search(RQM);
+                PLog.PercentageValue = 26;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsMappingHotel = clsMappingHotel.Select(c =>
                 {
@@ -1545,6 +1571,8 @@ namespace DataLayer
                     ); //?? c.stg_SupplierHotelRoomMapping_Id;
                     return c;
                 }).ToList();
+                PLog.PercentageValue = 37;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsSTGHotelInsert = clsSTGHotel.Where(p => !clsMappingHotel.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                  && (
@@ -1555,11 +1583,15 @@ namespace DataLayer
                     && (((p2.SupplierRoomName ?? string.Empty).ToString().Trim().ToUpper() == (p.RoomName ?? string.Empty).ToString().Trim().ToUpper()))
                     && (((p2.SupplierRoomCategoryId ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierRoomCategoryId ?? string.Empty).ToString().Trim().ToUpper()))
                 ))).ToList();
+                PLog.PercentageValue = 48;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsSTGHotel.RemoveAll(p => clsSTGHotelInsert.Any(p2 => (p2.stg_SupplierHotelRoomMapping_Id == p.stg_SupplierHotelRoomMapping_Id)));
 
                 clsMappingHotel.RemoveAll(p => p.SupplierRoomName == p.OldSupplierRoomName && (((p.stg_SupplierHotelRoomMapping_Id == Guid.Empty) ? p.Oldstg_SupplierHotelRoomMapping_Id : p.stg_SupplierHotelRoomMapping_Id) == p.Oldstg_SupplierHotelRoomMapping_Id));
 
+                PLog.PercentageValue = 53;
+                USD.AddStaticDataUploadProcessLog(PLog);
                 clsMappingHotel.InsertRange(clsMappingHotel.Count, clsSTGHotelInsert.Select
                     (g => new DC_Accommodation_SupplierRoomTypeMap_SearchRS
                     {
@@ -1592,6 +1624,8 @@ namespace DataLayer
                         Supplier_Id = g.Supplier_Id,
                         stg_SupplierHotelRoomMapping_Id = g.stg_SupplierHotelRoomMapping_Id
                     }));
+                PLog.PercentageValue = 58;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 if (clsMappingHotel.Count > 0)
                 {
@@ -1599,6 +1633,8 @@ namespace DataLayer
                 }
             }
 
+            PLog.PercentageValue = 100;
+            USD.AddStaticDataUploadProcessLog(PLog);
             return ret;
         }
 
@@ -1795,29 +1831,29 @@ namespace DataLayer
                     //{
                     if (string.IsNullOrWhiteSpace(obj.CalledFromTLGX))
                     {
-                        DL_Accomodation _dlAcco = new DL_Accomodation();
-                        foreach (var item in result)
+                    DL_Accomodation _dlAcco = new DL_Accomodation();
+                    foreach (var item in result)
+                    {
+                        if (string.IsNullOrWhiteSpace(item.Accommodation_RoomInfo_Name))
                         {
-                            if (string.IsNullOrWhiteSpace(item.Accommodation_RoomInfo_Name))
+                            if (!string.IsNullOrWhiteSpace(item.Tx_StrippedName))
                             {
-                                if (!string.IsNullOrWhiteSpace(item.Tx_StrippedName))
+                                Guid acco_id = item.Accommodation_Id.HasValue ? item.Accommodation_Id.Value : Guid.Empty;
+                                var resultRoomCategory = _dlAcco.GetAccomodationRoomInfo_RoomCategory(acco_id);
+                                if (resultRoomCategory != null && resultRoomCategory.Count > 0)
                                 {
-                                    Guid acco_id = item.Accommodation_Id.HasValue ? item.Accommodation_Id.Value : Guid.Empty;
-                                    var resultRoomCategory = _dlAcco.GetAccomodationRoomInfo_RoomCategory(acco_id);
-                                    if (resultRoomCategory != null && resultRoomCategory.Count > 0)
+                                    foreach (var itemroomcat in resultRoomCategory)
                                     {
-                                        foreach (var itemroomcat in resultRoomCategory)
+                                        if (itemroomcat.RoomCategory.ToLower() == item.Tx_StrippedName.ToLower())
                                         {
-                                            if (itemroomcat.RoomCategory.ToLower() == item.Tx_StrippedName.ToLower())
-                                            {
-                                                item.Accommodation_RoomInfo_Id = itemroomcat.Accommodation_RoomInfo_Id;
-                                                item.Accommodation_RoomInfo_Name = itemroomcat.RoomCategory;
-                                            }
+                                            item.Accommodation_RoomInfo_Id = itemroomcat.Accommodation_RoomInfo_Id;
+                                            item.Accommodation_RoomInfo_Name = itemroomcat.RoomCategory;
                                         }
                                     }
                                 }
                             }
                         }
+                    }
                     }
                     //}
 
@@ -1959,7 +1995,7 @@ namespace DataLayer
                             search.stg_SupplierHotelRoomMapping_Id = obj.stg_SupplierHotelRoomMapping_Id;
                             context.SaveChanges();
                         }
-                    }
+        }
                     context.SaveChanges();
                     //context.USP_UpdateMapID("roomtype");
                 }
@@ -2054,7 +2090,7 @@ namespace DataLayer
                 List<DC_SupplierRoomName_AttributeList> AttributeList;
                 foreach (DC_SupplierRoomName_Details srn in asrtmd)
                 {
-
+                    
                     AttributeList = new List<DC_SupplierRoomName_AttributeList>();
 
                     string BaseRoomName = srn.SupplierRoomName;
@@ -2066,7 +2102,7 @@ namespace DataLayer
 
                     //To Upper
                     BaseRoomName = BaseRoomName.ToUpper();
-
+                    
                     //Replace the braces
                     BaseRoomName = BaseRoomName.Replace('{', '(');
                     BaseRoomName = BaseRoomName.Replace('}', ')');
@@ -2913,7 +2949,10 @@ namespace DataLayer
         public bool CityMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             bool ret = false;
-
+            PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
+            PLog.SupplierImportFile_Id = obj.File_Id;
+            PLog.Step = "MAP";
+            PLog.Status = "MAPPING";
             if (obj != null)
             {
 
@@ -2930,6 +2969,8 @@ namespace DataLayer
                 RQ.PageNo = 0;
                 RQ.PageSize = int.MaxValue;
                 clsSTGCity = staticdata.GetSTGCityData(RQ);
+                PLog.PercentageValue = 15;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 DC_CityMapping_RQ RQCity = new DC_CityMapping_RQ();
                 if (CurSupplier_Id != Guid.Empty)
@@ -2939,6 +2980,8 @@ namespace DataLayer
                 RQCity.CalledFromTLGX = "TLGX";
                 //RQ.Status = "ALL";
                 clsMappingCity = GetCityMapping(RQCity);
+                PLog.PercentageValue = 26;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsMappingCity = clsMappingCity.Select(c =>
                 {
@@ -2951,6 +2994,8 @@ namespace DataLayer
                     c.Edit_User = "TLGX_DataHandler";
                     return c;
                 }).ToList();
+                PLog.PercentageValue = 37;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsSTGCityInsert = clsSTGCity.Where(p => !clsMappingCity.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                     && (
@@ -2960,6 +3005,8 @@ namespace DataLayer
                         && (p2.Country_Id == p.Country_Id)
                         && (((p2.CityName ?? string.Empty).ToString().Trim().ToUpper() == (p.CityName ?? string.Empty).ToString().Trim().ToUpper()))
                     ))).ToList();
+                PLog.PercentageValue = 48;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 #region "Commented Code"
                 //(p.CityCode != null && p.CityName != null && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper() && p2.CityCode == p.CityCode) 
@@ -2992,6 +3039,8 @@ namespace DataLayer
 
                 //clsMappingCity = clsMappingCity.Where(a => a.oldCityName != a.CityName).ToList();
                 clsMappingCity.RemoveAll(p => p.CityName == p.oldCityName);
+                PLog.PercentageValue = 53;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
 
                 clsMappingCity.InsertRange(clsMappingCity.Count, clsSTGCityInsert.Select
@@ -3019,6 +3068,8 @@ namespace DataLayer
 
                     }));
 
+                PLog.PercentageValue = 58;
+                USD.AddStaticDataUploadProcessLog(PLog);
                 if (clsMappingCity.Count > 0)
                 {
                     ret = UpdateCityMapping(clsMappingCity);
@@ -3026,6 +3077,8 @@ namespace DataLayer
                 else
                     ret = true;
             }
+            PLog.PercentageValue = 100;
+            USD.AddStaticDataUploadProcessLog(PLog);
 
             return ret;
         }
@@ -3915,7 +3968,7 @@ namespace DataLayer
                             Country = g.Where(c => c.MappinFor == "Country").Sum(c => c.totalcount),
                             City = g.Where(c => c.MappinFor == "City").Sum(c => c.totalcount),
                             Product = g.Where(c => c.MappinFor == "Product").Sum(c => c.totalcount),
-                            hotelroom = g.Where(c => c.MappinFor == "HotelRum").Sum(c => c.totalcount),
+                            hotelroom = g.Where(c => c.MappinFor == "HotelRoom").Sum(c => c.totalcount),
                             activity = g.Where(c => c.MappinFor == "Activity").Sum(c => c.totalcount),
                             suppliername = g.Key.SupplierName,
                         }
@@ -5155,33 +5208,63 @@ namespace DataLayer
 
         #endregion
         #region velocity Dashboard
-        public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(Guid SupplierID)
+        public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(DataContracts.Mapping.DC_RollOFParams parm)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    List<vwUserwisemappedStat> search;
-                    search = (from s in context.vwUserwisemappedStats
-                              where s.supplier_id == SupplierID && s.SupplierName != null
-                              select s).ToList();
+                    DateTime fd = Convert.ToDateTime(parm.Fromdate);
+                    DateTime td = Convert.ToDateTime(parm.ToDate);
+                    //List<vwUserwisemappedStat> search;
+                    var search = (from p in context.vwUserwisemappedStats
+                                  where p.supplier_id == parm.SupplierID && p.SupplierName != null && (p.EditDate >= fd && p.EditDate <= td)
+                                  group p by new { p.supplier_id, p.Username, p.MappinFor, p.Sequence, p.Status, p.SupplierName } into g
+                                  select new
+                                  {
+                                      supplierid = g.Key.supplier_id,
+                                      SupplierName = g.Key.SupplierName,
+                                      Username = g.Key.Username,
+                                      totalcount = (g.Sum(x => x.totalcount) ?? 0),
+                                      MappinFor = g.Key.MappinFor,
+                                      Sequence = g.Key.Sequence,
+                                      Status = g.Key.Status
+                                  }).ToList();
                     List<DataContracts.Mapping.DC_VelocityMappingStats> returnObj = new List<DataContracts.Mapping.DC_VelocityMappingStats>();
                     DataContracts.Mapping.DC_VelocityMappingStats newmapstats = new DataContracts.Mapping.DC_VelocityMappingStats();
-                    newmapstats.SupplierId = SupplierID;
-                    newmapstats.SupplierName = (from s in context.vwUserwisemappedStats where s.supplier_id == SupplierID select s.SupplierName).FirstOrDefault().ToString();
+                    newmapstats.SupplierId = parm.SupplierID;
+                    var res_supplierName = (from s in context.vwUserwisemappedStats where s.supplier_id == parm.SupplierID select s).FirstOrDefault();
+                    if (res_supplierName != null)
+                        newmapstats.SupplierName = Convert.ToString(res_supplierName.SupplierName);
                     List<DataContracts.Mapping.DC_VelocityMappingStatsFor> newmapstatsforList = new List<DataContracts.Mapping.DC_VelocityMappingStatsFor>();
 
-                    var MapForList = (from s in search select s.MappinFor).ToList().Distinct();
+                    var MapForList = "City,Country,Product,Activity,HotelRoom".Split(','); //(from s in search select s.MappinFor).ToList().Distinct();
 
                     foreach (var mapfor in MapForList)
                     {
                         DataContracts.Mapping.DC_VelocityMappingStatsFor newmapstatsfor = new DataContracts.Mapping.DC_VelocityMappingStatsFor();
 
                         newmapstatsfor.MappingFor = mapfor;
+                        var unMappedDataCount = (context.vwMappingStats
+                                                    .Where(cat => (cat.supplier_id == parm.SupplierID) && (cat.Status == "UNMAPPED" || cat.Status == "REVIEW") && (cat.MappinFor == mapfor))
+                           .GroupBy(cat => new { cat.SupplierName, cat.supplier_id })
+                                                        .Select(group => new
+                                                        {
+                                                            totalcount = group.Sum(x => x.totalcount)
+                                                        })).FirstOrDefault();
+                        if(unMappedDataCount != null)
+                        {
+                            newmapstatsfor.Unmappeddata = unMappedDataCount.totalcount ?? 0;
+                        }
+                        else
+                        {
+                            newmapstatsfor.Unmappeddata = 0;
+                        }
+
                         newmapstatsfor.MappingData = (from s in search
                                                       where s.MappinFor == mapfor
-                                                      orderby s.MappinFor
-                                                      select new DataContracts.Mapping.DC_VelocityMappingdata { Username = s.Username, Totalcount = (s.totalcount ?? 0) }).ToList();
+                                                      orderby s.MappinFor,s.Sequence
+                                                      select new DataContracts.Mapping.DC_VelocityMappingdata { Username = s.Username, Sequence = s.Sequence, Totalcount = (s.totalcount) }).ToList();
                         newmapstatsforList.Add(newmapstatsfor);
                     }
 
