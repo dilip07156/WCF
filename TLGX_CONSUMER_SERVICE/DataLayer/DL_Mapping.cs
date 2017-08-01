@@ -12,6 +12,8 @@ namespace DataLayer
 {
     public class DL_Mapping : IDisposable
     {
+        public DL_UploadStaticData USD = new DL_UploadStaticData();
+        DC_SupplierImportFile_Progress PLog = new DC_SupplierImportFile_Progress();
         public void Dispose()
         {
         }
@@ -156,7 +158,10 @@ namespace DataLayer
         public bool HotelMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             bool ret = true;
-
+            PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
+            PLog.SupplierImportFile_Id = obj.File_Id;
+            PLog.Step = "MAP";
+            PLog.Status = "MAPPING";
             if (obj != null)
             {
                 string CurSupplierName = obj.Name;
@@ -172,6 +177,8 @@ namespace DataLayer
                 RQ.PageNo = 0;
                 RQ.PageSize = int.MaxValue;
                 clsSTGHotel = staticdata.GetSTGHotelData(RQ);
+                PLog.PercentageValue = 15;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 DC_Mapping_ProductSupplier_Search_RQ RQM = new DC_Mapping_ProductSupplier_Search_RQ();
                 if (CurSupplier_Id != Guid.Empty)
@@ -180,6 +187,8 @@ namespace DataLayer
                 RQM.PageSize = int.MaxValue;
                 RQM.CalledFromTLGX = "TLGX";
                 clsMappingHotel = GetMappingHotelData(RQM);
+                PLog.PercentageValue = 26;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsMappingHotel = clsMappingHotel.Select(c =>
                 {
@@ -192,6 +201,8 @@ namespace DataLayer
                     c.Edit_User = "TLGX_DataHandler";
                     return c;
                 }).ToList();
+                PLog.PercentageValue = 37;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsSTGHotelInsert = clsSTGHotel.Where(p => !clsMappingHotel.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                  && (
@@ -201,10 +212,14 @@ namespace DataLayer
                     && (((p2.Country_Id ?? Guid.Empty) == (p.Country_Id ?? Guid.Empty)))
                     && (((p2.City_Id ?? Guid.Empty) == (p.City_Id ?? Guid.Empty)))
                 ))).ToList();
+                PLog.PercentageValue = 48;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsSTGHotel.RemoveAll(p => clsSTGHotelInsert.Any(p2 => (p2.stg_AccoMapping_Id == p.stg_AccoMapping_Id)));
 
                 clsMappingHotel.RemoveAll(p => p.ProductName == p.oldProductName);
+                PLog.PercentageValue = 53;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsMappingHotel.InsertRange(clsMappingHotel.Count, clsSTGHotelInsert.Select
                     (g => new DC_Accomodation_ProductMapping
@@ -251,12 +266,16 @@ namespace DataLayer
 
                     }));
 
+                PLog.PercentageValue = 58;
+                USD.AddStaticDataUploadProcessLog(PLog);
                 if (clsMappingHotel.Count > 0)
                 {
                     ret = UpdateAccomodationProductMapping(clsMappingHotel);
                 }
 
             }
+            PLog.PercentageValue = 100;
+            USD.AddStaticDataUploadProcessLog(PLog);
             return ret;
         }
 
@@ -1501,7 +1520,10 @@ namespace DataLayer
         public bool RoomTypeMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             bool ret = true;
-
+            PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
+            PLog.SupplierImportFile_Id = obj.File_Id;
+            PLog.Step = "MAP";
+            PLog.Status = "MAPPING";
             if (obj != null)
             {
                 string CurSupplierName = obj.Name;
@@ -1518,6 +1540,8 @@ namespace DataLayer
                 RQ.PageNo = 0;
                 RQ.PageSize = int.MaxValue;
                 clsSTGHotel = staticdata.GetSTGRoomTypeData(RQ);
+                PLog.PercentageValue = 15;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 DC_Accommodation_SupplierRoomTypeMap_SearchRQ RQM = new DC_Accommodation_SupplierRoomTypeMap_SearchRQ();
                 if (CurSupplier_Id != Guid.Empty)
@@ -1528,6 +1552,8 @@ namespace DataLayer
                 RQM.PageSize = int.MaxValue;
                 RQM.CalledFromTLGX = "TLGX";
                 clsMappingHotel = SupplierRoomTypeMapping_Search(RQM);
+                PLog.PercentageValue = 26;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsMappingHotel = clsMappingHotel.Select(c =>
                 {
@@ -1545,6 +1571,8 @@ namespace DataLayer
                     ); //?? c.stg_SupplierHotelRoomMapping_Id;
                     return c;
                 }).ToList();
+                PLog.PercentageValue = 37;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsSTGHotelInsert = clsSTGHotel.Where(p => !clsMappingHotel.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                  && (
@@ -1555,11 +1583,15 @@ namespace DataLayer
                     && (((p2.SupplierRoomName ?? string.Empty).ToString().Trim().ToUpper() == (p.RoomName ?? string.Empty).ToString().Trim().ToUpper()))
                     && (((p2.SupplierRoomCategoryId ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierRoomCategoryId ?? string.Empty).ToString().Trim().ToUpper()))
                 ))).ToList();
+                PLog.PercentageValue = 48;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsSTGHotel.RemoveAll(p => clsSTGHotelInsert.Any(p2 => (p2.stg_SupplierHotelRoomMapping_Id == p.stg_SupplierHotelRoomMapping_Id)));
 
                 clsMappingHotel.RemoveAll(p => p.SupplierRoomName == p.OldSupplierRoomName && (((p.stg_SupplierHotelRoomMapping_Id == Guid.Empty) ? p.Oldstg_SupplierHotelRoomMapping_Id : p.stg_SupplierHotelRoomMapping_Id) == p.Oldstg_SupplierHotelRoomMapping_Id));
 
+                PLog.PercentageValue = 53;
+                USD.AddStaticDataUploadProcessLog(PLog);
                 clsMappingHotel.InsertRange(clsMappingHotel.Count, clsSTGHotelInsert.Select
                     (g => new DC_Accommodation_SupplierRoomTypeMap_SearchRS
                     {
@@ -1592,6 +1624,8 @@ namespace DataLayer
                         Supplier_Id = g.Supplier_Id,
                         stg_SupplierHotelRoomMapping_Id = g.stg_SupplierHotelRoomMapping_Id
                     }));
+                PLog.PercentageValue = 58;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 if (clsMappingHotel.Count > 0)
                 {
@@ -1599,6 +1633,8 @@ namespace DataLayer
                 }
             }
 
+            PLog.PercentageValue = 100;
+            USD.AddStaticDataUploadProcessLog(PLog);
             return ret;
         }
 
@@ -2913,7 +2949,10 @@ namespace DataLayer
         public bool CityMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             bool ret = false;
-
+            PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
+            PLog.SupplierImportFile_Id = obj.File_Id;
+            PLog.Step = "MAP";
+            PLog.Status = "MAPPING";
             if (obj != null)
             {
 
@@ -2930,6 +2969,8 @@ namespace DataLayer
                 RQ.PageNo = 0;
                 RQ.PageSize = int.MaxValue;
                 clsSTGCity = staticdata.GetSTGCityData(RQ);
+                PLog.PercentageValue = 15;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 DC_CityMapping_RQ RQCity = new DC_CityMapping_RQ();
                 if (CurSupplier_Id != Guid.Empty)
@@ -2939,6 +2980,8 @@ namespace DataLayer
                 RQCity.CalledFromTLGX = "TLGX";
                 //RQ.Status = "ALL";
                 clsMappingCity = GetCityMapping(RQCity);
+                PLog.PercentageValue = 26;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsMappingCity = clsMappingCity.Select(c =>
                 {
@@ -2951,6 +2994,8 @@ namespace DataLayer
                     c.Edit_User = "TLGX_DataHandler";
                     return c;
                 }).ToList();
+                PLog.PercentageValue = 37;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 clsSTGCityInsert = clsSTGCity.Where(p => !clsMappingCity.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                     && (
@@ -2960,6 +3005,8 @@ namespace DataLayer
                         && (p2.Country_Id == p.Country_Id)
                         && (((p2.CityName ?? string.Empty).ToString().Trim().ToUpper() == (p.CityName ?? string.Empty).ToString().Trim().ToUpper()))
                     ))).ToList();
+                PLog.PercentageValue = 48;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
                 #region "Commented Code"
                 //(p.CityCode != null && p.CityName != null && p2.CityName.ToString().Trim().ToUpper() == p.CityName.ToString().Trim().ToUpper() && p2.CityCode == p.CityCode) 
@@ -2992,6 +3039,8 @@ namespace DataLayer
 
                 //clsMappingCity = clsMappingCity.Where(a => a.oldCityName != a.CityName).ToList();
                 clsMappingCity.RemoveAll(p => p.CityName == p.oldCityName);
+                PLog.PercentageValue = 53;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
 
                 clsMappingCity.InsertRange(clsMappingCity.Count, clsSTGCityInsert.Select
@@ -3019,6 +3068,8 @@ namespace DataLayer
 
                     }));
 
+                PLog.PercentageValue = 58;
+                USD.AddStaticDataUploadProcessLog(PLog);
                 if (clsMappingCity.Count > 0)
                 {
                     ret = UpdateCityMapping(clsMappingCity);
@@ -3026,6 +3077,8 @@ namespace DataLayer
                 else
                     ret = true;
             }
+            PLog.PercentageValue = 100;
+            USD.AddStaticDataUploadProcessLog(PLog);
 
             return ret;
         }
