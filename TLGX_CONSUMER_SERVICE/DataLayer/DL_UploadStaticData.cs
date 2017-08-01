@@ -883,15 +883,38 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    DataLayer.SupplierImportFile_Progress objNew = new DataLayer.SupplierImportFile_Progress()
+                    if(obj.SupplierImportFile_Id != null && !string.IsNullOrWhiteSpace(obj.Step))
                     {
-                        SupplierImportFileProgress_Id = obj.SupplierImportFileProgress_Id,
-                        SupplierImportFile_Id = obj.SupplierImportFile_Id,
-                        PercentageValue =obj.PercentageValue,
-                        Status = obj.Status,
-                        Step = obj.Step
-                    };
-                    context.SupplierImportFile_Progress.Add(objNew);
+                        if(obj.CurrentBatch != 0)
+                        {
+                            context.SupplierImportFile_Progress.RemoveRange(context.SupplierImportFile_Progress.Where(w => w.SupplierImportFile_Id == obj.SupplierImportFile_Id && w.CurrentBatch != 0 && w.CurrentBatch != obj.CurrentBatch));
+                        }
+
+                        var progress = (from a in context.SupplierImportFile_Progress
+                                        where a.SupplierImportFile_Id == obj.SupplierImportFile_Id && a.Step == obj.Step
+                                        select a).FirstOrDefault();
+
+                        if (progress != null)
+                        {
+                            progress.PercentageValue = obj.PercentageValue;
+                            progress.LastCheckedOn = DateTime.Now;
+                        }
+                        else
+                        {
+                            context.SupplierImportFile_Progress.Add(new SupplierImportFile_Progress
+                            {
+                                SupplierImportFileProgress_Id = Guid.NewGuid(),
+                                SupplierImportFile_Id = obj.SupplierImportFile_Id,
+                                PercentageValue = obj.PercentageValue,
+                                Status = obj.Status,
+                                Step = obj.Step,
+                                CurrentBatch = obj.CurrentBatch,
+                                LastCheckedOn = DateTime.Now,
+                                TotalBatch = obj.TotalBatch
+                            });
+                        }
+                    }
+                    
                     context.SaveChanges();
                     dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
                     dc.StatusMessage = "Process Log " + ReadOnlyMessage.strAddedSuccessfully;
@@ -914,12 +937,6 @@ namespace DataLayer
                 {
                     var ProgLogSearch = from a in context.SupplierImportFile_Progress select a;
 
-                    if (RQ.SupplierImportFileProgress_Id.HasValue)
-                    {
-                        ProgLogSearch = from a in ProgLogSearch
-                                        where a.SupplierImportFileProgress_Id == RQ.SupplierImportFileProgress_Id
-                                        select a;
-                    }
                     if (RQ.SupplierImportFile_Id.HasValue)
                     {
                         ProgLogSearch = from a in ProgLogSearch
@@ -946,9 +963,7 @@ namespace DataLayer
                     }
 
                     var total = ProgLogSearch.Count();
-
-                    var skip = RQ.PageSize * RQ.PageNo;
-
+                    
                     var ProgLogResult = (from a in ProgLogSearch
                                          select new DataContracts.UploadStaticData.DC_SupplierImportFile_Progress
                                          {
@@ -958,7 +973,7 @@ namespace DataLayer
                                              Status = a.Status,
                                              PercentageValue = a.PercentageValue,
                                              TotalCount = total
-                                         }).Skip(skip ?? 0).Take(RQ.PageSize ?? total).ToList();
+                                         }).ToList();
 
                     return ProgLogResult;
                 }

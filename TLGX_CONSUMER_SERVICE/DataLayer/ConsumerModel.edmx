@@ -1439,6 +1439,9 @@
           <Property Name="Step" Type="nvarchar" MaxLength="255" />
           <Property Name="PercentageValue" Type="int" />
           <Property Name="Status" Type="nvarchar" MaxLength="255" />
+          <Property Name="TotalBatch" Type="int" />
+          <Property Name="CurrentBatch" Type="int" />
+          <Property Name="LastCheckedOn" Type="datetime" />
         </EntityType>
         <EntityType Name="SupplierImportFile_VerboseLog">
           <Key>
@@ -1487,7 +1490,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwMappingStats' does not have
           <Property Name="supplier_id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="MappinFor" Type="varchar" MaxLength="8" Nullable="false" />
+          <Property Name="MappinFor" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="totalcount" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -2676,7 +2679,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="supplier_id" Type="Guid" Nullable="false" />
           <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="totalcount" Type="Int32" />
         </EntityType>
         <EntityType Name="SiteMap">
@@ -3301,6 +3304,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Step" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="PercentageValue" Type="Int32" />
           <Property Name="Status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TotalBatch" Type="Int32" />
+          <Property Name="CurrentBatch" Type="Int32" />
+          <Property Name="LastCheckedOn" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="SupplierImportFile_VerboseLog">
           <Key>
@@ -4871,6 +4877,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="SupplierImportFile_Progress">
             <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFile_Progress">
               <MappingFragment StoreEntitySet="SupplierImportFile_Progress">
+                <ScalarProperty Name="LastCheckedOn" ColumnName="LastCheckedOn" />
+                <ScalarProperty Name="CurrentBatch" ColumnName="CurrentBatch" />
+                <ScalarProperty Name="TotalBatch" ColumnName="TotalBatch" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="PercentageValue" ColumnName="PercentageValue" />
                 <ScalarProperty Name="Step" ColumnName="Step" />

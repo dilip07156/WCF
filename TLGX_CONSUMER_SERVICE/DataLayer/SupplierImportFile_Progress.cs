@@ -19,5 +19,8 @@ namespace DataLayer
         public string Step { get; set; }
         public Nullable<int> PercentageValue { get; set; }
         public string Status { get; set; }
+        public Nullable<int> TotalBatch { get; set; }
+        public Nullable<int> CurrentBatch { get; set; }
+        public Nullable<System.DateTime> LastCheckedOn { get; set; }
     }
 }

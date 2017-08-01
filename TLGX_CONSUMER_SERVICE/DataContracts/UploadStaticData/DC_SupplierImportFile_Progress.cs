@@ -24,14 +24,17 @@ namespace DataContracts.UploadStaticData
 
         [DataMember]
         public int TotalCount { get; set; }
+
+        [DataMember]
+        public int CurrentBatch { get; set; }
+
+        [DataMember]
+        public int TotalBatch { get; set; }
     }
 
     [DataContract]
     public class DC_SupplierImportFile_Progress_RQ
     {
-        [DataMember]
-        public Nullable<System.Guid> SupplierImportFileProgress_Id { get; set; }
-
         [DataMember]
         public Nullable<System.Guid> SupplierImportFile_Id { get; set; }
 
@@ -43,11 +46,5 @@ namespace DataContracts.UploadStaticData
             
         [DataMember]
         public string StatusExcept { get; set; }
-
-        [DataMember]
-        public int PageNo { get; set; }
-
-        [DataMember]
-        public int? PageSize { get; set; }
     }
 }
