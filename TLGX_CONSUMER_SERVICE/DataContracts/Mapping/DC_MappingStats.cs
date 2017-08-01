@@ -1268,6 +1268,7 @@ namespace DataContracts.Mapping
     {
          string _MappingFor;
         int _unmappeddata;
+        int? _estimate;
         List<DC_VelocityMappingdata> _MappingData;
         [DataMember]
         public string MappingFor
@@ -1306,6 +1307,19 @@ namespace DataContracts.Mapping
             set
             {
                 _unmappeddata = value;
+            }
+        }
+        [DataMember]
+        public int? Estimate
+        {
+            get
+            {
+                return _estimate;
+            }
+
+            set
+            {
+                _estimate = value;
             }
         }
     }
