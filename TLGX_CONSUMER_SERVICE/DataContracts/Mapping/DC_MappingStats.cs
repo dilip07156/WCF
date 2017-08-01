@@ -602,6 +602,7 @@ namespace DataContracts.Mapping
     [DataContract]
     public class DC_RollOFParams
     {
+        Guid _supplierID;
         string _fromdate;
         string _todate;
         [DataMember]
@@ -628,6 +629,19 @@ namespace DataContracts.Mapping
             set
             {
                 _todate = value;
+            }
+        }
+        [DataMember]
+        public Guid SupplierID
+        {
+            get
+            {
+                return _supplierID;
+            }
+
+            set
+            {
+                _supplierID = value;
             }
         }
     }
@@ -1208,6 +1222,7 @@ namespace DataContracts.Mapping
     {
         string _username;
         int _totalcount;
+        int _sequence;
         [DataMember]
         public string Username
         {
@@ -1234,11 +1249,25 @@ namespace DataContracts.Mapping
                 _totalcount = value;
             }
         }
+        [DataMember]
+        public int Sequence
+        {
+            get
+            {
+                return _sequence;
+            }
+
+            set
+            {
+                _sequence = value;
+            }
+        }
     }
     [DataContract]
     public class DC_VelocityMappingStatsFor
     {
          string _MappingFor;
+        int _unmappeddata;
         List<DC_VelocityMappingdata> _MappingData;
         [DataMember]
         public string MappingFor
@@ -1253,7 +1282,6 @@ namespace DataContracts.Mapping
                 _MappingFor = value;
             }
         }
-        public int total;
         [DataMember]
         public List<DC_VelocityMappingdata> MappingData
         {
@@ -1268,16 +1296,16 @@ namespace DataContracts.Mapping
             }
         }
         [DataMember]
-        public int Total
+        public int Unmappeddata
         {
             get
             {
-                return total;
+                return _unmappeddata;
             }
 
             set
             {
-                total = value;
+                _unmappeddata = value;
             }
         }
     }
