@@ -2800,7 +2800,7 @@ namespace DataLayer
                         {
                             prodMapSearch = from a in prodMapSearch
                                             join c in context.m_CountryMaster on a.Country_Id equals c.Country_Id
-                                            where (a.CountryName.ToUpper() == param.SupplierCityName.ToUpper()
+                                            where (a.CountryName.ToUpper() == param.SupplierCountryName.ToUpper()
                                             || c.Name.ToUpper() == param.SupplierCountryName.ToUpper()
                                             )
                                             select a;
