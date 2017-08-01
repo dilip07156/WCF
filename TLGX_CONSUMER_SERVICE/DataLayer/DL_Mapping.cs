@@ -5258,7 +5258,21 @@ namespace DataLayer
                                                         {
                                                             totalcount = group.Sum(x => x.totalcount)
                                                         })).FirstOrDefault();
-                        if(unMappedDataCount != null)
+                        //get estimate to complete mapping of unmapped data
+                        var totalmappeddata = ( from s in search where s.MappinFor==mapfor && s.Username== "Total" && s.Status== "Total"
+                                                select s.totalcount).FirstOrDefault();
+                        if (unMappedDataCount.totalcount != null && totalmappeddata != 0) {
+                            var days = (Convert.ToDateTime(parm.ToDate) - Convert.ToDateTime(parm.Fromdate)).TotalDays;
+                            var perday = (totalmappeddata / days);
+                            newmapstatsfor.Estimate= Convert.ToInt32(unMappedDataCount.totalcount / perday);
+                        }
+                        else
+                        {
+                            newmapstatsfor.Estimate = 0;
+                        }
+                        
+
+                        if (unMappedDataCount != null)
                         {
                             newmapstatsfor.Unmappeddata = unMappedDataCount.totalcount ?? 0;
                         }
@@ -5271,6 +5285,8 @@ namespace DataLayer
                                                       where s.MappinFor == mapfor
                                                       orderby s.MappinFor,s.Sequence
                                                       select new DataContracts.Mapping.DC_VelocityMappingdata { Username = s.Username, Sequence = s.Sequence, Totalcount = (s.totalcount) }).ToList();
+                        
+
                         newmapstatsforList.Add(newmapstatsfor);
                     }
 
