@@ -173,6 +173,30 @@ namespace BusinessLayer
             }
         }
 
+        public bool RoomTypeMappingMatch(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.RoomTypeMappingMatch(obj);
+            }
+        }
+
+        public List<DC_SupplierRoomType_TTFU_RQ> GetRoomTypeMapping_For_TTFU(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetRoomTypeMapping_For_TTFU(obj);
+            }
+        }
+
+        public bool UpdateRoomTypeMappingStatus(DC_MappingMatch obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.UpdateRoomTypeMappingStatus(obj);
+            }
+        }
+
         #endregion
 
         #region Country Mapping

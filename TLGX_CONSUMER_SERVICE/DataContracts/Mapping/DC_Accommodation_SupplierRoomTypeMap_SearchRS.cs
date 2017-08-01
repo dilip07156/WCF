@@ -72,6 +72,18 @@ namespace DataContracts.Mapping
         public List<DC_SupplierRoomTypeAttributes> RoomTypeAttributes { get; set; }
         [DataMember]
         public int TotalRecords { get; set; }
+        [DataMember]
+        public string OldSupplierRoomName { get; set; }
+
+        [DataMember]
+        public Nullable<System.Guid> stg_SupplierHotelRoomMapping_Id { get; set; }
+
+        [DataMember]
+        public string RoomDescription { get; set; }
+
+
+        [DataMember]
+        public Nullable<System.Guid> Oldstg_SupplierHotelRoomMapping_Id { get; set; }
     }
 
     [DataContract]
@@ -90,5 +102,6 @@ namespace DataContracts.Mapping
         [DataMember]
         public string IconClass { get; set; }
     }
+    
 
 }

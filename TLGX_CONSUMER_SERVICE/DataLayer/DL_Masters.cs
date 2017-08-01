@@ -757,14 +757,14 @@ namespace DataLayer
                                  select a;
                     }
 
-                    if(RQ.State_Id!=null)
+                    if (RQ.State_Id != null)
                     {
                         search = from a in search
                                  where a.State_Id == RQ.State_Id
                                  select a;
                     }
 
-                    if(!String.IsNullOrWhiteSpace(RQ.State_Name))
+                    if (!String.IsNullOrWhiteSpace(RQ.State_Name))
                     {
                         search = from a in search
                                  where a.StateName == RQ.State_Name
@@ -972,7 +972,7 @@ namespace DataLayer
                         search.StateName = param.StateName;
                         //search.State_Id = param.State_Id;
                         //search.Status = param.Status;
-                        
+
                     }
                     else
                     {
@@ -1830,6 +1830,56 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching port master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        public IList<DataContracts.Masters.DC_MasterAttribute> GetAllAttributeAndValuesByParentAttributeValue(DataContracts.Masters.DC_MasterAttribute _obj)
+        {
+            try
+            {
+                List<DC_MasterAttribute> _lstMasterAttribute = new List<DC_MasterAttribute>();
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from ma in context.m_masterattribute select ma;
+                    if (!string.IsNullOrWhiteSpace(_obj.MasterFor))
+                        search = from ma in search where ma.MasterFor == _obj.MasterFor select ma;
+
+                    if (_obj.ParentAttributeValue_Id.HasValue)
+                    {
+                        if (_obj.ParentAttributeValue_Id.Value != Guid.Empty)
+                            _lstMasterAttribute = (from ma in search
+                                                   join mac in context.m_masterattributevalue on ma.MasterAttribute_Id equals mac.MasterAttribute_Id
+                                                   where mac.ParentAttributeValue_Id == _obj.ParentAttributeValue_Id
+                                                   orderby mac.AttributeValue
+                                                   select new DC_MasterAttribute
+                                                   {
+                                                       MasterAttributeValue_Id = mac.MasterAttributeValue_Id,
+                                                       AttributeValue = mac.AttributeValue
+                                                   }).ToList();
+                    }
+                    if (!string.IsNullOrWhiteSpace(_obj.AttributeValue))
+                    {
+                        //Get partent_id 
+                        Guid _prentAttributeValue_Id = context.m_masterattributevalue.Where(p => p.AttributeValue.ToLower() == _obj.AttributeValue.ToLower()).FirstOrDefault().MasterAttributeValue_Id;
+                        if(_prentAttributeValue_Id != Guid.Empty)
+                        {
+                            _lstMasterAttribute = (from mac  in context.m_masterattributevalue where mac.ParentAttributeValue_Id == _prentAttributeValue_Id
+                                                  select new DC_MasterAttribute
+                                                  {
+                                                      MasterAttributeValue_Id = mac.MasterAttributeValue_Id,
+                                                      AttributeValue = mac.AttributeValue
+                                                  }).ToList();
+                        }
+
+                    }
+                    return _lstMasterAttribute;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         public IList<DataContracts.Masters.DC_MasterAttribute> GetAllAttributeAndValues(DataContracts.Masters.DC_MasterAttribute _obj)
         {
             try
@@ -2238,7 +2288,7 @@ namespace DataLayer
                                  select sup;
                     }
 
-                    if(!string.IsNullOrWhiteSpace(RQ.SupplierType))
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierType))
                     {
                         search = from sup in search
                                  where sup.SupplierType == RQ.SupplierType
@@ -3824,7 +3874,7 @@ namespace DataLayer
                             Status = item.Status,
                             Icon = item.Icon,
                             EntityFor = item.EntityFor
-                    };
+                        };
                         context.m_keyword.Add(newKeyword);
 
                         ret.StatusMessage = "Keyword " + ReadOnlyMessage.strAddedSuccessfully;
@@ -4051,7 +4101,9 @@ namespace DataLayer
                                      TotalRecords = total,
                                      Sequence = a.Sequence ?? 0,
                                      KeywordAlias_Id = a.KeywordAlias_Id,
-                                     Value = a.Value
+                                     Value = a.Value,
+                                     NoOfHits = a.NoOfHits ?? 0,
+                                     NewHits = 0
                                  };
 
 

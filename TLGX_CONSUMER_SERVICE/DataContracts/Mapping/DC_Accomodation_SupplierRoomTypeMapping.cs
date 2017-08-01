@@ -9,7 +9,7 @@ using System.Runtime.Serialization;
 namespace DataContracts.Mapping
 {
     [DataContract]
-    public class DC_Accomodation_SupplierRoomTypeMapping
+    public class DC_Accomodation_SupplierRoomTypeMapping 
     {
 
         System.Guid _Accommodation_SupplierRoomTypeMapping_Id;

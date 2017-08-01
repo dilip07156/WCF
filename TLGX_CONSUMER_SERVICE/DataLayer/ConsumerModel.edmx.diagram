@@ -44,7 +44,7 @@
         <EntityTypeShape EntityType="ConsumerModel.m_CityMapping" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.m_CountryMapping" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.m_MasterAttributeMapping" Width="1.5" PointX="7.375" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.m_MasterAttributeValueMapping" Width="1.5" PointX="7.375" PointY="4.75" />
+        <EntityTypeShape EntityType="ConsumerModel.m_MasterAttributeValueMapping" Width="1.5" PointX="13" PointY="4.125" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierProductMapping" Width="2.875" PointX="7.375" PointY="8.75" />
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" Width="1.5" PointX="0.75" PointY="6.75" />
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" Width="1.5" PointX="9.75" PointY="0.75" />
