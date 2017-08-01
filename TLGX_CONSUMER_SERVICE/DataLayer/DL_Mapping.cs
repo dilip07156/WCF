@@ -162,6 +162,8 @@ namespace DataLayer
             PLog.SupplierImportFile_Id = obj.File_Id;
             PLog.Step = "MAP";
             PLog.Status = "MAPPING";
+            PLog.CurrentBatch = obj.CurrentBatch ?? 0;
+            PLog.TotalBatch = obj.TotalBatch ?? 0;
             if (obj != null)
             {
                 string CurSupplierName = obj.Name;
@@ -1524,6 +1526,8 @@ namespace DataLayer
             PLog.SupplierImportFile_Id = obj.File_Id;
             PLog.Step = "MAP";
             PLog.Status = "MAPPING";
+            PLog.CurrentBatch = obj.CurrentBatch ?? 0;
+            PLog.TotalBatch = obj.TotalBatch ?? 0;
             if (obj != null)
             {
                 string CurSupplierName = obj.Name;
@@ -2953,6 +2957,8 @@ namespace DataLayer
             PLog.SupplierImportFile_Id = obj.File_Id;
             PLog.Step = "MAP";
             PLog.Status = "MAPPING";
+            PLog.CurrentBatch = obj.CurrentBatch ?? 0;
+            PLog.TotalBatch = obj.TotalBatch ?? 0;
             if (obj != null)
             {
 
