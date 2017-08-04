@@ -83,8 +83,8 @@ namespace DataContracts
         List<DC_Accommodation_RouteInfo> _Accommodation_RouteInfo;
         List<DC_Accommodation_Status> _Accomodation_Status;
         List<Masters.DC_DynamicAttributes> _Accomodation_DynamicAttributes;
-        List<DC_Accomodation_ClassificationAttributes> _Accomodation_ClassificationAttributes;        
-
+        List<DC_Accomodation_ClassificationAttributes> _Accomodation_ClassificationAttributes;
+        int _TotalRecords;
         [DataMember]
         public Nullable<bool> InsertFrom { get; set; }
 
@@ -1112,6 +1112,19 @@ namespace DataContracts
             set
             {
                 _fullAddress = value;
+            }
+        }
+        [DataMember]
+        public int TotalRecords
+        {
+            get
+            {
+                return _TotalRecords;
+            }
+
+            set
+            {
+                _TotalRecords = value;
             }
         }
     }
@@ -4562,6 +4575,10 @@ namespace DataContracts
         string _AccomodationId;
         string _searchfrom;
         string _starrating;
+        int? _TotalRecords;
+        Nullable<System.DateTime> _FromDate;
+        Nullable<System.DateTime> _ToDate;
+
         //[DataMember]
         //public string GroupOfCompanies
         //{
@@ -4838,6 +4855,45 @@ namespace DataContracts
             set
             {
                 _starrating = value;
+            }
+        }
+        [DataMember]
+        public int? TotalRecords
+        {
+            get
+            {
+                return _TotalRecords;
+            }
+
+            set
+            {
+                _TotalRecords = value;
+            }
+        }
+        [DataMember]
+        public DateTime? FromDate
+        {
+            get
+            {
+                return _FromDate;
+            }
+
+            set
+            {
+                _FromDate = value;
+            }
+        }
+        [DataMember]
+        public DateTime? ToDate
+        {
+            get
+            {
+                return _ToDate;
+            }
+
+            set
+            {
+                _ToDate = value;
             }
         }
     }
@@ -5350,7 +5406,7 @@ namespace DataContracts
             }
         }
     }
-
+    
     [DataContract]
     public class DC_Accomodation_DDL
     {

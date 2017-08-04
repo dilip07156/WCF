@@ -75,7 +75,30 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
+        
+        public string GetColumnNameWhichValuesIsNull(string Accomodation_Id)
+        {
+            using (BL_Accomodation obj = new BL_Accomodation())
+            {
+                return obj.GetColumnNameWhichValuesIsNull(Accomodation_Id);
+            }
+        }
 
+        public IList<DC_Accomodation> GetAccomodationListForMissingAttributeReports(DC_Accomodation_Search_RQ RQ)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                List<DC_Accomodation> searchResults = new List<DC_Accomodation>();
+                searchResults = objBL.GetAccomodationListForMissingAttributeReports(RQ);
+
+                if (searchResults.Count == 0)
+                {
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                }
+
+                return searchResults;
+            }
+        }
         public IList<DC_Accomodation_Search_RS> AccomodationSearch(DC_Accomodation_Search_RQ Accomodation_Request)
         {
             using (BL_Accomodation objBL = new BL_Accomodation())
