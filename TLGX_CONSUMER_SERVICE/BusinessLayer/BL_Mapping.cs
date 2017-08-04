@@ -303,12 +303,19 @@ namespace BusinessLayer
             }
         }
 
-        public bool DeleteSTGMappingTableIDs(Guid file_Id)
+        public bool DeleteSTGMappingTableIDs(string file_Id)
         {
-            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            Guid File_Id = new Guid();
+
+            if (Guid.TryParse(file_Id, out File_Id))
             {
-                return objBL.DeleteSTGMappingTableIDs(file_Id);
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.DeleteSTGMappingTableIDs(File_Id);
+                }
             }
+            else
+                return false;
         }
 
         public List<DataContracts.Mapping.DC_MappingStatsForSuppliers> GetMappingStatisticsForSuppliers()

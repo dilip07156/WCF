@@ -55,7 +55,7 @@ namespace OperationContracts
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "GET", UriTemplate = "DataHandler/Statistics/Delete/{File_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        bool DeleteSTGMappingTableIDs(Guid File_Id);
+        bool DeleteSTGMappingTableIDs(string File_Id);
 
         #endregion
 

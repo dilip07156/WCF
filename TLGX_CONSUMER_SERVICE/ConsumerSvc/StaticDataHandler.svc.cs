@@ -315,7 +315,7 @@ namespace ConsumerSvc
             }
         }
 
-        public bool DeleteSTGMappingTableIDs(Guid File_Id)
+        public bool DeleteSTGMappingTableIDs(string File_Id)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
