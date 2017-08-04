@@ -295,6 +295,7 @@
           <Property Name="Google_Place_Id" Type="nvarchar" MaxLength="255" />
           <Property Name="Country_Id" Type="uniqueidentifier" />
           <Property Name="City_Id" Type="uniqueidentifier" />
+          <Property Name="stg_AccoMapping_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Accommodation_RoomFacility">
           <Key>
@@ -811,6 +812,7 @@
           <Property Name="StateName" Type="nvarchar" MaxLength="255" />
           <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
           <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="stg_City_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="m_CityMaster">
           <Key>
@@ -856,6 +858,7 @@
           <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
           <Property Name="ContinentCode" Type="nvarchar" MaxLength="255" />
           <Property Name="ContinentName" Type="nvarchar" MaxLength="255" />
+          <Property Name="stg_Country_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="m_CountryMaster">
           <Key>
@@ -925,6 +928,10 @@
           <Property Name="Sequence" Type="int" />
           <Property Name="Icon" Type="nvarchar" MaxLength="255" />
           <Property Name="EntityFor" Type="nvarchar" MaxLength="500" />
+          <Property Name="AttributeType" Type="nvarchar" MaxLength="255" />
+          <Property Name="AttributeLevel" Type="nvarchar" MaxLength="255" />
+          <Property Name="AttributeSubLevel" Type="nvarchar" MaxLength="255" />
+          <Property Name="AttributeSubLevelValue" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="m_keyword_alias">
           <Key>
@@ -1076,6 +1083,7 @@
           <Property Name="EDIT_USER" Type="nvarchar" MaxLength="255" />
           <Property Name="Priority" Type="int" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="AttributeValue_ID" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="m_TeamMembers">
           <Key>
@@ -1222,6 +1230,15 @@
           <Property Name="IsSiteMapNode" Type="bit" />
           <Property Name="IsActive" Type="bit" />
           <Property Name="applicationId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="STG_Mapping_TableIds">
+          <Key>
+            <PropertyRef Name="STG_Mapping_Table_Id" />
+          </Key>
+          <Property Name="STG_Mapping_Table_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="STG_Id" Type="uniqueidentifier" />
+          <Property Name="Mapping_Id" Type="uniqueidentifier" />
+          <Property Name="File_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="stg_SupplierCityMapping">
           <Key>
@@ -1439,9 +1456,22 @@
           <Property Name="Step" Type="nvarchar" MaxLength="255" />
           <Property Name="PercentageValue" Type="int" />
           <Property Name="Status" Type="nvarchar" MaxLength="255" />
-          <Property Name="TotalBatch" Type="int" />
           <Property Name="CurrentBatch" Type="int" />
+          <Property Name="TotalBatch" Type="int" />
           <Property Name="LastCheckedOn" Type="datetime" />
+        </EntityType>
+        <EntityType Name="SupplierImportFile_Statistics">
+          <Key>
+            <PropertyRef Name="SupplierImportFile_Statistics_Id" />
+          </Key>
+          <Property Name="SupplierImportFile_Statistics_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SupplierImportFile_Id" Type="uniqueidentifier" />
+          <Property Name="FinalStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="TotalRows" Type="int" />
+          <Property Name="Mapped" Type="int" />
+          <Property Name="Unmapped" Type="int" />
+          <Property Name="Process_Date" Type="datetime" />
+          <Property Name="Process_User" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="SupplierImportFile_VerboseLog">
           <Key>
@@ -1480,7 +1510,7 @@
           <Property Name="EntityTypeID" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwMappingStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwMappingStats">
           <Key>
             <PropertyRef Name="Status" />
@@ -1490,11 +1520,11 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwMappingStats' does not have
           <Property Name="supplier_id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="MappinFor" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="MappinFor" Type="varchar" MaxLength="8" Nullable="false" />
           <Property Name="totalcount" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwUserwisemappedStats">
           <Key>
             <PropertyRef Name="Sequence" />
@@ -1635,6 +1665,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Places" EntityType="Self.Places" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule_NextOccurance" EntityType="Self.Schedule_NextOccurance" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SiteMap" EntityType="Self.SiteMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="STG_Mapping_TableIds" EntityType="Self.STG_Mapping_TableIds" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierCityMapping" EntityType="Self.stg_SupplierCityMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierCountryMapping" EntityType="Self.stg_SupplierCountryMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierHotelRoomMapping" EntityType="Self.stg_SupplierHotelRoomMapping" Schema="dbo" store:Type="Tables" />
@@ -1645,6 +1676,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Supplier_Schedule" EntityType="Self.Supplier_Schedule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFile_ErrorLog" EntityType="Self.SupplierImportFile_ErrorLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFile_Progress" EntityType="Self.SupplierImportFile_Progress" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierImportFile_Statistics" EntityType="Self.SupplierImportFile_Statistics" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFile_VerboseLog" EntityType="Self.SupplierImportFile_VerboseLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFileDetails" EntityType="Self.SupplierImportFileDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserEntity" EntityType="Self.UserEntity" Schema="dbo" store:Type="Tables" />
@@ -1785,6 +1817,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="SupplierImportFile_Progress" EntityType="ConsumerModel.SupplierImportFile_Progress" />
           <EntitySet Name="SupplierImportFile_VerboseLog" EntityType="ConsumerModel.SupplierImportFile_VerboseLog" />
           <EntitySet Name="vwUserwisemappedStats" EntityType="ConsumerModel.vwUserwisemappedStat" />
+          <EntitySet Name="SupplierImportFile_Statistics" EntityType="ConsumerModel.SupplierImportFile_Statistics" />
+          <EntitySet Name="STG_Mapping_TableIds" EntityType="ConsumerModel.STG_Mapping_TableIds" />
         </EntityContainer>
         <EntityType Name="Accommodation_Contact">
           <Key>
@@ -2133,6 +2167,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Google_Place_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Country_Id" Type="Guid" />
           <Property Name="City_Id" Type="Guid" />
+          <Property Name="stg_AccoMapping_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="m_CityMapping">
           <Key>
@@ -2159,6 +2194,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="StateName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="stg_City_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="m_CountryMapping">
           <Key>
@@ -2182,6 +2218,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ContinentCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ContinentName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="stg_Country_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="m_Activity_Master">
           <Key>
@@ -2678,7 +2715,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="supplier_id" Type="Guid" Nullable="false" />
           <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="totalcount" Type="Int32" />
         </EntityType>
         <EntityType Name="SiteMap">
@@ -2959,6 +2996,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="EDIT_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Priority" Type="Int32" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeValue_ID" Type="Guid" />
         </EntityType>
         <EntityType Name="SupplierImportFile_ErrorLog">
           <Key>
@@ -3201,6 +3239,10 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Sequence" Type="Int32" />
           <Property Name="Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EntityFor" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeLevel" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeSubLevel" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeSubLevelValue" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_keyword_alias">
           <Key>
@@ -3317,6 +3359,28 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="totalcount" Type="Int32" />
           <Property Name="EditDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="SupplierImportFile_Statistics">
+          <Key>
+            <PropertyRef Name="SupplierImportFile_Statistics_Id" />
+          </Key>
+          <Property Name="SupplierImportFile_Statistics_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierImportFile_Id" Type="Guid" />
+          <Property Name="FinalStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalRows" Type="Int32" />
+          <Property Name="Mapped" Type="Int32" />
+          <Property Name="Unmapped" Type="Int32" />
+          <Property Name="Process_Date" Type="DateTime" Precision="3" />
+          <Property Name="Process_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="STG_Mapping_TableIds">
+          <Key>
+            <PropertyRef Name="STG_Mapping_Table_Id" />
+          </Key>
+          <Property Name="STG_Mapping_Table_Id" Type="Guid" Nullable="false" />
+          <Property Name="STG_Id" Type="Guid" />
+          <Property Name="Mapping_Id" Type="Guid" />
+          <Property Name="File_Id" Type="Guid" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3645,6 +3709,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodation_ProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_ProductMapping">
               <MappingFragment StoreEntitySet="Accommodation_ProductMapping">
+                <ScalarProperty Name="stg_AccoMapping_Id" ColumnName="stg_AccoMapping_Id" />
                 <ScalarProperty Name="City_Id" ColumnName="City_Id" />
                 <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
                 <ScalarProperty Name="Google_Place_Id" ColumnName="Google_Place_Id" />
@@ -3691,6 +3756,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="m_CityMapping">
             <EntityTypeMapping TypeName="ConsumerModel.m_CityMapping">
               <MappingFragment StoreEntitySet="m_CityMapping">
+                <ScalarProperty Name="stg_City_Id" ColumnName="stg_City_Id" />
                 <ScalarProperty Name="Longitude" ColumnName="Longitude" />
                 <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="StateName" ColumnName="StateName" />
@@ -3718,6 +3784,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="m_CountryMapping">
             <EntityTypeMapping TypeName="ConsumerModel.m_CountryMapping">
               <MappingFragment StoreEntitySet="m_CountryMapping">
+                <ScalarProperty Name="stg_Country_Id" ColumnName="stg_Country_Id" />
                 <ScalarProperty Name="ContinentName" ColumnName="ContinentName" />
                 <ScalarProperty Name="ContinentCode" ColumnName="ContinentCode" />
                 <ScalarProperty Name="Longitude" ColumnName="Longitude" />
@@ -4513,6 +4580,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="m_SupplierImportAttributeValues">
             <EntityTypeMapping TypeName="ConsumerModel.m_SupplierImportAttributeValues">
               <MappingFragment StoreEntitySet="m_SupplierImportAttributeValues">
+                <ScalarProperty Name="AttributeValue_ID" ColumnName="AttributeValue_ID" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Priority" ColumnName="Priority" />
                 <ScalarProperty Name="EDIT_USER" ColumnName="EDIT_USER" />
@@ -4762,6 +4830,10 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="m_keyword">
             <EntityTypeMapping TypeName="ConsumerModel.m_keyword">
               <MappingFragment StoreEntitySet="m_keyword">
+                <ScalarProperty Name="AttributeSubLevelValue" ColumnName="AttributeSubLevelValue" />
+                <ScalarProperty Name="AttributeSubLevel" ColumnName="AttributeSubLevel" />
+                <ScalarProperty Name="AttributeLevel" ColumnName="AttributeLevel" />
+                <ScalarProperty Name="AttributeType" ColumnName="AttributeType" />
                 <ScalarProperty Name="EntityFor" ColumnName="EntityFor" />
                 <ScalarProperty Name="Icon" ColumnName="Icon" />
                 <ScalarProperty Name="Sequence" ColumnName="Sequence" />
@@ -4896,6 +4968,30 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
                 <ScalarProperty Name="supplier_id" ColumnName="supplier_id" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplierImportFile_Statistics">
+            <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFile_Statistics">
+              <MappingFragment StoreEntitySet="SupplierImportFile_Statistics">
+                <ScalarProperty Name="Process_User" ColumnName="Process_User" />
+                <ScalarProperty Name="Process_Date" ColumnName="Process_Date" />
+                <ScalarProperty Name="Unmapped" ColumnName="Unmapped" />
+                <ScalarProperty Name="Mapped" ColumnName="Mapped" />
+                <ScalarProperty Name="TotalRows" ColumnName="TotalRows" />
+                <ScalarProperty Name="FinalStatus" ColumnName="FinalStatus" />
+                <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
+                <ScalarProperty Name="SupplierImportFile_Statistics_Id" ColumnName="SupplierImportFile_Statistics_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STG_Mapping_TableIds">
+            <EntityTypeMapping TypeName="ConsumerModel.STG_Mapping_TableIds">
+              <MappingFragment StoreEntitySet="STG_Mapping_TableIds">
+                <ScalarProperty Name="File_Id" ColumnName="File_Id" />
+                <ScalarProperty Name="Mapping_Id" ColumnName="Mapping_Id" />
+                <ScalarProperty Name="STG_Id" ColumnName="STG_Id" />
+                <ScalarProperty Name="STG_Mapping_Table_Id" ColumnName="STG_Mapping_Table_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

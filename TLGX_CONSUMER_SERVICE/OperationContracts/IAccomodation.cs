@@ -42,6 +42,11 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "GET", UriTemplate = "GetAccomodation/Details/{Accomodation_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataContracts.DC_Accomodation GetAccomodationDetails(string Accomodation_Id);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "GetAccomodation/MissingAttributeReport/{Accomodation_Id}", RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        string GetColumnNameWhichValuesIsNull(string Accomodation_Id);
         #endregion
 
         #region Accomodation Info
