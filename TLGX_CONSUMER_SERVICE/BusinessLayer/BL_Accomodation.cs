@@ -44,7 +44,21 @@ namespace BusinessLayer
                 return obj.GetAccomodationDetails(Accomodation_Id);
             }
         }
+        public string GetColumnNameWhichValuesIsNull(string Accomodation_Id)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.GetColumnNameWhichValuesIsNull(Guid.Parse(Accomodation_Id));
+            }
+        }
 
+        public List<DataContracts.DC_Accomodation> GetAccomodationListForMissingAttributeReports(DataContracts.DC_Accomodation_Search_RQ RQ)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.GetAccomodationListForMissingAttributeReports(RQ);
+            }
+        }
         public List<DataContracts.DC_Accomodation_Search_RS> AccomodationSearch(DataContracts.DC_Accomodation_Search_RQ RQ)
         {
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())

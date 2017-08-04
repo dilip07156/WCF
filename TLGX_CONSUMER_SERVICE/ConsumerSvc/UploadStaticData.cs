@@ -148,6 +148,13 @@ namespace ConsumerSvc
             }
         }
 
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics> GetStaticDataUploadStatistics(DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics_RQ RQ)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.GetStaticDataUploadStatistics(RQ);
+            }
+        }
         #endregion
 
         #region Process Or Test Uploaded Files

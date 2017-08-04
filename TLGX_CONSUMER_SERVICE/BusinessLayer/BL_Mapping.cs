@@ -181,6 +181,14 @@ namespace BusinessLayer
             }
         }
 
+        public bool CountryMappingMatch(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.CountryMappingMatch(obj);
+            }
+        }
+
         public List<DC_SupplierRoomType_TTFU_RQ> GetRoomTypeMapping_For_TTFU(DataContracts.Masters.DC_Supplier obj)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
@@ -295,6 +303,20 @@ namespace BusinessLayer
             }
         }
 
+        public bool DeleteSTGMappingTableIDs(string file_Id)
+        {
+            Guid File_Id = new Guid();
+
+            if (Guid.TryParse(file_Id, out File_Id))
+            {
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.DeleteSTGMappingTableIDs(File_Id);
+                }
+            }
+            else
+                return false;
+        }
 
         public List<DataContracts.Mapping.DC_MappingStatsForSuppliers> GetMappingStatisticsForSuppliers()
         {

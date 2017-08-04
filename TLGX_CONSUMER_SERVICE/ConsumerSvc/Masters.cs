@@ -692,5 +692,13 @@ namespace ConsumerSvc
         }
         #endregion
 
+        //public string[] GetColumnNames(string TableName)
+        //{
+        //    using (BusinessLayer.BL_Masters obj = new BL_Masters())
+        //    {
+        //        return obj.GetColumnNames(TableName);
+        //    }
+        //}
+
     }
 }

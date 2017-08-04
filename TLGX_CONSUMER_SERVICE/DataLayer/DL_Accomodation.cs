@@ -457,6 +457,54 @@ namespace DataLayer
             }
         }
 
+
+        public List<DataContracts.DC_Accomodation> GetAccomodationListForMissingAttributeReports(DataContracts.DC_Accomodation_Search_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    var total = (from a in context.Accommodations
+                                 where a.Edit_Date >= RQ.FromDate && a.Edit_Date <= RQ.ToDate
+                                 select a.Accommodation_Id).Count();
+
+                    var acco = (from a in context.Accommodations
+                                where a.Edit_Date >= RQ.FromDate && a.Edit_Date <= RQ.ToDate
+                                select new DataContracts.DC_Accomodation
+                                {
+                                    Accommodation_Id = a.Accommodation_Id,
+                                    TotalRecords = total
+                                }).ToList();
+
+                    int count = 0,description,facility,room_info,rule_info,route_info,occupancy,nearByPlaces,media,hotelUpdates,Status,Attributes;
+                    foreach (var item in acco)
+                    {
+                        Guid id = acco[count].Accommodation_Id;
+                        var res = GetAccomodationDetails(id);
+                        description = res.Accommodation_Descriptions.Count();
+                        facility = res.Accommodation_Facility.Count();
+                        room_info = res.Accommodation_RoomInfo.Count();
+                        occupancy = res.Accommodation_PaxOccupancy.Count();
+                        nearByPlaces = res.Accommodation_NearbyPlaces.Count();
+                        rule_info = res.Accommodation_RuleInfo.Count();
+                        route_info = res.Accommodation_RouteInfo.Count();
+                        media = res.Accommodation_Media.Count();
+                        hotelUpdates = res.Accommodation_HotelUpdates.Count();
+                        Status = res.Accomodation_Status.Count();
+                        Attributes = res.Accomodation_ClassificationAttributes.Count();
+                        count++;
+                    }
+
+                    return acco;
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation list", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
         public DataContracts.DC_Accomodation GetAccomodationDetails(Guid Accomodation_Id)
         {
             try
@@ -856,6 +904,32 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation details", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        public string GetColumnNameWhichValuesIsNull(Guid Accomodation_Id)
+        {
+            int Count = 0;
+            StringBuilder sb = new StringBuilder();
+            var result = GetAccomodationDetails(Accomodation_Id);
+            if (result != null)
+            {
+                foreach (var item in result.GetType().GetProperties())
+                {
+                    if (string.IsNullOrWhiteSpace(Convert.ToString(item.GetValue(result))))
+                    {
+                        sb.Append(item.Name);
+                        sb.Append(";");
+                        Count++;
+                        if (Count > 4)
+                        {
+                            sb.AppendLine();
+                            Count = 0;
+                        }
+                    }
+                }
+            }
+            return sb.ToString();
+        }
+
         #endregion
 
         #region AccomodationInfo

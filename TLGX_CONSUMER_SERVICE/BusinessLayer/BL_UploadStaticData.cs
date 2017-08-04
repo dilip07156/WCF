@@ -154,11 +154,26 @@ namespace BusinessLayer
             }
         }
 
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics> GetStaticDataUploadStatistics(DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics_RQ RQ)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.GetStaticDataUploadStatistics(RQ);
+            }
+        }
         public DataContracts.DC_Message AddStaticDataUploadProcessLog(DataContracts.UploadStaticData.DC_SupplierImportFile_Progress obj)
         {
             using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
             {
                 return objBL.AddStaticDataUploadProcessLog(obj);
+            }
+        }
+
+        public DataContracts.DC_Message AddStaticDataUploadStatistics(DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.AddStaticDataUploadStatistics(obj);
             }
         }
         public List<DataContracts.UploadStaticData.DC_SupplierImportFile_Progress> GetStaticDataUploadProcessLog(DataContracts.UploadStaticData.DC_SupplierImportFile_Progress_RQ obj)
