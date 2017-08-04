@@ -12,16 +12,11 @@ namespace DataLayer
     using System;
     using System.Collections.Generic;
     
-    public partial class vwUserwisemappedStat
+    public partial class STG_Mapping_TableIds
     {
-        public Nullable<System.Guid> ID { get; set; }
-        public Nullable<System.Guid> supplier_id { get; set; }
-        public string SupplierName { get; set; }
-        public string Username { get; set; }
-        public int Sequence { get; set; }
-        public string Status { get; set; }
-        public string MappinFor { get; set; }
-        public Nullable<int> totalcount { get; set; }
-        public Nullable<System.DateTime> EditDate { get; set; }
+        public System.Guid STG_Mapping_Table_Id { get; set; }
+        public Nullable<System.Guid> STG_Id { get; set; }
+        public Nullable<System.Guid> Mapping_Id { get; set; }
+        public Nullable<System.Guid> File_Id { get; set; }
     }
 }

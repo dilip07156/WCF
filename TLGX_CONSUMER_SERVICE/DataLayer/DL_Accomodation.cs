@@ -2747,6 +2747,7 @@ namespace DataLayer
             {
                 var search = (from ar in context.Accommodation_RoomInfo
                               where ar.Accommodation_Id == Accomodation_Id
+                              orderby ar.RoomCategory
                               select new DataContracts.DC_Accomodation_Category_DDL
                               {
                                   Accommodation_RoomInfo_Id = ar.Accommodation_RoomInfo_Id,

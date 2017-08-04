@@ -181,6 +181,14 @@ namespace BusinessLayer
             }
         }
 
+        public bool CountryMappingMatch(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.CountryMappingMatch(obj);
+            }
+        }
+
         public List<DC_SupplierRoomType_TTFU_RQ> GetRoomTypeMapping_For_TTFU(DataContracts.Masters.DC_Supplier obj)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
@@ -597,21 +605,14 @@ namespace BusinessLayer
         }
         #endregion
         #region velocity Dashboard
-        public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(string SupplierID)
+        public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(DataContracts.Mapping.DC_RollOFParams parm)
         {
-            Guid gSupplier_Id;
-
-            if (!Guid.TryParse(SupplierID, out gSupplier_Id))
-            {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
-            }
-            else
-            {
+           
                 using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
                 {
-                    return objBL.GetVelocityDashboard(gSupplier_Id);
+                    return objBL.GetVelocityDashboard(parm);
                 }
-            }
+            
         }
         #endregion
     }

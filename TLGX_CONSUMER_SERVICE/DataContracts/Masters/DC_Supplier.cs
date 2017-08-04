@@ -21,6 +21,12 @@ namespace DataContracts.Masters
         string _ProductCategory;
         string _CategorySubType;
         int _TotalRecords;
+        Guid? _File_Id;
+
+        [DataMember]
+        public int? CurrentBatch { get; set; }
+        [DataMember]
+        public int? TotalBatch { get; set; }
 
         #region GetterSetter
         [DataMember]
@@ -216,6 +222,19 @@ namespace DataContracts.Masters
             set
             {
                 _CategorySubType = value;
+            }
+        }
+        [DataMember]
+        public Guid? File_Id
+        {
+            get
+            {
+                return _File_Id;
+            }
+
+            set
+            {
+                _File_Id = value;
             }
         }
         #endregion

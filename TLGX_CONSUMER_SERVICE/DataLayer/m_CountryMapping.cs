@@ -32,5 +32,6 @@ namespace DataLayer
         public string Longitude { get; set; }
         public string ContinentCode { get; set; }
         public string ContinentName { get; set; }
+        public Nullable<System.Guid> stg_Country_Id { get; set; }
     }
 }

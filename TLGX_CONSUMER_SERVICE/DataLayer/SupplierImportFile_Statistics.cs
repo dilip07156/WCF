@@ -12,15 +12,15 @@ namespace DataLayer
     using System;
     using System.Collections.Generic;
     
-    public partial class SupplierImportFile_Progress
+    public partial class SupplierImportFile_Statistics
     {
-        public System.Guid SupplierImportFileProgress_Id { get; set; }
+        public System.Guid SupplierImportFile_Statistics_Id { get; set; }
         public Nullable<System.Guid> SupplierImportFile_Id { get; set; }
-        public string Step { get; set; }
-        public Nullable<int> PercentageValue { get; set; }
-        public string Status { get; set; }
-        public Nullable<int> TotalBatch { get; set; }
-        public Nullable<int> CurrentBatch { get; set; }
-        public Nullable<System.DateTime> LastCheckedOn { get; set; }
+        public string FinalStatus { get; set; }
+        public Nullable<int> TotalRows { get; set; }
+        public Nullable<int> Mapped { get; set; }
+        public Nullable<int> Unmapped { get; set; }
+        public Nullable<System.DateTime> Process_Date { get; set; }
+        public string Process_User { get; set; }
     }
 }

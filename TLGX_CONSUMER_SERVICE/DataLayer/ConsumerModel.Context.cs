@@ -102,9 +102,11 @@ namespace DataLayer
         public virtual DbSet<Place> Places { get; set; }
         public virtual DbSet<Accommodation_SupplierRoomTypeAttributes> Accommodation_SupplierRoomTypeAttributes { get; set; }
         public virtual DbSet<Accommodation_SupplierRoomTypeMapping> Accommodation_SupplierRoomTypeMapping { get; set; }
-        public virtual DbSet<vwUserwisemappedStat> vwUserwisemappedStats { get; set; }
         public virtual DbSet<SupplierImportFile_Progress> SupplierImportFile_Progress { get; set; }
         public virtual DbSet<SupplierImportFile_VerboseLog> SupplierImportFile_VerboseLog { get; set; }
+        public virtual DbSet<vwUserwisemappedStat> vwUserwisemappedStats { get; set; }
+        public virtual DbSet<SupplierImportFile_Statistics> SupplierImportFile_Statistics { get; set; }
+        public virtual DbSet<STG_Mapping_TableIds> STG_Mapping_TableIds { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

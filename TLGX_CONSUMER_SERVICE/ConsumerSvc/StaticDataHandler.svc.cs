@@ -212,6 +212,14 @@ namespace ConsumerSvc
             }
         }
 
+        public bool CountryMappingMatch(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.CountryMappingMatch(obj);
+            }
+        }
+
         public List<DC_SupplierRoomType_TTFU_RQ> GetRoomTypeMapping_For_TTFU(DataContracts.Masters.DC_Supplier obj)
         {
             using (BL_Mapping objBL = new BL_Mapping())
@@ -298,5 +306,15 @@ namespace ConsumerSvc
                 return objBL.AddStaticDataUploadVerboseLog(obj);
             }
         }
+
+        public DC_Message AddStaticDataUploadStatistics(DC_SupplierImportFile_Statistics obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.AddStaticDataUploadStatistics(obj);
+            }
+        }
+
+
     }
 }

@@ -30,6 +30,14 @@ namespace DataContracts.Mapping
         string _MasterCountry_Id;
         string _MasterNameWithCode;
 
+        [DataMember]
+        public string OldCountryCode { get; set; }
+
+        [DataMember]
+        public string ActionType { get; set; }
+
+        [DataMember]
+        public Nullable<System.Guid> stg_Country_Id { get; set; }
 
         [DataMember]
         public string Latitude { get; set; }
@@ -453,6 +461,12 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public List<DataContracts.UploadStaticData.DC_SupplierImportAttributeValues> lstConfigs { get; set; }
+
+        [DataMember]
+        public int TotalPriorities { get; set; }
+
+        [DataMember]
+        public Nullable<Guid> File_Id { get; set; }
 
 
     }
