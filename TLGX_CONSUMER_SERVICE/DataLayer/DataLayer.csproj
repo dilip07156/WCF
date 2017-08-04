@@ -320,6 +320,9 @@
     <Compile Include="SiteMap.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="STG_Mapping_TableIds.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="stg_SupplierCityMapping.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
@@ -342,6 +345,9 @@
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="SupplierImportFile_Progress.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SupplierImportFile_Statistics.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="SupplierImportFile_VerboseLog.cs">

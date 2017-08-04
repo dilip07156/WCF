@@ -856,6 +856,31 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation details", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        public string GetColumnNameWhichValuesIsNull(Guid Accomodation_Id)
+        {
+            int Count = 0;
+            StringBuilder sb = new StringBuilder();
+            var result = GetAccomodationDetails(Accomodation_Id);
+            if (result != null)
+            {
+                foreach (var item in result.GetType().GetProperties())
+                {
+                    if (string.IsNullOrWhiteSpace(Convert.ToString(item.GetValue(result))))
+                    {
+                        sb.Append(item.Name);
+                        sb.Append(";");
+                        Count++;
+                        if (Count > 4)
+                        {
+                            sb.AppendLine();
+                            Count = 0;
+                        }
+                    }
+                }
+            }
+            return sb.ToString();
+        }
         #endregion
 
         #region AccomodationInfo

@@ -59,6 +59,8 @@ namespace DataContracts.Mapping
         string _mstHotelName;
         string _Google_Place_Id;
 
+        [DataMember]
+        public string ActionType { get; set; }
 
         [DataMember]
         public Nullable<System.Guid> Country_Id { get; set; }
@@ -71,6 +73,11 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public string StarRating { get; set; }
+
+
+        [DataMember]
+        public Nullable<System.Guid> stg_AccoMapping_Id { get; set; }
+
         [DataMember]
         public Guid Accommodation_ProductMapping_Id
         {

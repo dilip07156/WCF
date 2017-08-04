@@ -36,7 +36,7 @@ namespace DataContracts.UploadStaticData
     public class DC_SupplierImportFile_Progress_RQ
     {
         [DataMember]
-        public Nullable<System.Guid> SupplierImportFile_Id { get; set; }
+        public string SupplierImportFile_Id { get; set; }
 
         [DataMember]
         public string Step { get; set; }

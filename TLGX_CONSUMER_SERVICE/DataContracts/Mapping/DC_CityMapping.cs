@@ -39,6 +39,12 @@ namespace DataContracts.Mapping
         string _StateNameWithCode;
 
         [DataMember]
+        public Nullable<System.Guid> stg_City_Id { get; set; }
+
+        [DataMember]
+        public string ActionType { get; set; }
+
+        [DataMember]
         public string oldCityName { get; set; }
 
         [DataMember]
