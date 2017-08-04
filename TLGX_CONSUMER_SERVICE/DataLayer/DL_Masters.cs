@@ -1856,11 +1856,12 @@ namespace DataLayer
                                                        AttributeValue = mac.AttributeValue
                                                    }).ToList();
                     }
-                    if (!string.IsNullOrWhiteSpace(_obj.AttributeValue))
+                    if (_obj.ParentAttributeValue_Id.HasValue)
                     {
                         //Get partent_id 
-                        Guid _prentAttributeValue_Id = context.m_masterattributevalue.Where(p => p.AttributeValue.ToLower() == _obj.AttributeValue.ToLower()).FirstOrDefault().MasterAttributeValue_Id;
-                        if(_prentAttributeValue_Id != Guid.Empty)
+                        //Guid _prentAttributeValue_Id = context.m_masterattributevalue.Where(p => p.AttributeValue.ToLower() == _obj.AttributeValue.ToLower()).FirstOrDefault().MasterAttributeValue_Id;
+                        Guid _prentAttributeValue_Id = _obj.ParentAttributeValue_Id.Value;
+                        if (_prentAttributeValue_Id != Guid.Empty)
                         {
                             _lstMasterAttribute = (from mac  in context.m_masterattributevalue where mac.ParentAttributeValue_Id == _prentAttributeValue_Id
                                                   select new DC_MasterAttribute
@@ -2136,7 +2137,7 @@ namespace DataLayer
 
                     //Check duplicate 
                     var isduplicate = (from attr in context.m_masterattributevalue
-                                       where attr.MasterAttributeValue_Id != obj.MasterAttributeValue_Id && attr.MasterAttribute_Id == obj.MasterAttribute_Id && attr.AttributeValue == obj.AttributeValue
+                                       where attr.MasterAttributeValue_Id != obj.MasterAttributeValue_Id && attr.ParentAttributeValue_Id == obj.ParentAttributeValue_Id && attr.MasterAttribute_Id == obj.MasterAttribute_Id && attr.AttributeValue == obj.AttributeValue
                                        select attr).Count() == 0 ? false : true;
                     if (isduplicate)
                     {

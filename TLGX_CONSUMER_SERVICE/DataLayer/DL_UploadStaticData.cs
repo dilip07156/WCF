@@ -389,6 +389,7 @@ namespace DataLayer
                                              SupplierImportAttribute_Id = a.SupplierImportAttribute_Id,
                                              AttributeType = a.AttributeType,
                                              AttributeName = a.AttributeName,
+                                             AttributeValue_ID = a.AttributeValue_ID,
                                              AttributeValue = a.AttributeValue,
                                              STATUS = a.STATUS,
                                              CREATE_DATE = a.CREATE_DATE,
@@ -427,6 +428,7 @@ namespace DataLayer
                                        where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
                                        (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
                                         attr.AttributeName.Trim().TrimStart().ToUpper() == obj.AttributeName.Trim().TrimStart().ToUpper() &&
+                                        attr.AttributeValue_ID.Value == obj.AttributeValue_ID.Value &&
                                         attr.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
                                         attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id &&
                                         attr.Priority == obj.Priority
@@ -447,6 +449,7 @@ namespace DataLayer
                         objNew.AttributeType = obj.AttributeType;
                         objNew.AttributeName = obj.AttributeName;
                         objNew.AttributeValue = obj.AttributeValue;
+                        objNew.AttributeValue_ID = obj.AttributeValue_ID;
                         objNew.CREATE_DATE = obj.CREATE_DATE;
                         objNew.CREATE_USER = obj.CREATE_USER;
                         objNew.STATUS = obj.STATUS;
@@ -481,6 +484,7 @@ namespace DataLayer
                         var isDuplicate = (from a in context.m_SupplierImportAttributeValues
                                            where a.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
                                             a.AttributeName.Trim().TrimStart().ToUpper() == obj.AttributeName.Trim().TrimStart().ToUpper() &&
+                                            a.AttributeValue_ID.Value == obj.AttributeValue_ID.Value &&
                                             a.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
                                             a.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id &&
                                             a.SupplierImportAttributeValue_Id != obj.SupplierImportAttributeValue_Id &&
@@ -501,6 +505,7 @@ namespace DataLayer
                             {
                                 search.AttributeType = obj.AttributeType;
                                 search.AttributeName = obj.AttributeName;
+                                search.AttributeValue_ID = obj.AttributeValue_ID;
                                 search.AttributeValue = obj.AttributeValue;
                                 search.STATUS = obj.STATUS;
                                 search.EDIT_DATE = obj.EDIT_DATE;
