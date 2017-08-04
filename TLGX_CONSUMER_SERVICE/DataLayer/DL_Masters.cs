@@ -1860,14 +1860,15 @@ namespace DataLayer
                     {
                         //Get partent_id 
                         Guid _prentAttributeValue_Id = context.m_masterattributevalue.Where(p => p.AttributeValue.ToLower() == _obj.AttributeValue.ToLower()).FirstOrDefault().MasterAttributeValue_Id;
-                        if(_prentAttributeValue_Id != Guid.Empty)
+                        if (_prentAttributeValue_Id != Guid.Empty)
                         {
-                            _lstMasterAttribute = (from mac  in context.m_masterattributevalue where mac.ParentAttributeValue_Id == _prentAttributeValue_Id
-                                                  select new DC_MasterAttribute
-                                                  {
-                                                      MasterAttributeValue_Id = mac.MasterAttributeValue_Id,
-                                                      AttributeValue = mac.AttributeValue
-                                                  }).ToList();
+                            _lstMasterAttribute = (from mac in context.m_masterattributevalue
+                                                   where mac.ParentAttributeValue_Id == _prentAttributeValue_Id
+                                                   select new DC_MasterAttribute
+                                                   {
+                                                       MasterAttributeValue_Id = mac.MasterAttributeValue_Id,
+                                                       AttributeValue = mac.AttributeValue
+                                                   }).ToList();
                         }
 
                     }
@@ -3855,6 +3856,10 @@ namespace DataLayer
                             keyword.Status = item.Status;
                             keyword.Icon = item.Icon;
                             keyword.EntityFor = item.EntityFor;
+                            keyword.AttributeType = item.AttributeType;
+                            keyword.AttributeLevel = item.AttributeLevel;
+                            keyword.AttributeSubLevel = item.AttributeSubLevel;
+                            keyword.AttributeSubLevelValue = item.AttributeSubLevelValue;
 
                             ret.StatusMessage = "Keyword " + ReadOnlyMessage.strUpdatedSuccessfully;
                         }
@@ -3873,7 +3878,11 @@ namespace DataLayer
                             Missing = item.Missing,
                             Status = item.Status,
                             Icon = item.Icon,
-                            EntityFor = item.EntityFor
+                            EntityFor = item.EntityFor,
+                            AttributeType = item.AttributeType,
+                            AttributeLevel = item.AttributeLevel,
+                            AttributeSubLevel = item.AttributeSubLevel,
+                            AttributeSubLevelValue = item.AttributeSubLevelValue
                         };
                         context.m_keyword.Add(newKeyword);
 
@@ -4036,6 +4045,10 @@ namespace DataLayer
                                      Sequence = a.Sequence ?? 0,
                                      Icon = a.Icon,
                                      EntityFor = a.EntityFor,
+                                     AttributeType = a.AttributeType,
+                                     AttributeLevel = a.AttributeLevel,
+                                     AttributeSubLevel = a.AttributeSubLevel,
+                                     AttributeSubLevelValue = a.AttributeSubLevelValue,
                                      Alias = (from al in searchAlias
                                               where al.Keyword_Id == a.Keyword_Id
                                               orderby (al.Sequence ?? 0), al.Value
@@ -4142,5 +4155,23 @@ namespace DataLayer
         }
 
         #endregion
+
+        public string[] GetColumnNames(string TableName)
+        {
+
+            //using (ConsumerEntities context = new ConsumerEntities())
+            //{
+            //    var query = from meta in context.MetadataWorkspace.GetItems(DataSpace.CSpace)
+            //      .Where(m => m.BuiltInTypeKind == BuiltInTypeKind.EntityType)
+            //                let m = (meta as EntityType)
+            //                where m.BaseType != null
+            //                select new
+            //                {
+            //                    m.Name,
+            //                    BaseTypeName = m.BaseType != null ? m.BaseType.Name : null,
+            //                };
+            //}
+            return null;
+        }
     }
 }

@@ -446,5 +446,9 @@ namespace OperationContracts
         List<DC_keyword_alias> SearchKeywordAlias(DC_Keyword_RQ RQ);
         #endregion
 
+        //[OperationContract]
+        //[FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        //[WebInvoke(Method = "GET", UriTemplate = "Master/ColumnNames/Get", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        //string[] GetColumnNames(string TableName);
     }
 }

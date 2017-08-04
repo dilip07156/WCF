@@ -630,5 +630,13 @@ namespace BusinessLayer
         }
 
         #endregion
+
+        public string[] GetColumnNames(string TableName)
+        {
+            using (DataLayer.DL_Masters objDL = new DataLayer.DL_Masters())
+            {
+                return objDL.GetColumnNames(TableName);
+            }
+        }
     }
 }
