@@ -50,6 +50,15 @@ namespace DataContracts.Masters
         public string EntityFor { get; set; }
 
         [DataMember]
+        public string AttributeType { get; set; }
+        [DataMember]
+        public string AttributeLevel { get; set; }
+        [DataMember]
+        public string AttributeSubLevel { get; set; }
+        [DataMember]
+        public string AttributeSubLevelValue { get; set; }
+
+        [DataMember]
         public int TotalRecords { get; set; }
 
         [DataMember]
