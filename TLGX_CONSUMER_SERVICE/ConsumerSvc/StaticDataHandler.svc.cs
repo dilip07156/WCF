@@ -315,6 +315,12 @@ namespace ConsumerSvc
             }
         }
 
-
+        public bool DeleteSTGMappingTableIDs(Guid File_Id)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.DeleteSTGMappingTableIDs(File_Id);
+            }
+        }
     }
 }

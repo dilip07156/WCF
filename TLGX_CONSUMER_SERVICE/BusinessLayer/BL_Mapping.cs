@@ -303,6 +303,13 @@ namespace BusinessLayer
             }
         }
 
+        public bool DeleteSTGMappingTableIDs(Guid file_Id)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.DeleteSTGMappingTableIDs(file_Id);
+            }
+        }
 
         public List<DataContracts.Mapping.DC_MappingStatsForSuppliers> GetMappingStatisticsForSuppliers()
         {

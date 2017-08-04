@@ -512,7 +512,7 @@ namespace DataLayer
                             objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
                             objStat.SupplierImportFile_Id = obj.File_Id;
                             DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
-                            bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
+                            //bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
 
                             retrn = true;
                         }
@@ -767,7 +767,7 @@ namespace DataLayer
                             objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
                             objStat.SupplierImportFile_Id = obj.File_Id;
                             DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
-                            bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
+                            //bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
 
                             retrn = true;
                             //if (curSupplier_Id != null)
@@ -2996,7 +2996,7 @@ namespace DataLayer
                             objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
                             objStat.SupplierImportFile_Id = obj.File_Id;
                             DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
-                            bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
+                            //bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
 
                             if (curSupplier_Id != null)
                             {
@@ -3711,7 +3711,7 @@ namespace DataLayer
                             objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
                             objStat.SupplierImportFile_Id = obj.File_Id;
                             DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
-                            bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
+                            //bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
                             retrn = true;
                             //if (curSupplier_Id != null)
                             //{
