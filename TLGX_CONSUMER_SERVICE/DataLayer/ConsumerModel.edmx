@@ -1446,6 +1446,7 @@
           <Property Name="ErrorType" Type="nvarchar" MaxLength="255" />
           <Property Name="Error_DATE" Type="datetime" />
           <Property Name="Error_USER" Type="nvarchar" MaxLength="255" />
+          <Property Name="ErrorMessage_UI" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="SupplierImportFile_Progress">
           <Key>
@@ -3009,6 +3010,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <Property Name="ErrorType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Error_DATE" Type="DateTime" Precision="3" />
           <Property Name="Error_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ErrorMessage_UI" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="SupplierImportFileDetail">
           <Key>
@@ -4599,6 +4601,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySetMapping Name="SupplierImportFile_ErrorLog">
             <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFile_ErrorLog">
               <MappingFragment StoreEntitySet="SupplierImportFile_ErrorLog">
+                <ScalarProperty Name="ErrorMessage_UI" ColumnName="ErrorMessage_UI" />
                 <ScalarProperty Name="Error_USER" ColumnName="Error_USER" />
                 <ScalarProperty Name="Error_DATE" ColumnName="Error_DATE" />
                 <ScalarProperty Name="ErrorType" ColumnName="ErrorType" />

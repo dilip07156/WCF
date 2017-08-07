@@ -21,5 +21,6 @@ namespace DataLayer
         public string ErrorType { get; set; }
         public Nullable<System.DateTime> Error_DATE { get; set; }
         public string Error_USER { get; set; }
+        public string ErrorMessage_UI { get; set; }
     }
 }
