@@ -807,6 +807,7 @@ namespace DataLayer
                     objNew.ErrorDescription = obj.ErrorDescription;
                     objNew.Error_DATE = obj.Error_DATE;
                     objNew.Error_USER = obj.Error_USER;
+                    objNew.ErrorMessage_UI = obj.ErrorMessage_UI;
                     context.SupplierImportFile_ErrorLog.Add(objNew);
                     context.SaveChanges();
                     dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
@@ -864,6 +865,7 @@ namespace DataLayer
                                              Error_DATE = a.Error_DATE,
                                              Error_USER = a.Error_USER,
                                              ErrorCode = a.ErrorCode,
+                                             ErrorMessage_UI = a.ErrorMessage_UI,
                                              TotalCount = total
                                          }).Skip(skip ?? 0).Take(RQ.PageSize ?? total).ToList();
 
