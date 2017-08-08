@@ -287,5 +287,23 @@ namespace BusinessLayer
             }
         }
         #endregion
+        #region  File Progress DashBoard
+        public DataContracts.DC_FileProgressDashboard getFileProgressDashBoardData(string fileid)
+        {
+            Guid gfileid;
+
+            if (!Guid.TryParse(fileid, out gfileid))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            else
+            {
+                using (DL_UploadStaticData objBL = new DL_UploadStaticData())
+                {
+                    return objBL.getFileProgressDashBoardData(gfileid);
+                }
+            }
+        }
+        #endregion
     }
 }

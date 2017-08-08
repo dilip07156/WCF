@@ -182,6 +182,15 @@ namespace ConsumerSvc
             }
         }
         #endregion
+        #region File Progress DashBoard
+        public DataContracts.DC_FileProgressDashboard getFileProgressDashBoardData(string fileid)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.getFileProgressDashBoardData(fileid);
+            }
+        }
+        #endregion
 
     }
 }

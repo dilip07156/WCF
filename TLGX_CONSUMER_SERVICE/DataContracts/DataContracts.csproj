@@ -54,6 +54,7 @@
     <Compile Include="DC_Accomodation.cs" />
     <Compile Include="DC_Address.cs" />
     <Compile Include="DC_ErrorStatus.cs" />
+    <Compile Include="DC_FileProgressDashboard.cs" />
     <Compile Include="DC_GeoLocation.cs" />
     <Compile Include="DC_Masters.cs" />
     <Compile Include="DC_Master_City.cs" />
