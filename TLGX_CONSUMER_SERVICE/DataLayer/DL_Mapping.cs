@@ -1922,15 +1922,17 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var roomTypeSearch = from asrtm in context.Accommodation_SupplierRoomTypeMapping
-                                         join sup in context.Suppliers on asrtm.Supplier_Id equals sup.Supplier_Id
-                                         join acco in context.Accommodations on asrtm.Accommodation_Id equals acco.Accommodation_Id
-                                         join country in context.m_CountryMaster on acco.Country_Id equals country.Country_Id
-                                         join city in context.m_CityMaster on acco.City_Id equals city.City_Id
-                                         join accori in context.Accommodation_RoomInfo on new { AccoId = acco.Accommodation_Id, AccoRIId = asrtm.Accommodation_RoomInfo_Id ?? Guid.Empty } equals new { AccoId = accori.Accommodation_Id ?? Guid.Empty, AccoRIId = accori.Accommodation_RoomInfo_Id } into accoritemp
+                    context.Database.CommandTimeout = 0;
+
+                    var roomTypeSearch = from asrtm in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
+                                         //join sup in context.Suppliers.AsNoTracking() on asrtm.Supplier_Id equals sup.Supplier_Id
+                                         join acco in context.Accommodations.AsNoTracking() on asrtm.Accommodation_Id equals acco.Accommodation_Id
+                                         join country in context.m_CountryMaster.AsNoTracking() on acco.Country_Id equals country.Country_Id
+                                         join city in context.m_CityMaster.AsNoTracking() on acco.City_Id equals city.City_Id
+                                         join accori in context.Accommodation_RoomInfo.AsNoTracking() on new { AccoId = acco.Accommodation_Id, AccoRIId = asrtm.Accommodation_RoomInfo_Id ?? Guid.Empty } equals new { AccoId = accori.Accommodation_Id ?? Guid.Empty, AccoRIId = accori.Accommodation_RoomInfo_Id } into accoritemp
                                          from accorinew in accoritemp.DefaultIfEmpty()
-                                         where sup.Supplier_Id == (obj.Supplier_Id ?? sup.Supplier_Id)
-                                         && sup.Name.Trim().ToUpper() == (obj.SupplierName.Trim().ToUpper() ?? sup.Name.Trim().ToUpper())
+                                         where asrtm.Supplier_Id == (obj.Supplier_Id ?? asrtm.Supplier_Id)
+                                         //&& sup.Name.Trim().ToUpper() == (obj.SupplierName.Trim().ToUpper() ?? sup.Name.Trim().ToUpper())
                                          && country.Country_Id == (obj.Country ?? country.Country_Id)
                                          && city.City_Id == (obj.City ?? city.City_Id)
                                          && asrtm.MappingStatus == (obj.Status ?? asrtm.MappingStatus)
@@ -1955,7 +1957,7 @@ namespace DataLayer
                                              RatePlan = asrtm.RatePlan,
                                              RatePlanCode = asrtm.RatePlanCode,
                                              RoomTypeAttributes = (context.Accommodation_SupplierRoomTypeAttributes.Where(w => w.RoomTypeMap_Id == asrtm.Accommodation_SupplierRoomTypeMapping_Id).Select(s => new DC_SupplierRoomTypeAttributes { Accommodation_SupplierRoomTypeMapAttribute_Id = s.RoomTypeMapAttribute_Id, Accommodation_SupplierRoomTypeMap_Id = s.RoomTypeMap_Id, SupplierRoomTypeAttribute = s.SupplierRoomTypeAttribute, SystemAttributeKeyword = s.SystemAttributeKeyword, SystemAttributeKeyword_Id = s.SystemAttributeKeyword_Id, IconClass = context.m_keyword.Where(kw => kw.Keyword_Id == s.SystemAttributeKeyword_Id).Select(kws => kws.Icon).FirstOrDefault() }).ToList()),
-                                             SupplierName = sup.Code,
+                                             SupplierName = asrtm.SupplierName,
                                              SupplierProductId = asrtm.SupplierProductId,
                                              SupplierProductName = asrtm.SupplierProductName,
                                              SupplierRoomCategory = asrtm.SupplierRoomCategory,
@@ -1963,7 +1965,7 @@ namespace DataLayer
                                              SupplierRoomId = asrtm.SupplierRoomId,
                                              SupplierRoomName = asrtm.SupplierRoomName,
                                              SupplierRoomTypeCode = asrtm.SupplierRoomTypeCode,
-                                             Supplier_Id = sup.Supplier_Id,
+                                             Supplier_Id = asrtm.Supplier_Id,
                                              TotalRecords = 0,
                                              Tx_ReorderedName = asrtm.Tx_ReorderedName,
                                              TX_RoomName = asrtm.TX_RoomName,
@@ -2351,9 +2353,9 @@ namespace DataLayer
 
                     //Check for Spaced Keyword and Replace
                     List<DataContracts.Masters.DC_Keyword> SpacedKeywords = Keywords.Where(w => w.Attribute == false && w.Alias.Any(a => a.Value.Contains(' '))).ToList();
-                    foreach (DataContracts.Masters.DC_Keyword spacedkey in SpacedKeywords)
+                    foreach (DataContracts.Masters.DC_Keyword spacedkey in SpacedKeywords.OrderBy(o => o.Sequence))
                     {
-                        var spacedAliases = spacedkey.Alias.Where(w => w.Value.Contains(' ')).OrderBy(o => o.Sequence).OrderByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
+                        var spacedAliases = spacedkey.Alias.Where(w => w.Value.Contains(' ')).OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
                         foreach (var alias in spacedAliases)
                         {
                             if (BaseRoomName.Contains(alias.Value.ToUpper()))
@@ -2390,9 +2392,9 @@ namespace DataLayer
                     srn.TX_SupplierRoomName = BaseRoomName;
 
                     //Attribute Extraction
-                    foreach (var Attribute in Attributes)
+                    foreach (var Attribute in Attributes.OrderBy(o => o.Sequence))
                     {
-                        var aliases = Attribute.Alias.OrderBy(o => o.Sequence).OrderByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
+                        var aliases = Attribute.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
                         foreach (var alias in aliases)
                         {
                             if (BaseRoomName.Contains(alias.Value.ToUpper()))
