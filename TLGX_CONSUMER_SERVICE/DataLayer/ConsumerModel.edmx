@@ -413,6 +413,7 @@
           <Property Name="SupplierRoomTypeAttribute" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="SystemAttributeKeyword" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="SystemAttributeKeyword_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Accommodation_RoomFacility_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Accommodation_SupplierRoomTypeMapping">
           <Key>
@@ -3287,6 +3288,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <Property Name="SupplierRoomTypeAttribute" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="SystemAttributeKeyword" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="SystemAttributeKeyword_Id" Type="Guid" Nullable="false" />
+          <Property Name="Accommodation_RoomFacility_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="Accommodation_SupplierRoomTypeMapping">
           <Key>
@@ -4890,6 +4892,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySetMapping Name="Accommodation_SupplierRoomTypeAttributes">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeAttributes">
               <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeAttributes">
+                <ScalarProperty Name="Accommodation_RoomFacility_Id" ColumnName="Accommodation_RoomFacility_Id" />
                 <ScalarProperty Name="SystemAttributeKeyword_Id" ColumnName="SystemAttributeKeyword_Id" />
                 <ScalarProperty Name="SystemAttributeKeyword" ColumnName="SystemAttributeKeyword" />
                 <ScalarProperty Name="SupplierRoomTypeAttribute" ColumnName="SupplierRoomTypeAttribute" />
