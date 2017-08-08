@@ -2235,5 +2235,24 @@ namespace DataLayer
             }
         }
         #endregion
+
+        #region File Progress DashBoard
+        public DataContracts.DC_FileProgressDashboard getFileProgressDashBoardData(Guid fileid)
+        {
+            try
+            {
+                DataContracts.DC_FileProgressDashboard obj = new DC_FileProgressDashboard();
+                obj.ProgressLog = GetStaticDataUploadProcessLog(new DataContracts.UploadStaticData.DC_SupplierImportFile_Progress_RQ { SupplierImportFile_Id = fileid.ToString() });
+                obj.VerboseLog = GetStaticDataUploadVerboseLog(new DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog_RQ { SupplierImportFile_Id = fileid });
+                obj.FileDetails = GetStaticDataUploadStatistics(new DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics_RQ { SupplierImportFile_Id = fileid });
+                return obj;
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+            
+        }
+        #endregion
     }
 }
