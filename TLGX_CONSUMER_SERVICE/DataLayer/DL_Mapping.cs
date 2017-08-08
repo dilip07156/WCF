@@ -2351,9 +2351,9 @@ namespace DataLayer
 
                     //Check for Spaced Keyword and Replace
                     List<DataContracts.Masters.DC_Keyword> SpacedKeywords = Keywords.Where(w => w.Attribute == false && w.Alias.Any(a => a.Value.Contains(' '))).ToList();
-                    foreach (DataContracts.Masters.DC_Keyword spacedkey in SpacedKeywords)
+                    foreach (DataContracts.Masters.DC_Keyword spacedkey in SpacedKeywords.OrderBy(o => o.Sequence))
                     {
-                        var spacedAliases = spacedkey.Alias.Where(w => w.Value.Contains(' ')).OrderBy(o => o.Sequence).OrderByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
+                        var spacedAliases = spacedkey.Alias.Where(w => w.Value.Contains(' ')).OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
                         foreach (var alias in spacedAliases)
                         {
                             if (BaseRoomName.Contains(alias.Value.ToUpper()))
@@ -2390,9 +2390,9 @@ namespace DataLayer
                     srn.TX_SupplierRoomName = BaseRoomName;
 
                     //Attribute Extraction
-                    foreach (var Attribute in Attributes)
+                    foreach (var Attribute in Attributes.OrderBy(o => o.Sequence))
                     {
-                        var aliases = Attribute.Alias.OrderBy(o => o.Sequence).OrderByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
+                        var aliases = Attribute.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
                         foreach (var alias in aliases)
                         {
                             if (BaseRoomName.Contains(alias.Value.ToUpper()))
