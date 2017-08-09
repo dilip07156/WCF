@@ -1287,7 +1287,7 @@ namespace DataLayer
                     var skip = RQ.PageSize * RQ.PageNo;
 
                     var ProgLogResult = (from a in ProgLogSearch
-                                         orderby a.TimeStamp 
+                                         orderby a.TimeStamp descending
                                          select new DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog
                                          {
                                              SupplierImportFile_VerboseLog_Id = a.SupplierImportFile_VerboseLog_Id,
