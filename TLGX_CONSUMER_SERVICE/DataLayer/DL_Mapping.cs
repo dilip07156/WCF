@@ -1924,6 +1924,13 @@ namespace DataLayer
                 {
                     context.Database.CommandTimeout = 0;
 
+                    Guid? Accommodation_Id = null;
+
+                    if(!string.IsNullOrWhiteSpace(obj.ProductName))
+                    {
+                        Accommodation_Id = context.Accommodations.Where(w => w.HotelName.ToUpper() == obj.ProductName.ToUpper().Trim()).Select(s => s.Accommodation_Id).FirstOrDefault();
+                    }
+
                     var roomTypeSearch = from asrtm in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
                                              //join sup in context.Suppliers.AsNoTracking() on asrtm.Supplier_Id equals sup.Supplier_Id
                                          join acco in context.Accommodations.AsNoTracking() on asrtm.Accommodation_Id equals acco.Accommodation_Id
@@ -1936,7 +1943,7 @@ namespace DataLayer
                                          && country.Country_Id == (obj.Country ?? country.Country_Id)
                                          && city.City_Id == (obj.City ?? city.City_Id)
                                          && asrtm.MappingStatus == (obj.Status ?? asrtm.MappingStatus)
-                                         && acco.HotelName == (obj.ProductName ?? acco.HotelName)
+                                         && acco.Accommodation_Id == (Accommodation_Id ?? acco.Accommodation_Id)
                                          select new DC_Accommodation_SupplierRoomTypeMap_SearchRS
                                          {
                                              Accommodation_Id = asrtm.Accommodation_Id,
@@ -2068,6 +2075,29 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    context.Database.CommandTimeout = 0;
+
+                    //List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
+
+                    //if (obj != null)
+                    //{
+                    //    if(obj.Count > 0)
+                    //    {
+                    //        using (DL_Masters objDL = new DL_Masters())
+                    //        {
+                    //            Keywords = objDL.SearchKeyword(null);
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning, StatusMessage = "There are no records in input." };
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Input is NULL." };
+                    //}
+
                     foreach (DC_Accommodation_SupplierRoomTypeMap_Update item in obj)
                     {
                         if (item.Accommodation_SupplierRoomTypeMapping_Id != null && !string.IsNullOrWhiteSpace(item.Status))
@@ -2496,7 +2526,7 @@ namespace DataLayer
                                     SystemAttributeKeyword = Attribute.Keyword
                                 });
 
-                                if (Attribute.AttributeType.ToUpper().Contains("STRIP"))
+                                if ((Attribute.AttributeType ?? string.Empty).ToUpper().Contains("STRIP"))
                                 {
                                     BaseRoomName = BaseRoomName.Replace(alias.Value.ToUpper(), string.Empty);
                                 }
