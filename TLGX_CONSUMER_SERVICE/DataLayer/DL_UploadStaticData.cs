@@ -1208,7 +1208,9 @@ namespace DataLayer
                                              Step = a.Step,
                                              Status = a.Status,
                                              PercentageValue = a.PercentageValue,
-                                             TotalCount = total
+                                             TotalCount = total,
+                                             CurrentBatch=a.CurrentBatch??0,
+                                             TotalBatch=a.TotalBatch??0
                                          }).ToList();
 
                     return ProgLogResult;
