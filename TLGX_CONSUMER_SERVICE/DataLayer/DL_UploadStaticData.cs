@@ -1208,7 +1208,9 @@ namespace DataLayer
                                              Step = a.Step,
                                              Status = a.Status,
                                              PercentageValue = a.PercentageValue,
-                                             TotalCount = total
+                                             TotalCount = total,
+                                             CurrentBatch=a.CurrentBatch??0,
+                                             TotalBatch=a.TotalBatch??0
                                          }).ToList();
 
                     return ProgLogResult;
@@ -1285,7 +1287,7 @@ namespace DataLayer
                     var skip = RQ.PageSize * RQ.PageNo;
 
                     var ProgLogResult = (from a in ProgLogSearch
-                                         orderby a.TimeStamp 
+                                         orderby a.TimeStamp descending
                                          select new DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog
                                          {
                                              SupplierImportFile_VerboseLog_Id = a.SupplierImportFile_VerboseLog_Id,
@@ -2246,7 +2248,7 @@ namespace DataLayer
                 DataContracts.DC_FileProgressDashboard obj = new DC_FileProgressDashboard();
                 obj.ProgressLog = GetStaticDataUploadProcessLog(new DataContracts.UploadStaticData.DC_SupplierImportFile_Progress_RQ { SupplierImportFile_Id = fileid.ToString() });
                 obj.VerboseLog = GetStaticDataUploadVerboseLog(new DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog_RQ { SupplierImportFile_Id = fileid });
-                obj.FileDetails = GetStaticDataUploadStatistics(new DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics_RQ { SupplierImportFile_Id = fileid });
+                obj.FileDetails = GetStaticDataFileDetail(new DataContracts.UploadStaticData.DC_SupplierImportFileDetails_RQ  { SupplierImportFile_Id = fileid });
                 return obj;
             }
             catch(Exception ex)
