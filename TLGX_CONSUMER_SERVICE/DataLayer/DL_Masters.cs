@@ -17,6 +17,8 @@ namespace DataLayer
             Save,
             Update
         }
+
+
         public void Dispose()
         { }
 
@@ -1865,11 +1867,11 @@ namespace DataLayer
                         {
                             _lstMasterAttribute = (from mac in context.m_masterattributevalue
                                                    where mac.ParentAttributeValue_Id == _prentAttributeValue_Id
-                                                  select new DC_MasterAttribute
-                                                  {
-                                                      MasterAttributeValue_Id = mac.MasterAttributeValue_Id,
-                                                      AttributeValue = mac.AttributeValue
-                                                  }).ToList();
+                                                   select new DC_MasterAttribute
+                                                   {
+                                                       MasterAttributeValue_Id = mac.MasterAttributeValue_Id,
+                                                       AttributeValue = mac.AttributeValue
+                                                   }).ToList();
                         }
 
                     }
@@ -4174,25 +4176,134 @@ namespace DataLayer
             //}
             return null;
         }
-       
+
         public List<string> GetListOfColumnNamesByTable(string TableName)
         {
             List<string> _lstColumnName = new List<string>();
-
-            using (ConsumerEntities context = new ConsumerEntities())
+            if (TableName != null)
             {
-                var result = (from x in context.stg_SupplierCityMapping select x).Take(1).ToList();
-
-                foreach(var cl in result[0].GetType().GetProperties())
+                using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    //string strDataType = string.Empty;
-                    //if (cl.PropertyType.GenericTypeArguments.Length > 0)
-                    //    strDataType = Convert.ToString(cl.PropertyType.GenericTypeArguments[0].FullName);
-                    //else
-                    //    strDataType = cl.PropertyType.FullName;
-                    //_lstColumnName.Add(string.Concat(cl.Name, ",", strDataType));
-                    _lstColumnName.Add(cl.Name);
+                    string strtablename = TableName.ToLower();
+                    //City
+                    if (strtablename == "stg_suppliercitymapping")
+                    {
+                        var result = (from x in context.stg_SupplierCityMapping select x).Take(1).ToList();
 
+                        foreach (var cl in result[0].GetType().GetProperties())
+                        {
+                            _lstColumnName.Add(cl.Name);
+                        }
+                    }
+                    else if (strtablename == "m_citymaster")
+                    {
+                        var result = (from x in context.m_CityMaster select x).Take(1).ToList();
+
+                        foreach (var cl in result[0].GetType().GetProperties())
+                        {
+                            _lstColumnName.Add(cl.Name);
+                        }
+                    }
+                    else if (strtablename == "m_citymapping")
+                    {
+                        var result = (from x in context.m_CityMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+
+                    //Country
+                    else if (strtablename == "stg_suppliercountrymapping")
+                    {
+                        var result = (from x in context.stg_SupplierCountryMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "m_countrymapping")
+                    {
+                        var result = (from x in context.m_CountryMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "m_countrymaster")
+                    {
+                        var result = (from x in context.m_CountryMaster select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+
+                    //Activity
+                    else if (strtablename == "stg_supplieractivitymapping")
+                    {
+                        //var result = (from x in context.stg_supplieractivitymapping select x).Take(1).ToList();  //table Not added 
+                        //foreach (var cl in result[0].GetType().GetProperties())
+                        //    _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "m_activity_master")
+                    {
+                        var result = (from x in context.m_Activity_Master select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "activity_supplierproductmapping")
+                    {
+                        var result = (from x in context.Activity_SupplierProductMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+
+                    }
+
+                    //Hotel
+                    else if (strtablename == "stg_supplierproductmapping")
+                    {
+                        var result = (from x in context.stg_SupplierProductMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "accommodation_productmapping")
+                    {
+                        var result = (from x in context.Accommodation_ProductMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "accommodation")
+                    {
+                        var result = (from x in context.Accommodations select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+
+                    //Room Type
+                    else if (strtablename == "accommodation_supplierroomtypemapping")
+                    {
+                        var result = (from x in context.Accommodation_SupplierRoomTypeMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "accommodation_roominfo")
+                    {
+                        var result = (from x in context.Accommodation_RoomInfo select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "stg_supplierhotelroommapping")
+                    {
+                        var result = (from x in context.stg_SupplierHotelRoomMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    //var result = (from x in context.stg_SupplierCityMapping select x).Take(1).ToList();
+
+                    //foreach (var cl in result[0].GetType().GetProperties())
+                    //{
+                    //    //string strDataType = string.Empty;
+                    //    //if (cl.PropertyType.GenericTypeArguments.Length > 0)
+                    //    //    strDataType = Convert.ToString(cl.PropertyType.GenericTypeArguments[0].FullName);
+                    //    //else
+                    //    //    strDataType = cl.PropertyType.FullName;
+                    //    //_lstColumnName.Add(string.Concat(cl.Name, ",", strDataType));
+                    //    _lstColumnName.Add(cl.Name);
+
+                    //}
                 }
             }
             return _lstColumnName;
