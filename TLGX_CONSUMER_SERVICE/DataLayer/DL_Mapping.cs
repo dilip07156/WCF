@@ -2946,10 +2946,12 @@ namespace DataLayer
             configWhere = "";
 
             int totPriorities = obj.TotalPriorities;
+            int curPriority = obj.CurrentPriority;
             int totConfigs = 0;
             int curConfig = 0;
             if (totPriorities <= 0)
                 totPriorities = 1;
+            int PerForEachPriority = 60 / totPriorities;
 
             if (supdata != null)
             {
@@ -2990,7 +2992,7 @@ namespace DataLayer
 
                     foreach (DC_SupplierImportAttributeValues config in configs)
                     {
-
+                        curConfig = curConfig + 1;
                         configWhere = " " + configWhere + config.AttributeName + " == " + config.AttributeValue + " AND";
 
                         if (config.AttributeValue.Replace("m_CountryMaster.", "").Trim().ToUpper() == "CODE")
@@ -3029,7 +3031,8 @@ namespace DataLayer
                                              where m.Latitude != null && a.Latitude != null && m.Longitude != null && a.Longitude != null
                                              select a);
                         }
-                        PLog.PercentageValue = (70 / totPriorities) / totConfigs;
+                        //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
+                        PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + (PerForEachPriority / totConfigs);
                         USD.AddStaticDataUploadProcessLog(PLog);
                     }
 
@@ -3061,7 +3064,7 @@ namespace DataLayer
                                    Longitude = a.Longitude
                                }).ToList();
 
-                        PLog.PercentageValue = 75;
+                        PLog.PercentageValue = 65;
                         USD.AddStaticDataUploadProcessLog(PLog);
 
                         res = res.Select(c =>
@@ -3083,7 +3086,7 @@ namespace DataLayer
                             return c;
                         }).ToList();
 
-                        PLog.PercentageValue = 80;
+                        PLog.PercentageValue = 70;
                         USD.AddStaticDataUploadProcessLog(PLog);
 
                         #region "Old Code"
@@ -3142,7 +3145,7 @@ namespace DataLayer
                                 res.Remove(v);
                         }
 
-                        PLog.PercentageValue = 85;
+                        PLog.PercentageValue = 75;
                         USD.AddStaticDataUploadProcessLog(PLog);
 
                         if (UpdateCountryMapping(res))
