@@ -273,7 +273,13 @@ namespace DataLayer
                 }).ToList();
 
                 List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstobj = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
-                lstobj.InsertRange(lstobj.Count, clsMappingHotel.Where(a => a.stg_AccoMapping_Id != null && a.ActionType == "UPDATE").Select
+                lstobj.InsertRange(lstobj.Count, clsMappingHotel.Where(a => a.stg_AccoMapping_Id != null && a.ActionType == "UPDATE"
+                    && (a.stg_AccoMapping_Id ?? Guid.Empty ) != Guid.Empty
+                //&& a.stg_AccoMapping_Id == (clsSTGHotel
+                //    .Where(s => s.ProductId == a.SupplierProductReference)
+                //    .Select(s1 => s1.stg_AccoMapping_Id)
+                //    .FirstOrDefault())
+                ).Select
                    (g => new DataContracts.STG.DC_STG_Mapping_Table_Ids
                    {
                        STG_Mapping_Table_Id = Guid.NewGuid(),
@@ -347,7 +353,8 @@ namespace DataLayer
                         Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
                     }));
 
-                lstobj.InsertRange(lstobj.Count, clsMappingHotel.Where(a => a.stg_AccoMapping_Id != null && a.ActionType == "INSERT")
+                lstobj.InsertRange(lstobj.Count, clsMappingHotel.Where(a => a.stg_AccoMapping_Id != null && a.ActionType == "INSERT"
+                    && (a.stg_AccoMapping_Id ?? Guid.Empty) != Guid.Empty)
                .Select
                   (g => new DataContracts.STG.DC_STG_Mapping_Table_Ids
                   {
@@ -1737,7 +1744,8 @@ namespace DataLayer
                 }).ToList();
 
                 List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstobj = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
-                lstobj.InsertRange(lstobj.Count, clsMappingHotel.Where(a => a.stg_SupplierHotelRoomMapping_Id != null && a.ActionType == "UPDATE").Select
+                lstobj.InsertRange(lstobj.Count, clsMappingHotel.Where(a => a.stg_SupplierHotelRoomMapping_Id != null && a.ActionType == "UPDATE"
+                    && (a.stg_SupplierHotelRoomMapping_Id ?? Guid.Empty) != Guid.Empty).Select
                    (g => new DataContracts.STG.DC_STG_Mapping_Table_Ids
                    {
                        STG_Mapping_Table_Id = Guid.NewGuid(),
@@ -1803,7 +1811,8 @@ namespace DataLayer
                         ActionType = "INSERT"
                     }));
 
-                lstobj.InsertRange(lstobj.Count, clsMappingHotel.Where(a => a.stg_SupplierHotelRoomMapping_Id != null && a.ActionType == "INSERT")
+                lstobj.InsertRange(lstobj.Count, clsMappingHotel.Where(a => a.stg_SupplierHotelRoomMapping_Id != null && a.ActionType == "INSERT"
+                    && (a.stg_SupplierHotelRoomMapping_Id ?? Guid.Empty) != Guid.Empty)
                 .Select
                    (g => new DataContracts.STG.DC_STG_Mapping_Table_Ids
                    {
@@ -2835,7 +2844,8 @@ namespace DataLayer
                 }).ToList();
 
                 List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstobj = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
-                lstobj.InsertRange(lstobj.Count, clsMappingCountry.Where(a => ((a.stg_Country_Id == Guid.Empty) ? Guid.Empty : a.stg_Country_Id) != Guid.Empty && a.ActionType == "UPDATE").Select
+                lstobj.InsertRange(lstobj.Count, clsMappingCountry.Where(a => ((a.stg_Country_Id == Guid.Empty) ? Guid.Empty : a.stg_Country_Id) != Guid.Empty && a.ActionType == "UPDATE"
+                    && (a.stg_Country_Id ?? Guid.Empty) != Guid.Empty).Select
                    (g => new DataContracts.STG.DC_STG_Mapping_Table_Ids
                    {
                        STG_Mapping_Table_Id = Guid.NewGuid(),
@@ -2880,7 +2890,8 @@ namespace DataLayer
                     Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
                 }));
 
-                lstobj.InsertRange(lstobj.Count, clsMappingCountry.Where(a => a.stg_Country_Id != null && a.ActionType == "INSERT")
+                lstobj.InsertRange(lstobj.Count, clsMappingCountry.Where(a => a.stg_Country_Id != null && a.ActionType == "INSERT" 
+                && (a.stg_Country_Id ?? Guid.Empty) != Guid.Empty)
                .Select
                   (g => new DataContracts.STG.DC_STG_Mapping_Table_Ids
                   {
@@ -3523,7 +3534,8 @@ namespace DataLayer
                 }).ToList();
 
                 List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstobj = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
-                lstobj.InsertRange(lstobj.Count, clsMappingCity.Where(a => a.stg_City_Id != null && a.ActionType == "UPDATE").Select
+                lstobj.InsertRange(lstobj.Count, clsMappingCity.Where(a => a.stg_City_Id != null && a.ActionType == "UPDATE" 
+                && (a.stg_City_Id ?? Guid.Empty) != Guid.Empty).Select
                    (g => new DataContracts.STG.DC_STG_Mapping_Table_Ids
                    {
                        STG_Mapping_Table_Id = Guid.NewGuid(),
@@ -3607,7 +3619,8 @@ namespace DataLayer
 
                     }));
 
-                lstobj.InsertRange(lstobj.Count, clsMappingCity.Where(a => a.stg_City_Id != null && a.ActionType == "INSERT")
+                lstobj.InsertRange(lstobj.Count, clsMappingCity.Where(a => a.stg_City_Id != null && a.ActionType == "INSERT"
+                && (a.stg_City_Id ?? Guid.Empty) != Guid.Empty)
                .Select
                   (g => new DataContracts.STG.DC_STG_Mapping_Table_Ids
                   {
