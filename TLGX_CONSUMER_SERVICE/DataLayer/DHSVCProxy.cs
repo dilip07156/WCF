@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Runtime.Serialization.Json;
 using System.IO;
+using System.Net.Http;
 
 namespace DataLayer
 {
@@ -149,7 +150,41 @@ namespace DataLayer
                 ReturnValue = null;
                 return false;
             }
+        }
+    }
 
+    public class DHSVCProxyAsync
+    {
+        public void PostAsync(ProxyFor For, string URI, object Param, Type RequestType)
+        {
+            string AbsPath = string.Empty;
+            if (For == ProxyFor.DataHandler)
+            {
+                AbsPath = DHSVCProxy.DHSVCURL;
+            }
+            else if (For == ProxyFor.SqlToMongo)
+            {
+                AbsPath = DHSVCProxy.MONGOSVCURL;
+            }
+
+            string requestUri = AbsPath + URI;
+
+            DataContractJsonSerializer serializerToUpload = new DataContractJsonSerializer(RequestType);
+            string body = string.Empty;
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var reader = new StreamReader(memoryStream))
+                {
+                    serializerToUpload.WriteObject(memoryStream, Param);
+                    memoryStream.Position = 0;
+                    body = reader.ReadToEnd();
+                }
+            }
+            serializerToUpload = null;
+
+            HttpClient hc = new HttpClient();
+            StringContent json = new StringContent(body, Encoding.UTF8, "application/json");
+            hc.PostAsync(requestUri, json);
         }
     }
 }
