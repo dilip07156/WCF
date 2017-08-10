@@ -1067,6 +1067,9 @@
           <Property Name="EDIT_DATE" Type="datetime" />
           <Property Name="EDIT_USER" Type="nvarchar" MaxLength="255" />
           <Property Name="AttributeFor" Type="nvarchar" MaxLength="50" />
+          <Property Name="STG_Table" Type="nvarchar" MaxLength="255" />
+          <Property Name="Mapping_Table" Type="nvarchar" MaxLength="255" />
+          <Property Name="Master_Table" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="m_SupplierImportAttributeValues">
           <Key>
@@ -2981,6 +2984,9 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <Property Name="EDIT_DATE" Type="DateTime" Precision="3" />
           <Property Name="EDIT_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="AttributeFor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="STG_Table" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Mapping_Table" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Master_Table" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_SupplierImportAttributeValues">
           <Key>
@@ -4569,6 +4575,9 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySetMapping Name="m_SupplierImportAttributes">
             <EntityTypeMapping TypeName="ConsumerModel.m_SupplierImportAttributes">
               <MappingFragment StoreEntitySet="m_SupplierImportAttributes">
+                <ScalarProperty Name="Master_Table" ColumnName="Master_Table" />
+                <ScalarProperty Name="Mapping_Table" ColumnName="Mapping_Table" />
+                <ScalarProperty Name="STG_Table" ColumnName="STG_Table" />
                 <ScalarProperty Name="AttributeFor" ColumnName="AttributeFor" />
                 <ScalarProperty Name="EDIT_USER" ColumnName="EDIT_USER" />
                 <ScalarProperty Name="EDIT_DATE" ColumnName="EDIT_DATE" />

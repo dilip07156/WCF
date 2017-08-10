@@ -700,5 +700,12 @@ namespace ConsumerSvc
         //    }
         //}
 
+        public List<string> GetListOfColumnNamesByTable(string TableName)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetListOfColumnNamesByTable(TableName);
+            }
+        }
     }
 }

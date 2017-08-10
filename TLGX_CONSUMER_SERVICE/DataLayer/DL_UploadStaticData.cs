@@ -160,6 +160,13 @@ namespace DataLayer
                         objNew.AttributeFor = obj.For;
                         objNew.CREATE_DATE = obj.CREATE_DATE;
                         objNew.CREATE_USER = obj.CREATE_USER;
+                        MappingTableName _objMappingTableName = GetTableDeatils(obj.Entity);
+                        if (_objMappingTableName != null)
+                        {
+                            objNew.STG_Table = _objMappingTableName.STG_Table;
+                            objNew.Master_Table = _objMappingTableName.Master_Table;
+                            objNew.Mapping_Table = _objMappingTableName.Mapping_Table;
+                        }
 
                         context.m_SupplierImportAttributes.Add(objNew);
                         context.SaveChanges();
@@ -175,6 +182,70 @@ namespace DataLayer
                 dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                 return dc;
             }
+        }
+        #region Helping class MappingTableName
+        public class MappingTableName
+        {
+            public string STG_Table { get; set; }
+            public string Mapping_Table { get; set; }
+            public string Master_Table { get; set; }
+
+        }
+        #endregion
+        private MappingTableName GetTableDeatils(string entity)
+        {
+            MappingTableName _objMappingTableName = new MappingTableName();
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(entity))
+                {
+                    string strSTG_Table = "STAGING_" + entity.ToUpper();
+                    string strMapping_Table = "MAPPING_" + entity.ToUpper();
+                    string strMaster_Table = "MASTER_" + entity.ToUpper();
+                    string strMasterFor = "MappingFileConfig";
+                    string strParent = "MappingProcessType";
+
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        var resultSTG =
+                                  (from mst in context.m_masterattribute
+                                   join mstv in context.m_masterattributevalue on mst.MasterAttribute_Id equals mstv.MasterAttribute_Id
+                                   join msttblv in context.m_masterattributevalue on mstv.MasterAttributeValue_Id equals msttblv.ParentAttributeValue_Id
+                                   where mst.MasterFor == strMasterFor && mst.Name == strParent
+                                   && mstv.AttributeValue == strSTG_Table
+                                   select msttblv.AttributeValue
+                                   ).FirstOrDefault();
+
+                        _objMappingTableName.STG_Table = resultSTG;
+                        var resultMapping =
+                            (from mst in context.m_masterattribute
+                             join mstv in context.m_masterattributevalue on mst.MasterAttribute_Id equals mstv.MasterAttribute_Id
+                             join msttblv in context.m_masterattributevalue on mstv.MasterAttributeValue_Id equals msttblv.ParentAttributeValue_Id
+                             where mst.MasterFor == strMasterFor && mst.Name == strParent
+                             && mstv.AttributeValue == strMapping_Table
+                             select msttblv.AttributeValue
+                               ).FirstOrDefault();
+                        _objMappingTableName.Mapping_Table = resultMapping;
+
+                        var resultMaster =
+                            (from mst in context.m_masterattribute
+                             join mstv in context.m_masterattributevalue on mst.MasterAttribute_Id equals mstv.MasterAttribute_Id
+                             join msttblv in context.m_masterattributevalue on mstv.MasterAttributeValue_Id equals msttblv.ParentAttributeValue_Id
+                             where mst.MasterFor == strMasterFor && mst.Name == strParent
+                             && mstv.AttributeValue == strMaster_Table
+                             select msttblv.AttributeValue
+                               ).FirstOrDefault();
+                        _objMappingTableName.Master_Table = resultMaster;
+
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return _objMappingTableName;
         }
 
         public DataContracts.DC_Message UpdateStaticDataMappingAttribute(List<DataContracts.UploadStaticData.DC_SupplierImportAttributes> lobj)
@@ -610,10 +681,10 @@ namespace DataLayer
                                      select a;
                     }
 
-                    if(RQ.From_Date.HasValue && RQ.TO_Date.HasValue)
+                    if (RQ.From_Date.HasValue && RQ.TO_Date.HasValue)
                     {
                         FileSearch = from a in FileSearch
-                                     where a.CREATE_DATE >= RQ.From_Date && a.CREATE_DATE <=  RQ.TO_Date
+                                     where a.CREATE_DATE >= RQ.From_Date && a.CREATE_DATE <= RQ.TO_Date
                                      select a;
                     }
 
@@ -649,7 +720,7 @@ namespace DataLayer
                                                 CREATE_USER = a.CREATE_USER,
                                                 PROCESS_DATE = a.PROCESS_DATE,
                                                 PROCESS_USER = a.PROCESS_USER,
-                                                IsActive= a.IsActive ?? true,
+                                                IsActive = a.IsActive ?? true,
                                                 TotalRecords = total
                                             }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
@@ -890,9 +961,9 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if(obj.SupplierImportFile_Id != null && !string.IsNullOrWhiteSpace(obj.Step))
+                    if (obj.SupplierImportFile_Id != null && !string.IsNullOrWhiteSpace(obj.Step))
                     {
-                        if(obj.CurrentBatch != 0)
+                        if (obj.CurrentBatch != 0)
                         {
                             context.SupplierImportFile_Progress.RemoveRange(context.SupplierImportFile_Progress.Where(w => w.SupplierImportFile_Id == obj.SupplierImportFile_Id && w.CurrentBatch != 0 && w.CurrentBatch != obj.CurrentBatch));
                         }
@@ -921,7 +992,7 @@ namespace DataLayer
                             });
                         }
                     }
-                    
+
                     context.SaveChanges();
                     dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
                     dc.StatusMessage = "Process Log " + ReadOnlyMessage.strAddedSuccessfully;
@@ -1016,23 +1087,23 @@ namespace DataLayer
                     var StatResult = (from a in StatSearch
                                       join f in context.SupplierImportFileDetails.AsNoTracking() on a.SupplierImportFile_Id equals f.SupplierImportFile_Id
                                       join s in context.Suppliers.AsNoTracking() on f.Supplier_Id equals s.Supplier_Id
-                                      orderby s.Name,f.Entity
+                                      orderby s.Name, f.Entity
                                       select new DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics
-                                         {
-                                             SupplierImportFile_Statistics_Id = a.SupplierImportFile_Statistics_Id,
-                                             SupplierImportFile_Id = a.SupplierImportFile_Id,
-                                             TotalRows = a.TotalRows,
-                                             Unmapped = a.Unmapped,
-                                             Mapped = a.Mapped,
-                                             FinalStatus = a.FinalStatus,
-                                             Process_Date = a.Process_Date,
-                                             Process_User = a.Process_User,
-                                             TotalRecords = total,
-                                             Supplier = s.Name,
-                                             Entity = f.Entity,
-                                             FileName = f.OriginalFilePath,
-                                             ProcessedBy = f.PROCESS_USER
-                                         }).Skip(skip ?? 0).Take(RQ.PageSize ?? total).ToList();
+                                      {
+                                          SupplierImportFile_Statistics_Id = a.SupplierImportFile_Statistics_Id,
+                                          SupplierImportFile_Id = a.SupplierImportFile_Id,
+                                          TotalRows = a.TotalRows,
+                                          Unmapped = a.Unmapped,
+                                          Mapped = a.Mapped,
+                                          FinalStatus = a.FinalStatus,
+                                          Process_Date = a.Process_Date,
+                                          Process_User = a.Process_User,
+                                          TotalRecords = total,
+                                          Supplier = s.Name,
+                                          Entity = f.Entity,
+                                          FileName = f.OriginalFilePath,
+                                          ProcessedBy = f.PROCESS_USER
+                                      }).Skip(skip ?? 0).Take(RQ.PageSize ?? total).ToList();
 
                     return StatResult;
                 }
@@ -1067,8 +1138,8 @@ namespace DataLayer
 
                         //DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics stat = resstat.FirstOrDefault();
                         var stat = (from a in context.SupplierImportFile_Statistics
-                                        where a.SupplierImportFile_Id == obj.SupplierImportFile_Id 
-                                        select a).FirstOrDefault();
+                                    where a.SupplierImportFile_Id == obj.SupplierImportFile_Id
+                                    select a).FirstOrDefault();
 
                         if (stat != null)
                         {
@@ -1199,7 +1270,7 @@ namespace DataLayer
                     }
 
                     var total = ProgLogSearch.Count();
-                    
+
                     var ProgLogResult = (from a in ProgLogSearch
                                          select new DataContracts.UploadStaticData.DC_SupplierImportFile_Progress
                                          {
@@ -1209,8 +1280,8 @@ namespace DataLayer
                                              Status = a.Status,
                                              PercentageValue = a.PercentageValue,
                                              TotalCount = total,
-                                             CurrentBatch=a.CurrentBatch??0,
-                                             TotalBatch=a.TotalBatch??0
+                                             CurrentBatch = a.CurrentBatch ?? 0,
+                                             TotalBatch = a.TotalBatch ?? 0
                                          }).ToList();
 
                     return ProgLogResult;
@@ -1238,7 +1309,7 @@ namespace DataLayer
                         SupplierImportFile_VerboseLog_Id = obj.SupplierImportFile_VerboseLog_Id,
                         SupplierImportFile_Id = obj.SupplierImportFile_Id,
                         Message = obj.Message,
-                        Step= obj.Step,
+                        Step = obj.Step,
                         TimeStamp = obj.TimeStamp
                     };
                     context.SupplierImportFile_VerboseLog.Add(objNew);
@@ -1291,7 +1362,7 @@ namespace DataLayer
                                          select new DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog
                                          {
                                              SupplierImportFile_VerboseLog_Id = a.SupplierImportFile_VerboseLog_Id,
-                                             SupplierImportFile_Id= a.SupplierImportFile_Id,
+                                             SupplierImportFile_Id = a.SupplierImportFile_Id,
                                              Step = a.Step,
                                              Message = a.Message,
                                              TimeStamp = a.TimeStamp ?? DateTime.Now,
@@ -1634,7 +1705,7 @@ namespace DataLayer
                             objNew.ActionText = obj.ActionText;
                             objNew.Latitude = obj.Latitude;
                             objNew.Longitude = obj.Longitude;
-                            objNew.Country_Id = 
+                            objNew.Country_Id =
                                 ((geo.Where(s => s.CountryName == obj.CountryName).Select(s1 => s1.Country_Id).FirstOrDefault())) ??
                                 (geo.Where(s => s.CountryCode == obj.CountryCode).Select(s1 => s1.Country_Id).FirstOrDefault());
                             objNew.Supplier_Id = mySupplier_Id;
@@ -1786,7 +1857,7 @@ namespace DataLayer
                         context.stg_SupplierHotelRoomMapping.RemoveRange(oldRecords);
                         context.SaveChanges();
                         List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> dstobj = new List<DC_stg_SupplierHotelRoomMapping>();
-                        dstobj = lstobj.GroupBy(a => new { a.RoomName, a.SupplierID, a.SupplierName, a.SupplierProductId, a.SupplierProductName, a.SupplierRoomCategory, a.SupplierRoomTypeCode  }).Select(grp => grp.First()).ToList();
+                        dstobj = lstobj.GroupBy(a => new { a.RoomName, a.SupplierID, a.SupplierName, a.SupplierProductId, a.SupplierProductName, a.SupplierRoomCategory, a.SupplierRoomTypeCode }).Select(grp => grp.First()).ToList();
 
                         foreach (DataContracts.STG.DC_stg_SupplierHotelRoomMapping obj in dstobj)
                         {
@@ -1801,7 +1872,7 @@ namespace DataLayer
                                 Bedrooms = obj.Bedrooms,
                                 BedTypeCode = obj.BedTypeCode,
                                 ChildAge = obj.ChildAge,
-                                ExtraBed= obj.ExtraBed,
+                                ExtraBed = obj.ExtraBed,
                                 FloorName = obj.FloorName,
                                 FloorNumber = obj.FloorNumber,
                                 MaxAdults = obj.MaxAdults,
@@ -1824,9 +1895,9 @@ namespace DataLayer
                                 SupplierProductName = obj.SupplierProductName,
                                 SupplierProvider = obj.SupplierProvider,
                                 SupplierRoomCategoryId = obj.SupplierRoomCategoryId,
-                                SupplierRoomId= obj.SupplierRoomId,
+                                SupplierRoomId = obj.SupplierRoomId,
                                 Supplier_Id = obj.Supplier_Id,
-                                TX_RoomName = obj.TX_RoomName                                 
+                                TX_RoomName = obj.TX_RoomName
                             };
                             context.stg_SupplierHotelRoomMapping.Add(objNew);
                         }
@@ -2115,20 +2186,20 @@ namespace DataLayer
                                          SupplierID = a.SupplierID,
                                          stg_SupplierHotelRoomMapping_Id = a.stg_SupplierHotelRoomMapping_Id,
                                          BeddingConfig = a.BeddingConfig,
-                                         Bedrooms= a.Bedrooms,
-                                         BedTypeCode=a.BedTypeCode,
+                                         Bedrooms = a.Bedrooms,
+                                         BedTypeCode = a.BedTypeCode,
                                          ChildAge = a.ChildAge,
                                          ExtraBed = a.ExtraBed,
                                          FloorName = a.FloorName,
-                                         FloorNumber= a.FloorNumber,
-                                         MaxAdults= a.MaxAdults,
+                                         FloorNumber = a.FloorNumber,
+                                         MaxAdults = a.MaxAdults,
                                          MaxChild = a.MaxChild,
-                                         MaxGuestOccupancy =a.MaxGuestOccupancy,
+                                         MaxGuestOccupancy = a.MaxGuestOccupancy,
                                          MaxInfant = a.MaxInfant,
                                          PromotionalVendorCode = a.PromotionalVendorCode,
-                                         Quantity= a.Quantity,
+                                         Quantity = a.Quantity,
                                          RatePlan = a.RatePlan,
-                                         RatePlanCode=a.RatePlanCode,
+                                         RatePlanCode = a.RatePlanCode,
                                          RoomDescription = a.RoomDescription,
                                          RoomLocationCode = a.RoomLocationCode,
                                          RoomName = a.RoomName,
@@ -2248,15 +2319,17 @@ namespace DataLayer
                 DataContracts.DC_FileProgressDashboard obj = new DC_FileProgressDashboard();
                 obj.ProgressLog = GetStaticDataUploadProcessLog(new DataContracts.UploadStaticData.DC_SupplierImportFile_Progress_RQ { SupplierImportFile_Id = fileid.ToString() });
                 obj.VerboseLog = GetStaticDataUploadVerboseLog(new DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog_RQ { SupplierImportFile_Id = fileid });
-                obj.FileDetails = GetStaticDataFileDetail(new DataContracts.UploadStaticData.DC_SupplierImportFileDetails_RQ  { SupplierImportFile_Id = fileid });
+                obj.FileDetails = GetStaticDataFileDetail(new DataContracts.UploadStaticData.DC_SupplierImportFileDetails_RQ { SupplierImportFile_Id = fileid });
                 return obj;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return null;
             }
-            
+
         }
         #endregion
+
+
     }
 }

@@ -23,5 +23,8 @@ namespace DataLayer
         public Nullable<System.DateTime> EDIT_DATE { get; set; }
         public string EDIT_USER { get; set; }
         public string AttributeFor { get; set; }
+        public string STG_Table { get; set; }
+        public string Mapping_Table { get; set; }
+        public string Master_Table { get; set; }
     }
 }

@@ -4174,5 +4174,28 @@ namespace DataLayer
             //}
             return null;
         }
+       
+        public List<string> GetListOfColumnNamesByTable(string TableName)
+        {
+            List<string> _lstColumnName = new List<string>();
+
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                var result = (from x in context.stg_SupplierCityMapping select x).Take(1).ToList();
+
+                foreach(var cl in result[0].GetType().GetProperties())
+                {
+                    //string strDataType = string.Empty;
+                    //if (cl.PropertyType.GenericTypeArguments.Length > 0)
+                    //    strDataType = Convert.ToString(cl.PropertyType.GenericTypeArguments[0].FullName);
+                    //else
+                    //    strDataType = cl.PropertyType.FullName;
+                    //_lstColumnName.Add(string.Concat(cl.Name, ",", strDataType));
+                    _lstColumnName.Add(cl.Name);
+
+                }
+            }
+            return _lstColumnName;
+        }
     }
 }

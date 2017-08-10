@@ -638,5 +638,13 @@ namespace BusinessLayer
                 return objDL.GetColumnNames(TableName);
             }
         }
+
+        public List<string> GetListOfColumnNamesByTable(string TableName)
+        {
+            using (DataLayer.DL_Masters objDL = new DataLayer.DL_Masters())
+            {
+                return objDL.GetListOfColumnNamesByTable(TableName);
+            }
+        }
     }
 }

@@ -450,5 +450,11 @@ namespace OperationContracts
         //[FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         //[WebInvoke(Method = "GET", UriTemplate = "Master/ColumnNames/Get", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         //string[] GetColumnNames(string TableName);
+
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Master/GetListOfColumnNamesByTable/{TableName}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<string> GetListOfColumnNamesByTable(string TableName);
     }
 }

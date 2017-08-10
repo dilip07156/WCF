@@ -21,7 +21,11 @@ namespace DataLayer
             : base("name=ConsumerEntities")
         {
         }
-    
+        public DbSet Set(string name)
+        {
+            // you may need to fill in the namespace of your context
+            return base.Set(Type.GetType(name));
+        }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();
