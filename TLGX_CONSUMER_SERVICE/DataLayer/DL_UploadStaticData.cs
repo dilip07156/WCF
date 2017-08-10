@@ -2175,10 +2175,12 @@ namespace DataLayer
                 file.STATUS = obj.STATUS;
                 file.Supplier = obj.Supplier;
 
-                object result = null;
-                DHSVCProxy.PostData(ProxyFor.DataHandler, System.Configuration.ConfigurationManager.AppSettings["Data_Handler_Process_File"], file, file.GetType(), typeof(void), out result);
+                DHSVCProxyAsync DHP = new DHSVCProxyAsync();
+                DHP.PostAsync(ProxyFor.DataHandler, System.Configuration.ConfigurationManager.AppSettings["Data_Handler_Process_File"], file, file.GetType());
+                DHP = null;
+                file = null;
 
-                return new DC_Message { StatusMessage = "File has been processed." };
+                return new DC_Message { StatusMessage = "File has been sent for processing.", StatusCode = ReadOnlyMessage.StatusCode.Success };
             }
             catch (Exception e)
             {
