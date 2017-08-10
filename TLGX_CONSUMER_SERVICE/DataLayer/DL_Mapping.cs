@@ -566,7 +566,8 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var prodMapSearch = (from a in context.Accommodation_ProductMapping.AsNoTracking()
-                                         where a.Accommodation_Id == null && a.Supplier_Id == curSupplier_Id
+                                         join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
+                                         where s.File_Id == supdata.File_Id && a.Accommodation_Id == null && a.Supplier_Id == curSupplier_Id
                                          && a.Status.Trim().ToUpper() == "UNMAPPED"
                                          select a).ToList();
 
@@ -676,17 +677,34 @@ namespace DataLayer
                         {
                             isLatLongCheck = true;
                             prodMapSearch = (from a in prodMapSearch
-                                             join m in context.Accommodations.AsNoTracking() on new { a.Latitude, a.Longitude } equals new { m.Latitude, m.Longitude }
-                                             where m.Latitude != null && a.Latitude != null && m.Longitude != null && a.Longitude != null
+                                             where a.Latitude != null && a.Longitude != null
                                              select a).Distinct().ToList();
+
+                            if (prodMapSearch.Count > 0)
+                            {
+                                prodMapSearch = (from a in prodMapSearch
+                                                     //join m in context.Accommodations.AsNoTracking() on new { a.Latitude, a.Longitude } equals new { m.Latitude, m.Longitude }
+                                                 join m in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { m.Country_Id, m.City_Id }
+                                                 where m.Latitude != null && a.Latitude != null && m.Longitude != null && a.Longitude != null
+                                                 && a.Latitude == m.Latitude && a.Longitude == m.Longitude
+                                                 select a).Distinct().ToList();
+                            }
                         }
                         if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "GOOGLE_PLACE_ID")
                         {
                             isPlaceIdCheck = true;
+
                             prodMapSearch = (from a in prodMapSearch
-                                             join m in context.Accommodations.AsNoTracking() on a.Google_Place_Id equals m.Google_Place_Id
-                                             where m.Google_Place_Id != null && a.Google_Place_Id != null
+                                             where a.Google_Place_Id != null
                                              select a).Distinct().ToList();
+
+                            if (prodMapSearch.Count > 0)
+                            {
+                                prodMapSearch = (from a in prodMapSearch
+                                                 join m in context.Accommodations.AsNoTracking() on a.Google_Place_Id equals m.Google_Place_Id
+                                                 where m.Google_Place_Id != null && a.Google_Place_Id != null
+                                                 select a).Distinct().ToList();
+                            }
                         }
 
                         PLog.PercentageValue = (70 / totPriorities) / totConfigs;
