@@ -18,6 +18,18 @@ namespace DataLayer
         {
         }
 
+        public void CallLogVerbose(Guid SupplierImportFile_Id, string Step, string Message)
+        {
+            DC_SupplierImportFile_VerboseLog obj = new DC_SupplierImportFile_VerboseLog()
+            {
+                SupplierImportFile_VerboseLog_Id = Guid.NewGuid(),
+                SupplierImportFile_Id = SupplierImportFile_Id,
+                Step = Step,
+                Message = Message,
+                TimeStamp = DateTime.Now
+            };
+            DataContracts.DC_Message RM = USD.AddStaticDataUploadVerboseLog(obj);
+        }
         public bool DeleteSTGMappingTableIDs(Guid File_Id)
         {
             bool ret = false;
@@ -220,6 +232,8 @@ namespace DataLayer
         public bool HotelMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             bool ret = true;
+            Guid File_Id = new Guid();
+            File_Id = Guid.Parse(obj.File_Id.ToString());
             PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
             PLog.SupplierImportFile_Id = obj.File_Id;
             PLog.Step = "MAP";
@@ -236,6 +250,7 @@ namespace DataLayer
                 List<DataContracts.STG.DC_stg_SupplierProductMapping> clsSTGHotelInsert = new List<DataContracts.STG.DC_stg_SupplierProductMapping>();
                 List<DC_Accomodation_ProductMapping> clsMappingHotel = new List<DC_Accomodation_ProductMapping>();
 
+                CallLogVerbose(File_Id, "MAP", "Fetching Staged Hotels.");
                 DataContracts.STG.DC_stg_SupplierProductMapping_RQ RQ = new DataContracts.STG.DC_stg_SupplierProductMapping_RQ();
                 RQ.SupplierName = CurSupplierName;
                 RQ.PageNo = 0;
@@ -244,6 +259,7 @@ namespace DataLayer
                 PLog.PercentageValue = 15;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Fetching Existing Mapping Data.");
                 DC_Mapping_ProductSupplier_Search_RQ RQM = new DC_Mapping_ProductSupplier_Search_RQ();
                 if (CurSupplier_Id != Guid.Empty)
                     RQM.SupplierName = CurSupplierName;
@@ -254,6 +270,7 @@ namespace DataLayer
                 PLog.PercentageValue = 26;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Updating Existing Hotels.");
                 clsMappingHotel = clsMappingHotel.Select(c =>
                 {
                     c.ProductName = (clsSTGHotel
@@ -291,6 +308,7 @@ namespace DataLayer
                 PLog.PercentageValue = 37;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Checking for New Hotels in File.");
                 clsSTGHotelInsert = clsSTGHotel.Where(p => !clsMappingHotel.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                  && (
                     (((p2.ProductName ?? string.Empty).ToString().Trim().ToUpper() == (p.ProductName ?? string.Empty).ToString().Trim().ToUpper()))
@@ -302,12 +320,14 @@ namespace DataLayer
                 PLog.PercentageValue = 48;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Removing UnEdited Data.");
                 clsSTGHotel.RemoveAll(p => clsSTGHotelInsert.Any(p2 => (p2.stg_AccoMapping_Id == p.stg_AccoMapping_Id)));
 
                 clsMappingHotel.RemoveAll(p => p.ProductName == p.oldProductName);
                 PLog.PercentageValue = 53;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Inserting New Hotels.");
                 clsMappingHotel.InsertRange(clsMappingHotel.Count, clsSTGHotelInsert.Select
                     (g => new DC_Accomodation_ProductMapping
                     {
@@ -367,6 +387,7 @@ namespace DataLayer
 
                 PLog.PercentageValue = 58;
                 USD.AddStaticDataUploadProcessLog(PLog);
+                CallLogVerbose(File_Id, "MAP", "Updating / Inserting Database.");
                 if (clsMappingHotel.Count > 0)
                 {
                     ret = UpdateAccomodationProductMapping(clsMappingHotel);
@@ -375,6 +396,7 @@ namespace DataLayer
             }
             PLog.PercentageValue = 100;
             USD.AddStaticDataUploadProcessLog(PLog);
+            CallLogVerbose(File_Id, "MAP", "MAP Process Complete for Batch " + (obj.CurrentBatch ?? 0).ToString());
             return ret;
         }
 
@@ -1706,6 +1728,8 @@ namespace DataLayer
         public bool RoomTypeMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             bool ret = true;
+            Guid File_Id = new Guid();
+            File_Id = Guid.Parse(obj.File_Id.ToString());
             PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
             PLog.SupplierImportFile_Id = obj.File_Id;
             PLog.Step = "MAP";
@@ -1722,6 +1746,7 @@ namespace DataLayer
                 List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> clsSTGHotelInsert = new List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping>();
                 List<DC_Accommodation_SupplierRoomTypeMap_SearchRS> clsMappingHotel = new List<DC_Accommodation_SupplierRoomTypeMap_SearchRS>();
 
+                CallLogVerbose(File_Id, "MAP", "Fetching Staged Room Types.");
                 DataContracts.STG.DC_stg_SupplierHotelRoomMapping_RQ RQ = new DataContracts.STG.DC_stg_SupplierHotelRoomMapping_RQ();
                 RQ.SupplierName = CurSupplierName;
                 RQ.Supplier_Id = CurSupplier_Id;
@@ -1731,6 +1756,7 @@ namespace DataLayer
                 PLog.PercentageValue = 15;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Fetching Existing Mapping Data.");
                 DC_Accommodation_SupplierRoomTypeMap_SearchRQ RQM = new DC_Accommodation_SupplierRoomTypeMap_SearchRQ();
                 if (CurSupplier_Id != Guid.Empty)
                     RQM.Supplier_Id = CurSupplier_Id;
@@ -1743,6 +1769,7 @@ namespace DataLayer
                 PLog.PercentageValue = 26;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Updating Existing Room Types.");
                 clsMappingHotel = clsMappingHotel.Select(c =>
                 {
                     c.SupplierRoomName = (clsSTGHotel
@@ -1776,6 +1803,7 @@ namespace DataLayer
                 PLog.PercentageValue = 37;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Checking for New Room Types in File.");
                 clsSTGHotelInsert = clsSTGHotel.Where(p => !clsMappingHotel.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                  && (
                     (((p2.SupplierProductName ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierProductName ?? string.Empty).ToString().Trim().ToUpper()))
@@ -1791,10 +1819,13 @@ namespace DataLayer
                 clsSTGHotel.RemoveAll(p => clsSTGHotelInsert.Any(p2 => (p2.stg_SupplierHotelRoomMapping_Id == p.stg_SupplierHotelRoomMapping_Id)));
 
                 //clsMappingHotel.RemoveAll(p => p.SupplierRoomName == p.OldSupplierRoomName && (((p.stg_SupplierHotelRoomMapping_Id == Guid.Empty) ? p.Oldstg_SupplierHotelRoomMapping_Id : p.stg_SupplierHotelRoomMapping_Id) == p.Oldstg_SupplierHotelRoomMapping_Id));
+
+                CallLogVerbose(File_Id, "MAP", "Removing UnEdited Data.");
                 clsMappingHotel.RemoveAll(p => p.SupplierRoomName == p.OldSupplierRoomName);
 
                 PLog.PercentageValue = 53;
                 USD.AddStaticDataUploadProcessLog(PLog);
+                CallLogVerbose(File_Id, "MAP", "Inserting New Room Types.");
                 clsMappingHotel.InsertRange(clsMappingHotel.Count, clsSTGHotelInsert.Select
                     (g => new DC_Accommodation_SupplierRoomTypeMap_SearchRS
                     {
@@ -1843,7 +1874,7 @@ namespace DataLayer
 
                 PLog.PercentageValue = 58;
                 USD.AddStaticDataUploadProcessLog(PLog);
-
+                CallLogVerbose(File_Id, "MAP", "Updating / Inserting Database.");
                 if (clsMappingHotel.Count > 0)
                 {
                     ret = SupplierRoomTypeMapping_InsertUpdate(clsMappingHotel);
@@ -1852,6 +1883,7 @@ namespace DataLayer
 
             PLog.PercentageValue = 100;
             USD.AddStaticDataUploadProcessLog(PLog);
+            CallLogVerbose(File_Id, "MAP", "MAP Process Complete for Batch " + (obj.CurrentBatch ?? 0).ToString());
             return ret;
         }
 
@@ -2809,6 +2841,8 @@ namespace DataLayer
         public bool CountryMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             bool ret = true;
+            Guid File_Id = new Guid();
+            File_Id = Guid.Parse(obj.File_Id.ToString());
             PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
             PLog.SupplierImportFile_Id = obj.File_Id;
             PLog.Step = "MAP";
@@ -2825,6 +2859,7 @@ namespace DataLayer
                 List<DataContracts.STG.DC_stg_SupplierCountryMapping> clsSTGCountryInsert = new List<DataContracts.STG.DC_stg_SupplierCountryMapping>();
                 List<DC_CountryMapping> clsMappingCountry = new List<DC_CountryMapping>();
 
+                CallLogVerbose(File_Id, "MAP", "Fetching Staged Countries.");
                 DataContracts.STG.DC_stg_SupplierCountryMapping_RQ RQ = new DataContracts.STG.DC_stg_SupplierCountryMapping_RQ();
                 RQ.SupplierName = CurSupplierName;
                 RQ.PageNo = 0;
@@ -2833,6 +2868,7 @@ namespace DataLayer
                 PLog.PercentageValue = 15;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Fetching Existing Mapping Data.");
                 DC_CountryMappingRQ RQMapping = new DC_CountryMappingRQ();
                 if (CurSupplier_Id != Guid.Empty)
                     RQMapping.Supplier_Id = CurSupplier_Id;
@@ -2843,6 +2879,7 @@ namespace DataLayer
                 PLog.PercentageValue = 15;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Updating Existing Countries.");
                 clsMappingCountry = clsMappingCountry.Select(c =>
                 {
                     c.CountryCode = (clsSTGCountry
@@ -2873,19 +2910,21 @@ namespace DataLayer
                    }));
 
                 clsMappingCountry.RemoveAll(p => p.CountryCode == p.OldCountryCode);
-
+                CallLogVerbose(File_Id, "MAP", "Checking for New Countries in File.");
                 clsSTGCountryInsert = clsSTGCountry.Where(p => !clsMappingCountry.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                 && ((p.CountryCode != null && p2.CountryCode == p.CountryCode) || (p.CountryCode == null && p2.CountryName.ToString().Trim().ToUpper() == p.CountryName.ToString().Trim().ToUpper())))).ToList();
 
                 PLog.PercentageValue = 48;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Removing UnEdited Data.");
                 clsSTGCountry.RemoveAll(p => clsSTGCountryInsert.Any(p2 => (p2.stg_Country_Id == p.stg_Country_Id)));
 
 
                 PLog.PercentageValue = 53;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Inserting New Countries.");
                 clsMappingCountry.InsertRange(clsMappingCountry.Count, clsSTGCountryInsert.Select
                 (g => new DC_CountryMapping
                 {
@@ -2922,7 +2961,7 @@ namespace DataLayer
 
                 PLog.PercentageValue = 58;
                 USD.AddStaticDataUploadProcessLog(PLog);
-
+                CallLogVerbose(File_Id, "MAP", "Updating / Inserting Database.");
                 if (clsMappingCountry.Count > 0)
                 {
                     ret = UpdateCountryMapping(clsMappingCountry);
@@ -2931,6 +2970,7 @@ namespace DataLayer
 
             PLog.PercentageValue = 100;
             USD.AddStaticDataUploadProcessLog(PLog);
+            CallLogVerbose(File_Id, "MAP", "MAP Process Complete for Batch " + (obj.CurrentBatch ?? 0).ToString());
             return ret;
         }
 
@@ -2944,6 +2984,8 @@ namespace DataLayer
             string curSupplier = "";
             Guid? curSupplier_Id = Guid.Empty;
             configWhere = "";
+            Guid File_Id = new Guid();
+            File_Id = Guid.Parse(obj.File_Id.ToString());
 
             int totPriorities = obj.TotalPriorities;
             int curPriority = obj.CurrentPriority;
@@ -2989,41 +3031,50 @@ namespace DataLayer
                     PLog.SupplierImportFile_Id = obj.File_Id;
                     PLog.Step = "MATCH";
                     PLog.Status = "MATCHING";
+                    CallLogVerbose(File_Id, "MATCH", "Applying Matching Combination " + curPriority.ToString() + " out of Total " + totPriorities + " Combinations.");
+
+                    foreach (DC_SupplierImportAttributeValues config in configs)
+                    {
+                        configWhere = " " + configWhere + config.AttributeValue.Replace("m_CountryMaster.", "").Trim() + ",";
+                    }
+                    configWhere = configWhere.Remove(configWhere.Length - 1);
+                    CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);
 
                     foreach (DC_SupplierImportAttributeValues config in configs)
                     {
                         curConfig = curConfig + 1;
-                        configWhere = " " + configWhere + config.AttributeName + " == " + config.AttributeValue + " AND";
-
-                        if (config.AttributeValue.Replace("m_CountryMaster.", "").Trim().ToUpper() == "CODE")
+                        string CurrConfig = "";
+                        CurrConfig = config.AttributeValue.Replace("m_CountryMaster.", "").Trim().ToUpper();
+                        CallLogVerbose(File_Id, "MATCH", "Applying Check for " + CurrConfig);
+                        if (CurrConfig == "CODE")
                         {
                             isCodeCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CountryMaster on a.CountryCode equals m.Code
                                              select a);
                         }
-                        if (config.AttributeValue.Replace("m_CountryMaster.", "").Trim().ToUpper() == "NAME")
+                        if (CurrConfig == "NAME")
                         {
                             isNameCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CountryMaster on a.CountryName equals m.Name
                                              select a);
                         }
-                        if (config.AttributeValue.Replace("m_CountryMaster.", "").Trim().ToUpper() == "ISO3166-1-Alpha-2".Trim().ToUpper())
+                        if (CurrConfig == "ISO3166-1-Alpha-2".Trim().ToUpper())
                         {
                             isCodeCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CountryMaster on a.CountryCode equals m.ISO3166_1_Alpha_2
                                              select a);
                         }
-                        if (config.AttributeValue.Replace("m_CountryMaster.", "").Trim().ToUpper() == "ISO3166-1-Alpha-3".Trim().ToUpper())
+                        if (CurrConfig == "ISO3166-1-Alpha-3".Trim().ToUpper())
                         {
                             isCodeCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CountryMaster on a.CountryCode equals m.ISO3166_1_Alpha_3
                                              select a);
                         }
-                        if (config.AttributeValue.Replace("m_CountryMaster.", "").Trim().ToUpper() == "LATITUDE")
+                        if (CurrConfig == "LATITUDE")
                         {
                             isLatLongCheck = true;
                             prodMapSearch = (from a in prodMapSearch
@@ -3032,7 +3083,8 @@ namespace DataLayer
                                              select a);
                         }
                         //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
-                        PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + (PerForEachPriority / totConfigs);
+                        //PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + (PerForEachPriority / totConfigs);
+                        PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + ((PerForEachPriority / totConfigs) * curConfig);
                         USD.AddStaticDataUploadProcessLog(PLog);
                     }
 
@@ -3064,9 +3116,13 @@ namespace DataLayer
                                    Longitude = a.Longitude
                                }).ToList();
 
-                        PLog.PercentageValue = 65;
-                        USD.AddStaticDataUploadProcessLog(PLog);
+                        if (totPriorities == curPriority)
+                        {
+                            PLog.PercentageValue = 65;
+                            USD.AddStaticDataUploadProcessLog(PLog);
+                        }
 
+                        CallLogVerbose(File_Id, "MATCH", "Looking for Match in Master Data for Matching Combination " + curPriority.ToString() + ".");
                         res = res.Select(c =>
                         {
                             c.Country_Id = (context.m_CountryMaster
@@ -3086,8 +3142,11 @@ namespace DataLayer
                             return c;
                         }).ToList();
 
-                        PLog.PercentageValue = 70;
-                        USD.AddStaticDataUploadProcessLog(PLog);
+                        if (totPriorities == curPriority)
+                        {
+                            PLog.PercentageValue = 70;
+                            USD.AddStaticDataUploadProcessLog(PLog);
+                        }
 
                         #region "Old Code"
                         //    (c =>
@@ -3129,6 +3188,7 @@ namespace DataLayer
 
                         #endregion
 
+                        CallLogVerbose(File_Id, "MATCH", "Setting Appropriate Status.");
                         foreach (DC_CountryMapping v in res)
                         {
                             if (v.Country_Id != null)
@@ -3145,9 +3205,13 @@ namespace DataLayer
                                 res.Remove(v);
                         }
 
-                        PLog.PercentageValue = 75;
-                        USD.AddStaticDataUploadProcessLog(PLog);
-
+                        if (totPriorities == curPriority)
+                        {
+                            PLog.PercentageValue = 75;
+                            USD.AddStaticDataUploadProcessLog(PLog);
+                        }
+                        CallLogVerbose(File_Id, "MATCH", res.Count.ToString() + " Matches Found for Combination " + curPriority.ToString() + ".");
+                        CallLogVerbose(File_Id, "MATCH", "Updating into Database.");
                         if (UpdateCountryMapping(res))
                         {
                             DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
@@ -3166,8 +3230,12 @@ namespace DataLayer
                                 res = GetCountryMapping(RQ);
                             }
                         }
-                        PLog.PercentageValue = 100;
-                        USD.AddStaticDataUploadProcessLog(PLog);
+
+                        if (totPriorities == curPriority)
+                        {
+                            PLog.PercentageValue = 100;
+                            USD.AddStaticDataUploadProcessLog(PLog);
+                        }
                     }
                     else
                     {
@@ -3181,6 +3249,7 @@ namespace DataLayer
                             res = GetCountryMapping(RQ);
                         }
                     }
+                    CallLogVerbose(File_Id, "MATCH", "Update Done.");
                     return res;
                     //var result = prodMapSearch.Join(context.m_CountryMaster, "new(Id as firstKey,SomeOtherId as secondKey)"
                     //    , "new(PersonId as firstKey,AlternativeId as secondKey)", "new (inner as r, outer as p)");
@@ -3500,6 +3569,8 @@ namespace DataLayer
         public bool CityMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             bool ret = false;
+            Guid File_Id = new Guid();
+            File_Id = Guid.Parse(obj.File_Id.ToString());
             PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
             PLog.SupplierImportFile_Id = obj.File_Id;
             PLog.Step = "MAP";
@@ -3517,6 +3588,7 @@ namespace DataLayer
                 List<DataContracts.STG.DC_stg_SupplierCityMapping> clsSTGCityInsert = new List<DataContracts.STG.DC_stg_SupplierCityMapping>();
                 List<DC_CityMapping> clsMappingCity = new List<DC_CityMapping>();
 
+                CallLogVerbose(File_Id, "MAP", "Fetching Staged Cities.");
                 DataContracts.STG.DC_stg_SupplierCityMapping_RQ RQ = new DataContracts.STG.DC_stg_SupplierCityMapping_RQ();
                 RQ.SupplierName = CurSupplierName;
                 RQ.PageNo = 0;
@@ -3525,6 +3597,7 @@ namespace DataLayer
                 PLog.PercentageValue = 15;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Fetching Existing Mapping Data.");
                 DC_CityMapping_RQ RQCity = new DC_CityMapping_RQ();
                 if (CurSupplier_Id != Guid.Empty)
                     RQCity.Supplier_Id = CurSupplier_Id;
@@ -3536,6 +3609,7 @@ namespace DataLayer
                 PLog.PercentageValue = 26;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Updating Existing Cities.");
                 clsMappingCity = clsMappingCity.Select(c =>
                 {
                     c.CityName = (clsSTGCity
@@ -3567,6 +3641,7 @@ namespace DataLayer
                 PLog.PercentageValue = 37;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Checking for New Cities in File.");
                 clsSTGCityInsert = clsSTGCity.Where(p => !clsMappingCity.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                     && (
                         (((p2.StateName ?? string.Empty).ToString().Trim().ToUpper() == (p.StateName ?? string.Empty).ToString().Trim().ToUpper()))
@@ -3603,6 +3678,7 @@ namespace DataLayer
 
                 #endregion
 
+                CallLogVerbose(File_Id, "MAP", "Removing UnEdited Data.");
                 clsSTGCity.RemoveAll(p => clsSTGCityInsert.Any(p2 => (p2.stg_City_Id == p.stg_City_Id)));
 
 
@@ -3613,6 +3689,7 @@ namespace DataLayer
                 USD.AddStaticDataUploadProcessLog(PLog);
 
 
+                CallLogVerbose(File_Id, "MAP", "Inserting New Cities.");
                 clsMappingCity.InsertRange(clsMappingCity.Count, clsSTGCityInsert.Select
                     (g => new DC_CityMapping
                     {
@@ -3653,6 +3730,7 @@ namespace DataLayer
                 bool idinsert = AddSTGMappingTableIDs(lstobj);
                 PLog.PercentageValue = 58;
                 USD.AddStaticDataUploadProcessLog(PLog);
+                CallLogVerbose(File_Id, "MAP", "Updating / Inserting Database.");
                 if (clsMappingCity.Count > 0)
                 {
                     ret = UpdateCityMapping(clsMappingCity);
@@ -3662,7 +3740,7 @@ namespace DataLayer
             }
             PLog.PercentageValue = 100;
             USD.AddStaticDataUploadProcessLog(PLog);
-
+            CallLogVerbose(File_Id, "MAP", "MAP Process Complete for Batch " + (obj.CurrentBatch ?? 0).ToString());
             return ret;
         }
 
@@ -3678,12 +3756,17 @@ namespace DataLayer
             string curSupplier = "";
             Guid? curSupplier_Id = Guid.Empty;
             configWhere = "";
+            Guid File_Id = new Guid();
+            File_Id = Guid.Parse(obj.File_Id.ToString());
+
             int totPriorities = obj.TotalPriorities;
+            int curPriority = obj.CurrentPriority;
             int totConfigs = 0;
             int curConfig = 0;
 
             if (totPriorities <= 0)
                 totPriorities = 1;
+            int PerForEachPriority = 60 / totPriorities;
 
             if (supdata != null)
             {
@@ -3712,13 +3795,23 @@ namespace DataLayer
                     PLog.SupplierImportFile_Id = obj.File_Id;
                     PLog.Step = "MATCH";
                     PLog.Status = "MATCHING";
+                    CallLogVerbose(File_Id, "MATCH", "Applying Matching Combination " + curPriority.ToString() + " out of Total " + totPriorities + " Combinations.");
+
+                    foreach (DC_SupplierImportAttributeValues config in configs)
+                    {
+                        configWhere = " " + configWhere + config.AttributeValue.Replace("m_CityMaster.", "").Trim() + ",";
+                    }
+                    configWhere = configWhere.Remove(configWhere.Length - 1);
+                    CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);
 
                     foreach (DC_SupplierImportAttributeValues config in configs)
                     {
                         curConfig = curConfig + 1;
-                        configWhere = " " + configWhere + config.AttributeName + " == " + config.AttributeValue + " AND";
+                        string CurrConfig = "";
+                        CurrConfig = config.AttributeValue.Replace("m_CityMaster.", "").Trim().ToUpper();
+                        CallLogVerbose(File_Id, "MATCH", "Applying Check for " + CurrConfig);
 
-                        if (config.AttributeValue.Replace("m_CityMaster.", "").Trim().ToUpper() == "COUNTRYCODE")
+                        if (CurrConfig == "COUNTRYCODE")
                         {
                             isCountryCodeCheck = true;
                             prodMapSearch = (from a in prodMapSearch
@@ -3729,7 +3822,7 @@ namespace DataLayer
                             //join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
                             //select a);
                         }
-                        if (config.AttributeValue.Replace("m_CityMaster.", "").Trim().ToUpper() == "COUNTRYNAME")
+                        if (CurrConfig == "COUNTRYNAME")
                         {
                             isCountryNameCheck = true;
                             prodMapSearch = (from a in prodMapSearch
@@ -3740,7 +3833,7 @@ namespace DataLayer
                             //join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
                             //select a);
                         }
-                        if (config.AttributeValue.Replace("m_CityMaster.", "").Trim().ToUpper() == "CODE")
+                        if (CurrConfig == "CODE")
                         {
                             isCodeCheck = true;
                             prodMapSearch = (from a in prodMapSearch
@@ -3751,7 +3844,7 @@ namespace DataLayer
                                              where a.CityCode == m.Code
                                              select a);
                         }
-                        if (config.AttributeValue.Replace("m_CityMaster.", "").Trim().ToUpper() == "NAME")
+                        if (CurrConfig == "NAME")
                         {
                             isNameCheck = true;
                             prodMapSearch = (from a in prodMapSearch
@@ -3760,7 +3853,7 @@ namespace DataLayer
                                              where a.CityName.Trim().ToUpper() == m.Name
                                              select a);
                         }
-                        if (config.AttributeValue.Replace("m_CityMaster.", "").Trim().ToUpper() == "LATITUDE")
+                        if (CurrConfig == "LATITUDE")
                         {
                             isLatLongCheck = true;
                             prodMapSearch = (from a in prodMapSearch
@@ -3770,7 +3863,8 @@ namespace DataLayer
                                              && m.Latitude != null && a.Latitude != null && m.Longitude != null && a.Longitude != null
                                              select a);
                         }
-                        PLog.PercentageValue = (70 / totPriorities) / totConfigs;
+                        //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
+                        PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + ((PerForEachPriority / totConfigs) * curConfig);
                         USD.AddStaticDataUploadProcessLog(PLog);
 
                     }
@@ -3803,9 +3897,10 @@ namespace DataLayer
                                    Longitude = a.Longitude
                                }).ToList();
 
-                        PLog.PercentageValue = 75;
+                        PLog.PercentageValue = 65;
                         USD.AddStaticDataUploadProcessLog(PLog);
 
+                        CallLogVerbose(File_Id, "MATCH", "Looking for Match in Master Data for Matching Combination " + curPriority.ToString() + ".");
                         res = res.Select(c =>
                         {
                             c.City_Id = (context.m_CityMaster
