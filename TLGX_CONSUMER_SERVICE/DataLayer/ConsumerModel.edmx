@@ -413,6 +413,7 @@
           <Property Name="SupplierRoomTypeAttribute" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="SystemAttributeKeyword" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="SystemAttributeKeyword_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Accommodation_RoomFacility_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Accommodation_SupplierRoomTypeMapping">
           <Key>
@@ -1066,6 +1067,9 @@
           <Property Name="EDIT_DATE" Type="datetime" />
           <Property Name="EDIT_USER" Type="nvarchar" MaxLength="255" />
           <Property Name="AttributeFor" Type="nvarchar" MaxLength="50" />
+          <Property Name="STG_Table" Type="nvarchar" MaxLength="255" />
+          <Property Name="Mapping_Table" Type="nvarchar" MaxLength="255" />
+          <Property Name="Master_Table" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="m_SupplierImportAttributeValues">
           <Key>
@@ -1446,6 +1450,7 @@
           <Property Name="ErrorType" Type="nvarchar" MaxLength="255" />
           <Property Name="Error_DATE" Type="datetime" />
           <Property Name="Error_USER" Type="nvarchar" MaxLength="255" />
+          <Property Name="ErrorMessage_UI" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="SupplierImportFile_Progress">
           <Key>
@@ -2979,6 +2984,9 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <Property Name="EDIT_DATE" Type="DateTime" Precision="3" />
           <Property Name="EDIT_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="AttributeFor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="STG_Table" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Mapping_Table" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Master_Table" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_SupplierImportAttributeValues">
           <Key>
@@ -3009,6 +3017,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <Property Name="ErrorType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Error_DATE" Type="DateTime" Precision="3" />
           <Property Name="Error_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ErrorMessage_UI" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="SupplierImportFileDetail">
           <Key>
@@ -3285,6 +3294,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <Property Name="SupplierRoomTypeAttribute" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="SystemAttributeKeyword" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="SystemAttributeKeyword_Id" Type="Guid" Nullable="false" />
+          <Property Name="Accommodation_RoomFacility_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="Accommodation_SupplierRoomTypeMapping">
           <Key>
@@ -4565,6 +4575,9 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySetMapping Name="m_SupplierImportAttributes">
             <EntityTypeMapping TypeName="ConsumerModel.m_SupplierImportAttributes">
               <MappingFragment StoreEntitySet="m_SupplierImportAttributes">
+                <ScalarProperty Name="Master_Table" ColumnName="Master_Table" />
+                <ScalarProperty Name="Mapping_Table" ColumnName="Mapping_Table" />
+                <ScalarProperty Name="STG_Table" ColumnName="STG_Table" />
                 <ScalarProperty Name="AttributeFor" ColumnName="AttributeFor" />
                 <ScalarProperty Name="EDIT_USER" ColumnName="EDIT_USER" />
                 <ScalarProperty Name="EDIT_DATE" ColumnName="EDIT_DATE" />
@@ -4599,6 +4612,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySetMapping Name="SupplierImportFile_ErrorLog">
             <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFile_ErrorLog">
               <MappingFragment StoreEntitySet="SupplierImportFile_ErrorLog">
+                <ScalarProperty Name="ErrorMessage_UI" ColumnName="ErrorMessage_UI" />
                 <ScalarProperty Name="Error_USER" ColumnName="Error_USER" />
                 <ScalarProperty Name="Error_DATE" ColumnName="Error_DATE" />
                 <ScalarProperty Name="ErrorType" ColumnName="ErrorType" />
@@ -4887,6 +4901,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySetMapping Name="Accommodation_SupplierRoomTypeAttributes">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeAttributes">
               <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeAttributes">
+                <ScalarProperty Name="Accommodation_RoomFacility_Id" ColumnName="Accommodation_RoomFacility_Id" />
                 <ScalarProperty Name="SystemAttributeKeyword_Id" ColumnName="SystemAttributeKeyword_Id" />
                 <ScalarProperty Name="SystemAttributeKeyword" ColumnName="SystemAttributeKeyword" />
                 <ScalarProperty Name="SupplierRoomTypeAttribute" ColumnName="SupplierRoomTypeAttribute" />

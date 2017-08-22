@@ -466,6 +466,9 @@ namespace DataContracts.Mapping
         public int TotalPriorities { get; set; }
 
         [DataMember]
+        public int CurrentPriority { get; set; }
+
+        [DataMember]
         public Nullable<Guid> File_Id { get; set; }
 
 

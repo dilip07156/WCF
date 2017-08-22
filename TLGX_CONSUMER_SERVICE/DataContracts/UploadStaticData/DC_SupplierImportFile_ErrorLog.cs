@@ -25,6 +25,9 @@ namespace DataContracts.UploadStaticData
         public Nullable<System.DateTime> Error_DATE { get; set; }
 
         [DataMember]
+        public string ErrorMessage_UI { get; set; }
+
+        [DataMember]
         public string Error_USER { get; set; }
 
         [DataMember]

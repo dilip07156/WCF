@@ -17,6 +17,8 @@ namespace DataLayer
             Save,
             Update
         }
+
+
         public void Dispose()
         { }
 
@@ -1856,10 +1858,11 @@ namespace DataLayer
                                                        AttributeValue = mac.AttributeValue
                                                    }).ToList();
                     }
-                    if (!string.IsNullOrWhiteSpace(_obj.AttributeValue))
+                    if (_obj.ParentAttributeValue_Id.HasValue)
                     {
                         //Get partent_id 
-                        Guid _prentAttributeValue_Id = context.m_masterattributevalue.Where(p => p.AttributeValue.ToLower() == _obj.AttributeValue.ToLower()).FirstOrDefault().MasterAttributeValue_Id;
+                        //Guid _prentAttributeValue_Id = context.m_masterattributevalue.Where(p => p.AttributeValue.ToLower() == _obj.AttributeValue.ToLower()).FirstOrDefault().MasterAttributeValue_Id;
+                        Guid _prentAttributeValue_Id = _obj.ParentAttributeValue_Id.Value;
                         if (_prentAttributeValue_Id != Guid.Empty)
                         {
                             _lstMasterAttribute = (from mac in context.m_masterattributevalue
@@ -2137,7 +2140,7 @@ namespace DataLayer
 
                     //Check duplicate 
                     var isduplicate = (from attr in context.m_masterattributevalue
-                                       where attr.MasterAttributeValue_Id != obj.MasterAttributeValue_Id && attr.MasterAttribute_Id == obj.MasterAttribute_Id && attr.AttributeValue == obj.AttributeValue
+                                       where attr.MasterAttributeValue_Id != obj.MasterAttributeValue_Id && attr.ParentAttributeValue_Id == obj.ParentAttributeValue_Id && attr.MasterAttribute_Id == obj.MasterAttribute_Id && attr.AttributeValue == obj.AttributeValue
                                        select attr).Count() == 0 ? false : true;
                     if (isduplicate)
                     {
@@ -4172,6 +4175,138 @@ namespace DataLayer
             //                };
             //}
             return null;
+        }
+
+        public List<string> GetListOfColumnNamesByTable(string TableName)
+        {
+            List<string> _lstColumnName = new List<string>();
+            if (TableName != null)
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    string strtablename = TableName.ToLower();
+                    //City
+                    if (strtablename == "stg_suppliercitymapping")
+                    {
+                        var result = (from x in context.stg_SupplierCityMapping select x).Take(1).ToList();
+
+                        foreach (var cl in result[0].GetType().GetProperties())
+                        {
+                            _lstColumnName.Add(cl.Name);
+                        }
+                    }
+                    else if (strtablename == "m_citymaster")
+                    {
+                        var result = (from x in context.m_CityMaster select x).Take(1).ToList();
+
+                        foreach (var cl in result[0].GetType().GetProperties())
+                        {
+                            _lstColumnName.Add(cl.Name);
+                        }
+                    }
+                    else if (strtablename == "m_citymapping")
+                    {
+                        var result = (from x in context.m_CityMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+
+                    //Country
+                    else if (strtablename == "stg_suppliercountrymapping")
+                    {
+                        var result = (from x in context.stg_SupplierCountryMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "m_countrymapping")
+                    {
+                        var result = (from x in context.m_CountryMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "m_countrymaster")
+                    {
+                        var result = (from x in context.m_CountryMaster select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+
+                    //Activity
+                    else if (strtablename == "stg_supplieractivitymapping")
+                    {
+                        //var result = (from x in context.stg_supplieractivitymapping select x).Take(1).ToList();  //table Not added 
+                        //foreach (var cl in result[0].GetType().GetProperties())
+                        //    _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "m_activity_master")
+                    {
+                        var result = (from x in context.m_Activity_Master select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "activity_supplierproductmapping")
+                    {
+                        var result = (from x in context.Activity_SupplierProductMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+
+                    }
+
+                    //Hotel
+                    else if (strtablename == "stg_supplierproductmapping")
+                    {
+                        var result = (from x in context.stg_SupplierProductMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "accommodation_productmapping")
+                    {
+                        var result = (from x in context.Accommodation_ProductMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "accommodation")
+                    {
+                        var result = (from x in context.Accommodations select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+
+                    //Room Type
+                    else if (strtablename == "accommodation_supplierroomtypemapping")
+                    {
+                        var result = (from x in context.Accommodation_SupplierRoomTypeMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "accommodation_roominfo")
+                    {
+                        var result = (from x in context.Accommodation_RoomInfo select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    else if (strtablename == "stg_supplierhotelroommapping")
+                    {
+                        var result = (from x in context.stg_SupplierHotelRoomMapping select x).Take(1).ToList();
+                        foreach (var cl in result[0].GetType().GetProperties())
+                            _lstColumnName.Add(cl.Name);
+                    }
+                    //var result = (from x in context.stg_SupplierCityMapping select x).Take(1).ToList();
+
+                    //foreach (var cl in result[0].GetType().GetProperties())
+                    //{
+                    //    //string strDataType = string.Empty;
+                    //    //if (cl.PropertyType.GenericTypeArguments.Length > 0)
+                    //    //    strDataType = Convert.ToString(cl.PropertyType.GenericTypeArguments[0].FullName);
+                    //    //else
+                    //    //    strDataType = cl.PropertyType.FullName;
+                    //    //_lstColumnName.Add(string.Concat(cl.Name, ",", strDataType));
+                    //    _lstColumnName.Add(cl.Name);
+
+                    //}
+                }
+            }
+            return _lstColumnName;
         }
     }
 }
