@@ -464,39 +464,66 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-
-                    var total = (from a in context.Accommodations
-                                 where a.Edit_Date >= RQ.FromDate && a.Edit_Date <= RQ.ToDate
-                                 select a.Accommodation_Id).Count();
-
                     var acco = (from a in context.Accommodations
-                                where a.Edit_Date >= RQ.FromDate && a.Edit_Date <= RQ.ToDate
-                                select new DataContracts.DC_Accomodation
+                                where (a.Edit_Date ?? a.Create_Date) >= RQ.FromDate && (a.Edit_Date ?? a.Create_Date) <= RQ.ToDate
+                                select new
                                 {
-                                    Accommodation_Id = a.Accommodation_Id,
-                                    TotalRecords = total
+                                    Accommodation_Id = a.Accommodation_Id
                                 }).ToList();
 
-                    int count = 0,description,facility,room_info,rule_info,route_info,occupancy,nearByPlaces,media,hotelUpdates,Status,Attributes;
+                    List<DC_Accomodation> objList = new List<DC_Accomodation>();
+
                     foreach (var item in acco)
                     {
-                        Guid id = acco[count].Accommodation_Id;
-                        var res = GetAccomodationDetails(id);
-                        description = res.Accommodation_Descriptions.Count();
-                        facility = res.Accommodation_Facility.Count();
-                        room_info = res.Accommodation_RoomInfo.Count();
-                        occupancy = res.Accommodation_PaxOccupancy.Count();
-                        nearByPlaces = res.Accommodation_NearbyPlaces.Count();
-                        rule_info = res.Accommodation_RuleInfo.Count();
-                        route_info = res.Accommodation_RouteInfo.Count();
-                        media = res.Accommodation_Media.Count();
-                        hotelUpdates = res.Accommodation_HotelUpdates.Count();
-                        Status = res.Accomodation_Status.Count();
-                        Attributes = res.Accomodation_ClassificationAttributes.Count();
-                        count++;
-                    }
+                        Guid id = item.Accommodation_Id;
+                        var res = GetAccoDetails(id);
+                        //var result = GetColumnNameWhichValuesIsNull(id);
+                        if (res != null)
+                        {
+                            if (res.Accommodation_Descriptions.Count > 0)
+                            {
+                                res.TotalRecords_Accommodation_Descriptions = "YES";
+                            }
+                            res.TotalRecords_Accommodation_Facility = res.Accommodation_Facility.Count;
+                            res.TotalRecords_Accommodation_HealthAndSafety = res.Accommodation_HealthAndSafety.Count;
+                            res.TotalRecords_Accommodation_HotelUpdates = res.Accommodation_HotelUpdates.Count;
+                            res.TotalRecords_Accommodation_Media = res.Accommodation_Media.Count;
+                            res.TotalRecords_Accommodation_NearbyPlaces = res.Accommodation_NearbyPlaces.Count;
+                            res.TotalRecords_Accommodation_PaxOccupancy = res.Accommodation_PaxOccupancy.Count;
+                            res.TotalRecords_Accommodation_RoomInfo = res.Accommodation_RoomInfo.Count;
+                            res.TotalRecords_Accommodation_RouteInfo = res.Accommodation_RouteInfo.Count;
+                            res.TotalRecords_Accommodation_RuleInfo = res.Accommodation_RuleInfo.Count;
+                            res.TotalRecords_Accomodation_Contact = res.Accomodation_Contact.Count;
+                            res.TotalRecords_Accomodation_Status = res.Accomodation_Status.Count;
+                            res.TotalRecords_Accomodation_ClassificationAttributes = res.Accomodation_ClassificationAttributes.Count;
 
-                    return acco;
+                            StringBuilder sbRoom_Amenities = new StringBuilder();
+                            var list = new List<KeyValuePair<string, int>>();
+                            foreach (var itemRoomInfo in res.Accommodation_RoomInfo)
+                            {
+                                
+                                var rest = (from x in list where x.Key == itemRoomInfo.RoomCategory select x).FirstOrDefault();
+                                if (rest.Value > 0)
+                                {
+                                    list.Add(new KeyValuePair<string, int>(itemRoomInfo.RoomCategory, 1));
+                                }
+                                else
+                                {
+                                    int i = rest.Value;
+                                    list.Add(new KeyValuePair<string, int>(itemRoomInfo.RoomCategory, i++));
+                                }
+                            }
+                            
+                            foreach(var lst in list)
+                                sbRoom_Amenities.Append(string.Concat(Convert.ToString(lst.Key)," : ", Convert.ToString(lst.Value) ,";"));
+                            string strFinalRoom_Amenities = sbRoom_Amenities.ToString().TrimEnd(';');
+                            res.Room_Amenities = strFinalRoom_Amenities;
+
+                            objList.Add(res);
+
+                        }
+                    }
+                    return objList;
                 }
             }
             catch
@@ -505,6 +532,137 @@ namespace DataLayer
             }
         }
 
+        public DataContracts.DC_Accomodation GetAccoDetails(Guid Accomodation_Id)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var acco = from a in context.Accommodations
+                               where a.Accommodation_Id == Accomodation_Id
+                               select new DataContracts.DC_Accomodation
+                               {
+                                   Accommodation_Id = a.Accommodation_Id,
+                                   CompanyHotelID = a.CompanyHotelID,
+                                   HotelName = a.HotelName,
+                                   Edit_Date = a.Edit_Date,
+                                   Create_Date = a.Create_Date,
+                                   Accommodation_Descriptions = (from ad in context.Accommodation_Descriptions
+                                                                 where ad.Accommodation_Id == a.Accommodation_Id
+                                                                 select new DataContracts.DC_Accommodation_Descriptions
+                                                                 {
+                                                                     Accommodation_Description_Id = ad.Accommodation_Description_Id
+                                                                 }).ToList(),
+                                   Accommodation_Facility = (from af in context.Accommodation_Facility
+                                                             where af.Accommodation_Id == a.Accommodation_Id
+                                                             select new DataContracts.DC_Accommodation_Facility
+                                                             {
+                                                                 Accommodation_Facility_Id = af.Accommodation_Facility_Id,
+                                                                 Accommodation_Id = af.Accommodation_Id
+                                                             }).ToList(),
+                                   Accommodation_HealthAndSafety = (from ahs in context.Accommodation_HealthAndSafety
+                                                                    where ahs.Accommodation_Id == a.Accommodation_Id
+                                                                    select new DataContracts.DC_Accommodation_HealthAndSafety
+                                                                    {
+                                                                        Accommodation_HealthAndSafety_Id = ahs.Accommodation_HealthAndSafety_Id,
+                                                                        Accommodation_Id = ahs.Accommodation_Id
+                                                                    }).ToList(),
+                                   Accommodation_HotelUpdates = (from ah in context.Accommodation_HotelUpdates
+                                                                 where ah.Accommodation_Id == a.Accommodation_Id
+                                                                 select new DataContracts.DC_Accommodation_HotelUpdates
+                                                                 {
+                                                                     Accommodation_HotelUpdates_Id = ah.Accommodation_HotelUpdates_Id,
+                                                                     Accommodation_Id = ah.Accommodation_Id
+                                                                 }).ToList(),
+                                   Accommodation_Media = (from am in context.Accommodation_Media
+                                                          where am.Accommodation_Id == a.Accommodation_Id
+                                                          select new DataContracts.DC_Accommodation_Media
+                                                          {
+                                                              Accommodation_Id = am.Accommodation_Id,
+                                                              Accommodation_Media_Id = am.Accommodation_Media_Id,
+                                                              Media_Attributes = (from AMA in context.Media_Attributes
+                                                                                  where AMA.Media_Id == am.Accommodation_Media_Id
+                                                                                  select new DataContracts.DC_Accomodation_Media_Attributes
+                                                                                  {
+                                                                                      Accomodation_Media_Attributes_Id = AMA.Media_Attributes_Id,
+                                                                                      Accomodation_Media_Id = AMA.Media_Id
+                                                                                  }).ToList()
+                                                          }).ToList(),
+                                   Accommodation_NearbyPlaces = (from an in context.Accommodation_NearbyPlaces
+                                                                 where an.Accomodation_Id == a.Accommodation_Id
+                                                                 select new DataContracts.DC_Accommodation_NearbyPlaces
+                                                                 {
+                                                                     Accommodation_NearbyPlace_Id = an.Accommodation_NearbyPlace_Id,
+                                                                     Accomodation_Id = an.Accomodation_Id
+                                                                 }).ToList(),
+                                   Accommodation_PaxOccupancy = (from ap in context.Accommodation_PaxOccupancy
+                                                                 join ri in context.Accommodation_RoomInfo on ap.Accommodation_RoomInfo_Id equals ri.Accommodation_RoomInfo_Id
+                                                                 where ap.Accommodation_Id == a.Accommodation_Id
+                                                                 select new DataContracts.DC_Accommodation_PaxOccupancy
+                                                                 {
+                                                                     Accommodation_Id = ap.Accommodation_Id,
+                                                                     Accommodation_PaxOccupancy_Id = ap.Accommodation_PaxOccupancy_Id
+                                                                 }).ToList(),
+                                   Accommodation_RoomInfo = (from ar in context.Accommodation_RoomInfo
+                                                             where ar.Accommodation_Id == a.Accommodation_Id
+                                                             select new DataContracts.DC_Accommodation_RoomInfo
+                                                             {
+                                                                 Accommodation_Id = ar.Accommodation_Id,
+                                                                 Accommodation_RoomInfo_Id = ar.Accommodation_RoomInfo_Id,
+                                                                 RoomCategory = ar.RoomCategory,
+                                                                 RoomFacilities = (from rf in context.Accommodation_RoomFacility
+                                                                                   where rf.Accommodation_Id == ar.Accommodation_Id
+                                                                                   && rf.Accommodation_RoomInfo_Id == ar.Accommodation_RoomInfo_Id
+                                                                                   select new DataContracts.DC_Accomodation_RoomFacilities
+                                                                                   {
+                                                                                       Accommodation_Id = rf.Accommodation_Id,
+                                                                                       Accommodation_RoomFacility_Id = rf.Accommodation_RoomFacility_Id
+                                                                                   }).ToList()
+                                                             }).ToList(),
+                                   Accommodation_RouteInfo = (from ari in context.Accommodation_RouteInfo
+                                                              where ari.Accommodation_Id == a.Accommodation_Id
+                                                              select new DataContracts.DC_Accommodation_RouteInfo
+                                                              {
+                                                                  AccommodationCode = ari.AccommodationCode,
+                                                                  Accommodation_Id = ari.Accommodation_Id
+                                                              }).ToList(),
+                                   Accommodation_RuleInfo = (from arl in context.Accommodation_RuleInfo
+                                                             where arl.Accommodation_Id == a.Accommodation_Id
+                                                             select new DataContracts.DC_Accommodation_RuleInfo
+                                                             {
+                                                                 Accommodation_Id = arl.Accommodation_Id,
+                                                                 Accommodation_RuleInfo_Id = arl.Accommodation_RuleInfo_Id
+                                                             }).ToList(),
+                                   Accomodation_Contact = (from ac in context.Accommodation_Contact
+                                                           where ac.Accommodation_Id == a.Accommodation_Id
+                                                           select new DataContracts.DC_Accommodation_Contact
+                                                           {
+                                                               Accommodation_Contact_Id = ac.Accommodation_Contact_Id,
+                                                               Accommodation_Id = ac.Accommodation_Id
+                                                           }).ToList(),
+                                   Accomodation_Status = (from ast in context.Accommodation_Status
+                                                          where ast.Accommodation_Id == a.Accommodation_Id
+                                                          select new DataContracts.DC_Accommodation_Status
+                                                          {
+                                                              Accommodation_Id = ast.Accommodation_Id,
+                                                              Accommodation_Status_Id = ast.Accommodation_Status_Id
+                                                          }).ToList(),
+                                   Accomodation_ClassificationAttributes = (from aca in context.Accommodation_ClassificationAttributes
+                                                                            where aca.Accommodation_Id == Accomodation_Id
+                                                                            select new DataContracts.DC_Accomodation_ClassificationAttributes
+                                                                            {
+                                                                                Accommodation_ClassificationAttribute_Id = aca.Accommodation_ClassificationAttribute_Id,
+                                                                                Accommodation_Id = aca.Accommodation_Id
+                                                                            }).ToList()
+                               };
+                    return acco.FirstOrDefault();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation details", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
         public DataContracts.DC_Accomodation GetAccomodationDetails(Guid Accomodation_Id)
         {
             try
@@ -914,17 +1072,25 @@ namespace DataLayer
             {
                 foreach (var item in result.GetType().GetProperties())
                 {
-                    if (string.IsNullOrWhiteSpace(Convert.ToString(item.GetValue(result))))
+                    //if (item.GetValue(result).GetType().FullName == "System.Boolean" || item.GetValue(result).GetType().FullName == "System.string")
+                    //{
+                    if (item.Name == "TotalFloors" || item.Name == "TotalRooms" || item.Name == "CheckInTime" || item.Name == "CheckOutTime"
+                        || item.Name == "CompanyRating" || item.Name == "HotelRating" || item.Name == "RatingDate" || item.Name == "IsMysteryProduct"
+                        || item.Name == "CompanyRecommended")
                     {
-                        sb.Append(item.Name);
-                        sb.Append(";");
-                        Count++;
-                        if (Count > 4)
+                        if (string.IsNullOrWhiteSpace(Convert.ToString(item.GetValue(result))))
                         {
-                            sb.AppendLine();
-                            Count = 0;
+                            sb.Append(item.Name);
+                            sb.Append(";");
+                            Count++;
+                            if (Count > 4)
+                            {
+                                sb.AppendLine();
+                                Count = 0;
+                            }
                         }
                     }
+                    //}
                 }
             }
             return sb.ToString();

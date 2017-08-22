@@ -70,6 +70,7 @@ namespace DataContracts
         int? _Legacy_HTL_ID;
         string _Google_Place_Id;
         string _fullAddress;
+        int _TotalRecords;
         List<DC_Accommodation_Contact> _Accomodation_Contact;
         List<DC_Accommodation_Descriptions> _Accommodation_Descriptions;
         List<DC_Accommodation_HotelUpdates> _Accommodation_HotelUpdates;
@@ -84,7 +85,20 @@ namespace DataContracts
         List<DC_Accommodation_Status> _Accomodation_Status;
         List<Masters.DC_DynamicAttributes> _Accomodation_DynamicAttributes;
         List<DC_Accomodation_ClassificationAttributes> _Accomodation_ClassificationAttributes;
-        int _TotalRecords;
+        int? _TotalRecords_Accomodation_Contact;
+        string _TotalRecords_Accommodation_Descriptions;
+        int? _TotalRecords_Accommodation_HotelUpdates;
+        int? _TotalRecords_Accommodation_NearbyPlaces;
+        int? _TotalRecords_Accommodation_RuleInfo;
+        int? _TotalRecords_Accommodation_Facility;
+        int? _TotalRecords_Accommodation_HealthAndSafety;
+        int? _TotalRecords_Accommodation_Media;
+        int? _TotalRecords_Accommodation_RoomInfo;
+        int? _TotalRecords_Accommodation_PaxOccupancy;
+        int? _TotalRecords_Accommodation_RouteInfo;
+        int? _TotalRecords_Accomodation_Status;
+        int? _TotalRecords_Accomodation_ClassificationAttributes;
+        string _Room_Amenities;
         [DataMember]
         public Nullable<bool> InsertFrom { get; set; }
 
@@ -1125,6 +1139,188 @@ namespace DataContracts
             set
             {
                 _TotalRecords = value;
+            }
+        }
+        [DataMember]
+        public int? TotalRecords_Accomodation_Contact
+        {
+            get
+            {
+                return _TotalRecords_Accomodation_Contact;
+            }
+
+            set
+            {
+                _TotalRecords_Accomodation_Contact = value;
+            }
+        }
+        [DataMember]
+        public string TotalRecords_Accommodation_Descriptions
+        {
+            get
+            {
+                return _TotalRecords_Accommodation_Descriptions;
+            }
+
+            set
+            {
+                _TotalRecords_Accommodation_Descriptions = value;
+            }
+        }
+        [DataMember]
+        public int? TotalRecords_Accommodation_HotelUpdates
+        {
+            get
+            {
+                return _TotalRecords_Accommodation_HotelUpdates;
+            }
+
+            set
+            {
+                _TotalRecords_Accommodation_HotelUpdates = value;
+            }
+        }
+        [DataMember]
+        public int? TotalRecords_Accommodation_NearbyPlaces
+        {
+            get
+            {
+                return _TotalRecords_Accommodation_NearbyPlaces;
+            }
+
+            set
+            {
+                _TotalRecords_Accommodation_NearbyPlaces = value;
+            }
+        }
+        [DataMember]
+        public int? TotalRecords_Accommodation_RuleInfo
+        {
+            get
+            {
+                return _TotalRecords_Accommodation_RuleInfo;
+            }
+
+            set
+            {
+                _TotalRecords_Accommodation_RuleInfo = value;
+            }
+        }
+        [DataMember]
+        public int? TotalRecords_Accommodation_Facility
+        {
+            get
+            {
+                return _TotalRecords_Accommodation_Facility;
+            }
+
+            set
+            {
+                _TotalRecords_Accommodation_Facility = value;
+            }
+        }
+        [DataMember]
+        public int? TotalRecords_Accommodation_HealthAndSafety
+        {
+            get
+            {
+                return _TotalRecords_Accommodation_HealthAndSafety;
+            }
+
+            set
+            {
+                _TotalRecords_Accommodation_HealthAndSafety = value;
+            }
+        }
+        [DataMember]
+        public int? TotalRecords_Accommodation_Media
+        {
+            get
+            {
+                return _TotalRecords_Accommodation_Media;
+            }
+
+            set
+            {
+                _TotalRecords_Accommodation_Media = value;
+            }
+        }
+        [DataMember]
+        public int? TotalRecords_Accommodation_RoomInfo
+        {
+            get
+            {
+                return _TotalRecords_Accommodation_RoomInfo;
+            }
+
+            set
+            {
+                _TotalRecords_Accommodation_RoomInfo = value;
+            }
+        }
+        [DataMember]
+        public int? TotalRecords_Accommodation_PaxOccupancy
+        {
+            get
+            {
+                return _TotalRecords_Accommodation_PaxOccupancy;
+            }
+
+            set
+            {
+                _TotalRecords_Accommodation_PaxOccupancy = value;
+            }
+        }
+        [DataMember]
+        public int? TotalRecords_Accommodation_RouteInfo
+        {
+            get
+            {
+                return _TotalRecords_Accommodation_RouteInfo;
+            }
+
+            set
+            {
+                _TotalRecords_Accommodation_RouteInfo = value;
+            }
+        }
+        [DataMember]
+        public int? TotalRecords_Accomodation_Status
+        {
+            get
+            {
+                return _TotalRecords_Accomodation_Status;
+            }
+
+            set
+            {
+                _TotalRecords_Accomodation_Status = value;
+            }
+        }
+        [DataMember]
+        public int? TotalRecords_Accomodation_ClassificationAttributes
+        {
+            get
+            {
+                return _TotalRecords_Accomodation_ClassificationAttributes;
+            }
+
+            set
+            {
+                _TotalRecords_Accomodation_ClassificationAttributes = value;
+            }
+        }
+        [DataMember]
+        public string Room_Amenities
+        {
+            get
+            {
+                return _Room_Amenities;
+            }
+
+            set
+            {
+                _Room_Amenities = value;
             }
         }
     }
