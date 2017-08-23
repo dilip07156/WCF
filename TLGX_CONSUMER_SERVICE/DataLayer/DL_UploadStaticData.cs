@@ -965,7 +965,7 @@ namespace DataLayer
                     {
                         if (obj.CurrentBatch != 0)
                         {
-                            context.SupplierImportFile_Progress.RemoveRange(context.SupplierImportFile_Progress.Where(w => w.SupplierImportFile_Id == obj.SupplierImportFile_Id && w.CurrentBatch != 0 && w.CurrentBatch != obj.CurrentBatch));
+                            context.SupplierImportFile_Progress.RemoveRange(context.SupplierImportFile_Progress.Where(w => w.SupplierImportFile_Id == obj.SupplierImportFile_Id && w.CurrentBatch != 0 && w.Step.ToString().ToUpper() == obj.Step.ToString().ToUpper() && w.CurrentBatch != obj.CurrentBatch));
                         }
 
                         var progress = (from a in context.SupplierImportFile_Progress

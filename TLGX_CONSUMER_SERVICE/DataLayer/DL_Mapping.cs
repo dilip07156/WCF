@@ -447,11 +447,13 @@ namespace DataLayer
                     PLog.SupplierImportFile_Id = obj.File_Id;
                     PLog.Step = "MATCH";
                     PLog.Status = "MATCHING";
+                    PLog.CurrentBatch = curPriority;
+                    PLog.TotalBatch = totPriorities;
                     CallLogVerbose(File_Id, "MATCH", "Applying Matching Combination " + curPriority.ToString() + " out of Total " + totPriorities + " Combinations.");
 
                     foreach (DC_SupplierImportAttributeValues config in configs)
                     {
-                        configWhere = " " + configWhere + config.AttributeValue.Replace("Accommodation_RoomInfo.", "").Trim() + ",";
+                        configWhere = configWhere + " " + config.AttributeValue.Replace("Accommodation_RoomInfo.", "").Trim() + ",";
                     }
                     configWhere = configWhere.Remove(configWhere.Length - 1);
                     CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);
@@ -646,11 +648,13 @@ namespace DataLayer
                     PLog.SupplierImportFile_Id = obj.File_Id;
                     PLog.Step = "MATCH";
                     PLog.Status = "MATCHING";
+                    PLog.CurrentBatch = curPriority;
+                    PLog.TotalBatch = totPriorities;
                     CallLogVerbose(File_Id, "MATCH", "Applying Matching Combination " + curPriority.ToString() + " out of Total " + totPriorities + " Combinations.");
 
                     foreach (DC_SupplierImportAttributeValues config in configs)
                     {
-                        configWhere = " " + configWhere + config.AttributeValue.Replace("Accommodation.", "").Trim() + ",";
+                        configWhere = configWhere + " " + config.AttributeValue.Replace("Accommodation.", "").Trim() + ",";
                     }
                     configWhere = configWhere.Remove(configWhere.Length - 1);
                     CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);
@@ -3099,11 +3103,13 @@ namespace DataLayer
                     PLog.SupplierImportFile_Id = obj.File_Id;
                     PLog.Step = "MATCH";
                     PLog.Status = "MATCHING";
+                    PLog.CurrentBatch = curPriority;
+                    PLog.TotalBatch = totPriorities;
                     CallLogVerbose(File_Id, "MATCH", "Applying Matching Combination " + curPriority.ToString() + " out of Total " + totPriorities + " Combinations.");
 
                     foreach (DC_SupplierImportAttributeValues config in configs)
                     {
-                        configWhere = " " + configWhere + config.AttributeValue.Replace("m_CountryMaster.", "").Trim() + ",";
+                        configWhere = configWhere + " " + config.AttributeValue.Replace("m_CountryMaster.", "").Trim() + ",";
                     }
                     configWhere = configWhere.Remove(configWhere.Length - 1);
                     CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);
@@ -3863,11 +3869,13 @@ namespace DataLayer
                     PLog.SupplierImportFile_Id = obj.File_Id;
                     PLog.Step = "MATCH";
                     PLog.Status = "MATCHING";
+                    PLog.CurrentBatch = curPriority;
+                    PLog.TotalBatch = totPriorities;
                     CallLogVerbose(File_Id, "MATCH", "Applying Matching Combination " + curPriority.ToString() + " out of Total " + totPriorities + " Combinations.");
 
                     foreach (DC_SupplierImportAttributeValues config in configs)
                     {
-                        configWhere = " " + configWhere + config.AttributeValue.Replace("m_CityMaster.", "").Trim() + ",";
+                        configWhere = configWhere + " " + config.AttributeValue.Replace("m_CityMaster.", "").Trim() + ",";
                     }
                     configWhere = configWhere.Remove(configWhere.Length - 1);
                     CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);
