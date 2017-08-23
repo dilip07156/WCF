@@ -21,11 +21,7 @@ namespace DataLayer
             : base("name=ConsumerEntities")
         {
         }
-        public DbSet Set(string name)
-        {
-            // you may need to fill in the namespace of your context
-            return base.Set(Type.GetType(name));
-        }
+    
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();
@@ -104,13 +100,14 @@ namespace DataLayer
         public virtual DbSet<m_keyword> m_keyword { get; set; }
         public virtual DbSet<m_keyword_alias> m_keyword_alias { get; set; }
         public virtual DbSet<Place> Places { get; set; }
-        public virtual DbSet<Accommodation_SupplierRoomTypeAttributes> Accommodation_SupplierRoomTypeAttributes { get; set; }
         public virtual DbSet<Accommodation_SupplierRoomTypeMapping> Accommodation_SupplierRoomTypeMapping { get; set; }
         public virtual DbSet<SupplierImportFile_Progress> SupplierImportFile_Progress { get; set; }
         public virtual DbSet<SupplierImportFile_VerboseLog> SupplierImportFile_VerboseLog { get; set; }
         public virtual DbSet<vwUserwisemappedStat> vwUserwisemappedStats { get; set; }
         public virtual DbSet<SupplierImportFile_Statistics> SupplierImportFile_Statistics { get; set; }
         public virtual DbSet<STG_Mapping_TableIds> STG_Mapping_TableIds { get; set; }
+        public virtual DbSet<Supplier_APILocation> Supplier_APILocation { get; set; }
+        public virtual DbSet<Accommodation_SupplierRoomTypeAttributes> Accommodation_SupplierRoomTypeAttributes { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {
