@@ -369,6 +369,9 @@
     <Compile Include="SupplierImportFile_VerboseLog.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Supplier_APILocation.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Supplier_Market.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>

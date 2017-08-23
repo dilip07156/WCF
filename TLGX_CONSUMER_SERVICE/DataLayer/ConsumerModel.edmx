@@ -1054,9 +1054,13 @@
           <Property Name="UPDATE_DATE" Type="datetime" />
           <Property Name="UPDATE_USER" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'TLGX_DEV.dbo.m_SupplierImportAttributes' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="m_SupplierImportAttributes">
           <Key>
             <PropertyRef Name="SupplierImportAttribute_Id" />
+            
+            
           </Key>
           <Property Name="SupplierImportAttribute_Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Supplier_Id" Type="uniqueidentifier" Nullable="false" />
@@ -1386,6 +1390,20 @@
           <Property Name="SupplierOwner" Type="nvarchar" MaxLength="255" />
           <Property Name="StatusCode" Type="nvarchar" MaxLength="20" />
         </EntityType>
+        <EntityType Name="Supplier_APILocation">
+          <Key>
+            <PropertyRef Name="Supplier_APILocation_Id" />
+          </Key>
+          <Property Name="Supplier_APILocation_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Supplier_Id" Type="uniqueidentifier" />
+          <Property Name="Entity_Id" Type="uniqueidentifier" />
+          <Property Name="API_Path" Type="nvarchar(max)" />
+          <Property Name="CREATE_DATE" Type="datetime" />
+          <Property Name="CREATE_USER" Type="nvarchar" MaxLength="255" />
+          <Property Name="EDIT_DATE" Type="datetime" />
+          <Property Name="EDIT_USER" Type="nvarchar" MaxLength="255" />
+          <Property Name="STATUS" Type="nvarchar" MaxLength="255" />
+        </EntityType>
         <EntityType Name="Supplier_Market">
           <Key>
             <PropertyRef Name="Supplier_Market_Id" />
@@ -1658,7 +1676,6 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySet Name="m_PortMaster" EntityType="Self.m_PortMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_States" EntityType="Self.m_States" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_Statuses" EntityType="Self.m_Statuses" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="m_SupplierImportAttributes" EntityType="Self.m_SupplierImportAttributes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_SupplierImportAttributeValues" EntityType="Self.m_SupplierImportAttributeValues" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_TeamMembers" EntityType="Self.m_TeamMembers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_Teams" EntityType="Self.m_Teams" Schema="dbo" store:Type="Tables" />
@@ -1676,6 +1693,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySet Name="stg_SupplierHotelRoomMapping" EntityType="Self.stg_SupplierHotelRoomMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierProductMapping" EntityType="Self.stg_SupplierProductMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier" EntityType="Self.Supplier" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Supplier_APILocation" EntityType="Self.Supplier_APILocation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier_Market" EntityType="Self.Supplier_Market" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier_ProductCategory" EntityType="Self.Supplier_ProductCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier_Schedule" EntityType="Self.Supplier_Schedule" Schema="dbo" store:Type="Tables" />
@@ -1685,6 +1703,22 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySet Name="SupplierImportFile_VerboseLog" EntityType="Self.SupplierImportFile_VerboseLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFileDetails" EntityType="Self.SupplierImportFileDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserEntity" EntityType="Self.UserEntity" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="m_SupplierImportAttributes" EntityType="Self.m_SupplierImportAttributes" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [m_SupplierImportAttributes].[SupplierImportAttribute_Id] AS [SupplierImportAttribute_Id], 
+    [m_SupplierImportAttributes].[Supplier_Id] AS [Supplier_Id], 
+    [m_SupplierImportAttributes].[Entity] AS [Entity], 
+    [m_SupplierImportAttributes].[Status] AS [Status], 
+    [m_SupplierImportAttributes].[CREATE_DATE] AS [CREATE_DATE], 
+    [m_SupplierImportAttributes].[CREATE_USER] AS [CREATE_USER], 
+    [m_SupplierImportAttributes].[EDIT_DATE] AS [EDIT_DATE], 
+    [m_SupplierImportAttributes].[EDIT_USER] AS [EDIT_USER], 
+    [m_SupplierImportAttributes].[AttributeFor] AS [AttributeFor], 
+    [m_SupplierImportAttributes].[STG_Table] AS [STG_Table], 
+    [m_SupplierImportAttributes].[Mapping_Table] AS [Mapping_Table], 
+    [m_SupplierImportAttributes].[Master_Table] AS [Master_Table]
+    FROM [dbo].[m_SupplierImportAttributes] AS [m_SupplierImportAttributes]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="vwMappingStats" EntityType="Self.vwMappingStats" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [vwMappingStats].[supplier_id] AS [supplier_id], 
@@ -1817,13 +1851,14 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySet Name="m_keyword" EntityType="ConsumerModel.m_keyword" />
           <EntitySet Name="m_keyword_alias" EntityType="ConsumerModel.m_keyword_alias" />
           <EntitySet Name="Places" EntityType="ConsumerModel.Place" />
-          <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
           <EntitySet Name="Accommodation_SupplierRoomTypeMapping" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" />
           <EntitySet Name="SupplierImportFile_Progress" EntityType="ConsumerModel.SupplierImportFile_Progress" />
           <EntitySet Name="SupplierImportFile_VerboseLog" EntityType="ConsumerModel.SupplierImportFile_VerboseLog" />
           <EntitySet Name="vwUserwisemappedStats" EntityType="ConsumerModel.vwUserwisemappedStat" />
           <EntitySet Name="SupplierImportFile_Statistics" EntityType="ConsumerModel.SupplierImportFile_Statistics" />
           <EntitySet Name="STG_Mapping_TableIds" EntityType="ConsumerModel.STG_Mapping_TableIds" />
+          <EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
+          <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         </EntityContainer>
         <EntityType Name="Accommodation_Contact">
           <Key>
@@ -3285,17 +3320,6 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <Property Name="Google_Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Google_FullObjext" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="Accommodation_SupplierRoomTypeAttributes">
-          <Key>
-            <PropertyRef Name="RoomTypeMapAttribute_Id" />
-          </Key>
-          <Property Name="RoomTypeMapAttribute_Id" Type="Guid" Nullable="false" />
-          <Property Name="RoomTypeMap_Id" Type="Guid" Nullable="false" />
-          <Property Name="SupplierRoomTypeAttribute" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SystemAttributeKeyword" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SystemAttributeKeyword_Id" Type="Guid" Nullable="false" />
-          <Property Name="Accommodation_RoomFacility_Id" Type="Guid" />
-        </EntityType>
         <EntityType Name="Accommodation_SupplierRoomTypeMapping">
           <Key>
             <PropertyRef Name="Accommodation_SupplierRoomTypeMapping_Id" />
@@ -3391,6 +3415,31 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <Property Name="STG_Id" Type="Guid" />
           <Property Name="Mapping_Id" Type="Guid" />
           <Property Name="File_Id" Type="Guid" />
+        </EntityType>
+        <EntityType Name="Supplier_APILocation">
+          <Key>
+            <PropertyRef Name="Supplier_APILocation_Id" />
+          </Key>
+          <Property Name="Supplier_APILocation_Id" Type="Guid" Nullable="false" />
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="Entity_Id" Type="Guid" />
+          <Property Name="API_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATE_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EDIT_DATE" Type="DateTime" Precision="3" />
+          <Property Name="EDIT_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="STATUS" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Accommodation_SupplierRoomTypeAttributes">
+          <Key>
+            <PropertyRef Name="RoomTypeMapAttribute_Id" />
+          </Key>
+          <Property Name="RoomTypeMapAttribute_Id" Type="Guid" Nullable="false" />
+          <Property Name="RoomTypeMap_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierRoomTypeAttribute" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SystemAttributeKeyword" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SystemAttributeKeyword_Id" Type="Guid" Nullable="false" />
+          <Property Name="Accommodation_RoomFacility_Id" Type="Guid" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -4898,18 +4947,6 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Accommodation_SupplierRoomTypeAttributes">
-            <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeAttributes">
-              <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeAttributes">
-                <ScalarProperty Name="Accommodation_RoomFacility_Id" ColumnName="Accommodation_RoomFacility_Id" />
-                <ScalarProperty Name="SystemAttributeKeyword_Id" ColumnName="SystemAttributeKeyword_Id" />
-                <ScalarProperty Name="SystemAttributeKeyword" ColumnName="SystemAttributeKeyword" />
-                <ScalarProperty Name="SupplierRoomTypeAttribute" ColumnName="SupplierRoomTypeAttribute" />
-                <ScalarProperty Name="RoomTypeMap_Id" ColumnName="RoomTypeMap_Id" />
-                <ScalarProperty Name="RoomTypeMapAttribute_Id" ColumnName="RoomTypeMapAttribute_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Accommodation_SupplierRoomTypeMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeMapping">
               <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeMapping">
@@ -5007,6 +5044,33 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
                 <ScalarProperty Name="Mapping_Id" ColumnName="Mapping_Id" />
                 <ScalarProperty Name="STG_Id" ColumnName="STG_Id" />
                 <ScalarProperty Name="STG_Mapping_Table_Id" ColumnName="STG_Mapping_Table_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Supplier_APILocation">
+            <EntityTypeMapping TypeName="ConsumerModel.Supplier_APILocation">
+              <MappingFragment StoreEntitySet="Supplier_APILocation">
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="EDIT_USER" ColumnName="EDIT_USER" />
+                <ScalarProperty Name="EDIT_DATE" ColumnName="EDIT_DATE" />
+                <ScalarProperty Name="CREATE_USER" ColumnName="CREATE_USER" />
+                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
+                <ScalarProperty Name="API_Path" ColumnName="API_Path" />
+                <ScalarProperty Name="Entity_Id" ColumnName="Entity_Id" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="Supplier_APILocation_Id" ColumnName="Supplier_APILocation_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Accommodation_SupplierRoomTypeAttributes">
+            <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeAttributes">
+              <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeAttributes">
+                <ScalarProperty Name="Accommodation_RoomFacility_Id" ColumnName="Accommodation_RoomFacility_Id" />
+                <ScalarProperty Name="SystemAttributeKeyword_Id" ColumnName="SystemAttributeKeyword_Id" />
+                <ScalarProperty Name="SystemAttributeKeyword" ColumnName="SystemAttributeKeyword" />
+                <ScalarProperty Name="SupplierRoomTypeAttribute" ColumnName="SupplierRoomTypeAttribute" />
+                <ScalarProperty Name="RoomTypeMap_Id" ColumnName="RoomTypeMap_Id" />
+                <ScalarProperty Name="RoomTypeMapAttribute_Id" ColumnName="RoomTypeMapAttribute_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
