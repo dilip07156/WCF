@@ -39,6 +39,47 @@ namespace DataLayer
                 {
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
+                        DC_SupplierImportFileDetails_RQ RQ = new DC_SupplierImportFileDetails_RQ();
+                        RQ.SupplierImportFile_Id = File_Id;
+                        RQ.PageNo = 1;
+                        RQ.PageSize = int.MaxValue;
+                        var FileDetails = USD.GetStaticDataFileDetail(RQ);
+
+                        string SupplierName = FileDetails[0].Supplier.ToString();
+                        string Entity = FileDetails[0].Entity.ToString().ToUpper();
+
+                        switch(Entity)
+                        {
+                            case "COUNTRY":
+                                var stgCountries = (from y in context.stg_SupplierCountryMapping
+                                                    where y.SupplierName.ToString().ToUpper() == SupplierName.ToString().ToUpper()
+                                                    select y).ToList();
+                                context.stg_SupplierCountryMapping.RemoveRange(stgCountries);
+                                context.SaveChanges();
+                                break;
+                            case "CITY":
+                                var stgCities = (from y in context.stg_SupplierCityMapping
+                                                    where y.SupplierName.ToString().ToUpper() == SupplierName.ToString().ToUpper()
+                                                    select y).ToList();
+                                context.stg_SupplierCityMapping.RemoveRange(stgCities);
+                                context.SaveChanges();
+                                break;
+                            case "HOTEL":
+                                var stgHotel = (from y in context.stg_SupplierProductMapping
+                                                 where y.SupplierName.ToString().ToUpper() == SupplierName.ToString().ToUpper()
+                                                 select y).ToList();
+                                context.stg_SupplierProductMapping.RemoveRange(stgHotel);
+                                context.SaveChanges();
+                                break;
+                            case "ROOMTYPE":
+                                var stgRoomType = (from y in context.stg_SupplierHotelRoomMapping
+                                                where y.SupplierName.ToString().ToUpper() == SupplierName.ToString().ToUpper()
+                                                select y).ToList();
+                                context.stg_SupplierHotelRoomMapping.RemoveRange(stgRoomType);
+                                context.SaveChanges();
+                                break;
+                        }
+
                         var oldRecords = (from y in context.STG_Mapping_TableIds
                                           where y.File_Id == File_Id
                                           select y).ToList();
