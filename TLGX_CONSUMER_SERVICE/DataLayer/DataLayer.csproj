@@ -339,6 +339,9 @@
     <Compile Include="STG_Mapping_TableIds.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="stg_SupplierActivityMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="stg_SupplierCityMapping.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>

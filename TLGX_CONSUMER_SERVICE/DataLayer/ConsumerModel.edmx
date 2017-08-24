@@ -1244,6 +1244,70 @@
           <Property Name="Mapping_Id" Type="uniqueidentifier" />
           <Property Name="File_Id" Type="uniqueidentifier" />
         </EntityType>
+        <EntityType Name="stg_SupplierActivityMapping">
+          <Key>
+            <PropertyRef Name="stg_SupplierActivityMapping_Id" />
+          </Key>
+          <Property Name="stg_SupplierActivityMapping_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SupplierCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SuplierProductCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierProductType" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierType" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierLocationId" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierLocationName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierCountryName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierCityName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierCountryCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierCityCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierStateName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierStateCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierCityIATACode" Type="nvarchar" MaxLength="255" />
+          <Property Name="Duration" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierProductName" Type="nvarchar(max)" />
+          <Property Name="SupplierDataLangaugeCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="Introduction" Type="nvarchar(max)" />
+          <Property Name="Conditions" Type="nvarchar(max)" />
+          <Property Name="Inclusions" Type="nvarchar(max)" />
+          <Property Name="Exclusions" Type="nvarchar(max)" />
+          <Property Name="AdditionalInformation" Type="nvarchar(max)" />
+          <Property Name="DeparturePoint" Type="nvarchar(max)" />
+          <Property Name="TicketingDetails" Type="nvarchar(max)" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="255" />
+          <Property Name="DepartureTime" Type="nvarchar(max)" />
+          <Property Name="DepartureDate" Type="nvarchar(max)" />
+          <Property Name="DateFrom" Type="nvarchar" MaxLength="255" />
+          <Property Name="DateTo" Type="nvarchar" MaxLength="255" />
+          <Property Name="BlockOutDateFrom" Type="nvarchar" MaxLength="255" />
+          <Property Name="BlockOutDateTo" Type="nvarchar" MaxLength="255" />
+          <Property Name="OptionTitle" Type="nvarchar" MaxLength="255" />
+          <Property Name="OptionCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="OptionDescription" Type="nvarchar(max)" />
+          <Property Name="TourActivityLangauageCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProductDescription" Type="nvarchar(max)" />
+          <Property Name="TourActivityLanguage" Type="nvarchar" MaxLength="255" />
+          <Property Name="ImgURL" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProductValidFor" Type="nvarchar" MaxLength="255" />
+          <Property Name="Address" Type="nvarchar(max)" />
+          <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="DayPattern" Type="nvarchar(max)" />
+          <Property Name="Theme" Type="nvarchar" MaxLength="255" />
+          <Property Name="Distance" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierTourType" Type="nvarchar" MaxLength="255" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="TotalActivities" Type="int" />
+          <Property Name="PhysicalIntensity" Type="nvarchar" MaxLength="255" />
+          <Property Name="PassengerNumbers" Type="nvarchar" MaxLength="255" />
+          <Property Name="DurationLength" Type="nvarchar" MaxLength="255" />
+          <Property Name="Timing" Type="nvarchar" MaxLength="255" />
+          <Property Name="Session" Type="nvarchar" MaxLength="255" />
+          <Property Name="Specials" Type="nvarchar" MaxLength="255" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+        </EntityType>
         <EntityType Name="stg_SupplierCityMapping">
           <Key>
             <PropertyRef Name="stg_City_Id" />
@@ -1685,6 +1749,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySet Name="Schedule_NextOccurance" EntityType="Self.Schedule_NextOccurance" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SiteMap" EntityType="Self.SiteMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="STG_Mapping_TableIds" EntityType="Self.STG_Mapping_TableIds" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="stg_SupplierActivityMapping" EntityType="Self.stg_SupplierActivityMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierCityMapping" EntityType="Self.stg_SupplierCityMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierCountryMapping" EntityType="Self.stg_SupplierCountryMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierHotelRoomMapping" EntityType="Self.stg_SupplierHotelRoomMapping" Schema="dbo" store:Type="Tables" />
@@ -1838,8 +1903,9 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySet Name="vwUserwisemappedStats" EntityType="ConsumerModel.vwUserwisemappedStat" />
           <EntitySet Name="SupplierImportFile_Statistics" EntityType="ConsumerModel.SupplierImportFile_Statistics" />
           <EntitySet Name="STG_Mapping_TableIds" EntityType="ConsumerModel.STG_Mapping_TableIds" />
-          <EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
+        <EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
+        <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />
         </EntityContainer>
         <EntityType Name="Accommodation_Contact">
           <Key>
@@ -3396,31 +3462,6 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <Property Name="STG_Id" Type="Guid" />
           <Property Name="Mapping_Id" Type="Guid" />
           <Property Name="File_Id" Type="Guid" />
-        </EntityType>
-        <EntityType Name="Supplier_APILocation">
-          <Key>
-            <PropertyRef Name="Supplier_APILocation_Id" />
-          </Key>
-          <Property Name="Supplier_APILocation_Id" Type="Guid" Nullable="false" />
-          <Property Name="Supplier_Id" Type="Guid" />
-          <Property Name="Entity_Id" Type="Guid" />
-          <Property Name="API_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
-          <Property Name="CREATE_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="EDIT_DATE" Type="DateTime" Precision="3" />
-          <Property Name="EDIT_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="STATUS" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="Accommodation_SupplierRoomTypeAttributes">
-          <Key>
-            <PropertyRef Name="RoomTypeMapAttribute_Id" />
-          </Key>
-          <Property Name="RoomTypeMapAttribute_Id" Type="Guid" Nullable="false" />
-          <Property Name="RoomTypeMap_Id" Type="Guid" Nullable="false" />
-          <Property Name="SupplierRoomTypeAttribute" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SystemAttributeKeyword" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SystemAttributeKeyword_Id" Type="Guid" Nullable="false" />
-          <Property Name="Accommodation_RoomFacility_Id" Type="Guid" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -5025,33 +5066,6 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
                 <ScalarProperty Name="Mapping_Id" ColumnName="Mapping_Id" />
                 <ScalarProperty Name="STG_Id" ColumnName="STG_Id" />
                 <ScalarProperty Name="STG_Mapping_Table_Id" ColumnName="STG_Mapping_Table_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Supplier_APILocation">
-            <EntityTypeMapping TypeName="ConsumerModel.Supplier_APILocation">
-              <MappingFragment StoreEntitySet="Supplier_APILocation">
-                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
-                <ScalarProperty Name="EDIT_USER" ColumnName="EDIT_USER" />
-                <ScalarProperty Name="EDIT_DATE" ColumnName="EDIT_DATE" />
-                <ScalarProperty Name="CREATE_USER" ColumnName="CREATE_USER" />
-                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
-                <ScalarProperty Name="API_Path" ColumnName="API_Path" />
-                <ScalarProperty Name="Entity_Id" ColumnName="Entity_Id" />
-                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
-                <ScalarProperty Name="Supplier_APILocation_Id" ColumnName="Supplier_APILocation_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Accommodation_SupplierRoomTypeAttributes">
-            <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeAttributes">
-              <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeAttributes">
-                <ScalarProperty Name="Accommodation_RoomFacility_Id" ColumnName="Accommodation_RoomFacility_Id" />
-                <ScalarProperty Name="SystemAttributeKeyword_Id" ColumnName="SystemAttributeKeyword_Id" />
-                <ScalarProperty Name="SystemAttributeKeyword" ColumnName="SystemAttributeKeyword" />
-                <ScalarProperty Name="SupplierRoomTypeAttribute" ColumnName="SupplierRoomTypeAttribute" />
-                <ScalarProperty Name="RoomTypeMap_Id" ColumnName="RoomTypeMap_Id" />
-                <ScalarProperty Name="RoomTypeMapAttribute_Id" ColumnName="RoomTypeMapAttribute_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

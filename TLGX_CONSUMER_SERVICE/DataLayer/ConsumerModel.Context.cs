@@ -108,6 +108,7 @@ namespace DataLayer
         public virtual DbSet<STG_Mapping_TableIds> STG_Mapping_TableIds { get; set; }
         public virtual DbSet<Supplier_APILocation> Supplier_APILocation { get; set; }
         public virtual DbSet<Accommodation_SupplierRoomTypeAttributes> Accommodation_SupplierRoomTypeAttributes { get; set; }
+        public virtual DbSet<stg_SupplierActivityMapping> stg_SupplierActivityMapping { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {
