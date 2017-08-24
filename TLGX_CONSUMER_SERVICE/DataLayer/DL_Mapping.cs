@@ -39,6 +39,47 @@ namespace DataLayer
                 {
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
+                        DC_SupplierImportFileDetails_RQ RQ = new DC_SupplierImportFileDetails_RQ();
+                        RQ.SupplierImportFile_Id = File_Id;
+                        RQ.PageNo = 1;
+                        RQ.PageSize = int.MaxValue;
+                        var FileDetails = USD.GetStaticDataFileDetail(RQ);
+
+                        string SupplierName = FileDetails[0].Supplier.ToString();
+                        string Entity = FileDetails[0].Entity.ToString().ToUpper();
+
+                        switch(Entity)
+                        {
+                            case "COUNTRY":
+                                var stgCountries = (from y in context.stg_SupplierCountryMapping
+                                                    where y.SupplierName.ToString().ToUpper() == SupplierName.ToString().ToUpper()
+                                                    select y).ToList();
+                                context.stg_SupplierCountryMapping.RemoveRange(stgCountries);
+                                context.SaveChanges();
+                                break;
+                            case "CITY":
+                                var stgCities = (from y in context.stg_SupplierCityMapping
+                                                    where y.SupplierName.ToString().ToUpper() == SupplierName.ToString().ToUpper()
+                                                    select y).ToList();
+                                context.stg_SupplierCityMapping.RemoveRange(stgCities);
+                                context.SaveChanges();
+                                break;
+                            case "HOTEL":
+                                var stgHotel = (from y in context.stg_SupplierProductMapping
+                                                 where y.SupplierName.ToString().ToUpper() == SupplierName.ToString().ToUpper()
+                                                 select y).ToList();
+                                context.stg_SupplierProductMapping.RemoveRange(stgHotel);
+                                context.SaveChanges();
+                                break;
+                            case "ROOMTYPE":
+                                var stgRoomType = (from y in context.stg_SupplierHotelRoomMapping
+                                                where y.SupplierName.ToString().ToUpper() == SupplierName.ToString().ToUpper()
+                                                select y).ToList();
+                                context.stg_SupplierHotelRoomMapping.RemoveRange(stgRoomType);
+                                context.SaveChanges();
+                                break;
+                        }
+
                         var oldRecords = (from y in context.STG_Mapping_TableIds
                                           where y.File_Id == File_Id
                                           select y).ToList();
@@ -447,11 +488,13 @@ namespace DataLayer
                     PLog.SupplierImportFile_Id = obj.File_Id;
                     PLog.Step = "MATCH";
                     PLog.Status = "MATCHING";
+                    PLog.CurrentBatch = curPriority;
+                    PLog.TotalBatch = totPriorities;
                     CallLogVerbose(File_Id, "MATCH", "Applying Matching Combination " + curPriority.ToString() + " out of Total " + totPriorities + " Combinations.");
 
                     foreach (DC_SupplierImportAttributeValues config in configs)
                     {
-                        configWhere = " " + configWhere + config.AttributeValue.Replace("Accommodation_RoomInfo.", "").Trim() + ",";
+                        configWhere = configWhere + " " + config.AttributeValue.Replace("Accommodation_RoomInfo.", "").Trim() + ",";
                     }
                     configWhere = configWhere.Remove(configWhere.Length - 1);
                     CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);
@@ -646,11 +689,13 @@ namespace DataLayer
                     PLog.SupplierImportFile_Id = obj.File_Id;
                     PLog.Step = "MATCH";
                     PLog.Status = "MATCHING";
+                    PLog.CurrentBatch = curPriority;
+                    PLog.TotalBatch = totPriorities;
                     CallLogVerbose(File_Id, "MATCH", "Applying Matching Combination " + curPriority.ToString() + " out of Total " + totPriorities + " Combinations.");
 
                     foreach (DC_SupplierImportAttributeValues config in configs)
                     {
-                        configWhere = " " + configWhere + config.AttributeValue.Replace("Accommodation.", "").Trim() + ",";
+                        configWhere = configWhere + " " + config.AttributeValue.Replace("Accommodation.", "").Trim() + ",";
                     }
                     configWhere = configWhere.Remove(configWhere.Length - 1);
                     CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);
@@ -2975,17 +3020,19 @@ namespace DataLayer
                        Mapping_Id = g.CountryMapping_Id
                    }));
 
-                clsMappingCountry.RemoveAll(p => p.CountryCode == p.OldCountryCode);
                 CallLogVerbose(File_Id, "MAP", "Checking for New Countries in File.");
                 clsSTGCountryInsert = clsSTGCountry.Where(p => !clsMappingCountry.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
-                && ((p.CountryCode != null && p2.CountryCode == p.CountryCode) || (p.CountryCode == null && p2.CountryName.ToString().Trim().ToUpper() == p.CountryName.ToString().Trim().ToUpper())))).ToList();
+                && (
+                    (p.CountryCode != null && p2.CountryCode == p.CountryCode) 
+                    || (p.CountryCode == null && p2.CountryName.ToString().Trim().ToUpper() == p.CountryName.ToString().Trim().ToUpper())
+                ))).ToList();
 
                 PLog.PercentageValue = 48;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
                 CallLogVerbose(File_Id, "MAP", "Removing UnEdited Data.");
                 clsSTGCountry.RemoveAll(p => clsSTGCountryInsert.Any(p2 => (p2.stg_Country_Id == p.stg_Country_Id)));
-
+                clsMappingCountry.RemoveAll(p => p.CountryCode == p.OldCountryCode);
 
                 PLog.PercentageValue = 53;
                 USD.AddStaticDataUploadProcessLog(PLog);
@@ -3097,11 +3144,13 @@ namespace DataLayer
                     PLog.SupplierImportFile_Id = obj.File_Id;
                     PLog.Step = "MATCH";
                     PLog.Status = "MATCHING";
+                    PLog.CurrentBatch = curPriority;
+                    PLog.TotalBatch = totPriorities;
                     CallLogVerbose(File_Id, "MATCH", "Applying Matching Combination " + curPriority.ToString() + " out of Total " + totPriorities + " Combinations.");
 
                     foreach (DC_SupplierImportAttributeValues config in configs)
                     {
-                        configWhere = " " + configWhere + config.AttributeValue.Replace("m_CountryMaster.", "").Trim() + ",";
+                        configWhere = configWhere + " " + config.AttributeValue.Replace("m_CountryMaster.", "").Trim() + ",";
                     }
                     configWhere = configWhere.Remove(configWhere.Length - 1);
                     CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);
@@ -3861,11 +3910,13 @@ namespace DataLayer
                     PLog.SupplierImportFile_Id = obj.File_Id;
                     PLog.Step = "MATCH";
                     PLog.Status = "MATCHING";
+                    PLog.CurrentBatch = curPriority;
+                    PLog.TotalBatch = totPriorities;
                     CallLogVerbose(File_Id, "MATCH", "Applying Matching Combination " + curPriority.ToString() + " out of Total " + totPriorities + " Combinations.");
 
                     foreach (DC_SupplierImportAttributeValues config in configs)
                     {
-                        configWhere = " " + configWhere + config.AttributeValue.Replace("m_CityMaster.", "").Trim() + ",";
+                        configWhere = configWhere + " " + config.AttributeValue.Replace("m_CityMaster.", "").Trim() + ",";
                     }
                     configWhere = configWhere.Remove(configWhere.Length - 1);
                     CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);

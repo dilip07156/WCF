@@ -46,8 +46,8 @@
         <EntityTypeShape EntityType="ConsumerModel.m_MasterAttributeMapping" Width="1.5" PointX="7.375" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.m_MasterAttributeValueMapping" Width="1.5" PointX="13" PointY="4.125" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierProductMapping" Width="2.875" PointX="7.375" PointY="8.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" Width="1.5" PointX="0.75" PointY="6.75" />
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" Width="1.5" PointX="9.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" Width="2.625" PointX="0.75" PointY="6.75" />
       </Diagram>
       <Diagram DiagramId="9053f2c6e79c4c20b47e93053c1904d5" Name="Projects" />
       <Diagram DiagramId="c43918edb11c45ab899ecee9d6c63952" Name="Admin" >
@@ -95,6 +95,7 @@
         <EntityTypeShape EntityType="ConsumerModel.Supplier" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.Supplier_Market" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.Supplier_ProductCategory" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Supplier_APILocation" Width="1.5" PointX="0.75" PointY="4.75" />
       </Diagram>
       <Diagram DiagramId="2648cc592ec2449e869aa56c84772c33" Name="Upload Static Data" >
         <EntityTypeShape EntityType="ConsumerModel.m_SupplierImportAttributes" Width="1.5" PointX="0.75" PointY="0.75" />
