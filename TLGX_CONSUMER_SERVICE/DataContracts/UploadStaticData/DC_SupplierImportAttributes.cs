@@ -38,6 +38,12 @@ namespace DataContracts.UploadStaticData
 
         [DataMember]
         public string For { get; set; }
+        [DataMember]
+        public string STG_Table { get; set; }
+        [DataMember]
+        public string Master_Table { get; set; }
+        [DataMember]
+        public string Mapping_Table { get; set; }
     }
 
     [DataContract]

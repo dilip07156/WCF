@@ -1244,6 +1244,70 @@
           <Property Name="Mapping_Id" Type="uniqueidentifier" />
           <Property Name="File_Id" Type="uniqueidentifier" />
         </EntityType>
+        <EntityType Name="stg_SupplierActivityMapping">
+          <Key>
+            <PropertyRef Name="stg_SupplierActivityMapping_Id" />
+          </Key>
+          <Property Name="stg_SupplierActivityMapping_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SupplierCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SuplierProductCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierProductType" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierType" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierLocationId" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierLocationName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierCountryName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierCityName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierCountryCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierCityCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierStateName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierStateCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierCityIATACode" Type="nvarchar" MaxLength="255" />
+          <Property Name="Duration" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierProductName" Type="nvarchar(max)" />
+          <Property Name="SupplierDataLangaugeCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="Introduction" Type="nvarchar(max)" />
+          <Property Name="Conditions" Type="nvarchar(max)" />
+          <Property Name="Inclusions" Type="nvarchar(max)" />
+          <Property Name="Exclusions" Type="nvarchar(max)" />
+          <Property Name="AdditionalInformation" Type="nvarchar(max)" />
+          <Property Name="DeparturePoint" Type="nvarchar(max)" />
+          <Property Name="TicketingDetails" Type="nvarchar(max)" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="255" />
+          <Property Name="DepartureTime" Type="nvarchar(max)" />
+          <Property Name="DepartureDate" Type="nvarchar(max)" />
+          <Property Name="DateFrom" Type="nvarchar" MaxLength="255" />
+          <Property Name="DateTo" Type="nvarchar" MaxLength="255" />
+          <Property Name="BlockOutDateFrom" Type="nvarchar" MaxLength="255" />
+          <Property Name="BlockOutDateTo" Type="nvarchar" MaxLength="255" />
+          <Property Name="OptionTitle" Type="nvarchar" MaxLength="255" />
+          <Property Name="OptionCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="OptionDescription" Type="nvarchar(max)" />
+          <Property Name="TourActivityLangauageCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProductDescription" Type="nvarchar(max)" />
+          <Property Name="TourActivityLanguage" Type="nvarchar" MaxLength="255" />
+          <Property Name="ImgURL" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProductValidFor" Type="nvarchar" MaxLength="255" />
+          <Property Name="Address" Type="nvarchar(max)" />
+          <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="DayPattern" Type="nvarchar(max)" />
+          <Property Name="Theme" Type="nvarchar" MaxLength="255" />
+          <Property Name="Distance" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierTourType" Type="nvarchar" MaxLength="255" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="TotalActivities" Type="int" />
+          <Property Name="PhysicalIntensity" Type="nvarchar" MaxLength="255" />
+          <Property Name="PassengerNumbers" Type="nvarchar" MaxLength="255" />
+          <Property Name="DurationLength" Type="nvarchar" MaxLength="255" />
+          <Property Name="Timing" Type="nvarchar" MaxLength="255" />
+          <Property Name="Session" Type="nvarchar" MaxLength="255" />
+          <Property Name="Specials" Type="nvarchar" MaxLength="255" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+        </EntityType>
         <EntityType Name="stg_SupplierCityMapping">
           <Key>
             <PropertyRef Name="stg_City_Id" />
@@ -1671,6 +1735,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySet Name="Schedule_NextOccurance" EntityType="Self.Schedule_NextOccurance" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SiteMap" EntityType="Self.SiteMap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="STG_Mapping_TableIds" EntityType="Self.STG_Mapping_TableIds" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="stg_SupplierActivityMapping" EntityType="Self.stg_SupplierActivityMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierCityMapping" EntityType="Self.stg_SupplierCityMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierCountryMapping" EntityType="Self.stg_SupplierCountryMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierHotelRoomMapping" EntityType="Self.stg_SupplierHotelRoomMapping" Schema="dbo" store:Type="Tables" />
@@ -1824,6 +1889,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySet Name="vwUserwisemappedStats" EntityType="ConsumerModel.vwUserwisemappedStat" />
           <EntitySet Name="SupplierImportFile_Statistics" EntityType="ConsumerModel.SupplierImportFile_Statistics" />
           <EntitySet Name="STG_Mapping_TableIds" EntityType="ConsumerModel.STG_Mapping_TableIds" />
+          <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />
         </EntityContainer>
         <EntityType Name="Accommodation_Contact">
           <Key>
@@ -3391,6 +3457,70 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <Property Name="STG_Id" Type="Guid" />
           <Property Name="Mapping_Id" Type="Guid" />
           <Property Name="File_Id" Type="Guid" />
+        </EntityType>
+        <EntityType Name="stg_SupplierActivityMapping">
+          <Key>
+            <PropertyRef Name="stg_SupplierActivityMapping_Id" />
+          </Key>
+          <Property Name="stg_SupplierActivityMapping_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SuplierProductCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierProductType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierLocationId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierLocationName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierCountryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierCityName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierCountryCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierCityCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierStateName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierStateCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierCityIATACode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Duration" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierProductName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierDataLangaugeCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Introduction" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Conditions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Inclusions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Exclusions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AdditionalInformation" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DeparturePoint" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TicketingDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Currency" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DepartureTime" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DepartureDate" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DateFrom" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DateTo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="BlockOutDateFrom" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="BlockOutDateTo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="OptionTitle" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="OptionCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="OptionDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TourActivityLangauageCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TourActivityLanguage" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ImgURL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductValidFor" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DayPattern" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Theme" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Distance" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierTourType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="TotalActivities" Type="Int32" />
+          <Property Name="PhysicalIntensity" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PassengerNumbers" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DurationLength" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Timing" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Session" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Specials" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -5007,6 +5137,71 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
                 <ScalarProperty Name="Mapping_Id" ColumnName="Mapping_Id" />
                 <ScalarProperty Name="STG_Id" ColumnName="STG_Id" />
                 <ScalarProperty Name="STG_Mapping_Table_Id" ColumnName="STG_Mapping_Table_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="stg_SupplierActivityMapping">
+            <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierActivityMapping">
+              <MappingFragment StoreEntitySet="stg_SupplierActivityMapping">
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Specials" ColumnName="Specials" />
+                <ScalarProperty Name="Session" ColumnName="Session" />
+                <ScalarProperty Name="Timing" ColumnName="Timing" />
+                <ScalarProperty Name="DurationLength" ColumnName="DurationLength" />
+                <ScalarProperty Name="PassengerNumbers" ColumnName="PassengerNumbers" />
+                <ScalarProperty Name="PhysicalIntensity" ColumnName="PhysicalIntensity" />
+                <ScalarProperty Name="TotalActivities" ColumnName="TotalActivities" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="SupplierTourType" ColumnName="SupplierTourType" />
+                <ScalarProperty Name="Distance" ColumnName="Distance" />
+                <ScalarProperty Name="Theme" ColumnName="Theme" />
+                <ScalarProperty Name="DayPattern" ColumnName="DayPattern" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="ProductValidFor" ColumnName="ProductValidFor" />
+                <ScalarProperty Name="ImgURL" ColumnName="ImgURL" />
+                <ScalarProperty Name="TourActivityLanguage" ColumnName="TourActivityLanguage" />
+                <ScalarProperty Name="ProductDescription" ColumnName="ProductDescription" />
+                <ScalarProperty Name="TourActivityLangauageCode" ColumnName="TourActivityLangauageCode" />
+                <ScalarProperty Name="OptionDescription" ColumnName="OptionDescription" />
+                <ScalarProperty Name="OptionCode" ColumnName="OptionCode" />
+                <ScalarProperty Name="OptionTitle" ColumnName="OptionTitle" />
+                <ScalarProperty Name="BlockOutDateTo" ColumnName="BlockOutDateTo" />
+                <ScalarProperty Name="BlockOutDateFrom" ColumnName="BlockOutDateFrom" />
+                <ScalarProperty Name="DateTo" ColumnName="DateTo" />
+                <ScalarProperty Name="DateFrom" ColumnName="DateFrom" />
+                <ScalarProperty Name="DepartureDate" ColumnName="DepartureDate" />
+                <ScalarProperty Name="DepartureTime" ColumnName="DepartureTime" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="TicketingDetails" ColumnName="TicketingDetails" />
+                <ScalarProperty Name="DeparturePoint" ColumnName="DeparturePoint" />
+                <ScalarProperty Name="AdditionalInformation" ColumnName="AdditionalInformation" />
+                <ScalarProperty Name="Exclusions" ColumnName="Exclusions" />
+                <ScalarProperty Name="Inclusions" ColumnName="Inclusions" />
+                <ScalarProperty Name="Conditions" ColumnName="Conditions" />
+                <ScalarProperty Name="Introduction" ColumnName="Introduction" />
+                <ScalarProperty Name="SupplierDataLangaugeCode" ColumnName="SupplierDataLangaugeCode" />
+                <ScalarProperty Name="SupplierProductName" ColumnName="SupplierProductName" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="SupplierCityIATACode" ColumnName="SupplierCityIATACode" />
+                <ScalarProperty Name="SupplierStateCode" ColumnName="SupplierStateCode" />
+                <ScalarProperty Name="SupplierStateName" ColumnName="SupplierStateName" />
+                <ScalarProperty Name="SupplierCityCode" ColumnName="SupplierCityCode" />
+                <ScalarProperty Name="SupplierCountryCode" ColumnName="SupplierCountryCode" />
+                <ScalarProperty Name="SupplierCityName" ColumnName="SupplierCityName" />
+                <ScalarProperty Name="SupplierCountryName" ColumnName="SupplierCountryName" />
+                <ScalarProperty Name="SupplierLocationName" ColumnName="SupplierLocationName" />
+                <ScalarProperty Name="SupplierLocationId" ColumnName="SupplierLocationId" />
+                <ScalarProperty Name="SupplierType" ColumnName="SupplierType" />
+                <ScalarProperty Name="SupplierProductType" ColumnName="SupplierProductType" />
+                <ScalarProperty Name="SuplierProductCode" ColumnName="SuplierProductCode" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="SupplierCode" ColumnName="SupplierCode" />
+                <ScalarProperty Name="stg_SupplierActivityMapping_Id" ColumnName="stg_SupplierActivityMapping_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

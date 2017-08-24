@@ -111,6 +111,7 @@
         <EntityTypeShape EntityType="ConsumerModel.stg_SupplierCountryMapping" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.stg_SupplierHotelRoomMapping" Width="1.5" PointX="4.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.stg_SupplierProductMapping" Width="1.5" PointX="0.75" PointY="5.75" />
+        <EntityTypeShape EntityType="ConsumerModel.stg_SupplierActivityMapping" Width="1.5" PointX="7.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

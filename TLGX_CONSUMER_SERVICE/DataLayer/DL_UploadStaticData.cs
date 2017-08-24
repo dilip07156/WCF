@@ -117,6 +117,9 @@ namespace DataLayer
                                              CREATE_USER = a.CREATE_USER,
                                              EDIT_DATE = a.EDIT_DATE,
                                              EDIT_USER = a.EDIT_USER,
+                                             STG_Table = a.STG_Table,
+                                             Master_Table = a.Master_Table,
+                                             Mapping_Table = a.Mapping_Table,
                                              TotalRecords = total
                                          }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
