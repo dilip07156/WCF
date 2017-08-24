@@ -38,6 +38,9 @@ namespace DataContracts.Mapping
         public string ProductName { get; set; }
 
         [DataMember]
+        public string SupplierRoomName { get; set; }
+
+        [DataMember]
         public string CalledFromTLGX { get; set; }
 
     }
