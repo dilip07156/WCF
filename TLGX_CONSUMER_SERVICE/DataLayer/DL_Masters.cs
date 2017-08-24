@@ -2565,8 +2565,6 @@ namespace DataLayer
             return _msg;
 
         }
-
-
         public DataContracts.DC_Message AddUpdateSupplierMarket(DataContracts.Masters.DC_SupplierMarket _objSupMkt)
         {
             DC_Message _msg = new DC_Message();
@@ -2666,7 +2664,6 @@ namespace DataLayer
             return _msg;
 
         }
-
         public DataContracts.DC_Message AddUpdateSupplier_ProductCategory(DataContracts.Masters.DC_Supplier_ProductCategory _objSupCat)
         {
             DC_Message _msg = new DC_Message();
@@ -2770,6 +2767,175 @@ namespace DataLayer
 
         }
 
+        public List<DataContracts.Masters.DC_Supplier_ApiLocation> SupplierApiLocation_Search(DataContracts.Masters.DC_Supplier_ApiLocation RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from supApi in context.Supplier_APILocation
+                                 select supApi;
+
+                    if (RQ.Supplier_Id != Guid.Empty)
+                    {
+                        search = from sup in search
+                                 where sup.Supplier_Id == RQ.Supplier_Id
+                                 select sup;
+                    }
+
+                    if (RQ.ApiLocation_Id != Guid.Empty)
+                    {
+                        search = from sup in search
+                                 where sup.Supplier_APILocation_Id == RQ.ApiLocation_Id
+                                 select sup;
+                    }
+
+                    //int total;
+
+                    //total = search.Count();
+
+                    //if (RQ.PageSize == 0)
+                    //    RQ.PageSize = 10;
+
+                    //int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    //var canPage = skip < total;
+
+
+                    var result = from a in search
+                                 join mav in context.m_masterattributevalue on a.Entity_Id equals mav.MasterAttributeValue_Id
+                                 join sup in context.Suppliers on a.Supplier_Id equals sup.Supplier_Id
+                                 select new DataContracts.Masters.DC_Supplier_ApiLocation
+                                 {
+                                     Supplier_Id = a.Supplier_Id ?? Guid.Empty,
+                                     ApiEndPoint = a.API_Path,
+                                     ApiLocation_Id = a.Supplier_APILocation_Id,
+                                     Create_Date = a.CREATE_DATE,
+                                     Create_User = a.CREATE_USER,
+                                     Edit_Date = a.EDIT_DATE,
+                                     Edit_User = a.EDIT_USER,
+                                     Entity = mav.AttributeValue,
+                                     Entity_Id = a.Entity_Id,
+                                     IsActive = false,
+                                     Status = a.STATUS,
+                                     Supplier_Name = sup.Name
+                                 };
+
+                    return result.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Supplier Api Location", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+
+        }
+
+        public DataContracts.DC_Message SupplierApiLocation_Update(DataContracts.Masters.DC_Supplier_ApiLocation objApiLoc)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var SupplierApiLocation = context.Supplier_APILocation.Find(objApiLoc.ApiLocation_Id);
+                    if (SupplierApiLocation != null)
+                    {
+                        var dupeRecord = context.Supplier_APILocation.Where(w => w.API_Path.ToLower().Trim() == objApiLoc.ApiEndPoint.Trim().ToLower() && w.Supplier_APILocation_Id != objApiLoc.ApiLocation_Id).Select(r => r).FirstOrDefault();
+
+                        if (dupeRecord != null)
+                        {
+                            string Supplier = context.Suppliers.Where(w => w.Supplier_Id == dupeRecord.Supplier_Id).Select(s => s.Name).FirstOrDefault();
+                            string Entity = context.m_masterattributevalue.Where(w => w.MasterAttributeValue_Id == dupeRecord.Entity_Id).Select(s => s.AttributeValue).FirstOrDefault();
+
+                            return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Duplicate, StatusMessage = "This Api Location already exists for Supplier : " + Supplier + " and Entity : " + Entity };
+                        }
+                        else
+                        {
+                            SupplierApiLocation.Supplier_Id = objApiLoc.Supplier_Id;
+                            SupplierApiLocation.API_Path = objApiLoc.ApiEndPoint;
+                            SupplierApiLocation.EDIT_DATE = objApiLoc.Edit_Date ?? DateTime.Now;
+                            SupplierApiLocation.EDIT_USER = objApiLoc.Edit_User;
+                            SupplierApiLocation.Entity_Id = objApiLoc.Entity_Id;
+                            SupplierApiLocation.STATUS = objApiLoc.Status;
+                            context.SaveChanges();
+                            return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Record updated." };
+                        }
+                    }
+                    else
+                    {
+                        return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Invalid Record." };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating Supplier Api Location", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public DataContracts.DC_Message SupplierApiLocation_Add(DataContracts.Masters.DC_Supplier_ApiLocation objApiLoc)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (objApiLoc.Supplier_Id == null || objApiLoc.Entity_Id == null || string.IsNullOrWhiteSpace(objApiLoc.ApiEndPoint))
+                    {
+                        return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Invalid Record." };
+                    }
+
+                    if (objApiLoc.Supplier_Id == Guid.Empty || objApiLoc.Entity_Id == Guid.Empty)
+                    {
+                        return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Invalid Record." };
+                    }
+
+                    var dupeRecord = context.Supplier_APILocation.Where(w => w.API_Path.ToLower().Trim() == objApiLoc.ApiEndPoint.Trim().ToLower()).Select(r => r).FirstOrDefault();
+                    if (dupeRecord != null)
+                    {
+                        string Supplier = context.Suppliers.Where(w => w.Supplier_Id == dupeRecord.Supplier_Id).Select(s => s.Name).FirstOrDefault();
+                        string Entity = context.m_masterattributevalue.Where(w => w.MasterAttributeValue_Id == dupeRecord.Entity_Id).Select(s => s.AttributeValue).FirstOrDefault();
+
+                        return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Duplicate, StatusMessage = "This Api Location already exists for Supplier : " + Supplier + " and Entity : " + Entity };
+                    }
+
+                    dupeRecord = null;
+                    dupeRecord = context.Supplier_APILocation.Where(w => w.Supplier_Id == objApiLoc.Supplier_Id && w.Entity_Id == objApiLoc.Entity_Id).Select(r => r).FirstOrDefault();
+                    if (dupeRecord != null)
+                    {
+                        return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Duplicate, StatusMessage = "Duplicate entry for this supplier and entity." };
+                    }
+
+                    if (objApiLoc.ApiLocation_Id != null)
+                    {
+                        if (objApiLoc.ApiLocation_Id != Guid.Empty)
+                        {
+                            var SupplierApiLocation = context.Supplier_APILocation.Find(objApiLoc.ApiLocation_Id);
+                            if (SupplierApiLocation != null)
+                            {
+                                return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Duplicate, StatusMessage = "Duplicate primary key." };
+                            }
+                        }
+                    }
+
+                    context.Supplier_APILocation.Add(new Supplier_APILocation
+                    {
+                        API_Path = objApiLoc.ApiEndPoint,
+                        CREATE_DATE = objApiLoc.Create_Date ?? DateTime.Now,
+                        CREATE_USER = objApiLoc.Create_User,
+                        STATUS = objApiLoc.Status,
+                        Entity_Id = objApiLoc.Entity_Id,
+                        Supplier_Id = objApiLoc.Supplier_Id,
+                        Supplier_APILocation_Id = objApiLoc.ApiLocation_Id == Guid.Empty ? Guid.NewGuid() : objApiLoc.ApiLocation_Id
+                    });
+                    context.SaveChanges();
+                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Record Added." };
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding Supplier Api Location", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
         #endregion
 
         #region Statuses

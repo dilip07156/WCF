@@ -480,10 +480,56 @@ namespace DataLayer
                         //var result = GetColumnNameWhichValuesIsNull(id);
                         if (res != null)
                         {
-                            if (res.Accommodation_Descriptions.Count > 0)
+                            //For Rooms > Amenities count
+                            StringBuilder sbRoom_Amenities = new StringBuilder();
+                            var list = new List<KeyValuePair<string, int>>();
+                            foreach (var itemRoomInfo in res.Accommodation_RoomInfo)
                             {
-                                res.TotalRecords_Accommodation_Descriptions = "YES";
+
+                                var rest = (from x in list where x.Key == itemRoomInfo.RoomCategory select x).FirstOrDefault();
+                                if (rest.Value > 0)
+                                {
+                                    list.Add(new KeyValuePair<string, int>(itemRoomInfo.RoomCategory, 1));
+                                }
+                                else
+                                {
+                                    int i = rest.Value;
+                                    list.Add(new KeyValuePair<string, int>(itemRoomInfo.RoomCategory, i++));
+                                }
                             }
+
+                            foreach (var lst in list)
+                                sbRoom_Amenities.Append(string.Concat(Convert.ToString(lst.Key), " : ", Convert.ToString(lst.Value), ";"));
+
+                            string strFinalRoom_Amenities = sbRoom_Amenities.ToString().TrimEnd(';');
+                            
+                            //For getting names of null value columns
+                            int Count = 0;
+                            StringBuilder sb = new StringBuilder();
+
+                            foreach (var row in res.GetType().GetProperties())
+                            {
+                                if (row.Name == "TotalFloors" || row.Name == "TotalRooms" || row.Name == "CheckInTime" || row.Name == "CheckOutTime"
+                                    || row.Name == "CompanyRating" || row.Name == "HotelRating" || row.Name == "RatingDate" || row.Name == "IsMysteryProduct"
+                                    || row.Name == "CompanyRecommended")
+                                {
+                                    if (string.IsNullOrWhiteSpace(Convert.ToString(row.GetValue(res))))
+                                    {
+                                        sb.Append(row.Name);
+                                        sb.Append(";");
+                                        Count++;
+                                        if (Count > 4)
+                                        {
+                                            sb.AppendLine();
+                                            Count = 0;
+                                        }
+                                    }
+                                }
+                            }
+
+                            res.Null_Columns = sb.ToString();
+                            res.Room_Amenities = strFinalRoom_Amenities;
+                            res.TotalRecords_Accommodation_Descriptions = res.Accommodation_Descriptions.Count;
                             res.TotalRecords_Accommodation_Facility = res.Accommodation_Facility.Count;
                             res.TotalRecords_Accommodation_HealthAndSafety = res.Accommodation_HealthAndSafety.Count;
                             res.TotalRecords_Accommodation_HotelUpdates = res.Accommodation_HotelUpdates.Count;
@@ -497,28 +543,7 @@ namespace DataLayer
                             res.TotalRecords_Accomodation_Status = res.Accomodation_Status.Count;
                             res.TotalRecords_Accomodation_ClassificationAttributes = res.Accomodation_ClassificationAttributes.Count;
 
-                            StringBuilder sbRoom_Amenities = new StringBuilder();
-                            var list = new List<KeyValuePair<string, int>>();
-                            foreach (var itemRoomInfo in res.Accommodation_RoomInfo)
-                            {
-                                
-                                var rest = (from x in list where x.Key == itemRoomInfo.RoomCategory select x).FirstOrDefault();
-                                if (rest.Value > 0)
-                                {
-                                    list.Add(new KeyValuePair<string, int>(itemRoomInfo.RoomCategory, 1));
-                                }
-                                else
-                                {
-                                    int i = rest.Value;
-                                    list.Add(new KeyValuePair<string, int>(itemRoomInfo.RoomCategory, i++));
-                                }
-                            }
-                            
-                            foreach(var lst in list)
-                                sbRoom_Amenities.Append(string.Concat(Convert.ToString(lst.Key)," : ", Convert.ToString(lst.Value) ,";"));
-                            string strFinalRoom_Amenities = sbRoom_Amenities.ToString().TrimEnd(';');
-                            res.Room_Amenities = strFinalRoom_Amenities;
-
+                            //Adding Final data in List
                             objList.Add(res);
 
                         }
@@ -1067,13 +1092,11 @@ namespace DataLayer
         {
             int Count = 0;
             StringBuilder sb = new StringBuilder();
-            var result = GetAccomodationDetails(Accomodation_Id);
+            var result = GetAccoDetails(Accomodation_Id);
             if (result != null)
             {
                 foreach (var item in result.GetType().GetProperties())
                 {
-                    //if (item.GetValue(result).GetType().FullName == "System.Boolean" || item.GetValue(result).GetType().FullName == "System.string")
-                    //{
                     if (item.Name == "TotalFloors" || item.Name == "TotalRooms" || item.Name == "CheckInTime" || item.Name == "CheckOutTime"
                         || item.Name == "CompanyRating" || item.Name == "HotelRating" || item.Name == "RatingDate" || item.Name == "IsMysteryProduct"
                         || item.Name == "CompanyRecommended")
@@ -1090,7 +1113,6 @@ namespace DataLayer
                             }
                         }
                     }
-                    //}
                 }
             }
             return sb.ToString();
