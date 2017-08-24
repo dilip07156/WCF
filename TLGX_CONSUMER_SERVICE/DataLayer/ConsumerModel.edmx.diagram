@@ -48,6 +48,8 @@
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierProductMapping" Width="2.875" PointX="7.375" PointY="8.75" />
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" Width="1.5" PointX="9.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" Width="2.625" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="ConsumerModel.stg_SupplierActivityMapping" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Supplier_APILocation" Width="1.5" PointX="2.75" PointY="10.75" />
       </Diagram>
       <Diagram DiagramId="9053f2c6e79c4c20b47e93053c1904d5" Name="Projects" />
       <Diagram DiagramId="c43918edb11c45ab899ecee9d6c63952" Name="Admin" >
