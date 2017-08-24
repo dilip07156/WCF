@@ -1054,13 +1054,9 @@
           <Property Name="UPDATE_DATE" Type="datetime" />
           <Property Name="UPDATE_USER" Type="nvarchar" MaxLength="255" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'TLGX_DEV.dbo.m_SupplierImportAttributes' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="m_SupplierImportAttributes">
           <Key>
             <PropertyRef Name="SupplierImportAttribute_Id" />
-            
-            
           </Key>
           <Property Name="SupplierImportAttribute_Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Supplier_Id" Type="uniqueidentifier" Nullable="false" />
@@ -1676,6 +1672,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySet Name="m_PortMaster" EntityType="Self.m_PortMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_States" EntityType="Self.m_States" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_Statuses" EntityType="Self.m_Statuses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="m_SupplierImportAttributes" EntityType="Self.m_SupplierImportAttributes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_SupplierImportAttributeValues" EntityType="Self.m_SupplierImportAttributeValues" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_TeamMembers" EntityType="Self.m_TeamMembers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_Teams" EntityType="Self.m_Teams" Schema="dbo" store:Type="Tables" />
@@ -1703,22 +1700,6 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySet Name="SupplierImportFile_VerboseLog" EntityType="Self.SupplierImportFile_VerboseLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFileDetails" EntityType="Self.SupplierImportFileDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserEntity" EntityType="Self.UserEntity" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="m_SupplierImportAttributes" EntityType="Self.m_SupplierImportAttributes" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [m_SupplierImportAttributes].[SupplierImportAttribute_Id] AS [SupplierImportAttribute_Id], 
-    [m_SupplierImportAttributes].[Supplier_Id] AS [Supplier_Id], 
-    [m_SupplierImportAttributes].[Entity] AS [Entity], 
-    [m_SupplierImportAttributes].[Status] AS [Status], 
-    [m_SupplierImportAttributes].[CREATE_DATE] AS [CREATE_DATE], 
-    [m_SupplierImportAttributes].[CREATE_USER] AS [CREATE_USER], 
-    [m_SupplierImportAttributes].[EDIT_DATE] AS [EDIT_DATE], 
-    [m_SupplierImportAttributes].[EDIT_USER] AS [EDIT_USER], 
-    [m_SupplierImportAttributes].[AttributeFor] AS [AttributeFor], 
-    [m_SupplierImportAttributes].[STG_Table] AS [STG_Table], 
-    [m_SupplierImportAttributes].[Mapping_Table] AS [Mapping_Table], 
-    [m_SupplierImportAttributes].[Master_Table] AS [Master_Table]
-    FROM [dbo].[m_SupplierImportAttributes] AS [m_SupplierImportAttributes]</DefiningQuery>
-          </EntitySet>
           <EntitySet Name="vwMappingStats" EntityType="Self.vwMappingStats" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [vwMappingStats].[supplier_id] AS [supplier_id], 
