@@ -86,7 +86,7 @@ namespace DataContracts
         List<Masters.DC_DynamicAttributes> _Accomodation_DynamicAttributes;
         List<DC_Accomodation_ClassificationAttributes> _Accomodation_ClassificationAttributes;
         int? _TotalRecords_Accomodation_Contact;
-        string _TotalRecords_Accommodation_Descriptions;
+        int? _TotalRecords_Accommodation_Descriptions;
         int? _TotalRecords_Accommodation_HotelUpdates;
         int? _TotalRecords_Accommodation_NearbyPlaces;
         int? _TotalRecords_Accommodation_RuleInfo;
@@ -99,6 +99,7 @@ namespace DataContracts
         int? _TotalRecords_Accomodation_Status;
         int? _TotalRecords_Accomodation_ClassificationAttributes;
         string _Room_Amenities;
+        string _Null_Columns;
         [DataMember]
         public Nullable<bool> InsertFrom { get; set; }
 
@@ -1155,7 +1156,7 @@ namespace DataContracts
             }
         }
         [DataMember]
-        public string TotalRecords_Accommodation_Descriptions
+        public int? TotalRecords_Accommodation_Descriptions
         {
             get
             {
@@ -1321,6 +1322,19 @@ namespace DataContracts
             set
             {
                 _Room_Amenities = value;
+            }
+        }
+        [DataMember]
+        public string Null_Columns
+        {
+            get
+            {
+                return _Null_Columns;
+            }
+
+            set
+            {
+                _Null_Columns = value;
             }
         }
     }
