@@ -99,15 +99,4 @@ namespace DataContracts.UploadStaticData
         [DataMember]
         public string For { get; set; }
     }
-
-    [DataContract]
-    public class DC_SupplierAttributeValueFilter
-    {
-        [DataMember]
-        public string strAttributeType { get; set; }
-        [DataMember]
-        public int? intPriority { get; set; }
-        [DataMember]
-        public string DataFor { get; set; }
-    }
 }
