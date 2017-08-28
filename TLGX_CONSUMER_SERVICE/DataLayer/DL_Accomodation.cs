@@ -465,7 +465,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var acco = (from a in context.Accommodations
-                                where (a.Edit_Date ?? a.Create_Date) >= RQ.FromDate && (a.Edit_Date ?? a.Create_Date) <= RQ.ToDate
+                                where (a.Edit_Date ?? a.Create_Date) >= RQ.FromDate && (a.Edit_Date ?? a.Create_Date) <= RQ.ToDate 
                                 select new
                                 {
                                     Accommodation_Id = a.Accommodation_Id
@@ -477,7 +477,6 @@ namespace DataLayer
                     {
                         Guid id = item.Accommodation_Id;
                         var res = GetAccoDetails(id);
-                        //var result = GetColumnNameWhichValuesIsNull(id);
                         if (res != null)
                         {
                             //For Rooms > Amenities count
@@ -489,12 +488,15 @@ namespace DataLayer
                                 var rest = (from x in list where x.Key == itemRoomInfo.RoomCategory select x).FirstOrDefault();
                                 if (rest.Value > 0)
                                 {
-                                    list.Add(new KeyValuePair<string, int>(itemRoomInfo.RoomCategory, 1));
+                                    int count = rest.Value;
+                                    count++;
+                                    list.Remove(rest);
+                                    list.Add(new KeyValuePair<string, int>(itemRoomInfo.RoomCategory, count));
                                 }
                                 else
                                 {
                                     int i = rest.Value;
-                                    list.Add(new KeyValuePair<string, int>(itemRoomInfo.RoomCategory, i++));
+                                    list.Add(new KeyValuePair<string, int>(itemRoomInfo.RoomCategory, ++i));
                                 }
                             }
 
@@ -502,27 +504,20 @@ namespace DataLayer
                                 sbRoom_Amenities.Append(string.Concat(Convert.ToString(lst.Key), " : ", Convert.ToString(lst.Value), ";"));
 
                             string strFinalRoom_Amenities = sbRoom_Amenities.ToString().TrimEnd(';');
-                            
+
                             //For getting names of null value columns
-                            int Count = 0;
                             StringBuilder sb = new StringBuilder();
 
                             foreach (var row in res.GetType().GetProperties())
                             {
                                 if (row.Name == "TotalFloors" || row.Name == "TotalRooms" || row.Name == "CheckInTime" || row.Name == "CheckOutTime"
                                     || row.Name == "CompanyRating" || row.Name == "HotelRating" || row.Name == "RatingDate" || row.Name == "IsMysteryProduct"
-                                    || row.Name == "CompanyRecommended")
+                                    || row.Name == "CompanyRecommended" || row.Name == "YearBuilt")
                                 {
                                     if (string.IsNullOrWhiteSpace(Convert.ToString(row.GetValue(res))))
                                     {
                                         sb.Append(row.Name);
-                                        sb.Append(";");
-                                        Count++;
-                                        if (Count > 4)
-                                        {
-                                            sb.AppendLine();
-                                            Count = 0;
-                                        }
+                                        sb.Append(":;");
                                     }
                                 }
                             }
@@ -551,7 +546,7 @@ namespace DataLayer
                     return objList;
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation list", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -569,9 +564,17 @@ namespace DataLayer
                                {
                                    Accommodation_Id = a.Accommodation_Id,
                                    CompanyHotelID = a.CompanyHotelID,
-                                   HotelName = a.HotelName,
-                                   Edit_Date = a.Edit_Date,
+                                   CompanyRating = a.CompanyRating,
+                                   CheckInTime = a.CheckInTime,
+                                   CheckOutTime = a.CheckOutTime,
                                    Create_Date = a.Create_Date,
+                                   Edit_Date = a.Edit_Date,
+                                   HotelRating = a.HotelRating,
+                                   HotelName = a.HotelName,
+                                   RatingDate = a.RatingDate,
+                                   TotalFloors = a.TotalFloors,
+                                   TotalRooms = a.TotalRooms,
+                                   YearBuilt = a.YearBuilt,
                                    Accommodation_Descriptions = (from ad in context.Accommodation_Descriptions
                                                                  where ad.Accommodation_Id == a.Accommodation_Id
                                                                  select new DataContracts.DC_Accommodation_Descriptions
@@ -1087,37 +1090,6 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation details", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-
-        public string GetColumnNameWhichValuesIsNull(Guid Accomodation_Id)
-        {
-            int Count = 0;
-            StringBuilder sb = new StringBuilder();
-            var result = GetAccoDetails(Accomodation_Id);
-            if (result != null)
-            {
-                foreach (var item in result.GetType().GetProperties())
-                {
-                    if (item.Name == "TotalFloors" || item.Name == "TotalRooms" || item.Name == "CheckInTime" || item.Name == "CheckOutTime"
-                        || item.Name == "CompanyRating" || item.Name == "HotelRating" || item.Name == "RatingDate" || item.Name == "IsMysteryProduct"
-                        || item.Name == "CompanyRecommended")
-                    {
-                        if (string.IsNullOrWhiteSpace(Convert.ToString(item.GetValue(result))))
-                        {
-                            sb.Append(item.Name);
-                            sb.Append(";");
-                            Count++;
-                            if (Count > 4)
-                            {
-                                sb.AppendLine();
-                                Count = 0;
-                            }
-                        }
-                    }
-                }
-            }
-            return sb.ToString();
-        }
-
         #endregion
 
         #region AccomodationInfo
