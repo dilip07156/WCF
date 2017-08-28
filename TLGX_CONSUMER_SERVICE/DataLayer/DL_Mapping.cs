@@ -48,7 +48,7 @@ namespace DataLayer
                         string SupplierName = FileDetails[0].Supplier.ToString();
                         string Entity = FileDetails[0].Entity.ToString().ToUpper();
 
-                        switch(Entity)
+                        switch (Entity)
                         {
                             case "COUNTRY":
                                 var stgCountries = (from y in context.stg_SupplierCountryMapping
@@ -59,22 +59,22 @@ namespace DataLayer
                                 break;
                             case "CITY":
                                 var stgCities = (from y in context.stg_SupplierCityMapping
-                                                    where y.SupplierName.ToString().ToUpper() == SupplierName.ToString().ToUpper()
-                                                    select y).ToList();
+                                                 where y.SupplierName.ToString().ToUpper() == SupplierName.ToString().ToUpper()
+                                                 select y).ToList();
                                 context.stg_SupplierCityMapping.RemoveRange(stgCities);
                                 context.SaveChanges();
                                 break;
                             case "HOTEL":
                                 var stgHotel = (from y in context.stg_SupplierProductMapping
-                                                 where y.SupplierName.ToString().ToUpper() == SupplierName.ToString().ToUpper()
-                                                 select y).ToList();
+                                                where y.SupplierName.ToString().ToUpper() == SupplierName.ToString().ToUpper()
+                                                select y).ToList();
                                 context.stg_SupplierProductMapping.RemoveRange(stgHotel);
                                 context.SaveChanges();
                                 break;
                             case "ROOMTYPE":
                                 var stgRoomType = (from y in context.stg_SupplierHotelRoomMapping
-                                                where y.SupplierName.ToString().ToUpper() == SupplierName.ToString().ToUpper()
-                                                select y).ToList();
+                                                   where y.SupplierName.ToString().ToUpper() == SupplierName.ToString().ToUpper()
+                                                   select y).ToList();
                                 context.stg_SupplierHotelRoomMapping.RemoveRange(stgRoomType);
                                 context.SaveChanges();
                                 break;
@@ -332,7 +332,7 @@ namespace DataLayer
 
                 List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstobj = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                 lstobj.InsertRange(lstobj.Count, clsMappingHotel.Where(a => a.stg_AccoMapping_Id != null && a.ActionType == "UPDATE"
-                    && (a.stg_AccoMapping_Id ?? Guid.Empty ) != Guid.Empty
+                    && (a.stg_AccoMapping_Id ?? Guid.Empty) != Guid.Empty
                 //&& a.stg_AccoMapping_Id == (clsSTGHotel
                 //    .Where(s => s.ProductId == a.SupplierProductReference)
                 //    .Select(s1 => s1.stg_AccoMapping_Id)
@@ -630,7 +630,7 @@ namespace DataLayer
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating hotel mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
-                    CallLogVerbose(File_Id, "MATCH", "Update Done.");
+            CallLogVerbose(File_Id, "MATCH", "Update Done.");
             return true;
         }
 
@@ -2094,65 +2094,95 @@ namespace DataLayer
                 {
                     context.Database.CommandTimeout = 0;
 
-                    Guid? Accommodation_Id = null;
+                    var Accommodation_SupplierRoomTypeMapping = (from a in context.Accommodation_SupplierRoomTypeMapping select a).AsQueryable();
+                    var Accommodation = (from a in context.Accommodations select a).AsQueryable();
+                    var Country = (from a in context.m_CountryMaster select a).AsQueryable();
+                    var City = (from a in context.m_CityMaster select a).AsQueryable();
+                    var Accommodation_RoomInfo = (from a in context.Accommodation_RoomInfo select a).AsQueryable();
+                    var Accommodation_SupplierRoomTypeAttributes = (from a in context.Accommodation_SupplierRoomTypeAttributes select a).AsQueryable();
+                    var Keyword = (from a in context.m_keyword select a).AsQueryable();
 
-                    if(!string.IsNullOrWhiteSpace(obj.ProductName))
+                    if (obj.Supplier_Id != null)
                     {
-                        Accommodation_Id = context.Accommodations.Where(w => w.HotelName.ToUpper() == obj.ProductName.ToUpper().Trim()).Select(s => s.Accommodation_Id).FirstOrDefault();
+                        Accommodation_SupplierRoomTypeMapping = Accommodation_SupplierRoomTypeMapping.Where(w => w.Supplier_Id == obj.Supplier_Id).Select(s => s);
+                    }
+                    if (!string.IsNullOrWhiteSpace(obj.SupplierRoomName))
+                    {
+                        Accommodation_SupplierRoomTypeMapping = Accommodation_SupplierRoomTypeMapping.Where(w => w.SupplierRoomName.Contains(obj.SupplierRoomName)).Select(s => s);
+                    }
+                    if (!string.IsNullOrWhiteSpace(obj.Status))
+                    {
+                        Accommodation_SupplierRoomTypeMapping = Accommodation_SupplierRoomTypeMapping.Where(w => w.MappingStatus == obj.Status).Select(s => s);
                     }
 
-                    var roomTypeSearch = from asrtm in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
-                                             //join sup in context.Suppliers.AsNoTracking() on asrtm.Supplier_Id equals sup.Supplier_Id
-                                         join acco in context.Accommodations.AsNoTracking() on asrtm.Accommodation_Id equals acco.Accommodation_Id
-                                         join country in context.m_CountryMaster.AsNoTracking() on acco.Country_Id equals country.Country_Id
-                                         join city in context.m_CityMaster.AsNoTracking() on acco.City_Id equals city.City_Id
-                                         join accori in context.Accommodation_RoomInfo.AsNoTracking() on new { AccoId = acco.Accommodation_Id, AccoRIId = asrtm.Accommodation_RoomInfo_Id ?? Guid.Empty } equals new { AccoId = accori.Accommodation_Id ?? Guid.Empty, AccoRIId = accori.Accommodation_RoomInfo_Id } into accoritemp
-                                         from accorinew in accoritemp.DefaultIfEmpty()
-                                         where asrtm.Supplier_Id == (obj.Supplier_Id ?? asrtm.Supplier_Id)
-                                         //&& sup.Name.Trim().ToUpper() == (obj.SupplierName.Trim().ToUpper() ?? sup.Name.Trim().ToUpper())
-                                         && country.Country_Id == (obj.Country ?? country.Country_Id)
-                                         && city.City_Id == (obj.City ?? city.City_Id)
-                                         && asrtm.MappingStatus == (obj.Status ?? asrtm.MappingStatus)
-                                         && acco.Accommodation_Id == (Accommodation_Id ?? acco.Accommodation_Id)
-                                         select new DC_Accommodation_SupplierRoomTypeMap_SearchRS
-                                         {
-                                             Accommodation_Id = asrtm.Accommodation_Id,
-                                             Accommodation_RoomInfo_Id = accorinew.Accommodation_RoomInfo_Id,
-                                             Accommodation_RoomInfo_Name = accorinew.RoomCategory,
-                                             Accommodation_SupplierRoomTypeMapping_Id = asrtm.Accommodation_SupplierRoomTypeMapping_Id,
-                                             CommonProductId = acco.CompanyHotelID.ToString(),
-                                             Location = city.Name + "(" + country.Code + ")",
-                                             MapId = asrtm.MapId,
-                                             MappingStatus = asrtm.MappingStatus,
-                                             MaxAdults = asrtm.MaxAdults,
-                                             MaxChild = asrtm.MaxChild,
-                                             MaxGuestOccupancy = asrtm.MaxGuestOccupancy,
-                                             MaxInfants = asrtm.MaxInfants,
-                                             NumberOfRooms = (context.Accommodation_RoomInfo.Where(w => w.Accommodation_Id == acco.Accommodation_Id).Count()),
-                                             ProductName = acco.HotelName,
-                                             Quantity = asrtm.Quantity,
-                                             RatePlan = asrtm.RatePlan,
-                                             RatePlanCode = asrtm.RatePlanCode,
-                                             RoomTypeAttributes = (context.Accommodation_SupplierRoomTypeAttributes.Where(w => w.RoomTypeMap_Id == asrtm.Accommodation_SupplierRoomTypeMapping_Id).Select(s => new DC_SupplierRoomTypeAttributes { Accommodation_SupplierRoomTypeMapAttribute_Id = s.RoomTypeMapAttribute_Id, Accommodation_SupplierRoomTypeMap_Id = s.RoomTypeMap_Id, SupplierRoomTypeAttribute = s.SupplierRoomTypeAttribute, SystemAttributeKeyword = s.SystemAttributeKeyword, SystemAttributeKeyword_Id = s.SystemAttributeKeyword_Id, IconClass = context.m_keyword.Where(kw => kw.Keyword_Id == s.SystemAttributeKeyword_Id).Select(kws => kws.Icon).FirstOrDefault() }).ToList()),
-                                             SupplierName = asrtm.SupplierName,
-                                             SupplierProductId = asrtm.SupplierProductId,
-                                             SupplierProductName = asrtm.SupplierProductName,
-                                             SupplierRoomCategory = asrtm.SupplierRoomCategory,
-                                             SupplierRoomCategoryId = asrtm.SupplierRoomCategoryId,
-                                             SupplierRoomId = asrtm.SupplierRoomId,
-                                             SupplierRoomName = asrtm.SupplierRoomName,
-                                             SupplierRoomTypeCode = asrtm.SupplierRoomTypeCode,
-                                             Supplier_Id = asrtm.Supplier_Id,
-                                             TotalRecords = 0,
-                                             Tx_ReorderedName = asrtm.Tx_ReorderedName,
-                                             TX_RoomName = asrtm.TX_RoomName,
-                                             Tx_StrippedName = asrtm.Tx_StrippedName,
-                                             RoomDescription = asrtm.RoomDescription
-                                         };
+                    IQueryable<Guid> AccommodationIds = null;
+                    if (!string.IsNullOrWhiteSpace(obj.ProductName))
+                    {
+                        AccommodationIds = Accommodation.Where(w => w.HotelName.ToUpper() == obj.ProductName.ToUpper().Trim()).Select(s => s.Accommodation_Id).AsQueryable();
+                    }
 
-                    int total;
+                    if (AccommodationIds != null)
+                    {
+                        Accommodation_SupplierRoomTypeMapping = Accommodation_SupplierRoomTypeMapping.Where(w => AccommodationIds.Contains(w.Accommodation_Id ?? Guid.Empty)).Select(s => s);
+                        Accommodation = Accommodation.Where(w => AccommodationIds.Contains(w.Accommodation_Id)).Select(s => s);
+                        Accommodation_RoomInfo = Accommodation_RoomInfo.Where(w => AccommodationIds.Contains(w.Accommodation_Id ?? Guid.Empty)).Select(s => s);
+                    }
 
-                    total = roomTypeSearch.Count();
+                    if (obj.Country != null)
+                    {
+                        Accommodation = Accommodation.Where(w => w.Country_Id == obj.Country).Select(s => s);
+                        Country = Country.Where(w => w.Country_Id == obj.Country).Select(s => s);
+                    }
+
+                    if (obj.City != null)
+                    {
+                        Accommodation = Accommodation.Where(w => w.City_Id == obj.City).Select(s => s);
+                        City = City.Where(w => w.City_Id == obj.City).Select(s => s);
+                    }
+
+                    var roomTypeSearch = (from asrtm in Accommodation_SupplierRoomTypeMapping
+                                          join acco in Accommodation on asrtm.Accommodation_Id equals acco.Accommodation_Id
+                                          join country in Country on acco.Country_Id equals country.Country_Id
+                                          join city in City on acco.City_Id equals city.City_Id
+                                          join accori in Accommodation_RoomInfo on new { AccoId = acco.Accommodation_Id, AccoRIId = asrtm.Accommodation_RoomInfo_Id ?? Guid.Empty } equals new { AccoId = accori.Accommodation_Id ?? Guid.Empty, AccoRIId = accori.Accommodation_RoomInfo_Id } into accoritemp
+                                          from accorinew in accoritemp.DefaultIfEmpty()
+                                          select new DC_Accommodation_SupplierRoomTypeMap_SearchRS
+                                          {
+                                              Accommodation_Id = asrtm.Accommodation_Id,
+                                              Accommodation_RoomInfo_Id = accorinew.Accommodation_RoomInfo_Id,
+                                              Accommodation_RoomInfo_Name = accorinew.RoomCategory,
+                                              Accommodation_SupplierRoomTypeMapping_Id = asrtm.Accommodation_SupplierRoomTypeMapping_Id,
+                                              CommonProductId = acco.CompanyHotelID.ToString(),
+                                              Location = city.Name + "(" + country.Code + ")",
+                                              MapId = asrtm.MapId,
+                                              MappingStatus = asrtm.MappingStatus,
+                                              MaxAdults = asrtm.MaxAdults,
+                                              MaxChild = asrtm.MaxChild,
+                                              MaxGuestOccupancy = asrtm.MaxGuestOccupancy,
+                                              MaxInfants = asrtm.MaxInfants,
+                                              NumberOfRooms = (Accommodation_RoomInfo.Where(w => w.Accommodation_Id == acco.Accommodation_Id).Count()),
+                                              ProductName = acco.HotelName,
+                                              Quantity = asrtm.Quantity,
+                                              RatePlan = asrtm.RatePlan,
+                                              RatePlanCode = asrtm.RatePlanCode,
+                                              RoomTypeAttributes = (Accommodation_SupplierRoomTypeAttributes.Where(w => w.RoomTypeMap_Id == asrtm.Accommodation_SupplierRoomTypeMapping_Id).Select(s => new DC_SupplierRoomTypeAttributes { Accommodation_SupplierRoomTypeMapAttribute_Id = s.RoomTypeMapAttribute_Id, Accommodation_SupplierRoomTypeMap_Id = s.RoomTypeMap_Id, SupplierRoomTypeAttribute = s.SupplierRoomTypeAttribute, SystemAttributeKeyword = s.SystemAttributeKeyword, SystemAttributeKeyword_Id = s.SystemAttributeKeyword_Id, IconClass = Keyword.Where(kw => kw.Keyword_Id == s.SystemAttributeKeyword_Id).Select(kws => kws.Icon).FirstOrDefault() }).ToList()),
+                                              SupplierName = asrtm.SupplierName,
+                                              SupplierProductId = asrtm.SupplierProductId,
+                                              SupplierProductName = asrtm.SupplierProductName,
+                                              SupplierRoomCategory = asrtm.SupplierRoomCategory,
+                                              SupplierRoomCategoryId = asrtm.SupplierRoomCategoryId,
+                                              SupplierRoomId = asrtm.SupplierRoomId,
+                                              SupplierRoomName = asrtm.SupplierRoomName,
+                                              SupplierRoomTypeCode = asrtm.SupplierRoomTypeCode,
+                                              Supplier_Id = asrtm.Supplier_Id,
+                                              TotalRecords = 0,
+                                              Tx_ReorderedName = asrtm.Tx_ReorderedName,
+                                              TX_RoomName = asrtm.TX_RoomName,
+                                              Tx_StrippedName = asrtm.Tx_StrippedName,
+                                              RoomDescription = asrtm.RoomDescription
+                                          }).AsQueryable();
+
+                    int total = roomTypeSearch.Count();
 
                     var skip = obj.PageSize * obj.PageNo;
 
@@ -2191,40 +2221,29 @@ namespace DataLayer
                                                   Tx_ReorderedName = a.Tx_ReorderedName,
                                                   TX_RoomName = a.TX_RoomName,
                                                   Tx_StrippedName = a.Tx_StrippedName,
-                                                  RoomDescription = a.RoomDescription
+                                                  RoomDescription = a.RoomDescription,
                                               }).Skip(skip).Take(obj.PageSize);
 
                     var result = roomTypeSearchList.ToList();
 
-                    //if (!string.IsNullOrWhiteSpace(obj.Status))
-                    //{
                     if (string.IsNullOrWhiteSpace(obj.CalledFromTLGX))
                     {
-                        DL_Accomodation _dlAcco = new DL_Accomodation();
                         foreach (var item in result)
                         {
-                            if (string.IsNullOrWhiteSpace(item.Accommodation_RoomInfo_Name))
+                            if (item.Accommodation_RoomInfo_Id == null)
                             {
                                 if (!string.IsNullOrWhiteSpace(item.Tx_StrippedName))
                                 {
-                                    Guid acco_id = item.Accommodation_Id.HasValue ? item.Accommodation_Id.Value : Guid.Empty;
-                                    var resultRoomCategory = _dlAcco.GetAccomodationRoomInfo_RoomCategory(acco_id);
-                                    if (resultRoomCategory != null && resultRoomCategory.Count > 0)
+                                    var resultRoomCategory = Accommodation_RoomInfo.Where(w => w.Accommodation_Id == item.Accommodation_Id && w.RoomCategory.ToLower() == item.Tx_StrippedName.ToLower()).Select(s => s).FirstOrDefault();
+                                    if (resultRoomCategory != null)
                                     {
-                                        foreach (var itemroomcat in resultRoomCategory)
-                                        {
-                                            if (itemroomcat.RoomCategory.ToLower() == item.Tx_StrippedName.ToLower())
-                                            {
-                                                item.Accommodation_RoomInfo_Id = itemroomcat.Accommodation_RoomInfo_Id;
-                                                item.Accommodation_RoomInfo_Name = itemroomcat.RoomCategory;
-                                            }
-                                        }
+                                        item.Accommodation_RoomInfo_Id = resultRoomCategory.Accommodation_RoomInfo_Id;
+                                        item.Accommodation_RoomInfo_Name = resultRoomCategory.RoomCategory;
                                     }
                                 }
                             }
                         }
                     }
-                    //}
 
                     return result;
                 }
@@ -2233,7 +2252,7 @@ namespace DataLayer
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
                 {
-                    ErrorMessage = "Error while searching accomodation product supplier mapping",
+                    ErrorMessage = "Error while searching accomodation product supplier room type mapping",
                     ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
                 });
             }
@@ -2247,27 +2266,6 @@ namespace DataLayer
                 {
                     context.Database.CommandTimeout = 0;
 
-                    //List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
-
-                    //if (obj != null)
-                    //{
-                    //    if(obj.Count > 0)
-                    //    {
-                    //        using (DL_Masters objDL = new DL_Masters())
-                    //        {
-                    //            Keywords = objDL.SearchKeyword(null);
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning, StatusMessage = "There are no records in input." };
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Input is NULL." };
-                    //}
-
                     foreach (DC_Accommodation_SupplierRoomTypeMap_Update item in obj)
                     {
                         if (item.Accommodation_SupplierRoomTypeMapping_Id != null && !string.IsNullOrWhiteSpace(item.Status))
@@ -2280,98 +2278,113 @@ namespace DataLayer
                                 //item.Status -- ADD
                                 if (item.Status.ToUpper() == "ADD")
                                 {
-                                    Guid _newRoomId = Guid.NewGuid();
-
-                                    Accommodation_RoomInfo _newObj = new Accommodation_RoomInfo();
-                                    _newObj.Accommodation_RoomInfo_Id = _newRoomId;
-                                    _newObj.Accommodation_Id = acco.Accommodation_Id;
-                                    _newObj.Legacy_Htl_Id = acco.CompanyHotelID;
-                                    _newObj.RoomId = CommonFunctions.GenerateRoomId(Guid.Parse(item.Accommodation_Id.ToString()));
-                                    _newObj.NoOfRooms = accoSuppRoomTypeMap.Quantity;
-                                    _newObj.Description = accoSuppRoomTypeMap.SupplierRoomName + " : " + accoSuppRoomTypeMap.RoomDescription;
-                                    _newObj.RoomCategory = item.RoomCategory;
-                                    _newObj.Create_User = item.Edit_User;
-                                    _newObj.Create_Date = DateTime.Now;
-                                    _newObj.IsActive = true;
-
-                                    var accoSuppRoomTypeMapAttributes = context.Accommodation_SupplierRoomTypeAttributes.Where(w => w.RoomTypeMap_Id == item.Accommodation_SupplierRoomTypeMapping_Id).ToList();
-                                    if (accoSuppRoomTypeMapAttributes != null)
+                                    //Check if Same room already exists. If yes, fetch and map to existing instead of adding a new one.
+                                    var Acco_RoomInfo = (from a in context.Accommodation_RoomInfo select a).AsQueryable();
+                                    Acco_RoomInfo = Acco_RoomInfo.Where(w => w.Accommodation_Id == item.Accommodation_Id && w.RoomCategory.ToUpper().Trim() == item.RoomCategory.ToUpper().Trim()).Select(s => s);
+                                    var ExistingRoomInfo = Acco_RoomInfo.ToList();
+                                    if(ExistingRoomInfo.Count> 0)
                                     {
-                                        if (accoSuppRoomTypeMapAttributes.Count > 0)
+                                        //Update existing Room ID to SRTM table
+                                        item.Accommodation_RoomInfo_Id = ExistingRoomInfo[0].Accommodation_RoomInfo_Id;
+                                        item.Status = "MAPPED";
+                                        
+                                    }
+                                    else
+                                    {
+                                        Guid _newRoomId = Guid.NewGuid();
+
+                                        Accommodation_RoomInfo _newObj = new Accommodation_RoomInfo();
+                                        _newObj.Accommodation_RoomInfo_Id = _newRoomId;
+                                        _newObj.Accommodation_Id = acco.Accommodation_Id;
+                                        _newObj.Legacy_Htl_Id = acco.CompanyHotelID;
+                                        _newObj.RoomId = CommonFunctions.GenerateRoomId(Guid.Parse(item.Accommodation_Id.ToString()));
+                                        _newObj.NoOfRooms = accoSuppRoomTypeMap.Quantity;
+                                        _newObj.Description = accoSuppRoomTypeMap.SupplierRoomName + " : " + accoSuppRoomTypeMap.RoomDescription;
+                                        _newObj.RoomCategory = item.RoomCategory;
+
+                                        _newObj.Create_User = item.Edit_User;
+                                        _newObj.Create_Date = DateTime.Now;
+                                        _newObj.IsActive = true;
+
+                                        var accoSuppRoomTypeMapAttributes = context.Accommodation_SupplierRoomTypeAttributes.Where(w => w.RoomTypeMap_Id == item.Accommodation_SupplierRoomTypeMapping_Id).ToList();
+                                        if (accoSuppRoomTypeMapAttributes != null)
                                         {
-                                            foreach (var attribute in accoSuppRoomTypeMapAttributes)
+                                            if (accoSuppRoomTypeMapAttributes.Count > 0)
                                             {
-                                                var keyword = context.m_keyword.Find(attribute.SystemAttributeKeyword_Id);
-                                                if (keyword != null)
+                                                foreach (var attribute in accoSuppRoomTypeMapAttributes)
                                                 {
-                                                    if (!string.IsNullOrWhiteSpace(keyword.AttributeLevel))
+                                                    var keyword = context.m_keyword.Find(attribute.SystemAttributeKeyword_Id);
+                                                    if (keyword != null)
                                                     {
-                                                        if (keyword.AttributeLevel.ToUpper() == "ROOM AMENITY")
+                                                        if (!string.IsNullOrWhiteSpace(keyword.AttributeLevel))
                                                         {
-                                                            Guid _newFacilityId = Guid.NewGuid();
-                                                            Accommodation_RoomFacility RF = new Accommodation_RoomFacility();
-                                                            RF.Accommodation_Id = acco.Accommodation_Id;
-                                                            RF.Accommodation_RoomFacility_Id = _newFacilityId;
-                                                            RF.Accommodation_RoomInfo_Id = _newRoomId;
-                                                            RF.AmenityName = keyword.Keyword;
-                                                            RF.AmenityType = keyword.AttributeSubLevel;
-                                                            RF.Create_Date = DateTime.Now;
-                                                            RF.Create_User = item.Edit_User;
-                                                            context.Accommodation_RoomFacility.Add(RF);
-                                                            RF = null;
-                                                            attribute.Accommodation_RoomFacility_Id = _newFacilityId;
-                                                        }
-                                                        else if (keyword.AttributeLevel.ToUpper() == "ROOM INFO")
-                                                        {
-                                                            if (!string.IsNullOrWhiteSpace(keyword.AttributeSubLevel))
+                                                            if (keyword.AttributeLevel.ToUpper() == "ROOM AMENITY")
                                                             {
-                                                                if (keyword.AttributeSubLevel.ToUpper() == "NUMBER OF ROOMS")
+                                                                Guid _newFacilityId = Guid.NewGuid();
+                                                                Accommodation_RoomFacility RF = new Accommodation_RoomFacility();
+                                                                RF.Accommodation_Id = acco.Accommodation_Id;
+                                                                RF.Accommodation_RoomFacility_Id = _newFacilityId;
+                                                                RF.Accommodation_RoomInfo_Id = _newRoomId;
+                                                                RF.AmenityName = keyword.Keyword;
+                                                                RF.AmenityType = keyword.AttributeSubLevel;
+                                                                RF.Create_Date = DateTime.Now;
+                                                                RF.Create_User = item.Edit_User;
+                                                                context.Accommodation_RoomFacility.Add(RF);
+                                                                RF = null;
+                                                                attribute.Accommodation_RoomFacility_Id = _newFacilityId;
+                                                            }
+                                                            else if (keyword.AttributeLevel.ToUpper() == "ROOM INFO")
+                                                            {
+                                                                if (!string.IsNullOrWhiteSpace(keyword.AttributeSubLevel))
                                                                 {
-                                                                    int NoOfRooms = 0;
-                                                                    int.TryParse(attribute.SystemAttributeKeyword, out NoOfRooms);
-                                                                    _newObj.NoOfRooms = NoOfRooms;
-                                                                }
-                                                                else if (keyword.AttributeSubLevel.ToUpper() == "ROOM CATEGORY")
-                                                                {
-                                                                    _newObj.RoomCategory = keyword.AttributeSubLevelValue;
-                                                                }
-                                                                else if (keyword.AttributeSubLevel.ToUpper() == "FLOOR NAME")
-                                                                {
-                                                                    _newObj.FloorName = attribute.SystemAttributeKeyword;
-                                                                }
-                                                                else if (keyword.AttributeSubLevel.ToUpper() == "FLOOR NUMBER")
-                                                                {
-                                                                    _newObj.FloorNumber = attribute.SystemAttributeKeyword;
-                                                                }
-                                                                else if (keyword.AttributeSubLevel.ToUpper() == "ROOM VIEW")
-                                                                {
-                                                                    _newObj.RoomView = attribute.SystemAttributeKeyword;
-                                                                }
-                                                                else if (keyword.AttributeSubLevel.ToUpper() == "ROOM DECOR")
-                                                                {
-                                                                    _newObj.RoomDecor = attribute.SystemAttributeKeyword;
-                                                                }
-                                                                else if (keyword.AttributeSubLevel.ToUpper() == "BED TYPE")
-                                                                {
-                                                                    _newObj.BedType = keyword.AttributeSubLevelValue;
-                                                                }
-                                                                else if (keyword.AttributeSubLevel.ToUpper() == "BATHROOM TYPE")
-                                                                {
-                                                                    _newObj.BathRoomType = keyword.AttributeSubLevelValue;
-                                                                }
-                                                                else if (keyword.AttributeSubLevel.ToUpper() == "SMOKING")
-                                                                {
-                                                                    _newObj.Smoking = ((keyword.AttributeSubLevelValue ?? string.Empty) == "YES" ? true : false);
-                                                                }
-                                                                else if (keyword.AttributeSubLevel.ToUpper() == "ROOM SIZE")
-                                                                {
-                                                                    _newObj.RoomSize = attribute.SystemAttributeKeyword;
-                                                                }
-                                                                else if (keyword.AttributeSubLevel.ToUpper() == "INTER ROOMS")
-                                                                {
-                                                                    int NoOfInterRooms = 0;
-                                                                    int.TryParse(attribute.SystemAttributeKeyword, out NoOfInterRooms);
-                                                                    _newObj.NoOfInterconnectingRooms = NoOfInterRooms;
+                                                                    if (keyword.AttributeSubLevel.ToUpper() == "NUMBER OF ROOMS")
+                                                                    {
+                                                                        int NoOfRooms = 0;
+                                                                        int.TryParse(attribute.SystemAttributeKeyword, out NoOfRooms);
+                                                                        _newObj.NoOfRooms = NoOfRooms;
+                                                                    }
+                                                                    else if (keyword.AttributeSubLevel.ToUpper() == "ROOM CATEGORY")
+                                                                    {
+                                                                        _newObj.RoomCategory = keyword.AttributeSubLevelValue;
+                                                                    }
+                                                                    else if (keyword.AttributeSubLevel.ToUpper() == "FLOOR NAME")
+                                                                    {
+                                                                        _newObj.FloorName = attribute.SystemAttributeKeyword;
+                                                                    }
+                                                                    else if (keyword.AttributeSubLevel.ToUpper() == "FLOOR NUMBER")
+                                                                    {
+                                                                        _newObj.FloorNumber = attribute.SystemAttributeKeyword;
+                                                                    }
+                                                                    else if (keyword.AttributeSubLevel.ToUpper() == "ROOM VIEW")
+                                                                    {
+                                                                        _newObj.RoomView = attribute.SystemAttributeKeyword;
+                                                                    }
+                                                                    else if (keyword.AttributeSubLevel.ToUpper() == "ROOM DECOR")
+                                                                    {
+                                                                        _newObj.RoomDecor = attribute.SystemAttributeKeyword;
+                                                                    }
+                                                                    else if (keyword.AttributeSubLevel.ToUpper() == "BED TYPE")
+                                                                    {
+                                                                        _newObj.BedType = keyword.AttributeSubLevelValue;
+                                                                    }
+                                                                    else if (keyword.AttributeSubLevel.ToUpper() == "BATHROOM TYPE")
+                                                                    {
+                                                                        _newObj.BathRoomType = keyword.AttributeSubLevelValue;
+                                                                    }
+                                                                    else if (keyword.AttributeSubLevel.ToUpper() == "SMOKING")
+                                                                    {
+                                                                        _newObj.Smoking = ((keyword.AttributeSubLevelValue ?? string.Empty) == "YES" ? true : false);
+                                                                    }
+                                                                    else if (keyword.AttributeSubLevel.ToUpper() == "ROOM SIZE")
+                                                                    {
+                                                                        _newObj.RoomSize = attribute.SystemAttributeKeyword;
+                                                                    }
+                                                                    else if (keyword.AttributeSubLevel.ToUpper() == "INTER ROOMS")
+                                                                    {
+                                                                        int NoOfInterRooms = 0;
+                                                                        int.TryParse(attribute.SystemAttributeKeyword, out NoOfInterRooms);
+                                                                        _newObj.NoOfInterconnectingRooms = NoOfInterRooms;
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -2379,24 +2392,20 @@ namespace DataLayer
                                                 }
                                             }
                                         }
+
+                                        context.Accommodation_RoomInfo.Add(_newObj);
+
+                                        //Update new Room ID to SRTM table
+                                        item.Accommodation_RoomInfo_Id = _newRoomId;
+                                        item.Status = "MAPPED";
                                     }
-
-                                    context.Accommodation_RoomInfo.Add(_newObj);
-
-                                    //Update new Room ID to SRTM table
-                                    item.Accommodation_RoomInfo_Id = _newRoomId;
-                                    item.Status = "MAPPED";
-
                                 }
                                 else if (item.Status.ToUpper() == "UNMAPPED")
                                 {
-                                    accoSuppRoomTypeMap.Accommodation_RoomInfo_Id = null;
-                                }
-                                else
-                                {
-                                    accoSuppRoomTypeMap.Accommodation_RoomInfo_Id = item.Accommodation_RoomInfo_Id;
+                                    item.Accommodation_RoomInfo_Id = null;
                                 }
 
+                                accoSuppRoomTypeMap.Accommodation_RoomInfo_Id = item.Accommodation_RoomInfo_Id;
                                 accoSuppRoomTypeMap.MappingStatus = item.Status.ToUpper();
                                 accoSuppRoomTypeMap.Edit_Date = DateTime.Now;
                                 accoSuppRoomTypeMap.Edit_User = item.Edit_User;
@@ -2550,7 +2559,7 @@ namespace DataLayer
                     {
                         var MapIdsFilter = (from a in Acco_RoomTypeMap_Ids select a.Acco_RoomTypeMap_Id).ToList();
 
-                        asrtmd = context.Accommodation_SupplierRoomTypeMapping
+                        asrtmd = context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
                                      .Where(w => MapIdsFilter.Contains(w.Accommodation_SupplierRoomTypeMapping_Id))
                                      .OrderBy(o => o.Accommodation_SupplierRoomTypeMapping_Id)
                                      .Select(s => new DC_SupplierRoomName_Details
@@ -2575,7 +2584,7 @@ namespace DataLayer
                     }
                     else
                     {
-                        asrtmd = (from a in context.Accommodation_SupplierRoomTypeMapping
+                        asrtmd = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
                                   orderby a.Accommodation_SupplierRoomTypeMapping_Id
                                   select new DC_SupplierRoomName_Details
                                   {
@@ -2629,7 +2638,7 @@ namespace DataLayer
                     //trim both end
                     BaseRoomName = BaseRoomName.Trim();
 
-                    //Take only alpha characters
+                    //Take only valid characters
                     string RoomName_ValidChars = string.Empty;
                     foreach (char c in BaseRoomName)
                     {
@@ -3023,7 +3032,7 @@ namespace DataLayer
                 CallLogVerbose(File_Id, "MAP", "Checking for New Countries in File.");
                 clsSTGCountryInsert = clsSTGCountry.Where(p => !clsMappingCountry.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                 && (
-                    (p.CountryCode != null && p2.CountryCode == p.CountryCode) 
+                    (p.CountryCode != null && p2.CountryCode == p.CountryCode)
                     || (p.CountryCode == null && p2.CountryName.ToString().Trim().ToUpper() == p.CountryName.ToString().Trim().ToUpper())
                 ))).ToList();
 
@@ -3060,7 +3069,7 @@ namespace DataLayer
                     Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
                 }));
 
-                lstobj.InsertRange(lstobj.Count, clsMappingCountry.Where(a => a.stg_Country_Id != null && a.ActionType == "INSERT" 
+                lstobj.InsertRange(lstobj.Count, clsMappingCountry.Where(a => a.stg_Country_Id != null && a.ActionType == "INSERT"
                 && (a.stg_Country_Id ?? Guid.Empty) != Guid.Empty)
                .Select
                   (g => new DataContracts.STG.DC_STG_Mapping_Table_Ids
@@ -3744,7 +3753,7 @@ namespace DataLayer
                 }).ToList();
 
                 List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstobj = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
-                lstobj.InsertRange(lstobj.Count, clsMappingCity.Where(a => a.stg_City_Id != null && a.ActionType == "UPDATE" 
+                lstobj.InsertRange(lstobj.Count, clsMappingCity.Where(a => a.stg_City_Id != null && a.ActionType == "UPDATE"
                 && (a.stg_City_Id ?? Guid.Empty) != Guid.Empty).Select
                    (g => new DataContracts.STG.DC_STG_Mapping_Table_Ids
                    {

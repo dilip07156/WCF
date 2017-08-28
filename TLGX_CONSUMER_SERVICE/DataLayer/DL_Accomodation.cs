@@ -2905,7 +2905,7 @@ namespace DataLayer
         {
             using (ConsumerEntities context = new ConsumerEntities())
             {
-                var search = (from ar in context.Accommodation_RoomInfo
+                var search = (from ar in context.Accommodation_RoomInfo.AsNoTracking()
                               where ar.Accommodation_Id == Accomodation_Id
                               orderby ar.RoomCategory
                               select new DataContracts.DC_Accomodation_Category_DDL
