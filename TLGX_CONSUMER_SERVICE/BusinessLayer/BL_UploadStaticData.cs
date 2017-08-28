@@ -100,6 +100,14 @@ namespace BusinessLayer
                 return objBL.UpdateStaticDataMappingAttributeValueStatus(obj);
             }
         }
+
+        public List<string> GetStaticDataMappingAttributeValuesForFilter(DataContracts.UploadStaticData.DC_SupplierImportAttributeValues_RQ RQ)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.GetStaticDataMappingAttributeValuesForFilter(RQ);
+            }
+        }
         #endregion
 
 

@@ -80,6 +80,13 @@ namespace ConsumerSvc
                 return objBL.UpdateStaticDataMappingAttributeValueStatus(obj);
             }
         }
+        public List<string> GetStaticDataMappingAttributeValuesForFilter(DataContracts.UploadStaticData.DC_SupplierImportAttributeValues_RQ RQ)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.GetStaticDataMappingAttributeValuesForFilter(RQ);
+            }
+        }
         #endregion
 
 

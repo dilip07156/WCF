@@ -8,6 +8,7 @@ using DataContracts.Masters;
 using DataContracts;
 using System.Data;
 using DataContracts.STG;
+using DataContracts.UploadStaticData;
 
 namespace DataLayer
 {
@@ -340,7 +341,7 @@ namespace DataLayer
 
 
         #region "Mapping Config Attributes Values"
-        public List<DataContracts.UploadStaticData.DC_SupplierImportAttributeValues> GetStaticDataMappingAttributeValues(DataContracts.UploadStaticData.DC_SupplierImportAttributeValues_RQ RQ)
+        public List<DC_SupplierImportAttributeValues> GetStaticDataMappingAttributeValues(DataContracts.UploadStaticData.DC_SupplierImportAttributeValues_RQ RQ)
         {
             try
             {
@@ -445,6 +446,12 @@ namespace DataLayer
                     {
                         AttrMapSearch = from a in AttrMapSearch
                                         where a.STATUS.Trim().TrimStart().ToUpper() != RQ.StatusExcept.Trim().TrimStart().ToUpper()
+                                        select a;
+                    }
+                    if (RQ.Priority != -1)
+                    {
+                        AttrMapSearch = from a in AttrMapSearch
+                                        where a.Priority == RQ.Priority
                                         select a;
                     }
 
@@ -635,6 +642,51 @@ namespace DataLayer
             }
 
             return dc;
+        }
+
+        public List<string> GetStaticDataMappingAttributeValuesForFilter(DataContracts.UploadStaticData.DC_SupplierImportAttributeValues_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var AttrMapSearch = from a in context.m_SupplierImportAttributeValues select a;
+
+                    if (RQ.SupplierImportAttributeValue_Id.HasValue)
+                    {
+                        AttrMapSearch = from a in AttrMapSearch
+                                        where a.SupplierImportAttributeValue_Id == RQ.SupplierImportAttributeValue_Id
+                                        select a;
+                    }
+
+                    if (RQ.SupplierImportAttribute_Id.HasValue)
+                    {
+                        AttrMapSearch = from a in AttrMapSearch
+                                        where a.SupplierImportAttribute_Id == RQ.SupplierImportAttribute_Id
+                                        select a;
+                    }
+                    List<string> _lstFilterData = new List<string>();
+                    if (RQ.For.ToLower() == "attributetype")
+                    {
+                        _lstFilterData = AttrMapSearch.Select(a => a.AttributeType).Distinct().ToList();
+                    }
+                    else if (RQ.For.ToLower() == "priority")
+                    {
+                        _lstFilterData = AttrMapSearch.Select(a => a.Priority.ToString()).Distinct().ToList();
+                    }
+
+                    return _lstFilterData;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while getteing filter data for manageattrinutevalue",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+
         }
         #endregion
 
@@ -2322,7 +2374,7 @@ namespace DataLayer
                 DataContracts.DC_FileProgressDashboard obj = new DC_FileProgressDashboard();
                 obj.ProgressLog = GetStaticDataUploadProcessLog(new DataContracts.UploadStaticData.DC_SupplierImportFile_Progress_RQ { SupplierImportFile_Id = fileid.ToString() });
                 obj.VerboseLog = GetStaticDataUploadVerboseLog(new DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog_RQ { SupplierImportFile_Id = fileid });
-                obj.FileStatistics = GetStaticDataUploadStatistics(new DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics_RQ { SupplierImportFile_Id = fileid});
+                obj.FileStatistics = GetStaticDataUploadStatistics(new DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics_RQ { SupplierImportFile_Id = fileid });
                 return obj;
             }
             catch (Exception ex)
