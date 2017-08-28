@@ -75,15 +75,7 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
-
-        public string GetColumnNameWhichValuesIsNull(string Accomodation_Id)
-        {
-            using (BL_Accomodation obj = new BL_Accomodation())
-            {
-                return obj.GetColumnNameWhichValuesIsNull(Accomodation_Id);
-            }
-        }
-
+        
         public IList<DC_Accomodation> GetAccomodationListForMissingAttributeReports(DC_Accomodation_Search_RQ RQ)
         {
             using (BL_Accomodation objBL = new BL_Accomodation())
