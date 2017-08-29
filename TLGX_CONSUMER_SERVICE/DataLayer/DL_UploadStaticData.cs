@@ -463,7 +463,7 @@ namespace DataLayer
                     var skip = RQ.PageSize * RQ.PageNo;
 
                     var AttrMapResult = (from a in AttrMapSearch
-                                         orderby (a.Priority ?? 0) descending, a.AttributeType //, a.AttributeName, a.AttributeValue
+                                         orderby (a.Priority ?? 0) descending, a.AttributeType,a.CREATE_DATE descending //, a.AttributeName, a.AttributeValue
                                          select new DataContracts.UploadStaticData.DC_SupplierImportAttributeValues
                                          {
                                              SupplierImportAttributeValue_Id = a.SupplierImportAttributeValue_Id,

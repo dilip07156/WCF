@@ -4350,7 +4350,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    string strtablename = TableName.ToLower();
+                    string strtablename = TableName.ToLower().Trim();
                     switch (strtablename)
                     {
                         case "stg_suppliercitymapping":
