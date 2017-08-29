@@ -16,5 +16,9 @@ namespace DataContracts
         public List<UploadStaticData.DC_SupplierImportFile_VerboseLog> VerboseLog { get; set; }
         [DataMember]
         public List<UploadStaticData.DC_SupplierImportFile_Statistics> FileStatistics { get; set; }
+        [DataMember]
+        public List<UploadStaticData.DC_SupplierImportFileDetails> FileDetails { get; set; }
+        [DataMember]
+        public List<UploadStaticData.DC_SupplierImportFile_ErrorLog> ErrorLog { get; set; }
     }
 }
