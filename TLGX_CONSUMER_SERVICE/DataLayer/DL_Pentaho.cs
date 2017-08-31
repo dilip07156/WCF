@@ -169,8 +169,9 @@ namespace DataLayer
                         foreach (Supplier_ApiCallLog p in results)
                         {
                             p.Status = "REMOVED";
-                            p.CalledBy = "System";
+                            p.CalledBy = CalledBy;
                             p.CalledDate = DateTime.Now;
+                            p.Message = "Transformation Queue has been removed from Server.";
                         }
                         context.SaveChanges();
                     }
