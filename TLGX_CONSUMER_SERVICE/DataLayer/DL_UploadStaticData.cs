@@ -756,6 +756,10 @@ namespace DataLayer
                     total = FileSearch.Count();
 
                     var skip = RQ.PageSize * RQ.PageNo;
+                    if(RQ.PageSize==0)
+                    {
+                        RQ.PageSize = int.MaxValue;
+                    }
 
                     var FileSearchResult = (from a in FileSearch
                                             join s in context.Suppliers on a.Supplier_Id equals s.Supplier_Id
