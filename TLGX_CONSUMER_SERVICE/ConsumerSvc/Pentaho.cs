@@ -45,11 +45,11 @@ namespace ConsumerSvc
             }
         }
 
-        public List<DataContracts.Pentaho.DC_PentahoApiCallLogDetails> Pentaho_SupplierApiCall_List()
+        public List<DataContracts.Pentaho.DC_PentahoApiCallLogDetails> Pentaho_SupplierApiCall_List(DataContracts.Pentaho.DC_PentahoApiCallLogDetails_RQ RQ)
         {
             using (BusinessLayer.BL_Pentaho obj = new BL_Pentaho())
             {
-                return obj.Pentaho_SupplierApiCall_List();
+                return obj.Pentaho_SupplierApiCall_List(RQ);
             }
         }
     }

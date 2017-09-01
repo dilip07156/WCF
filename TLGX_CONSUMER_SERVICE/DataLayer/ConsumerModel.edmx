@@ -1459,8 +1459,10 @@
           <Property Name="PentahoCall_Id" Type="uniqueidentifier" />
           <Property Name="Message" Type="varchar" MaxLength="500" />
           <Property Name="Status" Type="varchar" MaxLength="50" />
-          <Property Name="CalledBy" Type="varchar" MaxLength="50" />
-          <Property Name="CalledDate" Type="datetime" />
+          <Property Name="Create_User" Type="varchar" MaxLength="50" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_User" Type="varchar" MaxLength="50" />
+          <Property Name="Edit_Date" Type="datetime" />
         </EntityType>
         <EntityType Name="Supplier_APILocation">
           <Key>
@@ -3578,8 +3580,10 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <Property Name="PentahoCall_Id" Type="Guid" />
           <Property Name="Message" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CalledBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CalledDate" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -5282,8 +5286,10 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySetMapping Name="Supplier_ApiCallLog">
             <EntityTypeMapping TypeName="ConsumerModel.Supplier_ApiCallLog">
               <MappingFragment StoreEntitySet="Supplier_ApiCallLog">
-                <ScalarProperty Name="CalledDate" ColumnName="CalledDate" />
-                <ScalarProperty Name="CalledBy" ColumnName="CalledBy" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Message" ColumnName="Message" />
                 <ScalarProperty Name="PentahoCall_Id" ColumnName="PentahoCall_Id" />

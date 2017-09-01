@@ -19,7 +19,9 @@ namespace DataLayer
         public Nullable<System.Guid> PentahoCall_Id { get; set; }
         public string Message { get; set; }
         public string Status { get; set; }
-        public string CalledBy { get; set; }
-        public Nullable<System.DateTime> CalledDate { get; set; }
+        public string Create_User { get; set; }
+        public Nullable<System.DateTime> Create_Date { get; set; }
+        public string Edit_User { get; set; }
+        public Nullable<System.DateTime> Edit_Date { get; set; }
     }
 }

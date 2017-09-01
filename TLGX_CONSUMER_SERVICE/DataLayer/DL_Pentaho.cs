@@ -52,8 +52,8 @@ namespace DataLayer
                                 SupplierApiCallLog_Id = Guid.NewGuid(),
                                 SupplierApiLocation_Id = ApiLocationId,
                                 PentahoCall_Id = Guid.Parse(callResult.id),
-                                CalledDate = DateTime.Now,
-                                CalledBy = CalledBy,
+                                Create_Date = DateTime.Now,
+                                Create_User = CalledBy,
                                 Message = callResult.message,
                                 Status = "CALL"
                             });
@@ -68,8 +68,8 @@ namespace DataLayer
                                 SupplierApiCallLog_Id = Guid.NewGuid(),
                                 SupplierApiLocation_Id = ApiLocationId,
                                 PentahoCall_Id = null,
-                                CalledDate = DateTime.Now,
-                                CalledBy = "System",
+                                Create_Date = DateTime.Now,
+                                Create_User = CalledBy,
                                 Message = "Api Call failed.",
                                 Status = "CALL"
                             });
@@ -84,8 +84,8 @@ namespace DataLayer
                             SupplierApiCallLog_Id = Guid.NewGuid(),
                             SupplierApiLocation_Id = ApiLocationId,
                             PentahoCall_Id = null,
-                            CalledDate = DateTime.Now,
-                            CalledBy = "System",
+                            Create_Date = DateTime.Now,
+                            Create_User = CalledBy,
                             Message = "Api Location is not found.",
                             Status = "CALL"
                         });
@@ -169,8 +169,8 @@ namespace DataLayer
                         foreach (Supplier_ApiCallLog p in results)
                         {
                             p.Status = "REMOVED";
-                            p.CalledBy = CalledBy;
-                            p.CalledDate = DateTime.Now;
+                            p.Edit_User = CalledBy;
+                            p.Edit_Date = DateTime.Now;
                             p.Message = "Transformation Queue has been removed from Server.";
                         }
                         context.SaveChanges();
@@ -192,23 +192,49 @@ namespace DataLayer
             }
         }
 
-        public List<DataContracts.Pentaho.DC_PentahoApiCallLogDetails> Pentaho_SupplierApiCall_List()
+        public List<DataContracts.Pentaho.DC_PentahoApiCallLogDetails> Pentaho_SupplierApiCall_List(DataContracts.Pentaho.DC_PentahoApiCallLogDetails_RQ RQ)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var result = (from log in context.Supplier_ApiCallLog
-                                  join loc in context.Supplier_APILocation on log.SupplierApiLocation_Id equals loc.Supplier_APILocation_Id
-                                  join sup in context.Suppliers on loc.Supplier_Id equals sup.Supplier_Id
-                                  join ent in context.m_masterattributevalue on loc.Entity_Id equals ent.MasterAttributeValue_Id
-                                  where log.Status == "CALL"
+                    var Supplier_APILocation = (from a in context.Supplier_APILocation select a).AsQueryable();
+
+
+                    if (RQ.Supplier_Id != null)
+                    {
+                        if (RQ.Supplier_Id != Guid.Empty)
+                        {
+                            Supplier_APILocation = Supplier_APILocation.Where(w => w.Supplier_Id == RQ.Supplier_Id);
+                        }
+                    }
+
+                    if (RQ.Entity_Id != null)
+                    {
+                        if (RQ.Entity_Id != Guid.Empty)
+                        {
+                            Supplier_APILocation = Supplier_APILocation.Where(w => w.Entity_Id == RQ.Entity_Id);
+                        }
+                    }
+
+                    var Supplier_ApiCallLog = (from a in context.Supplier_ApiCallLog select a).AsQueryable();
+                    if (!string.IsNullOrWhiteSpace(RQ.Status))
+                    {
+                        Supplier_ApiCallLog = Supplier_ApiCallLog.Where(w => w.Status.ToUpper().Trim() == RQ.Status.Trim().ToUpper());
+                    }
+
+                    var result = (from log in Supplier_ApiCallLog
+                                  join loc in Supplier_APILocation on log.SupplierApiLocation_Id equals loc.Supplier_APILocation_Id
+                                  join sup in context.Suppliers.AsNoTracking() on loc.Supplier_Id equals sup.Supplier_Id
+                                  join ent in context.m_masterattributevalue.AsNoTracking() on loc.Entity_Id equals ent.MasterAttributeValue_Id
                                   select new DataContracts.Pentaho.DC_PentahoApiCallLogDetails
                                   {
                                       Entity_Id = loc.Entity_Id,
                                       ApiPath = loc.API_Path,
-                                      CalledBy = log.CalledBy,
-                                      CalledDate = log.CalledDate,
+                                      Create_User = log.Create_User,
+                                      Create_Date = log.Create_Date,
+                                      Edit_User = log.Edit_User,
+                                      Edit_Date = log.Edit_Date,
                                       Entity = ent.AttributeValue,
                                       Message = log.Message,
                                       PentahoCall_Id = log.PentahoCall_Id,

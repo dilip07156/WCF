@@ -31,8 +31,12 @@ namespace DataContracts.Pentaho
         [DataMember]
         public string Status { get; set; }
         [DataMember]
-        public string CalledBy { get; set; }
+        public string Create_User { get; set; }
         [DataMember]
-        public Nullable<System.DateTime> CalledDate { get; set; }
+        public Nullable<System.DateTime> Create_Date { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public Nullable<System.DateTime> Edit_Date { get; set; }
     }
 }

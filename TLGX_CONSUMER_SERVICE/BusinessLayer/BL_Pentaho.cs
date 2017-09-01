@@ -43,11 +43,11 @@ namespace BusinessLayer
             }
         }
 
-        public List<DataContracts.Pentaho.DC_PentahoApiCallLogDetails> Pentaho_SupplierApiCall_List()
+        public List<DataContracts.Pentaho.DC_PentahoApiCallLogDetails> Pentaho_SupplierApiCall_List(DataContracts.Pentaho.DC_PentahoApiCallLogDetails_RQ RQ)
         {
             using (DataLayer.DL_Pentaho obj = new DataLayer.DL_Pentaho())
             {
-                return obj.Pentaho_SupplierApiCall_List();
+                return obj.Pentaho_SupplierApiCall_List(RQ);
             }
         }
     }
