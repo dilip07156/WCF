@@ -64,6 +64,7 @@
     <Compile Include="IGeoLocation.cs" />
     <Compile Include="IMapping.cs" />
     <Compile Include="IMasters.cs" />
+    <Compile Include="IPentaho.cs" />
     <Compile Include="ISchedule.cs" />
     <Compile Include="IStaticData.cs" />
     <Compile Include="IStaticDataHandler.cs" />

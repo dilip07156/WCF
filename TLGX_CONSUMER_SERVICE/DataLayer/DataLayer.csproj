@@ -220,6 +220,7 @@
     <Compile Include="DL_Masters.cs" />
     <Compile Include="DL_Master_Country.cs" />
     <Compile Include="DL_Master_City.cs" />
+    <Compile Include="DL_Pentaho.cs" />
     <Compile Include="DL_Schedule.cs" />
     <Compile Include="DL_UploadStaticData.cs" />
     <Compile Include="DynamicAttribute.cs">
@@ -370,6 +371,9 @@
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="SupplierImportFile_VerboseLog.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Supplier_ApiCallLog.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Supplier_APILocation.cs">

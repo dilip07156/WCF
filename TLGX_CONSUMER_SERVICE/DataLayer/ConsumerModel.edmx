@@ -1450,6 +1450,18 @@
           <Property Name="SupplierOwner" Type="nvarchar" MaxLength="255" />
           <Property Name="StatusCode" Type="nvarchar" MaxLength="20" />
         </EntityType>
+        <EntityType Name="Supplier_ApiCallLog">
+          <Key>
+            <PropertyRef Name="SupplierApiCallLog_Id" />
+          </Key>
+          <Property Name="SupplierApiCallLog_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SupplierApiLocation_Id" Type="uniqueidentifier" />
+          <Property Name="PentahoCall_Id" Type="uniqueidentifier" />
+          <Property Name="Message" Type="varchar" MaxLength="500" />
+          <Property Name="Status" Type="varchar" MaxLength="50" />
+          <Property Name="CalledBy" Type="varchar" MaxLength="50" />
+          <Property Name="CalledDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="Supplier_APILocation">
           <Key>
             <PropertyRef Name="Supplier_APILocation_Id" />
@@ -1755,6 +1767,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySet Name="stg_SupplierHotelRoomMapping" EntityType="Self.stg_SupplierHotelRoomMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierProductMapping" EntityType="Self.stg_SupplierProductMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier" EntityType="Self.Supplier" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Supplier_ApiCallLog" EntityType="Self.Supplier_ApiCallLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier_APILocation" EntityType="Self.Supplier_APILocation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier_Market" EntityType="Self.Supplier_Market" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier_ProductCategory" EntityType="Self.Supplier_ProductCategory" Schema="dbo" store:Type="Tables" />
@@ -1906,6 +1919,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
           <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />
           <EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
+          <EntitySet Name="Supplier_ApiCallLog" EntityType="ConsumerModel.Supplier_ApiCallLog" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -3554,6 +3568,18 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <Property Name="EDIT_DATE" Type="DateTime" Precision="3" />
           <Property Name="EDIT_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="STATUS" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Supplier_ApiCallLog">
+          <Key>
+            <PropertyRef Name="SupplierApiCallLog_Id" />
+          </Key>
+          <Property Name="SupplierApiCallLog_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierApiLocation_Id" Type="Guid" />
+          <Property Name="PentahoCall_Id" Type="Guid" />
+          <Property Name="Message" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CalledBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CalledDate" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -5250,6 +5276,19 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
                 <ScalarProperty Name="Entity_Id" ColumnName="Entity_Id" />
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
                 <ScalarProperty Name="Supplier_APILocation_Id" ColumnName="Supplier_APILocation_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Supplier_ApiCallLog">
+            <EntityTypeMapping TypeName="ConsumerModel.Supplier_ApiCallLog">
+              <MappingFragment StoreEntitySet="Supplier_ApiCallLog">
+                <ScalarProperty Name="CalledDate" ColumnName="CalledDate" />
+                <ScalarProperty Name="CalledBy" ColumnName="CalledBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="PentahoCall_Id" ColumnName="PentahoCall_Id" />
+                <ScalarProperty Name="SupplierApiLocation_Id" ColumnName="SupplierApiLocation_Id" />
+                <ScalarProperty Name="SupplierApiCallLog_Id" ColumnName="SupplierApiCallLog_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
