@@ -50,5 +50,13 @@ namespace BusinessLayer
                 return obj.Pentaho_SupplierApiCall_List(RQ);
             }
         }
+
+        public List<string> Pentaho_SupplierApiCall_Status()
+        {
+            using (DataLayer.DL_Pentaho obj = new DataLayer.DL_Pentaho())
+            {
+                return obj.Pentaho_SupplierApiCall_Status();
+            }
+        }
     }
 }

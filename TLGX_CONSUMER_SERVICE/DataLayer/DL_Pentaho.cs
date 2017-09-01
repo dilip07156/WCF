@@ -28,7 +28,9 @@ namespace DataLayer
 
                     if (!string.IsNullOrWhiteSpace(apilocation))
                     {
-                        string endpointurl = "runTrans/?trans=" + apilocation;
+                        var ApiCallId = Guid.NewGuid();
+
+                        string endpointurl = "runTrans/?trans=" + apilocation + "&ApiCallId=" + ApiCallId.ToString();
                         object result;
                         DHSVCProxy.GetData(ProxyFor.Pentaho, endpointurl, typeof(DataContracts.Pentaho.DC_PentahoApiCallResult), out result);
 
@@ -49,13 +51,13 @@ namespace DataLayer
 
                             context.Supplier_ApiCallLog.Add(new Supplier_ApiCallLog
                             {
-                                SupplierApiCallLog_Id = Guid.NewGuid(),
+                                SupplierApiCallLog_Id = ApiCallId,
                                 SupplierApiLocation_Id = ApiLocationId,
                                 PentahoCall_Id = Guid.Parse(callResult.id),
                                 Create_Date = DateTime.Now,
                                 Create_User = CalledBy,
                                 Message = callResult.message,
-                                Status = "CALL"
+                                Status = "SCHEDULED"
                             });
                             context.SaveChanges();
 
@@ -65,13 +67,13 @@ namespace DataLayer
                         {
                             context.Supplier_ApiCallLog.Add(new Supplier_ApiCallLog
                             {
-                                SupplierApiCallLog_Id = Guid.NewGuid(),
+                                SupplierApiCallLog_Id = ApiCallId,
                                 SupplierApiLocation_Id = ApiLocationId,
                                 PentahoCall_Id = null,
                                 Create_Date = DateTime.Now,
                                 Create_User = CalledBy,
                                 Message = "Api Call failed.",
-                                Status = "CALL"
+                                Status = "FAILED"
                             });
                             context.SaveChanges();
                             return new DC_Message { StatusMessage = "Api Call failed.", StatusCode = ReadOnlyMessage.StatusCode.Failed };
@@ -87,7 +89,7 @@ namespace DataLayer
                             Create_Date = DateTime.Now,
                             Create_User = CalledBy,
                             Message = "Api Location is not found.",
-                            Status = "CALL"
+                            Status = "INVALID"
                         });
                         context.SaveChanges();
                         return new DC_Message { StatusMessage = "Api Location is not found.", StatusCode = ReadOnlyMessage.StatusCode.Warning };
@@ -230,7 +232,7 @@ namespace DataLayer
                                   select new DataContracts.Pentaho.DC_PentahoApiCallLogDetails
                                   {
                                       Entity_Id = loc.Entity_Id,
-                                      ApiPath = loc.API_Path,
+                                      ApiPath = loc.API_Path.Split('/').Last().Split('.').First().Trim(),
                                       Create_User = log.Create_User,
                                       Create_Date = log.Create_Date,
                                       Edit_User = log.Edit_User,
@@ -251,6 +253,22 @@ namespace DataLayer
             catch (Exception e)
             {
                 return null;
+            }
+        }
+
+        public List<string> Pentaho_SupplierApiCall_Status()
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var result = (from log in context.Supplier_ApiCallLog select log.Status).ToList();
+                    return result;
+                }
+            }
+            catch (Exception e)
+            {
+                return new List<string>();
             }
         }
     }

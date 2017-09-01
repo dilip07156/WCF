@@ -52,5 +52,13 @@ namespace ConsumerSvc
                 return obj.Pentaho_SupplierApiCall_List(RQ);
             }
         }
+
+        public List<string> Pentaho_SupplierApiCall_Status()
+        {
+            using (BusinessLayer.BL_Pentaho obj = new BL_Pentaho())
+            {
+                return obj.Pentaho_SupplierApiCall_Status();
+            }
+        }
     }
 }
