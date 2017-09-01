@@ -29,11 +29,11 @@ namespace ConsumerSvc
             }
         }
 
-        public string Pentaho_SupplierApiLocationId_Get(string SupplierId, string EntityId)
+        public List<DataContracts.Masters.DC_Supplier_ApiLocation> Pentaho_SupplierApiLocation_Get(string SupplierId, string EntityId)
         {
             using (BusinessLayer.BL_Pentaho obj = new BL_Pentaho())
             {
-                return obj.Pentaho_SupplierApiLocationId_Get(SupplierId, EntityId);
+                return obj.Pentaho_SupplierApiLocation_Get(SupplierId, EntityId);
             }
         }
 

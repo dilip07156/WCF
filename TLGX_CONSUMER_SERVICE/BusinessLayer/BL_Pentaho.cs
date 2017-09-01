@@ -27,11 +27,11 @@ namespace BusinessLayer
             }
         }
 
-        public string Pentaho_SupplierApiLocationId_Get(string SupplierId, string EntityId)
+        public List<DataContracts.Masters.DC_Supplier_ApiLocation> Pentaho_SupplierApiLocation_Get(string SupplierId, string EntityId)
         {
             using (DataLayer.DL_Pentaho obj = new DataLayer.DL_Pentaho())
             {
-                return obj.Pentaho_SupplierApiLocationId_Get(Guid.Parse(SupplierId), Guid.Parse(EntityId));
+                return obj.Pentaho_SupplierApiLocation_Get(Guid.Parse(SupplierId), Guid.Parse(EntityId));
             }
         }
 

@@ -104,26 +104,55 @@ namespace DataLayer
             }
         }
 
-        public string Pentaho_SupplierApiLocationId_Get(Guid SupplierId, Guid EntityId)
+        public List<DataContracts.Masters.DC_Supplier_ApiLocation> Pentaho_SupplierApiLocation_Get(Guid SupplierId, Guid EntityId)
         {
             try
             {
                 if (SupplierId == Guid.Empty || EntityId == Guid.Empty)
                 {
-                    return string.Empty;
+                    return new List<DataContracts.Masters.DC_Supplier_ApiLocation>();
                 }
                 else
                 {
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        var ApiLocationId = context.Supplier_APILocation.Where(w => w.Entity_Id == EntityId && w.Supplier_Id == SupplierId).Select(s => s.Supplier_APILocation_Id).FirstOrDefault();
-                        return ApiLocationId.ToString();
+                        var search = (from supApi in context.Supplier_APILocation
+                                      select supApi).AsQueryable();
+
+                        search = from sup in search
+                                 where sup.Supplier_Id == SupplierId
+                                 select sup;
+
+                        search = from sup in search
+                                 where sup.Entity_Id == EntityId
+                                 select sup;
+
+                        var result = from a in search
+                                     join mav in context.m_masterattributevalue on a.Entity_Id equals mav.MasterAttributeValue_Id
+                                     join sup in context.Suppliers on a.Supplier_Id equals sup.Supplier_Id
+                                     select new DataContracts.Masters.DC_Supplier_ApiLocation
+                                     {
+                                         Supplier_Id = a.Supplier_Id ?? Guid.Empty,
+                                         ApiEndPoint = a.API_Path,
+                                         ApiLocation_Id = a.Supplier_APILocation_Id,
+                                         Create_Date = a.CREATE_DATE,
+                                         Create_User = a.CREATE_USER,
+                                         Edit_Date = a.EDIT_DATE,
+                                         Edit_User = a.EDIT_USER,
+                                         Entity = mav.AttributeValue,
+                                         Entity_Id = a.Entity_Id,
+                                         IsActive = false,
+                                         Status = a.STATUS,
+                                         Supplier_Name = sup.Name
+                                     };
+
+                        return result.ToList();
                     }
                 }
             }
             catch (Exception e)
             {
-                return string.Empty;
+                return new List<DataContracts.Masters.DC_Supplier_ApiLocation>();
             }
         }
 

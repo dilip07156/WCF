@@ -24,8 +24,8 @@ namespace OperationContracts
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "Pentaho/SupplierApi/GetId/{SupplierId}/{EntityId}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        string Pentaho_SupplierApiLocationId_Get(string SupplierId, string EntityId);
+        [WebInvoke(Method = "GET", UriTemplate = "Pentaho/SupplierApi/Get/{SupplierId}/{EntityId}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DataContracts.Masters.DC_Supplier_ApiLocation> Pentaho_SupplierApiLocation_Get(string SupplierId, string EntityId);
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
