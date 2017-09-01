@@ -58,6 +58,7 @@ namespace DataContracts.Mapping
         string _mstAcco_Id;
         string _mstHotelName;
         string _Google_Place_Id;
+        string _Location;
 
         [DataMember]
         public string ActionType { get; set; }
@@ -711,6 +712,19 @@ namespace DataContracts.Mapping
             set
             {
                 _Google_Place_Id = value;
+            }
+        }
+        [DataMember]
+        public string Location
+        {
+            get
+            {
+                return _Location;
+            }
+
+            set
+            {
+                _Location = value;
             }
         }
     }

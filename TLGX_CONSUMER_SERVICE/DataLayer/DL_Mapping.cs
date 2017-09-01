@@ -1527,6 +1527,7 @@ namespace DataLayer
                     var prodMapList = (from a in prodMapSearch
                                        join ma in context.Accommodations.AsNoTracking() on a.Accommodation_Id equals ma.Accommodation_Id into ja
                                        from jda in ja.DefaultIfEmpty()
+                                       //where jda.Location != null
                                        orderby a.SupplierName, a.ProductName, a.SupplierProductReference
                                        select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                        {
@@ -1570,8 +1571,8 @@ namespace DataLayer
                                            MapId = a.MapId,
                                            FullAddress = (a.address ?? string.Empty) + ", " + (a.Street ?? string.Empty) + ", " + (a.Street2 ?? string.Empty) + " " + (a.Street3 ?? string.Empty) + " " + (a.Street4 ?? string.Empty) + " " + (a.PostCode ?? string.Empty) + ", " + (a.CityName ?? string.Empty) + ", " + (a.StateName ?? string.Empty) + ", " + (a.CountryName ?? string.Empty),
                                            SystemFullAddress = (jda.FullAddress ?? string.Empty),
-                                           StarRating = a.StarRating
-
+                                           StarRating = a.StarRating,
+                                           Location=jda.Location
                                        }).Skip(skip).Take(obj.PageSize);
 
                     var result = prodMapList.ToList();
