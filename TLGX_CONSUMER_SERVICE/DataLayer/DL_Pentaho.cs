@@ -29,11 +29,24 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(apilocation))
                     {
                         var ApiCallId = Guid.NewGuid();
+                        Guid PentahoCallId = Guid.Empty;
 
-                        string endpointurl = "runTrans/?trans=" + apilocation + "&ApiCallId=" + ApiCallId.ToString();
+                        context.Supplier_ApiCallLog.Add(new Supplier_ApiCallLog
+                        {
+                            SupplierApiCallLog_Id = ApiCallId,
+                            SupplierApiLocation_Id = ApiLocationId,
+                            PentahoCall_Id = PentahoCallId,
+                            Create_Date = DateTime.Now,
+                            Create_User = CalledBy,
+                            Message = "Transformation Called.",
+                            Status = "SCHEDULED"
+                        });
+                        context.SaveChanges();
+                        var getInsertedRow = context.Supplier_ApiCallLog.Find(ApiCallId);
+
+                        string endpointurl = "runTrans/?trans=" + apilocation + "&api_call_id=" + ApiCallId.ToString();
                         object result;
                         DHSVCProxy.GetData(ProxyFor.Pentaho, endpointurl, typeof(DataContracts.Pentaho.DC_PentahoApiCallResult), out result);
-
                         DataContracts.Pentaho.DC_PentahoApiCallResult callResult = result as DataContracts.Pentaho.DC_PentahoApiCallResult;
 
                         if (callResult != null)
@@ -49,33 +62,21 @@ namespace DataLayer
                                 dc.StatusCode = ReadOnlyMessage.StatusCode.Danger;
                             }
 
-                            context.Supplier_ApiCallLog.Add(new Supplier_ApiCallLog
-                            {
-                                SupplierApiCallLog_Id = ApiCallId,
-                                SupplierApiLocation_Id = ApiLocationId,
-                                PentahoCall_Id = Guid.Parse(callResult.id),
-                                Create_Date = DateTime.Now,
-                                Create_User = CalledBy,
-                                Message = callResult.message,
-                                Status = "SCHEDULED"
-                            });
+
+                            Guid.TryParse(callResult.id, out PentahoCallId);
+                            getInsertedRow.PentahoCall_Id = PentahoCallId;
+                            getInsertedRow.Message = callResult.message;
                             context.SaveChanges();
 
                             return dc;
                         }
                         else
                         {
-                            context.Supplier_ApiCallLog.Add(new Supplier_ApiCallLog
-                            {
-                                SupplierApiCallLog_Id = ApiCallId,
-                                SupplierApiLocation_Id = ApiLocationId,
-                                PentahoCall_Id = null,
-                                Create_Date = DateTime.Now,
-                                Create_User = CalledBy,
-                                Message = "Api Call failed.",
-                                Status = "FAILED"
-                            });
+                            getInsertedRow.PentahoCall_Id = Guid.Empty;
+                            getInsertedRow.Message = "Api Call failed.";
+                            getInsertedRow.Status = "FAILED";
                             context.SaveChanges();
+
                             return new DC_Message { StatusMessage = "Api Call failed.", StatusCode = ReadOnlyMessage.StatusCode.Failed };
                         }
                     }
@@ -261,7 +262,7 @@ namespace DataLayer
                                   select new DataContracts.Pentaho.DC_PentahoApiCallLogDetails
                                   {
                                       Entity_Id = loc.Entity_Id,
-                                      ApiPath = loc.API_Path.Split('/').Last().Split('.').First().Trim(),
+                                      ApiPath = loc.API_Path,//.Split('/').Last().Split('.').First().Trim(),
                                       Create_User = log.Create_User,
                                       Create_Date = log.Create_Date,
                                       Edit_User = log.Edit_User,

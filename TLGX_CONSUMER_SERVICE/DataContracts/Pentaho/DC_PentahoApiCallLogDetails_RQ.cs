@@ -12,8 +12,10 @@ namespace DataContracts.Pentaho
     {
         [DataMember]
         public Guid? Supplier_Id { get; set; }
+
         [DataMember]
         public Guid? Entity_Id { get; set; }
+
         [DataMember]
         public string Status { get; set; }
     }
