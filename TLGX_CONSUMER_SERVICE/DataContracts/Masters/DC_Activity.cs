@@ -11,6 +11,69 @@ namespace DataContracts.Masters
     [DataContract]
     public class DC_Activity
     {
+        [DataMember]
+        public Guid Activity_Id { get; set; }
+
+        [DataMember]
+        public int? CommonProductID { get; set; }
+        [DataMember]
+        public int? Legacy_Product_ID { get; set; }
+        [DataMember]
+        public int? CompanyProductID { get; set; }
+        [DataMember]
+        public string Product_Name { get; set; }
+        [DataMember]
+        public string Display_Name { get; set; }
+        [DataMember]
+        public string Country { get; set; }
+        [DataMember]
+        public string City { get; set; }
+        [DataMember]
+        public Guid? Country_Id { get; set; }
+        [DataMember]
+        public Guid? City_Id { get; set; }
+        [DataMember]
+        public string ProductCategory { get; set; }
+        [DataMember]
+        public string ProductCategorySubType { get; set; }
+        [DataMember]
+        public string ProductType { get; set; }
+        [DataMember]
+        public string Mode_Of_Transport { get; set; }
+        [DataMember]
+        public int? CompanyRating { get; set; }
+        [DataMember]
+        public int? ProductRating { get; set; }
+        [DataMember]
+        public string Affiliation { get; set; }
+        [DataMember]
+        public bool? CompanyRecommended { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public string Remarks { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public double? Latitude { get; set; }
+        [DataMember]
+        public double? Longitude { get; set; }
+        [DataMember]
+        public string TourType { get; set; }
+        [DataMember]
+        public int? Parent_Legacy_Id { get; set; }
+        [DataMember]
+        public int? TotalRecord { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_OldSchema
+    {
         Guid _Activity_Id;
         int? _CommonProductID;
         int? _Legacy_Product_ID;
@@ -507,6 +570,77 @@ namespace DataContracts.Masters
         }
     }
 
+    public class DC_ActivitySearch_RS
+    {
+        [DataMember]
+        public Guid Activity_Id { get; set; }
+
+        [DataMember]
+        public int? CommonProductID { get; set; }
+        [DataMember]
+        public int? Legacy_Product_ID { get; set; }
+        [DataMember]
+        public int? CompanyProductID { get; set; }
+        [DataMember]
+        public string Product_Name { get; set; }
+        [DataMember]
+        public string Display_Name { get; set; }
+        [DataMember]
+        public string Country { get; set; }
+        [DataMember]
+        public string City { get; set; }
+        [DataMember]
+        public Guid? Country_Id { get; set; }
+        [DataMember]
+        public Guid? City_Id { get; set; }
+        [DataMember]
+        public string ProductCategory { get; set; }
+        [DataMember]
+        public string ProductCategorySubType { get; set; }
+        [DataMember]
+        public string ProductType { get; set; }
+        [DataMember]
+        public string Mode_Of_Transport { get; set; }
+        [DataMember]
+        public int? CompanyRating { get; set; }
+        [DataMember]
+        public int? ProductRating { get; set; }
+        [DataMember]
+        public string Affiliation { get; set; }
+        [DataMember]
+        public bool? CompanyRecommended { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public string Remarks { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public double? Latitude { get; set; }
+        [DataMember]
+        public double? Longitude { get; set; }
+        [DataMember]
+        public string TourType { get; set; }
+        [DataMember]
+        public int? Parent_Legacy_Id { get; set; }
+        [DataMember]
+        public int? TotalRecord { get; set; }
+
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string ProductNameSubType { get; set; }
+        [DataMember]
+        public string CommonProductNameSubType_Id { get; set; }
+
+    }
+
 
     [DataContract]
     public class DC_Activity_Search_RQ
@@ -522,7 +656,11 @@ namespace DataContracts.Masters
         [DataMember]
         public string ProductCategory { get; set; }
         [DataMember]
-        public string ProductSubType { get; set; }
+        public string ProductCategorySubType { get; set; }
+        [DataMember]
+        public string ProductType { get; set; }
+        [DataMember]
+        public string ProductNameSubType { get; set; }
         [DataMember]
         public string Status { get; set; }
         [DataMember]

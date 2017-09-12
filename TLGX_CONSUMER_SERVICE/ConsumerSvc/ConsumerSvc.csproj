@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accomodation.cs" />
+    <Compile Include="Activity.cs" />
     <Compile Include="Admin.cs" />
     <Compile Include="Consumer.svc.cs">
       <DependentUpon>Consumer.svc</DependentUpon>

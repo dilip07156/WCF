@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BL_Accomodation.cs" />
+    <Compile Include="BL_Activity.cs" />
     <Compile Include="BL_Admin.cs" />
     <Compile Include="BL_GeoLocation.cs" />
     <Compile Include="BL_Mapping.cs" />
