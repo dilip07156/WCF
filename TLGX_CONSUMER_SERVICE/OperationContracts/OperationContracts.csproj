@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IAccomodation.cs" />
+    <Compile Include="IActivity.cs" />
     <Compile Include="IAdmin.cs" />
     <Compile Include="IConsumer.cs" />
     <Compile Include="IGeoLocation.cs" />
