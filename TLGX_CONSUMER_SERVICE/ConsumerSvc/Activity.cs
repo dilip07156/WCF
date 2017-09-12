@@ -30,5 +30,13 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
+        public DataContracts.DC_Message AddUpdateActivity(DataContracts.Masters.DC_Activity _objAct)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateActivity(_objAct);
+            }
+        }
     }
 }
