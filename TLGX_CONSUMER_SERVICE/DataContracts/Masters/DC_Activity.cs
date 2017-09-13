@@ -12,7 +12,7 @@ namespace DataContracts.Masters
     public class DC_Activity
     {
         [DataMember]
-        public Guid Activity_Id { get; set; }
+        public Guid? Activity_Id { get; set; }
 
         [DataMember]
         public int? CommonProductID { get; set; }

@@ -24,5 +24,13 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        public DataContracts.DC_Message AddUpdateActivity(DataContracts.Masters.DC_Activity _objSup)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdateActivity(_objSup);
+            }
+        }
     }
 }
