@@ -292,7 +292,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var result = (from log in context.Supplier_ApiCallLog select log.Status).ToList();
+                    var result = (from log in context.Supplier_ApiCallLog select log.Status).Distinct().ToList();
                     return result;
                 }
             }
