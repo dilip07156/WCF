@@ -127,8 +127,8 @@
     <Content Include="packages.config" />
     <None Include="Properties\PublishProfiles\MDM_SVC_DEV.pubxml" />
     <None Include="Properties\PublishProfiles\MDM_SVC_DEV_CI.pubxml" />
-    <None Include="Properties\PublishProfiles\MDM_SVC_PREPROD.pubxml" />
-    <None Include="Properties\PublishProfiles\MDM_SVC_UAT.pubxml" />
+    <None Include="Properties\PublishProfiles\MDM_SVC_PREPROD_CI.pubxml" />
+    <None Include="Properties\PublishProfiles\MDM_SVC_QAS_CI.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>
