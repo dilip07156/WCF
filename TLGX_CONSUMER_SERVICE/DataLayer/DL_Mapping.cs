@@ -4930,15 +4930,15 @@ namespace DataLayer
 
                     var searchList = (from a in search
                                       join sup in context.Suppliers on a.Supplier_Id equals sup.Supplier_Id
-                                      join mav in context.m_masterattributevalue on a.SystemMasterAttribute_Id equals mav.MasterAttributeValue_Id
-                                      orderby sup.Name, mav.AttributeValue
+                                      join ma in context.m_masterattribute on a.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
+                                      orderby sup.Name
                                       select new DataContracts.Mapping.DC_MasterAttributeMapping_RS
                                       {
                                           MasterAttributeMapping_Id = a.MasterAttributeMapping_Id,
                                           Supplier_Attribute_Type = a.SupplierMasterAttribute,
                                           Supplier_Code = sup.Code,
                                           Supplier_Name = sup.Name,
-                                          System_Attribute_Type = mav.AttributeValue,
+                                          System_Attribute_Type = ma.Name,
                                           Status = a.Status,
                                           IsActive = a.IsActive,
                                           TotalRecords = total
