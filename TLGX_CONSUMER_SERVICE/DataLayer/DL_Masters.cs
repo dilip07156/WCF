@@ -2979,7 +2979,7 @@ namespace DataLayer
                     if (RQ.Activity_Id != null)
                     {
                         search = from a in search
-                                 where a.Acivity_Id == RQ.Activity_Id
+                                 where a.Activity_Id == RQ.Activity_Id
                                  select a;
                     }
 
@@ -3011,10 +3011,25 @@ namespace DataLayer
                                  select a;
                     }
 
-                    if (RQ.ProductSubType != null)
+                    if (RQ.ProductCategorySubType != null)
                     {
                         search = from a in search
-                                 where a.ProductSubType.Trim().TrimStart().ToUpper() == RQ.ProductSubType.Trim().TrimStart().ToUpper()
+                                 where a.ProductCategorySubType.Trim().TrimStart().ToUpper() == RQ.ProductCategorySubType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductType != null)
+                    {
+                        search = from a in search
+                                 where a.ProductType.Trim().TrimStart().ToUpper() == RQ.ProductType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductNameSubType != null)
+                    {
+                        search = from a in search
+                                 join at in context.Activity_Flavour on a.Activity_Id equals at.Activity_Id
+                                 where at.ProductNameSubType.Trim().TrimStart().ToUpper() == RQ.ProductNameSubType.Trim().TrimStart().ToUpper()
                                  select a;
                     }
 
@@ -3033,7 +3048,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(RQ.Keyword))
                     {
                         search = from a in search
-                                 join b in context.Activity_Content on a.Acivity_Id equals b.Activity_Id
+                                 join b in context.Activity_Content on a.Activity_Id equals b.Activity_Id
                                  where a.Product_Name.Contains(RQ.Keyword) || b.Content_Text.Contains(RQ.Keyword)
                                  select a;
                     }
@@ -3045,7 +3060,7 @@ namespace DataLayer
                                  orderby a.Product_Name
                                  select new DataContracts.Masters.DC_Activity
                                  {
-                                     Activity_Id = a.Acivity_Id,
+                                     Activity_Id = a.Activity_Id,
                                      CommonProductID = a.CommonProductID,
                                      Legacy_Product_ID = a.Legacy_Product_ID,
                                      Product_Name = a.Product_Name,
@@ -3053,31 +3068,27 @@ namespace DataLayer
                                      Country = a.Country,
                                      City = a.City,
                                      ProductType = a.ProductType,
-                                     ProductSubType = a.ProductSubType,
                                      ProductCategory = a.ProductCategory,
+                                     ProductCategorySubType = a.ProductCategorySubType,                                     
                                      Create_Date = a.Create_Date,
                                      Edit_Date = a.Edit_Date,
                                      Create_User = a.Create_User,
                                      Edit_User = a.Edit_User,
                                      IsActive = a.IsActive,
-                                     StartingPoint = a.StartingPoint,
-                                     EndingPoint = a.EndingPoint,
-                                     Duration = a.Duration,
                                      CompanyRecommended = a.CompanyRecommended,
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude,
-                                     ShortDescription = a.ShortDescription,
-                                     LongDescription = a.LongDescription,
-                                     MealsYN = a.MealsYN,
-                                     GuideYN = a.GuideYN,
-                                     TransferYN = a.TransferYN,
-                                     PhysicalLevel = a.PhysicalLevel,
-                                     Advisory = a.Advisory,
-                                     ThingsToCarry = a.ThingsToCarry,
-                                     DeparturePoint = a.DeparturePoint,
                                      TourType = a.TourType,
                                      Parent_Legacy_Id = a.Parent_Legacy_Id,
-                                     TotalRecord = total
+                                     TotalRecord = total,
+                                     Affiliation = a.Affiliation,
+                                     Country_Id = a.Country_Id,
+                                     City_Id = a.City_Id,
+                                     CompanyProductID = a.CompanyProductID,
+                                     CompanyRating = a.CompanyRating,
+                                     Mode_Of_Transport = a.Mode_Of_Transport,
+                                     ProductRating = a.ProductRating,
+                                     Remarks = a.Remarks
                                  };
                     return result.OrderBy(p => p.Product_Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -3105,13 +3116,13 @@ namespace DataLayer
                     //    Guid _Suppier_Id = Guid.Parse(RQ.Supplier_Id);
                     //    if (_Suppier_Id != Guid.Empty)
                     //    {
-                    //        search = search.Where(i => !(from ab in context.Activity_SupplierProductMapping where ab.Supplier_ID == _Suppier_Id && ab.MappingStatus == "MAPPED" && ab.Activity_ID != null select ab.Activity_ID).Contains(i.Acivity_Id));
+                    //        search = search.Where(i => !(from ab in context.Activity_SupplierProductMapping where ab.Supplier_ID == _Suppier_Id && ab.MappingStatus == "MAPPED" && ab.Activity_ID != null select ab.Activity_ID).Contains(i.Activity_Id));
                     //    }
                     //}
                     if (RQ.Activity_Id != null)
                     {
                         search = from a in search
-                                 where a.Acivity_Id == RQ.Activity_Id
+                                 where a.Activity_Id == RQ.Activity_Id
                                  select a;
                     }
 
@@ -3143,10 +3154,32 @@ namespace DataLayer
                                  select a;
                     }
 
-                    if (RQ.ProductSubType != null)
+                    if (RQ.ProductCategory != null)
                     {
                         search = from a in search
-                                 where a.ProductSubType.Trim().TrimStart().ToUpper() == RQ.ProductSubType.Trim().TrimStart().ToUpper()
+                                 where a.ProductCategory.Trim().TrimStart().ToUpper() == RQ.ProductCategory.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductCategorySubType != null)
+                    {
+                        search = from a in search
+                                 where a.ProductCategorySubType.Trim().TrimStart().ToUpper() == RQ.ProductCategorySubType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductType != null)
+                    {
+                        search = from a in search
+                                 where a.ProductType.Trim().TrimStart().ToUpper() == RQ.ProductType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductNameSubType != null)
+                    {
+                        search = from a in search
+                                 join at in context.Activity_Flavour on a.Activity_Id equals at.Activity_Id
+                                 where at.ProductNameSubType.Trim().TrimStart().ToUpper() == RQ.ProductNameSubType.Trim().TrimStart().ToUpper()
                                  select a;
                     }
 
@@ -3164,7 +3197,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(RQ.Keyword))
                     {
                         search = from a in search
-                                 join b in context.Activity_Content on a.Acivity_Id equals b.Activity_Id
+                                 join b in context.Activity_Content on a.Activity_Id equals b.Activity_Id
                                  where a.Product_Name.Contains(RQ.Keyword) || b.Content_Text.Contains(RQ.Keyword)
                                  select a;
                     }
@@ -3176,7 +3209,7 @@ namespace DataLayer
                                  orderby a.Product_Name
                                  select new DataContracts.Masters.DC_Activity
                                  {
-                                     Activity_Id = a.Acivity_Id,
+                                     Activity_Id = a.Activity_Id,
                                      CommonProductID = a.CommonProductID,
                                      Legacy_Product_ID = a.Legacy_Product_ID,
                                      Product_Name = a.Product_Name,
@@ -3184,31 +3217,28 @@ namespace DataLayer
                                      Country = a.Country,
                                      City = a.City,
                                      ProductType = a.ProductType,
-                                     ProductSubType = a.ProductSubType,
                                      ProductCategory = a.ProductCategory,
+                                     ProductCategorySubType = a.ProductCategorySubType,
                                      Create_Date = a.Create_Date,
                                      Edit_Date = a.Edit_Date,
                                      Create_User = a.Create_User,
                                      Edit_User = a.Edit_User,
                                      IsActive = a.IsActive,
-                                     StartingPoint = a.StartingPoint,
-                                     EndingPoint = a.EndingPoint,
-                                     Duration = a.Duration,
                                      CompanyRecommended = a.CompanyRecommended,
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude,
-                                     ShortDescription = a.ShortDescription,
-                                     LongDescription = a.LongDescription,
-                                     MealsYN = a.MealsYN,
-                                     GuideYN = a.GuideYN,
-                                     TransferYN = a.TransferYN,
-                                     PhysicalLevel = a.PhysicalLevel,
-                                     Advisory = a.Advisory,
-                                     ThingsToCarry = a.ThingsToCarry,
-                                     DeparturePoint = a.DeparturePoint,
                                      TourType = a.TourType,
                                      Parent_Legacy_Id = a.Parent_Legacy_Id,
-                                     TotalRecord = total
+                                     TotalRecord = total,
+                                     Affiliation = a.Affiliation,
+                                     Country_Id = a.Country_Id,
+                                     City_Id = a.City_Id,
+                                     CompanyProductID = a.CompanyProductID,
+                                     CompanyRating = a.CompanyRating,
+                                     Mode_Of_Transport = a.Mode_Of_Transport,
+                                     ProductRating = a.ProductRating,
+                                     Remarks = a.Remarks
+
                                  };
                     return result.OrderBy(p => p.Product_Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -3303,14 +3333,33 @@ namespace DataLayer
                                         select a;
                         }
                     }
-                    if (!string.IsNullOrWhiteSpace(RQ.ProductSubType))
+                    if (RQ.ProductCategory != null)
                     {
-                        if (RQ.ProductSubType.Length > 0)
-                        {
-                            actSearch = from a in actSearch
-                                        where a.ProductSubType == RQ.ProductSubType
-                                        select a;
-                        }
+                        actSearch = from a in actSearch
+                                    where a.ProductCategory.Trim().TrimStart().ToUpper() == RQ.ProductCategory.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductCategorySubType != null)
+                    {
+                        actSearch = from a in actSearch
+                                    where a.ProductCategorySubType.Trim().TrimStart().ToUpper() == RQ.ProductCategorySubType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductType != null)
+                    {
+                        actSearch = from a in actSearch
+                                    where a.ProductType.Trim().TrimStart().ToUpper() == RQ.ProductType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductNameSubType != null)
+                    {
+                        actSearch = from a in actSearch
+                                    join at in context.Activity_Flavour on a.Activity_Id equals at.Activity_Id
+                                 where at.ProductNameSubType.Trim().TrimStart().ToUpper() == RQ.ProductNameSubType.Trim().TrimStart().ToUpper()
+                                 select a;
                     }
 
                     var acco = (from a in actSearch
@@ -3839,7 +3888,7 @@ namespace DataLayer
                                   orderby act.Product_Name ascending
                                   select new DC_Activity_DDL
                                   {
-                                      Activity_Id = act.Acivity_Id,
+                                      Activity_Id = act.Activity_Id,
                                       Product_Name = act.Product_Name,
                                   }).ToList();
                     return result;

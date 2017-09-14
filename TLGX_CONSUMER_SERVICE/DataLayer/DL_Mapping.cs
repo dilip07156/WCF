@@ -5400,7 +5400,7 @@ namespace DataLayer
                     var skip = obj.PageSize * obj.PageNo;
 
                     var prodMap = (from a in prodMapSearch
-                                   join act in context.Activities on a.Activity_ID equals act.Acivity_Id into ja
+                                   join act in context.Activities on a.Activity_ID equals act.Activity_Id into ja
                                    from jda in ja.DefaultIfEmpty()
                                    orderby a.SupplierName
                                    select new DataContracts.Mapping.DC_Acitivity_SupplierProductMapping
@@ -5487,7 +5487,7 @@ namespace DataLayer
                                     if (searchActivity != null)
                                     {
                                         item.CKIS_Master = searchActivity.Product_Name;
-                                        item.Activity_ID = searchActivity.Acivity_Id;
+                                        item.Activity_ID = searchActivity.Activity_Id;
                                     }
                                 }
                             }
@@ -5610,7 +5610,7 @@ namespace DataLayer
                     var skip = obj.PageSize * obj.PageNo;
 
                     var prodMap = (from a in prodMapSearch
-                                   join act in context.Activities on a.Activity_ID equals act.Acivity_Id into ja
+                                   join act in context.Activities on a.Activity_ID equals act.Activity_Id into ja
                                    from jda in ja.DefaultIfEmpty()
                                    orderby a.SupplierName
                                    select new DataContracts.Mapping.DC_Acitivity_SupplierProductMapping
@@ -5697,7 +5697,7 @@ namespace DataLayer
                                     if (searchActivity != null)
                                     {
                                         item.CKIS_Master = searchActivity.Product_Name;
-                                        item.Activity_ID = searchActivity.Acivity_Id;
+                                        item.Activity_ID = searchActivity.Activity_Id;
                                     }
                                 }
                             }
@@ -5820,8 +5820,8 @@ namespace DataLayer
                     if (Activity_Id != Guid.Empty)
                     {
                         prodMapList = (from a in prodMapSearch
-                                       join act in context.Activities on a.Activity_ID equals act.Acivity_Id
-                                       where act.Acivity_Id == Activity_Id
+                                       join act in context.Activities on a.Activity_ID equals act.Activity_Id
+                                       where act.Activity_Id == Activity_Id
                                        orderby a.SupplierName
                                        select new DataContracts.Mapping.DC_Acitivity_SupplierProductMapping
                                        {
