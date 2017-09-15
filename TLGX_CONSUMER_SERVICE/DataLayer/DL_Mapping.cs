@@ -5032,8 +5032,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var duplicateSearch = from a in context.m_MasterAttributeMapping
-                                          where a.SupplierMasterAttribute == param.SupplierMasterAttribute.Trim()
-                                          && a.Supplier_Id == param.Supplier_Id
+                                          where  a.Supplier_Id == param.Supplier_Id
                                           && a.SystemMasterAttribute_Id == param.SystemMasterAttribute_Id
                                           select a;
                     if (duplicateSearch.Count() > 0)
