@@ -4997,9 +4997,9 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var search = from map in context.m_MasterAttributeMapping
-                                 join mapv in context.m_masterattributevalue on map.SystemMasterAttribute_Id equals mapv.MasterAttributeValue_Id
-                                 join mav in context.m_masterattributevalue on mapv.MasterAttributeValue_Id equals mav.ParentAttributeValue_Id
-                                 join mavm in context.m_MasterAttributeValueMapping on mav.MasterAttributeValue_Id equals mavm.SystemMasterAttributeValue_Id into mavm_l
+                                 join ma in context.m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
+                                 join mav in context.m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
+                                 join mavm in context.m_MasterAttributeValueMapping on new {mavmid = map.MasterAttributeMapping_Id, mavid = mav.MasterAttributeValue_Id } equals new { mavmid = mavm.MasterAttributeMapping_Id, mavid = mavm.SystemMasterAttributeValue_Id } into mavm_l
                                  from lr in mavm_l.DefaultIfEmpty()
                                  where map.MasterAttributeMapping_Id == MasterAttributeMapping_Id
                                  select new DataContracts.Mapping.DC_MasterAttributeValueMapping
@@ -5032,8 +5032,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var duplicateSearch = from a in context.m_MasterAttributeMapping
-                                          where a.SupplierMasterAttribute == param.SupplierMasterAttribute.Trim()
-                                          && a.Supplier_Id == param.Supplier_Id
+                                          where  a.Supplier_Id == param.Supplier_Id
                                           && a.SystemMasterAttribute_Id == param.SystemMasterAttribute_Id
                                           select a;
                     if (duplicateSearch.Count() > 0)
