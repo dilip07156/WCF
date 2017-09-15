@@ -169,7 +169,7 @@ namespace DataLayer
             using (ConsumerEntities context = new ConsumerEntities())
             {
                 var isduplicate = (from a in context.Activities
-                                   where a.Activity_Id != (_objAct.Activity_Id ?? Guid.Empty)  && a.Display_Name == _objAct.Display_Name
+                                   where a.Activity_Id != (_objAct.Activity_Id ?? Guid.Empty)  && a.Product_Name == _objAct.Product_Name
                                    select a).Count() == 0 ? false:true;
 
                 if(isduplicate)
@@ -256,6 +256,18 @@ namespace DataLayer
                             Remarks = _objAct.Remarks,
                             TourType = _objAct.TourType
                         };
+                        
+                        context.Activities.Add(_obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
                     }
                 }
             }
