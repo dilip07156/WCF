@@ -334,6 +334,14 @@ namespace ConsumerSvc
                 return obj.GetAllAttributeAndValuesByFOR(_obj);
             }
         }
+        public IList<DataContracts.Masters.DC_MasterAttribute> GetAllAttributeAndValuesByParentAttributeValue(DataContracts.Masters.DC_MasterAttribute _obj)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetAllAttributeAndValuesByParentAttributeValue(_obj);
+            }
+        }
+        
         public IList<DataContracts.Masters.DC_MasterAttribute> GetAllAttributeAndValues(DataContracts.Masters.DC_MasterAttribute _obj)
         {
             using (BusinessLayer.BL_Masters obj = new BL_Masters())
@@ -471,6 +479,30 @@ namespace ConsumerSvc
                 return obj.Supplier_ProductCategorySoftDelete(_objSup);
             }
         }
+
+        public List<DataContracts.Masters.DC_Supplier_ApiLocation> SupplierApiLocation_Search(DataContracts.Masters.DC_Supplier_ApiLocation RQ)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.SupplierApiLocation_Search(RQ);
+            }
+        }
+
+        public DataContracts.DC_Message SupplierApiLocation_Update(DataContracts.Masters.DC_Supplier_ApiLocation objApiLoc)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.SupplierApiLocation_Update(objApiLoc);
+            }
+        }
+
+        public DataContracts.DC_Message SupplierApiLocation_Add(DataContracts.Masters.DC_Supplier_ApiLocation objApiLoc)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.SupplierApiLocation_Add(objApiLoc);
+            }
+        }
         #endregion
 
         #region Statuses
@@ -518,7 +550,8 @@ namespace ConsumerSvc
         }
 
         #endregion
-            #region Common Funciton to Get Codes by Entity Type
+
+        #region Common Funciton to Get Codes by Entity Type
         public string GetCodeById(string objName, string obj_Id)
         {
             using (BusinessLayer.BL_Masters obj = new BL_Masters())
@@ -684,5 +717,20 @@ namespace ConsumerSvc
         }
         #endregion
 
+        //public string[] GetColumnNames(string TableName)
+        //{
+        //    using (BusinessLayer.BL_Masters obj = new BL_Masters())
+        //    {
+        //        return obj.GetColumnNames(TableName);
+        //    }
+        //}
+
+        public List<string> GetListOfColumnNamesByTable(string TableName)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetListOfColumnNamesByTable(TableName);
+            }
+        }
     }
 }

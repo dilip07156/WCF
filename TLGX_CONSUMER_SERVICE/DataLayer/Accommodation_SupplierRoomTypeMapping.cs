@@ -42,5 +42,7 @@ namespace DataLayer
         public string MappingStatus { get; set; }
         public Nullable<int> MapId { get; set; }
         public Nullable<System.Guid> Accommodation_RoomInfo_Id { get; set; }
+        public Nullable<System.Guid> stg_SupplierHotelRoomMapping_Id { get; set; }
+        public string RoomDescription { get; set; }
     }
 }

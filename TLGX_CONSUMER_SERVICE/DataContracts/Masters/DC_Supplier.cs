@@ -21,6 +21,12 @@ namespace DataContracts.Masters
         string _ProductCategory;
         string _CategorySubType;
         int _TotalRecords;
+        Guid? _File_Id;
+
+        [DataMember]
+        public int? CurrentBatch { get; set; }
+        [DataMember]
+        public int? TotalBatch { get; set; }
 
         #region GetterSetter
         [DataMember]
@@ -218,6 +224,19 @@ namespace DataContracts.Masters
                 _CategorySubType = value;
             }
         }
+        [DataMember]
+        public Guid? File_Id
+        {
+            get
+            {
+                return _File_Id;
+            }
+
+            set
+            {
+                _File_Id = value;
+            }
+        }
         #endregion
     }
 
@@ -229,6 +248,7 @@ namespace DataContracts.Masters
         string _Name;
         string _Code;
         string _ProductCategory_ID;
+        string _SupplierType;
         string _CategorySubType_ID;
         string _StatusCode;
         int? _PageNo;
@@ -338,6 +358,20 @@ namespace DataContracts.Masters
             set
             {
                 _PageSize = value;
+            }
+        }
+
+        [DataMember]
+        public string SupplierType
+        {
+            get
+            {
+                return _SupplierType;
+            }
+
+            set
+            {
+                _SupplierType = value;
             }
         }
         #endregion

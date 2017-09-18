@@ -100,6 +100,14 @@ namespace BusinessLayer
                 return objBL.UpdateStaticDataMappingAttributeValueStatus(obj);
             }
         }
+
+        public List<string> GetStaticDataMappingAttributeValuesForFilter(DataContracts.UploadStaticData.DC_SupplierImportAttributeValues_RQ RQ)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.GetStaticDataMappingAttributeValuesForFilter(RQ);
+            }
+        }
         #endregion
 
 
@@ -137,7 +145,7 @@ namespace BusinessLayer
         #endregion
 
 
-        #region "Error Log"
+        #region "Logging"
         public DataContracts.DC_Message AddStaticDataUploadErrorLog(DataContracts.UploadStaticData.DC_SupplierImportFile_ErrorLog obj)
         {
             using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
@@ -151,6 +159,50 @@ namespace BusinessLayer
             using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
             {
                 return objBL.GetStaticDataUploadErrorLog(obj);
+            }
+        }
+
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics> GetStaticDataUploadStatistics(DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics_RQ RQ)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.GetStaticDataUploadStatistics(RQ);
+            }
+        }
+        public DataContracts.DC_Message AddStaticDataUploadProcessLog(DataContracts.UploadStaticData.DC_SupplierImportFile_Progress obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.AddStaticDataUploadProcessLog(obj);
+            }
+        }
+
+        public DataContracts.DC_Message AddStaticDataUploadStatistics(DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.AddStaticDataUploadStatistics(obj);
+            }
+        }
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_Progress> GetStaticDataUploadProcessLog(DataContracts.UploadStaticData.DC_SupplierImportFile_Progress_RQ obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.GetStaticDataUploadProcessLog(obj);
+            }
+        }
+        public DataContracts.DC_Message AddStaticDataUploadVerboseLog(DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.AddStaticDataUploadVerboseLog(obj);
+            }
+        }
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog> GetStaticDataUploadVerboseLog(DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog_RQ obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.GetStaticDataUploadVerboseLog(obj);
             }
         }
         #endregion
@@ -178,6 +230,15 @@ namespace BusinessLayer
                 return objBL.AddSTGProductData(obj);
             }
         }
+
+        public DataContracts.DC_Message AddSTGRoomTypeData(List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.AddSTGRoomTypeData(obj);
+            }
+        }
+
         public List<DataContracts.STG.DC_stg_SupplierCountryMapping> GetSTGCountryData(DataContracts.STG.DC_stg_SupplierCountryMapping_RQ obj)
         {
             using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
@@ -198,6 +259,13 @@ namespace BusinessLayer
             using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
             {
                 return objBL.GetSTGHotelData(obj);
+            }
+        }
+        public List<DC_stg_SupplierHotelRoomMapping> GetSTGRoomTypeData(DC_stg_SupplierHotelRoomMapping_RQ obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.GetSTGRoomTypeData(obj);
             }
         }
         #endregion
@@ -224,6 +292,24 @@ namespace BusinessLayer
             using (DL_UploadStaticData objBL = new DL_UploadStaticData())
             {
                 return objBL.StaticFileUpload_TestFile_Transform(obj);
+            }
+        }
+        #endregion
+        #region  File Progress DashBoard
+        public DataContracts.DC_FileProgressDashboard getFileProgressDashBoardData(string fileid)
+        {
+            Guid gfileid;
+
+            if (!Guid.TryParse(fileid, out gfileid))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            else
+            {
+                using (DL_UploadStaticData objBL = new DL_UploadStaticData())
+                {
+                    return objBL.getFileProgressDashBoardData(gfileid);
+                }
             }
         }
         #endregion

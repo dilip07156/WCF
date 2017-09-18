@@ -19,6 +19,8 @@ namespace DataContracts.UploadStaticData
 
         [DataMember]
         public string AttributeName { get; set; }
+        [DataMember]
+        public Guid? AttributeValue_ID { get; set; }
 
         [DataMember]
         public string AttributeValue { get; set; }

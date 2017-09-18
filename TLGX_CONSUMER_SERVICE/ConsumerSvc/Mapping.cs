@@ -349,7 +349,15 @@ namespace ConsumerSvc
                 return objBL.getNewHotelsAddedReport(param);
             }
         }
-
         #endregion
+        #region velocity Dashboard
+        public IList<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(DataContracts.Mapping.DC_RollOFParams parm)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetVelocityDashboard( parm);
+            }
+        }
+       #endregion
     }
 }

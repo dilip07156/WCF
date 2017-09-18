@@ -19,5 +19,6 @@ namespace DataLayer
         public string SupplierRoomTypeAttribute { get; set; }
         public string SystemAttributeKeyword { get; set; }
         public System.Guid SystemAttributeKeyword_Id { get; set; }
+        public Nullable<System.Guid> Accommodation_RoomFacility_Id { get; set; }
     }
 }

@@ -6,13 +6,17 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Runtime.Serialization.Json;
 using System.IO;
+using System.Net.Http;
+using System.Xml.Serialization;
+using System.Xml;
 
 namespace DataLayer
 {
     public enum ProxyFor
     {
         DataHandler,
-        SqlToMongo
+        SqlToMongo,
+        Pentaho
     }
     public static class DHSVCProxy
     {
@@ -32,6 +36,14 @@ namespace DataLayer
             }
         }
 
+        public static string PENTAHOSVCURL
+        {
+            get
+            {
+                return System.Configuration.ConfigurationManager.AppSettings["PENTAHOSVCURL"];
+            }
+        }
+
         public static bool GetData(ProxyFor For, string uri, Type ResponseType, out object ReturnValue)
         {
             try
@@ -45,9 +57,21 @@ namespace DataLayer
                 {
                     AbsPath = MONGOSVCURL;
                 }
+                else if (For == ProxyFor.Pentaho)
+                {
+                    AbsPath = PENTAHOSVCURL;
+                }
 
                 HttpWebRequest request;
                 request = (HttpWebRequest)WebRequest.Create(AbsPath + uri);
+
+                if (For == ProxyFor.Pentaho)
+                {
+                    //string credidentials =  "cluster:cluster";
+                    //var authorization = Convert.ToBase64String(Encoding.Default.GetBytes(credidentials));
+                    //request.Headers["Authorization"] = "Basic " + authorization;
+                    request.Credentials = new NetworkCredential("cluster", "cluster");
+                }
 
                 request.KeepAlive = false;
                 HttpWebResponse response = request.GetResponse() as HttpWebResponse;
@@ -55,9 +79,34 @@ namespace DataLayer
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     Stream stream = response.GetResponseStream();
-                    DataContractJsonSerializer obj = new DataContractJsonSerializer(ResponseType);
-                    ReturnValue = obj.ReadObject(stream);
-                    obj = null;
+
+                    if(For == ProxyFor.Pentaho)
+                    {
+                        if (ResponseType != typeof(void))
+                        {
+                            var objXMLReader = new XmlTextReader(stream);
+
+                            XmlDocument xmldoc = new XmlDocument();
+                            xmldoc.Load(objXMLReader);
+                            string res = xmldoc.InnerXml;
+                            objXMLReader.Close();
+
+                            var reader = new StringReader(res);
+                            XmlSerializer serializer = new XmlSerializer(ResponseType);
+                            ReturnValue = serializer.Deserialize(reader);
+                        }
+                        else
+                        {
+                            ReturnValue = null;
+                        }
+                    }
+                    else
+                    {
+                        DataContractJsonSerializer obj = new DataContractJsonSerializer(ResponseType);
+                        ReturnValue = obj.ReadObject(stream);
+                        obj = null;
+                    }
+
                     stream = null;
                     response.Dispose();
                     request = null;
@@ -76,7 +125,6 @@ namespace DataLayer
                 ReturnValue = null;
                 return false;
             }
-
         }
 
         public static bool PostData(ProxyFor For, string URI, object Param, Type RequestType, Type ResponseType, out object ReturnValue)
@@ -149,7 +197,41 @@ namespace DataLayer
                 ReturnValue = null;
                 return false;
             }
+        }
+    }
 
+    public class DHSVCProxyAsync
+    {
+        public void PostAsync(ProxyFor For, string URI, object Param, Type RequestType)
+        {
+            string AbsPath = string.Empty;
+            if (For == ProxyFor.DataHandler)
+            {
+                AbsPath = DHSVCProxy.DHSVCURL;
+            }
+            else if (For == ProxyFor.SqlToMongo)
+            {
+                AbsPath = DHSVCProxy.MONGOSVCURL;
+            }
+
+            string requestUri = AbsPath + URI;
+
+            DataContractJsonSerializer serializerToUpload = new DataContractJsonSerializer(RequestType);
+            string body = string.Empty;
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var reader = new StreamReader(memoryStream))
+                {
+                    serializerToUpload.WriteObject(memoryStream, Param);
+                    memoryStream.Position = 0;
+                    body = reader.ReadToEnd();
+                }
+            }
+            serializerToUpload = null;
+
+            HttpClient hc = new HttpClient();
+            StringContent json = new StringContent(body, Encoding.UTF8, "application/json");
+            hc.PostAsync(requestUri, json);
         }
     }
 }

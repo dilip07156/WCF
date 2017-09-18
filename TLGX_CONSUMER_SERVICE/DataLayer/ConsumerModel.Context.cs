@@ -86,8 +86,6 @@ namespace DataLayer
         public virtual DbSet<Supplier_ProductCategory> Supplier_ProductCategory { get; set; }
         public virtual DbSet<m_MasterAttributeMapping> m_MasterAttributeMapping { get; set; }
         public virtual DbSet<m_MasterAttributeValueMapping> m_MasterAttributeValueMapping { get; set; }
-        public virtual DbSet<Activity> Activities { get; set; }
-        public virtual DbSet<Activity_Content> Activity_Content { get; set; }
         public virtual DbSet<m_SupplierImportAttributes> m_SupplierImportAttributes { get; set; }
         public virtual DbSet<m_SupplierImportAttributeValues> m_SupplierImportAttributeValues { get; set; }
         public virtual DbSet<SupplierImportFile_ErrorLog> SupplierImportFile_ErrorLog { get; set; }
@@ -100,8 +98,37 @@ namespace DataLayer
         public virtual DbSet<m_keyword> m_keyword { get; set; }
         public virtual DbSet<m_keyword_alias> m_keyword_alias { get; set; }
         public virtual DbSet<Place> Places { get; set; }
-        public virtual DbSet<Accommodation_SupplierRoomTypeAttributes> Accommodation_SupplierRoomTypeAttributes { get; set; }
         public virtual DbSet<Accommodation_SupplierRoomTypeMapping> Accommodation_SupplierRoomTypeMapping { get; set; }
+        public virtual DbSet<SupplierImportFile_Progress> SupplierImportFile_Progress { get; set; }
+        public virtual DbSet<SupplierImportFile_VerboseLog> SupplierImportFile_VerboseLog { get; set; }
+        public virtual DbSet<vwUserwisemappedStat> vwUserwisemappedStats { get; set; }
+        public virtual DbSet<SupplierImportFile_Statistics> SupplierImportFile_Statistics { get; set; }
+        public virtual DbSet<STG_Mapping_TableIds> STG_Mapping_TableIds { get; set; }
+        public virtual DbSet<Accommodation_SupplierRoomTypeAttributes> Accommodation_SupplierRoomTypeAttributes { get; set; }
+        public virtual DbSet<stg_SupplierActivityMapping> stg_SupplierActivityMapping { get; set; }
+        public virtual DbSet<Supplier_APILocation> Supplier_APILocation { get; set; }
+        public virtual DbSet<Supplier_ApiCallLog> Supplier_ApiCallLog { get; set; }
+        public virtual DbSet<Activity> Activities { get; set; }
+        public virtual DbSet<Activity_ClassificationAttributes> Activity_ClassificationAttributes { get; set; }
+        public virtual DbSet<Activity_Contact> Activity_Contact { get; set; }
+        public virtual DbSet<Activity_Content> Activity_Content { get; set; }
+        public virtual DbSet<Activity_Descriptions> Activity_Descriptions { get; set; }
+        public virtual DbSet<Activity_Facility> Activity_Facility { get; set; }
+        public virtual DbSet<Activity_Flavour> Activity_Flavour { get; set; }
+        public virtual DbSet<Activity_InclusionDetails> Activity_InclusionDetails { get; set; }
+        public virtual DbSet<Activity_Inclusions> Activity_Inclusions { get; set; }
+        public virtual DbSet<Activity_Itinerary> Activity_Itinerary { get; set; }
+        public virtual DbSet<Activity_Media> Activity_Media { get; set; }
+        public virtual DbSet<Activity_OldSchema> Activity_OldSchema { get; set; }
+        public virtual DbSet<Activity_PickUpDrop> Activity_PickUpDrop { get; set; }
+        public virtual DbSet<Activity_PickUpDropDetail> Activity_PickUpDropDetail { get; set; }
+        public virtual DbSet<Activity_PickupDropSchedule> Activity_PickupDropSchedule { get; set; }
+        public virtual DbSet<Activity_Policy> Activity_Policy { get; set; }
+        public virtual DbSet<Activity_Status> Activity_Status { get; set; }
+        public virtual DbSet<Activity_Tips> Activity_Tips { get; set; }
+        public virtual DbSet<Activity_Types> Activity_Types { get; set; }
+        public virtual DbSet<Activity_Updates> Activity_Updates { get; set; }
+        public virtual DbSet<Activity_WeatherInformation> Activity_WeatherInformation { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

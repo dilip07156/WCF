@@ -238,7 +238,7 @@ namespace DataContracts.Mapping
     [DataContract]
     public class DC_RollOffReportRule
     {
-        
+
         int _hotelid;
         string _hotelname;
         string _ruleName;
@@ -246,7 +246,7 @@ namespace DataContracts.Mapping
         string _internal_Flag;
         string _lastupdatedBy;
         string _lastupdateDate;
-    
+
         [DataMember]
         public int Hotelid
         {
@@ -602,6 +602,7 @@ namespace DataContracts.Mapping
     [DataContract]
     public class DC_RollOFParams
     {
+        Guid _supplierID;
         string _fromdate;
         string _todate;
         [DataMember]
@@ -630,8 +631,21 @@ namespace DataContracts.Mapping
                 _todate = value;
             }
         }
+        [DataMember]
+        public Guid SupplierID
+        {
+            get
+            {
+                return _supplierID;
+            }
+
+            set
+            {
+                _supplierID = value;
+            }
+        }
     }
-#endregion
+    #endregion
     #region rdlc reports
     [DataContract]
     public class DC_supplierwiseUnmappedReport
@@ -646,12 +660,12 @@ namespace DataContracts.Mapping
         public List<DC_unmappedProductReport> Unmappedproduct { get; set; }
         [DataMember]
         public List<DC_unmappedActivityReport> Unmappedactivity { get; set; }
-       
+
     }
     [DataContract]
     public class DC_UnmappedCountryReport
     {
-        
+
         string _countrycode;
         string _contryname;
         [DataMember]
@@ -1156,4 +1170,158 @@ namespace DataContracts.Mapping
         }
     }
     #endregion
+    #region velocity dash
+    [DataContract]
+    public class DC_VelocityMappingStats
+    {
+        Guid _SupplierId;
+        string _SupplierName;
+        List<DC_VelocityMappingStatsFor> _MappingStatsFor;
+        [DataMember]
+        public Guid SupplierId
+        {
+            get
+            {
+                return _SupplierId;
+            }
+
+            set
+            {
+                _SupplierId = value;
+            }
+        }
+        [DataMember]
+        public string SupplierName
+        {
+            get
+            {
+                return _SupplierName;
+            }
+
+            set
+            {
+                _SupplierName = value;
+            }
+        }
+        [DataMember]
+        public List<DC_VelocityMappingStatsFor> MappingStatsFor
+        {
+            get
+            {
+                return _MappingStatsFor;
+            }
+
+            set
+            {
+                _MappingStatsFor = value;
+            }
+        }
+    }
+    [DataContract]
+    public class DC_VelocityMappingdata
+    {
+        string _username;
+        int _totalcount;
+        int _sequence;
+        [DataMember]
+        public string Username
+        {
+            get
+            {
+                return _username;
+            }
+
+            set
+            {
+                _username = value;
+            }
+        }
+        [DataMember]
+        public int Totalcount
+        {
+            get
+            {
+                return _totalcount;
+            }
+
+            set
+            {
+                _totalcount = value;
+            }
+        }
+        [DataMember]
+        public int Sequence
+        {
+            get
+            {
+                return _sequence;
+            }
+
+            set
+            {
+                _sequence = value;
+            }
+        }
+    }
+    [DataContract]
+    public class DC_VelocityMappingStatsFor
+    {
+         string _MappingFor;
+        int _unmappeddata;
+        int? _estimate;
+        List<DC_VelocityMappingdata> _MappingData;
+        [DataMember]
+        public string MappingFor
+        {
+            get
+            {
+                return _MappingFor;
+            }
+
+            set
+            {
+                _MappingFor = value;
+            }
+        }
+        [DataMember]
+        public List<DC_VelocityMappingdata> MappingData
+        {
+            get
+            {
+                return _MappingData;
+            }
+
+            set
+            {
+                _MappingData = value;
+            }
+        }
+        [DataMember]
+        public int Unmappeddata
+        {
+            get
+            {
+                return _unmappeddata;
+            }
+
+            set
+            {
+                _unmappeddata = value;
+            }
+        }
+        [DataMember]
+        public int? Estimate
+        {
+            get
+            {
+                return _estimate;
+            }
+
+            set
+            {
+                _estimate = value;
+            }
+        }
+    }
 }
+#endregion

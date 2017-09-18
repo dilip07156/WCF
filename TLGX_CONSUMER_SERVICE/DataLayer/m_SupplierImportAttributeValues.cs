@@ -26,5 +26,6 @@ namespace DataLayer
         public string EDIT_USER { get; set; }
         public Nullable<int> Priority { get; set; }
         public string Description { get; set; }
+        public Nullable<System.Guid> AttributeValue_ID { get; set; }
     }
 }

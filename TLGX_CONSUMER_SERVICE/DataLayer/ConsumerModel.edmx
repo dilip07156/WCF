@@ -295,6 +295,7 @@
           <Property Name="Google_Place_Id" Type="nvarchar" MaxLength="255" />
           <Property Name="Country_Id" Type="uniqueidentifier" />
           <Property Name="City_Id" Type="uniqueidentifier" />
+          <Property Name="stg_AccoMapping_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Accommodation_RoomFacility">
           <Key>
@@ -412,6 +413,7 @@
           <Property Name="SupplierRoomTypeAttribute" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="SystemAttributeKeyword" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="SystemAttributeKeyword_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Accommodation_RoomFacility_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Accommodation_SupplierRoomTypeMapping">
           <Key>
@@ -445,8 +447,249 @@
           <Property Name="MappingStatus" Type="nvarchar" MaxLength="10" />
           <Property Name="MapId" Type="int" />
           <Property Name="Accommodation_RoomInfo_Id" Type="uniqueidentifier" />
+          <Property Name="stg_SupplierHotelRoomMapping_Id" Type="uniqueidentifier" />
+          <Property Name="RoomDescription" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Activity">
+          <Key>
+            <PropertyRef Name="Activity_Id" />
+          </Key>
+          <Property Name="Activity_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CommonProductID" Type="int" />
+          <Property Name="Legacy_Product_ID" Type="int" />
+          <Property Name="CompanyProductID" Type="int" />
+          <Property Name="FinanceProductID" Type="int" />
+          <Property Name="Product_Name" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Display_Name" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Country" Type="nvarchar" MaxLength="255" />
+          <Property Name="City" Type="nvarchar" MaxLength="255" />
+          <Property Name="Country_Id" Type="uniqueidentifier" />
+          <Property Name="City_Id" Type="uniqueidentifier" />
+          <Property Name="ProductCategory" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProductCategorySubType" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProductType" Type="nvarchar" MaxLength="255" />
+          <Property Name="Mode_Of_Transport" Type="nvarchar" MaxLength="255" />
+          <Property Name="CompanyRating" Type="int" />
+          <Property Name="ProductRating" Type="int" />
+          <Property Name="Affiliation" Type="nvarchar" MaxLength="255" />
+          <Property Name="CompanyRecommended" Type="bit" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="Remarks" Type="nvarchar(max)" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Latitude" Type="float" />
+          <Property Name="Longitude" Type="float" />
+          <Property Name="TourType" Type="nvarchar" MaxLength="2550" />
+          <Property Name="Parent_Legacy_Id" Type="int" />
+        </EntityType>
+        <EntityType Name="Activity_ClassificationAttributes">
+          <Key>
+            <PropertyRef Name="Activity_ClassificationAttribute_Id" />
+          </Key>
+          <Property Name="Activity_ClassificationAttribute_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="AttributeType" Type="nvarchar" MaxLength="255" />
+          <Property Name="AttributeValue" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="InternalOnly" Type="bit" />
+          <Property Name="AttributeSubType" Type="nvarchar" MaxLength="255" />
+          <Property Name="Activity_Flavour_Id" Type="uniqueidentifier" />
+          <Property Name="Legacy_Product_ID" Type="int" />
+        </EntityType>
+        <EntityType Name="Activity_Contact">
+          <Key>
+            <PropertyRef Name="Activity_Contact_Id" />
+          </Key>
+          <Property Name="Activity_Contact_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="Legacy_Product_ID" Type="int" />
+          <Property Name="Telephone" Type="varchar" MaxLength="30" />
+          <Property Name="Fax" Type="varchar" MaxLength="30" />
+          <Property Name="WebSiteURL" Type="varchar" MaxLength="255" />
+          <Property Name="Email" Type="varchar" MaxLength="255" />
+          <Property Name="Create_User" Type="varchar" MaxLength="50" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_User" Type="varchar" MaxLength="50" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="Activity_Content">
+          <Key>
+            <PropertyRef Name="ActivityContent_Id" />
+          </Key>
+          <Property Name="ActivityContent_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="Legacy_Id" Type="int" />
+          <Property Name="Content_Type" Type="nvarchar" MaxLength="15" />
+          <Property Name="Content_Text" Type="nvarchar(max)" />
+          <Property Name="Status" Type="nvarchar" MaxLength="10" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsInternal" Type="bit" />
+        </EntityType>
+        <EntityType Name="Activity_Descriptions">
+          <Key>
+            <PropertyRef Name="Activity_Description_Id" />
+          </Key>
+          <Property Name="Activity_Description_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="Legacy_Product_ID" Type="int" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Language_Code" Type="varchar" MaxLength="3" />
+          <Property Name="DescriptionFor" Type="nvarchar" MaxLength="255" />
+          <Property Name="DescriptionType" Type="nvarchar" MaxLength="255" />
+          <Property Name="FromDate" Type="datetime" />
+          <Property Name="ToDate" Type="datetime" />
+          <Property Name="Source" Type="varchar" MaxLength="50" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Activity_Flavour_Id" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="Activity_Facility">
+          <Key>
+            <PropertyRef Name="Activity_Facility_Id" />
+          </Key>
+          <Property Name="Activity_Facility_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="Legacy_Product_ID" Type="int" />
+          <Property Name="FacilityCategory" Type="nvarchar" MaxLength="255" />
+          <Property Name="FacilityType" Type="nvarchar" MaxLength="255" />
+          <Property Name="FacilityName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="FromDate" Type="datetime" />
+          <Property Name="ToDate" Type="datetime" />
+          <Property Name="Create_User" Type="varchar" MaxLength="50" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_User" Type="varchar" MaxLength="50" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="Activity_Flavour">
+          <Key>
+            <PropertyRef Name="Activity_Flavour_Id" />
+          </Key>
+          <Property Name="Activity_Flavour_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="ProductName" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Country" Type="nvarchar" MaxLength="255" />
+          <Property Name="City" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProductCategory" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProductCategorySubType" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProductType" Type="nvarchar" MaxLength="255" />
+          <Property Name="Legacy_Product_ID" Type="int" />
+          <Property Name="CommonProductNameSubType_Id" Type="nvarchar" MaxLength="255" />
+          <Property Name="CompanyProductNameSubType_Id" Type="nvarchar" MaxLength="255" />
+          <Property Name="FinanceControlId" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProductNameSubType" Type="nvarchar" MaxLength="255" />
+          <Property Name="PlaceOfEvent" Type="nvarchar" MaxLength="255" />
+          <Property Name="StartingPoint" Type="nvarchar" MaxLength="255" />
+          <Property Name="EndingPoint" Type="nvarchar" MaxLength="255" />
+          <Property Name="USP" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsPickUpDropDefined" Type="bit" />
+        </EntityType>
+        <EntityType Name="Activity_InclusionDetails">
+          <Key>
+            <PropertyRef Name="Activity_InclusionDetails_Id" />
+          </Key>
+          <Property Name="Activity_InclusionDetails_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Inclusions_Id" Type="uniqueidentifier" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="Legacy_Product_Id" Type="int" />
+          <Property Name="Activity_Flavour_Id" Type="uniqueidentifier" />
+          <Property Name="InclusionDetailFor" Type="nvarchar" MaxLength="255" />
+          <Property Name="GuideLanguage" Type="nvarchar" MaxLength="255" />
+          <Property Name="InclusionDetailType" Type="nvarchar" MaxLength="255" />
+          <Property Name="InclusionDetailName" Type="nvarchar" MaxLength="255" />
+          <Property Name="InclusionDetailDescription" Type="nvarchar(max)" />
+          <Property Name="InclusionDetailFrom" Type="datetime" />
+          <Property Name="InclusionDetailTo" Type="datetime" />
+          <Property Name="DaysofWeek" Type="nvarchar" MaxLength="7" />
+          <Property Name="FromTime" Type="nvarchar" MaxLength="50" />
+          <Property Name="ToTime" Type="nvarchar" MaxLength="50" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Activity_Inclusions">
+          <Key>
+            <PropertyRef Name="Activity_Inclusions_Id" />
+          </Key>
+          <Property Name="Activity_Inclusions_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="Legacy_Product_Id" Type="int" />
+          <Property Name="Activity_Flavour_Id" Type="uniqueidentifier" />
+          <Property Name="IsInclusion" Type="bit" />
+          <Property Name="InclusionFor" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsDriver" Type="bit" />
+          <Property Name="IsAudioCommentary" Type="bit" />
+          <Property Name="InclusionDescription" Type="nvarchar(max)" />
+          <Property Name="InclusionName" Type="nvarchar" MaxLength="255" />
+          <Property Name="RestaurantStyle" Type="nvarchar" MaxLength="255" />
+          <Property Name="InclusionType" Type="nvarchar" MaxLength="255" />
+          <Property Name="InclusionFrom" Type="datetime" />
+          <Property Name="InclusionTo" Type="datetime" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Activity_Itinerary">
+          <Key>
+            <PropertyRef Name="Activity_Itinerary_Id" />
+          </Key>
+          <Property Name="Activity_Itinerary_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="Legacy_Product_Id" Type="int" />
+          <Property Name="Activity_Flavour_Id" Type="uniqueidentifier" />
+          <Property Name="ItineraryTitle" Type="nvarchar" MaxLength="255" />
+          <Property Name="StartTime" Type="nvarchar" MaxLength="50" />
+          <Property Name="EndTime" Type="nvarchar" MaxLength="50" />
+          <Property Name="ItitneraryDescription" Type="nvarchar(max)" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Activity_Media">
+          <Key>
+            <PropertyRef Name="Activity_Media_Id" />
+          </Key>
+          <Property Name="Activity_Media_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="Legacy_Product_Id" Type="int" />
+          <Property Name="MediaName" Type="nvarchar" MaxLength="255" />
+          <Property Name="MediaType" Type="nvarchar" MaxLength="255" />
+          <Property Name="RoomCategory" Type="nvarchar" MaxLength="255" />
+          <Property Name="ValidFrom" Type="datetime" />
+          <Property Name="ValidTo" Type="datetime" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="Create_User" Type="varchar" MaxLength="50" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_User" Type="varchar" MaxLength="50" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Media_Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="Media_URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Media_Position" Type="int" />
+          <Property Name="Category" Type="nvarchar" MaxLength="255" />
+          <Property Name="SubCategory" Type="nvarchar" MaxLength="255" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="FileFormat" Type="nvarchar" MaxLength="50" />
+          <Property Name="MediaID" Type="nvarchar" MaxLength="255" />
+          <Property Name="MediaFileMaster" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Activity_OldSchema">
           <Key>
             <PropertyRef Name="Acivity_Id" />
           </Key>
@@ -483,21 +726,106 @@
           <Property Name="TourType" Type="nvarchar" MaxLength="2550" />
           <Property Name="Parent_Legacy_Id" Type="int" />
         </EntityType>
-        <EntityType Name="Activity_Content">
+        <EntityType Name="Activity_PickUpDrop">
           <Key>
-            <PropertyRef Name="ActivityContent_Id" />
+            <PropertyRef Name="Activity_PickUpDrop_Id" />
           </Key>
-          <Property Name="ActivityContent_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_PickUpDrop_Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Activity_Id" Type="uniqueidentifier" />
-          <Property Name="Legacy_Id" Type="int" />
-          <Property Name="Content_Type" Type="nvarchar" MaxLength="15" />
-          <Property Name="Content_Text" Type="nvarchar(max)" />
-          <Property Name="Status" Type="nvarchar" MaxLength="10" />
+          <Property Name="Legacy_Product_Id" Type="int" />
+          <Property Name="Activity_Flavour_Id" Type="uniqueidentifier" />
+          <Property Name="ForSupplier" Type="nvarchar" MaxLength="50" />
+          <Property Name="Supplier_Id" Type="uniqueidentifier" />
+          <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
+          <Property Name="TransferType" Type="nvarchar" MaxLength="255" />
+          <Property Name="VehicleType" Type="nvarchar" MaxLength="255" />
+          <Property Name="VehicleCategory" Type="nvarchar" MaxLength="255" />
+          <Property Name="VehicleName" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsAC" Type="bit" />
           <Property Name="Create_Date" Type="datetime" />
-          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
-          <Property Name="IsInternal" Type="bit" />
+        </EntityType>
+        <EntityType Name="Activity_PickUpDropDetail">
+          <Key>
+            <PropertyRef Name="Activity_PickUpDropDetail_Id" />
+          </Key>
+          <Property Name="Activity_PickUpDropDetail_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_PickUpDrop_Id" Type="uniqueidentifier" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="Legacy_Product_Id" Type="int" />
+          <Property Name="PickUpDropType" Type="nvarchar" MaxLength="255" />
+          <Property Name="FromToType" Type="nvarchar" MaxLength="255" />
+          <Property Name="LocationType" Type="nvarchar" MaxLength="255" />
+          <Property Name="LocationName" Type="nvarchar" MaxLength="255" />
+          <Property Name="AreaSearchFor" Type="nvarchar" MaxLength="255" />
+          <Property Name="AreaNameofPlace" Type="nvarchar" MaxLength="255" />
+          <Property Name="Accommodation_Id" Type="uniqueidentifier" />
+          <Property Name="Acco_Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Acco_Address" Type="nvarchar(max)" />
+          <Property Name="Acco_PostalCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="Acco_Country" Type="nvarchar" MaxLength="255" />
+          <Property Name="Acco_City" Type="nvarchar" MaxLength="255" />
+          <Property Name="Acco_State" Type="nvarchar" MaxLength="255" />
+          <Property Name="Acco_Area" Type="nvarchar" MaxLength="255" />
+          <Property Name="Acco_Location" Type="nvarchar" MaxLength="255" />
+          <Property Name="Acco_Telephone" Type="nvarchar" MaxLength="255" />
+          <Property Name="Acco_Fax" Type="nvarchar" MaxLength="255" />
+          <Property Name="Acco_Website" Type="nvarchar" MaxLength="255" />
+          <Property Name="Acco_Email" Type="nvarchar" MaxLength="255" />
+          <Property Name="Acco_ContactNotes" Type="nvarchar" MaxLength="255" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Activity_PickupDropSchedule">
+          <Key>
+            <PropertyRef Name="Activity_PickupDropSchedule_Id" />
+          </Key>
+          <Property Name="Activity_PickupDropSchedule_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="Legacy_Product_Id" Type="int" />
+          <Property Name="Activity_Flavour_Id" Type="uniqueidentifier" />
+          <Property Name="ForSupplier" Type="nvarchar" MaxLength="50" />
+          <Property Name="Supplier_Id" Type="uniqueidentifier" />
+          <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Activity_Policy">
+          <Key>
+            <PropertyRef Name="Activity_Policy_Id" />
+          </Key>
+          <Property Name="Activity_Policy_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="Legacy_Product_ID" Type="int" />
+          <Property Name="Policy_Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="AllowedYN" Type="bit" />
+          <Property Name="PolicyName" Type="nvarchar" MaxLength="255" />
+          <Property Name="PolicyDescription" Type="nvarchar(max)" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Activity_Status">
+          <Key>
+            <PropertyRef Name="Activity_Status_Id" />
+          </Key>
+          <Property Name="Activity_Status_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="Legacy_Product_ID" Type="datetime" />
+          <Property Name="From" Type="datetime" />
+          <Property Name="To" Type="datetime" />
+          <Property Name="DeactivationReason" Type="nvarchar(max)" />
+          <Property Name="Status" Type="nvarchar" MaxLength="10" />
+          <Property Name="CompanyMarket" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="Create_User" Type="varchar" MaxLength="50" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_User" Type="varchar" MaxLength="50" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Activity_Flavour_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Activity_SupplierProductMapping">
           <Key>
@@ -566,6 +894,68 @@
           <Property Name="Timing" Type="nvarchar" MaxLength="255" />
           <Property Name="Session" Type="nvarchar" MaxLength="255" />
           <Property Name="Specials" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Activity_Tips">
+          <Key>
+            <PropertyRef Name="Activity_Tips_Id" />
+          </Key>
+          <Property Name="Activity_Tips_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="Legacy_Product_Id" Type="int" />
+          <Property Name="TipsType" Type="nvarchar" MaxLength="255" />
+          <Property Name="TipsName" Type="nvarchar" MaxLength="255" />
+          <Property Name="TipsDescription" Type="nvarchar" MaxLength="255" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Activity_Types">
+          <Key>
+            <PropertyRef Name="Activity_Type_Id" />
+          </Key>
+          <Property Name="Activity_Type_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ActivityType" Type="nvarchar" MaxLength="255" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Activity_Updates">
+          <Key>
+            <PropertyRef Name="Activity_Updates_Id" />
+          </Key>
+          <Property Name="Activity_Updates_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="FromDate" Type="datetime" />
+          <Property Name="ToDate" Type="datetime" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Source" Type="nvarchar" MaxLength="255" />
+          <Property Name="Create_User" Type="varchar" MaxLength="255" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_User" Type="varchar" MaxLength="255" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsInternal" Type="bit" />
+          <Property Name="Legacy_Product_ID" Type="int" />
+        </EntityType>
+        <EntityType Name="Activity_WeatherInformation">
+          <Key>
+            <PropertyRef Name="Activity_WeatherInformation_Id" />
+          </Key>
+          <Property Name="Activity_WeatherInformation_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Id" Type="uniqueidentifier" />
+          <Property Name="Legacy_Product_Id" Type="int" />
+          <Property Name="Month" Type="nvarchar" MaxLength="255" />
+          <Property Name="WeatherDescription" Type="nvarchar(max)" />
+          <Property Name="MinTemp" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="MaxTemp" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="IsSuitableToVisit" Type="bit" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Applications">
           <Key>
@@ -809,6 +1199,7 @@
           <Property Name="StateName" Type="nvarchar" MaxLength="255" />
           <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
           <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="stg_City_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="m_CityMaster">
           <Key>
@@ -854,6 +1245,7 @@
           <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
           <Property Name="ContinentCode" Type="nvarchar" MaxLength="255" />
           <Property Name="ContinentName" Type="nvarchar" MaxLength="255" />
+          <Property Name="stg_Country_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="m_CountryMaster">
           <Key>
@@ -922,6 +1314,11 @@
           <Property Name="Attribute" Type="bit" />
           <Property Name="Sequence" Type="int" />
           <Property Name="Icon" Type="nvarchar" MaxLength="255" />
+          <Property Name="EntityFor" Type="nvarchar" MaxLength="500" />
+          <Property Name="AttributeType" Type="nvarchar" MaxLength="255" />
+          <Property Name="AttributeLevel" Type="nvarchar" MaxLength="255" />
+          <Property Name="AttributeSubLevel" Type="nvarchar" MaxLength="255" />
+          <Property Name="AttributeSubLevelValue" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="m_keyword_alias">
           <Key>
@@ -1056,6 +1453,9 @@
           <Property Name="EDIT_DATE" Type="datetime" />
           <Property Name="EDIT_USER" Type="nvarchar" MaxLength="255" />
           <Property Name="AttributeFor" Type="nvarchar" MaxLength="50" />
+          <Property Name="STG_Table" Type="nvarchar" MaxLength="255" />
+          <Property Name="Mapping_Table" Type="nvarchar" MaxLength="255" />
+          <Property Name="Master_Table" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="m_SupplierImportAttributeValues">
           <Key>
@@ -1073,6 +1473,7 @@
           <Property Name="EDIT_USER" Type="nvarchar" MaxLength="255" />
           <Property Name="Priority" Type="int" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="AttributeValue_ID" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="m_TeamMembers">
           <Key>
@@ -1220,6 +1621,79 @@
           <Property Name="IsActive" Type="bit" />
           <Property Name="applicationId" Type="uniqueidentifier" Nullable="false" />
         </EntityType>
+        <EntityType Name="STG_Mapping_TableIds">
+          <Key>
+            <PropertyRef Name="STG_Mapping_Table_Id" />
+          </Key>
+          <Property Name="STG_Mapping_Table_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="STG_Id" Type="uniqueidentifier" />
+          <Property Name="Mapping_Id" Type="uniqueidentifier" />
+          <Property Name="File_Id" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="stg_SupplierActivityMapping">
+          <Key>
+            <PropertyRef Name="stg_SupplierActivityMapping_Id" />
+          </Key>
+          <Property Name="stg_SupplierActivityMapping_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SupplierCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SuplierProductCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierProductType" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierType" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierLocationId" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierLocationName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierCountryName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierCityName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierCountryCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierCityCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierStateName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierStateCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierCityIATACode" Type="nvarchar" MaxLength="255" />
+          <Property Name="Duration" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierProductName" Type="nvarchar(max)" />
+          <Property Name="SupplierDataLangaugeCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="Introduction" Type="nvarchar(max)" />
+          <Property Name="Conditions" Type="nvarchar(max)" />
+          <Property Name="Inclusions" Type="nvarchar(max)" />
+          <Property Name="Exclusions" Type="nvarchar(max)" />
+          <Property Name="AdditionalInformation" Type="nvarchar(max)" />
+          <Property Name="DeparturePoint" Type="nvarchar(max)" />
+          <Property Name="TicketingDetails" Type="nvarchar(max)" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="255" />
+          <Property Name="DepartureTime" Type="nvarchar(max)" />
+          <Property Name="DepartureDate" Type="nvarchar(max)" />
+          <Property Name="DateFrom" Type="nvarchar" MaxLength="255" />
+          <Property Name="DateTo" Type="nvarchar" MaxLength="255" />
+          <Property Name="BlockOutDateFrom" Type="nvarchar" MaxLength="255" />
+          <Property Name="BlockOutDateTo" Type="nvarchar" MaxLength="255" />
+          <Property Name="OptionTitle" Type="nvarchar" MaxLength="255" />
+          <Property Name="OptionCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="OptionDescription" Type="nvarchar(max)" />
+          <Property Name="TourActivityLangauageCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProductDescription" Type="nvarchar(max)" />
+          <Property Name="TourActivityLanguage" Type="nvarchar" MaxLength="255" />
+          <Property Name="ImgURL" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProductValidFor" Type="nvarchar" MaxLength="255" />
+          <Property Name="Address" Type="nvarchar(max)" />
+          <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="DayPattern" Type="nvarchar(max)" />
+          <Property Name="Theme" Type="nvarchar" MaxLength="255" />
+          <Property Name="Distance" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierTourType" Type="nvarchar" MaxLength="255" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="TotalActivities" Type="int" />
+          <Property Name="PhysicalIntensity" Type="nvarchar" MaxLength="255" />
+          <Property Name="PassengerNumbers" Type="nvarchar" MaxLength="255" />
+          <Property Name="DurationLength" Type="nvarchar" MaxLength="255" />
+          <Property Name="Timing" Type="nvarchar" MaxLength="255" />
+          <Property Name="Session" Type="nvarchar" MaxLength="255" />
+          <Property Name="Specials" Type="nvarchar" MaxLength="255" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+        </EntityType>
         <EntityType Name="stg_SupplierCityMapping">
           <Key>
             <PropertyRef Name="stg_City_Id" />
@@ -1302,6 +1776,7 @@
           <Property Name="RatePlan" Type="nvarchar" MaxLength="50" />
           <Property Name="RatePlanCode" Type="nvarchar" MaxLength="50" />
           <Property Name="TX_RoomName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Supplier_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="stg_SupplierProductMapping">
           <Key>
@@ -1360,6 +1835,34 @@
           <Property Name="SupplierType" Type="nvarchar" MaxLength="255" />
           <Property Name="SupplierOwner" Type="nvarchar" MaxLength="255" />
           <Property Name="StatusCode" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="Supplier_ApiCallLog">
+          <Key>
+            <PropertyRef Name="SupplierApiCallLog_Id" />
+          </Key>
+          <Property Name="SupplierApiCallLog_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SupplierApiLocation_Id" Type="uniqueidentifier" />
+          <Property Name="PentahoCall_Id" Type="uniqueidentifier" />
+          <Property Name="Message" Type="varchar" MaxLength="500" />
+          <Property Name="Status" Type="varchar" MaxLength="50" />
+          <Property Name="Create_User" Type="varchar" MaxLength="50" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_User" Type="varchar" MaxLength="50" />
+          <Property Name="Edit_Date" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Supplier_APILocation">
+          <Key>
+            <PropertyRef Name="Supplier_APILocation_Id" />
+          </Key>
+          <Property Name="Supplier_APILocation_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Supplier_Id" Type="uniqueidentifier" />
+          <Property Name="Entity_Id" Type="uniqueidentifier" />
+          <Property Name="API_Path" Type="nvarchar(max)" />
+          <Property Name="CREATE_DATE" Type="datetime" />
+          <Property Name="CREATE_USER" Type="nvarchar" MaxLength="255" />
+          <Property Name="EDIT_DATE" Type="datetime" />
+          <Property Name="EDIT_USER" Type="nvarchar" MaxLength="255" />
+          <Property Name="STATUS" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Supplier_Market">
           <Key>
@@ -1425,6 +1928,43 @@
           <Property Name="ErrorType" Type="nvarchar" MaxLength="255" />
           <Property Name="Error_DATE" Type="datetime" />
           <Property Name="Error_USER" Type="nvarchar" MaxLength="255" />
+          <Property Name="ErrorMessage_UI" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="SupplierImportFile_Progress">
+          <Key>
+            <PropertyRef Name="SupplierImportFileProgress_Id" />
+          </Key>
+          <Property Name="SupplierImportFileProgress_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SupplierImportFile_Id" Type="uniqueidentifier" />
+          <Property Name="Step" Type="nvarchar" MaxLength="255" />
+          <Property Name="PercentageValue" Type="int" />
+          <Property Name="Status" Type="nvarchar" MaxLength="255" />
+          <Property Name="CurrentBatch" Type="int" />
+          <Property Name="TotalBatch" Type="int" />
+          <Property Name="LastCheckedOn" Type="datetime" />
+        </EntityType>
+        <EntityType Name="SupplierImportFile_Statistics">
+          <Key>
+            <PropertyRef Name="SupplierImportFile_Statistics_Id" />
+          </Key>
+          <Property Name="SupplierImportFile_Statistics_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SupplierImportFile_Id" Type="uniqueidentifier" />
+          <Property Name="FinalStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="TotalRows" Type="int" />
+          <Property Name="Mapped" Type="int" />
+          <Property Name="Unmapped" Type="int" />
+          <Property Name="Process_Date" Type="datetime" />
+          <Property Name="Process_User" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="SupplierImportFile_VerboseLog">
+          <Key>
+            <PropertyRef Name="SupplierImportFile_VerboseLog_Id" />
+          </Key>
+          <Property Name="SupplierImportFile_VerboseLog_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SupplierImportFile_Id" Type="uniqueidentifier" />
+          <Property Name="Step" Type="nvarchar" MaxLength="255" />
+          <Property Name="Message" Type="nvarchar(max)" />
+          <Property Name="TimeStamp" Type="datetime" />
         </EntityType>
         <EntityType Name="SupplierImportFileDetails">
           <Key>
@@ -1465,6 +2005,24 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Status" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="MappinFor" Type="varchar" MaxLength="8" Nullable="false" />
           <Property Name="totalcount" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vwUserwisemappedStats">
+          <Key>
+            <PropertyRef Name="Sequence" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="MappinFor" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" />
+          <Property Name="supplier_id" Type="uniqueidentifier" />
+          <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Username" Type="nvarchar" MaxLength="255" />
+          <Property Name="Sequence" Type="int" Nullable="false" />
+          <Property Name="Status" Type="varchar" MaxLength="6" Nullable="false" />
+          <Property Name="MappinFor" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="totalcount" Type="int" />
+          <Property Name="EditDate" Type="date" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
@@ -1545,8 +2103,27 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="Self.Accommodation_SupplierRoomTypeAttributes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Accommodation_SupplierRoomTypeMapping" EntityType="Self.Accommodation_SupplierRoomTypeMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity" EntityType="Self.Activity" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_ClassificationAttributes" EntityType="Self.Activity_ClassificationAttributes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_Contact" EntityType="Self.Activity_Contact" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_Content" EntityType="Self.Activity_Content" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_Descriptions" EntityType="Self.Activity_Descriptions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_Facility" EntityType="Self.Activity_Facility" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_Flavour" EntityType="Self.Activity_Flavour" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_InclusionDetails" EntityType="Self.Activity_InclusionDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_Inclusions" EntityType="Self.Activity_Inclusions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_Itinerary" EntityType="Self.Activity_Itinerary" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_Media" EntityType="Self.Activity_Media" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_OldSchema" EntityType="Self.Activity_OldSchema" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_PickUpDrop" EntityType="Self.Activity_PickUpDrop" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_PickUpDropDetail" EntityType="Self.Activity_PickUpDropDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_PickupDropSchedule" EntityType="Self.Activity_PickupDropSchedule" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_Policy" EntityType="Self.Activity_Policy" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_Status" EntityType="Self.Activity_Status" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_SupplierProductMapping" EntityType="Self.Activity_SupplierProductMapping" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_Tips" EntityType="Self.Activity_Tips" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_Types" EntityType="Self.Activity_Types" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_Updates" EntityType="Self.Activity_Updates" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_WeatherInformation" EntityType="Self.Activity_WeatherInformation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Applications" EntityType="Self.Applications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
@@ -1590,15 +2167,22 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySet Name="Places" EntityType="Self.Places" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule_NextOccurance" EntityType="Self.Schedule_NextOccurance" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SiteMap" EntityType="Self.SiteMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="STG_Mapping_TableIds" EntityType="Self.STG_Mapping_TableIds" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="stg_SupplierActivityMapping" EntityType="Self.stg_SupplierActivityMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierCityMapping" EntityType="Self.stg_SupplierCityMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierCountryMapping" EntityType="Self.stg_SupplierCountryMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierHotelRoomMapping" EntityType="Self.stg_SupplierHotelRoomMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierProductMapping" EntityType="Self.stg_SupplierProductMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier" EntityType="Self.Supplier" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Supplier_ApiCallLog" EntityType="Self.Supplier_ApiCallLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Supplier_APILocation" EntityType="Self.Supplier_APILocation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier_Market" EntityType="Self.Supplier_Market" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier_ProductCategory" EntityType="Self.Supplier_ProductCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier_Schedule" EntityType="Self.Supplier_Schedule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFile_ErrorLog" EntityType="Self.SupplierImportFile_ErrorLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierImportFile_Progress" EntityType="Self.SupplierImportFile_Progress" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierImportFile_Statistics" EntityType="Self.SupplierImportFile_Statistics" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierImportFile_VerboseLog" EntityType="Self.SupplierImportFile_VerboseLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFileDetails" EntityType="Self.SupplierImportFileDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserEntity" EntityType="Self.UserEntity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="vwMappingStats" EntityType="Self.vwMappingStats" store:Type="Views" store:Schema="dbo">
@@ -1609,6 +2193,19 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
     [vwMappingStats].[MappinFor] AS [MappinFor], 
     [vwMappingStats].[totalcount] AS [totalcount]
     FROM [dbo].[vwMappingStats] AS [vwMappingStats]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vwUserwisemappedStats" EntityType="Self.vwUserwisemappedStats" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vwUserwisemappedStats].[ID] AS [ID], 
+    [vwUserwisemappedStats].[supplier_id] AS [supplier_id], 
+    [vwUserwisemappedStats].[SupplierName] AS [SupplierName], 
+    [vwUserwisemappedStats].[Username] AS [Username], 
+    [vwUserwisemappedStats].[Sequence] AS [Sequence], 
+    [vwUserwisemappedStats].[Status] AS [Status], 
+    [vwUserwisemappedStats].[MappinFor] AS [MappinFor], 
+    [vwUserwisemappedStats].[totalcount] AS [totalcount], 
+    [vwUserwisemappedStats].[EditDate] AS [EditDate]
+    FROM [dbo].[vwUserwisemappedStats] AS [vwUserwisemappedStats]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -1706,8 +2303,6 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySet Name="Supplier_ProductCategory" EntityType="ConsumerModel.Supplier_ProductCategory" />
           <EntitySet Name="m_MasterAttributeMapping" EntityType="ConsumerModel.m_MasterAttributeMapping" />
           <EntitySet Name="m_MasterAttributeValueMapping" EntityType="ConsumerModel.m_MasterAttributeValueMapping" />
-          <EntitySet Name="Activities" EntityType="ConsumerModel.Activity" />
-          <EntitySet Name="Activity_Content" EntityType="ConsumerModel.Activity_Content" />
           <EntitySet Name="m_SupplierImportAttributes" EntityType="ConsumerModel.m_SupplierImportAttributes" />
           <EntitySet Name="m_SupplierImportAttributeValues" EntityType="ConsumerModel.m_SupplierImportAttributeValues" />
           <EntitySet Name="SupplierImportFile_ErrorLog" EntityType="ConsumerModel.SupplierImportFile_ErrorLog" />
@@ -1720,8 +2315,40 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySet Name="m_keyword" EntityType="ConsumerModel.m_keyword" />
           <EntitySet Name="m_keyword_alias" EntityType="ConsumerModel.m_keyword_alias" />
           <EntitySet Name="Places" EntityType="ConsumerModel.Place" />
-          <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
           <EntitySet Name="Accommodation_SupplierRoomTypeMapping" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" />
+          <EntitySet Name="SupplierImportFile_Progress" EntityType="ConsumerModel.SupplierImportFile_Progress" />
+          <EntitySet Name="SupplierImportFile_VerboseLog" EntityType="ConsumerModel.SupplierImportFile_VerboseLog" />
+          <EntitySet Name="vwUserwisemappedStats" EntityType="ConsumerModel.vwUserwisemappedStat" />
+          <EntitySet Name="SupplierImportFile_Statistics" EntityType="ConsumerModel.SupplierImportFile_Statistics" />
+          <EntitySet Name="STG_Mapping_TableIds" EntityType="ConsumerModel.STG_Mapping_TableIds" />
+          <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
+          <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />
+          <EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
+          <EntitySet Name="Supplier_ApiCallLog" EntityType="ConsumerModel.Supplier_ApiCallLog" />
+          <EntitySet Name="Activities" EntityType="ConsumerModel.Activity" />
+          <EntitySet Name="Activity_ClassificationAttributes" EntityType="ConsumerModel.Activity_ClassificationAttributes" />
+          <EntitySet Name="Activity_Contact" EntityType="ConsumerModel.Activity_Contact" />
+          <EntitySet Name="Activity_Content" EntityType="ConsumerModel.Activity_Content" />
+          <EntitySet Name="Activity_Descriptions" EntityType="ConsumerModel.Activity_Descriptions" />
+          <EntitySet Name="Activity_Facility" EntityType="ConsumerModel.Activity_Facility" />
+          <EntitySet Name="Activity_Flavour" EntityType="ConsumerModel.Activity_Flavour" />
+          <EntitySet Name="Activity_InclusionDetails" EntityType="ConsumerModel.Activity_InclusionDetails" />
+          <EntitySet Name="Activity_Inclusions" EntityType="ConsumerModel.Activity_Inclusions" />
+          <EntitySet Name="Activity_Itinerary" EntityType="ConsumerModel.Activity_Itinerary" />
+          <EntitySet Name="Activity_Media" EntityType="ConsumerModel.Activity_Media" />
+          <EntitySet Name="Activity_OldSchema" EntityType="ConsumerModel.Activity_OldSchema" />
+          <EntitySet Name="Activity_PickUpDrop" EntityType="ConsumerModel.Activity_PickUpDrop" />
+          <EntitySet Name="Activity_PickUpDropDetail" EntityType="ConsumerModel.Activity_PickUpDropDetail" />
+          <EntitySet Name="Activity_PickupDropSchedule" EntityType="ConsumerModel.Activity_PickupDropSchedule" />
+          <EntitySet Name="Activity_Policy" EntityType="ConsumerModel.Activity_Policy" />
+          <EntitySet Name="Activity_Status" EntityType="ConsumerModel.Activity_Status" />
+          <EntitySet Name="Activity_Tips" EntityType="ConsumerModel.Activity_Tips" />
+          <EntitySet Name="Activity_Types" EntityType="ConsumerModel.Activity_Types" />
+          <EntitySet Name="Activity_Updates" EntityType="ConsumerModel.Activity_Updates" />
+          <EntitySet Name="Activity_WeatherInformation" EntityType="ConsumerModel.Activity_WeatherInformation" />
+          <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
+          <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
+        <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
         </EntityContainer>
         <EntityType Name="Accommodation_Contact">
           <Key>
@@ -2070,6 +2697,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Google_Place_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Country_Id" Type="Guid" />
           <Property Name="City_Id" Type="Guid" />
+          <Property Name="stg_AccoMapping_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="m_CityMapping">
           <Key>
@@ -2096,6 +2724,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="StateName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="stg_City_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="m_CountryMapping">
           <Key>
@@ -2119,6 +2748,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ContinentCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ContinentName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="stg_Country_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="m_Activity_Master">
           <Key>
@@ -2813,59 +3443,6 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="Activity">
-          <Key>
-            <PropertyRef Name="Acivity_Id" />
-          </Key>
-          <Property Name="Acivity_Id" Type="Guid" Nullable="false" />
-          <Property Name="CommonProductID" Type="Int32" />
-          <Property Name="Legacy_Product_ID" Type="Int32" />
-          <Property Name="Product_Name" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="Display_Name" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="Country" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ProductType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ProductSubType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ProductCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="IsActive" Type="Boolean" />
-          <Property Name="StartingPoint" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="EndingPoint" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Duration" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CompanyRecommended" Type="Boolean" />
-          <Property Name="Latitude" Type="Double" />
-          <Property Name="Longitude" Type="Double" />
-          <Property Name="ShortDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="LongDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="MealsYN" Type="Boolean" />
-          <Property Name="GuideYN" Type="Boolean" />
-          <Property Name="TransferYN" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="PhysicalLevel" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Advisory" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ThingsToCarry" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DeparturePoint" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TourType" Type="String" MaxLength="2550" FixedLength="false" Unicode="true" />
-          <Property Name="Parent_Legacy_Id" Type="Int32" />
-        </EntityType>
-        <EntityType Name="Activity_Content">
-          <Key>
-            <PropertyRef Name="ActivityContent_Id" />
-          </Key>
-          <Property Name="ActivityContent_Id" Type="Guid" Nullable="false" />
-          <Property Name="Activity_Id" Type="Guid" />
-          <Property Name="Legacy_Id" Type="Int32" />
-          <Property Name="Content_Type" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="Content_Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="IsInternal" Type="Boolean" />
-        </EntityType>
         <EntityType Name="m_SupplierImportAttributes">
           <Key>
             <PropertyRef Name="SupplierImportAttribute_Id" />
@@ -2879,6 +3456,9 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="EDIT_DATE" Type="DateTime" Precision="3" />
           <Property Name="EDIT_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="AttributeFor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="STG_Table" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Mapping_Table" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Master_Table" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_SupplierImportAttributeValues">
           <Key>
@@ -2896,6 +3476,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="EDIT_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Priority" Type="Int32" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeValue_ID" Type="Guid" />
         </EntityType>
         <EntityType Name="SupplierImportFile_ErrorLog">
           <Key>
@@ -2908,6 +3489,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="ErrorType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Error_DATE" Type="DateTime" Precision="3" />
           <Property Name="Error_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ErrorMessage_UI" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="SupplierImportFileDetail">
           <Key>
@@ -3076,6 +3658,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="RatePlan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="RatePlanCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TX_RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Supplier_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="stg_SupplierProductMapping">
           <Key>
@@ -3136,6 +3719,11 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Attribute" Type="Boolean" />
           <Property Name="Sequence" Type="Int32" />
           <Property Name="Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EntityFor" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeLevel" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeSubLevel" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeSubLevelValue" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_keyword_alias">
           <Key>
@@ -3169,16 +3757,6 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="Google_Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Google_FullObjext" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="Accommodation_SupplierRoomTypeAttributes">
-          <Key>
-            <PropertyRef Name="RoomTypeMapAttribute_Id" />
-          </Key>
-          <Property Name="RoomTypeMapAttribute_Id" Type="Guid" Nullable="false" />
-          <Property Name="RoomTypeMap_Id" Type="Guid" Nullable="false" />
-          <Property Name="SupplierRoomTypeAttribute" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SystemAttributeKeyword" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SystemAttributeKeyword_Id" Type="Guid" Nullable="false" />
-        </EntityType>
         <EntityType Name="Accommodation_SupplierRoomTypeMapping">
           <Key>
             <PropertyRef Name="Accommodation_SupplierRoomTypeMapping_Id" />
@@ -3211,6 +3789,611 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <Property Name="MappingStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="MapId" Type="Int32" />
           <Property Name="Accommodation_RoomInfo_Id" Type="Guid" />
+          <Property Name="stg_SupplierHotelRoomMapping_Id" Type="Guid" />
+          <Property Name="RoomDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SupplierImportFile_Progress">
+          <Key>
+            <PropertyRef Name="SupplierImportFileProgress_Id" />
+          </Key>
+          <Property Name="SupplierImportFileProgress_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierImportFile_Id" Type="Guid" />
+          <Property Name="Step" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PercentageValue" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TotalBatch" Type="Int32" />
+          <Property Name="CurrentBatch" Type="Int32" />
+          <Property Name="LastCheckedOn" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="SupplierImportFile_VerboseLog">
+          <Key>
+            <PropertyRef Name="SupplierImportFile_VerboseLog_Id" />
+          </Key>
+          <Property Name="SupplierImportFile_VerboseLog_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierImportFile_Id" Type="Guid" />
+          <Property Name="Step" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TimeStamp" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="vwUserwisemappedStat">
+          <Key>
+            <PropertyRef Name="Sequence" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="MappinFor" />
+          </Key>
+          <Property Name="ID" Type="Guid" />
+          <Property Name="supplier_id" Type="Guid" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="totalcount" Type="Int32" />
+          <Property Name="EditDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="SupplierImportFile_Statistics">
+          <Key>
+            <PropertyRef Name="SupplierImportFile_Statistics_Id" />
+          </Key>
+          <Property Name="SupplierImportFile_Statistics_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierImportFile_Id" Type="Guid" />
+          <Property Name="FinalStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalRows" Type="Int32" />
+          <Property Name="Mapped" Type="Int32" />
+          <Property Name="Unmapped" Type="Int32" />
+          <Property Name="Process_Date" Type="DateTime" Precision="3" />
+          <Property Name="Process_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="STG_Mapping_TableIds">
+          <Key>
+            <PropertyRef Name="STG_Mapping_Table_Id" />
+          </Key>
+          <Property Name="STG_Mapping_Table_Id" Type="Guid" Nullable="false" />
+          <Property Name="STG_Id" Type="Guid" />
+          <Property Name="Mapping_Id" Type="Guid" />
+          <Property Name="File_Id" Type="Guid" />
+        </EntityType>
+        <EntityType Name="Accommodation_SupplierRoomTypeAttributes">
+          <Key>
+            <PropertyRef Name="RoomTypeMapAttribute_Id" />
+          </Key>
+          <Property Name="RoomTypeMapAttribute_Id" Type="Guid" Nullable="false" />
+          <Property Name="RoomTypeMap_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierRoomTypeAttribute" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SystemAttributeKeyword" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SystemAttributeKeyword_Id" Type="Guid" Nullable="false" />
+          <Property Name="Accommodation_RoomFacility_Id" Type="Guid" />
+        </EntityType>
+        <EntityType Name="stg_SupplierActivityMapping">
+          <Key>
+            <PropertyRef Name="stg_SupplierActivityMapping_Id" />
+          </Key>
+          <Property Name="stg_SupplierActivityMapping_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SuplierProductCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierProductType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierLocationId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierLocationName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierCountryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierCityName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierCountryCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierCityCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierStateName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierStateCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierCityIATACode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Duration" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierProductName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierDataLangaugeCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Introduction" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Conditions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Inclusions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Exclusions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AdditionalInformation" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DeparturePoint" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TicketingDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Currency" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DepartureTime" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DepartureDate" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DateFrom" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DateTo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="BlockOutDateFrom" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="BlockOutDateTo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="OptionTitle" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="OptionCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="OptionDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TourActivityLangauageCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TourActivityLanguage" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ImgURL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductValidFor" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DayPattern" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Theme" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Distance" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierTourType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="TotalActivities" Type="Int32" />
+          <Property Name="PhysicalIntensity" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PassengerNumbers" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DurationLength" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Timing" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Session" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Specials" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Supplier_APILocation">
+          <Key>
+            <PropertyRef Name="Supplier_APILocation_Id" />
+          </Key>
+          <Property Name="Supplier_APILocation_Id" Type="Guid" Nullable="false" />
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="Entity_Id" Type="Guid" />
+          <Property Name="API_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATE_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EDIT_DATE" Type="DateTime" Precision="3" />
+          <Property Name="EDIT_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="STATUS" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Supplier_ApiCallLog">
+          <Key>
+            <PropertyRef Name="SupplierApiCallLog_Id" />
+          </Key>
+          <Property Name="SupplierApiCallLog_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierApiLocation_Id" Type="Guid" />
+          <Property Name="PentahoCall_Id" Type="Guid" />
+          <Property Name="Message" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Activity">
+          <Key>
+            <PropertyRef Name="Activity_Id" />
+          </Key>
+          <Property Name="Activity_Id" Type="Guid" Nullable="false" />
+          <Property Name="CommonProductID" Type="Int32" />
+          <Property Name="Legacy_Product_ID" Type="Int32" />
+          <Property Name="CompanyProductID" Type="Int32" />
+          <Property Name="FinanceProductID" Type="Int32" />
+          <Property Name="Product_Name" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Display_Name" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Country" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Country_Id" Type="Guid" />
+          <Property Name="City_Id" Type="Guid" />
+          <Property Name="ProductCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductCategorySubType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Mode_Of_Transport" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyRating" Type="Int32" />
+          <Property Name="ProductRating" Type="Int32" />
+          <Property Name="Affiliation" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyRecommended" Type="Boolean" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="Double" />
+          <Property Name="Longitude" Type="Double" />
+          <Property Name="TourType" Type="String" MaxLength="2550" FixedLength="false" Unicode="true" />
+          <Property Name="Parent_Legacy_Id" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Activity_ClassificationAttributes">
+          <Key>
+            <PropertyRef Name="Activity_ClassificationAttribute_Id" />
+          </Key>
+          <Property Name="Activity_ClassificationAttribute_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="AttributeType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeValue" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InternalOnly" Type="Boolean" />
+          <Property Name="AttributeSubType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_Flavour_Id" Type="Guid" />
+          <Property Name="Legacy_Product_ID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Activity_Contact">
+          <Key>
+            <PropertyRef Name="Activity_Contact_Id" />
+          </Key>
+          <Property Name="Activity_Contact_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_ID" Type="Int32" />
+          <Property Name="Telephone" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Fax" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="WebSiteURL" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Activity_Content">
+          <Key>
+            <PropertyRef Name="ActivityContent_Id" />
+          </Key>
+          <Property Name="ActivityContent_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Id" Type="Int32" />
+          <Property Name="Content_Type" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="Content_Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsInternal" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Activity_Descriptions">
+          <Key>
+            <PropertyRef Name="Activity_Description_Id" />
+          </Key>
+          <Property Name="Activity_Description_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_ID" Type="Int32" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Language_Code" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="DescriptionFor" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DescriptionType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FromDate" Type="DateTime" Precision="3" />
+          <Property Name="ToDate" Type="DateTime" Precision="3" />
+          <Property Name="Source" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Activity_Flavour_Id" Type="Guid" />
+        </EntityType>
+        <EntityType Name="Activity_Facility">
+          <Key>
+            <PropertyRef Name="Activity_Facility_Id" />
+          </Key>
+          <Property Name="Activity_Facility_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_ID" Type="Int32" />
+          <Property Name="FacilityCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FacilityType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FacilityName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FromDate" Type="DateTime" Precision="3" />
+          <Property Name="ToDate" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Activity_Flavour">
+          <Key>
+            <PropertyRef Name="Activity_Flavour_Id" />
+          </Key>
+          <Property Name="Activity_Flavour_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="ProductName" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Country" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductCategorySubType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Legacy_Product_ID" Type="Int32" />
+          <Property Name="CommonProductNameSubType_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyProductNameSubType_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FinanceControlId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductNameSubType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PlaceOfEvent" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="StartingPoint" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EndingPoint" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="USP" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsPickUpDropDefined" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Activity_InclusionDetails">
+          <Key>
+            <PropertyRef Name="Activity_InclusionDetails_Id" />
+          </Key>
+          <Property Name="Activity_InclusionDetails_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Inclusions_Id" Type="Guid" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_Id" Type="Int32" />
+          <Property Name="Activity_Flavour_Id" Type="Guid" />
+          <Property Name="InclusionDetailFor" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="GuideLanguage" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InclusionDetailType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InclusionDetailName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InclusionDetailDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="InclusionDetailFrom" Type="DateTime" Precision="3" />
+          <Property Name="InclusionDetailTo" Type="DateTime" Precision="3" />
+          <Property Name="DaysofWeek" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
+          <Property Name="FromTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ToTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Activity_Inclusions">
+          <Key>
+            <PropertyRef Name="Activity_Inclusions_Id" />
+          </Key>
+          <Property Name="Activity_Inclusions_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_Id" Type="Int32" />
+          <Property Name="Activity_Flavour_Id" Type="Guid" />
+          <Property Name="IsInclusion" Type="Boolean" />
+          <Property Name="InclusionFor" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsDriver" Type="Boolean" />
+          <Property Name="IsAudioCommentary" Type="Boolean" />
+          <Property Name="InclusionDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="InclusionName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="RestaurantStyle" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InclusionType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InclusionFrom" Type="DateTime" Precision="3" />
+          <Property Name="InclusionTo" Type="DateTime" Precision="3" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Activity_Itinerary">
+          <Key>
+            <PropertyRef Name="Activity_Itinerary_Id" />
+          </Key>
+          <Property Name="Activity_Itinerary_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_Id" Type="Int32" />
+          <Property Name="Activity_Flavour_Id" Type="Guid" />
+          <Property Name="ItineraryTitle" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="StartTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EndTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ItitneraryDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Activity_Media">
+          <Key>
+            <PropertyRef Name="Activity_Media_Id" />
+          </Key>
+          <Property Name="Activity_Media_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_Id" Type="Int32" />
+          <Property Name="MediaName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="MediaType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="RoomCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ValidFrom" Type="DateTime" Precision="3" />
+          <Property Name="ValidTo" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Media_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Media_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Media_Position" Type="Int32" />
+          <Property Name="Category" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SubCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FileFormat" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MediaID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="MediaFileMaster" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Activity_OldSchema">
+          <Key>
+            <PropertyRef Name="Acivity_Id" />
+          </Key>
+          <Property Name="Acivity_Id" Type="Guid" Nullable="false" />
+          <Property Name="CommonProductID" Type="Int32" />
+          <Property Name="Legacy_Product_ID" Type="Int32" />
+          <Property Name="Product_Name" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Display_Name" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Country" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductSubType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="StartingPoint" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EndingPoint" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Duration" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyRecommended" Type="Boolean" />
+          <Property Name="Latitude" Type="Double" />
+          <Property Name="Longitude" Type="Double" />
+          <Property Name="ShortDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LongDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MealsYN" Type="Boolean" />
+          <Property Name="GuideYN" Type="Boolean" />
+          <Property Name="TransferYN" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PhysicalLevel" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Advisory" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ThingsToCarry" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DeparturePoint" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TourType" Type="String" MaxLength="2550" FixedLength="false" Unicode="true" />
+          <Property Name="Parent_Legacy_Id" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Activity_PickUpDrop">
+          <Key>
+            <PropertyRef Name="Activity_PickUpDrop_Id" />
+          </Key>
+          <Property Name="Activity_PickUpDrop_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_Id" Type="Int32" />
+          <Property Name="Activity_Flavour_Id" Type="Guid" />
+          <Property Name="ForSupplier" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TransferType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="VehicleType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="VehicleCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="VehicleName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsAC" Type="Boolean" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Activity_PickUpDropDetail">
+          <Key>
+            <PropertyRef Name="Activity_PickUpDropDetail_Id" />
+          </Key>
+          <Property Name="Activity_PickUpDropDetail_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_PickUpDrop_Id" Type="Guid" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_Id" Type="Int32" />
+          <Property Name="PickUpDropType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FromToType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="LocationType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="LocationName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AreaSearchFor" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AreaNameofPlace" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Accommodation_Id" Type="Guid" />
+          <Property Name="Acco_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Acco_Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Acco_PostalCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Acco_Country" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Acco_City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Acco_State" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Acco_Area" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Acco_Location" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Acco_Telephone" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Acco_Fax" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Acco_Website" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Acco_Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Acco_ContactNotes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Activity_PickupDropSchedule">
+          <Key>
+            <PropertyRef Name="Activity_PickupDropSchedule_Id" />
+          </Key>
+          <Property Name="Activity_PickupDropSchedule_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_Id" Type="Int32" />
+          <Property Name="Activity_Flavour_Id" Type="Guid" />
+          <Property Name="ForSupplier" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Activity_Policy">
+          <Key>
+            <PropertyRef Name="Activity_Policy_Id" />
+          </Key>
+          <Property Name="Activity_Policy_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_ID" Type="Int32" />
+          <Property Name="Policy_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AllowedYN" Type="Boolean" />
+          <Property Name="PolicyName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PolicyDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Activity_Status">
+          <Key>
+            <PropertyRef Name="Activity_Status_Id" />
+          </Key>
+          <Property Name="Activity_Status_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_ID" Type="DateTime" Precision="3" />
+          <Property Name="From" Type="DateTime" Precision="3" />
+          <Property Name="To" Type="DateTime" Precision="3" />
+          <Property Name="DeactivationReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyMarket" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Activity_Flavour_Id" Type="Guid" />
+        </EntityType>
+        <EntityType Name="Activity_Tips">
+          <Key>
+            <PropertyRef Name="Activity_Tips_Id" />
+          </Key>
+          <Property Name="Activity_Tips_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_Id" Type="Int32" />
+          <Property Name="TipsType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TipsName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TipsDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Activity_Types">
+          <Key>
+            <PropertyRef Name="Activity_Type_Id" />
+          </Key>
+          <Property Name="Activity_Type_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" Nullable="false" />
+          <Property Name="ActivityType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Activity_Updates">
+          <Key>
+            <PropertyRef Name="Activity_Updates_Id" />
+          </Key>
+          <Property Name="Activity_Updates_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="FromDate" Type="DateTime" Precision="3" />
+          <Property Name="ToDate" Type="DateTime" Precision="3" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Source" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsInternal" Type="Boolean" />
+          <Property Name="Legacy_Product_ID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Activity_WeatherInformation">
+          <Key>
+            <PropertyRef Name="Activity_WeatherInformation_Id" />
+          </Key>
+          <Property Name="Activity_WeatherInformation_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_Id" Type="Int32" />
+          <Property Name="Month" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WeatherDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MinTemp" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="MaxTemp" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="IsSuitableToVisit" Type="Boolean" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3539,6 +4722,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="Accommodation_ProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_ProductMapping">
               <MappingFragment StoreEntitySet="Accommodation_ProductMapping">
+                <ScalarProperty Name="stg_AccoMapping_Id" ColumnName="stg_AccoMapping_Id" />
                 <ScalarProperty Name="City_Id" ColumnName="City_Id" />
                 <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
                 <ScalarProperty Name="Google_Place_Id" ColumnName="Google_Place_Id" />
@@ -3585,6 +4769,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="m_CityMapping">
             <EntityTypeMapping TypeName="ConsumerModel.m_CityMapping">
               <MappingFragment StoreEntitySet="m_CityMapping">
+                <ScalarProperty Name="stg_City_Id" ColumnName="stg_City_Id" />
                 <ScalarProperty Name="Longitude" ColumnName="Longitude" />
                 <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="StateName" ColumnName="StateName" />
@@ -3612,6 +4797,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="m_CountryMapping">
             <EntityTypeMapping TypeName="ConsumerModel.m_CountryMapping">
               <MappingFragment StoreEntitySet="m_CountryMapping">
+                <ScalarProperty Name="stg_Country_Id" ColumnName="stg_Country_Id" />
                 <ScalarProperty Name="ContinentName" ColumnName="ContinentName" />
                 <ScalarProperty Name="ContinentCode" ColumnName="ContinentCode" />
                 <ScalarProperty Name="Longitude" ColumnName="Longitude" />
@@ -4334,64 +5520,12 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Activities">
-            <EntityTypeMapping TypeName="ConsumerModel.Activity">
-              <MappingFragment StoreEntitySet="Activity">
-                <ScalarProperty Name="Parent_Legacy_Id" ColumnName="Parent_Legacy_Id" />
-                <ScalarProperty Name="TourType" ColumnName="TourType" />
-                <ScalarProperty Name="DeparturePoint" ColumnName="DeparturePoint" />
-                <ScalarProperty Name="ThingsToCarry" ColumnName="ThingsToCarry" />
-                <ScalarProperty Name="Advisory" ColumnName="Advisory" />
-                <ScalarProperty Name="PhysicalLevel" ColumnName="PhysicalLevel" />
-                <ScalarProperty Name="TransferYN" ColumnName="TransferYN" />
-                <ScalarProperty Name="GuideYN" ColumnName="GuideYN" />
-                <ScalarProperty Name="MealsYN" ColumnName="MealsYN" />
-                <ScalarProperty Name="LongDescription" ColumnName="LongDescription" />
-                <ScalarProperty Name="ShortDescription" ColumnName="ShortDescription" />
-                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
-                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
-                <ScalarProperty Name="CompanyRecommended" ColumnName="CompanyRecommended" />
-                <ScalarProperty Name="Duration" ColumnName="Duration" />
-                <ScalarProperty Name="EndingPoint" ColumnName="EndingPoint" />
-                <ScalarProperty Name="StartingPoint" ColumnName="StartingPoint" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="ProductCategory" ColumnName="ProductCategory" />
-                <ScalarProperty Name="ProductSubType" ColumnName="ProductSubType" />
-                <ScalarProperty Name="ProductType" ColumnName="ProductType" />
-                <ScalarProperty Name="City" ColumnName="City" />
-                <ScalarProperty Name="Country" ColumnName="Country" />
-                <ScalarProperty Name="Display_Name" ColumnName="Display_Name" />
-                <ScalarProperty Name="Product_Name" ColumnName="Product_Name" />
-                <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
-                <ScalarProperty Name="CommonProductID" ColumnName="CommonProductID" />
-                <ScalarProperty Name="Acivity_Id" ColumnName="Acivity_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Activity_Content">
-            <EntityTypeMapping TypeName="ConsumerModel.Activity_Content">
-              <MappingFragment StoreEntitySet="Activity_Content">
-                <ScalarProperty Name="IsInternal" ColumnName="IsInternal" />
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Content_Text" ColumnName="Content_Text" />
-                <ScalarProperty Name="Content_Type" ColumnName="Content_Type" />
-                <ScalarProperty Name="Legacy_Id" ColumnName="Legacy_Id" />
-                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
-                <ScalarProperty Name="ActivityContent_Id" ColumnName="ActivityContent_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="m_SupplierImportAttributes">
             <EntityTypeMapping TypeName="ConsumerModel.m_SupplierImportAttributes">
               <MappingFragment StoreEntitySet="m_SupplierImportAttributes">
+                <ScalarProperty Name="Master_Table" ColumnName="Master_Table" />
+                <ScalarProperty Name="Mapping_Table" ColumnName="Mapping_Table" />
+                <ScalarProperty Name="STG_Table" ColumnName="STG_Table" />
                 <ScalarProperty Name="AttributeFor" ColumnName="AttributeFor" />
                 <ScalarProperty Name="EDIT_USER" ColumnName="EDIT_USER" />
                 <ScalarProperty Name="EDIT_DATE" ColumnName="EDIT_DATE" />
@@ -4407,6 +5541,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="m_SupplierImportAttributeValues">
             <EntityTypeMapping TypeName="ConsumerModel.m_SupplierImportAttributeValues">
               <MappingFragment StoreEntitySet="m_SupplierImportAttributeValues">
+                <ScalarProperty Name="AttributeValue_ID" ColumnName="AttributeValue_ID" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Priority" ColumnName="Priority" />
                 <ScalarProperty Name="EDIT_USER" ColumnName="EDIT_USER" />
@@ -4425,6 +5560,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="SupplierImportFile_ErrorLog">
             <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFile_ErrorLog">
               <MappingFragment StoreEntitySet="SupplierImportFile_ErrorLog">
+                <ScalarProperty Name="ErrorMessage_UI" ColumnName="ErrorMessage_UI" />
                 <ScalarProperty Name="Error_USER" ColumnName="Error_USER" />
                 <ScalarProperty Name="Error_DATE" ColumnName="Error_DATE" />
                 <ScalarProperty Name="ErrorType" ColumnName="ErrorType" />
@@ -4571,6 +5707,7 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="stg_SupplierHotelRoomMapping">
             <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierHotelRoomMapping">
               <MappingFragment StoreEntitySet="stg_SupplierHotelRoomMapping">
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
                 <ScalarProperty Name="TX_RoomName" ColumnName="TX_RoomName" />
                 <ScalarProperty Name="RatePlanCode" ColumnName="RatePlanCode" />
                 <ScalarProperty Name="RatePlan" ColumnName="RatePlan" />
@@ -4655,6 +5792,11 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
           <EntitySetMapping Name="m_keyword">
             <EntityTypeMapping TypeName="ConsumerModel.m_keyword">
               <MappingFragment StoreEntitySet="m_keyword">
+                <ScalarProperty Name="AttributeSubLevelValue" ColumnName="AttributeSubLevelValue" />
+                <ScalarProperty Name="AttributeSubLevel" ColumnName="AttributeSubLevel" />
+                <ScalarProperty Name="AttributeLevel" ColumnName="AttributeLevel" />
+                <ScalarProperty Name="AttributeType" ColumnName="AttributeType" />
+                <ScalarProperty Name="EntityFor" ColumnName="EntityFor" />
                 <ScalarProperty Name="Icon" ColumnName="Icon" />
                 <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="Attribute" ColumnName="Attribute" />
@@ -4704,20 +5846,11 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Accommodation_SupplierRoomTypeAttributes">
-            <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeAttributes">
-              <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeAttributes">
-                <ScalarProperty Name="SystemAttributeKeyword_Id" ColumnName="SystemAttributeKeyword_Id" />
-                <ScalarProperty Name="SystemAttributeKeyword" ColumnName="SystemAttributeKeyword" />
-                <ScalarProperty Name="SupplierRoomTypeAttribute" ColumnName="SupplierRoomTypeAttribute" />
-                <ScalarProperty Name="RoomTypeMap_Id" ColumnName="RoomTypeMap_Id" />
-                <ScalarProperty Name="RoomTypeMapAttribute_Id" ColumnName="RoomTypeMapAttribute_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Accommodation_SupplierRoomTypeMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeMapping">
               <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeMapping">
+                <ScalarProperty Name="RoomDescription" ColumnName="RoomDescription" />
+                <ScalarProperty Name="stg_SupplierHotelRoomMapping_Id" ColumnName="stg_SupplierHotelRoomMapping_Id" />
                 <ScalarProperty Name="Accommodation_RoomInfo_Id" ColumnName="Accommodation_RoomInfo_Id" />
                 <ScalarProperty Name="MapId" ColumnName="MapId" />
                 <ScalarProperty Name="MappingStatus" ColumnName="MappingStatus" />
@@ -4746,6 +5879,637 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwMappingStats' does not have a prima
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
                 <ScalarProperty Name="Accommodation_Id" ColumnName="Accommodation_Id" />
                 <ScalarProperty Name="Accommodation_SupplierRoomTypeMapping_Id" ColumnName="Accommodation_SupplierRoomTypeMapping_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplierImportFile_Progress">
+            <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFile_Progress">
+              <MappingFragment StoreEntitySet="SupplierImportFile_Progress">
+                <ScalarProperty Name="LastCheckedOn" ColumnName="LastCheckedOn" />
+                <ScalarProperty Name="CurrentBatch" ColumnName="CurrentBatch" />
+                <ScalarProperty Name="TotalBatch" ColumnName="TotalBatch" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="PercentageValue" ColumnName="PercentageValue" />
+                <ScalarProperty Name="Step" ColumnName="Step" />
+                <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
+                <ScalarProperty Name="SupplierImportFileProgress_Id" ColumnName="SupplierImportFileProgress_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplierImportFile_VerboseLog">
+            <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFile_VerboseLog">
+              <MappingFragment StoreEntitySet="SupplierImportFile_VerboseLog">
+                <ScalarProperty Name="TimeStamp" ColumnName="TimeStamp" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="Step" ColumnName="Step" />
+                <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
+                <ScalarProperty Name="SupplierImportFile_VerboseLog_Id" ColumnName="SupplierImportFile_VerboseLog_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwUserwisemappedStats">
+            <EntityTypeMapping TypeName="ConsumerModel.vwUserwisemappedStat">
+              <MappingFragment StoreEntitySet="vwUserwisemappedStats">
+                <ScalarProperty Name="EditDate" ColumnName="EditDate" />
+                <ScalarProperty Name="totalcount" ColumnName="totalcount" />
+                <ScalarProperty Name="MappinFor" ColumnName="MappinFor" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="supplier_id" ColumnName="supplier_id" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplierImportFile_Statistics">
+            <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFile_Statistics">
+              <MappingFragment StoreEntitySet="SupplierImportFile_Statistics">
+                <ScalarProperty Name="Process_User" ColumnName="Process_User" />
+                <ScalarProperty Name="Process_Date" ColumnName="Process_Date" />
+                <ScalarProperty Name="Unmapped" ColumnName="Unmapped" />
+                <ScalarProperty Name="Mapped" ColumnName="Mapped" />
+                <ScalarProperty Name="TotalRows" ColumnName="TotalRows" />
+                <ScalarProperty Name="FinalStatus" ColumnName="FinalStatus" />
+                <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
+                <ScalarProperty Name="SupplierImportFile_Statistics_Id" ColumnName="SupplierImportFile_Statistics_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STG_Mapping_TableIds">
+            <EntityTypeMapping TypeName="ConsumerModel.STG_Mapping_TableIds">
+              <MappingFragment StoreEntitySet="STG_Mapping_TableIds">
+                <ScalarProperty Name="File_Id" ColumnName="File_Id" />
+                <ScalarProperty Name="Mapping_Id" ColumnName="Mapping_Id" />
+                <ScalarProperty Name="STG_Id" ColumnName="STG_Id" />
+                <ScalarProperty Name="STG_Mapping_Table_Id" ColumnName="STG_Mapping_Table_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Accommodation_SupplierRoomTypeAttributes">
+            <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeAttributes">
+              <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeAttributes">
+                <ScalarProperty Name="Accommodation_RoomFacility_Id" ColumnName="Accommodation_RoomFacility_Id" />
+                <ScalarProperty Name="SystemAttributeKeyword_Id" ColumnName="SystemAttributeKeyword_Id" />
+                <ScalarProperty Name="SystemAttributeKeyword" ColumnName="SystemAttributeKeyword" />
+                <ScalarProperty Name="SupplierRoomTypeAttribute" ColumnName="SupplierRoomTypeAttribute" />
+                <ScalarProperty Name="RoomTypeMap_Id" ColumnName="RoomTypeMap_Id" />
+                <ScalarProperty Name="RoomTypeMapAttribute_Id" ColumnName="RoomTypeMapAttribute_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="stg_SupplierActivityMapping">
+            <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierActivityMapping">
+              <MappingFragment StoreEntitySet="stg_SupplierActivityMapping">
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Specials" ColumnName="Specials" />
+                <ScalarProperty Name="Session" ColumnName="Session" />
+                <ScalarProperty Name="Timing" ColumnName="Timing" />
+                <ScalarProperty Name="DurationLength" ColumnName="DurationLength" />
+                <ScalarProperty Name="PassengerNumbers" ColumnName="PassengerNumbers" />
+                <ScalarProperty Name="PhysicalIntensity" ColumnName="PhysicalIntensity" />
+                <ScalarProperty Name="TotalActivities" ColumnName="TotalActivities" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="SupplierTourType" ColumnName="SupplierTourType" />
+                <ScalarProperty Name="Distance" ColumnName="Distance" />
+                <ScalarProperty Name="Theme" ColumnName="Theme" />
+                <ScalarProperty Name="DayPattern" ColumnName="DayPattern" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="ProductValidFor" ColumnName="ProductValidFor" />
+                <ScalarProperty Name="ImgURL" ColumnName="ImgURL" />
+                <ScalarProperty Name="TourActivityLanguage" ColumnName="TourActivityLanguage" />
+                <ScalarProperty Name="ProductDescription" ColumnName="ProductDescription" />
+                <ScalarProperty Name="TourActivityLangauageCode" ColumnName="TourActivityLangauageCode" />
+                <ScalarProperty Name="OptionDescription" ColumnName="OptionDescription" />
+                <ScalarProperty Name="OptionCode" ColumnName="OptionCode" />
+                <ScalarProperty Name="OptionTitle" ColumnName="OptionTitle" />
+                <ScalarProperty Name="BlockOutDateTo" ColumnName="BlockOutDateTo" />
+                <ScalarProperty Name="BlockOutDateFrom" ColumnName="BlockOutDateFrom" />
+                <ScalarProperty Name="DateTo" ColumnName="DateTo" />
+                <ScalarProperty Name="DateFrom" ColumnName="DateFrom" />
+                <ScalarProperty Name="DepartureDate" ColumnName="DepartureDate" />
+                <ScalarProperty Name="DepartureTime" ColumnName="DepartureTime" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="TicketingDetails" ColumnName="TicketingDetails" />
+                <ScalarProperty Name="DeparturePoint" ColumnName="DeparturePoint" />
+                <ScalarProperty Name="AdditionalInformation" ColumnName="AdditionalInformation" />
+                <ScalarProperty Name="Exclusions" ColumnName="Exclusions" />
+                <ScalarProperty Name="Inclusions" ColumnName="Inclusions" />
+                <ScalarProperty Name="Conditions" ColumnName="Conditions" />
+                <ScalarProperty Name="Introduction" ColumnName="Introduction" />
+                <ScalarProperty Name="SupplierDataLangaugeCode" ColumnName="SupplierDataLangaugeCode" />
+                <ScalarProperty Name="SupplierProductName" ColumnName="SupplierProductName" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="SupplierCityIATACode" ColumnName="SupplierCityIATACode" />
+                <ScalarProperty Name="SupplierStateCode" ColumnName="SupplierStateCode" />
+                <ScalarProperty Name="SupplierStateName" ColumnName="SupplierStateName" />
+                <ScalarProperty Name="SupplierCityCode" ColumnName="SupplierCityCode" />
+                <ScalarProperty Name="SupplierCountryCode" ColumnName="SupplierCountryCode" />
+                <ScalarProperty Name="SupplierCityName" ColumnName="SupplierCityName" />
+                <ScalarProperty Name="SupplierCountryName" ColumnName="SupplierCountryName" />
+                <ScalarProperty Name="SupplierLocationName" ColumnName="SupplierLocationName" />
+                <ScalarProperty Name="SupplierLocationId" ColumnName="SupplierLocationId" />
+                <ScalarProperty Name="SupplierType" ColumnName="SupplierType" />
+                <ScalarProperty Name="SupplierProductType" ColumnName="SupplierProductType" />
+                <ScalarProperty Name="SuplierProductCode" ColumnName="SuplierProductCode" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="SupplierCode" ColumnName="SupplierCode" />
+                <ScalarProperty Name="stg_SupplierActivityMapping_Id" ColumnName="stg_SupplierActivityMapping_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Supplier_APILocation">
+            <EntityTypeMapping TypeName="ConsumerModel.Supplier_APILocation">
+              <MappingFragment StoreEntitySet="Supplier_APILocation">
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="EDIT_USER" ColumnName="EDIT_USER" />
+                <ScalarProperty Name="EDIT_DATE" ColumnName="EDIT_DATE" />
+                <ScalarProperty Name="CREATE_USER" ColumnName="CREATE_USER" />
+                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
+                <ScalarProperty Name="API_Path" ColumnName="API_Path" />
+                <ScalarProperty Name="Entity_Id" ColumnName="Entity_Id" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="Supplier_APILocation_Id" ColumnName="Supplier_APILocation_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Supplier_ApiCallLog">
+            <EntityTypeMapping TypeName="ConsumerModel.Supplier_ApiCallLog">
+              <MappingFragment StoreEntitySet="Supplier_ApiCallLog">
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="PentahoCall_Id" ColumnName="PentahoCall_Id" />
+                <ScalarProperty Name="SupplierApiLocation_Id" ColumnName="SupplierApiLocation_Id" />
+                <ScalarProperty Name="SupplierApiCallLog_Id" ColumnName="SupplierApiCallLog_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activities">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity">
+              <MappingFragment StoreEntitySet="Activity">
+                <ScalarProperty Name="Parent_Legacy_Id" ColumnName="Parent_Legacy_Id" />
+                <ScalarProperty Name="TourType" ColumnName="TourType" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CompanyRecommended" ColumnName="CompanyRecommended" />
+                <ScalarProperty Name="Affiliation" ColumnName="Affiliation" />
+                <ScalarProperty Name="ProductRating" ColumnName="ProductRating" />
+                <ScalarProperty Name="CompanyRating" ColumnName="CompanyRating" />
+                <ScalarProperty Name="Mode_Of_Transport" ColumnName="Mode_Of_Transport" />
+                <ScalarProperty Name="ProductType" ColumnName="ProductType" />
+                <ScalarProperty Name="ProductCategorySubType" ColumnName="ProductCategorySubType" />
+                <ScalarProperty Name="ProductCategory" ColumnName="ProductCategory" />
+                <ScalarProperty Name="City_Id" ColumnName="City_Id" />
+                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="Display_Name" ColumnName="Display_Name" />
+                <ScalarProperty Name="Product_Name" ColumnName="Product_Name" />
+                <ScalarProperty Name="FinanceProductID" ColumnName="FinanceProductID" />
+                <ScalarProperty Name="CompanyProductID" ColumnName="CompanyProductID" />
+                <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
+                <ScalarProperty Name="CommonProductID" ColumnName="CommonProductID" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_ClassificationAttributes">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_ClassificationAttributes">
+              <MappingFragment StoreEntitySet="Activity_ClassificationAttributes">
+                <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
+                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
+                <ScalarProperty Name="AttributeSubType" ColumnName="AttributeSubType" />
+                <ScalarProperty Name="InternalOnly" ColumnName="InternalOnly" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="AttributeValue" ColumnName="AttributeValue" />
+                <ScalarProperty Name="AttributeType" ColumnName="AttributeType" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_ClassificationAttribute_Id" ColumnName="Activity_ClassificationAttribute_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Contact">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Contact">
+              <MappingFragment StoreEntitySet="Activity_Contact">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="WebSiteURL" ColumnName="WebSiteURL" />
+                <ScalarProperty Name="Fax" ColumnName="Fax" />
+                <ScalarProperty Name="Telephone" ColumnName="Telephone" />
+                <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Contact_Id" ColumnName="Activity_Contact_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Content">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Content">
+              <MappingFragment StoreEntitySet="Activity_Content">
+                <ScalarProperty Name="IsInternal" ColumnName="IsInternal" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Content_Text" ColumnName="Content_Text" />
+                <ScalarProperty Name="Content_Type" ColumnName="Content_Type" />
+                <ScalarProperty Name="Legacy_Id" ColumnName="Legacy_Id" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="ActivityContent_Id" ColumnName="ActivityContent_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Descriptions">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Descriptions">
+              <MappingFragment StoreEntitySet="Activity_Descriptions">
+                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="ToDate" ColumnName="ToDate" />
+                <ScalarProperty Name="FromDate" ColumnName="FromDate" />
+                <ScalarProperty Name="DescriptionType" ColumnName="DescriptionType" />
+                <ScalarProperty Name="DescriptionFor" ColumnName="DescriptionFor" />
+                <ScalarProperty Name="Language_Code" ColumnName="Language_Code" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Description_Id" ColumnName="Activity_Description_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Facility">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Facility">
+              <MappingFragment StoreEntitySet="Activity_Facility">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="ToDate" ColumnName="ToDate" />
+                <ScalarProperty Name="FromDate" ColumnName="FromDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="FacilityName" ColumnName="FacilityName" />
+                <ScalarProperty Name="FacilityType" ColumnName="FacilityType" />
+                <ScalarProperty Name="FacilityCategory" ColumnName="FacilityCategory" />
+                <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Facility_Id" ColumnName="Activity_Facility_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Flavour">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Flavour">
+              <MappingFragment StoreEntitySet="Activity_Flavour">
+                <ScalarProperty Name="IsPickUpDropDefined" ColumnName="IsPickUpDropDefined" />
+                <ScalarProperty Name="USP" ColumnName="USP" />
+                <ScalarProperty Name="EndingPoint" ColumnName="EndingPoint" />
+                <ScalarProperty Name="StartingPoint" ColumnName="StartingPoint" />
+                <ScalarProperty Name="PlaceOfEvent" ColumnName="PlaceOfEvent" />
+                <ScalarProperty Name="ProductNameSubType" ColumnName="ProductNameSubType" />
+                <ScalarProperty Name="FinanceControlId" ColumnName="FinanceControlId" />
+                <ScalarProperty Name="CompanyProductNameSubType_Id" ColumnName="CompanyProductNameSubType_Id" />
+                <ScalarProperty Name="CommonProductNameSubType_Id" ColumnName="CommonProductNameSubType_Id" />
+                <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
+                <ScalarProperty Name="ProductType" ColumnName="ProductType" />
+                <ScalarProperty Name="ProductCategorySubType" ColumnName="ProductCategorySubType" />
+                <ScalarProperty Name="ProductCategory" ColumnName="ProductCategory" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_InclusionDetails">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_InclusionDetails">
+              <MappingFragment StoreEntitySet="Activity_InclusionDetails">
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="ToTime" ColumnName="ToTime" />
+                <ScalarProperty Name="FromTime" ColumnName="FromTime" />
+                <ScalarProperty Name="DaysofWeek" ColumnName="DaysofWeek" />
+                <ScalarProperty Name="InclusionDetailTo" ColumnName="InclusionDetailTo" />
+                <ScalarProperty Name="InclusionDetailFrom" ColumnName="InclusionDetailFrom" />
+                <ScalarProperty Name="InclusionDetailDescription" ColumnName="InclusionDetailDescription" />
+                <ScalarProperty Name="InclusionDetailName" ColumnName="InclusionDetailName" />
+                <ScalarProperty Name="InclusionDetailType" ColumnName="InclusionDetailType" />
+                <ScalarProperty Name="GuideLanguage" ColumnName="GuideLanguage" />
+                <ScalarProperty Name="InclusionDetailFor" ColumnName="InclusionDetailFor" />
+                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
+                <ScalarProperty Name="Legacy_Product_Id" ColumnName="Legacy_Product_Id" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Inclusions_Id" ColumnName="Activity_Inclusions_Id" />
+                <ScalarProperty Name="Activity_InclusionDetails_Id" ColumnName="Activity_InclusionDetails_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Inclusions">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Inclusions">
+              <MappingFragment StoreEntitySet="Activity_Inclusions">
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="InclusionTo" ColumnName="InclusionTo" />
+                <ScalarProperty Name="InclusionFrom" ColumnName="InclusionFrom" />
+                <ScalarProperty Name="InclusionType" ColumnName="InclusionType" />
+                <ScalarProperty Name="RestaurantStyle" ColumnName="RestaurantStyle" />
+                <ScalarProperty Name="InclusionName" ColumnName="InclusionName" />
+                <ScalarProperty Name="InclusionDescription" ColumnName="InclusionDescription" />
+                <ScalarProperty Name="IsAudioCommentary" ColumnName="IsAudioCommentary" />
+                <ScalarProperty Name="IsDriver" ColumnName="IsDriver" />
+                <ScalarProperty Name="InclusionFor" ColumnName="InclusionFor" />
+                <ScalarProperty Name="IsInclusion" ColumnName="IsInclusion" />
+                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
+                <ScalarProperty Name="Legacy_Product_Id" ColumnName="Legacy_Product_Id" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Inclusions_Id" ColumnName="Activity_Inclusions_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Itinerary">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Itinerary">
+              <MappingFragment StoreEntitySet="Activity_Itinerary">
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="ItitneraryDescription" ColumnName="ItitneraryDescription" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="ItineraryTitle" ColumnName="ItineraryTitle" />
+                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
+                <ScalarProperty Name="Legacy_Product_Id" ColumnName="Legacy_Product_Id" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Itinerary_Id" ColumnName="Activity_Itinerary_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Media">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Media">
+              <MappingFragment StoreEntitySet="Activity_Media">
+                <ScalarProperty Name="MediaFileMaster" ColumnName="MediaFileMaster" />
+                <ScalarProperty Name="MediaID" ColumnName="MediaID" />
+                <ScalarProperty Name="FileFormat" ColumnName="FileFormat" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="SubCategory" ColumnName="SubCategory" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Media_Position" ColumnName="Media_Position" />
+                <ScalarProperty Name="Media_URL" ColumnName="Media_URL" />
+                <ScalarProperty Name="Media_Path" ColumnName="Media_Path" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ValidTo" ColumnName="ValidTo" />
+                <ScalarProperty Name="ValidFrom" ColumnName="ValidFrom" />
+                <ScalarProperty Name="RoomCategory" ColumnName="RoomCategory" />
+                <ScalarProperty Name="MediaType" ColumnName="MediaType" />
+                <ScalarProperty Name="MediaName" ColumnName="MediaName" />
+                <ScalarProperty Name="Legacy_Product_Id" ColumnName="Legacy_Product_Id" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Media_Id" ColumnName="Activity_Media_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_OldSchema">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_OldSchema">
+              <MappingFragment StoreEntitySet="Activity_OldSchema">
+                <ScalarProperty Name="Parent_Legacy_Id" ColumnName="Parent_Legacy_Id" />
+                <ScalarProperty Name="TourType" ColumnName="TourType" />
+                <ScalarProperty Name="DeparturePoint" ColumnName="DeparturePoint" />
+                <ScalarProperty Name="ThingsToCarry" ColumnName="ThingsToCarry" />
+                <ScalarProperty Name="Advisory" ColumnName="Advisory" />
+                <ScalarProperty Name="PhysicalLevel" ColumnName="PhysicalLevel" />
+                <ScalarProperty Name="TransferYN" ColumnName="TransferYN" />
+                <ScalarProperty Name="GuideYN" ColumnName="GuideYN" />
+                <ScalarProperty Name="MealsYN" ColumnName="MealsYN" />
+                <ScalarProperty Name="LongDescription" ColumnName="LongDescription" />
+                <ScalarProperty Name="ShortDescription" ColumnName="ShortDescription" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="CompanyRecommended" ColumnName="CompanyRecommended" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="EndingPoint" ColumnName="EndingPoint" />
+                <ScalarProperty Name="StartingPoint" ColumnName="StartingPoint" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="ProductCategory" ColumnName="ProductCategory" />
+                <ScalarProperty Name="ProductSubType" ColumnName="ProductSubType" />
+                <ScalarProperty Name="ProductType" ColumnName="ProductType" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="Display_Name" ColumnName="Display_Name" />
+                <ScalarProperty Name="Product_Name" ColumnName="Product_Name" />
+                <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
+                <ScalarProperty Name="CommonProductID" ColumnName="CommonProductID" />
+                <ScalarProperty Name="Acivity_Id" ColumnName="Acivity_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_PickUpDrop">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_PickUpDrop">
+              <MappingFragment StoreEntitySet="Activity_PickUpDrop">
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="IsAC" ColumnName="IsAC" />
+                <ScalarProperty Name="VehicleName" ColumnName="VehicleName" />
+                <ScalarProperty Name="VehicleCategory" ColumnName="VehicleCategory" />
+                <ScalarProperty Name="VehicleType" ColumnName="VehicleType" />
+                <ScalarProperty Name="TransferType" ColumnName="TransferType" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="ForSupplier" ColumnName="ForSupplier" />
+                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
+                <ScalarProperty Name="Legacy_Product_Id" ColumnName="Legacy_Product_Id" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_PickUpDrop_Id" ColumnName="Activity_PickUpDrop_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_PickUpDropDetail">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_PickUpDropDetail">
+              <MappingFragment StoreEntitySet="Activity_PickUpDropDetail">
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Acco_ContactNotes" ColumnName="Acco_ContactNotes" />
+                <ScalarProperty Name="Acco_Email" ColumnName="Acco_Email" />
+                <ScalarProperty Name="Acco_Website" ColumnName="Acco_Website" />
+                <ScalarProperty Name="Acco_Fax" ColumnName="Acco_Fax" />
+                <ScalarProperty Name="Acco_Telephone" ColumnName="Acco_Telephone" />
+                <ScalarProperty Name="Acco_Location" ColumnName="Acco_Location" />
+                <ScalarProperty Name="Acco_Area" ColumnName="Acco_Area" />
+                <ScalarProperty Name="Acco_State" ColumnName="Acco_State" />
+                <ScalarProperty Name="Acco_City" ColumnName="Acco_City" />
+                <ScalarProperty Name="Acco_Country" ColumnName="Acco_Country" />
+                <ScalarProperty Name="Acco_PostalCode" ColumnName="Acco_PostalCode" />
+                <ScalarProperty Name="Acco_Address" ColumnName="Acco_Address" />
+                <ScalarProperty Name="Acco_Name" ColumnName="Acco_Name" />
+                <ScalarProperty Name="Accommodation_Id" ColumnName="Accommodation_Id" />
+                <ScalarProperty Name="AreaNameofPlace" ColumnName="AreaNameofPlace" />
+                <ScalarProperty Name="AreaSearchFor" ColumnName="AreaSearchFor" />
+                <ScalarProperty Name="LocationName" ColumnName="LocationName" />
+                <ScalarProperty Name="LocationType" ColumnName="LocationType" />
+                <ScalarProperty Name="FromToType" ColumnName="FromToType" />
+                <ScalarProperty Name="PickUpDropType" ColumnName="PickUpDropType" />
+                <ScalarProperty Name="Legacy_Product_Id" ColumnName="Legacy_Product_Id" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_PickUpDrop_Id" ColumnName="Activity_PickUpDrop_Id" />
+                <ScalarProperty Name="Activity_PickUpDropDetail_Id" ColumnName="Activity_PickUpDropDetail_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_PickupDropSchedule">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_PickupDropSchedule">
+              <MappingFragment StoreEntitySet="Activity_PickupDropSchedule">
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="ForSupplier" ColumnName="ForSupplier" />
+                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
+                <ScalarProperty Name="Legacy_Product_Id" ColumnName="Legacy_Product_Id" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_PickupDropSchedule_Id" ColumnName="Activity_PickupDropSchedule_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Policy">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Policy">
+              <MappingFragment StoreEntitySet="Activity_Policy">
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="PolicyDescription" ColumnName="PolicyDescription" />
+                <ScalarProperty Name="PolicyName" ColumnName="PolicyName" />
+                <ScalarProperty Name="AllowedYN" ColumnName="AllowedYN" />
+                <ScalarProperty Name="Policy_Type" ColumnName="Policy_Type" />
+                <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Policy_Id" ColumnName="Activity_Policy_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Status">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Status">
+              <MappingFragment StoreEntitySet="Activity_Status">
+                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CompanyMarket" ColumnName="CompanyMarket" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="DeactivationReason" ColumnName="DeactivationReason" />
+                <ScalarProperty Name="To" ColumnName="To" />
+                <ScalarProperty Name="From" ColumnName="From" />
+                <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Status_Id" ColumnName="Activity_Status_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Tips">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Tips">
+              <MappingFragment StoreEntitySet="Activity_Tips">
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="TipsDescription" ColumnName="TipsDescription" />
+                <ScalarProperty Name="TipsName" ColumnName="TipsName" />
+                <ScalarProperty Name="TipsType" ColumnName="TipsType" />
+                <ScalarProperty Name="Legacy_Product_Id" ColumnName="Legacy_Product_Id" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Tips_Id" ColumnName="Activity_Tips_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Types">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Types">
+              <MappingFragment StoreEntitySet="Activity_Types">
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="ActivityType" ColumnName="ActivityType" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Type_Id" ColumnName="Activity_Type_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Updates">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Updates">
+              <MappingFragment StoreEntitySet="Activity_Updates">
+                <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
+                <ScalarProperty Name="IsInternal" ColumnName="IsInternal" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ToDate" ColumnName="ToDate" />
+                <ScalarProperty Name="FromDate" ColumnName="FromDate" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Updates_Id" ColumnName="Activity_Updates_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_WeatherInformation">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_WeatherInformation">
+              <MappingFragment StoreEntitySet="Activity_WeatherInformation">
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="IsSuitableToVisit" ColumnName="IsSuitableToVisit" />
+                <ScalarProperty Name="MaxTemp" ColumnName="MaxTemp" />
+                <ScalarProperty Name="MinTemp" ColumnName="MinTemp" />
+                <ScalarProperty Name="WeatherDescription" ColumnName="WeatherDescription" />
+                <ScalarProperty Name="Month" ColumnName="Month" />
+                <ScalarProperty Name="Legacy_Product_Id" ColumnName="Legacy_Product_Id" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_WeatherInformation_Id" ColumnName="Activity_WeatherInformation_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

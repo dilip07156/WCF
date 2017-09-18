@@ -80,6 +80,13 @@ namespace ConsumerSvc
                 return objBL.UpdateStaticDataMappingAttributeValueStatus(obj);
             }
         }
+        public List<string> GetStaticDataMappingAttributeValuesForFilter(DataContracts.UploadStaticData.DC_SupplierImportAttributeValues_RQ RQ)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.GetStaticDataMappingAttributeValuesForFilter(RQ);
+            }
+        }
         #endregion
 
 
@@ -118,7 +125,7 @@ namespace ConsumerSvc
         #endregion
 
 
-        #region "Error Log"
+        #region "Logging"
         public DataContracts.DC_Message AddStaticDataUploadErrorLog(DataContracts.UploadStaticData.DC_SupplierImportFile_ErrorLog obj)
         {
             using (BL_UploadStaticData objBL = new BL_UploadStaticData())
@@ -133,7 +140,28 @@ namespace ConsumerSvc
                 return objBL.GetStaticDataUploadErrorLog(obj);
             }
         }
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_Progress> GetStaticDataUploadProcessLog(DataContracts.UploadStaticData.DC_SupplierImportFile_Progress_RQ obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.GetStaticDataUploadProcessLog(obj);
+            }
+        }
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog> GetStaticDataUploadVerboseLog(DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog_RQ obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.GetStaticDataUploadVerboseLog(obj);
+            }
+        }
 
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics> GetStaticDataUploadStatistics(DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics_RQ RQ)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.GetStaticDataUploadStatistics(RQ);
+            }
+        }
         #endregion
 
         #region Process Or Test Uploaded Files
@@ -158,6 +186,15 @@ namespace ConsumerSvc
             using (BL_UploadStaticData objBL = new BL_UploadStaticData())
             {
                 return objBL.StaticFileUpload_TestFile_Transform(obj);
+            }
+        }
+        #endregion
+        #region File Progress DashBoard
+        public DataContracts.DC_FileProgressDashboard getFileProgressDashBoardData(string fileid)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.getFileProgressDashBoardData(fileid);
             }
         }
         #endregion

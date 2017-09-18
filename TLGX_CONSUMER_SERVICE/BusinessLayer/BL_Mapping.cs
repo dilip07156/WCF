@@ -173,6 +173,38 @@ namespace BusinessLayer
             }
         }
 
+        public bool RoomTypeMappingMatch(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.RoomTypeMappingMatch(obj);
+            }
+        }
+
+        public bool CountryMappingMatch(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.CountryMappingMatch(obj);
+            }
+        }
+
+        public List<DC_SupplierRoomType_TTFU_RQ> GetRoomTypeMapping_For_TTFU(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetRoomTypeMapping_For_TTFU(obj);
+            }
+        }
+
+        public bool UpdateRoomTypeMappingStatus(DC_MappingMatch obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.UpdateRoomTypeMappingStatus(obj);
+            }
+        }
+
         #endregion
 
         #region Country Mapping
@@ -271,6 +303,20 @@ namespace BusinessLayer
             }
         }
 
+        public bool DeleteSTGMappingTableIDs(string file_Id)
+        {
+            Guid File_Id = new Guid();
+
+            if (Guid.TryParse(file_Id, out File_Id))
+            {
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.DeleteSTGMappingTableIDs(File_Id);
+                }
+            }
+            else
+                return false;
+        }
 
         public List<DataContracts.Mapping.DC_MappingStatsForSuppliers> GetMappingStatisticsForSuppliers()
         {
@@ -570,6 +616,17 @@ namespace BusinessLayer
             {
                 return objBL.getNewHotelsAddedReport(param);
             }
+        }
+        #endregion
+        #region velocity Dashboard
+        public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(DataContracts.Mapping.DC_RollOFParams parm)
+        {
+           
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.GetVelocityDashboard(parm);
+                }
+            
         }
         #endregion
     }

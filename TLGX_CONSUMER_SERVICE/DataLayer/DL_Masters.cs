@@ -17,6 +17,8 @@ namespace DataLayer
             Save,
             Update
         }
+
+
         public void Dispose()
         { }
 
@@ -757,14 +759,14 @@ namespace DataLayer
                                  select a;
                     }
 
-                    if(RQ.State_Id!=null)
+                    if (RQ.State_Id != null)
                     {
                         search = from a in search
                                  where a.State_Id == RQ.State_Id
                                  select a;
                     }
 
-                    if(!String.IsNullOrWhiteSpace(RQ.State_Name))
+                    if (!String.IsNullOrWhiteSpace(RQ.State_Name))
                     {
                         search = from a in search
                                  where a.StateName == RQ.State_Name
@@ -972,7 +974,7 @@ namespace DataLayer
                         search.StateName = param.StateName;
                         //search.State_Id = param.State_Id;
                         //search.Status = param.Status;
-                        
+
                     }
                     else
                     {
@@ -1830,6 +1832,58 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching port master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        public IList<DataContracts.Masters.DC_MasterAttribute> GetAllAttributeAndValuesByParentAttributeValue(DataContracts.Masters.DC_MasterAttribute _obj)
+        {
+            try
+            {
+                List<DC_MasterAttribute> _lstMasterAttribute = new List<DC_MasterAttribute>();
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from ma in context.m_masterattribute select ma;
+                    if (!string.IsNullOrWhiteSpace(_obj.MasterFor))
+                        search = from ma in search where ma.MasterFor == _obj.MasterFor select ma;
+
+                    if (_obj.ParentAttributeValue_Id.HasValue)
+                    {
+                        if (_obj.ParentAttributeValue_Id.Value != Guid.Empty)
+                            _lstMasterAttribute = (from ma in search
+                                                   join mac in context.m_masterattributevalue on ma.MasterAttribute_Id equals mac.MasterAttribute_Id
+                                                   where mac.ParentAttributeValue_Id == _obj.ParentAttributeValue_Id
+                                                   orderby mac.AttributeValue
+                                                   select new DC_MasterAttribute
+                                                   {
+                                                       MasterAttributeValue_Id = mac.MasterAttributeValue_Id,
+                                                       AttributeValue = mac.AttributeValue
+                                                   }).ToList();
+                    }
+                    if (_obj.ParentAttributeValue_Id.HasValue)
+                    {
+                        //Get partent_id 
+                        //Guid _prentAttributeValue_Id = context.m_masterattributevalue.Where(p => p.AttributeValue.ToLower() == _obj.AttributeValue.ToLower()).FirstOrDefault().MasterAttributeValue_Id;
+                        Guid _prentAttributeValue_Id = _obj.ParentAttributeValue_Id.Value;
+                        if (_prentAttributeValue_Id != Guid.Empty)
+                        {
+                            _lstMasterAttribute = (from mac in context.m_masterattributevalue
+                                                   where mac.ParentAttributeValue_Id == _prentAttributeValue_Id
+                                                   select new DC_MasterAttribute
+                                                   {
+                                                       MasterAttributeValue_Id = mac.MasterAttributeValue_Id,
+                                                       AttributeValue = mac.AttributeValue
+                                                   }).ToList();
+                        }
+
+                    }
+                    return _lstMasterAttribute;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         public IList<DataContracts.Masters.DC_MasterAttribute> GetAllAttributeAndValues(DataContracts.Masters.DC_MasterAttribute _obj)
         {
             try
@@ -2086,7 +2140,7 @@ namespace DataLayer
 
                     //Check duplicate 
                     var isduplicate = (from attr in context.m_masterattributevalue
-                                       where attr.MasterAttributeValue_Id != obj.MasterAttributeValue_Id && attr.MasterAttribute_Id == obj.MasterAttribute_Id && attr.AttributeValue == obj.AttributeValue
+                                       where attr.MasterAttributeValue_Id != obj.MasterAttributeValue_Id && attr.ParentAttributeValue_Id == obj.ParentAttributeValue_Id && attr.MasterAttribute_Id == obj.MasterAttribute_Id && attr.AttributeValue == obj.AttributeValue
                                        select attr).Count() == 0 ? false : true;
                     if (isduplicate)
                     {
@@ -2235,6 +2289,13 @@ namespace DataLayer
                         search = from sup in search
                                  join pro in context.Supplier_ProductCategory on sup.Supplier_Id equals pro.Supplier_Id
                                  where pro.ProductCategorySubType == RQ.CategorySubType_ID
+                                 select sup;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierType))
+                    {
+                        search = from sup in search
+                                 where sup.SupplierType == RQ.SupplierType
                                  select sup;
                     }
                     if (!string.IsNullOrWhiteSpace(RQ.StatusCode))
@@ -2504,8 +2565,6 @@ namespace DataLayer
             return _msg;
 
         }
-
-
         public DataContracts.DC_Message AddUpdateSupplierMarket(DataContracts.Masters.DC_SupplierMarket _objSupMkt)
         {
             DC_Message _msg = new DC_Message();
@@ -2605,7 +2664,6 @@ namespace DataLayer
             return _msg;
 
         }
-
         public DataContracts.DC_Message AddUpdateSupplier_ProductCategory(DataContracts.Masters.DC_Supplier_ProductCategory _objSupCat)
         {
             DC_Message _msg = new DC_Message();
@@ -2709,6 +2767,175 @@ namespace DataLayer
 
         }
 
+        public List<DataContracts.Masters.DC_Supplier_ApiLocation> SupplierApiLocation_Search(DataContracts.Masters.DC_Supplier_ApiLocation RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from supApi in context.Supplier_APILocation
+                                 select supApi;
+
+                    if (RQ.Supplier_Id != Guid.Empty)
+                    {
+                        search = from sup in search
+                                 where sup.Supplier_Id == RQ.Supplier_Id
+                                 select sup;
+                    }
+
+                    if (RQ.ApiLocation_Id != Guid.Empty)
+                    {
+                        search = from sup in search
+                                 where sup.Supplier_APILocation_Id == RQ.ApiLocation_Id
+                                 select sup;
+                    }
+
+                    //int total;
+
+                    //total = search.Count();
+
+                    //if (RQ.PageSize == 0)
+                    //    RQ.PageSize = 10;
+
+                    //int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    //var canPage = skip < total;
+
+
+                    var result = from a in search
+                                 join mav in context.m_masterattributevalue on a.Entity_Id equals mav.MasterAttributeValue_Id
+                                 join sup in context.Suppliers on a.Supplier_Id equals sup.Supplier_Id
+                                 select new DataContracts.Masters.DC_Supplier_ApiLocation
+                                 {
+                                     Supplier_Id = a.Supplier_Id ?? Guid.Empty,
+                                     ApiEndPoint = a.API_Path,
+                                     ApiLocation_Id = a.Supplier_APILocation_Id,
+                                     Create_Date = a.CREATE_DATE,
+                                     Create_User = a.CREATE_USER,
+                                     Edit_Date = a.EDIT_DATE,
+                                     Edit_User = a.EDIT_USER,
+                                     Entity = mav.AttributeValue,
+                                     Entity_Id = a.Entity_Id,
+                                     IsActive = false,
+                                     Status = a.STATUS,
+                                     Supplier_Name = sup.Name
+                                 };
+
+                    return result.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Supplier Api Location", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+
+        }
+
+        public DataContracts.DC_Message SupplierApiLocation_Update(DataContracts.Masters.DC_Supplier_ApiLocation objApiLoc)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var SupplierApiLocation = context.Supplier_APILocation.Find(objApiLoc.ApiLocation_Id);
+                    if (SupplierApiLocation != null)
+                    {
+                        var dupeRecord = context.Supplier_APILocation.Where(w => w.API_Path.ToLower().Trim() == objApiLoc.ApiEndPoint.Trim().ToLower() && w.Supplier_APILocation_Id != objApiLoc.ApiLocation_Id).Select(r => r).FirstOrDefault();
+
+                        if (dupeRecord != null)
+                        {
+                            string Supplier = context.Suppliers.Where(w => w.Supplier_Id == dupeRecord.Supplier_Id).Select(s => s.Name).FirstOrDefault();
+                            string Entity = context.m_masterattributevalue.Where(w => w.MasterAttributeValue_Id == dupeRecord.Entity_Id).Select(s => s.AttributeValue).FirstOrDefault();
+
+                            return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Duplicate, StatusMessage = "This Api Location already exists for Supplier : " + Supplier + " and Entity : " + Entity };
+                        }
+                        else
+                        {
+                            SupplierApiLocation.Supplier_Id = objApiLoc.Supplier_Id;
+                            SupplierApiLocation.API_Path = objApiLoc.ApiEndPoint;
+                            SupplierApiLocation.EDIT_DATE = objApiLoc.Edit_Date ?? DateTime.Now;
+                            SupplierApiLocation.EDIT_USER = objApiLoc.Edit_User;
+                            SupplierApiLocation.Entity_Id = objApiLoc.Entity_Id;
+                            SupplierApiLocation.STATUS = objApiLoc.Status;
+                            context.SaveChanges();
+                            return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Record updated." };
+                        }
+                    }
+                    else
+                    {
+                        return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Invalid Record." };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating Supplier Api Location", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public DataContracts.DC_Message SupplierApiLocation_Add(DataContracts.Masters.DC_Supplier_ApiLocation objApiLoc)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (objApiLoc.Supplier_Id == null || objApiLoc.Entity_Id == null || string.IsNullOrWhiteSpace(objApiLoc.ApiEndPoint))
+                    {
+                        return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Invalid Record." };
+                    }
+
+                    if (objApiLoc.Supplier_Id == Guid.Empty || objApiLoc.Entity_Id == Guid.Empty)
+                    {
+                        return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Invalid Record." };
+                    }
+
+                    var dupeRecord = context.Supplier_APILocation.Where(w => w.API_Path.ToLower().Trim() == objApiLoc.ApiEndPoint.Trim().ToLower()).Select(r => r).FirstOrDefault();
+                    if (dupeRecord != null)
+                    {
+                        string Supplier = context.Suppliers.Where(w => w.Supplier_Id == dupeRecord.Supplier_Id).Select(s => s.Name).FirstOrDefault();
+                        string Entity = context.m_masterattributevalue.Where(w => w.MasterAttributeValue_Id == dupeRecord.Entity_Id).Select(s => s.AttributeValue).FirstOrDefault();
+
+                        return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Duplicate, StatusMessage = "This Api Location already exists for Supplier : " + Supplier + " and Entity : " + Entity };
+                    }
+
+                    dupeRecord = null;
+                    dupeRecord = context.Supplier_APILocation.Where(w => w.Supplier_Id == objApiLoc.Supplier_Id && w.Entity_Id == objApiLoc.Entity_Id).Select(r => r).FirstOrDefault();
+                    if (dupeRecord != null)
+                    {
+                        return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Duplicate, StatusMessage = "Duplicate entry for this supplier and entity." };
+                    }
+
+                    if (objApiLoc.ApiLocation_Id != null)
+                    {
+                        if (objApiLoc.ApiLocation_Id != Guid.Empty)
+                        {
+                            var SupplierApiLocation = context.Supplier_APILocation.Find(objApiLoc.ApiLocation_Id);
+                            if (SupplierApiLocation != null)
+                            {
+                                return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Duplicate, StatusMessage = "Duplicate primary key." };
+                            }
+                        }
+                    }
+
+                    context.Supplier_APILocation.Add(new Supplier_APILocation
+                    {
+                        API_Path = objApiLoc.ApiEndPoint,
+                        CREATE_DATE = objApiLoc.Create_Date ?? DateTime.Now,
+                        CREATE_USER = objApiLoc.Create_User,
+                        STATUS = objApiLoc.Status,
+                        Entity_Id = objApiLoc.Entity_Id,
+                        Supplier_Id = objApiLoc.Supplier_Id,
+                        Supplier_APILocation_Id = objApiLoc.ApiLocation_Id == Guid.Empty ? Guid.NewGuid() : objApiLoc.ApiLocation_Id
+                    });
+                    context.SaveChanges();
+                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Record Added." };
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding Supplier Api Location", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
         #endregion
 
         #region Statuses
@@ -2752,7 +2979,7 @@ namespace DataLayer
                     if (RQ.Activity_Id != null)
                     {
                         search = from a in search
-                                 where a.Acivity_Id == RQ.Activity_Id
+                                 where a.Activity_Id == RQ.Activity_Id
                                  select a;
                     }
 
@@ -2784,10 +3011,25 @@ namespace DataLayer
                                  select a;
                     }
 
-                    if (RQ.ProductSubType != null)
+                    if (RQ.ProductCategorySubType != null)
                     {
                         search = from a in search
-                                 where a.ProductSubType.Trim().TrimStart().ToUpper() == RQ.ProductSubType.Trim().TrimStart().ToUpper()
+                                 where a.ProductCategorySubType.Trim().TrimStart().ToUpper() == RQ.ProductCategorySubType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductType != null)
+                    {
+                        search = from a in search
+                                 where a.ProductType.Trim().TrimStart().ToUpper() == RQ.ProductType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductNameSubType != null)
+                    {
+                        search = from a in search
+                                 join at in context.Activity_Flavour on a.Activity_Id equals at.Activity_Id
+                                 where at.ProductNameSubType.Trim().TrimStart().ToUpper() == RQ.ProductNameSubType.Trim().TrimStart().ToUpper()
                                  select a;
                     }
 
@@ -2806,7 +3048,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(RQ.Keyword))
                     {
                         search = from a in search
-                                 join b in context.Activity_Content on a.Acivity_Id equals b.Activity_Id
+                                 join b in context.Activity_Content on a.Activity_Id equals b.Activity_Id
                                  where a.Product_Name.Contains(RQ.Keyword) || b.Content_Text.Contains(RQ.Keyword)
                                  select a;
                     }
@@ -2818,7 +3060,7 @@ namespace DataLayer
                                  orderby a.Product_Name
                                  select new DataContracts.Masters.DC_Activity
                                  {
-                                     Activity_Id = a.Acivity_Id,
+                                     Activity_Id = a.Activity_Id,
                                      CommonProductID = a.CommonProductID,
                                      Legacy_Product_ID = a.Legacy_Product_ID,
                                      Product_Name = a.Product_Name,
@@ -2826,31 +3068,27 @@ namespace DataLayer
                                      Country = a.Country,
                                      City = a.City,
                                      ProductType = a.ProductType,
-                                     ProductSubType = a.ProductSubType,
                                      ProductCategory = a.ProductCategory,
+                                     ProductCategorySubType = a.ProductCategorySubType,                                     
                                      Create_Date = a.Create_Date,
                                      Edit_Date = a.Edit_Date,
                                      Create_User = a.Create_User,
                                      Edit_User = a.Edit_User,
                                      IsActive = a.IsActive,
-                                     StartingPoint = a.StartingPoint,
-                                     EndingPoint = a.EndingPoint,
-                                     Duration = a.Duration,
                                      CompanyRecommended = a.CompanyRecommended,
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude,
-                                     ShortDescription = a.ShortDescription,
-                                     LongDescription = a.LongDescription,
-                                     MealsYN = a.MealsYN,
-                                     GuideYN = a.GuideYN,
-                                     TransferYN = a.TransferYN,
-                                     PhysicalLevel = a.PhysicalLevel,
-                                     Advisory = a.Advisory,
-                                     ThingsToCarry = a.ThingsToCarry,
-                                     DeparturePoint = a.DeparturePoint,
                                      TourType = a.TourType,
                                      Parent_Legacy_Id = a.Parent_Legacy_Id,
-                                     TotalRecord = total
+                                     TotalRecord = total,
+                                     Affiliation = a.Affiliation,
+                                     Country_Id = a.Country_Id,
+                                     City_Id = a.City_Id,
+                                     CompanyProductID = a.CompanyProductID,
+                                     CompanyRating = a.CompanyRating,
+                                     Mode_Of_Transport = a.Mode_Of_Transport,
+                                     ProductRating = a.ProductRating,
+                                     Remarks = a.Remarks
                                  };
                     return result.OrderBy(p => p.Product_Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -2878,13 +3116,13 @@ namespace DataLayer
                     //    Guid _Suppier_Id = Guid.Parse(RQ.Supplier_Id);
                     //    if (_Suppier_Id != Guid.Empty)
                     //    {
-                    //        search = search.Where(i => !(from ab in context.Activity_SupplierProductMapping where ab.Supplier_ID == _Suppier_Id && ab.MappingStatus == "MAPPED" && ab.Activity_ID != null select ab.Activity_ID).Contains(i.Acivity_Id));
+                    //        search = search.Where(i => !(from ab in context.Activity_SupplierProductMapping where ab.Supplier_ID == _Suppier_Id && ab.MappingStatus == "MAPPED" && ab.Activity_ID != null select ab.Activity_ID).Contains(i.Activity_Id));
                     //    }
                     //}
                     if (RQ.Activity_Id != null)
                     {
                         search = from a in search
-                                 where a.Acivity_Id == RQ.Activity_Id
+                                 where a.Activity_Id == RQ.Activity_Id
                                  select a;
                     }
 
@@ -2916,10 +3154,32 @@ namespace DataLayer
                                  select a;
                     }
 
-                    if (RQ.ProductSubType != null)
+                    if (RQ.ProductCategory != null)
                     {
                         search = from a in search
-                                 where a.ProductSubType.Trim().TrimStart().ToUpper() == RQ.ProductSubType.Trim().TrimStart().ToUpper()
+                                 where a.ProductCategory.Trim().TrimStart().ToUpper() == RQ.ProductCategory.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductCategorySubType != null)
+                    {
+                        search = from a in search
+                                 where a.ProductCategorySubType.Trim().TrimStart().ToUpper() == RQ.ProductCategorySubType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductType != null)
+                    {
+                        search = from a in search
+                                 where a.ProductType.Trim().TrimStart().ToUpper() == RQ.ProductType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductNameSubType != null)
+                    {
+                        search = from a in search
+                                 join at in context.Activity_Flavour on a.Activity_Id equals at.Activity_Id
+                                 where at.ProductNameSubType.Trim().TrimStart().ToUpper() == RQ.ProductNameSubType.Trim().TrimStart().ToUpper()
                                  select a;
                     }
 
@@ -2937,7 +3197,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(RQ.Keyword))
                     {
                         search = from a in search
-                                 join b in context.Activity_Content on a.Acivity_Id equals b.Activity_Id
+                                 join b in context.Activity_Content on a.Activity_Id equals b.Activity_Id
                                  where a.Product_Name.Contains(RQ.Keyword) || b.Content_Text.Contains(RQ.Keyword)
                                  select a;
                     }
@@ -2949,7 +3209,7 @@ namespace DataLayer
                                  orderby a.Product_Name
                                  select new DataContracts.Masters.DC_Activity
                                  {
-                                     Activity_Id = a.Acivity_Id,
+                                     Activity_Id = a.Activity_Id,
                                      CommonProductID = a.CommonProductID,
                                      Legacy_Product_ID = a.Legacy_Product_ID,
                                      Product_Name = a.Product_Name,
@@ -2957,31 +3217,28 @@ namespace DataLayer
                                      Country = a.Country,
                                      City = a.City,
                                      ProductType = a.ProductType,
-                                     ProductSubType = a.ProductSubType,
                                      ProductCategory = a.ProductCategory,
+                                     ProductCategorySubType = a.ProductCategorySubType,
                                      Create_Date = a.Create_Date,
                                      Edit_Date = a.Edit_Date,
                                      Create_User = a.Create_User,
                                      Edit_User = a.Edit_User,
                                      IsActive = a.IsActive,
-                                     StartingPoint = a.StartingPoint,
-                                     EndingPoint = a.EndingPoint,
-                                     Duration = a.Duration,
                                      CompanyRecommended = a.CompanyRecommended,
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude,
-                                     ShortDescription = a.ShortDescription,
-                                     LongDescription = a.LongDescription,
-                                     MealsYN = a.MealsYN,
-                                     GuideYN = a.GuideYN,
-                                     TransferYN = a.TransferYN,
-                                     PhysicalLevel = a.PhysicalLevel,
-                                     Advisory = a.Advisory,
-                                     ThingsToCarry = a.ThingsToCarry,
-                                     DeparturePoint = a.DeparturePoint,
                                      TourType = a.TourType,
                                      Parent_Legacy_Id = a.Parent_Legacy_Id,
-                                     TotalRecord = total
+                                     TotalRecord = total,
+                                     Affiliation = a.Affiliation,
+                                     Country_Id = a.Country_Id,
+                                     City_Id = a.City_Id,
+                                     CompanyProductID = a.CompanyProductID,
+                                     CompanyRating = a.CompanyRating,
+                                     Mode_Of_Transport = a.Mode_Of_Transport,
+                                     ProductRating = a.ProductRating,
+                                     Remarks = a.Remarks
+
                                  };
                     return result.OrderBy(p => p.Product_Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -3076,14 +3333,33 @@ namespace DataLayer
                                         select a;
                         }
                     }
-                    if (!string.IsNullOrWhiteSpace(RQ.ProductSubType))
+                    if (RQ.ProductCategory != null)
                     {
-                        if (RQ.ProductSubType.Length > 0)
-                        {
-                            actSearch = from a in actSearch
-                                        where a.ProductSubType == RQ.ProductSubType
-                                        select a;
-                        }
+                        actSearch = from a in actSearch
+                                    where a.ProductCategory.Trim().TrimStart().ToUpper() == RQ.ProductCategory.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductCategorySubType != null)
+                    {
+                        actSearch = from a in actSearch
+                                    where a.ProductCategorySubType.Trim().TrimStart().ToUpper() == RQ.ProductCategorySubType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductType != null)
+                    {
+                        actSearch = from a in actSearch
+                                    where a.ProductType.Trim().TrimStart().ToUpper() == RQ.ProductType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductNameSubType != null)
+                    {
+                        actSearch = from a in actSearch
+                                    join at in context.Activity_Flavour on a.Activity_Id equals at.Activity_Id
+                                 where at.ProductNameSubType.Trim().TrimStart().ToUpper() == RQ.ProductNameSubType.Trim().TrimStart().ToUpper()
+                                 select a;
                     }
 
                     var acco = (from a in actSearch
@@ -3100,6 +3376,7 @@ namespace DataLayer
             }
         }
         #endregion
+
         #region Common Funciton to Get Codes by Entity Type
         public string GetCodeById(string objName, Guid obj_Id)
         {
@@ -3611,7 +3888,7 @@ namespace DataLayer
                                   orderby act.Product_Name ascending
                                   select new DC_Activity_DDL
                                   {
-                                      Activity_Id = act.Acivity_Id,
+                                      Activity_Id = act.Activity_Id,
                                       Product_Name = act.Product_Name,
                                   }).ToList();
                     return result;
@@ -3625,7 +3902,6 @@ namespace DataLayer
         }
 
         #endregion
-
 
         #region City Area and Location
         public bool SaveCityAreaLocation(DC_CityAreaLocation obj)
@@ -3797,6 +4073,11 @@ namespace DataLayer
                             keyword.Sequence = item.Sequence;
                             keyword.Status = item.Status;
                             keyword.Icon = item.Icon;
+                            keyword.EntityFor = item.EntityFor;
+                            keyword.AttributeType = item.AttributeType;
+                            keyword.AttributeLevel = item.AttributeLevel;
+                            keyword.AttributeSubLevel = item.AttributeSubLevel;
+                            keyword.AttributeSubLevelValue = item.AttributeSubLevelValue;
 
                             ret.StatusMessage = "Keyword " + ReadOnlyMessage.strUpdatedSuccessfully;
                         }
@@ -3814,8 +4095,13 @@ namespace DataLayer
                             Extra = item.Extra,
                             Missing = item.Missing,
                             Status = item.Status,
-                            Icon = item.Icon
-                    };
+                            Icon = item.Icon,
+                            EntityFor = item.EntityFor,
+                            AttributeType = item.AttributeType,
+                            AttributeLevel = item.AttributeLevel,
+                            AttributeSubLevel = item.AttributeSubLevel,
+                            AttributeSubLevelValue = item.AttributeSubLevelValue
+                        };
                         context.m_keyword.Add(newKeyword);
 
                         ret.StatusMessage = "Keyword " + ReadOnlyMessage.strAddedSuccessfully;
@@ -3976,6 +4262,11 @@ namespace DataLayer
                                      Attribute = a.Attribute ?? false,
                                      Sequence = a.Sequence ?? 0,
                                      Icon = a.Icon,
+                                     EntityFor = a.EntityFor,
+                                     AttributeType = a.AttributeType,
+                                     AttributeLevel = a.AttributeLevel,
+                                     AttributeSubLevel = a.AttributeSubLevel,
+                                     AttributeSubLevelValue = a.AttributeSubLevelValue,
                                      Alias = (from al in searchAlias
                                               where al.Keyword_Id == a.Keyword_Id
                                               orderby (al.Sequence ?? 0), al.Value
@@ -4041,7 +4332,9 @@ namespace DataLayer
                                      TotalRecords = total,
                                      Sequence = a.Sequence ?? 0,
                                      KeywordAlias_Id = a.KeywordAlias_Id,
-                                     Value = a.Value
+                                     Value = a.Value,
+                                     NoOfHits = a.NoOfHits ?? 0,
+                                     NewHits = 0
                                  };
 
 
@@ -4066,7 +4359,7 @@ namespace DataLayer
                         var KeywordAliasItem = context.m_keyword_alias.Find(item.KeywordAlias_Id);
                         if (KeywordAliasItem != null)
                         {
-                            KeywordAliasItem.NoOfHits = KeywordAliasItem.NoOfHits + item.NewHits;
+                            KeywordAliasItem.NoOfHits = (KeywordAliasItem.NoOfHits ?? 0) + item.NewHits;
                         }
                     }
                     context.SaveChanges();
@@ -4080,5 +4373,84 @@ namespace DataLayer
         }
 
         #endregion
+
+        public string[] GetColumnNames(string TableName)
+        {
+
+            //using (ConsumerEntities context = new ConsumerEntities())
+            //{
+            //    var query = from meta in context.MetadataWorkspace.GetItems(DataSpace.CSpace)
+            //      .Where(m => m.BuiltInTypeKind == BuiltInTypeKind.EntityType)
+            //                let m = (meta as EntityType)
+            //                where m.BaseType != null
+            //                select new
+            //                {
+            //                    m.Name,
+            //                    BaseTypeName = m.BaseType != null ? m.BaseType.Name : null,
+            //                };
+            //}
+            return null;
+        }
+
+        public List<string> GetListOfColumnNamesByTable(string TableName)
+        {
+            List<string> _lstColumnName = new List<string>();
+            if (TableName != null)
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    string strtablename = TableName.ToLower().Trim();
+                    switch (strtablename)
+                    {
+                        case "stg_suppliercitymapping":
+                            _lstColumnName = typeof(stg_SupplierCityMapping).GetProperties().Select(property => property.Name).ToList();
+                            break;
+                        case "m_citymaster":
+                            _lstColumnName = typeof(m_CityMaster).GetProperties().Select(property => property.Name).ToList();
+                            break;
+                        case "m_citymapping":
+                            _lstColumnName = typeof(m_CityMapping).GetProperties().Select(property => property.Name).ToList();
+                            break;
+                        case "stg_suppliercountrymapping":
+                            _lstColumnName = typeof(stg_SupplierCountryMapping).GetProperties().Select(property => property.Name).ToList();
+                            break;
+                        case "m_countrymapping":
+                            _lstColumnName = typeof(m_CountryMapping).GetProperties().Select(property => property.Name).ToList();
+                            break;
+                        case "m_countrymaster":
+                            _lstColumnName = typeof(m_CountryMaster).GetProperties().Select(property => property.Name).ToList();
+                            break;
+                        case "stg_supplieractivitymapping":
+                            _lstColumnName = typeof(stg_SupplierActivityMapping).GetProperties().Select(property => property.Name).ToList();
+                            break;
+                        case "activity":
+                            _lstColumnName = typeof(Activity).GetProperties().Select(property => property.Name).ToList();
+                            break;
+                        case "activity_supplierproductmapping":
+                            _lstColumnName = typeof(Activity_SupplierProductMapping).GetProperties().Select(property => property.Name).ToList();
+                            break;
+                        case "stg_supplierproductmapping":
+                            _lstColumnName = typeof(stg_SupplierProductMapping).GetProperties().Select(property => property.Name).ToList();
+                            break;
+                        case "accommodation_productmapping":
+                            _lstColumnName = typeof(Accommodation_ProductMapping).GetProperties().Select(property => property.Name).ToList();
+                            break;
+                        case "accommodation":
+                            _lstColumnName = typeof(Accommodation).GetProperties().Select(property => property.Name).ToList();
+                            break;
+                        case "accommodation_supplierroomtypemapping":
+                            _lstColumnName = typeof(Accommodation_SupplierRoomTypeMapping).GetProperties().Select(property => property.Name).ToList();
+                            break;
+                        case "accommodation_roominfo":
+                            _lstColumnName = typeof(Accommodation_RoomInfo).GetProperties().Select(property => property.Name).ToList();
+                            break;
+                        case "stg_supplierhotelroommapping":
+                            _lstColumnName = typeof(stg_SupplierHotelRoomMapping).GetProperties().Select(property => property.Name).ToList();
+                            break;
+                    }
+                }
+            }
+            return _lstColumnName;
+        }
     }
 }

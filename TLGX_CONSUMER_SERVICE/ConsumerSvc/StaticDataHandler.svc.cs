@@ -188,11 +188,43 @@ namespace ConsumerSvc
             }
         }
 
+        public bool UpdateRoomTypeMappingStatus(DC_MappingMatch obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.UpdateRoomTypeMappingStatus(obj);
+            }
+        }
+
         public bool HotelMappingMatch(DC_Supplier sup)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
                 return objBL.HotelMappingMatch(sup);
+            }
+        }
+
+        public bool RoomTypeMappingMatch(DC_Supplier sup)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.RoomTypeMappingMatch(sup);
+            }
+        }
+
+        public bool CountryMappingMatch(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.CountryMappingMatch(obj);
+            }
+        }
+
+        public List<DC_SupplierRoomType_TTFU_RQ> GetRoomTypeMapping_For_TTFU(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetRoomTypeMapping_For_TTFU(obj);
             }
         }
 
@@ -225,6 +257,69 @@ namespace ConsumerSvc
             using (BL_Mapping objBL = new BL_Mapping())
             {
                 objBL.DataHandler_RoomName_Attributes_Update(SRNDetails);
+            }
+        }
+
+        public List<DC_stg_SupplierHotelRoomMapping> GetSTGRoomTypeData(DC_stg_SupplierHotelRoomMapping_RQ obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.GetSTGRoomTypeData(obj);
+            }
+        }
+
+        public DC_Message AddSTGRoomTypeData(List<DC_stg_SupplierHotelRoomMapping> obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.AddSTGRoomTypeData(obj);
+            }
+        }
+
+        public DataContracts.DC_Message DataHandler_AccomodationSupplierRoomTypeMapping_TTFU(List<DataContracts.Mapping.DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
+        {
+            if (Acco_RoomTypeMap_Ids == null)
+            {
+                return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Parameter Is Null" };
+            }
+            else
+            {
+                using (BL_Mapping objBL = new BL_Mapping())
+                {
+                    return objBL.AccomodationSupplierRoomTypeMapping_TTFUALL(Acco_RoomTypeMap_Ids);
+                }
+            }
+        }
+
+        public DC_Message AddStaticDataUploadProcessLog(DC_SupplierImportFile_Progress obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.AddStaticDataUploadProcessLog(obj);
+            }
+        }
+
+        public DC_Message AddStaticDataUploadVerboseLog(DC_SupplierImportFile_VerboseLog obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.AddStaticDataUploadVerboseLog(obj);
+            }
+        }
+
+        public DC_Message AddStaticDataUploadStatistics(DC_SupplierImportFile_Statistics obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.AddStaticDataUploadStatistics(obj);
+            }
+        }
+
+        public bool DeleteSTGMappingTableIDs(string File_Id)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.DeleteSTGMappingTableIDs(File_Id);
             }
         }
     }

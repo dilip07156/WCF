@@ -267,6 +267,14 @@ namespace BusinessLayer
                 return obj.GetAllAttributeAndValuesByFOR(_obj);
             }
         }
+        public IList<DataContracts.Masters.DC_MasterAttribute> GetAllAttributeAndValuesByParentAttributeValue(DataContracts.Masters.DC_MasterAttribute _obj)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetAllAttributeAndValuesByParentAttributeValue(_obj);
+            }
+        }
+        
         public IList<DataContracts.Masters.DC_MasterAttribute> GetAllAttributeAndValues(DataContracts.Masters.DC_MasterAttribute _obj)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
@@ -397,6 +405,30 @@ namespace BusinessLayer
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
                 return obj.Supplier_ProductCategorySoftDelete(_objSup);
+            }
+        }
+
+        public List<DataContracts.Masters.DC_Supplier_ApiLocation> SupplierApiLocation_Search(DataContracts.Masters.DC_Supplier_ApiLocation RQ)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.SupplierApiLocation_Search(RQ);
+            }
+        }
+
+        public DataContracts.DC_Message SupplierApiLocation_Update(DataContracts.Masters.DC_Supplier_ApiLocation objApiLoc)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.SupplierApiLocation_Update(objApiLoc);
+            }
+        }
+
+        public DataContracts.DC_Message SupplierApiLocation_Add(DataContracts.Masters.DC_Supplier_ApiLocation objApiLoc)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.SupplierApiLocation_Add(objApiLoc);
             }
         }
         #endregion
@@ -622,5 +654,21 @@ namespace BusinessLayer
         }
 
         #endregion
+
+        public string[] GetColumnNames(string TableName)
+        {
+            using (DataLayer.DL_Masters objDL = new DataLayer.DL_Masters())
+            {
+                return objDL.GetColumnNames(TableName);
+            }
+        }
+
+        public List<string> GetListOfColumnNamesByTable(string TableName)
+        {
+            using (DataLayer.DL_Masters objDL = new DataLayer.DL_Masters())
+            {
+                return objDL.GetListOfColumnNamesByTable(TableName);
+            }
+        }
     }
 }

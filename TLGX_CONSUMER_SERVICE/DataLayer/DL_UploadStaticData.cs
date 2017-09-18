@@ -8,6 +8,7 @@ using DataContracts.Masters;
 using DataContracts;
 using System.Data;
 using DataContracts.STG;
+using DataContracts.UploadStaticData;
 
 namespace DataLayer
 {
@@ -117,6 +118,9 @@ namespace DataLayer
                                              CREATE_USER = a.CREATE_USER,
                                              EDIT_DATE = a.EDIT_DATE,
                                              EDIT_USER = a.EDIT_USER,
+                                             STG_Table = a.STG_Table,
+                                             Master_Table = a.Master_Table,
+                                             Mapping_Table = a.Mapping_Table,
                                              TotalRecords = total
                                          }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
@@ -160,6 +164,13 @@ namespace DataLayer
                         objNew.AttributeFor = obj.For;
                         objNew.CREATE_DATE = obj.CREATE_DATE;
                         objNew.CREATE_USER = obj.CREATE_USER;
+                        MappingTableName _objMappingTableName = GetTableDeatils(obj.Entity);
+                        if (_objMappingTableName != null)
+                        {
+                            objNew.STG_Table = _objMappingTableName.STG_Table;
+                            objNew.Master_Table = _objMappingTableName.Master_Table;
+                            objNew.Mapping_Table = _objMappingTableName.Mapping_Table;
+                        }
 
                         context.m_SupplierImportAttributes.Add(objNew);
                         context.SaveChanges();
@@ -175,6 +186,70 @@ namespace DataLayer
                 dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                 return dc;
             }
+        }
+        #region Helping class MappingTableName
+        public class MappingTableName
+        {
+            public string STG_Table { get; set; }
+            public string Mapping_Table { get; set; }
+            public string Master_Table { get; set; }
+
+        }
+        #endregion
+        private MappingTableName GetTableDeatils(string entity)
+        {
+            MappingTableName _objMappingTableName = new MappingTableName();
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(entity))
+                {
+                    string strSTG_Table = "STAGING_" + entity.ToUpper();
+                    string strMapping_Table = "MAPPING_" + entity.ToUpper();
+                    string strMaster_Table = "MASTER_" + entity.ToUpper();
+                    string strMasterFor = "MappingFileConfig";
+                    string strParent = "MappingProcessType";
+
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        var resultSTG =
+                                  (from mst in context.m_masterattribute
+                                   join mstv in context.m_masterattributevalue on mst.MasterAttribute_Id equals mstv.MasterAttribute_Id
+                                   join msttblv in context.m_masterattributevalue on mstv.MasterAttributeValue_Id equals msttblv.ParentAttributeValue_Id
+                                   where mst.MasterFor == strMasterFor && mst.Name == strParent
+                                   && mstv.AttributeValue == strSTG_Table
+                                   select msttblv.AttributeValue
+                                   ).FirstOrDefault();
+
+                        _objMappingTableName.STG_Table = resultSTG;
+                        var resultMapping =
+                            (from mst in context.m_masterattribute
+                             join mstv in context.m_masterattributevalue on mst.MasterAttribute_Id equals mstv.MasterAttribute_Id
+                             join msttblv in context.m_masterattributevalue on mstv.MasterAttributeValue_Id equals msttblv.ParentAttributeValue_Id
+                             where mst.MasterFor == strMasterFor && mst.Name == strParent
+                             && mstv.AttributeValue == strMapping_Table
+                             select msttblv.AttributeValue
+                               ).FirstOrDefault();
+                        _objMappingTableName.Mapping_Table = resultMapping;
+
+                        var resultMaster =
+                            (from mst in context.m_masterattribute
+                             join mstv in context.m_masterattributevalue on mst.MasterAttribute_Id equals mstv.MasterAttribute_Id
+                             join msttblv in context.m_masterattributevalue on mstv.MasterAttributeValue_Id equals msttblv.ParentAttributeValue_Id
+                             where mst.MasterFor == strMasterFor && mst.Name == strParent
+                             && mstv.AttributeValue == strMaster_Table
+                             select msttblv.AttributeValue
+                               ).FirstOrDefault();
+                        _objMappingTableName.Master_Table = resultMaster;
+
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return _objMappingTableName;
         }
 
         public DataContracts.DC_Message UpdateStaticDataMappingAttribute(List<DataContracts.UploadStaticData.DC_SupplierImportAttributes> lobj)
@@ -266,7 +341,7 @@ namespace DataLayer
 
 
         #region "Mapping Config Attributes Values"
-        public List<DataContracts.UploadStaticData.DC_SupplierImportAttributeValues> GetStaticDataMappingAttributeValues(DataContracts.UploadStaticData.DC_SupplierImportAttributeValues_RQ RQ)
+        public List<DC_SupplierImportAttributeValues> GetStaticDataMappingAttributeValues(DataContracts.UploadStaticData.DC_SupplierImportAttributeValues_RQ RQ)
         {
             try
             {
@@ -373,6 +448,12 @@ namespace DataLayer
                                         where a.STATUS.Trim().TrimStart().ToUpper() != RQ.StatusExcept.Trim().TrimStart().ToUpper()
                                         select a;
                     }
+                    if (RQ.Priority != -1)
+                    {
+                        AttrMapSearch = from a in AttrMapSearch
+                                        where a.Priority == RQ.Priority
+                                        select a;
+                    }
 
 
                     int total;
@@ -382,13 +463,14 @@ namespace DataLayer
                     var skip = RQ.PageSize * RQ.PageNo;
 
                     var AttrMapResult = (from a in AttrMapSearch
-                                         orderby a.AttributeType, (a.Priority ?? 0) //, a.AttributeName, a.AttributeValue
+                                         orderby (a.Priority ?? 0) descending, a.AttributeType,a.CREATE_DATE descending //, a.AttributeName, a.AttributeValue
                                          select new DataContracts.UploadStaticData.DC_SupplierImportAttributeValues
                                          {
                                              SupplierImportAttributeValue_Id = a.SupplierImportAttributeValue_Id,
                                              SupplierImportAttribute_Id = a.SupplierImportAttribute_Id,
                                              AttributeType = a.AttributeType,
                                              AttributeName = a.AttributeName,
+                                             AttributeValue_ID = a.AttributeValue_ID,
                                              AttributeValue = a.AttributeValue,
                                              STATUS = a.STATUS,
                                              CREATE_DATE = a.CREATE_DATE,
@@ -427,6 +509,7 @@ namespace DataLayer
                                        where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
                                        (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
                                         attr.AttributeName.Trim().TrimStart().ToUpper() == obj.AttributeName.Trim().TrimStart().ToUpper() &&
+                                        attr.AttributeValue_ID.Value == obj.AttributeValue_ID.Value &&
                                         attr.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
                                         attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id &&
                                         attr.Priority == obj.Priority
@@ -447,6 +530,7 @@ namespace DataLayer
                         objNew.AttributeType = obj.AttributeType;
                         objNew.AttributeName = obj.AttributeName;
                         objNew.AttributeValue = obj.AttributeValue;
+                        objNew.AttributeValue_ID = obj.AttributeValue_ID;
                         objNew.CREATE_DATE = obj.CREATE_DATE;
                         objNew.CREATE_USER = obj.CREATE_USER;
                         objNew.STATUS = obj.STATUS;
@@ -481,6 +565,7 @@ namespace DataLayer
                         var isDuplicate = (from a in context.m_SupplierImportAttributeValues
                                            where a.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
                                             a.AttributeName.Trim().TrimStart().ToUpper() == obj.AttributeName.Trim().TrimStart().ToUpper() &&
+                                            a.AttributeValue_ID.Value == obj.AttributeValue_ID.Value &&
                                             a.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
                                             a.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id &&
                                             a.SupplierImportAttributeValue_Id != obj.SupplierImportAttributeValue_Id &&
@@ -501,6 +586,7 @@ namespace DataLayer
                             {
                                 search.AttributeType = obj.AttributeType;
                                 search.AttributeName = obj.AttributeName;
+                                search.AttributeValue_ID = obj.AttributeValue_ID;
                                 search.AttributeValue = obj.AttributeValue;
                                 search.STATUS = obj.STATUS;
                                 search.EDIT_DATE = obj.EDIT_DATE;
@@ -557,6 +643,51 @@ namespace DataLayer
 
             return dc;
         }
+
+        public List<string> GetStaticDataMappingAttributeValuesForFilter(DataContracts.UploadStaticData.DC_SupplierImportAttributeValues_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var AttrMapSearch = from a in context.m_SupplierImportAttributeValues select a;
+
+                    if (RQ.SupplierImportAttributeValue_Id.HasValue)
+                    {
+                        AttrMapSearch = from a in AttrMapSearch
+                                        where a.SupplierImportAttributeValue_Id == RQ.SupplierImportAttributeValue_Id
+                                        select a;
+                    }
+
+                    if (RQ.SupplierImportAttribute_Id.HasValue)
+                    {
+                        AttrMapSearch = from a in AttrMapSearch
+                                        where a.SupplierImportAttribute_Id == RQ.SupplierImportAttribute_Id
+                                        select a;
+                    }
+                    List<string> _lstFilterData = new List<string>();
+                    if (RQ.For.ToLower() == "attributetype")
+                    {
+                        _lstFilterData = AttrMapSearch.Select(a => a.AttributeType).Distinct().ToList();
+                    }
+                    else if (RQ.For.ToLower() == "priority")
+                    {
+                        _lstFilterData = AttrMapSearch.Select(a => a.Priority.ToString()).Distinct().ToList();
+                    }
+
+                    return _lstFilterData;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while getteing filter data for manageattrinutevalue",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+
+        }
         #endregion
 
 
@@ -605,6 +736,13 @@ namespace DataLayer
                                      select a;
                     }
 
+                    if (RQ.From_Date.HasValue && RQ.TO_Date.HasValue)
+                    {
+                        FileSearch = from a in FileSearch
+                                     where a.CREATE_DATE >= RQ.From_Date && a.CREATE_DATE <= RQ.TO_Date
+                                     select a;
+                    }
+
                     if (!string.IsNullOrWhiteSpace(RQ.StatusExcept))
                     {
                         FileSearch = from a in FileSearch
@@ -618,6 +756,10 @@ namespace DataLayer
                     total = FileSearch.Count();
 
                     var skip = RQ.PageSize * RQ.PageNo;
+                    if(RQ.PageSize==0)
+                    {
+                        RQ.PageSize = int.MaxValue;
+                    }
 
                     var FileSearchResult = (from a in FileSearch
                                             join s in context.Suppliers on a.Supplier_Id equals s.Supplier_Id
@@ -637,6 +779,7 @@ namespace DataLayer
                                                 CREATE_USER = a.CREATE_USER,
                                                 PROCESS_DATE = a.PROCESS_DATE,
                                                 PROCESS_USER = a.PROCESS_USER,
+                                                IsActive = a.IsActive ?? true,
                                                 TotalRecords = total
                                             }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
@@ -724,6 +867,7 @@ namespace DataLayer
                                 search.STATUS = obj.STATUS;
                                 search.PROCESS_DATE = obj.PROCESS_DATE;
                                 search.PROCESS_USER = obj.PROCESS_USER;
+                                search.IsActive = obj.IsActive;
                             }
                             context.SaveChanges();
                             dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
@@ -758,6 +902,7 @@ namespace DataLayer
                         search.STATUS = obj.STATUS;
                         search.PROCESS_USER = obj.PROCESS_USER;
                         search.PROCESS_DATE = obj.PROCESS_DATE;
+                        search.IsActive = obj.IsActive;
                     }
                     context.SaveChanges();
                     dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
@@ -775,7 +920,7 @@ namespace DataLayer
         }
         #endregion
 
-        #region "Error Log"
+        #region "Logging"
         public DataContracts.DC_Message AddStaticDataUploadErrorLog(DataContracts.UploadStaticData.DC_SupplierImportFile_ErrorLog obj)
         {
             DataContracts.DC_Message dc = new DataContracts.DC_Message();
@@ -792,6 +937,7 @@ namespace DataLayer
                     objNew.ErrorDescription = obj.ErrorDescription;
                     objNew.Error_DATE = obj.Error_DATE;
                     objNew.Error_USER = obj.Error_USER;
+                    objNew.ErrorMessage_UI = obj.ErrorMessage_UI;
                     context.SupplierImportFile_ErrorLog.Add(objNew);
                     context.SaveChanges();
                     dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
@@ -849,6 +995,7 @@ namespace DataLayer
                                              Error_DATE = a.Error_DATE,
                                              Error_USER = a.Error_USER,
                                              ErrorCode = a.ErrorCode,
+                                             ErrorMessage_UI = a.ErrorMessage_UI,
                                              TotalCount = total
                                          }).Skip(skip ?? 0).Take(RQ.PageSize ?? total).ToList();
 
@@ -860,6 +1007,435 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
                 {
                     ErrorMessage = "Error while searching Error Attributes",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+        }
+
+        public DataContracts.DC_Message AddStaticDataUploadProcessLog(DataContracts.UploadStaticData.DC_SupplierImportFile_Progress obj)
+        {
+            DataContracts.DC_Message dc = new DataContracts.DC_Message();
+
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (obj.SupplierImportFile_Id != null && !string.IsNullOrWhiteSpace(obj.Step))
+                    {
+                        if (obj.CurrentBatch != 0)
+                        {
+                            context.SupplierImportFile_Progress.RemoveRange(context.SupplierImportFile_Progress.Where(w => w.SupplierImportFile_Id == obj.SupplierImportFile_Id && w.CurrentBatch != 0 && w.Step.ToString().ToUpper() == obj.Step.ToString().ToUpper() && w.CurrentBatch != obj.CurrentBatch));
+                        }
+
+                        var progress = (from a in context.SupplierImportFile_Progress
+                                        where a.SupplierImportFile_Id == obj.SupplierImportFile_Id && a.Step == obj.Step
+                                        select a).FirstOrDefault();
+
+                        if (progress != null)
+                        {
+                            progress.PercentageValue = obj.PercentageValue;
+                            progress.LastCheckedOn = DateTime.Now;
+                        }
+                        else
+                        {
+                            context.SupplierImportFile_Progress.Add(new SupplierImportFile_Progress
+                            {
+                                SupplierImportFileProgress_Id = Guid.NewGuid(),
+                                SupplierImportFile_Id = obj.SupplierImportFile_Id,
+                                PercentageValue = obj.PercentageValue,
+                                Status = obj.Status,
+                                Step = obj.Step,
+                                CurrentBatch = obj.CurrentBatch,
+                                LastCheckedOn = DateTime.Now,
+                                TotalBatch = obj.TotalBatch
+                            });
+                        }
+                    }
+
+                    context.SaveChanges();
+                    dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                    dc.StatusMessage = "Process Log " + ReadOnlyMessage.strAddedSuccessfully;
+                }
+                return dc;
+            }
+            catch (Exception e)
+            {
+                dc.StatusMessage = ReadOnlyMessage.strFailed;
+                dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                return dc;
+            }
+        }
+
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics> GetStaticDataUploadStatistics(DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var StatSearch = from a in context.SupplierImportFile_Statistics select a;
+
+                    if (RQ.SupplierImportFile_Id.HasValue && RQ.SupplierImportFile_Id != Guid.Empty)
+                    {
+                        StatSearch = from a in StatSearch
+                                     where a.SupplierImportFile_Id == RQ.SupplierImportFile_Id
+                                     select a;
+                    }
+                    if (RQ.Supplier_Id.HasValue && RQ.Supplier_Id != Guid.Empty)
+                    {
+                        StatSearch = from a in StatSearch
+                                     join f in context.SupplierImportFileDetails.AsNoTracking() on a.SupplierImportFile_Id equals f.SupplierImportFile_Id
+                                     where f.Supplier_Id == RQ.Supplier_Id
+                                     select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.Supplier))
+                    {
+                        StatSearch = from a in StatSearch
+                                     join f in context.SupplierImportFileDetails.AsNoTracking() on a.SupplierImportFile_Id equals f.SupplierImportFile_Id
+                                     join s in context.Suppliers.AsNoTracking() on f.Supplier_Id equals s.Supplier_Id
+                                     where s.Name.Trim().ToUpper() == RQ.Supplier.Trim().ToUpper()
+                                     select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.Entity))
+                    {
+                        StatSearch = from a in StatSearch
+                                     join f in context.SupplierImportFileDetails.AsNoTracking() on a.SupplierImportFile_Id equals f.SupplierImportFile_Id
+                                     where f.Entity.Trim().ToUpper() == RQ.Entity.Trim().ToUpper()
+                                     select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.STATUS))
+                    {
+                        StatSearch = from a in StatSearch
+                                     where a.FinalStatus.Trim().ToUpper() == RQ.STATUS.Trim().ToUpper()
+                                     select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.StatusExcept))
+                    {
+                        StatSearch = from a in StatSearch
+                                     where a.FinalStatus.Trim().ToUpper() != RQ.StatusExcept.Trim().ToUpper()
+                                     select a;
+                    }
+                    if (RQ.From_Date != null)
+                    {
+                        if (RQ.TO_Date != null)
+                        {
+                            StatSearch = from a in StatSearch
+                                         where a.Process_Date >= RQ.From_Date && a.Process_Date <= RQ.TO_Date
+                                         select a;
+                        }
+                        else
+                        {
+                            StatSearch = from a in StatSearch
+                                         where a.Process_Date >= RQ.From_Date
+                                         select a;
+                        }
+                    }
+                    else
+                    {
+                        if (RQ.TO_Date != null)
+                        {
+                            StatSearch = from a in StatSearch
+                                         where a.Process_Date <= RQ.TO_Date
+                                         select a;
+                        }
+                    }
+
+                    var total = StatSearch.Count();
+
+                    var skip = RQ.PageSize * RQ.PageNo;
+
+                    var StatResult = (from a in StatSearch
+                                      join f in context.SupplierImportFileDetails.AsNoTracking() on a.SupplierImportFile_Id equals f.SupplierImportFile_Id
+                                      join s in context.Suppliers.AsNoTracking() on f.Supplier_Id equals s.Supplier_Id
+                                      orderby s.Name, f.Entity
+                                      select new DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics
+                                      {
+                                          SupplierImportFile_Statistics_Id = a.SupplierImportFile_Statistics_Id,
+                                          SupplierImportFile_Id = a.SupplierImportFile_Id,
+                                          TotalRows = a.TotalRows,
+                                          Unmapped = a.Unmapped,
+                                          Mapped = a.Mapped,
+                                          FinalStatus = a.FinalStatus,
+                                          Process_Date = a.Process_Date,
+                                          Process_User = a.Process_User,
+                                          TotalRecords = total,
+                                          Supplier = s.Name,
+                                          Entity = f.Entity,
+                                          FileName = f.OriginalFilePath,
+                                          ProcessedBy = f.PROCESS_USER
+                                      }).Skip(skip ?? 0).Take(RQ.PageSize ?? total).ToList();
+
+                    return StatResult;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while searching Statistics",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+        }
+
+        public DataContracts.DC_Message AddStaticDataUploadStatistics(DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics obj)
+        {
+            DataContracts.DC_Message dc = new DataContracts.DC_Message();
+
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    if (obj.SupplierImportFile_Id != null)
+                    {
+                        DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics_RQ RQ = new DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics_RQ();
+                        RQ.SupplierImportFile_Id = obj.SupplierImportFile_Id;
+                        RQ.PageNo = 0;
+                        RQ.PageSize = int.MaxValue;
+                        List<DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics> resstat = new List<DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics>();
+                        resstat = GetStaticDataUploadStatistics(RQ);
+
+                        //DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics stat = resstat.FirstOrDefault();
+                        var stat = (from a in context.SupplierImportFile_Statistics
+                                    where a.SupplierImportFile_Id == obj.SupplierImportFile_Id
+                                    select a).FirstOrDefault();
+
+                        if (stat != null)
+                        {
+                            int mapped = 0;
+                            int unmapped = 0;
+                            if (resstat[0].Entity.Trim().ToUpper() == "COUNTRY")
+                            {
+                                var getcount = from m in context.m_CountryMapping
+                                               join j in context.STG_Mapping_TableIds on m.CountryMapping_Id equals j.Mapping_Id
+                                               where j.File_Id == obj.SupplierImportFile_Id
+                                               group m by new { m.Status } into g
+                                               select new { g.Key.Status, count = g.Count() };
+
+                                stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
+                                //stat.TotalRows = obj.TotalRows;
+                                //stat.Unmapped = obj.Unmapped;
+                                //stat.Mapped = obj.Mapped;
+                                stat.Unmapped = getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
+                                stat.Mapped = getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                            }
+                            else if (resstat[0].Entity.Trim().ToUpper() == "CITY")
+                            {
+                                var getcount = from m in context.m_CityMapping
+                                               join j in context.STG_Mapping_TableIds on m.CityMapping_Id equals j.Mapping_Id
+                                               where j.File_Id == obj.SupplierImportFile_Id
+                                               group m by new { m.Status } into g
+                                               select new { g.Key.Status, count = g.Count() };
+
+                                stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
+                                //stat.TotalRows = obj.TotalRows;
+                                stat.Unmapped = getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
+                                stat.Mapped = getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                            }
+                            else if (resstat[0].Entity.Trim().ToUpper() == "HOTEL")
+                            {
+                                var getcount = from m in context.Accommodation_ProductMapping
+                                               join j in context.STG_Mapping_TableIds on m.Accommodation_ProductMapping_Id equals j.Mapping_Id
+                                               where j.File_Id == obj.SupplierImportFile_Id
+                                               group m by new { m.Status } into g
+                                               select new { g.Key.Status, count = g.Count() };
+
+                                stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
+                                //stat.TotalRows = obj.TotalRows;
+                                stat.Unmapped = getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
+                                stat.Mapped = getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                            }
+                            else if (resstat[0].Entity.Trim().ToUpper() == "ROOMTYPE")
+                            {
+                                var getcount = from m in context.Accommodation_SupplierRoomTypeMapping
+                                               join j in context.STG_Mapping_TableIds on m.Accommodation_SupplierRoomTypeMapping_Id equals j.Mapping_Id
+                                               where j.File_Id == obj.SupplierImportFile_Id
+                                               group m by new { m.MappingStatus } into g
+                                               select new { g.Key.MappingStatus, count = g.Count() };
+
+                                stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
+                                //stat.TotalRows = obj.TotalRows;
+                                stat.Unmapped = getcount.Where(g => g.MappingStatus.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
+                                stat.Mapped = getcount.Where(g => g.MappingStatus.Trim().ToUpper() == "MAPPED" || g.MappingStatus.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                            }
+                        }
+                        else
+                        {
+                            DataLayer.SupplierImportFile_Statistics newObj = new DataLayer.SupplierImportFile_Statistics()
+                            {
+                                SupplierImportFile_Statistics_Id = Guid.NewGuid(),
+                                SupplierImportFile_Id = obj.SupplierImportFile_Id,
+                                FinalStatus = obj.FinalStatus,
+                                TotalRows = obj.TotalRows,
+                                Mapped = obj.Mapped,
+                                Unmapped = obj.Unmapped,
+                                Process_Date = DateTime.Now,
+                                Process_User = obj.Process_User
+                            };
+                            context.SupplierImportFile_Statistics.Add(newObj);
+                        }
+                    }
+                    context.SaveChanges();
+                    dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                    dc.StatusMessage = "Process Log " + ReadOnlyMessage.strAddedSuccessfully;
+
+                }
+                return dc;
+
+            }
+            catch (Exception e)
+            {
+                dc.StatusMessage = ReadOnlyMessage.strFailed;
+                dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                return dc;
+            }
+        }
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_Progress> GetStaticDataUploadProcessLog(DataContracts.UploadStaticData.DC_SupplierImportFile_Progress_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var ProgLogSearch = from a in context.SupplierImportFile_Progress select a;
+
+                    //if (RQ.SupplierImportFile_Id.HasValue)
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierImportFile_Id))
+                    {
+                        Guid fileId = new Guid();
+                        if (Guid.TryParse(RQ.SupplierImportFile_Id, out fileId))
+                        {
+                            ProgLogSearch = from a in ProgLogSearch
+                                            where a.SupplierImportFile_Id == fileId //RQ.SupplierImportFile_Id
+                                            select a;
+                        }
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.Step))
+                    {
+                        ProgLogSearch = from a in ProgLogSearch
+                                        where a.Step.Trim().ToUpper() == RQ.Step.Trim().ToUpper()
+                                        select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.Status))
+                    {
+                        ProgLogSearch = from a in ProgLogSearch
+                                        where a.Status.Trim().ToUpper() == RQ.Status.Trim().ToUpper()
+                                        select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.StatusExcept))
+                    {
+                        ProgLogSearch = from a in ProgLogSearch
+                                        where a.Status.Trim().ToUpper() != RQ.StatusExcept.Trim().ToUpper()
+                                        select a;
+                    }
+
+                    var total = ProgLogSearch.Count();
+
+                    var ProgLogResult = (from a in ProgLogSearch
+                                         select new DataContracts.UploadStaticData.DC_SupplierImportFile_Progress
+                                         {
+                                             SupplierImportFileProgress_Id = a.SupplierImportFileProgress_Id,
+                                             SupplierImportFile_Id = a.SupplierImportFile_Id,
+                                             Step = a.Step,
+                                             Status = a.Status,
+                                             PercentageValue = a.PercentageValue,
+                                             TotalCount = total,
+                                             CurrentBatch = a.CurrentBatch ?? 0,
+                                             TotalBatch = a.TotalBatch ?? 0
+                                         }).ToList();
+
+                    return ProgLogResult;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while searching Progress Log",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+        }
+        public DataContracts.DC_Message AddStaticDataUploadVerboseLog(DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog obj)
+        {
+            DataContracts.DC_Message dc = new DataContracts.DC_Message();
+
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    DataLayer.SupplierImportFile_VerboseLog objNew = new DataLayer.SupplierImportFile_VerboseLog()
+                    {
+                        SupplierImportFile_VerboseLog_Id = obj.SupplierImportFile_VerboseLog_Id,
+                        SupplierImportFile_Id = obj.SupplierImportFile_Id,
+                        Message = obj.Message,
+                        Step = obj.Step,
+                        TimeStamp = obj.TimeStamp
+                    };
+                    context.SupplierImportFile_VerboseLog.Add(objNew);
+                    context.SaveChanges();
+                    dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                    dc.StatusMessage = "Verbose Log " + ReadOnlyMessage.strAddedSuccessfully;
+                }
+                return dc;
+            }
+            catch (Exception e)
+            {
+                dc.StatusMessage = ReadOnlyMessage.strFailed;
+                dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                return dc;
+            }
+        }
+        public List<DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog> GetStaticDataUploadVerboseLog(DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var ProgLogSearch = from a in context.SupplierImportFile_VerboseLog select a;
+
+                    if (RQ.SupplierImportFile_VerboseLog_Id.HasValue)
+                    {
+                        ProgLogSearch = from a in ProgLogSearch
+                                        where a.SupplierImportFile_VerboseLog_Id == RQ.SupplierImportFile_VerboseLog_Id
+                                        select a;
+                    }
+                    if (RQ.SupplierImportFile_Id.HasValue)
+                    {
+                        ProgLogSearch = from a in ProgLogSearch
+                                        where a.SupplierImportFile_Id == RQ.SupplierImportFile_Id
+                                        select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.Step))
+                    {
+                        ProgLogSearch = from a in ProgLogSearch
+                                        where a.Step.Trim().ToUpper() == RQ.Step.Trim().ToUpper()
+                                        select a;
+                    }
+
+                    var total = ProgLogSearch.Count();
+
+                    var skip = RQ.PageSize * RQ.PageNo;
+
+                    var ProgLogResult = (from a in ProgLogSearch
+                                         orderby a.TimeStamp descending
+                                         select new DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog
+                                         {
+                                             SupplierImportFile_VerboseLog_Id = a.SupplierImportFile_VerboseLog_Id,
+                                             SupplierImportFile_Id = a.SupplierImportFile_Id,
+                                             Step = a.Step,
+                                             Message = a.Message,
+                                             TimeStamp = a.TimeStamp ?? DateTime.Now,
+                                             TotalCount = total
+                                         }).Skip(skip ?? 0).Take(RQ.PageSize ?? total).ToList();
+
+                    return ProgLogResult;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while searching Progress Log",
                     ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
                 });
             }
@@ -1188,7 +1764,7 @@ namespace DataLayer
                             objNew.ActionText = obj.ActionText;
                             objNew.Latitude = obj.Latitude;
                             objNew.Longitude = obj.Longitude;
-                            objNew.Country_Id = 
+                            objNew.Country_Id =
                                 ((geo.Where(s => s.CountryName == obj.CountryName).Select(s1 => s1.Country_Id).FirstOrDefault())) ??
                                 (geo.Where(s => s.CountryCode == obj.CountryCode).Select(s1 => s1.Country_Id).FirstOrDefault());
                             objNew.Supplier_Id = mySupplier_Id;
@@ -1319,6 +1895,89 @@ namespace DataLayer
                 return dc;
             }
 
+        }
+
+        public DataContracts.DC_Message AddSTGRoomTypeData(List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> lstobj)
+        {
+            DataContracts.DC_Message dc = new DataContracts.DC_Message();
+
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    string mySupplier = lstobj[0].SupplierName;
+                    Guid? mySupplier_Id = lstobj[0].Supplier_Id;
+
+                    if (!string.IsNullOrWhiteSpace(mySupplier))
+                    {
+                        var oldRecords = (from y in context.stg_SupplierHotelRoomMapping
+                                          where y.SupplierName.Trim().ToUpper() == mySupplier.Trim().ToUpper()
+                                          select y).ToList();
+                        context.stg_SupplierHotelRoomMapping.RemoveRange(oldRecords);
+                        context.SaveChanges();
+                        List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> dstobj = new List<DC_stg_SupplierHotelRoomMapping>();
+                        dstobj = lstobj.GroupBy(a => new { a.RoomName, a.SupplierID, a.SupplierName, a.SupplierProductId, a.SupplierProductName, a.SupplierRoomCategory, a.SupplierRoomTypeCode }).Select(grp => grp.First()).ToList();
+
+                        foreach (DataContracts.STG.DC_stg_SupplierHotelRoomMapping obj in dstobj)
+                        {
+                            DataLayer.stg_SupplierHotelRoomMapping objNew = new DataLayer.stg_SupplierHotelRoomMapping()
+                            {
+                                stg_SupplierHotelRoomMapping_Id = obj.stg_SupplierHotelRoomMapping_Id,
+                                Amenities = obj.Amenities,
+                                BathRoomType = obj.BathRoomType,
+                                SupplierRoomTypeCode = obj.SupplierRoomTypeCode,
+                                SupplierRoomCategory = obj.SupplierRoomCategory,
+                                BeddingConfig = obj.BeddingConfig,
+                                Bedrooms = obj.Bedrooms,
+                                BedTypeCode = obj.BedTypeCode,
+                                ChildAge = obj.ChildAge,
+                                ExtraBed = obj.ExtraBed,
+                                FloorName = obj.FloorName,
+                                FloorNumber = obj.FloorNumber,
+                                MaxAdults = obj.MaxAdults,
+                                MaxChild = obj.MaxChild,
+                                MaxGuestOccupancy = obj.MaxGuestOccupancy,
+                                MaxInfant = obj.MaxInfant,
+                                PromotionalVendorCode = obj.PromotionalVendorCode,
+                                Quantity = obj.Quantity,
+                                RatePlan = obj.RatePlan,
+                                RatePlanCode = obj.RatePlanCode,
+                                RoomDescription = obj.RoomDescription,
+                                RoomLocationCode = obj.RoomLocationCode,
+                                RoomName = obj.RoomName,
+                                RoomSize = obj.RoomSize,
+                                RoomViewCode = obj.RoomViewCode,
+                                Smoking = obj.Smoking,
+                                SupplierID = obj.SupplierID,
+                                SupplierName = obj.SupplierName,
+                                SupplierProductId = obj.SupplierProductId,
+                                SupplierProductName = obj.SupplierProductName,
+                                SupplierProvider = obj.SupplierProvider,
+                                SupplierRoomCategoryId = obj.SupplierRoomCategoryId,
+                                SupplierRoomId = obj.SupplierRoomId,
+                                Supplier_Id = obj.Supplier_Id,
+                                TX_RoomName = obj.TX_RoomName
+                            };
+                            context.stg_SupplierHotelRoomMapping.Add(objNew);
+                        }
+                        context.SaveChanges();
+                        dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        dc.StatusMessage = "Product Static Data " + ReadOnlyMessage.strAddedSuccessfully;
+                    }
+                    else
+                    {
+                        dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        dc.StatusMessage = "Supplier Not Found";
+                    }
+                }
+                return dc;
+            }
+            catch (Exception e)
+            {
+                dc.StatusMessage = ReadOnlyMessage.strFailed;
+                dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                return dc;
+            }
         }
 
         public List<DC_stg_SupplierProductMapping> GetSTGHotelData(DC_stg_SupplierProductMapping_RQ RQ)
@@ -1493,6 +2152,144 @@ namespace DataLayer
             }
         }
 
+        public List<DC_stg_SupplierHotelRoomMapping> GetSTGRoomTypeData(DC_stg_SupplierHotelRoomMapping_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var stgSearch = from a in context.stg_SupplierHotelRoomMapping select a;
+
+                    if (RQ.stg_SupplierHotelRoomMapping_Id.HasValue)
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.stg_SupplierHotelRoomMapping_Id == RQ.stg_SupplierHotelRoomMapping_Id
+                                    select a;
+                    }
+
+                    if (!(RQ.Supplier_Id == Guid.Empty))
+                    {
+                        stgSearch = from a in stgSearch
+                                    join s in context.Suppliers on a.SupplierName.Trim().TrimStart().ToUpper() equals s.Name.Trim().TrimStart().ToUpper()
+                                    where s.Supplier_Id == RQ.Supplier_Id
+                                    select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierName.Trim().TrimStart().ToUpper() == RQ.SupplierName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierID))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierID.Trim().TrimStart().ToUpper() == RQ.SupplierID.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierProductId))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierProductId.Trim().TrimStart().ToUpper() == RQ.SupplierProductId.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierProductName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierProductName.Trim().TrimStart().ToUpper() == RQ.SupplierProductName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierRoomId))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierRoomId.Trim().TrimStart().ToUpper() == RQ.SupplierRoomId.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierRoomTypeCode))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierRoomTypeCode.Trim().TrimStart().ToUpper() == RQ.SupplierRoomTypeCode.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.RoomName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.RoomName.Trim().TrimStart().ToUpper() == RQ.RoomName.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierRoomCategory))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierRoomCategory.Trim().TrimStart().ToUpper() == RQ.SupplierRoomCategory.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.RoomName))
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierRoomCategoryId.Trim().TrimStart().ToUpper() == RQ.SupplierRoomCategoryId.Trim().TrimStart().ToUpper()
+                                    select a;
+                    }
+
+                    int total;
+
+                    total = stgSearch.Count();
+
+                    var skip = RQ.PageSize * RQ.PageNo;
+
+                    var stgResult = (from a in stgSearch
+                                     orderby a.SupplierName
+                                     select new DataContracts.STG.DC_stg_SupplierHotelRoomMapping
+                                     {
+                                         Amenities = a.Amenities,
+                                         BathRoomType = a.BathRoomType,
+                                         SupplierID = a.SupplierID,
+                                         stg_SupplierHotelRoomMapping_Id = a.stg_SupplierHotelRoomMapping_Id,
+                                         BeddingConfig = a.BeddingConfig,
+                                         Bedrooms = a.Bedrooms,
+                                         BedTypeCode = a.BedTypeCode,
+                                         ChildAge = a.ChildAge,
+                                         ExtraBed = a.ExtraBed,
+                                         FloorName = a.FloorName,
+                                         FloorNumber = a.FloorNumber,
+                                         MaxAdults = a.MaxAdults,
+                                         MaxChild = a.MaxChild,
+                                         MaxGuestOccupancy = a.MaxGuestOccupancy,
+                                         MaxInfant = a.MaxInfant,
+                                         PromotionalVendorCode = a.PromotionalVendorCode,
+                                         Quantity = a.Quantity,
+                                         RatePlan = a.RatePlan,
+                                         RatePlanCode = a.RatePlanCode,
+                                         RoomDescription = a.RoomDescription,
+                                         RoomLocationCode = a.RoomLocationCode,
+                                         RoomName = a.RoomName,
+                                         RoomSize = a.RoomSize,
+                                         RoomViewCode = a.RoomViewCode,
+                                         Smoking = a.Smoking,
+                                         SupplierName = a.SupplierName,
+                                         SupplierProductId = a.SupplierProductId,
+                                         SupplierProductName = a.SupplierProductName,
+                                         SupplierProvider = a.SupplierProvider,
+                                         SupplierRoomCategory = a.SupplierRoomCategory,
+                                         SupplierRoomCategoryId = a.SupplierRoomCategoryId,
+                                         SupplierRoomId = a.SupplierRoomId,
+                                         SupplierRoomTypeCode = a.SupplierRoomTypeCode,
+                                         Supplier_Id = a.Supplier_Id,
+                                         TX_RoomName = a.TX_RoomName
+                                     }
+                                        ).Skip(skip).Take(RQ.PageSize).ToList();
+
+                    return stgResult;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while searching Supplier Data",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+        }
         #endregion
 
         #region Process Or Test Uploaded Files
@@ -1510,10 +2307,12 @@ namespace DataLayer
                 file.STATUS = obj.STATUS;
                 file.Supplier = obj.Supplier;
 
-                object result = null;
-                DHSVCProxy.PostData(ProxyFor.DataHandler, System.Configuration.ConfigurationManager.AppSettings["Data_Handler_Process_File"], file, file.GetType(), typeof(void), out result);
+                DHSVCProxyAsync DHP = new DHSVCProxyAsync();
+                DHP.PostAsync(ProxyFor.DataHandler, System.Configuration.ConfigurationManager.AppSettings["Data_Handler_Process_File"], file, file.GetType());
+                DHP = null;
+                file = null;
 
-                return new DC_Message { StatusMessage = "File has been processed." };
+                return new DC_Message { StatusMessage = "File has been sent for processing.", StatusCode = ReadOnlyMessage.StatusCode.Success };
             }
             catch (Exception e)
             {
@@ -1570,5 +2369,28 @@ namespace DataLayer
             }
         }
         #endregion
+
+        #region File Progress DashBoard
+        public DataContracts.DC_FileProgressDashboard getFileProgressDashBoardData(Guid fileid)
+        {
+            try
+            {
+                DataContracts.DC_FileProgressDashboard obj = new DC_FileProgressDashboard();
+                obj.ProgressLog = GetStaticDataUploadProcessLog(new DataContracts.UploadStaticData.DC_SupplierImportFile_Progress_RQ { SupplierImportFile_Id = fileid.ToString() });
+                obj.VerboseLog = GetStaticDataUploadVerboseLog(new DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog_RQ { SupplierImportFile_Id = fileid });
+                obj.FileStatistics = GetStaticDataUploadStatistics(new DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics_RQ { SupplierImportFile_Id = fileid });
+                obj.FileDetails = GetStaticDataFileDetail(new DataContracts.UploadStaticData.DC_SupplierImportFileDetails_RQ { SupplierImportFile_Id = fileid });
+                obj.ErrorLog= GetStaticDataUploadErrorLog(new DataContracts.UploadStaticData.DC_SupplierImportFile_ErrorLog_RQ {SupplierImportFile_Id=fileid });
+                return obj;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+        #endregion
+
+
     }
 }
