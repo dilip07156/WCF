@@ -5007,6 +5007,7 @@ namespace DataLayer
                         if (RQ.MasterAttributeMapping_Id != Guid.Empty)
                         {
                             m_MasterAttributeMapping = from a in m_MasterAttributeMapping where a.MasterAttributeMapping_Id == RQ.MasterAttributeMapping_Id select a;
+                           // m_MasterAttributeValueMapping = from a in m_MasterAttributeValueMapping where a.MasterAttributeMapping_Id == RQ.MasterAttributeMapping_Id select a;
                         }
                     }
 
@@ -5046,10 +5047,10 @@ namespace DataLayer
 
                     var skip = RQ.PageSize * RQ.PageNo;
 
-                    var searchReturn = (from map in context.m_MasterAttributeMapping
-                                        join ma in context.m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
-                                        join mav in context.m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
-                                        join mavm in context.m_MasterAttributeValueMapping on new { mavmid = map.MasterAttributeMapping_Id, mavid = mav.MasterAttributeValue_Id } equals new { mavmid = mavm.MasterAttributeMapping_Id, mavid = mavm.SystemMasterAttributeValue_Id } into mavm_l
+                    var searchReturn = (from map in m_MasterAttributeMapping
+                                        join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
+                                        join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
+                                        join mavm in m_MasterAttributeValueMapping on new { mavmid = map.MasterAttributeMapping_Id, mavid = mav.MasterAttributeValue_Id } equals new { mavmid = mavm.MasterAttributeMapping_Id, mavid = mavm.SystemMasterAttributeValue_Id } into mavm_l
                                         from lr in mavm_l.DefaultIfEmpty()
                                         orderby mav.AttributeValue
                                         select new DataContracts.Mapping.DC_MasterAttributeValueMapping
