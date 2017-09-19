@@ -1527,7 +1527,7 @@ namespace DataLayer
                     var prodMapList = (from a in prodMapSearch
                                        join ma in context.Accommodations.AsNoTracking() on a.Accommodation_Id equals ma.Accommodation_Id into ja
                                        from jda in ja.DefaultIfEmpty()
-                                       //where jda.Location != null
+                                           //where jda.Location != null
                                        orderby a.SupplierName, a.ProductName, a.SupplierProductReference
                                        select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                        {
@@ -1572,7 +1572,7 @@ namespace DataLayer
                                            FullAddress = (a.address ?? string.Empty) + ", " + (a.Street ?? string.Empty) + ", " + (a.Street2 ?? string.Empty) + " " + (a.Street3 ?? string.Empty) + " " + (a.Street4 ?? string.Empty) + " " + (a.PostCode ?? string.Empty) + ", " + (a.CityName ?? string.Empty) + ", " + (a.StateName ?? string.Empty) + ", " + (a.CountryName ?? string.Empty),
                                            SystemFullAddress = (jda.FullAddress ?? string.Empty),
                                            StarRating = a.StarRating,
-                                           Location=jda.Location
+                                           Location = jda.Location
                                        }).Skip(skip).Take(obj.PageSize);
 
                     var result = prodMapList.ToList();
@@ -2283,12 +2283,12 @@ namespace DataLayer
                                     var Acco_RoomInfo = (from a in context.Accommodation_RoomInfo select a).AsQueryable();
                                     Acco_RoomInfo = Acco_RoomInfo.Where(w => w.Accommodation_Id == item.Accommodation_Id && w.RoomCategory.ToUpper().Trim() == item.RoomCategory.ToUpper().Trim()).Select(s => s);
                                     var ExistingRoomInfo = Acco_RoomInfo.ToList();
-                                    if(ExistingRoomInfo.Count> 0)
+                                    if (ExistingRoomInfo.Count > 0)
                                     {
                                         //Update existing Room ID to SRTM table
                                         item.Accommodation_RoomInfo_Id = ExistingRoomInfo[0].Accommodation_RoomInfo_Id;
                                         item.Status = "MAPPED";
-                                        
+
                                     }
                                     else
                                     {
@@ -4990,33 +4990,84 @@ namespace DataLayer
             }
         }
 
-        public List<DataContracts.Mapping.DC_MasterAttributeValueMapping> GetMasterAttributeValueMapping(Guid MasterAttributeMapping_Id)
+        public List<DataContracts.Mapping.DC_MasterAttributeValueMapping> GetMasterAttributeValueMapping(DataContracts.Mapping.DC_MasterAttributeValueMapping_RQ RQ)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = from map in context.m_MasterAttributeMapping
-                                 join ma in context.m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
-                                 join mav in context.m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
-                                 join mavm in context.m_MasterAttributeValueMapping on new {mavmid = map.MasterAttributeMapping_Id, mavid = mav.MasterAttributeValue_Id } equals new { mavmid = mavm.MasterAttributeMapping_Id, mavid = mavm.SystemMasterAttributeValue_Id } into mavm_l
-                                 from lr in mavm_l.DefaultIfEmpty()
-                                 where map.MasterAttributeMapping_Id == MasterAttributeMapping_Id
-                                 select new DataContracts.Mapping.DC_MasterAttributeValueMapping
-                                 {
-                                     MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
-                                     Create_Date = map.Create_Date,
-                                     Create_User = map.Create_User,
-                                     Edit_Date = map.Edit_Date,
-                                     Edit_User = map.Edit_User,
-                                     IsActive = map.IsActive,
-                                     MasterAttributeValueMapping_Id = (lr == null ? Guid.NewGuid() : lr.MasterAttributeValueMapping_Id),
-                                     SupplierMasterAttributeValue = (lr == null ? string.Empty : lr.SupplierMasterAttributeValue),
-                                     SystemMasterAttributeValue = mav.AttributeValue,
-                                     SystemMasterAttributeValue_Id = mav.MasterAttributeValue_Id
-                                 };
 
-                    return search.ToList();
+                    var m_MasterAttributeMapping = (from a in context.m_MasterAttributeMapping select a).AsQueryable();
+                    var m_masterattribute = (from a in context.m_masterattribute select a).AsQueryable();
+                    var m_masterattributevalue = (from a in context.m_masterattributevalue select a).AsQueryable();
+                    var m_MasterAttributeValueMapping = (from a in context.m_MasterAttributeValueMapping select a).AsQueryable();
+
+                    if (RQ.MasterAttributeMapping_Id != null)
+                    {
+                        if (RQ.MasterAttributeMapping_Id != Guid.Empty)
+                        {
+                            m_MasterAttributeMapping = from a in m_MasterAttributeMapping where a.MasterAttributeMapping_Id == RQ.MasterAttributeMapping_Id select a;
+                        }
+                    }
+
+                    if (RQ.SystemMasterAttributeValue_Id != null)
+                    {
+                        if (RQ.SystemMasterAttributeValue_Id != Guid.Empty)
+                        {
+                            m_masterattributevalue = from a in m_masterattributevalue where a.MasterAttributeValue_Id == RQ.SystemMasterAttributeValue_Id select a;
+                        }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.SystemMasterAttributeValue))
+                    {
+                        m_masterattributevalue = from a in m_masterattributevalue where a.AttributeValue.ToUpper().Trim() == RQ.SystemMasterAttributeValue.ToUpper().Trim() select a;
+                    }
+
+                    var search = (from map in m_MasterAttributeMapping
+                                  join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
+                                  join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
+                                  join mavm in m_MasterAttributeValueMapping on new { mavmid = map.MasterAttributeMapping_Id, mavid = mav.MasterAttributeValue_Id } equals new { mavmid = mavm.MasterAttributeMapping_Id, mavid = mavm.SystemMasterAttributeValue_Id } into mavm_l
+                                  from lr in mavm_l.DefaultIfEmpty()
+                                  select new DataContracts.Mapping.DC_MasterAttributeValueMapping
+                                  {
+                                      MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
+                                      Create_Date = map.Create_Date,
+                                      Create_User = map.Create_User,
+                                      Edit_Date = map.Edit_Date,
+                                      Edit_User = map.Edit_User,
+                                      IsActive = map.IsActive,
+                                      MasterAttributeValueMapping_Id = (lr == null ? Guid.NewGuid() : lr.MasterAttributeValueMapping_Id),
+                                      SupplierMasterAttributeValue = (lr == null ? string.Empty : lr.SupplierMasterAttributeValue),
+                                      SystemMasterAttributeValue = mav.AttributeValue,
+                                      SystemMasterAttributeValue_Id = mav.MasterAttributeValue_Id
+                                  }).AsQueryable();
+
+                    int total = search.Count();
+
+                    var skip = RQ.PageSize * RQ.PageNo;
+
+                    var searchReturn = (from map in context.m_MasterAttributeMapping
+                                        join ma in context.m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
+                                        join mav in context.m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
+                                        join mavm in context.m_MasterAttributeValueMapping on new { mavmid = map.MasterAttributeMapping_Id, mavid = mav.MasterAttributeValue_Id } equals new { mavmid = mavm.MasterAttributeMapping_Id, mavid = mavm.SystemMasterAttributeValue_Id } into mavm_l
+                                        from lr in mavm_l.DefaultIfEmpty()
+                                        orderby mav.AttributeValue
+                                        select new DataContracts.Mapping.DC_MasterAttributeValueMapping
+                                        {
+                                            MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
+                                            Create_Date = map.Create_Date,
+                                            Create_User = map.Create_User,
+                                            Edit_Date = map.Edit_Date,
+                                            Edit_User = map.Edit_User,
+                                            IsActive = map.IsActive,
+                                            MasterAttributeValueMapping_Id = (lr == null ? Guid.NewGuid() : lr.MasterAttributeValueMapping_Id),
+                                            SupplierMasterAttributeValue = (lr == null ? string.Empty : lr.SupplierMasterAttributeValue),
+                                            SystemMasterAttributeValue = mav.AttributeValue,
+                                            SystemMasterAttributeValue_Id = mav.MasterAttributeValue_Id,
+                                            TotalRecords = total
+                                        }).Skip(skip).Take(RQ.PageSize);
+
+                    return searchReturn.ToList();
                 }
             }
             catch
@@ -5032,7 +5083,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var duplicateSearch = from a in context.m_MasterAttributeMapping
-                                          where  a.Supplier_Id == param.Supplier_Id
+                                          where a.Supplier_Id == param.Supplier_Id
                                           && a.SystemMasterAttribute_Id == param.SystemMasterAttribute_Id
                                           select a;
                     if (duplicateSearch.Count() > 0)
@@ -5142,47 +5193,45 @@ namespace DataLayer
             }
         }
 
-        public DataContracts.DC_Message UpdateMasterAttributeValueMapping(DataContracts.Mapping.DC_MasterAttributeValueMapping param)
+        public DataContracts.DC_Message UpdateMasterAttributeValueMapping(List<DataContracts.Mapping.DC_MasterAttributeValueMapping> paramList)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = context.m_MasterAttributeValueMapping.Find(param.MasterAttributeValueMapping_Id);
-
-                    if (search != null)
+                    foreach(var param in paramList)
                     {
-                        search.IsActive = param.IsActive;
-                        search.Edit_Date = DateTime.Now;
-                        search.Edit_User = param.Edit_User;
-                        search.SupplierMasterAttributeValue = param.SupplierMasterAttributeValue;
+                        var search = context.m_MasterAttributeValueMapping.Find(param.MasterAttributeValueMapping_Id);
 
-                        context.SaveChanges();
-
+                        if (search != null)
+                        {
+                            search.IsActive = param.IsActive;
+                            search.Edit_Date = DateTime.Now;
+                            search.Edit_User = param.Edit_User;
+                            search.SupplierMasterAttributeValue = param.SupplierMasterAttributeValue;
+                            context.SaveChanges();
+                        }
+                        else
+                        {
+                            m_MasterAttributeValueMapping newObj = new m_MasterAttributeValueMapping();
+                            newObj.MasterAttributeMapping_Id = param.MasterAttributeMapping_Id;
+                            newObj.MasterAttributeValueMapping_Id = param.MasterAttributeValueMapping_Id ?? Guid.NewGuid();
+                            newObj.SupplierMasterAttributeValue = param.SupplierMasterAttributeValue;
+                            newObj.SystemMasterAttributeValue_Id = param.SystemMasterAttributeValue_Id;
+                            newObj.IsActive = param.IsActive;
+                            newObj.Create_Date = DateTime.Now;
+                            newObj.Create_User = param.Create_User;
+                            context.m_MasterAttributeValueMapping.Add(newObj);
+                            context.SaveChanges();
+                        }
                     }
-                    else
-                    {
-                        m_MasterAttributeValueMapping newObj = new m_MasterAttributeValueMapping();
-                        newObj.MasterAttributeMapping_Id = param.MasterAttributeMapping_Id;
-                        newObj.MasterAttributeValueMapping_Id = param.MasterAttributeValueMapping_Id ?? Guid.NewGuid();
-                        newObj.SupplierMasterAttributeValue = param.SupplierMasterAttributeValue;
-                        newObj.SystemMasterAttributeValue_Id = param.SystemMasterAttributeValue_Id;
-                        newObj.IsActive = param.IsActive;
-                        newObj.Create_Date = DateTime.Now;
-                        newObj.Create_User = param.Create_User;
-                        context.m_MasterAttributeValueMapping.Add(newObj);
-                        context.SaveChanges();
-                    }
-
-
+                    
                     return new DataContracts.DC_Message
                     {
                         StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success,
                         StatusMessage = "Data saved successfully."
                     };
                 }
-
-
             }
             catch
             {
@@ -6058,6 +6107,7 @@ namespace DataLayer
         }
 
         #endregion
+
         #region velocity Dashboard
         public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(DataContracts.Mapping.DC_RollOFParams parm)
         {

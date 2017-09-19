@@ -20,6 +20,7 @@ namespace DataContracts.Mapping
         System.DateTime? _Create_Date;
         string _Edit_User;
         Nullable<System.DateTime> _Edit_Date;
+        int _TotalRecords;
 
         [DataMember]
         public Guid? MasterAttributeValueMapping_Id
@@ -158,6 +159,100 @@ namespace DataContracts.Mapping
             set
             {
                 _SystemMasterAttributeValue = value;
+            }
+        }
+
+        [DataMember]
+        public int TotalRecords
+        {
+            get
+            {
+                return _TotalRecords;
+            }
+
+            set
+            {
+                _TotalRecords = value;
+            }
+        }
+    }
+
+    [DataContract]
+    public class DC_MasterAttributeValueMapping_RQ
+    {
+        System.Guid? _MasterAttributeMapping_Id;
+        System.Guid? _SystemMasterAttributeValue_Id;
+        string _SystemMasterAttributeValue;
+        int _PageNo;
+        int _PageSize;
+
+        [DataMember]
+        public Guid? MasterAttributeMapping_Id
+        {
+            get
+            {
+                return _MasterAttributeMapping_Id;
+            }
+
+            set
+            {
+                _MasterAttributeMapping_Id = value;
+            }
+        }
+
+        [DataMember]
+        public int PageNo
+        {
+            get
+            {
+                return _PageNo;
+            }
+
+            set
+            {
+                _PageNo = value;
+            }
+        }
+
+        [DataMember]
+        public int PageSize
+        {
+            get
+            {
+                return _PageSize;
+            }
+
+            set
+            {
+                _PageSize = value;
+            }
+        }
+
+        [DataMember]
+        public string SystemMasterAttributeValue
+        {
+            get
+            {
+                return _SystemMasterAttributeValue;
+            }
+
+            set
+            {
+                _SystemMasterAttributeValue = value;
+            }
+        }
+
+        [DataMember]
+        public Guid? SystemMasterAttributeValue_Id
+        {
+            get
+            {
+                return _SystemMasterAttributeValue_Id;
+            }
+
+            set
+            {
+                _SystemMasterAttributeValue_Id = value;
             }
         }
     }
