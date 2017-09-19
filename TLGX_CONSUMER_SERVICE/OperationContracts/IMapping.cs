@@ -119,7 +119,7 @@ namespace OperationContracts
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "Mapping/MasterAttribute/Add", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DataContracts.DC_Message AddMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping param);
+        DataContracts.Mapping.DC_MasterAttributeMappingAdd_RS AddMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping param);
 
 
         [OperationContract]

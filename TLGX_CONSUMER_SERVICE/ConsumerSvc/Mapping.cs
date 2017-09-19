@@ -256,7 +256,7 @@ namespace ConsumerSvc
             }
         }
 
-        public DataContracts.DC_Message AddMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping param)
+        public DataContracts.Mapping.DC_MasterAttributeMappingAdd_RS AddMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping param)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {

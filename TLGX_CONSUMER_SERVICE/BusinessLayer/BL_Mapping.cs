@@ -490,7 +490,7 @@ namespace BusinessLayer
             }
         }
 
-        public DataContracts.DC_Message AddMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping param)
+        public DataContracts.Mapping.DC_MasterAttributeMappingAdd_RS AddMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping param)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {

@@ -396,4 +396,13 @@ namespace DataContracts.Mapping
             }
         }
     }
+
+    [DataContract]
+    public class DC_MasterAttributeMappingAdd_RS
+    {
+        [DataMember]
+        public DC_Message Message { get; set; }
+        [DataMember]
+        public Guid? AttributeMapping_Id { get; set; }
+    }
 }
