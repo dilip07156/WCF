@@ -5029,6 +5029,7 @@ namespace DataLayer
                                   join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
                                   join mavm in m_MasterAttributeValueMapping on new { mavmid = map.MasterAttributeMapping_Id, mavid = mav.MasterAttributeValue_Id } equals new { mavmid = mavm.MasterAttributeMapping_Id, mavid = mavm.SystemMasterAttributeValue_Id } into mavm_l
                                   from lr in mavm_l.DefaultIfEmpty()
+                                  orderby mav.AttributeValue
                                   select new DataContracts.Mapping.DC_MasterAttributeValueMapping
                                   {
                                       MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
