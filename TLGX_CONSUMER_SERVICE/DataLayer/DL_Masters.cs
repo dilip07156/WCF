@@ -4208,7 +4208,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(obj.systemWord))
                     {
                         search = from r in search
-                                 where r.Keyword.Trim().ToUpper() == obj.systemWord.Trim().ToUpper()
+                                 where r.Keyword.Trim().ToUpper().Contains(obj.systemWord.Trim().ToUpper())
                                  select r;
                     }
 
@@ -4234,7 +4234,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(obj.Alias))
                     {
                         searchAlias = from a in searchAlias
-                                      where a.Value == obj.Alias
+                                      where a.Value.Contains(obj.Alias)
                                       select a;
                     }
 
