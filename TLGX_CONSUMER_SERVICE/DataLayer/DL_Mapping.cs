@@ -5047,25 +5047,31 @@ namespace DataLayer
 
                     var skip = RQ.PageSize * RQ.PageNo;
 
-                    var searchReturn = (from map in search orderby map.SystemMasterAttributeValue select new DataContracts.Mapping.DC_MasterAttributeValueMapping
-                    {
-                        MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
-                        Create_Date = map.Create_Date,
-                        Create_User = map.Create_User,
-                        Edit_Date = map.Edit_Date,
-                        Edit_User = map.Edit_User,
-                        IsActive = map.IsActive,
-                        MasterAttributeValueMapping_Id = map.MasterAttributeValueMapping_Id,
-                        SupplierMasterAttributeValue = map.SupplierMasterAttributeValue,
-                        SystemMasterAttributeValue = map.SystemMasterAttributeValue,
-                        SystemMasterAttributeValue_Id = map.SystemMasterAttributeValue_Id,
-                        TotalRecords=total
-                    }).Skip(skip).Take(RQ.PageSize);
+                    var searchReturn = (from map in m_MasterAttributeMapping
+                                        join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
+                                        join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
+                                        join mavm in m_MasterAttributeValueMapping on new { mavmid = map.MasterAttributeMapping_Id, mavid = mav.MasterAttributeValue_Id } equals new { mavmid = mavm.MasterAttributeMapping_Id, mavid = mavm.SystemMasterAttributeValue_Id } into mavm_l
+                                        from lr in mavm_l.DefaultIfEmpty()
+                                        orderby mav.AttributeValue
+                                        select new DataContracts.Mapping.DC_MasterAttributeValueMapping
+                                        {
+                                            MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
+                                            Create_Date = map.Create_Date,
+                                            Create_User = map.Create_User,
+                                            Edit_Date = map.Edit_Date,
+                                            Edit_User = map.Edit_User,
+                                            IsActive = map.IsActive,
+                                            MasterAttributeValueMapping_Id = (lr == null ? Guid.NewGuid() : lr.MasterAttributeValueMapping_Id),
+                                            SupplierMasterAttributeValue = (lr == null ? string.Empty : lr.SupplierMasterAttributeValue),
+                                            SystemMasterAttributeValue = mav.AttributeValue,
+                                            SystemMasterAttributeValue_Id = mav.MasterAttributeValue_Id,
+                                            TotalRecords = total
+                                        }).Skip(skip).Take(RQ.PageSize);
 
                     return searchReturn.ToList();
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching master attribute value mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
