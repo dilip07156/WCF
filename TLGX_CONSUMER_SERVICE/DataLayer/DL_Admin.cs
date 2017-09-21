@@ -19,6 +19,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using DataContracts;
 using log4net;
+using DataContracts.Admin;
 
 namespace DataLayer
 {
@@ -278,6 +279,11 @@ namespace DataLayer
                             search.Description = SM.Description;
                             search.Edit_Date = SM.Edit_Date;
                             search.Edit_User = SM.Edit_User;
+                            //SiteMapNode active Or Inactive Check
+                            if (!SM.IsSiteMapNode)
+                                SetSiteMapNodeActiveInactiveForParent(SM);
+                            else
+                                SetSiteMapNodeActiveInactiveForChild(SM);
                             search.IsSiteMapNode = SM.IsSiteMapNode;
                             search.IsActive = SM.IsActive;
                             search.Parent = SM.ParentID;
@@ -289,6 +295,62 @@ namespace DataLayer
                         context.SaveChanges();
                     }
                     return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating sitemap master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        private void SetSiteMapNodeActiveInactiveForChild(DC_SiteMap sM)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = (from sm in context.SiteMaps
+                                  where sm.ID == sM.ParentID
+                                  select sm).FirstOrDefault();
+                    if(search != null)
+                    {
+                        //Check parent node
+                        int _intparent = Convert.ToInt32(search.ID);
+                        var parent = (from sm in context.SiteMaps
+                                      where sm.ID == _intparent
+                                      select sm).FirstOrDefault();
+                        if (!Convert.ToBoolean(parent.IsSiteMapNode))
+                        {
+                            parent.IsSiteMapNode = sM.IsSiteMapNode;
+                            context.SaveChanges();
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private void SetSiteMapNodeActiveInactiveForParent(DC_SiteMap sM)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = (from sm in context.SiteMaps
+                                  where sm.Parent == sM.ID
+                                  select sm).ToList();
+                    if (search != null && search.Count > 0)
+                    {
+                        foreach(var item in search)
+                        {
+                            item.IsSiteMapNode = sM.IsSiteMapNode;
+                        }
+                        context.SaveChanges();
+                    }
                 }
             }
             catch (Exception ex)
