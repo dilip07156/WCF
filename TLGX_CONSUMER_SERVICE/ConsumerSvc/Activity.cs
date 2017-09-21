@@ -38,5 +38,13 @@ namespace ConsumerSvc
                 return obj.AddUpdateActivity(_objAct);
             }
         }
+
+        public DataContracts.DC_Message AddUpdateProductInfo(DataContracts.Masters.DC_Activity _objPro)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateProductInfo(_objPro);
+            }
+        }
     }
 }

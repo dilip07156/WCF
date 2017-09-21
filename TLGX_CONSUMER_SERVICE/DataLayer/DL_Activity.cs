@@ -162,24 +162,13 @@ namespace DataLayer
         #endregion
 
         #region "Activity Insert and Update"
-        public DataContracts.DC_Message AddUpdateActivity(DataContracts.Masters.DC_Activity _objAct)
+        public DataContracts.DC_Message AddUpdateProductInfo(DataContracts.Masters.DC_Activity _objAct)
         {
             DC_Message _msg = new DC_Message();
 
             using (ConsumerEntities context = new ConsumerEntities())
             {
-                var isduplicate = (from a in context.Activities
-                                   where a.Activity_Id != (_objAct.Activity_Id ?? Guid.Empty)  && a.Product_Name == _objAct.Product_Name
-                                   select a).Count() == 0 ? false:true;
-
-                if(isduplicate)
-                {
-                    _msg.StatusMessage = ReadOnlyMessage.strAlreadyExist;
-                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
-                    return _msg;
-                }
-
-                if(_objAct.Activity_Id.HasValue && _objAct.Activity_Id!=Guid.Empty)
+                if(_objAct.Activity_Id.HasValue) //&& _objAct.Activity_Id == Guid.Empty)|| _objAct.Activity_Id != Guid.Empty
                 {
                     var results = context.Activities.Find(_objAct.Activity_Id);
 
@@ -189,8 +178,8 @@ namespace DataLayer
                         results.Country = _objAct.Country;
                         results.City_Id = _objAct.City_Id;
                         results.City = _objAct.City;
-                        results.Edit_Date = _objAct.Edit_Date;
-                        results.Edit_User = _objAct.Edit_User;
+                        results.Edit_Date = DateTime.Now;
+                        results.Edit_User = System.Web.HttpContext.Current.User.Identity.Name; 
                         results.ProductCategory = _objAct.ProductCategory;
                         results.ProductCategorySubType = _objAct.ProductCategorySubType;
                         results.ProductType = _objAct.ProductType;
@@ -235,8 +224,8 @@ namespace DataLayer
                             City = _objAct.City,
                             City_Id = _objAct.City_Id,
                             Country_Id = _objAct.Country_Id,
-                            Create_Date = _objAct.Create_Date,
-                            Create_User = _objAct.Create_User,
+                            Create_Date = DateTime.Now,
+                            Create_User = System.Web.HttpContext.Current.User.Identity.Name,
                             CommonProductID = _objAct.CommonProductID,
                             CompanyProductID =_objAct.CompanyProductID,
                             CompanyRating = _objAct.CompanyRating,
@@ -272,6 +261,119 @@ namespace DataLayer
                 }
             }
             
+            return _msg;
+        }
+
+        public DataContracts.DC_Message AddUpdateActivity(DataContracts.Masters.DC_Activity _objAct)
+        {
+            DC_Message _msg = new DC_Message();
+
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                var isduplicate = (from a in context.Activities
+                                   where a.Activity_Id != (_objAct.Activity_Id ?? Guid.Empty) && a.Product_Name == _objAct.Product_Name
+                                   select a).Count() == 0 ? false : true;
+
+                if (isduplicate)
+                {
+                    _msg.StatusMessage = ReadOnlyMessage.strAlreadyExist;
+                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
+                    return _msg;
+                }
+
+                if (_objAct.Activity_Id.HasValue && _objAct.Activity_Id != Guid.Empty)
+                {
+                    var results = context.Activities.Find(_objAct.Activity_Id);
+
+                    if (results != null)
+                    {
+                        results.Country_Id = _objAct.Country_Id;
+                        results.Country = _objAct.Country;
+                        results.City_Id = _objAct.City_Id;
+                        results.City = _objAct.City;
+                        results.Edit_Date = _objAct.Edit_Date;
+                        results.Edit_User = _objAct.Edit_User;
+                        results.ProductCategory = _objAct.ProductCategory;
+                        results.ProductCategorySubType = _objAct.ProductCategorySubType;
+                        results.ProductType = _objAct.ProductType;
+                        results.Product_Name = _objAct.Product_Name;
+
+                        results.Affiliation = _objAct.Affiliation;
+                        results.CommonProductID = _objAct.CommonProductID;
+                        results.CompanyProductID = _objAct.CompanyProductID;
+                        results.CompanyRating = _objAct.CompanyRating;
+                        results.CompanyRecommended = _objAct.CompanyRecommended;
+                        results.Display_Name = _objAct.Display_Name;
+                        results.IsActive = _objAct.IsActive;
+                        results.Latitude = _objAct.Latitude;
+                        results.Legacy_Product_ID = _objAct.Legacy_Product_ID;
+                        results.Longitude = _objAct.Longitude;
+                        results.Mode_Of_Transport = _objAct.Mode_Of_Transport;
+                        results.Parent_Legacy_Id = _objAct.Parent_Legacy_Id;
+                        results.Remarks = _objAct.Remarks;
+                        results.TourType = _objAct.TourType;
+
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+
+                        return _msg;
+
+                    }
+                    else
+                    {
+                        Activity _obj = new Activity()
+                        {
+                            Activity_Id = Guid.NewGuid(),
+                            Affiliation = _objAct.Affiliation,
+                            Country = _objAct.Country,
+                            City = _objAct.City,
+                            City_Id = _objAct.City_Id,
+                            Country_Id = _objAct.Country_Id,
+                            Create_Date = _objAct.Create_Date,
+                            Create_User = _objAct.Create_User,
+                            CommonProductID = _objAct.CommonProductID,
+                            CompanyProductID = _objAct.CompanyProductID,
+                            CompanyRating = _objAct.CompanyRating,
+                            CompanyRecommended = _objAct.CompanyRecommended,
+                            Display_Name = _objAct.Display_Name,
+                            IsActive = _objAct.IsActive,
+                            Latitude = _objAct.Latitude,
+                            Longitude = _objAct.Longitude,
+                            Legacy_Product_ID = _objAct.Legacy_Product_ID,
+                            Mode_Of_Transport = _objAct.Mode_Of_Transport,
+                            Product_Name = _objAct.Product_Name,
+                            ProductCategory = _objAct.ProductCategory,
+                            ProductCategorySubType = _objAct.ProductCategorySubType,
+                            ProductType = _objAct.ProductType,
+                            ProductRating = _objAct.ProductRating,
+                            Parent_Legacy_Id = _objAct.Parent_Legacy_Id,
+                            Remarks = _objAct.Remarks,
+                            TourType = _objAct.TourType
+                        };
+
+                        context.Activities.Add(_obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                }
+            }
+
             return _msg;
         }
         #endregion

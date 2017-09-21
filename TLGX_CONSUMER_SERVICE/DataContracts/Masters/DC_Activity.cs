@@ -640,8 +640,7 @@ namespace DataContracts.Masters
         public string CommonProductNameSubType_Id { get; set; }
 
     }
-
-
+    
     [DataContract]
     public class DC_Activity_Search_RQ
     {
@@ -712,5 +711,44 @@ namespace DataContracts.Masters
         public string Product_Name { get; set; }
 
 
+    }
+    [DataContract]
+    public class DC_Activity_Contact
+    {
+        [DataMember]
+        public Guid Activity_Contact_Id { get; set; }
+
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+
+        [DataMember]
+        public int? Legacy_Htl_Id { get; set; }
+
+        [DataMember]
+        public string Telephone { get; set; }
+
+        [DataMember]
+        public string Fax { get; set; }
+
+        [DataMember]
+        public string WebSiteURL { get; set; }
+
+        [DataMember]
+        public string Email { get; set; }
+
+        [DataMember] 
+        public string Create_User { get; set; }
+
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+
+        [DataMember]
+        public string Edit_User { get; set; }
+
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+
+        [DataMember]
+        public bool IsActive { get; set; }
     }
 }
