@@ -5219,7 +5219,7 @@ namespace DataLayer
 
                         if (search != null)
                         {
-                            search.IsActive = param.IsActive;
+                            search.IsActive = param.IsActive ?? false;
                             search.Edit_Date = DateTime.Now;
                             search.Edit_User = param.Edit_User;
                             search.SupplierMasterAttributeValue = param.SupplierMasterAttributeValue;
@@ -5232,7 +5232,7 @@ namespace DataLayer
                             newObj.MasterAttributeValueMapping_Id = param.MasterAttributeValueMapping_Id ?? Guid.NewGuid();
                             newObj.SupplierMasterAttributeValue = param.SupplierMasterAttributeValue;
                             newObj.SystemMasterAttributeValue_Id = param.SystemMasterAttributeValue_Id;
-                            newObj.IsActive = param.IsActive;
+                            newObj.IsActive = param.IsActive ?? false;
                             newObj.Create_Date = DateTime.Now;
                             newObj.Create_User = param.Create_User;
                             context.m_MasterAttributeValueMapping.Add(newObj);

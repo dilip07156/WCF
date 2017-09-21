@@ -15,7 +15,7 @@ namespace DataContracts.Mapping
         System.Guid _SystemMasterAttributeValue_Id;
         string _SystemMasterAttributeValue;
         string _SupplierMasterAttributeValue;
-        bool _IsActive;
+        bool? _IsActive;
         string _Create_User;
         System.DateTime? _Create_Date;
         string _Edit_User;
@@ -79,7 +79,7 @@ namespace DataContracts.Mapping
         }
 
         [DataMember]
-        public bool IsActive
+        public bool? IsActive
         {
             get
             {
