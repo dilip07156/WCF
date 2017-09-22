@@ -62,7 +62,15 @@ namespace BusinessLayer
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
-                return obj.UpdateActivityContacts(AC);
+                return obj.AddActivityContacts(AC);
+            }
+        }
+        
+        public string GetLegacyProductId(Guid Activity_Id)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetLegacyProductId(Activity_Id);
             }
         }
         #endregion

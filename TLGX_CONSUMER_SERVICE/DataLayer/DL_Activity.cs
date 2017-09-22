@@ -188,6 +188,7 @@ namespace DataLayer
                         results.Affiliation = _objAct.Affiliation;
                         results.CommonProductID = _objAct.CommonProductID;
                         results.CompanyProductID = _objAct.CompanyProductID;
+                        results.FinanceProductID = _objAct.FinanceProductID;
                         results.CompanyRating = _objAct.CompanyRating;
                         results.CompanyRecommended = _objAct.CompanyRecommended;
                         results.Display_Name = _objAct.Display_Name;
@@ -390,18 +391,18 @@ namespace DataLayer
                                  && ac.Activity_Contact_Id == (DataKey_Id == Guid.Empty ? ac.Activity_Contact_Id : DataKey_Id)
                                  select new DC_Activity_Contact
                                  {
-                                     Activity_Contact_Id=ac.Activity_Contact_Id,
-                                     Activity_Id=ac.Activity_Id,
-                                     Create_Date=ac.Create_Date,
-                                     Create_User=ac.Create_User,
-                                     Edit_Date=ac.Edit_Date,
-                                     Edit_User=ac.Edit_User,
-                                     Email=ac.Email,
-                                     Fax=ac.Fax,
-                                     Legacy_Product_ID=ac.Legacy_Product_ID,
-                                     Telephone=ac.Telephone,
-                                     WebSiteURL=ac.WebSiteURL,
-                                     IsActive=(ac.IsActive ?? true)
+                                     Activity_Contact_Id = ac.Activity_Contact_Id,
+                                     Activity_Id = ac.Activity_Id,
+                                     Create_Date = ac.Create_Date,
+                                     Create_User = ac.Create_User,
+                                     Edit_Date = ac.Edit_Date,
+                                     Edit_User = ac.Edit_User,
+                                     Email = ac.Email,
+                                     Fax = ac.Fax,
+                                     Legacy_Product_ID = ac.Legacy_Product_ID,
+                                     Telephone = ac.Telephone,
+                                     WebSiteURL = ac.WebSiteURL,
+                                     IsActive = (ac.IsActive ?? true)
                                  };
                     return search.ToList();
                 }
@@ -489,6 +490,26 @@ namespace DataLayer
             catch
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding Activity contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        
+        public string GetLegacyProductId(Guid Activity_Id)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = (from ac in context.Activity_Contact
+                                  where ac.Activity_Id == Activity_Id
+                                  select new { ac.Legacy_Product_ID }).FirstOrDefault();
+
+                    return Convert.ToString(search);
+                    
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Activity contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
         #endregion

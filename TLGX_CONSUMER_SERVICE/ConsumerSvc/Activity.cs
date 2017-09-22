@@ -78,6 +78,14 @@ namespace ConsumerSvc
                 return obj.AddActivityContacts(AC);
             }
         }
+        
+        public string GetLegacyProductId(string Activity_Id)
+        {
+            using (BL_Activity obj = new BL_Activity())
+            {
+                return obj.GetLegacyProductId(Guid.Parse(Activity_Id));
+            }
+        }
         #endregion
     }
 }

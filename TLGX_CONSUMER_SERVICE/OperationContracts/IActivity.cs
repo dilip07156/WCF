@@ -43,6 +43,11 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "AddActivity/Contacts", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool AddActivityContacts(DataContracts.Masters.DC_Activity_Contact AC);
+        
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "GetActivity/LegacyProductId/{Activity_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        string GetLegacyProductId(string Activity_Id);
         #endregion
     }
 }

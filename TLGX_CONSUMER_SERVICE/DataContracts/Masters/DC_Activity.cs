@@ -21,6 +21,8 @@ namespace DataContracts.Masters
         [DataMember]
         public int? CompanyProductID { get; set; }
         [DataMember]
+        public int? FinanceProductID { get; set; }
+        [DataMember]
         public string Product_Name { get; set; }
         [DataMember]
         public string Display_Name { get; set; }
@@ -723,7 +725,7 @@ namespace DataContracts.Masters
 
         [DataMember]
         public int? Legacy_Product_ID { get; set; }
-
+        
         [DataMember]
         public string Telephone { get; set; }
 
