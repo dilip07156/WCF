@@ -248,15 +248,15 @@ namespace ConsumerSvc
             }
         }
 
-        public List<DataContracts.Mapping.DC_MasterAttributeValueMapping> GetMasterAttributeValueMapping(string MasterAttributeMapping_Id)
+        public List<DataContracts.Mapping.DC_MasterAttributeValueMapping> GetMasterAttributeValueMapping(DataContracts.Mapping.DC_MasterAttributeValueMapping_RQ RQ)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
-                return objBL.GetMasterAttributeValueMapping(MasterAttributeMapping_Id);
+                return objBL.GetMasterAttributeValueMapping(RQ);
             }
         }
 
-        public DataContracts.DC_Message AddMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping param)
+        public DataContracts.Mapping.DC_MasterAttributeMappingAdd_RS AddMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping param)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
@@ -273,7 +273,7 @@ namespace ConsumerSvc
             }
         }
 
-        public DataContracts.DC_Message UpdateMasterAttributeValueMapping(DataContracts.Mapping.DC_MasterAttributeValueMapping param)
+        public DataContracts.DC_Message UpdateMasterAttributeValueMapping(List<DataContracts.Mapping.DC_MasterAttributeValueMapping> param)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {

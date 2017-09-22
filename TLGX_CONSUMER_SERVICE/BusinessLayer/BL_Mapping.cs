@@ -63,10 +63,10 @@ namespace BusinessLayer
             //}
             //else
             //{
-                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
-                {
-                    return objBL.GetAccomodationProductMapping(obj);
-                }
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetAccomodationProductMapping(obj);
+            }
             //}
 
         }
@@ -432,12 +432,12 @@ namespace BusinessLayer
         }
         public List<DataContracts.Mapping.DC_supplierwisesummaryReport> GetsupplierwiseSummaryReport()
         {
-            
-                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
-                {
-                    return objBL.GetsupplierwiseSummaryReport();
-                }
-            
+
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetsupplierwiseSummaryReport();
+            }
+
         }
         public List<DataContracts.Mapping.DC_supplierwiseunmappedsummaryReport> GetsupplierwiseUnmappedSummaryReport(string SupplierID)
         {
@@ -482,24 +482,15 @@ namespace BusinessLayer
             }
         }
 
-        public List<DataContracts.Mapping.DC_MasterAttributeValueMapping> GetMasterAttributeValueMapping(string MasterAttributeMapping_Id)
+        public List<DataContracts.Mapping.DC_MasterAttributeValueMapping> GetMasterAttributeValueMapping(DataContracts.Mapping.DC_MasterAttributeValueMapping_RQ RQ)
         {
-            Guid gMasterAttributeMapping_Id;
-
-            if (!Guid.TryParse(MasterAttributeMapping_Id, out gMasterAttributeMapping_Id))
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
-            }
-            else
-            {
-                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
-                {
-                    return objBL.GetMasterAttributeValueMapping(gMasterAttributeMapping_Id);
-                }
+                return objBL.GetMasterAttributeValueMapping(RQ);
             }
         }
 
-        public DataContracts.DC_Message AddMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping param)
+        public DataContracts.Mapping.DC_MasterAttributeMappingAdd_RS AddMasterAttributeMapping(DataContracts.Mapping.DC_MasterAttributeMapping param)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
@@ -516,7 +507,7 @@ namespace BusinessLayer
             }
         }
 
-        public DataContracts.DC_Message UpdateMasterAttributeValueMapping(DataContracts.Mapping.DC_MasterAttributeValueMapping param)
+        public DataContracts.DC_Message UpdateMasterAttributeValueMapping(List<DataContracts.Mapping.DC_MasterAttributeValueMapping> param)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
@@ -621,12 +612,12 @@ namespace BusinessLayer
         #region velocity Dashboard
         public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(DataContracts.Mapping.DC_RollOFParams parm)
         {
-           
-                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
-                {
-                    return objBL.GetVelocityDashboard(parm);
-                }
-            
+
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetVelocityDashboard(parm);
+            }
+
         }
         #endregion
     }
