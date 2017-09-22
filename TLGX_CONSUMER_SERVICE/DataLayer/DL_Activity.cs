@@ -162,6 +162,109 @@ namespace DataLayer
         #endregion
 
         #region "Activity Insert and Update"
+        public DataContracts.DC_Message AddUpdateProductInfo(DataContracts.Masters.DC_Activity _objAct)
+        {
+            DC_Message _msg = new DC_Message();
+
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                if (_objAct.Activity_Id.HasValue) //&& _objAct.Activity_Id == Guid.Empty)|| _objAct.Activity_Id != Guid.Empty
+                {
+                    var results = context.Activities.Find(_objAct.Activity_Id);
+
+                    if (results != null)
+                    {
+                        results.Country_Id = _objAct.Country_Id;
+                        results.Country = _objAct.Country;
+                        results.City_Id = _objAct.City_Id;
+                        results.City = _objAct.City;
+                        results.Edit_Date = DateTime.Now;
+                        results.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                        results.ProductCategory = _objAct.ProductCategory;
+                        results.ProductCategorySubType = _objAct.ProductCategorySubType;
+                        results.ProductType = _objAct.ProductType;
+                        results.Product_Name = _objAct.Product_Name;
+
+                        results.Affiliation = _objAct.Affiliation;
+                        results.CommonProductID = _objAct.CommonProductID;
+                        results.CompanyProductID = _objAct.CompanyProductID;
+                        results.FinanceProductID = _objAct.FinanceProductID;
+                        results.CompanyRating = _objAct.CompanyRating;
+                        results.CompanyRecommended = _objAct.CompanyRecommended;
+                        results.Display_Name = _objAct.Display_Name;
+                        results.IsActive = _objAct.IsActive;
+                        results.Latitude = _objAct.Latitude;
+                        results.Legacy_Product_ID = _objAct.Legacy_Product_ID;
+                        results.Longitude = _objAct.Longitude;
+                        results.Mode_Of_Transport = _objAct.Mode_Of_Transport;
+                        results.Parent_Legacy_Id = _objAct.Parent_Legacy_Id;
+                        results.Remarks = _objAct.Remarks;
+                        results.TourType = _objAct.TourType;
+
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+
+                        return _msg;
+
+                    }
+                    else
+                    {
+                        Activity _obj = new Activity()
+                        {
+                            Activity_Id = Guid.NewGuid(),
+                            Affiliation = _objAct.Affiliation,
+                            Country = _objAct.Country,
+                            City = _objAct.City,
+                            City_Id = _objAct.City_Id,
+                            Country_Id = _objAct.Country_Id,
+                            Create_Date = DateTime.Now,
+                            Create_User = System.Web.HttpContext.Current.User.Identity.Name,
+                            CommonProductID = _objAct.CommonProductID,
+                            CompanyProductID = _objAct.CompanyProductID,
+                            CompanyRating = _objAct.CompanyRating,
+                            CompanyRecommended = _objAct.CompanyRecommended,
+                            Display_Name = _objAct.Display_Name,
+                            IsActive = _objAct.IsActive,
+                            Latitude = _objAct.Latitude,
+                            Longitude = _objAct.Longitude,
+                            Legacy_Product_ID = _objAct.Legacy_Product_ID,
+                            Mode_Of_Transport = _objAct.Mode_Of_Transport,
+                            Product_Name = _objAct.Product_Name,
+                            ProductCategory = _objAct.ProductCategory,
+                            ProductCategorySubType = _objAct.ProductCategorySubType,
+                            ProductType = _objAct.ProductType,
+                            ProductRating = _objAct.ProductRating,
+                            Parent_Legacy_Id = _objAct.Parent_Legacy_Id,
+                            Remarks = _objAct.Remarks,
+                            TourType = _objAct.TourType
+                        };
+
+                        context.Activities.Add(_obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                }
+            }
+
+            return _msg;
+        }
+
         public DataContracts.DC_Message AddUpdateActivity(DataContracts.Masters.DC_Activity _objAct)
         {
             DC_Message _msg = new DC_Message();
@@ -169,21 +272,21 @@ namespace DataLayer
             using (ConsumerEntities context = new ConsumerEntities())
             {
                 var isduplicate = (from a in context.Activities
-                                   where a.Activity_Id != (_objAct.Activity_Id ?? Guid.Empty)  && a.Product_Name == _objAct.Product_Name
-                                   select a).Count() == 0 ? false:true;
+                                   where a.Activity_Id != (_objAct.Activity_Id ?? Guid.Empty) && a.Product_Name == _objAct.Product_Name
+                                   select a).Count() == 0 ? false : true;
 
-                if(isduplicate)
+                if (isduplicate)
                 {
                     _msg.StatusMessage = ReadOnlyMessage.strAlreadyExist;
                     _msg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
                     return _msg;
                 }
 
-                if(_objAct.Activity_Id.HasValue && _objAct.Activity_Id!=Guid.Empty)
+                if (_objAct.Activity_Id.HasValue && _objAct.Activity_Id != Guid.Empty)
                 {
                     var results = context.Activities.Find(_objAct.Activity_Id);
 
-                    if(results!=null)
+                    if (results != null)
                     {
                         results.Country_Id = _objAct.Country_Id;
                         results.Country = _objAct.Country;
@@ -211,7 +314,7 @@ namespace DataLayer
                         results.Remarks = _objAct.Remarks;
                         results.TourType = _objAct.TourType;
 
-                        if (context.SaveChanges()==1)
+                        if (context.SaveChanges() == 1)
                         {
                             _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
                             _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
@@ -223,7 +326,7 @@ namespace DataLayer
                         }
 
                         return _msg;
-                        
+
                     }
                     else
                     {
@@ -238,14 +341,14 @@ namespace DataLayer
                             Create_Date = _objAct.Create_Date,
                             Create_User = _objAct.Create_User,
                             CommonProductID = _objAct.CommonProductID,
-                            CompanyProductID =_objAct.CompanyProductID,
+                            CompanyProductID = _objAct.CompanyProductID,
                             CompanyRating = _objAct.CompanyRating,
                             CompanyRecommended = _objAct.CompanyRecommended,
                             Display_Name = _objAct.Display_Name,
                             IsActive = _objAct.IsActive,
                             Latitude = _objAct.Latitude,
                             Longitude = _objAct.Longitude,
-                            Legacy_Product_ID =_objAct.Legacy_Product_ID,
+                            Legacy_Product_ID = _objAct.Legacy_Product_ID,
                             Mode_Of_Transport = _objAct.Mode_Of_Transport,
                             Product_Name = _objAct.Product_Name,
                             ProductCategory = _objAct.ProductCategory,
@@ -256,7 +359,7 @@ namespace DataLayer
                             Remarks = _objAct.Remarks,
                             TourType = _objAct.TourType
                         };
-                        
+
                         context.Activities.Add(_obj);
                         if (context.SaveChanges() == 1)
                         {
@@ -271,8 +374,143 @@ namespace DataLayer
                     }
                 }
             }
-            
+
             return _msg;
+        }
+        #endregion
+
+        #region "Activity Contacts"
+        public List<DC_Activity_Contact> GetActivityContacts(Guid Activity_Id, Guid DataKey_Id)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from ac in context.Activity_Contact
+                                 where ac.Activity_Id == Activity_Id
+                                 && ac.Activity_Contact_Id == (DataKey_Id == Guid.Empty ? ac.Activity_Contact_Id : DataKey_Id)
+                                 select new DC_Activity_Contact
+                                 {
+                                     Activity_Contact_Id = ac.Activity_Contact_Id,
+                                     Activity_Id = ac.Activity_Id,
+                                     Create_Date = ac.Create_Date,
+                                     Create_User = ac.Create_User,
+                                     Edit_Date = ac.Edit_Date,
+                                     Edit_User = ac.Edit_User,
+                                     Email = ac.Email,
+                                     Fax = ac.Fax,
+                                     Legacy_Product_ID = ac.Legacy_Product_ID,
+                                     Telephone = ac.Telephone,
+                                     WebSiteURL = ac.WebSiteURL,
+                                     IsActive = (ac.IsActive ?? true)
+                                 };
+                    return search.ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Activity contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public bool UpdateActivityContacts(DC_Activity_Contact AC)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = (from ac in context.Activity_Contact
+                                  where ac.Activity_Contact_Id == AC.Activity_Contact_Id
+                                  select ac).First();
+                    if (search != null)
+                    {
+                        if ((AC.IsActive) != (search.IsActive ?? true))
+                        {
+                            search.IsActive = AC.IsActive;
+                            search.Edit_Date = AC.Edit_Date;
+                            search.Edit_User = AC.Edit_User;
+                        }
+                        else
+                        {
+                            search.Edit_Date = AC.Edit_Date;
+                            search.Edit_User = AC.Edit_User;
+                            search.Email = AC.Email;
+                            search.Fax = AC.Fax;
+                            search.Legacy_Product_ID = AC.Legacy_Product_ID;
+                            search.Telephone = AC.Telephone;
+                            search.WebSiteURL = AC.WebSiteURL;
+                            search.IsActive = AC.IsActive;
+                        }
+                        context.SaveChanges();
+                    }
+
+                    return true;
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public bool AddActivityContacts(DC_Activity_Contact AC)
+        {
+            try
+            {
+                if (AC.Activity_Id == null)
+                {
+                    return false;
+                }
+
+                if (AC.Activity_Id == null)
+                {
+                    AC.Activity_Id = Guid.NewGuid();
+                }
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    Activity_Contact newObj = new Activity_Contact();
+                    newObj.Activity_Contact_Id = AC.Activity_Contact_Id;
+                    newObj.Activity_Id = AC.Activity_Id;
+                    newObj.Create_Date = AC.Create_Date;
+                    newObj.Create_User = AC.Create_User;
+                    newObj.Email = AC.Email;
+                    newObj.Fax = AC.Fax;
+                    newObj.Legacy_Product_ID = AC.Legacy_Product_ID;
+                    newObj.Telephone = AC.Telephone;
+                    newObj.WebSiteURL = AC.WebSiteURL;
+                    newObj.IsActive = AC.IsActive;
+
+                    context.Activity_Contact.Add(newObj);
+                    context.SaveChanges();
+
+                    return true;
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding Activity contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        
+        public string GetLegacyProductId(Guid Activity_Id)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = (from ac in context.Activity_Contact
+                                  where ac.Activity_Id == Activity_Id
+                                  select new { ac.Legacy_Product_ID }).FirstOrDefault();
+
+                    return Convert.ToString(search);
+                    
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Activity contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
         }
         #endregion
     }
