@@ -46,5 +46,38 @@ namespace ConsumerSvc
                 return obj.AddUpdateProductInfo(_objPro);
             }
         }
+
+        #region "Activity conatct"
+        public IList<DC_Activity_Contact> GetActivityContacts(string Activity_Id, string DataKey_Id)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                List<DC_Activity_Contact> searchResults = new List<DC_Activity_Contact>();
+                searchResults = objBL.GetActivityContacts(Guid.Parse(Activity_Id), Guid.Parse(DataKey_Id));
+
+                if (searchResults == null)
+                {
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                }
+                return searchResults;
+            }
+        }
+
+        public bool UpdateActivityContacts(DC_Activity_Contact AC)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.UpdateActivityContacts(AC);
+            }
+        }
+
+        public bool AddActivityContacts(DC_Activity_Contact AC)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddActivityContacts(AC);
+            }
+        }
+        #endregion
     }
 }

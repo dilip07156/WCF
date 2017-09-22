@@ -40,5 +40,31 @@ namespace BusinessLayer
                 return obj.AddUpdateProductInfo(_objPro);
             }
         }
+
+        #region "Activity Contact"
+        public List<DC_Activity_Contact> GetActivityContacts(Guid Activity_Id, Guid DataKey_Id)
+        {
+            using (DataLayer.DL_Activity _obj = new DataLayer.DL_Activity())
+            {
+                return _obj.GetActivityContacts(Activity_Id, DataKey_Id);
+            }
+        }
+
+        public bool UpdateActivityContacts(DC_Activity_Contact AC)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.UpdateActivityContacts(AC);
+            }
+        }
+
+        public bool AddActivityContacts(DC_Activity_Contact AC)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.UpdateActivityContacts(AC);
+            }
+        }
+        #endregion
     }
 }

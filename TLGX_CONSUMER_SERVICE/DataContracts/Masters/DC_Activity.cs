@@ -722,7 +722,7 @@ namespace DataContracts.Masters
         public Guid? Activity_Id { get; set; }
 
         [DataMember]
-        public int? Legacy_Htl_Id { get; set; }
+        public int? Legacy_Product_ID { get; set; }
 
         [DataMember]
         public string Telephone { get; set; }
