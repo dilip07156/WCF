@@ -714,6 +714,7 @@ namespace DataContracts.Masters
 
 
     }
+
     [DataContract]
     public class DC_Activity_Contact
     {
@@ -752,5 +753,45 @@ namespace DataContracts.Masters
 
         [DataMember]
         public bool IsActive { get; set; }
+    }
+
+    [DataContract]
+    public class DC_Activity_Status
+    {
+        [DataMember]
+        public Guid Activity_Status_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+
+        [DataMember]
+        public DateTime? From { get; set; }
+
+        [DataMember]
+        public DateTime? To { get; set; }
+
+        [DataMember]
+        public string DeactivationReason { get; set; }
+
+        [DataMember]
+        public string Status { get; set; }
+
+        [DataMember]
+        public string CompanyMarket { get; set; }
+
+        [DataMember]
+        public bool IsActive { get; set; }
+
+        [DataMember]
+        public string Create_User { get; set; }
+
+        [DataMember]
+        public string Edit_User { get; set; }
+
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+
     }
 }

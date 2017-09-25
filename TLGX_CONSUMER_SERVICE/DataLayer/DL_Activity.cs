@@ -156,13 +156,13 @@ namespace DataLayer
             }
             catch
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Attr Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Attr Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
         #endregion
 
         #region "Activity Insert and Update"
-        public DataContracts.DC_Message AddUpdateProductInfo(DataContracts.Masters.DC_Activity _objAct)
+        public DC_Message AddUpdateProductInfo(DataContracts.Masters.DC_Activity _objAct)
         {
             DC_Message _msg = new DC_Message();
 
@@ -409,7 +409,7 @@ namespace DataLayer
             }
             catch (Exception e)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Activity contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
 
@@ -449,7 +449,7 @@ namespace DataLayer
             }
             catch
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while updating activity contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
 
@@ -489,7 +489,7 @@ namespace DataLayer
             }
             catch
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding Activity contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
         
@@ -509,7 +509,123 @@ namespace DataLayer
             }
             catch (Exception e)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Activity contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
+
+        #region "Activity Status"
+        public List<DC_Activity_Status> GetActivityStatus(Guid Activity_Id, Guid DataKey_Id)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from ast in context.Activity_Status
+                                 where ast.Activity_Id == Activity_Id
+                                 && ast.Activity_Status_Id == (DataKey_Id == Guid.Empty ? ast.Activity_Status_Id : DataKey_Id)
+                                 select new DC_Activity_Status
+                                 {
+                                     Activity_Id = ast.Activity_Id,
+                                     Activity_Status_Id = ast.Activity_Status_Id,
+                                     CompanyMarket = ast.CompanyMarket,
+                                     DeactivationReason = ast.DeactivationReason,
+                                     From = ast.From,
+                                     Status = ast.Status,
+                                     To = ast.To,
+                                     IsActive = (ast.IsActive ?? true),
+                                     Create_Date = ast.Create_Date,
+                                     Create_User = ast.Create_User,
+                                     Edit_Date = ast.Edit_Date,
+                                     Edit_User = ast.Edit_User
+                                 };
+                    return search.ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching activity status", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public bool UpdateActivityStatus(DC_Activity_Status AS)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = (from a in context.Activity_Status
+                                  where a.Activity_Status_Id == AS.Activity_Status_Id
+                                  select a).First();
+                    if (search != null)
+                    {
+                        if ((AS.IsActive) != (search.IsActive ?? true))
+                        {
+                            search.IsActive = AS.IsActive;
+                            search.Edit_Date = AS.Edit_Date;
+                            search.Edit_User = AS.Edit_User;
+                        }
+                        else
+                        {
+                            search.Activity_Id = AS.Activity_Id;
+                            search.CompanyMarket = AS.CompanyMarket;
+                            search.DeactivationReason = AS.DeactivationReason;
+                            search.From = AS.From;
+                            search.Status = AS.Status;
+                            search.To = AS.To;
+                            search.Edit_Date = AS.Edit_Date;
+                            search.Edit_User = AS.Edit_User;
+                        }
+
+                        context.SaveChanges();
+                    }
+                    return true;
+                }
+            }
+            catch
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while updating activity status", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public bool AddActivityStatus(DC_Activity_Status AS)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (AS.Activity_Id == null)
+                    {
+                        return false;
+                    }
+
+                    Activity_Status objNew = new Activity_Status();
+
+                    if (AS.Activity_Status_Id== null)
+                    {
+                        AS.Activity_Status_Id = Guid.NewGuid();
+                    }
+
+                    objNew.Activity_Status_Id = AS.Activity_Status_Id;
+                    objNew.Activity_Id = AS.Activity_Id;
+                    objNew.CompanyMarket = AS.CompanyMarket;
+                    objNew.DeactivationReason = AS.DeactivationReason;
+                    objNew.From = AS.From;
+                    objNew.Status = AS.Status;
+                    objNew.To = AS.To;
+                    objNew.IsActive = AS.IsActive;
+                    objNew.Create_Date = AS.Create_Date;
+                    objNew.Create_User = AS.Create_User;
+
+                    context.Activity_Status.Add(objNew);
+                    context.SaveChanges();
+
+                    return true;
+                }
+            }
+            catch
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding activity status", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
         #endregion
