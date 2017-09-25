@@ -74,5 +74,31 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        #region "Activity Status"
+        public List<DC_Activity_Status> GetActivityStatus(Guid Activity_Id, Guid DataKey_Id)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityStatus(Activity_Id, DataKey_Id);
+            }
+        }
+
+        public bool UpdateActivityStatus(DC_Activity_Status AS)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.UpdateActivityStatus(AS);
+            }
+        }
+
+        public bool AddActivityStatus(DC_Activity_Status AS)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddActivityStatus(AS);
+            }
+        }
+        #endregion
     }
 }

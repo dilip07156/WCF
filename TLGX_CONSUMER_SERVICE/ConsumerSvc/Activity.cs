@@ -87,5 +87,38 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
+        #region "Activity Status"
+        public IList<DC_Activity_Status> GetActivityStatus(string Activity_Id, string DataKey_Id)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                List<DC_Activity_Status> searchResults = new List<DC_Activity_Status>();
+                searchResults = objBL.GetActivityStatus(Guid.Parse(Activity_Id), Guid.Parse(DataKey_Id));
+
+                if (searchResults == null)
+                {
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                }
+                return searchResults;
+            }
+        }
+
+        public bool UpdateActivityStatus(DC_Activity_Status AS)
+        {
+            using (BL_Activity obj = new BL_Activity())
+            {
+                return obj.UpdateActivityStatus(AS);
+            }
+        }
+
+        public bool AddActivityStatus(DC_Activity_Status AS)
+        {
+            using (BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddActivityStatus(AS);
+            }
+        }
+        #endregion
     }
 }
