@@ -4990,7 +4990,7 @@ namespace DataLayer
             }
         }
 
-        public List<DataContracts.Mapping.DC_MasterAttributeValueMapping> GetMasterAttributeValueMapping(DataContracts.Mapping.DC_MasterAttributeValueMapping_RQ RQ)
+        public List<DataContracts.Mapping.DC_MasterAttributeValueMappingRS> GetMasterAttributeValueMapping(DataContracts.Mapping.DC_MasterAttributeValueMapping_RQ RQ)
         {
             try
             {
@@ -5027,18 +5027,10 @@ namespace DataLayer
                     var search = (from map in m_MasterAttributeMapping
                                   join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
                                   join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
-                                  join mavm in m_MasterAttributeValueMapping on new { mavmid = map.MasterAttributeMapping_Id, mavid = mav.MasterAttributeValue_Id } equals new { mavmid = mavm.MasterAttributeMapping_Id, mavid = mavm.SystemMasterAttributeValue_Id } into mavm_l
-                                  from lr in mavm_l.DefaultIfEmpty()
-                                  select new DataContracts.Mapping.DC_MasterAttributeValueMapping
+                                 
+                                  select new 
                                   {
                                       MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
-                                      Create_Date = map.Create_Date,
-                                      Create_User = map.Create_User,
-                                      Edit_Date = map.Edit_Date,
-                                      Edit_User = map.Edit_User,
-                                      IsActive = lr.IsActive,
-                                      MasterAttributeValueMapping_Id = (lr == null ? Guid.NewGuid() : lr.MasterAttributeValueMapping_Id),
-                                      SupplierMasterAttributeValue = (lr == null ? string.Empty : lr.SupplierMasterAttributeValue),
                                       SystemMasterAttributeValue = mav.AttributeValue,
                                       SystemMasterAttributeValue_Id = mav.MasterAttributeValue_Id
                                   }).AsQueryable();
@@ -5050,28 +5042,33 @@ namespace DataLayer
                     var searchReturn = (from map in m_MasterAttributeMapping
                                         join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
                                         join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
-                                        join mavm in m_MasterAttributeValueMapping on new { mavmid = map.MasterAttributeMapping_Id, mavid = mav.MasterAttributeValue_Id } equals new { mavmid = mavm.MasterAttributeMapping_Id, mavid = mavm.SystemMasterAttributeValue_Id } into mavm_l
-                                        from lr in mavm_l.DefaultIfEmpty()
                                         orderby mav.AttributeValue
-                                        select new DataContracts.Mapping.DC_MasterAttributeValueMapping
+                                        select new DataContracts.Mapping.DC_MasterAttributeValueMappingRS
                                         {
                                             MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
-                                            Create_Date = map.Create_Date,
-                                            Create_User = map.Create_User,
-                                            Edit_Date = map.Edit_Date,
-                                            Edit_User = map.Edit_User,
-                                            IsActive = lr.IsActive,
-                                            MasterAttributeValueMapping_Id = (lr == null ? Guid.NewGuid() : lr.MasterAttributeValueMapping_Id),
-                                            SupplierMasterAttributeValue = (lr == null ? string.Empty : lr.SupplierMasterAttributeValue),
                                             SystemMasterAttributeValue = mav.AttributeValue,
                                             SystemMasterAttributeValue_Id = mav.MasterAttributeValue_Id,
-                                            TotalRecords = total
+                                            TotalRecords = total,
+                                            SupplierAttributeValues = (from imavm in m_MasterAttributeValueMapping
+                                                                       where imavm.MasterAttributeMapping_Id == map.MasterAttributeMapping_Id
+                                                                       && imavm.SystemMasterAttributeValue_Id == mav.MasterAttributeValue_Id
+                                                                       select new DataContracts.Mapping.DC_SupplierAttributeValues
+                                                                       {
+                                                                           MasterAttributeValueMapping_Id = imavm.MasterAttributeValueMapping_Id,
+                                                                           SupplierMasterAttributeValue = imavm.SupplierMasterAttributeValue,
+                                                                           Create_User = imavm.Create_User,
+                                                                           Create_Date = imavm.Create_Date,
+                                                                           Edit_Date = imavm.Edit_Date,
+                                                                           Edit_User = imavm.Edit_User,
+                                                                           IsActive = imavm.IsActive
+                                                                       }).ToList(),
+                                           
                                         }).Skip(skip).Take(RQ.PageSize);
 
                     return searchReturn.ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching master attribute value mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
