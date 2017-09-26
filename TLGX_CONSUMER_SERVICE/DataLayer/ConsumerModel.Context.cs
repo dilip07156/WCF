@@ -119,7 +119,6 @@ namespace DataLayer
         public virtual DbSet<Activity_Inclusions> Activity_Inclusions { get; set; }
         public virtual DbSet<Activity_Itinerary> Activity_Itinerary { get; set; }
         public virtual DbSet<Activity_Media> Activity_Media { get; set; }
-        public virtual DbSet<Activity_OldSchema> Activity_OldSchema { get; set; }
         public virtual DbSet<Activity_PickUpDrop> Activity_PickUpDrop { get; set; }
         public virtual DbSet<Activity_PickUpDropDetail> Activity_PickUpDropDetail { get; set; }
         public virtual DbSet<Activity_PickupDropSchedule> Activity_PickupDropSchedule { get; set; }
