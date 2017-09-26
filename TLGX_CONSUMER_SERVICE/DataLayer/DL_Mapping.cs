@@ -5230,7 +5230,7 @@ namespace DataLayer
                             newObj.MasterAttributeMapping_Id = param.MasterAttributeMapping_Id;
                             newObj.MasterAttributeValueMapping_Id = param.MasterAttributeValueMapping_Id ?? Guid.NewGuid();
                             newObj.SupplierMasterAttributeValue = param.SupplierMasterAttributeValue;
-                            search.SupplierMasterAttributeCode = param.SupplierMasterAttributeCode;
+                            newObj.SupplierMasterAttributeCode = param.SupplierMasterAttributeCode;
                             newObj.SystemMasterAttributeValue_Id = param.SystemMasterAttributeValue_Id;
                             newObj.IsActive = param.IsActive ?? false;
                             newObj.Create_Date = DateTime.Now;
