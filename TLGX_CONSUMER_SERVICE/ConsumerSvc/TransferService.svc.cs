@@ -11,31 +11,91 @@ using System.IO;
 
 namespace ConsumerSvc
 {
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, ConcurrencyMode = ConcurrencyMode.Single)]
     public class TransferService : OperationContracts.ITransferService
     {
-        public void UploadFile(RemoteFileInfo request)
+        public UploadResponse UploadFile(RemoteFileInfo request)
         {
-            FileStream targetStream = null;
-            Stream sourceStream = request.FileByteStream;
+            //FileStream targetStream = null;
+            //Stream sourceStream = request.FileByteStream;
 
-            string uploadFolder = @"D:\UPLOAD\";
+            //string uploadFolder = @"D:\UPLOAD\";
 
-            string filePath = Path.Combine(uploadFolder, request.FileName);
+            //string filePath = Path.Combine(uploadFolder, request.FileName);
 
-            using (targetStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+            //using (targetStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+            //{
+            //    //read from the input stream in 65000 byte chunks
+            //    const int bufferLen = 4096;
+            //    byte[] buffer = new byte[bufferLen];
+            //    int count = 0;
+            //    while ((count = sourceStream.Read(buffer, 0, bufferLen)) > 0)
+            //    {
+            //        // save to output stream
+            //        targetStream.Write(buffer, 0, count);
+            //    }
+            //    targetStream.Close();
+            //    sourceStream.Close();
+            //}
+
+            try
             {
-                //read from the input stream in 65000 byte chunks
-                const int bufferLen = 65000;
-                byte[] buffer = new byte[bufferLen];
-                int count = 0;
-                while ((count = sourceStream.Read(buffer, 0, bufferLen)) > 0)
+                Guid FileUploadUniqueID = Guid.NewGuid();
+
+                var uploadDirectory = @"D:\UPLOAD\";
+
+                // Try to create the upload directory if it does not yet exist
+                if (!Directory.Exists(uploadDirectory))
                 {
-                    // save to output stream
-                    targetStream.Write(buffer, 0, count);
+                    Directory.CreateDirectory(uploadDirectory);
                 }
-                targetStream.Close();
-                sourceStream.Close();
+
+                // Check if a file with the same filename is already
+                // present in the upload directory. If this is the case
+                // then delete this file
+                
+                var path = Path.Combine(uploadDirectory, System.IO.Path.GetFileNameWithoutExtension(request.FileName) + "_" + FileUploadUniqueID.ToString().Replace("-","_") + "." +  System.IO.Path.GetExtension(request.FileName).Replace(".",""));
+
+                //if (File.Exists(path))
+                //{
+                //    File.Delete(path);
+                //}
+
+                // Read the incoming stream and save it to file
+                const int bufferSize = 4096;
+
+                var buffer = new byte[bufferSize];
+                using (var outputStream = new FileStream(path, FileMode.Create, FileAccess.Write))
+                {
+                    var bytesRead = request.FileByteStream.Read(buffer, 0, bufferSize);
+                    while (bytesRead > 0)
+                    {
+                        outputStream.Write(buffer, 0, bytesRead);
+                        bytesRead = request.FileByteStream.Read(buffer, 0, bufferSize);
+                    }
+                    outputStream.Close();
+                }
+                request.FileByteStream.Close();
+                request.FileByteStream.Dispose();
+
+                return new UploadResponse
+                {
+                    UploadSucceeded = true,
+                    UploadedPath = path
+                };
             }
+            catch (Exception ex)
+            {
+                // Note down exception some where!
+                request.FileByteStream.Close();
+                request.FileByteStream.Dispose();
+                return new UploadResponse
+                {
+                    UploadSucceeded = false,
+                    UploadedPath = string.Empty
+                };
+            }
+
         }
     }
 }

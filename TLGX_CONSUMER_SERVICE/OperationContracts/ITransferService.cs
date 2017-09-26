@@ -11,7 +11,7 @@ namespace OperationContracts
     public interface ITransferService
     {
         [OperationContract]
-        void UploadFile(RemoteFileInfo request);
+        UploadResponse UploadFile(RemoteFileInfo request);
     }
 
     [MessageContract]
@@ -41,5 +41,15 @@ namespace OperationContracts
                 FileByteStream = null;
             }
         }
+    }
+
+    [MessageContract]
+    public class UploadResponse
+    {
+        [MessageBodyMember(Order = 1)]
+        public bool UploadSucceeded { get; set; }
+
+        [MessageBodyMember(Order = 2)]
+        public string UploadedPath { get; set; }
     }
 }
