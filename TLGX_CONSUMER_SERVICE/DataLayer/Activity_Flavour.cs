@@ -32,5 +32,8 @@ namespace DataLayer
         public string EndingPoint { get; set; }
         public string USP { get; set; }
         public Nullable<bool> IsPickUpDropDefined { get; set; }
+        public Nullable<bool> MustSeeInCountry { get; set; }
+        public Nullable<bool> CompanyReccom { get; set; }
+        public string Duration { get; set; }
     }
 }
