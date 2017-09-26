@@ -5056,6 +5056,7 @@ namespace DataLayer
                                                                        {
                                                                            MasterAttributeValueMapping_Id = imavm.MasterAttributeValueMapping_Id,
                                                                            SupplierMasterAttributeValue = imavm.SupplierMasterAttributeValue,
+                                                                           SupplierMasterAttributeCode = imavm.SupplierMasterAttributeCode,
                                                                            Create_User = imavm.Create_User,
                                                                            Create_Date = imavm.Create_Date,
                                                                            Edit_Date = imavm.Edit_Date,
@@ -5220,6 +5221,7 @@ namespace DataLayer
                             search.Edit_Date = DateTime.Now;
                             search.Edit_User = param.Edit_User;
                             search.SupplierMasterAttributeValue = param.SupplierMasterAttributeValue;
+                            search.SupplierMasterAttributeCode = param.SupplierMasterAttributeCode;
                             context.SaveChanges();
                         }
                         else
@@ -5228,6 +5230,7 @@ namespace DataLayer
                             newObj.MasterAttributeMapping_Id = param.MasterAttributeMapping_Id;
                             newObj.MasterAttributeValueMapping_Id = param.MasterAttributeValueMapping_Id ?? Guid.NewGuid();
                             newObj.SupplierMasterAttributeValue = param.SupplierMasterAttributeValue;
+                            search.SupplierMasterAttributeCode = param.SupplierMasterAttributeCode;
                             newObj.SystemMasterAttributeValue_Id = param.SystemMasterAttributeValue_Id;
                             newObj.IsActive = param.IsActive ?? false;
                             newObj.Create_Date = DateTime.Now;

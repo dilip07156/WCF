@@ -15,6 +15,7 @@ namespace DataContracts.Mapping
         System.Guid _SystemMasterAttributeValue_Id;
         string _SystemMasterAttributeValue;
         string _SupplierMasterAttributeValue;
+        string _SupplierMasterAttributeCode;
         bool? _IsActive;
         string _Create_User;
         System.DateTime? _Create_Date;
@@ -174,7 +175,19 @@ namespace DataContracts.Mapping
                 _TotalRecords = value;
             }
         }
-        
+        [DataMember]
+        public string SupplierMasterAttributeCode
+        {
+            get
+            {
+                return _SupplierMasterAttributeCode;
+            }
+
+            set
+            {
+                _SupplierMasterAttributeCode = value;
+            }
+        }
     }
     [DataContract]
     public class DC_MasterAttributeValueMappingRS
@@ -341,6 +354,7 @@ namespace DataContracts.Mapping
     {
         System.Guid? _MasterAttributeValueMapping_Id;
         string _SupplierMasterAttributeValue;
+        string _SupplierMasterAttributeCode;
         bool? _IsActive;
         string _Create_User;
         System.DateTime? _Create_Date;
@@ -442,6 +456,19 @@ namespace DataContracts.Mapping
             set
             {
                 _Edit_Date = value;
+            }
+        }
+        [DataMember]
+        public string SupplierMasterAttributeCode
+        {
+            get
+            {
+                return _SupplierMasterAttributeCode;
+            }
+
+            set
+            {
+                _SupplierMasterAttributeCode = value;
             }
         }
     }

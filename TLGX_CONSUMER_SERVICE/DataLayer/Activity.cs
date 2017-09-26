@@ -43,5 +43,8 @@ namespace DataLayer
         public Nullable<double> Longitude { get; set; }
         public string TourType { get; set; }
         public Nullable<int> Parent_Legacy_Id { get; set; }
+        public string Street { get; set; }
+        public string Street2 { get; set; }
+        public string PostalCode { get; set; }
     }
 }
