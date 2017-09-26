@@ -95,6 +95,7 @@
     <Content Include="Consumer.svc" />
     <Content Include="Global.asax" />
     <Content Include="StaticDataHandler.svc" />
+    <Content Include="TransferService.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -117,6 +118,9 @@
     <Compile Include="Schedule.cs" />
     <Compile Include="StaticDataHandler.svc.cs">
       <DependentUpon>StaticDataHandler.svc</DependentUpon>
+    </Compile>
+    <Compile Include="TransferService.svc.cs">
+      <DependentUpon>TransferService.svc</DependentUpon>
     </Compile>
     <Compile Include="UploadStaticData.cs" />
   </ItemGroup>
