@@ -130,7 +130,6 @@
         <EntityTypeShape EntityType="ConsumerModel.Activity_Inclusions" Width="1.5" PointX="8.75" PointY="6.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_Itinerary" Width="1.5" PointX="0.75" PointY="9.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_Media" Width="1.5" PointX="10.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_OldSchema" Width="1.5" PointX="2.75" PointY="10.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_PickUpDrop" Width="1.5" PointX="10.75" PointY="6.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_PickUpDropDetail" Width="1.5" PointX="4.75" PointY="11.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_PickupDropSchedule" Width="1.5" PointX="10.75" PointY="11.75" />

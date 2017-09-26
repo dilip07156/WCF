@@ -2308,7 +2308,6 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <EntitySet Name="Activity_Inclusions" EntityType="ConsumerModel.Activity_Inclusions" />
           <EntitySet Name="Activity_Itinerary" EntityType="ConsumerModel.Activity_Itinerary" />
           <EntitySet Name="Activity_Media" EntityType="ConsumerModel.Activity_Media" />
-          <EntitySet Name="Activity_OldSchema" EntityType="ConsumerModel.Activity_OldSchema" />
           <EntitySet Name="Activity_PickUpDrop" EntityType="ConsumerModel.Activity_PickUpDrop" />
           <EntitySet Name="Activity_PickUpDropDetail" EntityType="ConsumerModel.Activity_PickUpDropDetail" />
           <EntitySet Name="Activity_PickupDropSchedule" EntityType="ConsumerModel.Activity_PickupDropSchedule" />
@@ -4176,43 +4175,6 @@ warning 6002: The table/view 'TLGX_DEV.dbo.vwUserwisemappedStats' does not have 
           <Property Name="FileFormat" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MediaID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="MediaFileMaster" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="Activity_OldSchema">
-          <Key>
-            <PropertyRef Name="Acivity_Id" />
-          </Key>
-          <Property Name="Acivity_Id" Type="Guid" Nullable="false" />
-          <Property Name="CommonProductID" Type="Int32" />
-          <Property Name="Legacy_Product_ID" Type="Int32" />
-          <Property Name="Product_Name" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="Display_Name" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="Country" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ProductType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ProductSubType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ProductCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="IsActive" Type="Boolean" />
-          <Property Name="StartingPoint" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="EndingPoint" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Duration" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CompanyRecommended" Type="Boolean" />
-          <Property Name="Latitude" Type="Double" />
-          <Property Name="Longitude" Type="Double" />
-          <Property Name="ShortDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="LongDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="MealsYN" Type="Boolean" />
-          <Property Name="GuideYN" Type="Boolean" />
-          <Property Name="TransferYN" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="PhysicalLevel" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Advisory" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ThingsToCarry" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DeparturePoint" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TourType" Type="String" MaxLength="2550" FixedLength="false" Unicode="true" />
-          <Property Name="Parent_Legacy_Id" Type="Int32" />
         </EntityType>
         <EntityType Name="Activity_PickUpDrop">
           <Key>
