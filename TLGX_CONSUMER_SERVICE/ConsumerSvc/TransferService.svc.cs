@@ -98,7 +98,7 @@ namespace ConsumerSvc
 
         }
 
-        public bool UploadFileInChunks(FileData request)
+        public UploadResponse UploadFileInChunks(FileData request)
         {
             try
             {
@@ -116,12 +116,21 @@ namespace ConsumerSvc
                     fileStream.Write(request.BufferData, 0, request.BufferData.Length);
                 }
 
-                return true;
+                return new UploadResponse { UploadedPath = FilePath, UploadSucceeded = true };
             }
             catch
             {
-                return false;
+                return new UploadResponse { UploadedPath = string.Empty, UploadSucceeded = false };
             }
+        }
+
+        public bool DeleteFile(string FilePath)
+        {
+            if (File.Exists(FilePath))
+            {
+                File.Delete(FilePath);
+            }
+            return true;
         }
     }
 }

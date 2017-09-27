@@ -15,7 +15,10 @@ namespace OperationContracts
         UploadResponse UploadFile(RemoteFileInfo request);
 
         [OperationContract]
-        bool UploadFileInChunks(FileData request);
+        UploadResponse UploadFileInChunks(FileData request);
+
+        [OperationContract]
+        bool DeleteFile(string FilePath);
     }
 
     [MessageContract]
