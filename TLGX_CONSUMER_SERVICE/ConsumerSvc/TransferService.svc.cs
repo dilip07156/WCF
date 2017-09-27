@@ -97,5 +97,31 @@ namespace ConsumerSvc
             }
 
         }
+
+        public bool UploadFileInChunks(FileData request)
+        {
+            try
+            {
+                var uploadDirectory = @"D:\UPLOAD\";
+                var FilePath = Path.Combine(uploadDirectory, request.FileName);
+
+                if (request.FilePostition == 0)
+                {
+                    File.Create(FilePath).Close();
+                }
+
+                using (FileStream fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
+                {
+                    fileStream.Seek(request.FilePostition, SeekOrigin.Begin);
+                    fileStream.Write(request.BufferData, 0, request.BufferData.Length);
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

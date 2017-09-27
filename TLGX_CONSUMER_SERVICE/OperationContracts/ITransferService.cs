@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,9 @@ namespace OperationContracts
     {
         [OperationContract]
         UploadResponse UploadFile(RemoteFileInfo request);
+
+        [OperationContract]
+        bool UploadFileInChunks(FileData request);
     }
 
     [MessageContract]
@@ -52,4 +56,16 @@ namespace OperationContracts
         [MessageBodyMember(Order = 2)]
         public string UploadedPath { get; set; }
     }
+
+    [DataContract]
+    public class FileData
+    {
+        [DataMember]
+        public string FileName { get; set; }
+        [DataMember]
+        public byte[] BufferData { get; set; }
+        [DataMember]
+        public long FilePostition { get; set; }
+    }
+
 }
