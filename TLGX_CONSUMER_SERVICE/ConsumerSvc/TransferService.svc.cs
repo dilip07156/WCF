@@ -103,6 +103,12 @@ namespace ConsumerSvc
             try
             {
                 var uploadDirectory = @"D:\UPLOAD\";
+
+                if (!Directory.Exists(uploadDirectory))
+                {
+                    Directory.CreateDirectory(uploadDirectory);
+                }
+
                 var FilePath = Path.Combine(uploadDirectory, request.FileName);
 
                 if (request.FilePostition == 0)
