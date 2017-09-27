@@ -195,7 +195,7 @@ namespace DataContracts.Mapping
         System.Guid _MasterAttributeMapping_Id;
         System.Guid _SystemMasterAttributeValue_Id;
         string _SystemMasterAttributeValue;
-        
+
         int _TotalRecords;
         List<DC_SupplierAttributeValues> _SupplierAttributeValues;
 
@@ -254,7 +254,7 @@ namespace DataContracts.Mapping
                 _TotalRecords = value;
             }
         }
-        
+
         [DataMember]
         public List<DC_SupplierAttributeValues> SupplierAttributeValues
         {
@@ -471,5 +471,11 @@ namespace DataContracts.Mapping
                 _SupplierMasterAttributeCode = value;
             }
         }
+    }
+    [DataContract]
+    public class DC_SupplierAttributeValues_RQ
+    {
+        [DataMember]
+        public System.Guid? MasterAttributeValueMapping_Id { get; set; }
     }
 }

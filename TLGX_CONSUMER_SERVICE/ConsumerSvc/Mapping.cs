@@ -8,6 +8,7 @@ using System.Text;
 using OperationContracts;
 using DataContracts;
 using BusinessLayer;
+using DataContracts.Mapping;
 
 namespace ConsumerSvc
 {
@@ -278,6 +279,13 @@ namespace ConsumerSvc
             using (BL_Mapping objBL = new BL_Mapping())
             {
                 return objBL.UpdateMasterAttributeValueMapping(param);
+            }
+        }
+        public DataContracts.DC_Message DeleteMasterAttributeValueMapping(DC_SupplierAttributeValues_RQ param)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.DeleteMasterAttributeValueMapping(param);
             }
         }
 

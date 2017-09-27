@@ -5027,8 +5027,8 @@ namespace DataLayer
                     var search = (from map in m_MasterAttributeMapping
                                   join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
                                   join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
-                                 
-                                  select new 
+
+                                  select new
                                   {
                                       MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
                                       SystemMasterAttributeValue = mav.AttributeValue,
@@ -5063,7 +5063,7 @@ namespace DataLayer
                                                                            Edit_User = imavm.Edit_User,
                                                                            IsActive = imavm.IsActive
                                                                        }).ToList(),
-                                           
+
                                         }).Skip(skip).Take(RQ.PageSize);
 
                     return searchReturn.ToList();
@@ -5252,6 +5252,44 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating master attribute value mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        public DataContracts.DC_Message DeleteMasterAttributeValueMapping(DC_SupplierAttributeValues_RQ param)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (param.MasterAttributeValueMapping_Id != null)
+                    {
+                        var search = context.m_MasterAttributeValueMapping.Find(param.MasterAttributeValueMapping_Id);
+                        if (search != null)
+                        {
+                            context.m_MasterAttributeValueMapping.Remove(search);
+                        }
+                        context.SaveChanges();
+                        return new DataContracts.DC_Message
+                        {
+                            StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success,
+                            StatusMessage = "Data Deleted successfully."
+                        };
+                    }
+                    else
+                    {
+                        return new DataContracts.DC_Message
+                        {
+                            StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning,
+                            StatusMessage = "No data found to delete."
+                        };
+                    }
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while Deleting Supplier attribute value", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+
 
         #endregion
 

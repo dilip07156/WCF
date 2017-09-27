@@ -514,6 +514,13 @@ namespace BusinessLayer
                 return objBL.UpdateMasterAttributeValueMapping(param);
             }
         }
+        public DataContracts.DC_Message DeleteMasterAttributeValueMapping(DC_SupplierAttributeValues_RQ param)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.DeleteMasterAttributeValueMapping(param);
+            }
+        }
 
         #endregion
         #region Activity Mapping
