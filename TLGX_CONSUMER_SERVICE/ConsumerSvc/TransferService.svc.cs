@@ -98,7 +98,7 @@ namespace ConsumerSvc
 
         }
 
-        public UploadResponse UploadFileInChunks(FileData request)
+        public Response UploadFileInChunks(FileData request)
         {
             try
             {
@@ -116,11 +116,11 @@ namespace ConsumerSvc
                     fileStream.Write(request.BufferData, 0, request.BufferData.Length);
                 }
 
-                return new UploadResponse { UploadedPath = FilePath, UploadSucceeded = true };
+                return new Response { UploadedPath = FilePath, UploadSucceeded = true };
             }
             catch
             {
-                return new UploadResponse { UploadedPath = string.Empty, UploadSucceeded = false };
+                return new Response { UploadedPath = string.Empty, UploadSucceeded = false };
             }
         }
 

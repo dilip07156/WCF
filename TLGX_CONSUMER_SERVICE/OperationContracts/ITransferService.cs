@@ -15,7 +15,7 @@ namespace OperationContracts
         UploadResponse UploadFile(RemoteFileInfo request);
 
         [OperationContract]
-        UploadResponse UploadFileInChunks(FileData request);
+        Response UploadFileInChunks(FileData request);
 
         [OperationContract]
         bool DeleteFile(string FilePath);
@@ -69,6 +69,15 @@ namespace OperationContracts
         public byte[] BufferData { get; set; }
         [DataMember]
         public long FilePostition { get; set; }
+    }
+
+    [DataContract]
+    public class Response
+    {
+        [DataMember]
+        public bool UploadSucceeded { get; set; }
+        [DataMember]
+        public string UploadedPath { get; set; }
     }
 
 }
