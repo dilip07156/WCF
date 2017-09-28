@@ -794,4 +794,119 @@ namespace DataContracts.Masters
         public DateTime? Edit_Date { get; set; }
 
     }
+
+    [DataContract]
+    public class DC_Activity_Descriptions
+    {
+        [DataMember]
+        public Guid? Activity_Description_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Legacy_Product_ID { get; set; }
+        [DataMember]
+        public string Description { get; set; }
+        [DataMember]
+        public string Language_Code { get; set; }
+        [DataMember]
+        public string DescriptionFor { get; set; }
+        [DataMember]
+        public string DescriptionType { get; set; }
+        [DataMember]
+        public DateTime? FromDate { get; set; }
+        [DataMember]
+        public DateTime? ToDate { get; set; }
+        [DataMember]
+        public string Source { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Description_Name { get; set; }
+        [DataMember]
+        public string DescriptionSubType { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+
+    }
+    [DataContract]
+    public class DC_Activity_Media
+    {
+        [DataMember]
+        public Guid? Activity_Media_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public string MediaName { get; set; }
+        [DataMember]
+        public string MediaType { get; set; }
+        [DataMember]
+        public string RoomCategory { get; set; }
+        [DataMember]
+        public DateTime? ValidFrom { get; set; }
+        [DataMember]
+        public DateTime? ValidTo { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Media_Path { get; set; }
+        [DataMember]
+        public string Media_URL { get; set; }
+        [DataMember]
+        public int? Media_Position { get; set; }
+        [DataMember]
+        public string Category { get; set; }
+        [DataMember]
+        public string SubCategory { get; set; }
+        [DataMember]
+        public string Description { get; set; }
+        [DataMember]
+        public string FileFormat { get; set; }
+        [DataMember]
+        public string MediaID { get; set; }
+        [DataMember]
+        public string MediaFileMaster { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+    public class DC_Activity_Media_Search_RQ
+    {
+        [DataMember]
+        public Guid? Activity_Media_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public string MediaName { get; set; }
+        [DataMember]
+        public string Category { get; set; }
+        [DataMember]
+        public string SubCategory { get; set; }
+        [DataMember]
+        public DateTime? ValidFrom { get; set; }
+        [DataMember]
+        public DateTime? ValidTo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public string MediaType { get; set; }
+    }
 }

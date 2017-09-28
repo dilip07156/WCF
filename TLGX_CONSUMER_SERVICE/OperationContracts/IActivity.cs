@@ -66,5 +66,13 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "AddActivity/Status", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool AddActivityStatus(DataContracts.Masters.DC_Activity_Status AS);
         #endregion
+        #region Activity Media
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Activity/Media/Get", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Masters.DC_Activity_Media> GetActivityMedia(DataContracts.Masters.DC_Activity_Media_Search_RQ RQ);
+
+
+        #endregion
     }
 }
