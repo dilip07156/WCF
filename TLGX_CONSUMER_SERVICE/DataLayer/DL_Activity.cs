@@ -480,7 +480,6 @@ namespace DataLayer
                     newObj.Telephone = AC.Telephone;
                     newObj.WebSiteURL = AC.WebSiteURL;
                     newObj.IsActive = AC.IsActive;
-
                     context.Activity_Contact.Add(newObj);
                     context.SaveChanges();
 
@@ -628,6 +627,167 @@ namespace DataLayer
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding activity status", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+        #endregion
+        #region Activity Media
+        public List<DC_Activity_Media_Search> GetActivityMedia(DC_Activity_Media_Search_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_Media
+                                 select a;
+
+                    if (RQ.Activity_Media_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Id == RQ.Activity_Media_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Id == RQ.Activity_Id
+                                 select a;
+                    }
+                    if (RQ.MediaType != null)
+                    {
+                        search = from a in search
+                                 where a.MediaType.Trim().TrimStart().ToUpper() == RQ.MediaType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.MediaName != null)
+                    {
+                        search = from a in search
+                                 where a.MediaName.Trim().TrimStart().ToUpper() == RQ.MediaName.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.Category != null)
+                    {
+                        search = from a in search
+                                 where a.Category.Trim().TrimStart().ToUpper() == RQ.Category.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.SubCategory != null)
+                    {
+                        search = from a in search
+                                 where a.SubCategory.Trim().TrimStart().ToUpper() == RQ.SubCategory.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ValidFrom != null)
+                    {
+                        search = from a in search
+                                 where a.ValidFrom== RQ.ValidFrom
+                                 select a;
+                    }
+
+                    if (RQ.ValidTo != null)
+                    {
+                        search = from a in search
+                                 where a.ValidTo == RQ.ValidTo
+                                 select a;
+                    }
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    var result = from a in search
+                                 orderby a.MediaName
+                                 select new DataContracts.Masters.DC_Activity_Media_Search
+                                 {
+                                     Activity_Id=a.Activity_Id,
+                                     Activity_Media_Id=a.Activity_Media_Id,
+                                      IsActive=a.IsActive,
+                                      MediaName=a.MediaName,
+                                      Create_Date=a.Create_Date,
+                                      Create_User=a.Create_User,
+                                      Edit_Date=a.Edit_Date,
+                                      Edit_User=a.Edit_User,
+                                      MediaType=a.MediaType,
+                                      Category=a.Category,
+                                      SubCategory=a.SubCategory,
+                                      Description=a.Description,
+                                      FileFormat=a.FileFormat,
+                                      Legacy_Product_Id=a.Legacy_Product_Id,
+                                      MediaFileMaster=a.MediaFileMaster,
+                                      MediaID=a.MediaID,
+                                      Media_Path=a.Media_Path,
+                                      Media_Position=a.Media_Position,
+                                      Media_URL=a.Media_URL,
+                                      RoomCategory=a.RoomCategory,
+                                      ValidFrom=a.ValidFrom,
+                                      ValidTo=a.ValidTo,
+                                      TotalRecords=total
+                                 };
+                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Media", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public DC_Message AddActivityMedia(DC_Activity_Media RQ)
+        {
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                         Activity_Media newmed = new Activity_Media();
+
+                        if (RQ.Activity_Media_Id == null)
+                        {
+                            newmed.Activity_Media_Id = Guid.NewGuid();
+                        }
+                        else
+                        {
+                            newmed.Activity_Media_Id = RQ.Activity_Media_Id??Guid.Empty;
+                        }
+                            newmed.Activity_Id = RQ.Activity_Id;
+                            newmed.Legacy_Product_Id = RQ.Legacy_Product_Id;
+                            newmed.IsActive = RQ.IsActive;
+                            newmed.FileFormat = RQ.FileFormat;
+                            newmed.Media_URL = RQ.Media_URL;
+                            newmed.Media_Position = RQ.Media_Position;
+                            newmed.SubCategory = RQ.SubCategory;
+                            newmed.MediaFileMaster = RQ.MediaFileMaster;
+                            newmed.Description = RQ.Description;
+                            newmed.MediaID = RQ.MediaID;
+                            newmed.MediaType = RQ.MediaType;
+                            newmed.RoomCategory = RQ.RoomCategory;
+                            newmed.MediaName = RQ.MediaName;
+                            newmed.Media_Path = RQ.Media_Path;
+                            newmed.Category = RQ.Category;
+                            newmed.ValidFrom = RQ.ValidFrom;
+                            newmed.ValidTo = RQ.ValidTo;
+                            newmed.Create_Date = DateTime.Now;
+                            newmed.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                        
+                        context.Activity_Media.Add(newmed);
+                        //context.SaveChanges();
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    return _msg;
+                 }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity media", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
+        #region inclusion
         #endregion
     }
 }

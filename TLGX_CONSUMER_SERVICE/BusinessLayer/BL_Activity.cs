@@ -100,5 +100,21 @@ namespace BusinessLayer
             }
         }
         #endregion
+        #region Activity Media
+        public List<DC_Activity_Media_Search> GetActivityMedia(DC_Activity_Media_Search_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityMedia(RQ);
+            }
+        }
+        public DC_Message AddActivityMedia(DC_Activity_Media RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddActivityMedia(RQ);
+            }
+        }
+        #endregion
     }
 }
