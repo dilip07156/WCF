@@ -883,6 +883,53 @@ namespace DataContracts.Masters
         public string MediaID { get; set; }
         [DataMember]
         public string MediaFileMaster { get; set; }
+    }
+    public class DC_Activity_Media_Search
+    {
+        [DataMember]
+        public Guid? Activity_Media_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public string MediaName { get; set; }
+        [DataMember]
+        public string MediaType { get; set; }
+        [DataMember]
+        public string RoomCategory { get; set; }
+        [DataMember]
+        public DateTime? ValidFrom { get; set; }
+        [DataMember]
+        public DateTime? ValidTo { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Media_Path { get; set; }
+        [DataMember]
+        public string Media_URL { get; set; }
+        [DataMember]
+        public int? Media_Position { get; set; }
+        [DataMember]
+        public string Category { get; set; }
+        [DataMember]
+        public string SubCategory { get; set; }
+        [DataMember]
+        public string Description { get; set; }
+        [DataMember]
+        public string FileFormat { get; set; }
+        [DataMember]
+        public string MediaID { get; set; }
+        [DataMember]
+        public string MediaFileMaster { get; set; }
         [DataMember]
         public int? TotalRecords { get; set; }
     }
