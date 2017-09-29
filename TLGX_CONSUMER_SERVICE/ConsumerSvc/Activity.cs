@@ -140,5 +140,18 @@ namespace ConsumerSvc
             }
         }
         #endregion
+        #region Activity Inclusions
+        public IList<DC_Activity_Inclusions_RS> GetActivityInclusions(DC_Activity_Inclusions_RQ RQ)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                List<DC_Activity_Inclusions_RS> searchResults = new List<DC_Activity_Inclusions_RS>();
+                searchResults = objBL.GetActivityInclusions(RQ);
+                if (searchResults.Count == 0)
+                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                return searchResults;
+            }
+        }
+        #endregion
     }
 }

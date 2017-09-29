@@ -836,6 +836,7 @@ namespace DataContracts.Masters
         public Guid? Activity_Flavour_Id { get; set; }
 
     }
+    #region Activity Media
     [DataContract]
     public class DC_Activity_Media
     {
@@ -884,6 +885,7 @@ namespace DataContracts.Masters
         [DataMember]
         public string MediaFileMaster { get; set; }
     }
+    [DataContract]
     public class DC_Activity_Media_Search
     {
         [DataMember]
@@ -933,6 +935,7 @@ namespace DataContracts.Masters
         [DataMember]
         public int? TotalRecords { get; set; }
     }
+    [DataContract]
     public class DC_Activity_Media_Search_RQ
     {
         [DataMember]
@@ -956,4 +959,115 @@ namespace DataContracts.Masters
         [DataMember]
         public string MediaType { get; set; }
     }
+    #endregion
+    #region inclusion
+    [DataContract]
+    public class DC_Activity_Inclusions
+    {
+        [DataMember]
+        public Guid? Activity_Inclusions_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public bool? IsInclusion { get; set; }
+        [DataMember]
+        public string InclusionFor { get; set; }
+        [DataMember]
+        public bool? IsDriver { get; set; }
+        [DataMember]
+        public bool? IsAudioCommentary { get; set; }
+        [DataMember]
+        public string InclusionDescription { get; set; }
+        [DataMember]
+        public string InclusionName { get; set; }
+        [DataMember]
+        public string RestaurantStyle { get; set; }
+        [DataMember]
+        public string InclusionType { get; set; }
+        [DataMember]
+        public DateTime? InclusionFrom { get; set; }
+        [DataMember]
+        public DateTime? InclusionTo { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+
+    }
+    [DataContract]
+    public class DC_Activity_Inclusions_RS
+    {
+        [DataMember]
+        public Guid? Activity_Inclusions_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public bool? IsInclusion { get; set; }
+        [DataMember]
+        public string InclusionFor { get; set; }
+        [DataMember]
+        public bool? IsDriver { get; set; }
+        [DataMember]
+        public bool? IsAudioCommentary { get; set; }
+        [DataMember]
+        public string InclusionDescription { get; set; }
+        [DataMember]
+        public string InclusionName { get; set; }
+        [DataMember]
+        public string RestaurantStyle { get; set; }
+        [DataMember]
+        public string InclusionType { get; set; }
+        [DataMember]
+        public DateTime? InclusionFrom { get; set; }
+        [DataMember]
+        public DateTime? InclusionTo { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+
+    }
+    [DataContract]
+    public class DC_Activity_Inclusions_RQ
+    {
+        [DataMember]
+        public Guid? Activity_Inclusions_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public bool? IsInclusion { get; set; }
+        [DataMember]
+        public string InclusionName { get; set; }
+        [DataMember]
+        public string InclusionType { get; set; }
+        [DataMember]
+        public DateTime? InclusionFrom { get; set; }
+        [DataMember]
+        public DateTime? InclusionTo { get; set; }
+        public int? PageNo { get; set; }
+        public int? PageSize { get; set; }
+    }
+    #endregion
 }

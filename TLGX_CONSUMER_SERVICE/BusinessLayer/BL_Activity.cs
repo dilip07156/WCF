@@ -116,5 +116,14 @@ namespace BusinessLayer
             }
         }
         #endregion
+        #region Activity inclusions
+        public List<DC_Activity_Inclusions_RS> GetActivityInclusions(DC_Activity_Inclusions_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityInclusions(RQ);
+            }
+        }
+        #endregion
     }
 }
