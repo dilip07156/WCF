@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 
 namespace DataContracts.Masters
 {
+    #region "Activity"
     [DataContract]
     public class DC_Activity
     {
@@ -674,7 +675,9 @@ namespace DataContracts.Masters
         public string Keyword { get; set; }
 
     }
+    #endregion
 
+    #region "Activity Content"
     [DataContract]
     public class DC_Activity_Content
     {
@@ -714,7 +717,9 @@ namespace DataContracts.Masters
 
 
     }
+    #endregion
 
+    #region "Activity Contacts"
     [DataContract]
     public class DC_Activity_Contact
     {
@@ -754,7 +759,9 @@ namespace DataContracts.Masters
         [DataMember]
         public bool IsActive { get; set; }
     }
+    #endregion
 
+    #region "Activity Status"
     [DataContract]
     public class DC_Activity_Status
     {
@@ -794,7 +801,9 @@ namespace DataContracts.Masters
         public DateTime? Edit_Date { get; set; }
 
     }
+    #endregion
 
+    #region "Activity Description"
     [DataContract]
     public class DC_Activity_Descriptions
     {
@@ -836,57 +845,11 @@ namespace DataContracts.Masters
         public Guid? Activity_Flavour_Id { get; set; }
 
     }
+    #endregion
+
     #region Activity Media
     [DataContract]
     public class DC_Activity_Media
-    {
-        [DataMember]
-        public Guid? Activity_Media_Id { get; set; }
-        [DataMember]
-        public Guid? Activity_Id { get; set; }
-        [DataMember]
-        public int? Legacy_Product_Id { get; set; }
-        [DataMember]
-        public string MediaName { get; set; }
-        [DataMember]
-        public string MediaType { get; set; }
-        [DataMember]
-        public string RoomCategory { get; set; }
-        [DataMember]
-        public DateTime? ValidFrom { get; set; }
-        [DataMember]
-        public DateTime? ValidTo { get; set; }
-        [DataMember]
-        public bool? IsActive { get; set; }
-        [DataMember]
-        public string Create_User { get; set; }
-        [DataMember]
-        public DateTime? Create_Date { get; set; }
-        [DataMember]
-        public string Edit_User { get; set; }
-        [DataMember]
-        public DateTime? Edit_Date { get; set; }
-        [DataMember]
-        public string Media_Path { get; set; }
-        [DataMember]
-        public string Media_URL { get; set; }
-        [DataMember]
-        public int? Media_Position { get; set; }
-        [DataMember]
-        public string Category { get; set; }
-        [DataMember]
-        public string SubCategory { get; set; }
-        [DataMember]
-        public string Description { get; set; }
-        [DataMember]
-        public string FileFormat { get; set; }
-        [DataMember]
-        public string MediaID { get; set; }
-        [DataMember]
-        public string MediaFileMaster { get; set; }
-    }
-    [DataContract]
-    public class DC_Activity_Media_Search
     {
         [DataMember]
         public Guid? Activity_Media_Id { get; set; }
@@ -960,7 +923,8 @@ namespace DataContracts.Masters
         public string MediaType { get; set; }
     }
     #endregion
-    #region inclusion
+
+    #region inclusions
     [DataContract]
     public class DC_Activity_Inclusions
     {
@@ -1066,8 +1030,111 @@ namespace DataContracts.Masters
         public DateTime? InclusionFrom { get; set; }
         [DataMember]
         public DateTime? InclusionTo { get; set; }
+        [DataMember]
         public int? PageNo { get; set; }
+        [DataMember]
         public int? PageSize { get; set; }
     }
+    #endregion
+
+    #region Inclusion Details
+    [DataContract]
+    public class DC_Activity_InclusionsDetails
+    {
+        [DataMember]
+        public Guid? Activity_InclusionDetails_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Inclusion_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string InclusionDetailFor { get; set; }
+        [DataMember]
+        public string GuideLanguage { get; set; }
+        [DataMember]
+        public string InclusionDetailType { get; set; }
+        [DataMember]
+        public string InclusionDetailName { get; set; }
+        [DataMember]
+        public string InclusionDetailDescription { get; set; }
+        [DataMember]
+        public DateTime? InclusionFrom { get; set; }
+        [DataMember]
+        public DateTime? InclusionTo { get; set; }
+        [DataMember]
+        public string DaysOfWeek { get; set; }
+        [DataMember]
+        public string FromTime { get; set; }
+        [DataMember]
+        public string ToTime { get; set; }
+        [DataMember]
+        public string CreateUser { get; set; }
+        [DataMember]
+        public string EditUser { get; set; }
+        [DataMember]
+        public DateTime? CreateDate { get; set; }
+        [DataMember]
+        public DateTime? EditDate { get; set; }
+    }
+    #endregion
+
+    #region Activiy Clasification Attributes
+    [DataContract]
+    public class DC_Activity_ClassificationAttributes
+    {
+        [DataMember]
+        public Guid? Activity_ClassificationAttribute_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public string AttributeType { get; set; }
+        [DataMember]
+        public string AttributeValue { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public bool? InternalOnly { get; set; }
+        [DataMember]
+        public string AttributeSubType { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string CreateUser { get; set; }
+        [DataMember]
+        public string EditUser { get; set; }
+        [DataMember]
+        public DateTime? CreateDate { get; set; }
+        [DataMember]
+        public DateTime? EditDate { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_ClassificationAttributes_RQ
+    {
+        [DataMember]
+        public Guid? Activity_ClassificationAttribute_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public string AttributeType { get; set; }
+        [DataMember]
+        public string AttributeValue { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+
     #endregion
 }

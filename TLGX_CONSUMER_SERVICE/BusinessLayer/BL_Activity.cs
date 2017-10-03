@@ -23,7 +23,6 @@ namespace BusinessLayer
                 return obj.ActivitySearch(RQ);
             }
         }
-        #endregion
 
         public DataContracts.DC_Message AddUpdateActivity(DataContracts.Masters.DC_Activity _objAct)
         {
@@ -40,6 +39,8 @@ namespace BusinessLayer
                 return obj.AddUpdateProductInfo(_objPro);
             }
         }
+
+        #endregion
 
         #region "Activity Contact"
         public List<DC_Activity_Contact> GetActivityContacts(Guid Activity_Id, Guid DataKey_Id)
@@ -100,14 +101,16 @@ namespace BusinessLayer
             }
         }
         #endregion
+
         #region Activity Media
-        public List<DC_Activity_Media_Search> GetActivityMedia(DC_Activity_Media_Search_RQ RQ)
+        public List<DC_Activity_Media> GetActivityMedia(DC_Activity_Media_Search_RQ RQ)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
                 return obj.GetActivityMedia(RQ);
             }
         }
+
         public DC_Message AddActivityMedia(DC_Activity_Media RQ)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
@@ -116,12 +119,39 @@ namespace BusinessLayer
             }
         }
         #endregion
+
         #region Activity inclusions
         public List<DC_Activity_Inclusions_RS> GetActivityInclusions(DC_Activity_Inclusions_RQ RQ)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
                 return obj.GetActivityInclusions(RQ);
+            }
+        }
+
+        public DataContracts.DC_Message AddActivityInclusions(DataContracts.Masters.DC_Activity_Inclusions RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddActivityInclusions(RQ);
+            }
+        }
+        #endregion
+
+        #region Activiy Clasification Attributes
+        public List<DC_Activity_ClassificationAttributes> GetActivityClasificationAttributes(DC_Activity_ClassificationAttributes_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityClasificationAttributes(RQ);
+            }
+        }
+
+        public DC_Message AddUpdateActivityClassifiationAttributes(DC_Activity_ClassificationAttributes RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdateActivityClassifiationAttributes(RQ);
             }
         }
         #endregion

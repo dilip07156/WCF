@@ -120,12 +120,13 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
         #region Activity Media
-        public IList<DC_Activity_Media_Search> GetActivityMedia(DC_Activity_Media_Search_RQ RQ)
+        public IList<DataContracts.Masters.DC_Activity_Media> GetActivityMedia(DC_Activity_Media_Search_RQ RQ)
         {
             using (BL_Activity objBL = new BL_Activity())
             {
-                List<DC_Activity_Media_Search> searchResults = new List<DC_Activity_Media_Search>();
+                List<DataContracts.Masters.DC_Activity_Media> searchResults = new List<DC_Activity_Media>();
                 searchResults = objBL.GetActivityMedia(RQ);
                 if (searchResults.Count == 0)
                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
@@ -140,8 +141,9 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
         #region Activity Inclusions
-        public IList<DC_Activity_Inclusions_RS> GetActivityInclusions(DC_Activity_Inclusions_RQ RQ)
+        public IList<DataContracts.Masters.DC_Activity_Inclusions_RS> GetActivityInclusions(DC_Activity_Inclusions_RQ RQ)
         {
             using (BL_Activity objBL = new BL_Activity())
             {
@@ -150,6 +152,34 @@ namespace ConsumerSvc
                 if (searchResults.Count == 0)
                      throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
+            }
+        }
+        public DataContracts.DC_Message AddActivityInclusions(DataContracts.Masters.DC_Activity_Inclusions RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddActivityInclusions(RQ);
+            }
+        }
+        #endregion
+
+        #region Activiy Clasification Attributes
+        public IList<DataContracts.Masters.DC_Activity_ClassificationAttributes> GetActivityClasificationAttributes(DC_Activity_ClassificationAttributes_RQ RQ)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                List<DC_Activity_ClassificationAttributes> searchResults = new List<DC_Activity_ClassificationAttributes>();
+                searchResults = objBL.GetActivityClasificationAttributes(RQ);
+                if (searchResults.Count == 0)
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                return searchResults;
+            }
+        }
+        public DC_Message AddUpdateActivityClassifiationAttributes(DC_Activity_ClassificationAttributes RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateActivityClassifiationAttributes(RQ);
             }
         }
         #endregion

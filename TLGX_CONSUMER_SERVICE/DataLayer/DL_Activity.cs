@@ -628,8 +628,9 @@ namespace DataLayer
             }
         }
         #endregion
+
         #region Activity Media
-        public List<DC_Activity_Media_Search> GetActivityMedia(DC_Activity_Media_Search_RQ RQ)
+        public List<DC_Activity_Media> GetActivityMedia(DC_Activity_Media_Search_RQ RQ)
         {
             try
             {
@@ -695,7 +696,7 @@ namespace DataLayer
 
                     var result = from a in search
                                  orderby a.MediaName
-                                 select new DataContracts.Masters.DC_Activity_Media_Search
+                                 select new DataContracts.Masters.DC_Activity_Media
                                  {
                                      Activity_Id=a.Activity_Id,
                                      Activity_Media_Id=a.Activity_Media_Id,
@@ -787,6 +788,7 @@ namespace DataLayer
             }
         }
         #endregion
+
         #region  Activity Inclusions
         public List<DC_Activity_Inclusions_RS> GetActivityInclusions(DC_Activity_Inclusions_RQ RQ)
         {
@@ -864,6 +866,212 @@ namespace DataLayer
             }
             catch(Exception ex) {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Inclusions", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public DataContracts.DC_Message AddActivityInclusions(DataContracts.Masters.DC_Activity_Inclusions RQ)
+        {
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    Activity_Inclusions obj = new Activity_Inclusions();
+
+                    if (RQ.Activity_Inclusions_Id == null)
+                    {
+                        obj.Activity_Inclusions_Id = Guid.NewGuid();
+                    }
+                    else
+                    {
+                        obj.Activity_Inclusions_Id = RQ.Activity_Inclusions_Id ?? Guid.Empty;
+                    }
+                    obj.Activity_Id = RQ.Activity_Id;
+                    obj.Legacy_Product_Id = RQ.Legacy_Product_Id;
+                    obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                    obj.IsInclusion=RQ.IsInclusion;
+                    obj.InclusionName = RQ.InclusionName;
+                    obj.InclusionDescription = RQ.InclusionDescription;
+                    obj.InclusionFor = RQ.InclusionFor;
+                    obj.InclusionFrom = RQ.InclusionFrom;
+                    obj.InclusionTo = RQ.InclusionTo;
+                    obj.InclusionType = RQ.InclusionType;
+                    obj.IsDriver = RQ.IsDriver;
+                    obj.IsAudioCommentary = RQ.IsAudioCommentary;
+                    obj.RestaurantStyle = RQ.RestaurantStyle;
+                    obj.Create_Date = DateTime.Now;
+                    obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                    context.Activity_Inclusions.Add(obj);
+                    if (context.SaveChanges() == 1)
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                    }
+                    else
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                    }
+                    return _msg;
+                }
+            }
+            catch(Exception EX)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity inclusions", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
+
+        #region Activiy Clasification Attributes
+        public List<DC_Activity_ClassificationAttributes> GetActivityClasificationAttributes(DC_Activity_ClassificationAttributes_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_ClassificationAttributes
+                                 select a;
+
+                    if (RQ.Activity_ClassificationAttribute_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Id == RQ.Activity_ClassificationAttribute_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Id == RQ.Activity_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Flavour_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
+                                 select a;
+                    }
+                    if (RQ.AttributeType != null)
+                    {
+                        search = from a in search
+                                 where a.AttributeType.Trim().TrimStart().ToUpper() == RQ.AttributeType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.AttributeValue != null)
+                    {
+                        search = from a in search
+                                 where a.AttributeValue.Trim().TrimStart().ToUpper() == RQ.AttributeValue.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.Legacy_Product_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Legacy_Product_ID == RQ.Legacy_Product_Id
+                                 select a;
+                    }
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    var result = from a in search
+                                 orderby a.AttributeValue
+                                 select new DataContracts.Masters.DC_Activity_ClassificationAttributes
+                                 {
+                                     Activity_Id = a.Activity_Id,
+                                     IsActive = a.IsActive,
+                                     CreateDate = a.Create_Date,
+                                     CreateUser = a.Create_User,
+                                     EditDate = a.Edit_Date,
+                                     EditUser = a.Edit_User,
+                                     Legacy_Product_Id = a.Legacy_Product_ID,
+                                     AttributeType=a.AttributeType,
+                                     Activity_Flavour_Id=a.Activity_Flavour_Id,
+                                     Activity_ClassificationAttribute_Id=a.Activity_ClassificationAttribute_Id,
+                                     AttributeSubType=a.AttributeSubType,
+                                     AttributeValue=a.AttributeValue,
+                                     InternalOnly=a.InternalOnly,
+                                     TotalRecords = total
+                                 };
+                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Classification Attributes", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+
+            }
+        }
+
+        public DC_Message AddUpdateActivityClassifiationAttributes(DC_Activity_ClassificationAttributes RQ)
+        {
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                   
+                    if (RQ.Activity_ClassificationAttribute_Id != null)
+                    {
+                        var res = context.Activity_ClassificationAttributes.Find(RQ.Activity_ClassificationAttribute_Id);
+                        if (res != null)
+                        {
+                            res.Activity_ClassificationAttribute_Id = RQ.Activity_ClassificationAttribute_Id ?? Guid.Empty;
+                            res.Activity_Id = RQ.Activity_Id;
+                            res.Legacy_Product_ID = RQ.Legacy_Product_Id;
+                            res.IsActive = RQ.IsActive;
+                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                            res.AttributeSubType = RQ.AttributeSubType;
+                            res.AttributeType = RQ.AttributeType;
+                            res.AttributeValue = RQ.AttributeValue;
+                            res.Edit_Date = DateTime.Now;
+                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                            if (context.SaveChanges() == 1)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                    else
+                    {
+                        DataLayer.Activity_ClassificationAttributes obj = new DataLayer.Activity_ClassificationAttributes();
+                        obj.Activity_ClassificationAttribute_Id = Guid.NewGuid();
+                        obj.Activity_Id = RQ.Activity_Id;
+                        obj.Legacy_Product_ID = RQ.Legacy_Product_Id;
+                        obj.IsActive = RQ.IsActive;
+                        obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                        obj.AttributeSubType = RQ.AttributeSubType;
+                        obj.AttributeType = RQ.AttributeType;
+                        obj.AttributeValue = RQ.AttributeValue;
+                        obj.Create_Date = DateTime.Now;
+                        obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                        context.Activity_ClassificationAttributes.Add(obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                    return _msg;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity Classification Attributes", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
         #endregion
