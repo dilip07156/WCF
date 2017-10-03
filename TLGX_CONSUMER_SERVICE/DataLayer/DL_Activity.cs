@@ -1003,12 +1003,13 @@ namespace DataLayer
 
         public DC_Message AddUpdateActivityClassifiationAttributes(DC_Activity_ClassificationAttributes RQ)
         {
+            bool IsInsert = false;
             DataContracts.DC_Message _msg = new DataContracts.DC_Message();
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                   
+
                     if (RQ.Activity_ClassificationAttribute_Id != null)
                     {
                         var res = context.Activity_ClassificationAttributes.Find(RQ.Activity_ClassificationAttribute_Id);
@@ -1036,15 +1037,15 @@ namespace DataLayer
                             }
                         }
                         else
-                        {
-                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
-                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
-                        }
+                            IsInsert = true;
                     }
                     else
+                        IsInsert = true;
+
+                    if (IsInsert)
                     {
                         DataLayer.Activity_ClassificationAttributes obj = new DataLayer.Activity_ClassificationAttributes();
-                        obj.Activity_ClassificationAttribute_Id = Guid.NewGuid();
+                        obj.Activity_ClassificationAttribute_Id = RQ.Activity_ClassificationAttribute_Id ?? Guid.NewGuid();
                         obj.Activity_Id = RQ.Activity_Id;
                         obj.Legacy_Product_ID = RQ.Legacy_Product_Id;
                         obj.IsActive = RQ.IsActive;
