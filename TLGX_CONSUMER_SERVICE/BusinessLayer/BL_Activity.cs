@@ -155,5 +155,22 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        #region Activity PickUpDrop
+        public List<DataContracts.Masters.DC_Activity_PickUpDrop> GetActivityPickUpDrop(DataContracts.Masters.DC_Activity_PickUpDrop_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityPickUpDrop(RQ);
+            }
+        }
+        public DC_Message AddUpdatePickUpDrop(DC_Activity_PickUpDrop RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdatePickUpDrop(RQ);
+            }
+        }
+        #endregion
     }
 }

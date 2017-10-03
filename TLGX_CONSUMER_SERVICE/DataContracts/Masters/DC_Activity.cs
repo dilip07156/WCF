@@ -1125,6 +1125,8 @@ namespace DataContracts.Masters
         [DataMember]
         public string AttributeType { get; set; }
         [DataMember]
+        public string AttributeSubType { get; set; }
+        [DataMember]
         public string AttributeValue { get; set; }
         [DataMember]
         public int? Legacy_Product_Id { get; set; }
@@ -1136,5 +1138,63 @@ namespace DataContracts.Masters
         public int? PageSize { get; set; }
     }
 
+    #endregion
+
+    #region pickUpDrop
+    public class DC_Activity_PickUpDrop
+    {
+        [DataMember]
+        public Guid? Activity_PickUpDrop_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public Guid? Supplier_Id { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+        [DataMember]
+        public string TransferType { get; set; }
+        [DataMember]
+        public string VehicleType { get; set; }
+        [DataMember]
+        public string VehicleCategory { get; set; }
+        [DataMember]
+        public string VehicleName { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public bool? IsAC { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+
+    public class DC_Activity_PickUpDrop_RQ
+    {
+        [DataMember]
+        public Guid? Activity_PickUpDrop_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public Guid? Supplier_Id { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
     #endregion
 }

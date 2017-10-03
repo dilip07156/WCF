@@ -183,5 +183,27 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
+        #region Activity PickUpDrop
+        public IList<DataContracts.Masters.DC_Activity_PickUpDrop> GetActivityPickUpDrop(DataContracts.Masters.DC_Activity_PickUpDrop_RQ RQ)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                List<DC_Activity_PickUpDrop> searchResults = new List<DC_Activity_PickUpDrop>();
+                searchResults = objBL.GetActivityPickUpDrop(RQ);
+                if (searchResults.Count == 0)
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                return searchResults;
+            }
+        }
+
+        public DC_Message AddUpdatePickUpDrop(DC_Activity_PickUpDrop RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdatePickUpDrop(RQ);
+            }
+        }
+        #endregion
     }
 }

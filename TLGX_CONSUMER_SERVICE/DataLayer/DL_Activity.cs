@@ -737,7 +737,17 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                         Activity_Media newmed = new Activity_Media();
+                    var isduplicate = (from a in context.Activity_Media
+                                       where a.MediaName.Trim().TrimStart().ToUpper() == RQ.MediaName.Trim().TrimStart().ToUpper()
+                                       select a).Count() == 0 ? false : true;
+
+                    if (isduplicate)
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strAlreadyExist;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
+                        return _msg;
+                    }
+                    Activity_Media newmed = new Activity_Media();
 
                         if (RQ.Activity_Media_Id == null)
                         {
@@ -868,7 +878,6 @@ namespace DataLayer
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Inclusions", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-
         public DataContracts.DC_Message AddActivityInclusions(DataContracts.Masters.DC_Activity_Inclusions RQ)
         {
             DataContracts.DC_Message _msg = new DataContracts.DC_Message();
@@ -962,6 +971,12 @@ namespace DataLayer
                                  where a.AttributeValue.Trim().TrimStart().ToUpper() == RQ.AttributeValue.Trim().TrimStart().ToUpper()
                                  select a;
                     }
+                    if (RQ.AttributeSubType != null)
+                    {
+                        search = from a in search
+                                 where a.AttributeSubType.Trim().TrimStart().ToUpper() == RQ.AttributeSubType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
 
                     if (RQ.Legacy_Product_Id != null)
                     {
@@ -1000,7 +1015,6 @@ namespace DataLayer
 
             }
         }
-
         public DC_Message AddUpdateActivityClassifiationAttributes(DC_Activity_ClassificationAttributes RQ)
         {
             DataContracts.DC_Message _msg = new DataContracts.DC_Message();
@@ -1073,6 +1087,91 @@ namespace DataLayer
             {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity Classification Attributes", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
+        }
+        #endregion
+
+        #region Activity PickUpDrop
+        public List<DataContracts.Masters.DC_Activity_PickUpDrop> GetActivityPickUpDrop(DataContracts.Masters.DC_Activity_PickUpDrop_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_PickUpDrop
+                                 select a;
+
+                    if (RQ.Activity_PickUpDrop_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Id == RQ.Activity_PickUpDrop_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Id == RQ.Activity_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Flavour_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
+                                 select a;
+                    }
+                    if (RQ.SupplierName != null)
+                    {
+                        search = from a in search
+                                 where a.SupplierName.Trim().TrimStart().ToUpper() == RQ.SupplierName.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.Supplier_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Supplier_Id == RQ.Supplier_Id
+                                 select a;
+                    }
+                    if (RQ.Legacy_Product_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Legacy_Product_Id == RQ.Legacy_Product_Id
+                                 select a;
+                    }
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    var result = from a in search
+                                 orderby a.SupplierName
+                                 select new DataContracts.Masters.DC_Activity_PickUpDrop
+                                 {
+                                     Activity_PickUpDrop_Id=a.Activity_PickUpDrop_Id,
+                                     Activity_Id = a.Activity_Id,
+                                     IsAC = a.IsAC,
+                                     Create_Date = a.Create_Date,
+                                     Create_User = a.Create_User,
+                                     Edit_Date = a.Edit_Date,
+                                     Edit_User = a.Edit_User,
+                                     Legacy_Product_Id = a.Legacy_Product_Id,
+                                    Supplier_Id=a.Supplier_Id,
+                                    SupplierName=a.SupplierName,
+                                    Activity_Flavour_Id=a.Activity_Flavour_Id,
+                                    TransferType=a.TransferType,
+                                    VehicleCategory=a.VehicleCategory,
+                                     VehicleName=a.VehicleName,
+                                     VehicleType=a.VehicleType,
+                                     TotalRecords = total
+                                 };
+                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity  PickUpDrops", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+
+            }
+        }
+        public DC_Message AddUpdatePickUpDrop(DC_Activity_PickUpDrop RQ)
+        {
+            
         }
         #endregion
     }
