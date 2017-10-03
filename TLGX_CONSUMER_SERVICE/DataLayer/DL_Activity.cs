@@ -1172,7 +1172,86 @@ namespace DataLayer
         }
         public DC_Message AddUpdatePickUpDrop(DC_Activity_PickUpDrop RQ)
         {
-            
+            bool IsInsert = false;
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    if (RQ.Activity_PickUpDrop_Id != null)
+                    {
+                        var res = context.Activity_PickUpDrop.Find(RQ.Activity_PickUpDrop_Id);
+                        if (res != null)
+                        {
+                            res.Activity_PickUpDrop_Id = RQ.Activity_PickUpDrop_Id??Guid.Empty;
+                            res.Activity_Id = RQ.Activity_Id;
+                            res.Legacy_Product_Id = RQ.Legacy_Product_Id;
+                            res.IsAC = RQ.IsAC;
+                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                            res.SupplierName = RQ.SupplierName;
+                            res.Supplier_Id = RQ.Supplier_Id;
+                            res.TransferType = RQ.TransferType;
+                            res.VehicleCategory = RQ.VehicleCategory;
+                            res.VehicleName = RQ.VehicleName;
+                            res.VehicleType = RQ.VehicleType;
+                            res.ForSupplier = RQ.ForSupplier;
+                            res.Edit_Date = DateTime.Now;
+                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                            if (context.SaveChanges() == 1)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
+                        }
+                        else
+                            IsInsert = true;
+                    }
+                    else
+                        IsInsert = true;
+
+                    if (IsInsert)
+                    {
+                        DataLayer.Activity_PickUpDrop obj = new DataLayer.Activity_PickUpDrop();
+
+                        obj.Activity_PickUpDrop_Id =RQ.Activity_PickUpDrop_Id??Guid.NewGuid();
+                        obj.Activity_Id = RQ.Activity_Id;
+                        obj.Legacy_Product_Id = RQ.Legacy_Product_Id;
+                        obj.IsAC = RQ.IsAC;
+                        obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                        obj.SupplierName = RQ.SupplierName;
+                        obj.Supplier_Id = RQ.Supplier_Id;
+                        obj.TransferType = RQ.TransferType;
+                        obj.VehicleCategory = RQ.VehicleCategory;
+                        obj.VehicleName = RQ.VehicleName;
+                        obj.VehicleType = RQ.VehicleType;
+                        obj.ForSupplier = RQ.ForSupplier;
+                        obj.Create_Date = DateTime.Now;
+                        obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                        context.Activity_PickUpDrop.Add(obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                    return _msg;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity pickUpDrop", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
         }
         #endregion
     }

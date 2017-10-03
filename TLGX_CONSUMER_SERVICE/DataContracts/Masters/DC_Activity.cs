@@ -1174,6 +1174,8 @@ namespace DataContracts.Masters
         [DataMember]
         public bool? IsAC { get; set; }
         [DataMember]
+        public string ForSupplier { get; set; }
+        [DataMember]
         public int? TotalRecords { get; set; }
     }
 
