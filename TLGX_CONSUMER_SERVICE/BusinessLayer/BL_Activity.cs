@@ -111,11 +111,11 @@ namespace BusinessLayer
             }
         }
 
-        public DC_Message AddActivityMedia(DC_Activity_Media RQ)
+        public DC_Message AddUpdateActivityMedia(DC_Activity_Media RQ)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
-                return obj.AddActivityMedia(RQ);
+                return obj.AddUpdateActivityMedia(RQ);
             }
         }
         #endregion
@@ -129,11 +129,11 @@ namespace BusinessLayer
             }
         }
 
-        public DataContracts.DC_Message AddActivityInclusions(DataContracts.Masters.DC_Activity_Inclusions RQ)
+        public DataContracts.DC_Message AddUpdateActivityInclusions(DataContracts.Masters.DC_Activity_Inclusions RQ)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
-                return obj.AddActivityInclusions(RQ);
+                return obj.AddUpdateActivityInclusions(RQ);
             }
         }
         #endregion

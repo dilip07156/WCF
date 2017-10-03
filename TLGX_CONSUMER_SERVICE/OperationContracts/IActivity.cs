@@ -68,6 +68,7 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "AddActivity/Status", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool AddActivityStatus(DataContracts.Masters.DC_Activity_Status AS);
         #endregion
+
         #region Activity Media
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
@@ -76,8 +77,8 @@ namespace OperationContracts
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "POST", UriTemplate = "Activity/Media/AddMedia", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DataContracts.DC_Message AddActivityMedia(DataContracts.Masters.DC_Activity_Media RQ);
+        [WebInvoke(Method = "POST", UriTemplate = "Activity/Media/AddUpdateMedia", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message AddUpdateActivityMedia(DataContracts.Masters.DC_Activity_Media RQ);
         #endregion
 
         #region Activity Inclusions
@@ -88,8 +89,8 @@ namespace OperationContracts
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "POST", UriTemplate = "Activity/Inclusions/AddInclusions", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DataContracts.DC_Message AddActivityInclusions(DataContracts.Masters.DC_Activity_Inclusions RQ);
+        [WebInvoke(Method = "POST", UriTemplate = "Activity/Inclusions/AddUpdateInclusions", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message AddUpdateActivityInclusions(DataContracts.Masters.DC_Activity_Inclusions RQ);
         #endregion
 
         #region  Activiy Clasification Attributes

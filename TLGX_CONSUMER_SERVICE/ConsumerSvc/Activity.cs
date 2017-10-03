@@ -133,11 +133,11 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
-        public DC_Message AddActivityMedia(DC_Activity_Media RQ)
+        public DC_Message AddUpdateActivityMedia(DC_Activity_Media RQ)
         {
             using (BusinessLayer.BL_Activity obj = new BL_Activity())
             {
-                return obj.AddActivityMedia(RQ);
+                return obj.AddUpdateActivityMedia(RQ);
             }
         }
         #endregion
@@ -154,11 +154,11 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
-        public DataContracts.DC_Message AddActivityInclusions(DataContracts.Masters.DC_Activity_Inclusions RQ)
+        public DataContracts.DC_Message AddUpdateActivityInclusions(DataContracts.Masters.DC_Activity_Inclusions RQ)
         {
             using (BusinessLayer.BL_Activity obj = new BL_Activity())
             {
-                return obj.AddActivityInclusions(RQ);
+                return obj.AddUpdateActivityInclusions(RQ);
             }
         }
         #endregion

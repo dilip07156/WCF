@@ -730,15 +730,16 @@ namespace DataLayer
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Media", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-        public DC_Message AddActivityMedia(DC_Activity_Media RQ)
+        public DC_Message AddUpdateActivityMedia(DC_Activity_Media RQ)
         {
+            bool IsInsert = false;
             DataContracts.DC_Message _msg = new DataContracts.DC_Message();
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var isduplicate = (from a in context.Activity_Media
-                                       where a.MediaName.Trim().TrimStart().ToUpper() == RQ.MediaName.Trim().TrimStart().ToUpper()
+                                       where a.MediaName.Trim().TrimStart().ToUpper() == RQ.MediaName.Trim().TrimStart().ToUpper() && a.Activity_Media_Id != RQ.Activity_Media_Id
                                        select a).Count() == 0 ? false : true;
 
                     if (isduplicate)
@@ -747,36 +748,68 @@ namespace DataLayer
                         _msg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
                         return _msg;
                     }
-                    Activity_Media newmed = new Activity_Media();
-
-                        if (RQ.Activity_Media_Id == null)
+                    if (RQ.Activity_Media_Id != null)
+                    {
+                        var res = context.Activity_Media.Find(RQ.Activity_Media_Id);
+                        if (res != null)
                         {
-                            newmed.Activity_Media_Id = Guid.NewGuid();
+                            res.Activity_Media_Id = RQ.Activity_Media_Id ?? Guid.Empty;
+                            res.Activity_Id = RQ.Activity_Id;
+                            res.Legacy_Product_Id = RQ.Legacy_Product_Id;
+                            res.IsActive = RQ.IsActive;
+                            res.FileFormat = RQ.FileFormat;
+                            res.Media_URL = RQ.Media_URL;
+                            res.Media_Position = RQ.Media_Position;
+                            res.SubCategory = RQ.SubCategory;
+                            res.MediaFileMaster = RQ.MediaFileMaster;
+                            res.Description = RQ.Description;
+                            res.MediaID = RQ.MediaID;
+                            res.MediaType = RQ.MediaType;
+                            res.RoomCategory = RQ.RoomCategory;
+                            res.MediaName = RQ.MediaName;
+                            res.Media_Path = RQ.Media_Path;
+                            res.Category = RQ.Category;
+                            res.ValidFrom = RQ.ValidFrom;
+                            res.ValidTo = RQ.ValidTo;
+                            res.Edit_Date = DateTime.Now;
+                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                            if (context.SaveChanges() == 1)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
                         }
-                        else
-                        {
-                            newmed.Activity_Media_Id = RQ.Activity_Media_Id??Guid.Empty;
-                        }
-                            newmed.Activity_Id = RQ.Activity_Id;
-                            newmed.Legacy_Product_Id = RQ.Legacy_Product_Id;
-                            newmed.IsActive = RQ.IsActive;
-                            newmed.FileFormat = RQ.FileFormat;
-                            newmed.Media_URL = RQ.Media_URL;
-                            newmed.Media_Position = RQ.Media_Position;
-                            newmed.SubCategory = RQ.SubCategory;
-                            newmed.MediaFileMaster = RQ.MediaFileMaster;
-                            newmed.Description = RQ.Description;
-                            newmed.MediaID = RQ.MediaID;
-                            newmed.MediaType = RQ.MediaType;
-                            newmed.RoomCategory = RQ.RoomCategory;
-                            newmed.MediaName = RQ.MediaName;
-                            newmed.Media_Path = RQ.Media_Path;
-                            newmed.Category = RQ.Category;
-                            newmed.ValidFrom = RQ.ValidFrom;
-                            newmed.ValidTo = RQ.ValidTo;
-                            newmed.Create_Date = DateTime.Now;
-                            newmed.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
-                        
+                        else IsInsert = true;
+                    }
+                    else IsInsert = true;
+                    if (IsInsert)
+                    {
+                        Activity_Media newmed = new Activity_Media();
+                        newmed.Activity_Media_Id = RQ.Activity_Media_Id ?? Guid.NewGuid();
+                        newmed.Activity_Id = RQ.Activity_Id;
+                        newmed.Legacy_Product_Id = RQ.Legacy_Product_Id;
+                        newmed.IsActive = RQ.IsActive;
+                        newmed.FileFormat = RQ.FileFormat;
+                        newmed.Media_URL = RQ.Media_URL;
+                        newmed.Media_Position = RQ.Media_Position;
+                        newmed.SubCategory = RQ.SubCategory;
+                        newmed.MediaFileMaster = RQ.MediaFileMaster;
+                        newmed.Description = RQ.Description;
+                        newmed.MediaID = RQ.MediaID;
+                        newmed.MediaType = RQ.MediaType;
+                        newmed.RoomCategory = RQ.RoomCategory;
+                        newmed.MediaName = RQ.MediaName;
+                        newmed.Media_Path = RQ.Media_Path;
+                        newmed.Category = RQ.Category;
+                        newmed.ValidFrom = RQ.ValidFrom;
+                        newmed.ValidTo = RQ.ValidTo;
+                        newmed.Create_Date = DateTime.Now;
+                        newmed.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
                         context.Activity_Media.Add(newmed);
                         //context.SaveChanges();
                         if (context.SaveChanges() == 1)
@@ -789,8 +822,9 @@ namespace DataLayer
                             _msg.StatusMessage = ReadOnlyMessage.strFailed;
                             _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                         }
-                    return _msg;
-                 }
+                    }
+                        return _msg;
+                    }
             }
             catch (Exception ex)
             {
@@ -878,48 +912,80 @@ namespace DataLayer
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Inclusions", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-        public DataContracts.DC_Message AddActivityInclusions(DataContracts.Masters.DC_Activity_Inclusions RQ)
+        public DataContracts.DC_Message AddUpdateActivityInclusions(DataContracts.Masters.DC_Activity_Inclusions RQ)
         {
+            bool isinsert = false;
             DataContracts.DC_Message _msg = new DataContracts.DC_Message();
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    Activity_Inclusions obj = new Activity_Inclusions();
+                    if (RQ.Activity_Inclusions_Id != null)
+                    {
+                        var res = context.Activity_Inclusions.Find(RQ.Activity_Inclusions_Id);
+                        if (res != null)
+                        {
+                            res.Activity_Inclusions_Id = RQ.Activity_Inclusions_Id ?? Guid.Empty;
+                            res.Activity_Id = RQ.Activity_Id;
+                            res.Legacy_Product_Id = RQ.Legacy_Product_Id;
+                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                            res.IsInclusion = RQ.IsInclusion;
+                            res.InclusionName = RQ.InclusionName;
+                            res.InclusionDescription = RQ.InclusionDescription;
+                            res.InclusionFor = RQ.InclusionFor;
+                            res.InclusionFrom = RQ.InclusionFrom;
+                            res.InclusionTo = RQ.InclusionTo;
+                            res.InclusionType = RQ.InclusionType;
+                            res.IsDriver = RQ.IsDriver;
+                            res.IsAudioCommentary = RQ.IsAudioCommentary;
+                            res.RestaurantStyle = RQ.RestaurantStyle;
+                            res.Create_Date = DateTime.Now;
+                            res.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                            if (context.SaveChanges() == 1)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
+                        }
+                        else isinsert = true;
+                    }
+                    else isinsert = true;
 
-                    if (RQ.Activity_Inclusions_Id == null)
+                    if (isinsert)
                     {
-                        obj.Activity_Inclusions_Id = Guid.NewGuid();
-                    }
-                    else
-                    {
-                        obj.Activity_Inclusions_Id = RQ.Activity_Inclusions_Id ?? Guid.Empty;
-                    }
-                    obj.Activity_Id = RQ.Activity_Id;
-                    obj.Legacy_Product_Id = RQ.Legacy_Product_Id;
-                    obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
-                    obj.IsInclusion=RQ.IsInclusion;
-                    obj.InclusionName = RQ.InclusionName;
-                    obj.InclusionDescription = RQ.InclusionDescription;
-                    obj.InclusionFor = RQ.InclusionFor;
-                    obj.InclusionFrom = RQ.InclusionFrom;
-                    obj.InclusionTo = RQ.InclusionTo;
-                    obj.InclusionType = RQ.InclusionType;
-                    obj.IsDriver = RQ.IsDriver;
-                    obj.IsAudioCommentary = RQ.IsAudioCommentary;
-                    obj.RestaurantStyle = RQ.RestaurantStyle;
-                    obj.Create_Date = DateTime.Now;
-                    obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
-                    context.Activity_Inclusions.Add(obj);
-                    if (context.SaveChanges() == 1)
-                    {
-                        _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
-                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
-                    }
-                    else
-                    {
-                        _msg.StatusMessage = ReadOnlyMessage.strFailed;
-                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        Activity_Inclusions obj = new Activity_Inclusions();
+                        obj.Activity_Inclusions_Id = RQ.Activity_Inclusions_Id ?? Guid.NewGuid();
+                        obj.Activity_Id = RQ.Activity_Id;
+                        obj.Legacy_Product_Id = RQ.Legacy_Product_Id;
+                        obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                        obj.IsInclusion = RQ.IsInclusion;
+                        obj.InclusionName = RQ.InclusionName;
+                        obj.InclusionDescription = RQ.InclusionDescription;
+                        obj.InclusionFor = RQ.InclusionFor;
+                        obj.InclusionFrom = RQ.InclusionFrom;
+                        obj.InclusionTo = RQ.InclusionTo;
+                        obj.InclusionType = RQ.InclusionType;
+                        obj.IsDriver = RQ.IsDriver;
+                        obj.IsAudioCommentary = RQ.IsAudioCommentary;
+                        obj.RestaurantStyle = RQ.RestaurantStyle;
+                        obj.Create_Date = DateTime.Now;
+                        obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                        context.Activity_Inclusions.Add(obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
                     }
                     return _msg;
                 }
@@ -1023,7 +1089,15 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-
+                     var isduplicate = (from a in context.Activity_ClassificationAttributes
+                                                      where a.AttributeValue.Trim().TrimStart().ToUpper() == RQ.AttributeValue.Trim().TrimStart().ToUpper() && a.Activity_ClassificationAttribute_Id != RQ.Activity_ClassificationAttribute_Id
+                                        select a).Count() == 0 ? false : true;
+                    if (isduplicate)
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strAlreadyExist;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
+                        return _msg;
+                    }
                     if (RQ.Activity_ClassificationAttribute_Id != null)
                     {
                         var res = context.Activity_ClassificationAttributes.Find(RQ.Activity_ClassificationAttribute_Id);
@@ -1209,11 +1283,9 @@ namespace DataLayer
                                 _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                             }
                         }
-                        else
-                            IsInsert = true;
+                        else IsInsert = true;
                     }
-                    else
-                        IsInsert = true;
+                    else IsInsert = true;
 
                     if (IsInsert)
                     {
