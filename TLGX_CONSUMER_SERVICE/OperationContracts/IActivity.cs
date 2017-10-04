@@ -140,7 +140,18 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "Activity/PickUpDropDetails/AddUpdate", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataContracts.DC_Message AddUpdatePickUpDropDetails(DC_Activity_PickUpDropDetails RQ);
+        #endregion
 
+        #region Activity Description
+        //[OperationContract]
+        //[FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        //[WebInvoke(Method = "POST", UriTemplate = "Activity/Descriptions/Get", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        //IList<DataContracts.Masters.DC_Activity_Descriptions> GetActivityDescription(DataContracts.Masters.DC_Activity_Descriptions_RQ RQ);
+
+        //[OperationContract]
+        //[FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        //[WebInvoke(Method = "POST", UriTemplate = "Activity/Descriptions/AddUpdate", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        //DataContracts.DC_Message AddUpdateActivityDescription(DC_Activity_Descriptions RQ);
         #endregion
     }
 }

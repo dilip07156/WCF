@@ -207,5 +207,22 @@ namespace BusinessLayer
         }
         #endregion
 
+        #region Activity Description
+        //public List<DataContracts.Masters.DC_Activity_Descriptions> GetActivityDescription(DataContracts.Masters.DC_Activity_Descriptions_RQ RQ)
+        //{
+        //    using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+        //    {
+        //        return obj.GetActivityDescription(RQ);
+        //    }
+        //}
+        //public DataContracts.DC_Message AddUpdateActivityDescription(DC_Activity_Descriptions RQ)
+        //{
+        //    using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+        //    {
+        //        return obj.AddUpdateActivityDescription(RQ);
+        //    }
+        //}
+        #endregion
+
     }
 }
