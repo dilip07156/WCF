@@ -121,7 +121,7 @@ namespace BusinessLayer
         #endregion
 
         #region Activity inclusions
-        public List<DC_Activity_Inclusions_RS> GetActivityInclusions(DC_Activity_Inclusions_RQ RQ)
+        public List<DC_Activity_Inclusions> GetActivityInclusions(DC_Activity_Inclusions_RQ RQ)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
@@ -134,6 +134,23 @@ namespace BusinessLayer
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
                 return obj.AddUpdateActivityInclusions(RQ);
+            }
+        }
+        #endregion
+
+        #region InclusionDetails
+        public List<DC_Activity_InclusionsDetails> GetActivityInclusionDetails(DC_Activity_InclusionDetails_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityInclusionDetails(RQ);
+            }
+        }
+        public DataContracts.DC_Message AddUpdateInclusionDetails(DataContracts.Masters.DC_Activity_InclusionsDetails RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdateInclusionDetails(RQ);
             }
         }
         #endregion
@@ -172,5 +189,23 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        #region Activity PickUpDrop Details
+        public List<DataContracts.Masters.DC_Activity_PickUpDropDetails> GetPickUpDropDetails(DataContracts.Masters.DC_Activity_PickUpDropDetails_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetPickUpDropDetails(RQ);
+            }
+        }
+        public DataContracts.DC_Message AddUpdatePickUpDropDetails(DC_Activity_PickUpDropDetails RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdatePickUpDropDetails(RQ);
+            }
+        }
+        #endregion
+
     }
 }

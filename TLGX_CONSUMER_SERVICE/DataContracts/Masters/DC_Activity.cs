@@ -964,50 +964,8 @@ namespace DataContracts.Masters
         public string Create_User { get; set; }
         [DataMember]
         public string Edit_User { get; set; }
-
-    }
-    [DataContract]
-    public class DC_Activity_Inclusions_RS
-    {
-        [DataMember]
-        public Guid? Activity_Inclusions_Id { get; set; }
-        [DataMember]
-        public Guid? Activity_Id { get; set; }
-        [DataMember]
-        public int? Legacy_Product_Id { get; set; }
-        [DataMember]
-        public Guid? Activity_Flavour_Id { get; set; }
-        [DataMember]
-        public bool? IsInclusion { get; set; }
-        [DataMember]
-        public string InclusionFor { get; set; }
-        [DataMember]
-        public bool? IsDriver { get; set; }
-        [DataMember]
-        public bool? IsAudioCommentary { get; set; }
-        [DataMember]
-        public string InclusionDescription { get; set; }
-        [DataMember]
-        public string InclusionName { get; set; }
-        [DataMember]
-        public string RestaurantStyle { get; set; }
-        [DataMember]
-        public string InclusionType { get; set; }
-        [DataMember]
-        public DateTime? InclusionFrom { get; set; }
-        [DataMember]
-        public DateTime? InclusionTo { get; set; }
-        [DataMember]
-        public DateTime? Create_Date { get; set; }
-        [DataMember]
-        public DateTime? Edit_Date { get; set; }
-        [DataMember]
-        public string Create_User { get; set; }
-        [DataMember]
-        public string Edit_User { get; set; }
         [DataMember]
         public int? TotalRecords { get; set; }
-
     }
     [DataContract]
     public class DC_Activity_Inclusions_RQ
@@ -1062,9 +1020,9 @@ namespace DataContracts.Masters
         [DataMember]
         public string InclusionDetailDescription { get; set; }
         [DataMember]
-        public DateTime? InclusionFrom { get; set; }
+        public DateTime? InclusionDetailFrom { get; set; }
         [DataMember]
-        public DateTime? InclusionTo { get; set; }
+        public DateTime? InclusionDetailTo { get; set; }
         [DataMember]
         public string DaysOfWeek { get; set; }
         [DataMember]
@@ -1079,6 +1037,33 @@ namespace DataContracts.Masters
         public DateTime? CreateDate { get; set; }
         [DataMember]
         public DateTime? EditDate { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_InclusionDetails_RQ
+    {
+        public Guid? Activity_InclusionDetails_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Inclusion_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public DateTime? InclusionDetailFrom { get; set; }
+        [DataMember]
+        public DateTime? InclusionDetailTo { get; set; }
+        [DataMember]
+        public string InclusionDetailType { get; set; }
+        [DataMember]
+        public string InclusionDetailName { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
     }
     #endregion
 
@@ -1137,10 +1122,10 @@ namespace DataContracts.Masters
         [DataMember]
         public int? PageSize { get; set; }
     }
-
     #endregion
 
     #region pickUpDrop
+    [DataContract]
     public class DC_Activity_PickUpDrop
     {
         [DataMember]
@@ -1178,7 +1163,7 @@ namespace DataContracts.Masters
         [DataMember]
         public int? TotalRecords { get; set; }
     }
-
+    [DataContract]
     public class DC_Activity_PickUpDrop_RQ
     {
         [DataMember]
@@ -1197,6 +1182,101 @@ namespace DataContracts.Masters
         public int? PageNo { get; set; }
         [DataMember]
         public int? PageSize { get; set; }
+    }
+    #endregion
+
+    #region pickUpDrop Details
+    [DataContract]
+    public class DC_Activity_PickUpDropDetails
+    {
+        [DataMember]
+        public Guid? Activity_PickUpDropDetail_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_PickUpDrop_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public string PickUpDropType { get; set; }
+        [DataMember]
+        public string FromToType { get; set; }
+        [DataMember]
+        public string LocationType { get; set; }
+        [DataMember]
+        public string LocationName { get; set; }
+        [DataMember]
+        public string AreaSearchFor { get; set; }
+        [DataMember]
+        public string AreaNameofPlace { get; set; }
+        [DataMember]
+        public Guid? Accommodation_Id { get; set; }
+        [DataMember]
+        public string Acco_Name { get; set; }
+        [DataMember]
+        public string Acco_Address { get; set; }
+        [DataMember]
+        public string Acco_PostalCode { get; set; }
+        [DataMember]
+        public string Acco_Country { get; set; }
+        [DataMember]
+        public string Acco_City { get; set; }
+        [DataMember]
+        public string Acco_State { get; set; }
+        [DataMember]
+        public string Acco_Area { get; set; }
+        [DataMember]
+        public string Acco_Location { get; set; }
+        [DataMember]
+        public string Acco_Telephone { get; set; }
+        [DataMember]
+        public string Acco_Fax { get; set; }
+        [DataMember]
+        public string Acco_Website { get; set; }
+        [DataMember]
+        public string Acco_Email { get; set; }
+        [DataMember]
+        public string Acco_ContactNotes { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_PickUpDropDetails_RQ
+    {
+        [DataMember]
+        public Guid? Activity_PickUpDropDetail_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_PickUpDrop_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public string PickUpDropType { get; set; }
+        [DataMember]
+        public string FromToType { get; set; }
+        [DataMember]
+        public string LocationName { get; set; }
+        [DataMember]
+        public string Acco_Country { get; set; }
+        [DataMember]
+        public string Acco_City { get; set; }
+        [DataMember]
+        public string Acco_State { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+        [DataMember]
+        public Guid? Accommodation_Id { get; set; }
     }
     #endregion
 }
