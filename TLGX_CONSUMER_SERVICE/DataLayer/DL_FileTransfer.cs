@@ -23,7 +23,7 @@ namespace DataLayer
                 file.BufferData = request.BufferData;
 
                 object result = null;
-                DHSVCProxy.PostData(ProxyFor.DataHandler, System.Configuration.ConfigurationManager.AppSettings["Data_Handler_Upload_File_InChunks"], file, file.GetType(), dc.GetType(), out result);
+                DHSVCProxy.PostData(ProxyFor.DataHandler, System.Configuration.ConfigurationManager.AppSettings["Data_Handler_Upload_File_InChunks"], file, file.GetType(), typeof(DataContracts.FileTransfer.DC_UploadResponse), out result);
                 file = null;
                 return result as DataContracts.FileTransfer.DC_UploadResponse;
             }
