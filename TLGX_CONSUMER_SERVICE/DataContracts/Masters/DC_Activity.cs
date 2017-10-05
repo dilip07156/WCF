@@ -852,6 +852,14 @@ namespace DataContracts.Masters
         [DataMember]
         public string MediaFileMaster { get; set; }
         [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public int? Media_Width { get; set; }
+        [DataMember]
+        public int? Media_Height { get; set; }
+        [DataMember]
+        public string Media_Caption { get; set; }
+        [DataMember]
         public int? TotalRecords { get; set; }
     }
     [DataContract]
@@ -861,6 +869,8 @@ namespace DataContracts.Masters
         public Guid? Activity_Media_Id { get; set; }
         [DataMember]
         public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
         [DataMember]
         public string MediaName { get; set; }
         [DataMember]
@@ -970,6 +980,8 @@ namespace DataContracts.Masters
         [DataMember]
         public string GuideLanguage { get; set; }
         [DataMember]
+        public string GuideLanguageCode { get; set; }
+        [DataMember]
         public string InclusionDetailType { get; set; }
         [DataMember]
         public string InclusionDetailName { get; set; }
@@ -1016,6 +1028,8 @@ namespace DataContracts.Masters
         public string InclusionDetailType { get; set; }
         [DataMember]
         public string InclusionDetailName { get; set; }
+        [DataMember]
+        public string GuideLanguage { get; set; }
         [DataMember]
         public int? PageNo { get; set; }
         [DataMember]
@@ -1299,5 +1313,9 @@ namespace DataContracts.Masters
         [DataMember]
         public int? PageSize { get; set; }
     }
+    #endregion
+
+    #region Activity Flavour
+
     #endregion
 }

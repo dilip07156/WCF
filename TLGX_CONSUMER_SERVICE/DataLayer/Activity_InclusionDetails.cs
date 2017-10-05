@@ -33,5 +33,6 @@ namespace DataLayer
         public Nullable<System.DateTime> Edit_Date { get; set; }
         public string Create_User { get; set; }
         public string Edit_User { get; set; }
+        public string GuideLanguageCode { get; set; }
     }
 }

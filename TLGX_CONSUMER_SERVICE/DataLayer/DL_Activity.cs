@@ -691,6 +691,12 @@ namespace DataLayer
                                  where a.ValidTo == RQ.ValidTo
                                  select a;
                     }
+                    if (RQ.Activity_Flavour_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
+                                 select a;
+                    }
                     int total = search.Count();
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
@@ -720,6 +726,10 @@ namespace DataLayer
                                       RoomCategory=a.RoomCategory,
                                       ValidFrom=a.ValidFrom,
                                       ValidTo=a.ValidTo,
+                                      Activity_Flavour_Id=a.Activity_Flavour_Id,
+                                      Media_Caption=a.Media_Caption,
+                                      Media_Height=a.Media_Height,
+                                      Media_Width=a.Media_Width,
                                       TotalRecords=total
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
@@ -771,6 +781,10 @@ namespace DataLayer
                             res.Category = RQ.Category;
                             res.ValidFrom = RQ.ValidFrom;
                             res.ValidTo = RQ.ValidTo;
+                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                            res.Media_Caption = RQ.Media_Caption;
+                            res.Media_Height = RQ.Media_Height;
+                            res.Media_Width = RQ.Media_Width;
                             res.Edit_Date = DateTime.Now;
                             res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
                             if (context.SaveChanges() == 1)
@@ -808,6 +822,10 @@ namespace DataLayer
                         newmed.Category = RQ.Category;
                         newmed.ValidFrom = RQ.ValidFrom;
                         newmed.ValidTo = RQ.ValidTo;
+                        newmed.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                        newmed.Media_Caption = RQ.Media_Caption;
+                        newmed.Media_Height = RQ.Media_Height;
+                        newmed.Media_Width = RQ.Media_Width;
                         newmed.Create_Date = DateTime.Now;
                         newmed.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
                         context.Activity_Media.Add(newmed);
@@ -1064,6 +1082,13 @@ namespace DataLayer
                                  where a.InclusionDetailName.Trim().TrimStart().ToUpper() == RQ.InclusionDetailName.Trim().TrimStart().ToUpper()
                                  select a;
                     }
+                    if (RQ.GuideLanguage != null)
+                    {
+                        search = from a in search
+                                 where a.GuideLanguage.Trim().TrimStart().ToUpper() == RQ.GuideLanguage.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
                     int total = search.Count();
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
@@ -1087,6 +1112,7 @@ namespace DataLayer
                                            Activity_Flavour_Id = s.Activity_Flavour_Id,
                                            DaysOfWeek = s.DaysofWeek,
                                            Legacy_Product_Id = s.Legacy_Product_Id,
+                                           GuideLanguageCode=s.GuideLanguageCode,
                                            TotalRecords = total
                                        };
                     return searchresult.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
@@ -1127,6 +1153,7 @@ namespace DataLayer
                             res.FromTime = RQ.FromTime;
                             res.ToTime = RQ.ToTime;
                             res.GuideLanguage = RQ.GuideLanguage;
+                            res.GuideLanguageCode = RQ.GuideLanguageCode;
                             if (context.SaveChanges() == 1)
                             {
                                 _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
@@ -1244,16 +1271,13 @@ namespace DataLayer
                                  orderby a.AttributeValue
                                  select new DataContracts.Masters.DC_Activity_ClassificationAttributes
                                  {
+                                     Activity_ClassificationAttribute_Id = a.Activity_ClassificationAttribute_Id,
+                                     Activity_Flavour_Id = a.Activity_Flavour_Id,
                                      Activity_Id = a.Activity_Id,
                                      IsActive = a.IsActive,
                                      CreateDate = a.Create_Date,
-                                     CreateUser = a.Create_User,
-                                     EditDate = a.Edit_Date,
-                                     EditUser = a.Edit_User,
                                      Legacy_Product_Id = a.Legacy_Product_ID,
                                      AttributeType=a.AttributeType,
-                                     Activity_Flavour_Id=a.Activity_Flavour_Id,
-                                     Activity_ClassificationAttribute_Id=a.Activity_ClassificationAttribute_Id,
                                      AttributeSubType=a.AttributeSubType,
                                      AttributeValue=a.AttributeValue,
                                      InternalOnly=a.InternalOnly,
@@ -1739,6 +1763,9 @@ namespace DataLayer
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity pickUpDrop Details", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+        #endregion
+
+        #region Activity Flavour
         #endregion
     }
 }
