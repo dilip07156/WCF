@@ -2009,5 +2009,610 @@ namespace DataLayer
             }
         }
         #endregion
+
+        #region Activity Deals
+        public List<DataContracts.Masters.DC_Activity_Deals> GetActivityDeals(DataContracts.Masters.DC_Activity_Deals_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_Deals
+                                 select a;
+                    if (RQ.Activity_Deals_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Deals_Id == RQ.Activity_Deals_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Flavour_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Id == RQ.Activity_Id
+                                 select a;
+                    }
+                   
+                    if (RQ.DealName != null)
+                    {
+                        search = from a in search
+                                 where a.DealName.Trim().TrimStart().ToUpper() == RQ.DealName.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.DealCode != null)
+                    {
+                        search = from a in search
+                                 where a.DealCode.Trim().TrimStart().ToUpper() == RQ.DealCode.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    var result = from a in search
+                                 orderby a.DealName
+                                 select new DataContracts.Masters.DC_Activity_Deals
+                                 {
+                                     Activity_Deals_Id=a.Activity_Deals_Id,
+                                     Activity_Flavour_Id = a.Activity_Flavour_Id,
+                                     Activity_Id = a.Activity_Id,
+                                     DealName=a.DealName,
+                                     DealCode=a.DealCode,
+                                     DealText =a.DealText,
+                                     Deal_Price=a.Deal_Price,
+                                     Deal_Currency=a.Deal_Currency,
+                                     Deal_TnC=a.Deal_TnC,
+                                     Create_Date = a.Create_Date,
+                                     TotalRecords = total
+                                 };
+                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Deals", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+
+        }
+        public DataContracts.DC_Message AddUpdateActivityDeals(DC_Activity_Deals RQ)
+        {
+            bool IsInsert = false;
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    if (RQ.Activity_Deals_Id != null)
+                    {
+                        var res = context.Activity_Deals.Find(RQ.Activity_Deals_Id);
+                        if (res != null)
+                        {
+                            res.Activity_Deals_Id = RQ.Activity_Deals_Id ?? Guid.Empty;
+                            res.Activity_Id = RQ.Activity_Id;
+                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                            res.DealName = RQ.DealName;
+                            res.DealCode = RQ.DealCode;
+                            res.DealText = RQ.DealText;
+                            res.Deal_Currency = RQ.Deal_Currency;
+                            res.Deal_Price = RQ.Deal_Price;
+                            res.Deal_TnC = RQ.Deal_TnC;
+                            res.Edit_Date = DateTime.Now;
+                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                            if (context.SaveChanges() == 1)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
+                        }
+                        else IsInsert = true;
+                    }
+                    else IsInsert = true;
+
+                    if (IsInsert)
+                    {
+                        DataLayer.Activity_Deals obj = new DataLayer.Activity_Deals();
+
+                        obj.Activity_Deals_Id = RQ.Activity_Deals_Id ?? Guid.NewGuid();
+                        obj.Activity_Id = RQ.Activity_Id;
+                        obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                        obj.DealName = RQ.DealName;
+                        obj.DealCode = RQ.DealCode;
+                        obj.DealText = RQ.DealText;
+                        obj.Deal_Currency = RQ.Deal_Currency;
+                        obj.Deal_Price = RQ.Deal_Price;
+                        obj.Deal_TnC = RQ.Deal_TnC;
+                        obj.Create_Date = DateTime.Now;
+                        obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                        context.Activity_Deals.Add(obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                    return _msg;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity Deals", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
+
+        #region Activity Prices
+        public List<DataContracts.Masters.DC_Activity_Prices> GetActivityPrices(DataContracts.Masters.DC_Activity_Prices_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_Prices
+                                 select a;
+                    if (RQ.Activity_Prices_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Prices_Id == RQ.Activity_Prices_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Flavour_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Id == RQ.Activity_Id
+                                 select a;
+                    }
+
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    var result = from a in search
+                                 select new DataContracts.Masters.DC_Activity_Prices
+                                 {
+                                     Activity_Prices_Id = a.Activity_Prices_Id,
+                                     Activity_Flavour_Id = a.Activity_Flavour_Id,
+                                     Activity_Id = a.Activity_Id,
+                                     PriceBasis=a.PriceBasis,
+                                     PriceCode=a.PriceCode,
+                                     PriceCurrency=a.PriceCurrency,
+                                      PriceNet=a.PriceNet,
+                                     Totalrecords = total
+                                 };
+                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity prices", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+
+        }
+        public DataContracts.DC_Message AddUpdateActivityPrices(DC_Activity_Prices RQ)
+        {
+            bool IsInsert = false;
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    if (RQ.Activity_Prices_Id != null)
+                    {
+                        var res = context.Activity_Prices.Find(RQ.Activity_Prices_Id);
+                        if (res != null)
+                        {
+                            res.Activity_Prices_Id = RQ.Activity_Prices_Id ?? Guid.Empty;
+                            res.Activity_Id = RQ.Activity_Id;
+                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                            res.PriceBasis = RQ.PriceBasis;
+                            res.PriceCode = RQ.PriceCode;
+                            res.PriceCurrency = RQ.PriceCurrency;
+                            res.PriceNet = RQ.PriceNet;
+                            if (context.SaveChanges() == 1)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
+                        }
+                        else IsInsert = true;
+                    }
+                    else IsInsert = true;
+
+                    if (IsInsert)
+                    {
+                        DataLayer.Activity_Prices obj = new DataLayer.Activity_Prices();
+                        obj.Activity_Prices_Id = RQ.Activity_Prices_Id ?? Guid.NewGuid();
+                        obj.Activity_Id = RQ.Activity_Id;
+                        obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                        obj.PriceBasis = RQ.PriceBasis;
+                        obj.PriceCode = RQ.PriceCode;
+                        obj.PriceCurrency = RQ.PriceCurrency;
+                        obj.PriceNet = RQ.PriceNet;
+                        context.Activity_Prices.Add(obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                    return _msg;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity Prices", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
+
+        #region Supplier Product mapping
+        public List<DataContracts.Masters.DC_Activity_SupplierProductMapping> GetActSupplierProdMapping(DataContracts.Masters.DC_Activity_SupplierProductMapping_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_SupplierProductMapping
+                                 select a;
+
+                    if (RQ.ActivitySupplierProductMapping_Id != null)
+                    {
+                        search = from a in search
+                                 where a.ActivitySupplierProductMapping_Id == RQ.ActivitySupplierProductMapping_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_ID != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_ID == RQ.Activity_ID
+                                 select a;
+                    }
+
+                    if (RQ.Supplier_ID != null)
+                    {
+                        search = from a in search
+                                 where a.Supplier_ID == RQ.Supplier_ID
+                                 select a;
+                    }
+                    if (RQ.SuplierProductCode != null)
+                    {
+                        search = from a in search
+                                 where a.SuplierProductCode.Trim().TrimStart().ToUpper() == RQ.SuplierProductCode.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.SupplierCityName != null)
+                    {
+                        search = from a in search
+                                 where a.SupplierCityName.Trim().TrimStart().ToUpper() == RQ.SupplierCityName.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.SupplierCountryName != null)
+                    {
+                        search = from a in search
+                                 where a.SupplierCountryName.Trim().TrimStart().ToUpper() == RQ.SupplierCountryName.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.SupplierCode != null)
+                    {
+                        search = from a in search
+                                 where a.SupplierCode.Trim().TrimStart().ToUpper() == RQ.SupplierCode.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.SupplierName != null)
+                    {
+                        search = from a in search
+                                 where a.SupplierName.Trim().TrimStart().ToUpper() == RQ.SupplierName.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.SupplierProductType != null)
+                    {
+                        search = from a in search
+                                 where a.SupplierProductType.Trim().TrimStart().ToUpper() == RQ.SupplierProductType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.SupplierType != null)
+                    {
+                        search = from a in search
+                                 where a.SupplierType.Trim().TrimStart().ToUpper() == RQ.SupplierType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    var result = from a in search
+                                 orderby a.SupplierName
+                                 select new DataContracts.Masters.DC_Activity_SupplierProductMapping
+                                 {
+                                     ActivitySupplierProductMapping_Id = a.ActivitySupplierProductMapping_Id,
+                                     Activity_ID = a.Activity_ID,
+                                     AdditionalInformation = a.AdditionalInformation,
+                                     Address = a.Address,
+                                     SupplierName = a.SupplierName,
+                                     Supplier_ID = a.Supplier_ID,
+                                     SupplierType = a.SupplierType,
+                                     Area = a.Area,
+                                     BlockOutDateFrom = a.BlockOutDateFrom,
+                                     BlockOutDateTo = a.BlockOutDateTo,
+                                     Conditions = a.Conditions,
+                                     Create_Date = a.Create_Date,
+                                     Currency = a.Currency,
+                                     DateFrom = a.DateFrom,
+                                     DateTo = a.DateTo,
+                                     SupplierCityIATACode = a.SupplierCityIATACode,
+                                     DayPattern = a.DayPattern,
+                                     DepartureDate = a.DepartureDate,
+                                     DeparturePoint = a.DeparturePoint,
+                                     DepartureTime = a.DepartureTime,
+                                     Distance = a.Distance,
+                                     Duration = a.Duration,
+                                     DurationLength = a.DurationLength,
+                                     Exclusions = a.Exclusions,
+                                     ImgURL = a.ImgURL,
+                                     Inclusions = a.Inclusions,
+                                     Introduction = a.Introduction,
+                                     Latitude = a.Latitude,
+                                     Longitude = a.Longitude,
+                                     Location = a.Location,
+                                     MapID = a.MapID,
+                                     MappingStatus = a.MappingStatus,
+                                     OptionCode = a.OptionCode,
+                                     TotalActivities = a.TotalActivities,
+                                     OptionDescription = a.OptionDescription,
+                                     OptionTitle = a.OptionTitle,
+                                     PassengerNumbers = a.PassengerNumbers,
+                                     PhysicalIntensity = a.PhysicalIntensity,
+                                     Price = a.Price,
+                                     ProductDescription = a.ProductDescription,
+                                     ProductValidFor = a.ProductValidFor,
+                                     Rating = a.Rating,
+                                     Recommonded = a.Recommonded,
+                                     Session = a.Session,
+                                     Specials = a.Specials,
+                                     SuplierProductCode = a.SuplierProductCode,
+                                     SupplierCityName = a.SupplierCityName,
+                                     SupplierCityCode = a.SupplierCityCode,
+                                     SupplierCountryName = a.SupplierCountryName,
+                                     SupplierCountryCode = a.SupplierCountryCode,
+                                     SupplierCode = a.SupplierCode,
+                                     SupplierDataLangaugeCode = a.SupplierLocationId,
+                                     SupplierLocationId=a.SupplierLocationId,
+                                     SupplierLocationName=a.SupplierLocationName,
+                                     SupplierProductName=a.SupplierProductName,
+                                     SupplierProductType=a.SupplierProductType,
+                                     SupplierStateCode=a.SupplierStateCode,
+                                     SupplierStateName=a.SupplierStateName,
+                                     SupplierTourType=a.SupplierTourType,
+                                    Theme=a.Theme,
+                                    TicketingDetails=a.TicketingDetails,
+                                    Timing=a.Timing,
+                                    TourActivityLangauageCode=a.TourActivityLangauageCode,
+                                    TourActivityLanguage=a.TourActivityLanguage,   
+                                    TotalRecords = total
+                                 };
+                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Supplier Produvt Mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActSupplierProdMapping(DC_Activity_SupplierProductMapping RQ)
+        {
+
+            bool IsInsert = false;
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    if (RQ.ActivitySupplierProductMapping_Id != null)
+                    {
+                        var res = context.Activity_SupplierProductMapping.Find(RQ.ActivitySupplierProductMapping_Id);
+                        if (res != null)
+                        {
+                            res.ActivitySupplierProductMapping_Id = RQ.ActivitySupplierProductMapping_Id ?? Guid.Empty;
+                            res.Activity_ID = RQ.Activity_ID;
+                            res.AdditionalInformation = RQ.AdditionalInformation;
+                            res.Address = RQ.Address;
+                            res.SupplierName = RQ.SupplierName;
+                            res.Supplier_ID = RQ.Supplier_ID.Value;
+                            res.SupplierType = RQ.SupplierType;
+                            res.Area = RQ.Area;
+                            res.BlockOutDateFrom = RQ.BlockOutDateFrom;
+                            res.BlockOutDateTo = RQ.BlockOutDateTo;
+                            res.Conditions = RQ.Conditions;
+                            res.Currency = RQ.Currency;
+                            res.DateFrom = RQ.DateFrom;
+                            res.DateTo = RQ.DateTo;
+                            res.SupplierCityIATACode = RQ.SupplierCityIATACode;
+                            res.DayPattern = RQ.DayPattern;
+                            res.DepartureDate = RQ.DepartureDate;
+                            res.DeparturePoint = RQ.DeparturePoint;
+                            res.DepartureTime = RQ.DepartureTime;
+                            res.Distance = RQ.Distance;
+                            res.Duration = RQ.Duration;
+                            res.DurationLength = RQ.DurationLength;
+                            res.Exclusions = RQ.Exclusions;
+                            res.ImgURL = RQ.ImgURL;
+                            res.Inclusions = RQ.Inclusions;
+                            res.Introduction = RQ.Introduction;
+                            res.Latitude = RQ.Latitude;
+                            res.Longitude = RQ.Longitude;
+                            res.Location = RQ.Location;
+                            res.MapID = RQ.MapID;
+                            res.MappingStatus = RQ.MappingStatus;
+                            res.OptionCode = RQ.OptionCode;
+                            res.TotalActivities = RQ.TotalActivities;
+                            res.OptionDescription = RQ.OptionDescription;
+                            res.OptionTitle = RQ.OptionTitle;
+                            res.PassengerNumbers = RQ.PassengerNumbers;
+                            res.PhysicalIntensity = RQ.PhysicalIntensity;
+                            res.Price = RQ.Price;
+                            res.ProductDescription = RQ.ProductDescription;
+                            res.ProductValidFor = RQ.ProductValidFor;
+                            res.Rating = RQ.Rating;
+                            res.Recommonded = RQ.Recommonded;
+                            res.Session = RQ.Session;
+                            res.Specials = RQ.Specials;
+                            res.SuplierProductCode = RQ.SuplierProductCode;
+                            res.SupplierCityName = RQ.SupplierCityName;
+                            res.SupplierCityCode = RQ.SupplierCityCode;
+                            res.SupplierCountryName = RQ.SupplierCountryName;
+                            res.SupplierCountryCode = RQ.SupplierCountryCode;
+                            res.SupplierCode = RQ.SupplierCode;
+                            res.SupplierDataLangaugeCode = RQ.SupplierLocationId;
+                            res.SupplierLocationId = RQ.SupplierLocationId;
+                            res.SupplierLocationName = RQ.SupplierLocationName;
+                            res.SupplierProductName = RQ.SupplierProductName;
+                            res.SupplierProductType = RQ.SupplierProductType;
+                            res.SupplierStateCode = RQ.SupplierStateCode;
+                            res.SupplierStateName = RQ.SupplierStateName;
+                            res.SupplierTourType = RQ.SupplierTourType;
+                            res.Theme = RQ.Theme;
+                            res.TicketingDetails = RQ.TicketingDetails;
+                            res.Timing = RQ.Timing;
+                            res.TourActivityLangauageCode = RQ.TourActivityLangauageCode;
+                            res.TourActivityLanguage = RQ.TourActivityLanguage;
+                            res.Edit_Date = DateTime.Now;
+                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                            if (context.SaveChanges() == 1)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
+                        }
+                        else IsInsert = true;
+                    }
+                    else IsInsert = true;
+
+                    if (IsInsert)
+                    {
+                        DataLayer.Activity_SupplierProductMapping obj = new DataLayer.Activity_SupplierProductMapping();
+                        obj.ActivitySupplierProductMapping_Id = RQ.ActivitySupplierProductMapping_Id ?? Guid.NewGuid();
+                        obj.Activity_ID = RQ.Activity_ID;
+                        obj.AdditionalInformation = RQ.AdditionalInformation;
+                        obj.Address = RQ.Address;
+                        obj.SupplierName = RQ.SupplierName;
+                        obj.Supplier_ID = RQ.Supplier_ID.Value;
+                        obj.SupplierType = RQ.SupplierType;
+                        obj.Area = RQ.Area;
+                        obj.BlockOutDateFrom = RQ.BlockOutDateFrom;
+                        obj.BlockOutDateTo = RQ.BlockOutDateTo;
+                        obj.Conditions = RQ.Conditions;
+                        obj.Currency = RQ.Currency;
+                        obj.DateFrom = RQ.DateFrom;
+                        obj.DateTo = RQ.DateTo;
+                        obj.SupplierCityIATACode = RQ.SupplierCityIATACode;
+                        obj.DayPattern = RQ.DayPattern;
+                        obj.DepartureDate = RQ.DepartureDate;
+                        obj.DeparturePoint = RQ.DeparturePoint;
+                        obj.DepartureTime = RQ.DepartureTime;
+                        obj.Distance = RQ.Distance;
+                        obj.Duration = RQ.Duration;
+                        obj.DurationLength = RQ.DurationLength;
+                        obj.Exclusions = RQ.Exclusions;
+                        obj.ImgURL = RQ.ImgURL;
+                        obj.Inclusions = RQ.Inclusions;
+                        obj.Introduction = RQ.Introduction;
+                        obj.Latitude = RQ.Latitude;
+                        obj.Longitude = RQ.Longitude;
+                        obj.Location = RQ.Location;
+                        obj.MapID = RQ.MapID;
+                        obj.MappingStatus = RQ.MappingStatus;
+                        obj.OptionCode = RQ.OptionCode;
+                        obj.TotalActivities = RQ.TotalActivities;
+                        obj.OptionDescription = RQ.OptionDescription;
+                        obj.OptionTitle = RQ.OptionTitle;
+                        obj.PassengerNumbers = RQ.PassengerNumbers;
+                        obj.PhysicalIntensity = RQ.PhysicalIntensity;
+                        obj.Price = RQ.Price;
+                        obj.ProductDescription = RQ.ProductDescription;
+                        obj.ProductValidFor = RQ.ProductValidFor;
+                        obj.Rating = RQ.Rating;
+                        obj.Recommonded = RQ.Recommonded;
+                        obj.Session = RQ.Session;
+                        obj.Specials = RQ.Specials;
+                        obj.SuplierProductCode = RQ.SuplierProductCode;
+                        obj.SupplierCityName = RQ.SupplierCityName;
+                        obj.SupplierCityCode = RQ.SupplierCityCode;
+                        obj.SupplierCountryName = RQ.SupplierCountryName;
+                        obj.SupplierCountryCode = RQ.SupplierCountryCode;
+                        obj.SupplierCode = RQ.SupplierCode;
+                        obj.SupplierDataLangaugeCode = RQ.SupplierLocationId;
+                        obj.SupplierLocationId = RQ.SupplierLocationId;
+                        obj.SupplierLocationName = RQ.SupplierLocationName;
+                        obj.SupplierProductName = RQ.SupplierProductName;
+                        obj.SupplierProductType = RQ.SupplierProductType;
+                        obj.SupplierStateCode = RQ.SupplierStateCode;
+                        obj.SupplierStateName = RQ.SupplierStateName;
+                        obj.SupplierTourType = RQ.SupplierTourType;
+                        obj.Theme = RQ.Theme;
+                        obj.TicketingDetails = RQ.TicketingDetails;
+                        obj.Timing = RQ.Timing;
+                        obj.TourActivityLangauageCode = RQ.TourActivityLangauageCode;
+                        obj.TourActivityLanguage = RQ.TourActivityLanguage;
+                        obj.Create_Date = DateTime.Now;
+                        obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+
+                        context.Activity_SupplierProductMapping.Add(obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                    return _msg;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Supplier Product Mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
     }
 }

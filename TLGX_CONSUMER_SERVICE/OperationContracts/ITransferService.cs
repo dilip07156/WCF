@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataContracts.FileTransfer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -15,7 +16,7 @@ namespace OperationContracts
         UploadResponse UploadFile(RemoteFileInfo request);
 
         [OperationContract]
-        Response UploadFileInChunks(FileData request);
+        DC_UploadResponse UploadFileInChunks(DC_FileData request);
 
         [OperationContract]
         bool DeleteFile(string FilePath);
@@ -60,24 +61,24 @@ namespace OperationContracts
         public string UploadedPath { get; set; }
     }
 
-    [DataContract]
-    public class FileData
-    {
-        [DataMember]
-        public string FileName { get; set; }
-        [DataMember]
-        public byte[] BufferData { get; set; }
-        [DataMember]
-        public long FilePostition { get; set; }
-    }
+    //[DataContract]
+    //public class FileData
+    //{
+    //    [DataMember]
+    //    public string FileName { get; set; }
+    //    [DataMember]
+    //    public byte[] BufferData { get; set; }
+    //    [DataMember]
+    //    public long FilePostition { get; set; }
+    //}
 
-    [DataContract]
-    public class Response
-    {
-        [DataMember]
-        public bool UploadSucceeded { get; set; }
-        [DataMember]
-        public string UploadedPath { get; set; }
-    }
+    //[DataContract]
+    //public class Response
+    //{
+    //    [DataMember]
+    //    public bool UploadSucceeded { get; set; }
+    //    [DataMember]
+    //    public string UploadedPath { get; set; }
+    //}
 
 }
