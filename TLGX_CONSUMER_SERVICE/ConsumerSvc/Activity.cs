@@ -14,7 +14,7 @@ namespace ConsumerSvc
 {
     public partial class Consumer : IConsumer
     {
-        #region Activity Search
+        #region Activity 
         public IList<DC_ActivitySearch_RS> ActivitySearch(DC_Activity_Search_RQ Activity_Request)
         {
             using (BL_Activity objBL = new BL_Activity())
@@ -29,8 +29,7 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
-        #endregion
-
+        
         public DataContracts.DC_Message AddUpdateActivity(DataContracts.Masters.DC_Activity _objAct)
         {
             using (BusinessLayer.BL_Activity obj = new BL_Activity())
@@ -46,6 +45,7 @@ namespace ConsumerSvc
                 return obj.AddUpdateProductInfo(_objPro);
             }
         }
+        #endregion
 
         #region "Activity conatct"
         public IList<DC_Activity_Contact> GetActivityContacts(string Activity_Id, string DataKey_Id)
@@ -267,6 +267,27 @@ namespace ConsumerSvc
         //        return obj.AddUpdateActivityDescription(RQ);
         //    }
         //}
+        #endregion
+
+        #region Activity Flavour
+        public IList<DataContracts.Masters.DC_Activity_Flavour> GetActivityFlavour(DataContracts.Masters.DC_Activity_Flavour_RQ RQ)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                List<DC_Activity_Flavour> searchResults = new List<DC_Activity_Flavour>();
+                searchResults = objBL.GetActivityFlavour(RQ);
+                if (searchResults.Count == 0)
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                return searchResults;
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityFlavour(DC_Activity_Flavour RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateActivityFlavour(RQ);
+            }
+        }
         #endregion
     }
 }

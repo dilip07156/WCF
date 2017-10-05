@@ -1316,6 +1316,115 @@ namespace DataContracts.Masters
     #endregion
 
     #region Activity Flavour
+    [DataContract]
+    public class DC_Activity_Flavour
+    {
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public string ProductName { get; set; }
+        [DataMember]
+        public string Country { get; set; }
+        [DataMember]
+        public string City { get; set; }
+        [DataMember]
+        public string ProductCategory { get; set; }
+        [DataMember]
+        public string ProductCategorySubType { get; set; }
+        [DataMember]
+        public string ProductType { get; set; }
+        [DataMember]
+        public int? Legacy_Product_ID { get; set; }
+        [DataMember]
+        public string CommonProductNameSubType_Id { get; set; }
+        [DataMember]
+        public string CompanyProductNameSubType_Id { get; set; }
+        [DataMember]
+        public string FinanceControlId { get; set; }
+        [DataMember]
+        public string ProductNameSubType { get; set; }
+        [DataMember]
+        public string PlaceOfEvent { get; set; }
+        [DataMember]
+        public string StartingPoint { get; set; }
+        [DataMember]
+        public string EndingPoint { get; set; }
+        [DataMember]
+        public string USP { get; set; }
+        [DataMember]
+        public bool? IsPickUpDropDefined { get; set; }
+        [DataMember]
+        public bool? MustSeeInCountry { get; set; }
+        [DataMember]
+        public bool? CompanyReccom { get; set; }
+        [DataMember]
+        public string Duration { get; set; }
+        [DataMember]
+        public string CountryCode { get; set; }
+        [DataMember]
+        public string CityCode { get; set; }
+        [DataMember]
+        public decimal? Latitude { get; set; }
+        [DataMember]
+        public decimal? Longitude { get; set; }
+        [DataMember]
+        public string Street { get; set; }
+        [DataMember]
+        public string Street2 { get; set; }
+        [DataMember]
+        public string Street3 { get; set; }
+        [DataMember]
+        public string Street4 { get; set; }
+        [DataMember]
+        public string Street5 { get; set; }
+        [DataMember]
+        public string PostalCode { get; set; }
+        [DataMember]
+        public Guid? City_Id { get; set; }
+        [DataMember]
+        public Guid? Country_Id { get; set; }
+        [DataMember]
+        public string Area { get; set; }
+        [DataMember]
+        public string Location { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
 
+    }
+    [DataContract]
+    public class DC_Activity_Flavour_RQ
+    {
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public string ProductName { get; set; }
+        [DataMember]
+        public string Country { get; set; }
+        [DataMember]
+        public string City { get; set; }
+        [DataMember]
+        public string ProductCategory { get; set; }
+        [DataMember]
+        public string ProductType { get; set; }
+        [DataMember]
+        public int? Legacy_Product_ID { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
     #endregion
+
 }

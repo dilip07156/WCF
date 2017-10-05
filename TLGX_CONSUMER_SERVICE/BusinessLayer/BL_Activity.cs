@@ -224,5 +224,22 @@ namespace BusinessLayer
         //}
         #endregion
 
+        #region Activity Flavour
+        public List<DataContracts.Masters.DC_Activity_Flavour> GetActivityFlavour(DataContracts.Masters.DC_Activity_Flavour_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityFlavour(RQ);
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityFlavour(DC_Activity_Flavour RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdateActivityFlavour(RQ);
+            }
+        }
+        #endregion
+
     }
 }

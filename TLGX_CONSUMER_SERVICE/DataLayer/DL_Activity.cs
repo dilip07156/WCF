@@ -1766,6 +1766,248 @@ namespace DataLayer
         #endregion
 
         #region Activity Flavour
+        public List<DataContracts.Masters.DC_Activity_Flavour> GetActivityFlavour(DataContracts.Masters.DC_Activity_Flavour_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_Flavour
+                                 select a;
+
+                    if (RQ.Activity_Flavour_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Id == RQ.Activity_Id
+                                 select a;
+                    }
+                    if (RQ.Legacy_Product_ID != null)
+                    {
+                        search = from a in search
+                                 where a.Legacy_Product_ID == RQ.Legacy_Product_ID
+                                 select a;
+                    }
+                    if (RQ.City != null)
+                    {
+                        search = from a in search
+                                 where a.City.Trim().TrimStart().ToUpper() == RQ.City.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.Country != null)
+                    {
+                        search = from a in search
+                                 where a.Country.Trim().TrimStart().ToUpper() == RQ.Country.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductCategory != null)
+                    {
+                        search = from a in search
+                                 where a.ProductCategory.Trim().TrimStart().ToUpper() == RQ.ProductCategory.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductName != null)
+                    {
+                        search = from a in search
+                                 where a.ProductName.Trim().TrimStart().ToUpper() == RQ.ProductName.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    if (RQ.ProductType != null)
+                    {
+                        search = from a in search
+                                 where a.ProductType.Trim().TrimStart().ToUpper() == RQ.ProductType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                   
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    var result = from a in search
+                                 orderby a.ProductName
+                                 select new DataContracts.Masters.DC_Activity_Flavour
+                                 {
+                                     Activity_Flavour_Id = a.Activity_Flavour_Id,
+                                     Activity_Id = a.Activity_Id,
+                                     Legacy_Product_ID = a.Legacy_Product_ID,
+                                     ProductName = a.ProductName,
+                                     ProductNameSubType = a.ProductNameSubType,
+                                     ProductType = a.ProductType,
+                                     Country = a.Country,
+                                     City = a.City,
+                                     Country_Id = a.Country_Id,
+                                     City_Id = a.City_Id,
+                                     CityCode = a.CityCode,
+                                     CountryCode = a.CountryCode,
+                                     ProductCategory = a.ProductCategory,
+                                     ProductCategorySubType = a.ProductCategorySubType,
+                                     Area = a.Area,
+                                     CommonProductNameSubType_Id = a.CommonProductNameSubType_Id,
+                                     CompanyProductNameSubType_Id = a.CompanyProductNameSubType_Id,
+                                     CompanyReccom = a.CompanyReccom,
+                                     Duration = a.Duration,
+                                     EndingPoint = a.EndingPoint,
+                                     FinanceControlId = a.FinanceControlId,
+                                     IsPickUpDropDefined = a.IsPickUpDropDefined,
+                                     Latitude = a.Latitude,
+                                     Longitude=a.Longitude,
+                                     Location=a.Location,
+                                     MustSeeInCountry=a.MustSeeInCountry,
+                                     PlaceOfEvent=a.PlaceOfEvent,
+                                     PostalCode=a.PostalCode,
+                                     StartingPoint=a.StartingPoint,
+                                     Street=a.Street,
+                                     Street2 = a.Street2,
+                                     Street3 = a.Street3,
+                                     Street4 = a.Street4,
+                                     Street5 = a.Street5,
+                                     USP=a.USP,
+                                     Create_Date = a.Create_Date,
+                                     TotalRecords = total
+                                 };
+                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Flavour", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityFlavour(DC_Activity_Flavour RQ)
+        {
+            bool IsInsert = false;
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    if (RQ.Activity_Flavour_Id != null)
+                    {
+                        var res = context.Activity_Flavour.Find(RQ.Activity_Flavour_Id);
+                        if (res != null)
+                        {
+                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id ?? Guid.Empty;
+                            res.Activity_Id = RQ.Activity_Id;
+                            res.Legacy_Product_ID = RQ.Legacy_Product_ID;
+                            res.ProductName = RQ.ProductName;
+                            res.ProductNameSubType = RQ.ProductNameSubType;
+                            res.ProductType = RQ.ProductType;
+                            res.Country = RQ.Country;
+                            res.City = RQ.City;
+                            res.Country_Id = RQ.Country_Id;
+                            res.City_Id = RQ.City_Id;
+                            res.CityCode = RQ.CityCode;
+                            res.CountryCode = RQ.CountryCode;
+                            res.ProductCategory = RQ.ProductCategory;
+                            res.ProductCategorySubType = RQ.ProductCategorySubType;
+                            res.Area = RQ.Area;
+                            res.CommonProductNameSubType_Id = RQ.CommonProductNameSubType_Id;
+                            res.CompanyProductNameSubType_Id = RQ.CompanyProductNameSubType_Id;
+                            res.CompanyReccom = RQ.CompanyReccom;
+                            res.Duration = RQ.Duration;
+                            res.EndingPoint = RQ.EndingPoint;
+                            res.FinanceControlId = RQ.FinanceControlId;
+                            res.IsPickUpDropDefined = RQ.IsPickUpDropDefined;
+                            res.Latitude = RQ.Latitude;
+                            res.Longitude = RQ.Longitude;
+                            res.Location = RQ.Location;
+                            res.MustSeeInCountry = RQ.MustSeeInCountry;
+                            res.PlaceOfEvent = RQ.PlaceOfEvent;
+                            res.PostalCode = RQ.PostalCode;
+                            res.StartingPoint = RQ.StartingPoint;
+                            res.Street = RQ.Street;
+                            res.Street2 = RQ.Street2;
+                            res.Street3 = RQ.Street3;
+                            res.Street4 = RQ.Street4;
+                            res.Street5 = RQ.Street5;
+                            res.USP = RQ.USP;
+                            res.Edit_Date = DateTime.Now;
+                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                            if (context.SaveChanges() == 1)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
+                        }
+                        else IsInsert = true;
+                    }
+                    else IsInsert = true;
+
+                    if (IsInsert)
+                    {
+                        DataLayer.Activity_Flavour obj = new DataLayer.Activity_Flavour();
+
+                        obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id ?? Guid.NewGuid();
+                        obj.Activity_Id = RQ.Activity_Id;
+                        obj.Legacy_Product_ID = RQ.Legacy_Product_ID;
+                        obj.ProductName = RQ.ProductName;
+                        obj.ProductNameSubType = RQ.ProductNameSubType;
+                        obj.ProductType = RQ.ProductType;
+                        obj.Country = RQ.Country;
+                        obj.City = RQ.City;
+                        obj.Country_Id = RQ.Country_Id;
+                        obj.City_Id = RQ.City_Id;
+                        obj.CityCode = RQ.CityCode;
+                        obj.CountryCode = RQ.CountryCode;
+                        obj.ProductCategory = RQ.ProductCategory;
+                        obj.ProductCategorySubType = RQ.ProductCategorySubType;
+                        obj.Area = RQ.Area;
+                        obj.CommonProductNameSubType_Id = RQ.CommonProductNameSubType_Id;
+                        obj.CompanyProductNameSubType_Id = RQ.CompanyProductNameSubType_Id;
+                        obj.CompanyReccom = RQ.CompanyReccom;
+                        obj.Duration = RQ.Duration;
+                        obj.EndingPoint = RQ.EndingPoint;
+                        obj.FinanceControlId = RQ.FinanceControlId;
+                        obj.IsPickUpDropDefined = RQ.IsPickUpDropDefined;
+                        obj.Latitude = RQ.Latitude;
+                        obj.Longitude = RQ.Longitude;
+                        obj.Location = RQ.Location;
+                        obj.MustSeeInCountry = RQ.MustSeeInCountry;
+                        obj.PlaceOfEvent = RQ.PlaceOfEvent;
+                        obj.PostalCode = RQ.PostalCode;
+                        obj.StartingPoint = RQ.StartingPoint;
+                        obj.Street = RQ.Street;
+                        obj.Street2 = RQ.Street2;
+                        obj.Street3 = RQ.Street3;
+                        obj.Street4 = RQ.Street4;
+                        obj.Street5 = RQ.Street5;
+                        obj.USP = RQ.USP;
+                        obj.Create_Date = DateTime.Now;
+                        obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                        context.Activity_Flavour.Add(obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                    return _msg;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity flavour", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
         #endregion
     }
 }
