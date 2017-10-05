@@ -448,11 +448,14 @@ namespace DataLayer
                                         where a.STATUS.Trim().TrimStart().ToUpper() != RQ.StatusExcept.Trim().TrimStart().ToUpper()
                                         select a;
                     }
-                    if (RQ.Priority != -1)
+                    if (RQ.Priority != null)
                     {
-                        AttrMapSearch = from a in AttrMapSearch
-                                        where a.Priority == RQ.Priority
-                                        select a;
+                        if (RQ.Priority != -1)
+                        {
+                            AttrMapSearch = from a in AttrMapSearch
+                                            where a.Priority == RQ.Priority
+                                            select a;
+                        }
                     }
 
 
