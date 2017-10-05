@@ -275,5 +275,22 @@ namespace BusinessLayer
         }
         #endregion
 
+        #region Supplier Product mapping
+        public List<DataContracts.Masters.DC_Activity_SupplierProductMapping> GetActSupplierProdMapping(DataContracts.Masters.DC_Activity_SupplierProductMapping_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActSupplierProdMapping(RQ);
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActSupplierProdMapping(DC_Activity_SupplierProductMapping RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdateActSupplierProdMapping(RQ);
+            }
+        }
+        #endregion
+
     }
 }

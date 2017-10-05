@@ -312,7 +312,7 @@ namespace ConsumerSvc
         #endregion
 
         #region Activity Prices
-        public List<DataContracts.Masters.DC_Activity_Prices> GetActivityPrices(DataContracts.Masters.DC_Activity_Prices_RQ RQ)
+        public IList<DataContracts.Masters.DC_Activity_Prices> GetActivityPrices(DataContracts.Masters.DC_Activity_Prices_RQ RQ)
         {
             using (BL_Activity objBL = new BL_Activity())
             {
@@ -328,6 +328,27 @@ namespace ConsumerSvc
             using (BusinessLayer.BL_Activity obj = new BL_Activity())
             {
                 return obj.AddUpdateActivityPrices(RQ);
+            }
+        }
+        #endregion
+
+        #region Supplier Product mapping
+        public IList<DataContracts.Masters.DC_Activity_SupplierProductMapping> GetActSupplierProdMapping(DataContracts.Masters.DC_Activity_SupplierProductMapping_RQ RQ)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                List<DC_Activity_SupplierProductMapping> searchResults = new List<DC_Activity_SupplierProductMapping>();
+                searchResults = objBL.GetActSupplierProdMapping(RQ);
+                if (searchResults.Count == 0)
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                return searchResults;
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActSupplierProdMapping(DC_Activity_SupplierProductMapping RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateActSupplierProdMapping(RQ);
             }
         }
         #endregion
