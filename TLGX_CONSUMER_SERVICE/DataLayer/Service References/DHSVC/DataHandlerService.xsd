@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/TLGX_DataHandler_WcfService.DataContracts" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/TLGX_DataHandler_WcfService.DataContracts" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://10.21.32.196:8002/DataHandlerService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:64450/DataHandlerService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
   <xs:complexType name="DC_SupplierImportFileDetails_TestProcess">
     <xs:sequence>
       <xs:element minOccurs="0" name="Data" nillable="true">
