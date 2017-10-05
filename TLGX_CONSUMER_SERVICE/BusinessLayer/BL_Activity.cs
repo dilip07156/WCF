@@ -111,17 +111,17 @@ namespace BusinessLayer
             }
         }
 
-        public DC_Message AddActivityMedia(DC_Activity_Media RQ)
+        public DC_Message AddUpdateActivityMedia(DC_Activity_Media RQ)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
-                return obj.AddActivityMedia(RQ);
+                return obj.AddUpdateActivityMedia(RQ);
             }
         }
         #endregion
 
         #region Activity inclusions
-        public List<DC_Activity_Inclusions_RS> GetActivityInclusions(DC_Activity_Inclusions_RQ RQ)
+        public List<DC_Activity_Inclusions> GetActivityInclusions(DC_Activity_Inclusions_RQ RQ)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
@@ -129,11 +129,28 @@ namespace BusinessLayer
             }
         }
 
-        public DataContracts.DC_Message AddActivityInclusions(DataContracts.Masters.DC_Activity_Inclusions RQ)
+        public DataContracts.DC_Message AddUpdateActivityInclusions(DataContracts.Masters.DC_Activity_Inclusions RQ)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
-                return obj.AddActivityInclusions(RQ);
+                return obj.AddUpdateActivityInclusions(RQ);
+            }
+        }
+        #endregion
+
+        #region InclusionDetails
+        public List<DC_Activity_InclusionsDetails> GetActivityInclusionDetails(DC_Activity_InclusionDetails_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityInclusionDetails(RQ);
+            }
+        }
+        public DataContracts.DC_Message AddUpdateInclusionDetails(DataContracts.Masters.DC_Activity_InclusionsDetails RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdateInclusionDetails(RQ);
             }
         }
         #endregion
@@ -155,5 +172,74 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        #region Activity PickUpDrop
+        public List<DataContracts.Masters.DC_Activity_PickUpDrop> GetActivityPickUpDrop(DataContracts.Masters.DC_Activity_PickUpDrop_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityPickUpDrop(RQ);
+            }
+        }
+        public DC_Message AddUpdatePickUpDrop(DC_Activity_PickUpDrop RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdatePickUpDrop(RQ);
+            }
+        }
+        #endregion
+
+        #region Activity PickUpDrop Details
+        public List<DataContracts.Masters.DC_Activity_PickUpDropDetails> GetPickUpDropDetails(DataContracts.Masters.DC_Activity_PickUpDropDetails_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetPickUpDropDetails(RQ);
+            }
+        }
+        public DataContracts.DC_Message AddUpdatePickUpDropDetails(DC_Activity_PickUpDropDetails RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdatePickUpDropDetails(RQ);
+            }
+        }
+        #endregion
+
+        #region Activity Description
+        //public List<DataContracts.Masters.DC_Activity_Descriptions> GetActivityDescription(DataContracts.Masters.DC_Activity_Descriptions_RQ RQ)
+        //{
+        //    using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+        //    {
+        //        return obj.GetActivityDescription(RQ);
+        //    }
+        //}
+        //public DataContracts.DC_Message AddUpdateActivityDescription(DC_Activity_Descriptions RQ)
+        //{
+        //    using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+        //    {
+        //        return obj.AddUpdateActivityDescription(RQ);
+        //    }
+        //}
+        #endregion
+
+        #region Activity Flavour
+        public List<DataContracts.Masters.DC_Activity_Flavour> GetActivityFlavour(DataContracts.Masters.DC_Activity_Flavour_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityFlavour(RQ);
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityFlavour(DC_Activity_Flavour RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdateActivityFlavour(RQ);
+            }
+        }
+        #endregion
+
     }
 }
