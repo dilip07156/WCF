@@ -2009,5 +2009,270 @@ namespace DataLayer
             }
         }
         #endregion
+
+        #region Activity Deals
+        public List<DataContracts.Masters.DC_Activity_Deals> GetActivityDeals(DataContracts.Masters.DC_Activity_Deals_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_Deals
+                                 select a;
+                    if (RQ.Activity_Deals_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Deals_Id == RQ.Activity_Deals_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Flavour_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Id == RQ.Activity_Id
+                                 select a;
+                    }
+                   
+                    if (RQ.DealName != null)
+                    {
+                        search = from a in search
+                                 where a.DealName.Trim().TrimStart().ToUpper() == RQ.DealName.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.DealCode != null)
+                    {
+                        search = from a in search
+                                 where a.DealCode.Trim().TrimStart().ToUpper() == RQ.DealCode.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    var result = from a in search
+                                 orderby a.DealName
+                                 select new DataContracts.Masters.DC_Activity_Deals
+                                 {
+                                     Activity_Deals_Id=a.Activity_Deals_Id,
+                                     Activity_Flavour_Id = a.Activity_Flavour_Id,
+                                     Activity_Id = a.Activity_Id,
+                                     DealName=a.DealName,
+                                     DealCode=a.DealCode,
+                                     DealText =a.DealText,
+                                     Deal_Price=a.Deal_Price,
+                                     Deal_Currency=a.Deal_Currency,
+                                     Deal_TnC=a.Deal_TnC,
+                                     Create_Date = a.Create_Date,
+                                     TotalRecords = total
+                                 };
+                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Deals", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+
+        }
+        public DataContracts.DC_Message AddUpdateActivityDeals(DC_Activity_Deals RQ)
+        {
+            bool IsInsert = false;
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    if (RQ.Activity_Deals_Id != null)
+                    {
+                        var res = context.Activity_Deals.Find(RQ.Activity_Deals_Id);
+                        if (res != null)
+                        {
+                            res.Activity_Deals_Id = RQ.Activity_Deals_Id ?? Guid.Empty;
+                            res.Activity_Id = RQ.Activity_Id;
+                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                            res.DealName = RQ.DealName;
+                            res.DealCode = RQ.DealCode;
+                            res.DealText = RQ.DealText;
+                            res.Deal_Currency = RQ.Deal_Currency;
+                            res.Deal_Price = RQ.Deal_Price;
+                            res.Deal_TnC = RQ.Deal_TnC;
+                            res.Edit_Date = DateTime.Now;
+                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                            if (context.SaveChanges() == 1)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
+                        }
+                        else IsInsert = true;
+                    }
+                    else IsInsert = true;
+
+                    if (IsInsert)
+                    {
+                        DataLayer.Activity_Deals obj = new DataLayer.Activity_Deals();
+
+                        obj.Activity_Deals_Id = RQ.Activity_Deals_Id ?? Guid.NewGuid();
+                        obj.Activity_Id = RQ.Activity_Id;
+                        obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                        obj.DealName = RQ.DealName;
+                        obj.DealCode = RQ.DealCode;
+                        obj.DealText = RQ.DealText;
+                        obj.Deal_Currency = RQ.Deal_Currency;
+                        obj.Deal_Price = RQ.Deal_Price;
+                        obj.Deal_TnC = RQ.Deal_TnC;
+                        obj.Create_Date = DateTime.Now;
+                        obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                        context.Activity_Deals.Add(obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                    return _msg;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity Deals", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
+
+        #region Activity Prices
+        public List<DataContracts.Masters.DC_Activity_Prices> GetActivityPrices(DataContracts.Masters.DC_Activity_Prices_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_Prices
+                                 select a;
+                    if (RQ.Activity_Prices_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Prices_Id == RQ.Activity_Prices_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Flavour_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Id == RQ.Activity_Id
+                                 select a;
+                    }
+
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    var result = from a in search
+                                 select new DataContracts.Masters.DC_Activity_Prices
+                                 {
+                                     Activity_Prices_Id = a.Activity_Prices_Id,
+                                     Activity_Flavour_Id = a.Activity_Flavour_Id,
+                                     Activity_Id = a.Activity_Id,
+                                     PriceBasis=a.PriceBasis,
+                                     PriceCode=a.PriceCode,
+                                     PriceCurrency=a.PriceCurrency,
+                                      PriceNet=a.PriceNet,
+                                     Totalrecords = total
+                                 };
+                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity prices", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+
+        }
+        public DataContracts.DC_Message AddUpdateActivityPrices(DC_Activity_Prices RQ)
+        {
+            bool IsInsert = false;
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    if (RQ.Activity_Prices_Id != null)
+                    {
+                        var res = context.Activity_Prices.Find(RQ.Activity_Prices_Id);
+                        if (res != null)
+                        {
+                            res.Activity_Prices_Id = RQ.Activity_Prices_Id ?? Guid.Empty;
+                            res.Activity_Id = RQ.Activity_Id;
+                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                            res.PriceBasis = RQ.PriceBasis;
+                            res.PriceCode = RQ.PriceCode;
+                            res.PriceCurrency = RQ.PriceCurrency;
+                            res.PriceNet = RQ.PriceNet;
+                            if (context.SaveChanges() == 1)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
+                        }
+                        else IsInsert = true;
+                    }
+                    else IsInsert = true;
+
+                    if (IsInsert)
+                    {
+                        DataLayer.Activity_Prices obj = new DataLayer.Activity_Prices();
+                        obj.Activity_Prices_Id = RQ.Activity_Prices_Id ?? Guid.NewGuid();
+                        obj.Activity_Id = RQ.Activity_Id;
+                        obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                        obj.PriceBasis = RQ.PriceBasis;
+                        obj.PriceCode = RQ.PriceCode;
+                        obj.PriceCurrency = RQ.PriceCurrency;
+                        obj.PriceNet = RQ.PriceNet;
+                        context.Activity_Prices.Add(obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                    return _msg;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity Prices", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
     }
 }

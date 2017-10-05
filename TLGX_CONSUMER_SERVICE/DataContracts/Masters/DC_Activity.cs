@@ -643,7 +643,7 @@ namespace DataContracts.Masters
         public string CommonProductNameSubType_Id { get; set; }
 
     }
-    
+
     [DataContract]
     public class DC_Activity_Search_RQ
     {
@@ -731,7 +731,7 @@ namespace DataContracts.Masters
 
         [DataMember]
         public int? Legacy_Product_ID { get; set; }
-        
+
         [DataMember]
         public string Telephone { get; set; }
 
@@ -744,7 +744,7 @@ namespace DataContracts.Masters
         [DataMember]
         public string Email { get; set; }
 
-        [DataMember] 
+        [DataMember]
         public string Create_User { get; set; }
 
         [DataMember]
@@ -1427,4 +1427,97 @@ namespace DataContracts.Masters
     }
     #endregion
 
+    #region Activity Deals
+    [DataContract]
+    public class DC_Activity_Deals
+    {
+        [DataMember]
+        public Guid? Activity_Deals_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string DealCode { get; set; }
+        [DataMember]
+        public string DealText { get; set; }
+        [DataMember]
+        public string DealName { get; set; }
+        [DataMember]
+        public string Deal_TnC { get; set; }
+        [DataMember]
+        public decimal? Deal_Price { get; set; }
+        [DataMember]
+        public string Deal_Currency { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_Deals_RQ
+    {
+        [DataMember]
+        public Guid? Activity_Deals_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string DealCode { get; set; }
+        [DataMember]
+        public string DealName { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
+    #region Activity Prices
+    [DataContract]
+    public class DC_Activity_Prices
+    {
+        [DataMember]
+        public Guid? Activity_Prices_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string PriceCode { get; set; }
+        [DataMember]
+        public string PriceBasis { get; set; }
+        [DataMember]
+        public decimal? PriceNet { get; set; }
+        [DataMember]
+        public string PriceCurrency { get; set; }
+        [DataMember]
+        public int? Totalrecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_Prices_RQ
+    {
+        [DataMember]
+        public Guid? Activity_Prices_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
 }
+   
+
+

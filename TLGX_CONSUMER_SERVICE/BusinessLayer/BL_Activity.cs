@@ -241,5 +241,39 @@ namespace BusinessLayer
         }
         #endregion
 
+        #region Activity Deals
+        public List<DataContracts.Masters.DC_Activity_Deals> GetActivityDeals(DataContracts.Masters.DC_Activity_Deals_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityDeals(RQ);
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityDeals(DC_Activity_Deals RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdateActivityDeals(RQ);
+            }
+        }
+        #endregion
+
+        #region Activity Prices
+        public List<DataContracts.Masters.DC_Activity_Prices> GetActivityPrices(DataContracts.Masters.DC_Activity_Prices_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityPrices(RQ);
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityPrices(DC_Activity_Prices RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdateActivityPrices(RQ);
+            }
+        }
+        #endregion
+
     }
 }
