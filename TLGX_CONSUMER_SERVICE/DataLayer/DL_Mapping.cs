@@ -4003,6 +4003,7 @@ namespace DataLayer
                         res = (from a in prodMapSearch
                                join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName } equals new { m.Supplier_Id, m.CountryName }
                                join ms in context.m_CountryMaster on m.Country_Id equals ms.Country_Id
+                               where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
                                select new DataContracts.Mapping.DC_CityMapping
                                {
                                    CityMapping_Id = a.CityMapping_Id,
