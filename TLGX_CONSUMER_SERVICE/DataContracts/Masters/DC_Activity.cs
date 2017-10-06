@@ -1688,7 +1688,172 @@ namespace DataContracts.Masters
     }
     #endregion
 
+    #region Reviews And Scores
+    [DataContract]
+    public class DC_Activity_ReviewsAndScores
+    {
+        [DataMember]
+        public Guid? Activity_ReviewsAndScores_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string Review_Source { get; set; }
+        [DataMember]
+        public string Review_Type { get; set; }
+        [DataMember]
+        public decimal? Review_Score { get; set; }
+        [DataMember]
+        public bool? IsCustomerReview { get; set; }
+        [DataMember]
+        public string Review_Author { get; set; }
+        [DataMember]
+        public DateTime? Review_PostedDate { get; set; }
+        [DataMember]
+        public string Review_Title { get; set; }
+        [DataMember]
+        public string Review_Description { get; set; }
+        [DataMember]
+        public string Review_Status { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public int? Totalrecords { get; set; }
     }
+    [DataContract]
+    public class DC_Activity_ReviewsAndScores_RQ
+    {
+        [DataMember]
+        public Guid? Activity_ReviewsAndScores_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string Review_Title { get; set; }
+        [DataMember]
+        public string Review_Author { get; set; }
+        [DataMember]
+        public string Review_Status { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
+    #region Supplier Product mapping_CA
+    [DataContract]
+    public class DC_Activity_SupplierProductMapping_CA
+    {
+        [DataMember]
+        public Guid? Activity_SupplierProductMapping_CA_Id { get; set; }
+        [DataMember]
+        public Guid? Supplier_ID { get; set; }
+        [DataMember]
+        public string SupplierCode { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+        [DataMember]
+        public string SuplierProductCode { get; set; }
+        [DataMember]
+        public string SupplierProductName { get; set; }
+        [DataMember]
+        public string AttributeType { get; set; }
+        [DataMember]
+        public string AttributeSubType { get; set; }
+        [DataMember]
+        public string AttributeValue { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public int? Totalrecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_SupplierProductMapping_CA_RQ
+    {
+        [DataMember]
+        public Guid? Activity_SupplierProductMapping_CA_Id { get; set; }
+        [DataMember]
+        public Guid? Supplier_ID { get; set; }
+        [DataMember]
+        public string SupplierCode { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+        [DataMember]
+        public string AttributeType { get; set; }
+        [DataMember]
+        public string AttributeSubType { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
+    #region Activity Policy
+    [DataContract]
+    public class DC_Activity_Policy
+    {
+        [DataMember]
+        public Guid? Activity_Policy_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_ID { get; set; }
+        [DataMember]
+        public string Policy_Type { get; set; }
+        [DataMember]
+        public bool? AllowedYN { get; set; }
+        [DataMember]
+        public string PolicyName { get; set; }
+        [DataMember]
+        public string PolicyDescription { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public int? Totalrecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_Policy_RQ
+    {
+        [DataMember]
+        public Guid? Activity_Policy_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_ID { get; set; }
+        [DataMember]
+        public string PolicyName { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
+}
 
 
 
