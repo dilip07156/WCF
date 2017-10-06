@@ -8,6 +8,7 @@ using System.ServiceModel.Web;
 using System.Text;
 using OperationContracts;
 using System.IO;
+using BusinessLayer;
 
 namespace ConsumerSvc
 {
@@ -53,8 +54,8 @@ namespace ConsumerSvc
                 // Check if a file with the same filename is already
                 // present in the upload directory. If this is the case
                 // then delete this file
-                
-                var path = Path.Combine(uploadDirectory, System.IO.Path.GetFileNameWithoutExtension(request.FileName) + "_" + FileUploadUniqueID.ToString().Replace("-","_") + "." +  System.IO.Path.GetExtension(request.FileName).Replace(".",""));
+
+                var path = Path.Combine(uploadDirectory, System.IO.Path.GetFileNameWithoutExtension(request.FileName) + "_" + FileUploadUniqueID.ToString().Replace("-", "_") + "." + System.IO.Path.GetExtension(request.FileName).Replace(".", ""));
 
                 //if (File.Exists(path))
                 //{
@@ -98,36 +99,41 @@ namespace ConsumerSvc
 
         }
 
-        public Response UploadFileInChunks(FileData request)
+        public DataContracts.FileTransfer.DC_UploadResponse UploadFileInChunks(DataContracts.FileTransfer.DC_FileData request)
         {
-            try
+            using (BL_FileTransfer obj = new BL_FileTransfer())
             {
-                var uploadDirectory = @"D:\UPLOAD\";
-
-                if (!Directory.Exists(uploadDirectory))
-                {
-                    Directory.CreateDirectory(uploadDirectory);
-                }
-
-                var FilePath = Path.Combine(uploadDirectory, request.FileName);
-
-                if (request.FilePostition == 0)
-                {
-                    File.Create(FilePath).Close();
-                }
-
-                using (FileStream fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
-                {
-                    fileStream.Seek(request.FilePostition, SeekOrigin.Begin);
-                    fileStream.Write(request.BufferData, 0, request.BufferData.Length);
-                }
-
-                return new Response { UploadedPath = FilePath, UploadSucceeded = true };
+                return obj.UploadFileInChunks(request);
             }
-            catch
-            {
-                return new Response { UploadedPath = string.Empty, UploadSucceeded = false };
-            }
+
+            //try
+            //{
+            //    var uploadDirectory = @"D:\UPLOAD\";
+
+            //    if (!Directory.Exists(uploadDirectory))
+            //    {
+            //        Directory.CreateDirectory(uploadDirectory);
+            //    }
+
+            //    var FilePath = Path.Combine(uploadDirectory, request.FileName);
+
+            //    if (request.FilePostition == 0)
+            //    {
+            //        File.Create(FilePath).Close();
+            //    }
+
+            //    using (FileStream fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
+            //    {
+            //        fileStream.Seek(request.FilePostition, SeekOrigin.Begin);
+            //        fileStream.Write(request.BufferData, 0, request.BufferData.Length);
+            //    }
+
+            //    return new Response { UploadedPath = FilePath, UploadSucceeded = true };
+            //}
+            //catch
+            //{
+            //    return new Response { UploadedPath = string.Empty, UploadSucceeded = false };
+            //}
         }
 
         public bool DeleteFile(string FilePath)

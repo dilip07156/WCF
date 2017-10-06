@@ -300,6 +300,7 @@
     <Compile Include="DL_Accomodation.cs" />
     <Compile Include="DL_Activity.cs" />
     <Compile Include="DL_Admin.cs" />
+    <Compile Include="DL_FileTransfer.cs" />
     <Compile Include="DL_GeoLocation.cs" />
     <Compile Include="DL_Mapping.cs" />
     <Compile Include="DL_Masters.cs" />
@@ -511,19 +512,25 @@
       <DependentUpon>ConsumerModel.edmx</DependentUpon>
       <LastGenOutput>ConsumerModel.cs</LastGenOutput>
     </Content>
-    <None Include="Service References\DHSVC\DataHandlerService1.disco" />
-    <None Include="Service References\DHSVC\DataHandlerService1.wsdl" />
-    <None Include="Service References\DHSVC\DataHandlerService5.xsd">
+    <None Include="Service References\DHSVC\DataHandlerService.disco" />
+    <None Include="Service References\DHSVC\DataHandlerService.wsdl" />
+    <None Include="Service References\DHSVC\DataHandlerService.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\DHSVC\DataHandlerService51.xsd">
+    <None Include="Service References\DHSVC\DataHandlerService1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\DHSVC\DataHandlerService52.xsd">
+    <None Include="Service References\DHSVC\DataHandlerService2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\DHSVC\DataHandlerService53.xsd">
+    <None Include="Service References\DHSVC\DataHandlerService3.xsd">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DHSVC\DataHandlerService4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DHSVC\DataLayer.DHSVC.DC_UploadResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\DHSVC\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
