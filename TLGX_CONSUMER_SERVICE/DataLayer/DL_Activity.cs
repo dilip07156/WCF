@@ -2614,5 +2614,439 @@ namespace DataLayer
             }
         }
         #endregion
+
+        #region Reviews And Scores
+        public List<DataContracts.Masters.DC_Activity_ReviewsAndScores> GetActReviewsAndScores(DataContracts.Masters.DC_Activity_ReviewsAndScores_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_ReviewsAndScores
+                                 select a;
+                    if (RQ.Activity_ReviewsAndScores_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_ReviewsAndScores_Id == RQ.Activity_ReviewsAndScores_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Flavour_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Id == RQ.Activity_Id
+                                 select a;
+                    }
+                    if (RQ.Review_Title != null)
+                    {
+                        search = from a in search
+                                 where a.Review_Title.Trim().TrimStart().ToUpper() == RQ.Review_Title.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.Review_Author != null)
+                    {
+                        search = from a in search
+                                 where a.Review_Author.Trim().TrimStart().ToUpper() == RQ.Review_Author.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.Review_Status != null)
+                    {
+                        search = from a in search
+                                 where a.Review_Status.Trim().TrimStart().ToUpper() == RQ.Review_Status.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    var result = from a in search
+                                 select new DataContracts.Masters.DC_Activity_ReviewsAndScores
+                                 {
+                                    Activity_ReviewsAndScores_Id = a.Activity_ReviewsAndScores_Id,
+                                    Activity_Flavour_Id =a.Activity_ReviewsAndScores_Id,
+                                    Activity_Id=a.Activity_Id,
+                                    Review_Author=a.Review_Author,
+                                    IsCustomerReview=a.IsCustomerReview,
+                                    Review_Description=a.Review_Description,
+                                    Review_PostedDate=a.Review_PostedDate,
+                                    Review_Score=a.Review_Score,
+                                    Review_Title=a.Review_Title,
+                                    Review_Type=a.Review_Type,
+                                    Review_Source=a.Review_Source,
+                                    Create_Date=a.Create_Date,                                    
+                                    Totalrecords = total
+                                 };
+                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Reviews and scores", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActReviewsNScores(DC_Activity_ReviewsAndScores RQ)
+        {
+            bool IsInsert = false;
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    if (RQ.Activity_ReviewsAndScores_Id != null)
+                    {
+                        var res = context.Activity_ReviewsAndScores.Find(RQ.Activity_ReviewsAndScores_Id);
+                        if (res != null)
+                        {
+                            res.Activity_ReviewsAndScores_Id = RQ.Activity_ReviewsAndScores_Id ?? Guid.Empty;
+                            res.Activity_Id = RQ.Activity_Id;
+                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                            res.IsCustomerReview = RQ.IsCustomerReview;
+                            res.Review_Author = RQ.Review_Author;
+                            res.Review_Description = RQ.Review_Description;
+                            res.Review_PostedDate = RQ.Review_PostedDate;
+                            res.Review_Author = RQ.Review_Author;
+                            res.Review_Description = RQ.Review_Description;
+                            res.Review_Title = RQ.Review_Title;
+                            res.Review_Status = RQ.Review_Status;
+                            res.Review_Type = RQ.Review_Type;
+                            res.Edit_Date =DateTime.Now;
+                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name; 
+                            if (context.SaveChanges() == 1)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
+                        }
+                        else IsInsert = true;
+                    }
+                    else IsInsert = true;
+
+                    if (IsInsert)
+                    {
+                        DataLayer.Activity_ReviewsAndScores obj = new DataLayer.Activity_ReviewsAndScores();
+                        obj.Activity_ReviewsAndScores_Id = RQ.Activity_ReviewsAndScores_Id ?? Guid.NewGuid();
+                        obj.Activity_Id = RQ.Activity_Id;
+                        obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                        obj.IsCustomerReview = RQ.IsCustomerReview;
+                        obj.Review_Author = RQ.Review_Author;
+                        obj.Review_Description = RQ.Review_Description;
+                        obj.Review_PostedDate = RQ.Review_PostedDate;      
+                        obj.Review_Author = RQ.Review_Author;
+                        obj.Review_Description = RQ.Review_Description;
+                        obj.Review_Title = RQ.Review_Title;
+                        obj.Review_Status = RQ.Review_Status;
+                        obj.Review_Type = RQ.Review_Type;                                 
+                        obj.Create_Date = DateTime.Now;
+                        obj.Create_User= System.Web.HttpContext.Current.User.Identity.Name;
+                        context.Activity_ReviewsAndScores.Add(obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                    return _msg;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity Reviews and Scores", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
+
+        #region Supplier Product mapping_CA
+        public List<DataContracts.Masters.DC_Activity_SupplierProductMapping_CA> GetActSupplierProdMapping_CA(DataContracts.Masters.DC_Activity_SupplierProductMapping_CA_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_SupplierProductMapping_CA
+                                 select a;
+                    if (RQ.Activity_SupplierProductMapping_CA_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_SupplierProductMapping_CA_Id == RQ.Activity_SupplierProductMapping_CA_Id
+                                 select a;
+                    }
+                    if (RQ.Supplier_ID != null)
+                    {
+                        search = from a in search
+                                 where a.Supplier_ID == RQ.Supplier_ID
+                                 select a;
+                    }
+                    if (RQ.SupplierCode != null)
+                    {
+                        search = from a in search
+                                 where a.SupplierCode.Trim().TrimStart().ToUpper() == RQ.SupplierCode.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.SupplierName != null)
+                    {
+                        search = from a in search
+                                 where a.SupplierName.Trim().TrimStart().ToUpper() == RQ.SupplierName.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.AttributeType != null)
+                    {
+                        search = from a in search
+                                 where a.AttributeType.Trim().TrimStart().ToUpper() == RQ.AttributeType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.AttributeSubType != null)
+                    {
+                        search = from a in search
+                                 where a.AttributeSubType.Trim().TrimStart().ToUpper() == RQ.AttributeSubType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    var result = from a in search
+                                 select new DataContracts.Masters.DC_Activity_SupplierProductMapping_CA
+                                 {
+                                     Activity_SupplierProductMapping_CA_Id=a.Activity_SupplierProductMapping_CA_Id,
+                                     Supplier_ID=a.Supplier_ID,
+                                     AttributeSubType=a.AttributeSubType,
+                                     AttributeType=a.AttributeType,
+                                     AttributeValue=a.AttributeValue,
+                                     SupplierCode=a.SupplierCode,
+                                     SupplierName=a.SupplierName,
+                                     SuplierProductCode=a.SuplierProductCode,
+                                     SupplierProductName=a.SupplierProductName,
+                                     IsActive=a.IsActive,
+                                     Create_Date = a.Create_Date,
+                                     Totalrecords = total
+                                 };
+                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity SupplierProductMapping_CA", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActSupplierProdMapping_CA(DC_Activity_SupplierProductMapping_CA RQ)
+        {
+            bool IsInsert = false;
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    if (RQ.Activity_SupplierProductMapping_CA_Id != null)
+                    {
+                        var res = context.Activity_SupplierProductMapping_CA.Find(RQ.Activity_SupplierProductMapping_CA_Id);
+                        if (res != null)
+                        {
+                            res.Activity_SupplierProductMapping_CA_Id = RQ.Activity_SupplierProductMapping_CA_Id??Guid.Empty;
+                            res.Supplier_ID = RQ.Supplier_ID;
+                            res.AttributeSubType = RQ.AttributeSubType;
+                            res.AttributeType = RQ.AttributeType;
+                            res.AttributeValue = RQ.AttributeValue;
+                            res.SupplierCode = RQ.SupplierCode;
+                            res.SupplierName = RQ.SupplierName;
+                            res.SuplierProductCode = RQ.SuplierProductCode;
+                            res.SupplierProductName = RQ.SupplierProductName;
+                            res.IsActive = RQ.IsActive;
+                            res.Edit_Date = DateTime.Now;
+                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                            if (context.SaveChanges() == 1)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
+                        }
+                        else IsInsert = true;
+                    }
+                    else IsInsert = true;
+
+                    if (IsInsert)
+                    {
+                        DataLayer.Activity_SupplierProductMapping_CA obj = new DataLayer.Activity_SupplierProductMapping_CA();
+                        obj.Activity_SupplierProductMapping_CA_Id = RQ.Activity_SupplierProductMapping_CA_Id ?? Guid.Empty;
+                        obj.Supplier_ID = RQ.Supplier_ID;
+                        obj.AttributeSubType = RQ.AttributeSubType;
+                        obj.AttributeType = RQ.AttributeType;
+                        obj.AttributeValue = RQ.AttributeValue;
+                        obj.SupplierCode = RQ.SupplierCode;
+                        obj.SupplierName = RQ.SupplierName;
+                        obj.SuplierProductCode = RQ.SuplierProductCode;
+                        obj.SupplierProductName = RQ.SupplierProductName;
+                        obj.IsActive = RQ.IsActive;
+                        obj.Create_Date = DateTime.Now;
+                        obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                        context.Activity_SupplierProductMapping_CA.Add(obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                    return _msg;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity SupplierProductMapping_CA", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
+
+        #region Activity Policy
+        public List<DataContracts.Masters.DC_Activity_Policy> GetActivityPolicy(DataContracts.Masters.DC_Activity_Policy_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_Policy
+                                 select a;
+                    if (RQ.Activity_Policy_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Policy_Id == RQ.Activity_Policy_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Id == RQ.Activity_Id
+                                 select a;
+                    }
+                    if (RQ.Legacy_Product_ID != null)
+                    {
+                        search = from a in search
+                                 where a.Legacy_Product_ID == RQ.Legacy_Product_ID
+                                 select a;
+                    }
+                    if (RQ.PolicyName != null)
+                    {
+                        search = from a in search
+                                 where a.PolicyName.Trim().TrimStart().ToUpper() == RQ.PolicyName.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    var result = from a in search
+                                 select new DataContracts.Masters.DC_Activity_Policy
+                                 {
+                                     Activity_Policy_Id=a.Activity_Policy_Id,
+                                     Activity_Id=a.Activity_Id,
+                                     AllowedYN=a.AllowedYN,
+                                     PolicyName=a.PolicyName,
+                                     Policy_Type=a.Policy_Type,
+                                     PolicyDescription=a.PolicyDescription,
+                                     Legacy_Product_ID=a.Legacy_Product_ID,
+                                     Create_Date = a.Create_Date,
+                                     Totalrecords = total
+                                 };
+                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity SupplierProductMapping_CA", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityPolicy(DataContracts.Masters.DC_Activity_Policy RQ)
+        {
+            bool IsInsert = false;
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    if (RQ.Activity_Policy_Id != null)
+                    {
+                        var res = context.Activity_Policy.Find(RQ.Activity_Policy_Id);
+                        if (res != null)
+                        {
+                            res.Activity_Policy_Id = RQ.Activity_Policy_Id??Guid.Empty;
+                            res.Activity_Id = RQ.Activity_Id;
+                            res.AllowedYN = RQ.AllowedYN;
+                            res.PolicyName = RQ.PolicyName;
+                            res.Policy_Type = RQ.Policy_Type;
+                            res.PolicyDescription = RQ.PolicyDescription;
+                            res.Legacy_Product_ID = RQ.Legacy_Product_ID;
+                            res.Edit_Date = DateTime.Now;
+                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                            if (context.SaveChanges() == 1)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
+                        }
+                        else IsInsert = true;
+                    }
+                    else IsInsert = true;
+
+                    if (IsInsert)
+                    {
+                        DataLayer.Activity_Policy obj = new DataLayer.Activity_Policy();
+                        obj.Activity_Policy_Id = RQ.Activity_Policy_Id ?? Guid.Empty;
+                        obj.Activity_Id = RQ.Activity_Id;
+                        obj.AllowedYN = RQ.AllowedYN;
+                        obj.PolicyName = RQ.PolicyName;
+                        obj.Policy_Type = RQ.Policy_Type;
+                        obj.PolicyDescription = RQ.PolicyDescription;
+                        obj.Legacy_Product_ID = RQ.Legacy_Product_ID;
+                        obj.Create_Date = DateTime.Now;
+                        obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                        context.Activity_Policy.Add(obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                    return _msg;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity SupplierProductMapping_CA", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
     }
 }
