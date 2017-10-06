@@ -4001,7 +4001,7 @@ namespace DataLayer
                     if (isCountryCodeCheck || isCountryNameCheck || isCodeCheck || isNameCheck || isLatLongCheck)
                     {
                         res = (from a in prodMapSearch
-                               join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName } equals new { m.Supplier_Id, m.CountryName }
+                               join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName, a.CountryCode } equals new { m.Supplier_Id, m.CountryName, m.CountryCode }
                                join ms in context.m_CountryMaster on m.Country_Id equals ms.Country_Id
                                where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
                                select new DataContracts.Mapping.DC_CityMapping
