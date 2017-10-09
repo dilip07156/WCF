@@ -492,7 +492,7 @@ namespace DataLayer
             }
         }
         
-        public string GetLegacyProductId(Guid Activity_Id)
+        public int GetLegacyProductId(Guid Activity_Id)
         {
             try
             {
@@ -502,7 +502,7 @@ namespace DataLayer
                                   where ac.Activity_Id == Activity_Id
                                   select new { ac.Legacy_Product_ID }).FirstOrDefault();
 
-                    return Convert.ToString(search);
+                    return Convert.ToInt32( search);
                     
                 }
             }

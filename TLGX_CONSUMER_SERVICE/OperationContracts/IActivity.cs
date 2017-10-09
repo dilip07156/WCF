@@ -49,7 +49,7 @@ namespace OperationContracts
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "GET", UriTemplate = "GetActivity/LegacyProductId/{Activity_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        string GetLegacyProductId(string Activity_Id);
+        int GetLegacyProductId(string Activity_Id);
         #endregion
 
         #region "Activity Status"

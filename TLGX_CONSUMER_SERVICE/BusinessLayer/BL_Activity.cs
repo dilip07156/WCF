@@ -67,7 +67,7 @@ namespace BusinessLayer
             }
         }
         
-        public string GetLegacyProductId(Guid Activity_Id)
+        public int GetLegacyProductId(Guid Activity_Id)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {

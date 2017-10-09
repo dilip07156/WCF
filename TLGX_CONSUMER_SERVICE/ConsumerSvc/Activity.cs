@@ -79,7 +79,7 @@ namespace ConsumerSvc
             }
         }
         
-        public string GetLegacyProductId(string Activity_Id)
+        public int GetLegacyProductId(string Activity_Id)
         {
             using (BL_Activity obj = new BL_Activity())
             {
