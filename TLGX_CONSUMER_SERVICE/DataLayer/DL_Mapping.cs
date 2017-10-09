@@ -4001,6 +4001,9 @@ namespace DataLayer
                     if (isCountryCodeCheck || isCountryNameCheck || isCodeCheck || isNameCheck || isLatLongCheck)
                     {
                         res = (from a in prodMapSearch
+                               join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName} equals new { m.Supplier_Id, m.CountryName }
+                               join ms in context.m_CountryMaster on m.Country_Id equals ms.Country_Id
+                               where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
                                select new DataContracts.Mapping.DC_CityMapping
                                {
                                    CityMapping_Id = a.CityMapping_Id,
@@ -4011,8 +4014,8 @@ namespace DataLayer
                                    StateName = a.StateName,
                                    Country_Id = a.Country_Id,
                                    Supplier_Id = a.Supplier_Id,
-                                   CountryCode = a.CountryCode,
-                                   CountryName = a.CountryName,
+                                   CountryCode = ms.Code,
+                                   CountryName = ms.Name,
                                    Create_Date = a.Create_Date,
                                    Create_User = a.Create_User,
                                    Edit_Date = a.Edit_Date,
@@ -4023,6 +4026,36 @@ namespace DataLayer
                                    Latitude = a.Latitude,
                                    Longitude = a.Longitude
                                }).ToList();
+
+                        if (res.Count == 0)
+                        {
+                            res = (from a in prodMapSearch
+                                   join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { m.Supplier_Id, m.CountryCode }
+                                   join ms in context.m_CountryMaster on m.Country_Id equals ms.Country_Id
+                                   where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
+                                   select new DataContracts.Mapping.DC_CityMapping
+                                   {
+                                       CityMapping_Id = a.CityMapping_Id,
+                                       CityCode = a.CityCode,
+                                       CityName = a.CityName,
+                                       City_Id = a.City_Id,
+                                       StateCode = a.StateCode,
+                                       StateName = a.StateName,
+                                       Country_Id = a.Country_Id,
+                                       Supplier_Id = a.Supplier_Id,
+                                       CountryCode = ms.Code,
+                                       CountryName = ms.Name,
+                                       Create_Date = a.Create_Date,
+                                       Create_User = a.Create_User,
+                                       Edit_Date = a.Edit_Date,
+                                       Edit_User = a.Edit_User,
+                                       MapID = a.MapID,
+                                       Status = a.Status,
+                                       SupplierName = a.SupplierName,
+                                       Latitude = a.Latitude,
+                                       Longitude = a.Longitude
+                                   }).ToList();
+                        }
 
                         if (totPriorities == curPriority)
                         {

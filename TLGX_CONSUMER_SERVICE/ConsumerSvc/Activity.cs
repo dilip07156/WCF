@@ -352,5 +352,69 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
+        #region Reviews And Scores
+        public IList<DataContracts.Masters.DC_Activity_ReviewsAndScores> GetActReviewsAndScores(DataContracts.Masters.DC_Activity_ReviewsAndScores_RQ RQ)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                List<DC_Activity_ReviewsAndScores> searchResults = new List<DC_Activity_ReviewsAndScores>();
+                searchResults = objBL.GetActReviewsAndScores(RQ);
+                if (searchResults.Count == 0)
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                return searchResults;
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActReviewsNScores(DC_Activity_ReviewsAndScores RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateActReviewsNScores(RQ);
+            }
+        }
+        #endregion
+
+
+        #region Supplier Product mapping_CA
+        public IList<DataContracts.Masters.DC_Activity_SupplierProductMapping_CA> GetActSupplierProdMapping_CA(DataContracts.Masters.DC_Activity_SupplierProductMapping_CA_RQ RQ)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                List<DC_Activity_SupplierProductMapping_CA> searchResults = new List<DC_Activity_SupplierProductMapping_CA>();
+                searchResults = objBL.GetActSupplierProdMapping_CA(RQ);
+                if (searchResults.Count == 0)
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                return searchResults;
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActSupplierProdMapping_CA(DC_Activity_SupplierProductMapping_CA RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateActSupplierProdMapping_CA(RQ);
+            }
+        }
+        #endregion
+
+        #region Activity Policy
+        public IList<DataContracts.Masters.DC_Activity_Policy> GetActivityPolicy(DataContracts.Masters.DC_Activity_Policy_RQ RQ)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                List<DC_Activity_Policy> searchResults = new List<DC_Activity_Policy>();
+                searchResults = objBL.GetActivityPolicy(RQ);
+                if (searchResults.Count == 0)
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                return searchResults;
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityPolicy(DataContracts.Masters.DC_Activity_Policy RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateActivityPolicy(RQ);
+            }
+        }
+        #endregion
     }
 }
