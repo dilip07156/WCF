@@ -767,7 +767,7 @@ namespace DataLayer
                     var FileSearchResult = (from a in FileSearch
                                             join s in context.Suppliers on a.Supplier_Id equals s.Supplier_Id
                                             where s.StatusCode.ToUpper() == "ACTIVE"
-                                            orderby s.Create_Date descending, s.Name, a.Entity
+                                            orderby a.CREATE_DATE descending
                                             select new DataContracts.UploadStaticData.DC_SupplierImportFileDetails
                                             {
                                                 SupplierImportFile_Id = a.SupplierImportFile_Id,
