@@ -48,12 +48,12 @@ namespace ConsumerSvc
         #endregion
 
         #region "Activity conatct"
-        public IList<DC_Activity_Contact> GetActivityContacts(string Activity_Id, string DataKey_Id)
+        public IList<DC_Activity_Contact> GetActivityContacts(string Activity_Flavour_Id, string DataKey_Id)
         {
             using (BL_Activity objBL = new BL_Activity())
             {
                 List<DC_Activity_Contact> searchResults = new List<DC_Activity_Contact>();
-                searchResults = objBL.GetActivityContacts(Guid.Parse(Activity_Id), Guid.Parse(DataKey_Id));
+                searchResults = objBL.GetActivityContacts(Guid.Parse(Activity_Flavour_Id), Guid.Parse(DataKey_Id));
 
                 if (searchResults == null)
                 {
@@ -79,11 +79,11 @@ namespace ConsumerSvc
             }
         }
         
-        public int GetLegacyProductId(string Activity_Id)
+        public int GetLegacyProductId(string Activity_Flavour_Id)
         {
             using (BL_Activity obj = new BL_Activity())
             {
-                return obj.GetLegacyProductId(Guid.Parse(Activity_Id));
+                return obj.GetLegacyProductId(Guid.Parse(Activity_Flavour_Id));
             }
         }
         #endregion
