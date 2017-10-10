@@ -89,12 +89,12 @@ namespace ConsumerSvc
         #endregion
 
         #region "Activity Status"
-        public IList<DC_Activity_Status> GetActivityStatus(string Activity_Id, string DataKey_Id)
+        public IList<DC_Activity_Status> GetActivityStatus(string Activity_Flavour_Id, string DataKey_Id)
         {
             using (BL_Activity objBL = new BL_Activity())
             {
                 List<DC_Activity_Status> searchResults = new List<DC_Activity_Status>();
-                searchResults = objBL.GetActivityStatus(Guid.Parse(Activity_Id), Guid.Parse(DataKey_Id));
+                searchResults = objBL.GetActivityStatus(Guid.Parse(Activity_Flavour_Id), Guid.Parse(DataKey_Id));
 
                 if (searchResults == null)
                 {

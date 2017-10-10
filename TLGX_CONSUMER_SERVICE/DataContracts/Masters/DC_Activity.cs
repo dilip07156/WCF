@@ -770,7 +770,8 @@ namespace DataContracts.Masters
         public Guid Activity_Status_Id { get; set; }
         [DataMember]
         public Guid? Activity_Id { get; set; }
-
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
         [DataMember]
         public DateTime? From { get; set; }
 

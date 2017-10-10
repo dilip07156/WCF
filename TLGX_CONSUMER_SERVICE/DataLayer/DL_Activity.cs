@@ -516,19 +516,20 @@ namespace DataLayer
         #endregion
 
         #region "Activity Status"
-        public List<DC_Activity_Status> GetActivityStatus(Guid Activity_Id, Guid DataKey_Id)
+        public List<DC_Activity_Status> GetActivityStatus(Guid Activity_Flavour_Id, Guid DataKey_Id)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var search = from ast in context.Activity_Status
-                                 where ast.Activity_Id == Activity_Id
+                                 where ast.Activity_Flavour_Id == Activity_Flavour_Id
                                  && ast.Activity_Status_Id == (DataKey_Id == Guid.Empty ? ast.Activity_Status_Id : DataKey_Id)
                                  select new DC_Activity_Status
                                  {
                                      Activity_Id = ast.Activity_Id,
                                      Activity_Status_Id = ast.Activity_Status_Id,
+                                     Activity_Flavour_Id=ast.Activity_Flavour_Id,
                                      CompanyMarket = ast.CompanyMarket,
                                      DeactivationReason = ast.DeactivationReason,
                                      From = ast.From,
@@ -609,6 +610,7 @@ namespace DataLayer
 
                     objNew.Activity_Status_Id = AS.Activity_Status_Id;
                     objNew.Activity_Id = AS.Activity_Id;
+                    objNew.Activity_Flavour_Id = AS.Activity_Flavour_Id;
                     objNew.CompanyMarket = AS.CompanyMarket;
                     objNew.DeactivationReason = AS.DeactivationReason;
                     objNew.From = AS.From;

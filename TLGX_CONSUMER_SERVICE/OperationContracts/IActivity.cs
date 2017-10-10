@@ -55,8 +55,8 @@ namespace OperationContracts
         #region "Activity Status"
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "GetActivity/Status/{Activity_Id}/{DataKey_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        IList<DataContracts.Masters.DC_Activity_Status> GetActivityStatus(string Activity_Id, string DataKey_Id);
+        [WebInvoke(Method = "GET", UriTemplate = "GetActivity/Status/{Activity_Flavour_Id}/{DataKey_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Masters.DC_Activity_Status> GetActivityStatus(string Activity_Flavour_Id, string DataKey_Id);
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
