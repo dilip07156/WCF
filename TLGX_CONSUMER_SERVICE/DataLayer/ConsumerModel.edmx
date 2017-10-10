@@ -888,7 +888,7 @@
           </Key>
           <Property Name="Activity_Status_Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Activity_Id" Type="uniqueidentifier" />
-          <Property Name="Legacy_Product_ID" Type="datetime" />
+          <Property Name="Legacy_Product_ID" Type="int" />
           <Property Name="From" Type="datetime" />
           <Property Name="To" Type="datetime" />
           <Property Name="DeactivationReason" Type="nvarchar(max)" />
@@ -2549,7 +2549,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Activity_PickUpDropDetail" EntityType="ConsumerModel.Activity_PickUpDropDetail" />
           <EntitySet Name="Activity_PickupDropSchedule" EntityType="ConsumerModel.Activity_PickupDropSchedule" />
           <EntitySet Name="Activity_Policy" EntityType="ConsumerModel.Activity_Policy" />
-          <EntitySet Name="Activity_Status" EntityType="ConsumerModel.Activity_Status" />
           <EntitySet Name="Activity_Tips" EntityType="ConsumerModel.Activity_Tips" />
           <EntitySet Name="Activity_Types" EntityType="ConsumerModel.Activity_Types" />
           <EntitySet Name="Activity_Updates" EntityType="ConsumerModel.Activity_Updates" />
@@ -2569,6 +2568,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Activity_SupplierProductMapping_Deals" EntityType="ConsumerModel.Activity_SupplierProductMapping_Deals" />
           <EntitySet Name="Accommodation_Descriptions" EntityType="ConsumerModel.Accommodation_Descriptions" />
           <EntitySet Name="Activity_Contact" EntityType="ConsumerModel.Activity_Contact" />
+          <EntitySet Name="Activity_Status" EntityType="ConsumerModel.Activity_Status" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -4421,25 +4421,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Activity_Flavour_Id" Type="Guid" />
         </EntityType>
-        <EntityType Name="Activity_Status">
-          <Key>
-            <PropertyRef Name="Activity_Status_Id" />
-          </Key>
-          <Property Name="Activity_Status_Id" Type="Guid" Nullable="false" />
-          <Property Name="Activity_Id" Type="Guid" />
-          <Property Name="Legacy_Product_ID" Type="DateTime" Precision="3" />
-          <Property Name="From" Type="DateTime" Precision="3" />
-          <Property Name="To" Type="DateTime" Precision="3" />
-          <Property Name="DeactivationReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="CompanyMarket" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="IsActive" Type="Boolean" />
-          <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="Activity_Flavour_Id" Type="Guid" />
-        </EntityType>
         <EntityType Name="Activity_Tips">
           <Key>
             <PropertyRef Name="Activity_Tips_Id" />
@@ -4822,6 +4803,25 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Activity_Status">
+          <Key>
+            <PropertyRef Name="Activity_Status_Id" />
+          </Key>
+          <Property Name="Activity_Status_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_ID" Type="Int32" />
+          <Property Name="From" Type="DateTime" Precision="3" />
+          <Property Name="To" Type="DateTime" Precision="3" />
+          <Property Name="DeactivationReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyMarket" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Activity_Flavour_Id" Type="Guid" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -6733,26 +6733,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Activity_Status">
-            <EntityTypeMapping TypeName="ConsumerModel.Activity_Status">
-              <MappingFragment StoreEntitySet="Activity_Status">
-                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
-                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="CompanyMarket" ColumnName="CompanyMarket" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="DeactivationReason" ColumnName="DeactivationReason" />
-                <ScalarProperty Name="To" ColumnName="To" />
-                <ScalarProperty Name="From" ColumnName="From" />
-                <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
-                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
-                <ScalarProperty Name="Activity_Status_Id" ColumnName="Activity_Status_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Activity_Tips">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_Tips">
               <MappingFragment StoreEntitySet="Activity_Tips">
@@ -7152,6 +7132,26 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
                 <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
                 <ScalarProperty Name="Activity_Contact_Id" ColumnName="Activity_Contact_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Status">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Status">
+              <MappingFragment StoreEntitySet="Activity_Status">
+                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CompanyMarket" ColumnName="CompanyMarket" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="DeactivationReason" ColumnName="DeactivationReason" />
+                <ScalarProperty Name="To" ColumnName="To" />
+                <ScalarProperty Name="From" ColumnName="From" />
+                <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Status_Id" ColumnName="Activity_Status_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
