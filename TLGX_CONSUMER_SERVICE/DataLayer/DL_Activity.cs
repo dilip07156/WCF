@@ -573,8 +573,8 @@ namespace DataLayer
                             search.Activity_Id = AS.Activity_Id;
                             search.CompanyMarket = AS.CompanyMarket;
                             search.DeactivationReason = AS.DeactivationReason;
-                            search.Legacy_Product_ID=AS.Legacy_Product_ID,
-                            search.Activity_Flavour_Id=AS.Activity_Flavour_Id,
+                            search.Legacy_Product_ID = AS.Legacy_Product_ID;
+                            search.Activity_Flavour_Id = AS.Activity_Flavour_Id;
                             search.From = AS.From;
                             search.Status = AS.Status;
                             search.To = AS.To;
