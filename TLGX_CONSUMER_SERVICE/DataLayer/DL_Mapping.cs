@@ -5069,6 +5069,7 @@ namespace DataLayer
                                   join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
                                   join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
                                   orderby mav.AttributeValue.Trim().TrimStart()
+                                  where mav.IsActive == true
                                   select new
                                   {
                                       MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
@@ -5084,6 +5085,7 @@ namespace DataLayer
                                         join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
                                         join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
                                         orderby mav.AttributeValue.Trim().TrimStart()
+                                        where mav.IsActive == true
                                         select new DataContracts.Mapping.DC_MasterAttributeValueMappingRS
                                         {
                                             MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
