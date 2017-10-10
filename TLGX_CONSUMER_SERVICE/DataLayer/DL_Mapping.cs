@@ -5060,7 +5060,7 @@ namespace DataLayer
                     var search = (from map in m_MasterAttributeMapping
                                   join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
                                   join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
-
+                                  orderby mav.AttributeValue.Trim().TrimStart()
                                   select new
                                   {
                                       MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
@@ -5075,7 +5075,7 @@ namespace DataLayer
                     var searchReturn = (from map in m_MasterAttributeMapping
                                         join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
                                         join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
-                                        orderby mav.AttributeValue
+                                        orderby mav.AttributeValue.Trim().TrimStart()
                                         select new DataContracts.Mapping.DC_MasterAttributeValueMappingRS
                                         {
                                             MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
