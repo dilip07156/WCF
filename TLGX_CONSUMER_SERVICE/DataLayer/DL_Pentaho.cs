@@ -39,7 +39,7 @@ namespace DataLayer
                             Create_Date = DateTime.Now,
                             Create_User = CalledBy,
                             Message = "Transformation Called.",
-                            Status = "SCHEDULED"
+                            Status = "SENT TO CARTE"
                         });
                         context.SaveChanges();
                         var getInsertedRow = context.Supplier_ApiCallLog.Find(ApiCallId);

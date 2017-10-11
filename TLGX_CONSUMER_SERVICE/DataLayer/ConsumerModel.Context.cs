@@ -108,7 +108,6 @@ namespace DataLayer
         public virtual DbSet<Supplier_APILocation> Supplier_APILocation { get; set; }
         public virtual DbSet<Supplier_ApiCallLog> Supplier_ApiCallLog { get; set; }
         public virtual DbSet<Activity_ClassificationAttributes> Activity_ClassificationAttributes { get; set; }
-        public virtual DbSet<Activity_Contact> Activity_Contact { get; set; }
         public virtual DbSet<Activity_Content> Activity_Content { get; set; }
         public virtual DbSet<Activity_Facility> Activity_Facility { get; set; }
         public virtual DbSet<Activity_Flavour> Activity_Flavour { get; set; }
@@ -119,7 +118,6 @@ namespace DataLayer
         public virtual DbSet<Activity_PickUpDropDetail> Activity_PickUpDropDetail { get; set; }
         public virtual DbSet<Activity_PickupDropSchedule> Activity_PickupDropSchedule { get; set; }
         public virtual DbSet<Activity_Policy> Activity_Policy { get; set; }
-        public virtual DbSet<Activity_Status> Activity_Status { get; set; }
         public virtual DbSet<Activity_Tips> Activity_Tips { get; set; }
         public virtual DbSet<Activity_Types> Activity_Types { get; set; }
         public virtual DbSet<Activity_Updates> Activity_Updates { get; set; }
@@ -138,6 +136,8 @@ namespace DataLayer
         public virtual DbSet<Activity_SupplierProductMapping_CA> Activity_SupplierProductMapping_CA { get; set; }
         public virtual DbSet<Activity_SupplierProductMapping_Deals> Activity_SupplierProductMapping_Deals { get; set; }
         public virtual DbSet<Accommodation_Descriptions> Accommodation_Descriptions { get; set; }
+        public virtual DbSet<Activity_Contact> Activity_Contact { get; set; }
+        public virtual DbSet<Activity_Status> Activity_Status { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

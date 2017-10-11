@@ -725,7 +725,8 @@ namespace DataContracts.Masters
     {
         [DataMember]
         public Guid Activity_Contact_Id { get; set; }
-
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
         [DataMember]
         public Guid? Activity_Id { get; set; }
 
@@ -769,7 +770,11 @@ namespace DataContracts.Masters
         public Guid Activity_Status_Id { get; set; }
         [DataMember]
         public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
 
+        [DataMember]
+        public int? Legacy_Product_ID { get; set; }
         [DataMember]
         public DateTime? From { get; set; }
 

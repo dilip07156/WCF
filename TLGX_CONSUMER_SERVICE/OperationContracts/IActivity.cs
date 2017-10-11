@@ -33,8 +33,8 @@ namespace OperationContracts
         #region "Activity Contact"
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "GetActivity/Contacts/{Activity_Id}/{DataKey_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        IList<DataContracts.Masters.DC_Activity_Contact> GetActivityContacts(string Activity_Id, string DataKey_Id);
+        [WebInvoke(Method = "GET", UriTemplate = "GetActivity/Contacts/{Activity_Flavour_Id}/{DataKey_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Masters.DC_Activity_Contact> GetActivityContacts(string Activity_Flavour_Id, string DataKey_Id);
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
@@ -48,15 +48,15 @@ namespace OperationContracts
         
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "GetActivity/LegacyProductId/{Activity_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        string GetLegacyProductId(string Activity_Id);
+        [WebInvoke(Method = "GET", UriTemplate = "GetActivity/LegacyProductId/{Activity_Flavour_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        int GetLegacyProductId(string Activity_Flavour_Id);
         #endregion
 
         #region "Activity Status"
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "GetActivity/Status/{Activity_Id}/{DataKey_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        IList<DataContracts.Masters.DC_Activity_Status> GetActivityStatus(string Activity_Id, string DataKey_Id);
+        [WebInvoke(Method = "GET", UriTemplate = "GetActivity/Status/{Activity_Flavour_Id}/{DataKey_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Masters.DC_Activity_Status> GetActivityStatus(string Activity_Flavour_Id, string DataKey_Id);
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]

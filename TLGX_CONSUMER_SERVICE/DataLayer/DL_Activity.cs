@@ -380,19 +380,20 @@ namespace DataLayer
         #endregion
 
         #region "Activity Contacts"
-        public List<DC_Activity_Contact> GetActivityContacts(Guid Activity_Id, Guid DataKey_Id)
+        public List<DC_Activity_Contact> GetActivityContacts(Guid Activity_Flavour_Id, Guid DataKey_Id)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var search = from ac in context.Activity_Contact
-                                 where ac.Activity_Id == Activity_Id
+                                 where ac.Activity_Flavour_Id == Activity_Flavour_Id
                                  && ac.Activity_Contact_Id == (DataKey_Id == Guid.Empty ? ac.Activity_Contact_Id : DataKey_Id)
                                  select new DC_Activity_Contact
                                  {
                                      Activity_Contact_Id = ac.Activity_Contact_Id,
                                      Activity_Id = ac.Activity_Id,
+                                     Activity_Flavour_Id=ac.Activity_Flavour_Id,
                                      Create_Date = ac.Create_Date,
                                      Create_User = ac.Create_User,
                                      Edit_Date = ac.Edit_Date,
@@ -457,14 +458,14 @@ namespace DataLayer
         {
             try
             {
-                if (AC.Activity_Id == null)
+                if (AC.Activity_Contact_Id == null)
                 {
                     return false;
                 }
 
-                if (AC.Activity_Id == null)
+                if (AC.Activity_Contact_Id == null)
                 {
-                    AC.Activity_Id = Guid.NewGuid();
+                    AC.Activity_Contact_Id = Guid.NewGuid();
                 }
 
                 using (ConsumerEntities context = new ConsumerEntities())
@@ -472,6 +473,7 @@ namespace DataLayer
                     Activity_Contact newObj = new Activity_Contact();
                     newObj.Activity_Contact_Id = AC.Activity_Contact_Id;
                     newObj.Activity_Id = AC.Activity_Id;
+                    newObj.Activity_Flavour_Id = AC.Activity_Flavour_Id;
                     newObj.Create_Date = AC.Create_Date;
                     newObj.Create_User = AC.Create_User;
                     newObj.Email = AC.Email;
@@ -492,17 +494,17 @@ namespace DataLayer
             }
         }
         
-        public string GetLegacyProductId(Guid Activity_Id)
+        public int GetLegacyProductId(Guid Activity_Flavour_Id)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var search = (from ac in context.Activity_Contact
-                                  where ac.Activity_Id == Activity_Id
+                                  where ac.Activity_Flavour_Id == Activity_Flavour_Id
                                   select new { ac.Legacy_Product_ID }).FirstOrDefault();
 
-                    return Convert.ToString(search);
+                    return Convert.ToInt32( search);
                     
                 }
             }
@@ -514,19 +516,21 @@ namespace DataLayer
         #endregion
 
         #region "Activity Status"
-        public List<DC_Activity_Status> GetActivityStatus(Guid Activity_Id, Guid DataKey_Id)
+        public List<DC_Activity_Status> GetActivityStatus(Guid Activity_Flavour_Id, Guid DataKey_Id)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var search = from ast in context.Activity_Status
-                                 where ast.Activity_Id == Activity_Id
+                                 where ast.Activity_Flavour_Id == Activity_Flavour_Id
                                  && ast.Activity_Status_Id == (DataKey_Id == Guid.Empty ? ast.Activity_Status_Id : DataKey_Id)
                                  select new DC_Activity_Status
                                  {
                                      Activity_Id = ast.Activity_Id,
                                      Activity_Status_Id = ast.Activity_Status_Id,
+                                     Activity_Flavour_Id=ast.Activity_Flavour_Id,
+                                     Legacy_Product_ID=ast.Legacy_Product_ID,
                                      CompanyMarket = ast.CompanyMarket,
                                      DeactivationReason = ast.DeactivationReason,
                                      From = ast.From,
@@ -569,6 +573,8 @@ namespace DataLayer
                             search.Activity_Id = AS.Activity_Id;
                             search.CompanyMarket = AS.CompanyMarket;
                             search.DeactivationReason = AS.DeactivationReason;
+                            search.Legacy_Product_ID = AS.Legacy_Product_ID;
+                            search.Activity_Flavour_Id = AS.Activity_Flavour_Id;
                             search.From = AS.From;
                             search.Status = AS.Status;
                             search.To = AS.To;
@@ -607,6 +613,7 @@ namespace DataLayer
 
                     objNew.Activity_Status_Id = AS.Activity_Status_Id;
                     objNew.Activity_Id = AS.Activity_Id;
+                    objNew.Activity_Flavour_Id = AS.Activity_Flavour_Id;
                     objNew.CompanyMarket = AS.CompanyMarket;
                     objNew.DeactivationReason = AS.DeactivationReason;
                     objNew.From = AS.From;
