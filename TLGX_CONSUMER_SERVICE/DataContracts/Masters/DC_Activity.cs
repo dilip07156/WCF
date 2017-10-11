@@ -1422,7 +1422,11 @@ namespace DataContracts.Masters
         [DataMember]
         public string ProductCategory { get; set; }
         [DataMember]
+        public string ProductCategorySubType { get; set; }
+        [DataMember]
         public string ProductType { get; set; }
+        [DataMember]
+        public string ProductNameSubType { get; set; }
         [DataMember]
         public int? Legacy_Product_ID { get; set; }
         [DataMember]
