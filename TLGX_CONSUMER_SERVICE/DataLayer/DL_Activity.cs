@@ -1333,8 +1333,8 @@ namespace DataLayer
                     obj.AttributeType = RQ.AttributeType;
                     obj.AttributeValue = RQ.AttributeValue;
                     obj.InternalOnly = RQ.InternalOnly;
-                    obj.Create_Date = DateTime.Now;
-                    obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                    obj.Create_Date = RQ.CreateDate;
+                    obj.Create_User = RQ.CreateUser;
 
                     context.Activity_ClassificationAttributes.Add(obj);
                     context.SaveChanges();
@@ -1375,6 +1375,8 @@ namespace DataLayer
                             search.AttributeType = RQ.AttributeType;
                             search.AttributeValue = RQ.AttributeValue;
                             search.InternalOnly = RQ.InternalOnly;
+                            search.Edit_Date = RQ.EditDate;
+                            search.Edit_User = RQ.EditUser;
                         }
 
                         context.SaveChanges();
