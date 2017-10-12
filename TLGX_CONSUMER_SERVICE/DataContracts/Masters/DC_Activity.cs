@@ -1437,10 +1437,6 @@ namespace DataContracts.Masters
         public int? PageNo { get; set; }
         [DataMember]
         public int? PageSize { get; set; }
-        [DataMember]
-        public string ProductNameSubType { get; set; }
-        [DataMember]
-        public string ProductCategorySubType { get; set; }
     }
     #endregion
 
