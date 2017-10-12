@@ -936,6 +936,8 @@ namespace DataContracts.Masters
         [DataMember]
         public string Edit_User { get; set; }
         [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
         public int? TotalRecords { get; set; }
     }
     [DataContract]
@@ -1010,6 +1012,8 @@ namespace DataContracts.Masters
         public DateTime? CreateDate { get; set; }
         [DataMember]
         public DateTime? EditDate { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
         [DataMember]
         public int? TotalRecords { get; set; }
     }

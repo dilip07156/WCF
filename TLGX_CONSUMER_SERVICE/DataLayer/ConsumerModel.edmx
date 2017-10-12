@@ -510,7 +510,7 @@
           <Property Name="Activity_ClassificationAttribute_Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Activity_Id" Type="uniqueidentifier" />
           <Property Name="AttributeType" Type="nvarchar" MaxLength="255" />
-          <Property Name="AttributeValue" Type="nvarchar" MaxLength="255" />
+          <Property Name="AttributeValue" Type="nvarchar(max)" />
           <Property Name="IsActive" Type="bit" />
           <Property Name="Create_Date" Type="datetime" />
           <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
@@ -683,6 +683,7 @@
           <Property Name="Edit_Date" Type="datetime" />
           <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsActive" Type="bit" />
         </EntityType>
         <EntityType Name="Activity_Inclusions">
           <Key>
@@ -706,6 +707,7 @@
           <Property Name="Edit_Date" Type="datetime" />
           <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsActive" Type="bit" />
         </EntityType>
         <EntityType Name="Activity_Itinerary">
           <Key>
@@ -2542,8 +2544,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Activity_Content" EntityType="ConsumerModel.Activity_Content" />
           <EntitySet Name="Activity_Facility" EntityType="ConsumerModel.Activity_Facility" />
           <EntitySet Name="Activity_Flavour" EntityType="ConsumerModel.Activity_Flavour" />
-          <EntitySet Name="Activity_InclusionDetails" EntityType="ConsumerModel.Activity_InclusionDetails" />
-          <EntitySet Name="Activity_Inclusions" EntityType="ConsumerModel.Activity_Inclusions" />
           <EntitySet Name="Activity_Itinerary" EntityType="ConsumerModel.Activity_Itinerary" />
           <EntitySet Name="Activity_PickUpDrop" EntityType="ConsumerModel.Activity_PickUpDrop" />
           <EntitySet Name="Activity_PickUpDropDetail" EntityType="ConsumerModel.Activity_PickUpDropDetail" />
@@ -2569,6 +2569,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Accommodation_Descriptions" EntityType="ConsumerModel.Accommodation_Descriptions" />
           <EntitySet Name="Activity_Contact" EntityType="ConsumerModel.Activity_Contact" />
           <EntitySet Name="Activity_Status" EntityType="ConsumerModel.Activity_Status" />
+          <EntitySet Name="Activity_InclusionDetails" EntityType="ConsumerModel.Activity_InclusionDetails" />
+          <EntitySet Name="Activity_Inclusions" EntityType="ConsumerModel.Activity_Inclusions" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -4172,7 +4174,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Activity_ClassificationAttribute_Id" Type="Guid" Nullable="false" />
           <Property Name="Activity_Id" Type="Guid" />
           <Property Name="AttributeType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="AttributeValue" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="Create_Date" Type="DateTime" Precision="3" />
           <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -4257,54 +4259,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Country_Id" Type="Guid" />
           <Property Name="Area" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Location" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="Activity_InclusionDetails">
-          <Key>
-            <PropertyRef Name="Activity_InclusionDetails_Id" />
-          </Key>
-          <Property Name="Activity_InclusionDetails_Id" Type="Guid" Nullable="false" />
-          <Property Name="Activity_Inclusions_Id" Type="Guid" />
-          <Property Name="Activity_Id" Type="Guid" />
-          <Property Name="Legacy_Product_Id" Type="Int32" />
-          <Property Name="Activity_Flavour_Id" Type="Guid" />
-          <Property Name="InclusionDetailFor" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="GuideLanguage" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="InclusionDetailType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="InclusionDetailName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="InclusionDetailDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="InclusionDetailFrom" Type="DateTime" Precision="3" />
-          <Property Name="InclusionDetailTo" Type="DateTime" Precision="3" />
-          <Property Name="DaysofWeek" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
-          <Property Name="FromTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ToTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="GuideLanguageCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="Activity_Inclusions">
-          <Key>
-            <PropertyRef Name="Activity_Inclusions_Id" />
-          </Key>
-          <Property Name="Activity_Inclusions_Id" Type="Guid" Nullable="false" />
-          <Property Name="Activity_Id" Type="Guid" />
-          <Property Name="Legacy_Product_Id" Type="Int32" />
-          <Property Name="Activity_Flavour_Id" Type="Guid" />
-          <Property Name="IsInclusion" Type="Boolean" />
-          <Property Name="InclusionFor" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="IsDriver" Type="Boolean" />
-          <Property Name="IsAudioCommentary" Type="Boolean" />
-          <Property Name="InclusionDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="InclusionName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="RestaurantStyle" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="InclusionType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="InclusionFrom" Type="DateTime" Precision="3" />
-          <Property Name="InclusionTo" Type="DateTime" Precision="3" />
           <Property Name="Create_Date" Type="DateTime" Precision="3" />
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -4822,6 +4776,56 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="Activity_Flavour_Id" Type="Guid" />
+        </EntityType>
+        <EntityType Name="Activity_InclusionDetails">
+          <Key>
+            <PropertyRef Name="Activity_InclusionDetails_Id" />
+          </Key>
+          <Property Name="Activity_InclusionDetails_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Inclusions_Id" Type="Guid" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_Id" Type="Int32" />
+          <Property Name="Activity_Flavour_Id" Type="Guid" />
+          <Property Name="InclusionDetailFor" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="GuideLanguage" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="GuideLanguageCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InclusionDetailType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InclusionDetailName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InclusionDetailDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="InclusionDetailFrom" Type="DateTime" Precision="3" />
+          <Property Name="InclusionDetailTo" Type="DateTime" Precision="3" />
+          <Property Name="DaysofWeek" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
+          <Property Name="FromTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ToTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Activity_Inclusions">
+          <Key>
+            <PropertyRef Name="Activity_Inclusions_Id" />
+          </Key>
+          <Property Name="Activity_Inclusions_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_Id" Type="Int32" />
+          <Property Name="Activity_Flavour_Id" Type="Guid" />
+          <Property Name="IsInclusion" Type="Boolean" />
+          <Property Name="InclusionFor" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsDriver" Type="Boolean" />
+          <Property Name="IsAudioCommentary" Type="Boolean" />
+          <Property Name="InclusionDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="InclusionName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="RestaurantStyle" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InclusionType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InclusionFrom" Type="DateTime" Precision="3" />
+          <Property Name="InclusionTo" Type="DateTime" Precision="3" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -6567,56 +6571,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Activity_InclusionDetails">
-            <EntityTypeMapping TypeName="ConsumerModel.Activity_InclusionDetails">
-              <MappingFragment StoreEntitySet="Activity_InclusionDetails">
-                <ScalarProperty Name="GuideLanguageCode" ColumnName="GuideLanguageCode" />
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="ToTime" ColumnName="ToTime" />
-                <ScalarProperty Name="FromTime" ColumnName="FromTime" />
-                <ScalarProperty Name="DaysofWeek" ColumnName="DaysofWeek" />
-                <ScalarProperty Name="InclusionDetailTo" ColumnName="InclusionDetailTo" />
-                <ScalarProperty Name="InclusionDetailFrom" ColumnName="InclusionDetailFrom" />
-                <ScalarProperty Name="InclusionDetailDescription" ColumnName="InclusionDetailDescription" />
-                <ScalarProperty Name="InclusionDetailName" ColumnName="InclusionDetailName" />
-                <ScalarProperty Name="InclusionDetailType" ColumnName="InclusionDetailType" />
-                <ScalarProperty Name="GuideLanguage" ColumnName="GuideLanguage" />
-                <ScalarProperty Name="InclusionDetailFor" ColumnName="InclusionDetailFor" />
-                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
-                <ScalarProperty Name="Legacy_Product_Id" ColumnName="Legacy_Product_Id" />
-                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
-                <ScalarProperty Name="Activity_Inclusions_Id" ColumnName="Activity_Inclusions_Id" />
-                <ScalarProperty Name="Activity_InclusionDetails_Id" ColumnName="Activity_InclusionDetails_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Activity_Inclusions">
-            <EntityTypeMapping TypeName="ConsumerModel.Activity_Inclusions">
-              <MappingFragment StoreEntitySet="Activity_Inclusions">
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="InclusionTo" ColumnName="InclusionTo" />
-                <ScalarProperty Name="InclusionFrom" ColumnName="InclusionFrom" />
-                <ScalarProperty Name="InclusionType" ColumnName="InclusionType" />
-                <ScalarProperty Name="RestaurantStyle" ColumnName="RestaurantStyle" />
-                <ScalarProperty Name="InclusionName" ColumnName="InclusionName" />
-                <ScalarProperty Name="InclusionDescription" ColumnName="InclusionDescription" />
-                <ScalarProperty Name="IsAudioCommentary" ColumnName="IsAudioCommentary" />
-                <ScalarProperty Name="IsDriver" ColumnName="IsDriver" />
-                <ScalarProperty Name="InclusionFor" ColumnName="InclusionFor" />
-                <ScalarProperty Name="IsInclusion" ColumnName="IsInclusion" />
-                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
-                <ScalarProperty Name="Legacy_Product_Id" ColumnName="Legacy_Product_Id" />
-                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
-                <ScalarProperty Name="Activity_Inclusions_Id" ColumnName="Activity_Inclusions_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Activity_Itinerary">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_Itinerary">
               <MappingFragment StoreEntitySet="Activity_Itinerary">
@@ -7152,6 +7106,58 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
                 <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
                 <ScalarProperty Name="Activity_Status_Id" ColumnName="Activity_Status_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_InclusionDetails">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_InclusionDetails">
+              <MappingFragment StoreEntitySet="Activity_InclusionDetails">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="ToTime" ColumnName="ToTime" />
+                <ScalarProperty Name="FromTime" ColumnName="FromTime" />
+                <ScalarProperty Name="DaysofWeek" ColumnName="DaysofWeek" />
+                <ScalarProperty Name="InclusionDetailTo" ColumnName="InclusionDetailTo" />
+                <ScalarProperty Name="InclusionDetailFrom" ColumnName="InclusionDetailFrom" />
+                <ScalarProperty Name="InclusionDetailDescription" ColumnName="InclusionDetailDescription" />
+                <ScalarProperty Name="InclusionDetailName" ColumnName="InclusionDetailName" />
+                <ScalarProperty Name="InclusionDetailType" ColumnName="InclusionDetailType" />
+                <ScalarProperty Name="GuideLanguageCode" ColumnName="GuideLanguageCode" />
+                <ScalarProperty Name="GuideLanguage" ColumnName="GuideLanguage" />
+                <ScalarProperty Name="InclusionDetailFor" ColumnName="InclusionDetailFor" />
+                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
+                <ScalarProperty Name="Legacy_Product_Id" ColumnName="Legacy_Product_Id" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Inclusions_Id" ColumnName="Activity_Inclusions_Id" />
+                <ScalarProperty Name="Activity_InclusionDetails_Id" ColumnName="Activity_InclusionDetails_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Inclusions">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Inclusions">
+              <MappingFragment StoreEntitySet="Activity_Inclusions">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="InclusionTo" ColumnName="InclusionTo" />
+                <ScalarProperty Name="InclusionFrom" ColumnName="InclusionFrom" />
+                <ScalarProperty Name="InclusionType" ColumnName="InclusionType" />
+                <ScalarProperty Name="RestaurantStyle" ColumnName="RestaurantStyle" />
+                <ScalarProperty Name="InclusionName" ColumnName="InclusionName" />
+                <ScalarProperty Name="InclusionDescription" ColumnName="InclusionDescription" />
+                <ScalarProperty Name="IsAudioCommentary" ColumnName="IsAudioCommentary" />
+                <ScalarProperty Name="IsDriver" ColumnName="IsDriver" />
+                <ScalarProperty Name="InclusionFor" ColumnName="InclusionFor" />
+                <ScalarProperty Name="IsInclusion" ColumnName="IsInclusion" />
+                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
+                <ScalarProperty Name="Legacy_Product_Id" ColumnName="Legacy_Product_Id" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Inclusions_Id" ColumnName="Activity_Inclusions_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

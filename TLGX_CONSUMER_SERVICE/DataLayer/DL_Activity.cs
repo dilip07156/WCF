@@ -937,7 +937,8 @@ namespace DataLayer
                                            Create_Date = s.Create_Date,
                                            RestaurantStyle = s.RestaurantStyle,
                                            TotalRecords = total,
-                                           Activity_Id = s.Activity_Id
+                                           Activity_Id = s.Activity_Id,
+                                           IsActive=s.IsActive
                                        };
                      return searchresult.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -1120,7 +1121,8 @@ namespace DataLayer
                                            DaysOfWeek = s.DaysofWeek,
                                            Legacy_Product_Id = s.Legacy_Product_Id,
                                            GuideLanguageCode=s.GuideLanguageCode,
-                                           TotalRecords = total
+                                           TotalRecords = total,
+                                           IsActive = s.IsActive
                                        };
                     return searchresult.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
