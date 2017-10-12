@@ -114,8 +114,14 @@ namespace OperationContracts
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "POST", UriTemplate = "Activity/ClassificationAttributes/AddUpdate", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DataContracts.DC_Message AddUpdateActivityClassifiationAttributes(DC_Activity_ClassificationAttributes RQ);
+        [WebInvoke(Method = "POST", UriTemplate = "Activity/ClassificationAttributes/Add", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        bool AddActivityClassifiationAttributes(DataContracts.Masters.DC_Activity_ClassificationAttributes RQ);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Activity/ClassificationAttributes/Update", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        bool UpdateActivityClassifiationAttributes(DataContracts.Masters.DC_Activity_ClassificationAttributes RQ);
+        
         #endregion
 
         #region Activity PickUpDrop

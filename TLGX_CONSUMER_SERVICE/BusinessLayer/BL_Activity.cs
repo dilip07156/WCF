@@ -164,11 +164,19 @@ namespace BusinessLayer
             }
         }
 
-        public DC_Message AddUpdateActivityClassifiationAttributes(DC_Activity_ClassificationAttributes RQ)
+        public bool AddActivityClassifiationAttributes(DataContracts.Masters.DC_Activity_ClassificationAttributes RQ)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
-                return obj.AddUpdateActivityClassifiationAttributes(RQ);
+                return obj.AddActivityClassifiationAttributes(RQ);
+            }
+        }
+
+        public bool UpdateActivityClassifiationAttributes(DataContracts.Masters.DC_Activity_ClassificationAttributes RQ)
+        {
+            using(DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.UpdateActivityClassifiationAttributes(RQ);
             }
         }
         #endregion

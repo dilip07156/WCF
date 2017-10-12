@@ -196,11 +196,20 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
-        public DC_Message AddUpdateActivityClassifiationAttributes(DC_Activity_ClassificationAttributes RQ)
+
+        public bool AddActivityClassifiationAttributes(DataContracts.Masters.DC_Activity_ClassificationAttributes RQ)
         {
-            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            using (BL_Activity obj = new BL_Activity())
             {
-                return obj.AddUpdateActivityClassifiationAttributes(RQ);
+                return obj.AddActivityClassifiationAttributes(RQ);
+            }
+        }
+
+         public bool UpdateActivityClassifiationAttributes(DataContracts.Masters.DC_Activity_ClassificationAttributes RQ)
+        {
+            using (BL_Activity obj = new BL_Activity())
+            {
+                return obj.UpdateActivityClassifiationAttributes(RQ);
             }
         }
         #endregion
