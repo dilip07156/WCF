@@ -973,6 +973,7 @@ namespace DataLayer
                             res.InclusionType = RQ.InclusionType;
                             res.IsDriver = RQ.IsDriver;
                             res.IsAudioCommentary = RQ.IsAudioCommentary;
+                            res.IsActive = RQ.IsActive;
                             res.RestaurantStyle = RQ.RestaurantStyle;
                             res.Edit_Date = DateTime.Now;
                             res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
@@ -1007,6 +1008,7 @@ namespace DataLayer
                         obj.InclusionType = RQ.InclusionType;
                         obj.IsDriver = RQ.IsDriver;
                         obj.IsAudioCommentary = RQ.IsAudioCommentary;
+                        obj.IsActive = RQ.IsActive;
                         obj.RestaurantStyle = RQ.RestaurantStyle;
                         obj.Create_Date = DateTime.Now;
                         obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
@@ -1156,6 +1158,7 @@ namespace DataLayer
                             res.InclusionDetailFrom = RQ.InclusionDetailFrom;
                             res.InclusionDetailTo = RQ.InclusionDetailTo;
                             res.InclusionDetailType = RQ.InclusionDetailType;
+                            res.IsActive = RQ.IsActive;
                             res.Edit_Date= DateTime.Now;
                             res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
                             res.DaysofWeek = RQ.DaysOfWeek;
@@ -1192,6 +1195,7 @@ namespace DataLayer
                         obj.InclusionDetailName = RQ.InclusionDetailName;
                         obj.InclusionDetailFrom = RQ.InclusionDetailFrom;
                         obj.InclusionDetailTo = RQ.InclusionDetailTo;
+                        obj.IsActive = RQ.IsActive;
                         obj.Create_Date = DateTime.Now;
                         obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
                         obj.DaysofWeek = RQ.DaysOfWeek;
