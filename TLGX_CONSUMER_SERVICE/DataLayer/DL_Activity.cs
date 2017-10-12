@@ -458,10 +458,10 @@ namespace DataLayer
         {
             try
             {
-                if (AC.Activity_Contact_Id == null)
-                {
-                    return false;
-                }
+                //if (AC.Activity_Contact_Id == null)
+                //{
+                //    return false;
+                //}
 
                 if (AC.Activity_Contact_Id == null)
                 {
@@ -599,10 +599,10 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if (AS.Activity_Id == null)
-                    {
-                        return false;
-                    }
+                    //if (AS.Activity_Id == null)
+                    //{
+                    //    return false;
+                    //}
 
                     Activity_Status objNew = new Activity_Status();
 
