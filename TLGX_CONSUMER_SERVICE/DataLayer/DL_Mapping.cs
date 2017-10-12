@@ -3842,8 +3842,9 @@ namespace DataLayer
                         oldCityName = g.CityName,
                         ActionType = "INSERT",
                         stg_City_Id = g.stg_City_Id,
-                        Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
-
+                        Remarks = "", //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
+                        StateCode = g.StateCode,
+                        StateName = g.StateName
                     }));
 
                 lstobj.InsertRange(lstobj.Count, clsMappingCity.Where(a => a.stg_City_Id != null && a.ActionType == "INSERT"
