@@ -1825,6 +1825,13 @@ namespace DataLayer
                                  select a;
                     }
 
+                    if (RQ.ProductCategorySubType != null)
+                    {
+                        search = from a in search
+                                 where a.ProductCategorySubType.Trim().TrimStart().ToUpper() == RQ.ProductCategorySubType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
                     if (RQ.ProductName != null)
                     {
                         search = from a in search
@@ -1838,8 +1845,14 @@ namespace DataLayer
                                  where a.ProductType.Trim().TrimStart().ToUpper() == RQ.ProductType.Trim().TrimStart().ToUpper()
                                  select a;
                     }
+                    if (RQ.ProductNameSubType != null)
+                    {
+                        search = from a in search
+                                 where a.ProductNameSubType.Trim().TrimStart().ToUpper() == RQ.ProductNameSubType.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
 
-                   
+
                     int total = search.Count();
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 

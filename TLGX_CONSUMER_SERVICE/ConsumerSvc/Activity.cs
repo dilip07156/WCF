@@ -279,7 +279,7 @@ namespace ConsumerSvc
         #endregion
 
         #region Activity Flavour
-        public IList<DataContracts.Masters.DC_Activity_Flavour> GetActivityFlavour(DataContracts.Masters.DC_Activity_Flavour_RQ RQ)
+        public List<DataContracts.Masters.DC_Activity_Flavour> GetActivityFlavour(DataContracts.Masters.DC_Activity_Flavour_RQ RQ)
         {
             using (BL_Activity objBL = new BL_Activity())
             {
