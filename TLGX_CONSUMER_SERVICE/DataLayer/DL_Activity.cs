@@ -458,10 +458,10 @@ namespace DataLayer
         {
             try
             {
-                if (AC.Activity_Contact_Id == null)
-                {
-                    return false;
-                }
+                //if (AC.Activity_Contact_Id == null)
+                //{
+                //    return false;
+                //}
 
                 if (AC.Activity_Contact_Id == null)
                 {
@@ -599,10 +599,10 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if (AS.Activity_Id == null)
-                    {
-                        return false;
-                    }
+                    //if (AS.Activity_Id == null)
+                    //{
+                    //    return false;
+                    //}
 
                     Activity_Status objNew = new Activity_Status();
 
@@ -937,7 +937,8 @@ namespace DataLayer
                                            Create_Date = s.Create_Date,
                                            RestaurantStyle = s.RestaurantStyle,
                                            TotalRecords = total,
-                                           Activity_Id = s.Activity_Id
+                                           Activity_Id = s.Activity_Id,
+                                           IsActive=s.IsActive
                                        };
                      return searchresult.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -972,6 +973,7 @@ namespace DataLayer
                             res.InclusionType = RQ.InclusionType;
                             res.IsDriver = RQ.IsDriver;
                             res.IsAudioCommentary = RQ.IsAudioCommentary;
+                            res.IsActive = RQ.IsActive;
                             res.RestaurantStyle = RQ.RestaurantStyle;
                             res.Edit_Date = DateTime.Now;
                             res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
@@ -1006,6 +1008,7 @@ namespace DataLayer
                         obj.InclusionType = RQ.InclusionType;
                         obj.IsDriver = RQ.IsDriver;
                         obj.IsAudioCommentary = RQ.IsAudioCommentary;
+                        obj.IsActive = RQ.IsActive;
                         obj.RestaurantStyle = RQ.RestaurantStyle;
                         obj.Create_Date = DateTime.Now;
                         obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
@@ -1120,7 +1123,8 @@ namespace DataLayer
                                            DaysOfWeek = s.DaysofWeek,
                                            Legacy_Product_Id = s.Legacy_Product_Id,
                                            GuideLanguageCode=s.GuideLanguageCode,
-                                           TotalRecords = total
+                                           TotalRecords = total,
+                                           IsActive = s.IsActive
                                        };
                     return searchresult.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -1154,6 +1158,7 @@ namespace DataLayer
                             res.InclusionDetailFrom = RQ.InclusionDetailFrom;
                             res.InclusionDetailTo = RQ.InclusionDetailTo;
                             res.InclusionDetailType = RQ.InclusionDetailType;
+                            res.IsActive = RQ.IsActive;
                             res.Edit_Date= DateTime.Now;
                             res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
                             res.DaysofWeek = RQ.DaysOfWeek;
@@ -1190,6 +1195,7 @@ namespace DataLayer
                         obj.InclusionDetailName = RQ.InclusionDetailName;
                         obj.InclusionDetailFrom = RQ.InclusionDetailFrom;
                         obj.InclusionDetailTo = RQ.InclusionDetailTo;
+                        obj.IsActive = RQ.IsActive;
                         obj.Create_Date = DateTime.Now;
                         obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
                         obj.DaysofWeek = RQ.DaysOfWeek;

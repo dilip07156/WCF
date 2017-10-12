@@ -936,6 +936,8 @@ namespace DataContracts.Masters
         [DataMember]
         public string Edit_User { get; set; }
         [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
         public int? TotalRecords { get; set; }
     }
     [DataContract]
@@ -1010,6 +1012,8 @@ namespace DataContracts.Masters
         public DateTime? CreateDate { get; set; }
         [DataMember]
         public DateTime? EditDate { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
         [DataMember]
         public int? TotalRecords { get; set; }
     }
@@ -1433,6 +1437,10 @@ namespace DataContracts.Masters
         public int? PageNo { get; set; }
         [DataMember]
         public int? PageSize { get; set; }
+        [DataMember]
+        public string ProductNameSubType { get; set; }
+        [DataMember]
+        public string ProductCategorySubType { get; set; }
     }
     #endregion
 
