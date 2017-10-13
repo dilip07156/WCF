@@ -3076,6 +3076,12 @@ namespace DataLayer
                                  where a.Activity_Policy_Id == RQ.Activity_Policy_Id
                                  select a;
                     }
+                    if (RQ.Activity_Flavour_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
+                                 select a;
+                    }
                     if (RQ.Activity_Id != null)
                     {
                         search = from a in search
@@ -3098,9 +3104,11 @@ namespace DataLayer
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
                     var result = from a in search
+                                 orderby a.Create_Date
                                  select new DataContracts.Masters.DC_Activity_Policy
                                  {
                                      Activity_Policy_Id=a.Activity_Policy_Id,
+                                     Activity_Flavour_Id=a.Activity_Flavour_Id,
                                      Activity_Id=a.Activity_Id,
                                      AllowedYN=a.AllowedYN,
                                      PolicyName=a.PolicyName,
@@ -3113,7 +3121,7 @@ namespace DataLayer
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
             }
-            catch
+            catch (Exception e)
             {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity SupplierProductMapping_CA", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
