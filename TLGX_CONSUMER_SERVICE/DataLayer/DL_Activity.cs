@@ -755,16 +755,6 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var isduplicate = (from a in context.Activity_Media
-                                       where a.MediaName.Trim().TrimStart().ToUpper() == RQ.MediaName.Trim().TrimStart().ToUpper() && a.Activity_Media_Id != RQ.Activity_Media_Id
-                                       select a).Count() == 0 ? false : true;
-
-                    if (isduplicate)
-                    {
-                        _msg.StatusMessage = ReadOnlyMessage.strAlreadyExist;
-                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
-                        return _msg;
-                    }
                     if (RQ.Activity_Media_Id != null)
                     {
                         var res = context.Activity_Media.Find(RQ.Activity_Media_Id);
