@@ -81,5 +81,6 @@ namespace DataLayer
         public Nullable<double> Rating { get; set; }
         public string Location { get; set; }
         public string Area { get; set; }
+        public Nullable<bool> IsActive { get; set; }
     }
 }

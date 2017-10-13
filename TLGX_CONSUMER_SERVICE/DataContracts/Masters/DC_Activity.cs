@@ -1669,6 +1669,8 @@ namespace DataContracts.Masters
         [DataMember]
         public string Area { get; set; }
         [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
         public int? TotalRecords { get; set; }
     }
     [DataContract]
@@ -1737,6 +1739,8 @@ namespace DataContracts.Masters
         public DateTime? Create_Date { get; set; }
         [DataMember]
         public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
         [DataMember]
         public int? Totalrecords { get; set; }
     }
@@ -1847,6 +1851,8 @@ namespace DataContracts.Masters
         public DateTime? Create_Date { get; set; }
         [DataMember]
         public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
         [DataMember]
         public int? Totalrecords { get; set; }
     }

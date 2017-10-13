@@ -979,33 +979,52 @@ namespace DataLayer
                         var res = context.Activity_Inclusions.Find(RQ.Activity_Inclusions_Id);
                         if (res != null)
                         {
-                            res.Activity_Inclusions_Id = RQ.Activity_Inclusions_Id ?? Guid.Empty;
-                            res.Activity_Id = RQ.Activity_Id;
-                            res.Legacy_Product_Id = RQ.Legacy_Product_Id;
-                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
-                            res.IsInclusion = RQ.IsInclusion;
-                            res.InclusionName = RQ.InclusionName;
-                            res.InclusionDescription = RQ.InclusionDescription;
-                            res.InclusionFor = RQ.InclusionFor;
-                            res.InclusionFrom = RQ.InclusionFrom;
-                            res.InclusionTo = RQ.InclusionTo;
-                            res.InclusionType = RQ.InclusionType;
-                            res.IsDriver = RQ.IsDriver;
-                            res.IsAudioCommentary = RQ.IsAudioCommentary;
-                            res.IsActive = RQ.IsActive;
-                            res.RestaurantStyle = RQ.RestaurantStyle;
-                            res.Edit_Date = DateTime.Now;
-                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
-                            if (context.SaveChanges() == 1)
+                            if ((RQ.IsActive) != (res.IsActive ?? true))
                             {
-                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                res.IsActive = RQ.IsActive;
+                                res.Edit_Date = RQ.Edit_Date;
+                                res.Edit_User = RQ.Edit_User;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUnDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
                             }
                             else
                             {
-                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                res.Activity_Inclusions_Id = RQ.Activity_Inclusions_Id ?? Guid.Empty;
+                                res.Activity_Id = RQ.Activity_Id;
+                                res.Legacy_Product_Id = RQ.Legacy_Product_Id;
+                                res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                                res.IsInclusion = RQ.IsInclusion;
+                                res.InclusionName = RQ.InclusionName;
+                                res.InclusionDescription = RQ.InclusionDescription;
+                                res.InclusionFor = RQ.InclusionFor;
+                                res.InclusionFrom = RQ.InclusionFrom;
+                                res.InclusionTo = RQ.InclusionTo;
+                                res.InclusionType = RQ.InclusionType;
+                                res.IsDriver = RQ.IsDriver;
+                                res.IsAudioCommentary = RQ.IsAudioCommentary;
+                                res.RestaurantStyle = RQ.RestaurantStyle;
+                                res.Edit_Date = DateTime.Now;
+                                res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
                             }
+                           
                         }
                         else isinsert = true;
                     }
@@ -1166,34 +1185,52 @@ namespace DataLayer
                         var res = context.Activity_InclusionDetails.Find(RQ.Activity_InclusionDetails_Id);
                         if (res != null)
                         {
-                            res.Activity_InclusionDetails_Id = RQ.Activity_InclusionDetails_Id ?? Guid.Empty;
-                            res.Activity_Id = RQ.Activity_Id;
-                            res.Legacy_Product_Id = RQ.Legacy_Product_Id;
-                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
-                            res.InclusionDetailName = RQ.InclusionDetailName;
-                            res.InclusionDetailDescription = RQ.InclusionDetailDescription;
-                            res.InclusionDetailFor = RQ.InclusionDetailFor;
-                            res.Activity_Inclusions_Id = RQ.Activity_Inclusion_Id;
-                            res.InclusionDetailFrom = RQ.InclusionDetailFrom;
-                            res.InclusionDetailTo = RQ.InclusionDetailTo;
-                            res.InclusionDetailType = RQ.InclusionDetailType;
-                            res.IsActive = RQ.IsActive;
-                            res.Edit_Date= DateTime.Now;
-                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
-                            res.DaysofWeek = RQ.DaysOfWeek;
-                            res.FromTime = RQ.FromTime;
-                            res.ToTime = RQ.ToTime;
-                            res.GuideLanguage = RQ.GuideLanguage;
-                            res.GuideLanguageCode = RQ.GuideLanguageCode;
-                            if (context.SaveChanges() == 1)
+                            if ((RQ.IsActive) != (res.IsActive ?? true))
                             {
-                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                res.IsActive = RQ.IsActive;
+                                res.Edit_Date = RQ.EditDate;
+                                res.Edit_User = RQ.EditUser;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUnDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
                             }
                             else
                             {
-                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                res.Activity_InclusionDetails_Id = RQ.Activity_InclusionDetails_Id ?? Guid.Empty;
+                                res.Activity_Id = RQ.Activity_Id;
+                                res.Legacy_Product_Id = RQ.Legacy_Product_Id;
+                                res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                                res.InclusionDetailName = RQ.InclusionDetailName;
+                                res.InclusionDetailDescription = RQ.InclusionDetailDescription;
+                                res.InclusionDetailFor = RQ.InclusionDetailFor;
+                                res.Activity_Inclusions_Id = RQ.Activity_Inclusion_Id;
+                                res.InclusionDetailFrom = RQ.InclusionDetailFrom;
+                                res.InclusionDetailTo = RQ.InclusionDetailTo;
+                                res.InclusionDetailType = RQ.InclusionDetailType;
+                                res.Edit_Date = DateTime.Now;
+                                res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                                res.DaysofWeek = RQ.DaysOfWeek;
+                                res.FromTime = RQ.FromTime;
+                                res.ToTime = RQ.ToTime;
+                                res.GuideLanguage = RQ.GuideLanguage;
+                                res.GuideLanguageCode = RQ.GuideLanguageCode;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
                             }
                         }
                         else isinsert = true;
@@ -2477,7 +2514,6 @@ namespace DataLayer
         }
         public DataContracts.DC_Message AddUpdateActSupplierProdMapping(DC_Activity_SupplierProductMapping RQ)
         {
-
             bool IsInsert = false;
             DataContracts.DC_Message _msg = new DataContracts.DC_Message();
             try
@@ -2490,81 +2526,101 @@ namespace DataLayer
                         var res = context.Activity_SupplierProductMapping.Find(RQ.ActivitySupplierProductMapping_Id);
                         if (res != null)
                         {
-                            res.ActivitySupplierProductMapping_Id = RQ.ActivitySupplierProductMapping_Id ?? Guid.Empty;
-                            res.Activity_ID = RQ.Activity_ID;
-                            res.AdditionalInformation = RQ.AdditionalInformation;
-                            res.Address = RQ.Address;
-                            res.SupplierName = RQ.SupplierName;
-                            res.Supplier_ID = RQ.Supplier_ID.Value;
-                            res.SupplierType = RQ.SupplierType;
-                            res.Area = RQ.Area;
-                            res.BlockOutDateFrom = RQ.BlockOutDateFrom;
-                            res.BlockOutDateTo = RQ.BlockOutDateTo;
-                            res.Conditions = RQ.Conditions;
-                            res.Currency = RQ.Currency;
-                            res.DateFrom = RQ.DateFrom;
-                            res.DateTo = RQ.DateTo;
-                            res.SupplierCityIATACode = RQ.SupplierCityIATACode;
-                            res.DayPattern = RQ.DayPattern;
-                            res.DepartureDate = RQ.DepartureDate;
-                            res.DeparturePoint = RQ.DeparturePoint;
-                            res.DepartureTime = RQ.DepartureTime;
-                            res.Distance = RQ.Distance;
-                            res.Duration = RQ.Duration;
-                            res.DurationLength = RQ.DurationLength;
-                            res.Exclusions = RQ.Exclusions;
-                            res.ImgURL = RQ.ImgURL;
-                            res.Inclusions = RQ.Inclusions;
-                            res.Introduction = RQ.Introduction;
-                            res.Latitude = RQ.Latitude;
-                            res.Longitude = RQ.Longitude;
-                            res.Location = RQ.Location;
-                            res.MapID = RQ.MapID;
-                            res.MappingStatus = RQ.MappingStatus;
-                            res.OptionCode = RQ.OptionCode;
-                            res.TotalActivities = RQ.TotalActivities;
-                            res.OptionDescription = RQ.OptionDescription;
-                            res.OptionTitle = RQ.OptionTitle;
-                            res.PassengerNumbers = RQ.PassengerNumbers;
-                            res.PhysicalIntensity = RQ.PhysicalIntensity;
-                            res.Price = RQ.Price;
-                            res.ProductDescription = RQ.ProductDescription;
-                            res.ProductValidFor = RQ.ProductValidFor;
-                            res.Rating = RQ.Rating;
-                            res.Recommonded = RQ.Recommonded;
-                            res.Session = RQ.Session;
-                            res.Specials = RQ.Specials;
-                            res.SuplierProductCode = RQ.SuplierProductCode;
-                            res.SupplierCityName = RQ.SupplierCityName;
-                            res.SupplierCityCode = RQ.SupplierCityCode;
-                            res.SupplierCountryName = RQ.SupplierCountryName;
-                            res.SupplierCountryCode = RQ.SupplierCountryCode;
-                            res.SupplierCode = RQ.SupplierCode;
-                            res.SupplierDataLangaugeCode = RQ.SupplierLocationId;
-                            res.SupplierLocationId = RQ.SupplierLocationId;
-                            res.SupplierLocationName = RQ.SupplierLocationName;
-                            res.SupplierProductName = RQ.SupplierProductName;
-                            res.SupplierProductType = RQ.SupplierProductType;
-                            res.SupplierStateCode = RQ.SupplierStateCode;
-                            res.SupplierStateName = RQ.SupplierStateName;
-                            res.SupplierTourType = RQ.SupplierTourType;
-                            res.Theme = RQ.Theme;
-                            res.TicketingDetails = RQ.TicketingDetails;
-                            res.Timing = RQ.Timing;
-                            res.TourActivityLangauageCode = RQ.TourActivityLangauageCode;
-                            res.TourActivityLanguage = RQ.TourActivityLanguage;
-                            res.Edit_Date = DateTime.Now;
-                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
-                            if (context.SaveChanges() == 1)
+                            if ((RQ.IsActive) != (res.IsActive ?? true))
                             {
-                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                res.IsActive = RQ.IsActive;
+                                res.Edit_Date = RQ.Edit_Date;
+                                res.Edit_User = RQ.Edit_User;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUnDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
                             }
                             else
                             {
-                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                res.ActivitySupplierProductMapping_Id = RQ.ActivitySupplierProductMapping_Id ?? Guid.Empty;
+                                res.Activity_ID = RQ.Activity_ID;
+                                res.AdditionalInformation = RQ.AdditionalInformation;
+                                res.Address = RQ.Address;
+                                res.SupplierName = RQ.SupplierName;
+                                res.Supplier_ID = RQ.Supplier_ID.Value;
+                                res.SupplierType = RQ.SupplierType;
+                                res.Area = RQ.Area;
+                                res.BlockOutDateFrom = RQ.BlockOutDateFrom;
+                                res.BlockOutDateTo = RQ.BlockOutDateTo;
+                                res.Conditions = RQ.Conditions;
+                                res.Currency = RQ.Currency;
+                                res.DateFrom = RQ.DateFrom;
+                                res.DateTo = RQ.DateTo;
+                                res.SupplierCityIATACode = RQ.SupplierCityIATACode;
+                                res.DayPattern = RQ.DayPattern;
+                                res.DepartureDate = RQ.DepartureDate;
+                                res.DeparturePoint = RQ.DeparturePoint;
+                                res.DepartureTime = RQ.DepartureTime;
+                                res.Distance = RQ.Distance;
+                                res.Duration = RQ.Duration;
+                                res.DurationLength = RQ.DurationLength;
+                                res.Exclusions = RQ.Exclusions;
+                                res.ImgURL = RQ.ImgURL;
+                                res.Inclusions = RQ.Inclusions;
+                                res.Introduction = RQ.Introduction;
+                                res.Latitude = RQ.Latitude;
+                                res.Longitude = RQ.Longitude;
+                                res.Location = RQ.Location;
+                                res.MapID = RQ.MapID;
+                                res.MappingStatus = RQ.MappingStatus;
+                                res.OptionCode = RQ.OptionCode;
+                                res.TotalActivities = RQ.TotalActivities;
+                                res.OptionDescription = RQ.OptionDescription;
+                                res.OptionTitle = RQ.OptionTitle;
+                                res.PassengerNumbers = RQ.PassengerNumbers;
+                                res.PhysicalIntensity = RQ.PhysicalIntensity;
+                                res.Price = RQ.Price;
+                                res.ProductDescription = RQ.ProductDescription;
+                                res.ProductValidFor = RQ.ProductValidFor;
+                                res.Rating = RQ.Rating;
+                                res.Recommonded = RQ.Recommonded;
+                                res.Session = RQ.Session;
+                                res.Specials = RQ.Specials;
+                                res.SuplierProductCode = RQ.SuplierProductCode;
+                                res.SupplierCityName = RQ.SupplierCityName;
+                                res.SupplierCityCode = RQ.SupplierCityCode;
+                                res.SupplierCountryName = RQ.SupplierCountryName;
+                                res.SupplierCountryCode = RQ.SupplierCountryCode;
+                                res.SupplierCode = RQ.SupplierCode;
+                                res.SupplierDataLangaugeCode = RQ.SupplierLocationId;
+                                res.SupplierLocationId = RQ.SupplierLocationId;
+                                res.SupplierLocationName = RQ.SupplierLocationName;
+                                res.SupplierProductName = RQ.SupplierProductName;
+                                res.SupplierProductType = RQ.SupplierProductType;
+                                res.SupplierStateCode = RQ.SupplierStateCode;
+                                res.SupplierStateName = RQ.SupplierStateName;
+                                res.SupplierTourType = RQ.SupplierTourType;
+                                res.Theme = RQ.Theme;
+                                res.TicketingDetails = RQ.TicketingDetails;
+                                res.Timing = RQ.Timing;
+                                res.TourActivityLangauageCode = RQ.TourActivityLangauageCode;
+                                res.TourActivityLanguage = RQ.TourActivityLanguage;
+                                res.Edit_Date = DateTime.Now;
+                                res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
                             }
+                           
                         }
                         else IsInsert = true;
                     }
@@ -2748,30 +2804,50 @@ namespace DataLayer
                         var res = context.Activity_ReviewsAndScores.Find(RQ.Activity_ReviewsAndScores_Id);
                         if (res != null)
                         {
-                            res.Activity_ReviewsAndScores_Id = RQ.Activity_ReviewsAndScores_Id ?? Guid.Empty;
-                            res.Activity_Id = RQ.Activity_Id;
-                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
-                            res.IsCustomerReview = RQ.IsCustomerReview;
-                            res.Review_Author = RQ.Review_Author;
-                            res.Review_Description = RQ.Review_Description;
-                            res.Review_PostedDate = RQ.Review_PostedDate;
-                            res.Review_Author = RQ.Review_Author;
-                            res.Review_Description = RQ.Review_Description;
-                            res.Review_Title = RQ.Review_Title;
-                            res.Review_Status = RQ.Review_Status;
-                            res.Review_Type = RQ.Review_Type;
-                            res.Edit_Date =DateTime.Now;
-                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name; 
-                            if (context.SaveChanges() == 1)
+                            if ((RQ.IsActive) != (res.IsActive ?? true))
                             {
-                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                res.IsActive = RQ.IsActive;
+                                res.Edit_Date = RQ.Edit_Date;
+                                res.Edit_User = RQ.Edit_User;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUnDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
                             }
                             else
                             {
-                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                res.Activity_ReviewsAndScores_Id = RQ.Activity_ReviewsAndScores_Id ?? Guid.Empty;
+                                res.Activity_Id = RQ.Activity_Id;
+                                res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                                res.IsCustomerReview = RQ.IsCustomerReview;
+                                res.Review_Author = RQ.Review_Author;
+                                res.Review_Description = RQ.Review_Description;
+                                res.Review_PostedDate = RQ.Review_PostedDate;
+                                res.Review_Author = RQ.Review_Author;
+                                res.Review_Description = RQ.Review_Description;
+                                res.Review_Title = RQ.Review_Title;
+                                res.Review_Status = RQ.Review_Status;
+                                res.Review_Type = RQ.Review_Type;
+                                res.Edit_Date = DateTime.Now;
+                                res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
                             }
+                           
                         }
                         else IsInsert = true;
                     }
@@ -2902,28 +2978,47 @@ namespace DataLayer
                         var res = context.Activity_SupplierProductMapping_CA.Find(RQ.Activity_SupplierProductMapping_CA_Id);
                         if (res != null)
                         {
-                            res.Activity_SupplierProductMapping_CA_Id = RQ.Activity_SupplierProductMapping_CA_Id??Guid.Empty;
-                            res.Supplier_ID = RQ.Supplier_ID;
-                            res.AttributeSubType = RQ.AttributeSubType;
-                            res.AttributeType = RQ.AttributeType;
-                            res.AttributeValue = RQ.AttributeValue;
-                            res.SupplierCode = RQ.SupplierCode;
-                            res.SupplierName = RQ.SupplierName;
-                            res.SuplierProductCode = RQ.SuplierProductCode;
-                            res.SupplierProductName = RQ.SupplierProductName;
-                            res.IsActive = RQ.IsActive;
-                            res.Edit_Date = DateTime.Now;
-                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
-                            if (context.SaveChanges() == 1)
+                            if ((RQ.IsActive) != (res.IsActive ?? true))
                             {
-                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                res.IsActive = RQ.IsActive;
+                                res.Edit_Date = RQ.Edit_Date;
+                                res.Edit_User = RQ.Edit_User;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUnDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
                             }
                             else
                             {
-                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                res.Activity_SupplierProductMapping_CA_Id = RQ.Activity_SupplierProductMapping_CA_Id ?? Guid.Empty;
+                                res.Supplier_ID = RQ.Supplier_ID;
+                                res.AttributeSubType = RQ.AttributeSubType;
+                                res.AttributeType = RQ.AttributeType;
+                                res.AttributeValue = RQ.AttributeValue;
+                                res.SupplierCode = RQ.SupplierCode;
+                                res.SupplierName = RQ.SupplierName;
+                                res.SuplierProductCode = RQ.SuplierProductCode;
+                                res.SupplierProductName = RQ.SupplierProductName;
+                                res.Edit_Date = DateTime.Now;
+                                res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
                             }
+                           
                         }
                         else IsInsert = true;
                     }
@@ -3037,24 +3132,43 @@ namespace DataLayer
                         var res = context.Activity_Policy.Find(RQ.Activity_Policy_Id);
                         if (res != null)
                         {
-                            res.Activity_Policy_Id = RQ.Activity_Policy_Id??Guid.Empty;
-                            res.Activity_Id = RQ.Activity_Id;
-                            res.AllowedYN = RQ.AllowedYN;
-                            res.PolicyName = RQ.PolicyName;
-                            res.Policy_Type = RQ.Policy_Type;
-                            res.PolicyDescription = RQ.PolicyDescription;
-                            res.Legacy_Product_ID = RQ.Legacy_Product_ID;
-                            res.Edit_Date = DateTime.Now;
-                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
-                            if (context.SaveChanges() == 1)
+                            if ((RQ.IsActive) != (res.IsActive ?? true))
                             {
-                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                res.IsActive = RQ.IsActive;
+                                res.Edit_Date = RQ.Edit_Date;
+                                res.Edit_User = RQ.Edit_User;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUnDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
                             }
                             else
                             {
-                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                res.Activity_Policy_Id = RQ.Activity_Policy_Id ?? Guid.Empty;
+                                res.Activity_Id = RQ.Activity_Id;
+                                res.AllowedYN = RQ.AllowedYN;
+                                res.PolicyName = RQ.PolicyName;
+                                res.Policy_Type = RQ.Policy_Type;
+                                res.PolicyDescription = RQ.PolicyDescription;
+                                res.Legacy_Product_ID = RQ.Legacy_Product_ID;
+                                res.Edit_Date = DateTime.Now;
+                                res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
                             }
                         }
                         else IsInsert = true;
@@ -3071,6 +3185,7 @@ namespace DataLayer
                         obj.Policy_Type = RQ.Policy_Type;
                         obj.PolicyDescription = RQ.PolicyDescription;
                         obj.Legacy_Product_ID = RQ.Legacy_Product_ID;
+                        obj.IsActive = RQ.IsActive;
                         obj.Create_Date = DateTime.Now;
                         obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
                         context.Activity_Policy.Add(obj);

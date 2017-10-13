@@ -850,6 +850,7 @@
           <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Activity_Flavour_Id" Type="uniqueidentifier" />
+          <Property Name="IsActive" Type="bit" />
         </EntityType>
         <EntityType Name="Activity_Prices">
           <Key>
@@ -883,6 +884,7 @@
           <Property Name="Edit_Date" Type="datetime" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Review_Status" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsActive" Type="bit" />
         </EntityType>
         <EntityType Name="Activity_Status">
           <Key>
@@ -1060,6 +1062,7 @@
           <Property Name="Rating" Type="float" />
           <Property Name="Location" Type="nvarchar" MaxLength="255" />
           <Property Name="Area" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsActive" Type="bit" />
         </EntityType>
         <EntityType Name="Activity_SupplierProductMapping_CA">
           <Key>
@@ -2548,7 +2551,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Activity_PickUpDrop" EntityType="ConsumerModel.Activity_PickUpDrop" />
           <EntitySet Name="Activity_PickUpDropDetail" EntityType="ConsumerModel.Activity_PickUpDropDetail" />
           <EntitySet Name="Activity_PickupDropSchedule" EntityType="ConsumerModel.Activity_PickupDropSchedule" />
-          <EntitySet Name="Activity_Policy" EntityType="ConsumerModel.Activity_Policy" />
           <EntitySet Name="Activity_Tips" EntityType="ConsumerModel.Activity_Tips" />
           <EntitySet Name="Activity_Types" EntityType="ConsumerModel.Activity_Types" />
           <EntitySet Name="Activity_Updates" EntityType="ConsumerModel.Activity_Updates" />
@@ -2559,7 +2561,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Activity_Descriptions" EntityType="ConsumerModel.Activity_Descriptions" />
           <EntitySet Name="Activity_Media" EntityType="ConsumerModel.Activity_Media" />
           <EntitySet Name="Activity_Prices" EntityType="ConsumerModel.Activity_Prices" />
-          <EntitySet Name="Activity_ReviewsAndScores" EntityType="ConsumerModel.Activity_ReviewsAndScores" />
           <EntitySet Name="Activity_SupplierActivityImageMapping" EntityType="ConsumerModel.Activity_SupplierActivityImageMapping" />
           <EntitySet Name="Activity_SupplierActivityMetaDataMapping" EntityType="ConsumerModel.Activity_SupplierActivityMetaDataMapping" />
           <EntitySet Name="Activity_SupplierActivityReviews" EntityType="ConsumerModel.Activity_SupplierActivityReviews" />
@@ -2571,6 +2572,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Activity_Status" EntityType="ConsumerModel.Activity_Status" />
           <EntitySet Name="Activity_InclusionDetails" EntityType="ConsumerModel.Activity_InclusionDetails" />
           <EntitySet Name="Activity_Inclusions" EntityType="ConsumerModel.Activity_Inclusions" />
+          <EntitySet Name="Activity_Policy" EntityType="ConsumerModel.Activity_Policy" />
+          <EntitySet Name="Activity_ReviewsAndScores" EntityType="ConsumerModel.Activity_ReviewsAndScores" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -3719,73 +3722,74 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Key>
             <PropertyRef Name="ActivitySupplierProductMapping_Id" />
           </Key>
-          <Property Name="ActivitySupplierProductMapping_Id" Type="Guid" Nullable="false" />
+          <Property Name="ActivitySupplierProductMapping_Id" Nullable="false" Type="Guid" />
           <Property Name="Activity_ID" Type="Guid" />
-          <Property Name="Supplier_ID" Type="Guid" Nullable="false" />
-          <Property Name="SupplierCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SuplierProductCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierProductType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierLocationId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierLocationName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierCountryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierCityName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierCountryCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierCityCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierStateName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierStateCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierCityIATACode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Duration" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierProductName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierDataLangaugeCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Introduction" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Conditions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Inclusions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Exclusions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="AdditionalInformation" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DeparturePoint" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TicketingDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Currency" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="DepartureTime" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DepartureDate" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DateFrom" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="DateTo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="BlockOutDateFrom" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="BlockOutDateTo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="OptionTitle" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="OptionCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="OptionDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TourActivityLangauageCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ProductDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TourActivityLanguage" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ImgURL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ProductValidFor" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="DayPattern" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Theme" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Distance" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierTourType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="MappingStatus" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_User" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Supplier_ID" Nullable="false" Type="Guid" />
+          <Property Name="SupplierCode" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SupplierName" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SuplierProductCode" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SupplierProductType" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SupplierType" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SupplierLocationId" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SupplierLocationName" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SupplierCountryName" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SupplierCityName" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SupplierCountryCode" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SupplierCityCode" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SupplierStateName" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SupplierStateCode" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SupplierCityIATACode" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Duration" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SupplierProductName" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SupplierDataLangaugeCode" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Introduction" MaxLength="Max" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Conditions" MaxLength="Max" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Inclusions" MaxLength="Max" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Exclusions" MaxLength="Max" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="AdditionalInformation" MaxLength="Max" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="DeparturePoint" MaxLength="Max" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="TicketingDetails" MaxLength="Max" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Currency" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="DepartureTime" MaxLength="Max" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="DepartureDate" MaxLength="Max" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="DateFrom" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="DateTo" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="BlockOutDateFrom" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="BlockOutDateTo" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="OptionTitle" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="OptionCode" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="OptionDescription" MaxLength="Max" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="TourActivityLangauageCode" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="ProductDescription" MaxLength="Max" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="TourActivityLanguage" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="ImgURL" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="ProductValidFor" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Address" MaxLength="Max" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Latitude" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Longitude" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="DayPattern" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Theme" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Distance" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SupplierTourType" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="MappingStatus" MaxLength="100" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Create_Date" Precision="3" Type="DateTime" />
+          <Property Name="Edit_Date" Precision="3" Type="DateTime" />
+          <Property Name="Create_User" MaxLength="100" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Edit_User" MaxLength="100" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="MapID" Type="Int32" />
-          <Property Name="Price" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Price" Precision="18" Scale="0" Type="Decimal" />
           <Property Name="TotalActivities" Type="Int32" />
-          <Property Name="PhysicalIntensity" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="PassengerNumbers" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="DurationLength" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Timing" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Session" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Specials" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PhysicalIntensity" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="PassengerNumbers" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="DurationLength" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Timing" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Session" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Specials" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="Recommonded" Type="Boolean" />
           <Property Name="Rating" Type="Double" />
-          <Property Name="Location" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Area" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Location" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Area" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IsActive" Type="Boolean" />
         </EntityType>
         <EntityType Name="stg_SupplierCityMapping">
           <Key>
@@ -4358,23 +4362,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="Activity_Policy">
-          <Key>
-            <PropertyRef Name="Activity_Policy_Id" />
-          </Key>
-          <Property Name="Activity_Policy_Id" Type="Guid" Nullable="false" />
-          <Property Name="Activity_Id" Type="Guid" />
-          <Property Name="Legacy_Product_ID" Type="Int32" />
-          <Property Name="Policy_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="AllowedYN" Type="Boolean" />
-          <Property Name="PolicyName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="PolicyDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Activity_Flavour_Id" Type="Guid" />
-        </EntityType>
         <EntityType Name="Activity_Tips">
           <Key>
             <PropertyRef Name="Activity_Tips_Id" />
@@ -4573,27 +4560,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="PriceBasis" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="PriceNet" Type="Decimal" Precision="18" Scale="0" />
           <Property Name="PriceCurrency" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="Activity_ReviewsAndScores">
-          <Key>
-            <PropertyRef Name="Activity_ReviewsAndScores_Id" />
-          </Key>
-          <Property Name="Activity_ReviewsAndScores_Id" Type="Guid" Nullable="false" />
-          <Property Name="Activity_Flavour_Id" Type="Guid" />
-          <Property Name="Activity_Id" Type="Guid" />
-          <Property Name="Review_Source" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Review_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Review_Score" Type="Decimal" Precision="18" Scale="0" />
-          <Property Name="IsCustomerReview" Type="Boolean" />
-          <Property Name="Review_Author" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Review_PostedDate" Type="DateTime" Precision="3" />
-          <Property Name="Review_Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Review_Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Review_Status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Activity_SupplierActivityImageMapping">
           <Key>
@@ -4825,6 +4791,46 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Activity_Policy">
+          <Key>
+            <PropertyRef Name="Activity_Policy_Id" />
+          </Key>
+          <Property Name="Activity_Policy_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Legacy_Product_ID" Type="Int32" />
+          <Property Name="Policy_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AllowedYN" Type="Boolean" />
+          <Property Name="PolicyName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PolicyDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_Flavour_Id" Type="Guid" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Activity_ReviewsAndScores">
+          <Key>
+            <PropertyRef Name="Activity_ReviewsAndScores_Id" />
+          </Key>
+          <Property Name="Activity_ReviewsAndScores_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Flavour_Id" Type="Guid" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="Review_Source" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Review_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Review_Score" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="IsCustomerReview" Type="Boolean" />
+          <Property Name="Review_Author" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Review_PostedDate" Type="DateTime" Precision="3" />
+          <Property Name="Review_Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Review_Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Review_Status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" />
         </EntityType>
       </Schema>
@@ -6005,6 +6011,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Activity_SupplierProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_SupplierProductMapping">
               <MappingFragment StoreEntitySet="Activity_SupplierProductMapping">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="Area" ColumnName="Area" />
                 <ScalarProperty Name="Location" ColumnName="Location" />
                 <ScalarProperty Name="Rating" ColumnName="Rating" />
@@ -6669,24 +6676,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Activity_Policy">
-            <EntityTypeMapping TypeName="ConsumerModel.Activity_Policy">
-              <MappingFragment StoreEntitySet="Activity_Policy">
-                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="PolicyDescription" ColumnName="PolicyDescription" />
-                <ScalarProperty Name="PolicyName" ColumnName="PolicyName" />
-                <ScalarProperty Name="AllowedYN" ColumnName="AllowedYN" />
-                <ScalarProperty Name="Policy_Type" ColumnName="Policy_Type" />
-                <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
-                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
-                <ScalarProperty Name="Activity_Policy_Id" ColumnName="Activity_Policy_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Activity_Tips">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_Tips">
               <MappingFragment StoreEntitySet="Activity_Tips">
@@ -6893,28 +6882,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
                 <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
                 <ScalarProperty Name="Activity_Prices_Id" ColumnName="Activity_Prices_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Activity_ReviewsAndScores">
-            <EntityTypeMapping TypeName="ConsumerModel.Activity_ReviewsAndScores">
-              <MappingFragment StoreEntitySet="Activity_ReviewsAndScores">
-                <ScalarProperty Name="Review_Status" ColumnName="Review_Status" />
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="Review_Description" ColumnName="Review_Description" />
-                <ScalarProperty Name="Review_Title" ColumnName="Review_Title" />
-                <ScalarProperty Name="Review_PostedDate" ColumnName="Review_PostedDate" />
-                <ScalarProperty Name="Review_Author" ColumnName="Review_Author" />
-                <ScalarProperty Name="IsCustomerReview" ColumnName="IsCustomerReview" />
-                <ScalarProperty Name="Review_Score" ColumnName="Review_Score" />
-                <ScalarProperty Name="Review_Type" ColumnName="Review_Type" />
-                <ScalarProperty Name="Review_Source" ColumnName="Review_Source" />
-                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
-                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
-                <ScalarProperty Name="Activity_ReviewsAndScores_Id" ColumnName="Activity_ReviewsAndScores_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7158,6 +7125,48 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Legacy_Product_Id" ColumnName="Legacy_Product_Id" />
                 <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
                 <ScalarProperty Name="Activity_Inclusions_Id" ColumnName="Activity_Inclusions_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_Policy">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_Policy">
+              <MappingFragment StoreEntitySet="Activity_Policy">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="PolicyDescription" ColumnName="PolicyDescription" />
+                <ScalarProperty Name="PolicyName" ColumnName="PolicyName" />
+                <ScalarProperty Name="AllowedYN" ColumnName="AllowedYN" />
+                <ScalarProperty Name="Policy_Type" ColumnName="Policy_Type" />
+                <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Policy_Id" ColumnName="Activity_Policy_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_ReviewsAndScores">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_ReviewsAndScores">
+              <MappingFragment StoreEntitySet="Activity_ReviewsAndScores">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Review_Status" ColumnName="Review_Status" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Review_Description" ColumnName="Review_Description" />
+                <ScalarProperty Name="Review_Title" ColumnName="Review_Title" />
+                <ScalarProperty Name="Review_PostedDate" ColumnName="Review_PostedDate" />
+                <ScalarProperty Name="Review_Author" ColumnName="Review_Author" />
+                <ScalarProperty Name="IsCustomerReview" ColumnName="IsCustomerReview" />
+                <ScalarProperty Name="Review_Score" ColumnName="Review_Score" />
+                <ScalarProperty Name="Review_Type" ColumnName="Review_Type" />
+                <ScalarProperty Name="Review_Source" ColumnName="Review_Source" />
+                <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
+                <ScalarProperty Name="Activity_ReviewsAndScores_Id" ColumnName="Activity_ReviewsAndScores_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
