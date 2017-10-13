@@ -258,24 +258,24 @@ namespace ConsumerSvc
         #endregion
 
         #region Activity Description
-        //public IList<DataContracts.Masters.DC_Activity_Descriptions> GetActivityDescription(DataContracts.Masters.DC_Activity_Descriptions_RQ RQ)
-        //{
-        //    using (BL_Activity objBL = new BL_Activity())
-        //    {
-        //        List<DC_Activity_Descriptions> searchResults = new List<DC_Activity_Descriptions>();
-        //        searchResults = objBL.GetActivityDescription(RQ);
-        //        if (searchResults.Count == 0)
-        //            throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
-        //        return searchResults;
-        //    }
-        //}
-        //public DataContracts.DC_Message AddUpdateActivityDescription(DC_Activity_Descriptions RQ)
-        //{
-        //    using (BusinessLayer.BL_Activity obj = new BL_Activity())
-        //    {
-        //        return obj.AddUpdateActivityDescription(RQ);
-        //    }
-        //}
+        public IList<DataContracts.Masters.DC_Activity_Descriptions> GetActivityDescription(DataContracts.Masters.DC_Activity_Descriptions_RQ RQ)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                List<DC_Activity_Descriptions> searchResults = new List<DC_Activity_Descriptions>();
+                searchResults = objBL.GetActivityDescription(RQ);
+                if (searchResults.Count == 0)
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                return searchResults;
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityDescription(DC_Activity_Descriptions RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateActivityDescription(RQ);
+            }
+        }
         #endregion
 
         #region Activity Flavour
@@ -383,7 +383,6 @@ namespace ConsumerSvc
         }
         #endregion
 
-
         #region Supplier Product mapping_CA
         public IList<DataContracts.Masters.DC_Activity_SupplierProductMapping_CA> GetActSupplierProdMapping_CA(DataContracts.Masters.DC_Activity_SupplierProductMapping_CA_RQ RQ)
         {
@@ -425,5 +424,7 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
+       
     }
 }

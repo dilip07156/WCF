@@ -510,7 +510,7 @@ namespace DataLayer
             }
             catch (Exception e)
             {
-                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Legacy Id", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
         #endregion
@@ -1594,6 +1594,183 @@ namespace DataLayer
             catch (Exception ex)
             {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity pickUpDrop", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
+
+        #region Activity Description
+        public List<DataContracts.Masters.DC_Activity_Descriptions> GetActivityDescription(DataContracts.Masters.DC_Activity_Descriptions_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_Descriptions
+                                 select a;
+
+                    if (RQ.Activity_Description_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Description_Id == RQ.Activity_Description_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Id == RQ.Activity_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Flavour_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
+                                 select a;
+                    }
+                    if (RQ.Legacy_Product_ID != null)
+                    {
+                        search = from a in search
+                                 where a.Legacy_Product_ID == RQ.Legacy_Product_ID
+                                 select a;
+                    }
+
+                    if (RQ.DescriptionFor != null)
+                    {
+                        search = from a in search
+                                 where a.DescriptionFor.Trim().TrimStart().ToUpper() == RQ.DescriptionFor.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    var result = from a in search
+                                 orderby a.DescriptionType
+                                 select new DataContracts.Masters.DC_Activity_Descriptions
+                                 {
+                                     Activity_Description_Id = a.Activity_Description_Id,
+                                     Activity_Id = a.Activity_Id,
+                                     Activity_Flavour_Id = a.Activity_Flavour_Id,
+                                     IsActive = a.IsActive,
+                                     Legacy_Product_ID = a.Legacy_Product_ID,
+                                     Create_Date = a.Create_Date,
+                                     DescriptionType = a.DescriptionType,
+                                     DescriptionSubType = a.DescriptionSubType,
+                                     Description = a.Description,
+                                     Description_Name = a.Description_Name,
+                                     DescriptionFor = a.DescriptionFor,
+                                     FromDate = a.FromDate,
+                                     ToDate = a.ToDate,
+                                     Language_Code = a.Language_Code,
+                                     Source = a.Source,
+                                     TotalRecords = total,
+                                     
+                                     
+                                 };
+                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Description", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityDescription(DC_Activity_Descriptions RQ)
+        {
+            bool IsInsert = false;
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (RQ.Activity_Description_Id != null)
+                    {
+                        var res = context.Activity_Descriptions.Find(RQ.Activity_Description_Id);
+                        if (res != null)
+                        {
+                            if ((RQ.IsActive) != (res.IsActive ?? true))
+                            {
+                                res.IsActive = RQ.IsActive;
+                                res.Edit_Date = RQ.Edit_Date;
+                                res.Edit_User = RQ.Edit_User;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUnDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
+                            }
+                            else
+                            {
+                               res.Activity_Description_Id = RQ.Activity_Description_Id ?? Guid.NewGuid();
+                               res.Activity_Id = RQ.Activity_Id;
+                               res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                               res.Legacy_Product_ID = RQ.Legacy_Product_ID;
+                               res.DescriptionType = RQ.DescriptionType;
+                               res.DescriptionSubType = RQ.DescriptionSubType;
+                               res.Description = RQ.Description;
+                               res.Description_Name = RQ.Description_Name;
+                               res.DescriptionFor = RQ.DescriptionFor;
+                               res.FromDate = RQ.FromDate;
+                               res.ToDate = RQ.ToDate;
+                               res.Language_Code = RQ.Language_Code;
+                               res.Source = RQ.Source;
+                                res.Edit_Date = DateTime.Now;
+                                res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
+                            }
+                        }
+                        else IsInsert = true;
+                    }
+                    else IsInsert = true;
+                    if (IsInsert)
+                    {
+                        Activity_Descriptions newmed = new Activity_Descriptions();
+                        newmed.Activity_Description_Id = RQ.Activity_Description_Id??Guid.NewGuid();
+                        newmed.Activity_Id = RQ.Activity_Id;
+                        newmed.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                        newmed.IsActive = RQ.IsActive;
+                        newmed.Legacy_Product_ID = RQ.Legacy_Product_ID;
+                        newmed.DescriptionType = RQ.DescriptionType;
+                        newmed.DescriptionSubType = RQ.DescriptionSubType;
+                        newmed.Description = RQ.Description;
+                        newmed.Description_Name = RQ.Description_Name;
+                        newmed.DescriptionFor = RQ.DescriptionFor;
+                        newmed.FromDate = RQ.FromDate;
+                        newmed.ToDate = RQ.ToDate;
+                        newmed.Language_Code = RQ.Language_Code;
+                        newmed.Source = RQ.Source;
+                        newmed.Create_Date = DateTime.Now;
+                        newmed.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                        context.Activity_Descriptions.Add(newmed);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                    return _msg;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity Descriptions", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
         #endregion
