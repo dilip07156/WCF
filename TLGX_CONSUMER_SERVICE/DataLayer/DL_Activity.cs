@@ -770,40 +770,58 @@ namespace DataLayer
                         var res = context.Activity_Media.Find(RQ.Activity_Media_Id);
                         if (res != null)
                         {
-                            res.Activity_Media_Id = RQ.Activity_Media_Id ?? Guid.Empty;
-                            res.Activity_Id = RQ.Activity_Id;
-                            res.Legacy_Product_Id = RQ.Legacy_Product_Id;
-                            res.IsActive = RQ.IsActive;
-                            res.FileFormat = RQ.FileFormat;
-                            res.Media_URL = RQ.Media_URL;
-                            res.Media_Position = RQ.Media_Position;
-                            res.SubCategory = RQ.SubCategory;
-                            res.MediaFileMaster = RQ.MediaFileMaster;
-                            res.Description = RQ.Description;
-                            res.MediaID = RQ.MediaID;
-                            res.MediaType = RQ.MediaType;
-                            res.RoomCategory = RQ.RoomCategory;
-                            res.MediaName = RQ.MediaName;
-                            res.Media_Path = RQ.Media_Path;
-                            res.Category = RQ.Category;
-                            res.ValidFrom = RQ.ValidFrom;
-                            res.ValidTo = RQ.ValidTo;
-                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
-                            res.Media_Caption = RQ.Media_Caption;
-                            res.Media_Height = RQ.Media_Height;
-                            res.Media_Width = RQ.Media_Width;
-                            res.Edit_Date = DateTime.Now;
-                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
-                            if (context.SaveChanges() == 1)
+                            if ((RQ.IsActive) != (res.IsActive ?? true))
                             {
-                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                res.IsActive = RQ.IsActive;
+                                res.Edit_Date = RQ.Edit_Date;
+                                res.Edit_User = RQ.Edit_User;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUnDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
                             }
                             else
                             {
-                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
-                            }
+                                res.Activity_Media_Id = RQ.Activity_Media_Id ?? Guid.Empty;
+                                res.Activity_Id = RQ.Activity_Id;
+                                res.Legacy_Product_Id = RQ.Legacy_Product_Id;
+                                res.FileFormat = RQ.FileFormat;
+                                res.Media_URL = RQ.Media_URL;
+                                res.Media_Position = RQ.Media_Position;
+                                res.SubCategory = RQ.SubCategory;
+                                res.MediaFileMaster = RQ.MediaFileMaster;
+                                res.Description = RQ.Description;
+                                res.MediaID = RQ.MediaID;
+                                res.MediaType = RQ.MediaType;
+                                res.RoomCategory = RQ.RoomCategory;
+                                res.MediaName = RQ.MediaName;
+                                res.Media_Path = RQ.Media_Path;
+                                res.Category = RQ.Category;
+                                res.ValidFrom = RQ.ValidFrom;
+                                res.ValidTo = RQ.ValidTo;
+                                res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                                res.Media_Caption = RQ.Media_Caption;
+                                res.Media_Height = RQ.Media_Height;
+                                res.Media_Width = RQ.Media_Width;
+                                res.Edit_Date = DateTime.Now;
+                                res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
+                            }  
                         }
                         else IsInsert = true;
                     }
@@ -848,14 +866,15 @@ namespace DataLayer
                             _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                         }
                     }
-                        return _msg;
-                    }
+                    return _msg;
+                }
             }
             catch (Exception ex)
             {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity media", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
         #endregion
 
         #region  Activity Inclusions
