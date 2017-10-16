@@ -107,6 +107,7 @@
     <Compile Include="Consumer.svc.cs">
       <DependentUpon>Consumer.svc</DependentUpon>
     </Compile>
+    <Compile Include="FileTransfer.cs" />
     <Compile Include="GeoLocation.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

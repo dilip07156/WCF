@@ -89,7 +89,6 @@ namespace ConsumerSvc
         }
         #endregion
 
-
         #region "Upload File"
         public List<DataContracts.UploadStaticData.DC_SupplierImportFileDetails> GetStaticDataFileDetail(DataContracts.UploadStaticData.DC_SupplierImportFileDetails_RQ obj)
         {
@@ -123,7 +122,6 @@ namespace ConsumerSvc
             }
         }
         #endregion
-
 
         #region "Logging"
         public DataContracts.DC_Message AddStaticDataUploadErrorLog(DataContracts.UploadStaticData.DC_SupplierImportFile_ErrorLog obj)
@@ -189,6 +187,7 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
         #region File Progress DashBoard
         public DataContracts.DC_FileProgressDashboard getFileProgressDashBoardData(string fileid)
         {
@@ -198,6 +197,5 @@ namespace ConsumerSvc
             }
         }
         #endregion
-
     }
 }

@@ -20,5 +20,21 @@ namespace BusinessLayer
                 return obj.UploadFileInChunks(request);
             }
         }
+
+        public DataContracts.FileTransfer.DC_UploadResponse TransferFileInChunks(DataContracts.FileTransfer.DC_FileData request)
+        {
+            using (DataLayer.DL_FileTransfer obj = new DataLayer.DL_FileTransfer())
+            {
+                return obj.TransferFileInChunks(request);
+            }
+        }
+
+        public DataContracts.FileTransfer.DC_FileUploadResponse FileUpload(DataContracts.FileTransfer.DC_RemoteFileInfo request)
+        {
+            using (DataLayer.DL_FileTransfer obj = new DataLayer.DL_FileTransfer())
+            {
+                return obj.FileUpload(request);
+            }
+        }
     }
 }
