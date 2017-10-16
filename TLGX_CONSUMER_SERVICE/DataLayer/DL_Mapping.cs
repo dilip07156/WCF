@@ -3948,7 +3948,7 @@ namespace DataLayer
                             isCountryCodeCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CountryMapping on a.Supplier_Id equals m.Supplier_Id
-                                             where a.CountryCode != null && m.CountryCode != null 
+                                             where a.CountryCode != null && m.CountryCode != null
                                              && a.CountryCode.Trim().ToUpper() == m.CountryCode.Trim().ToUpper()
                                              select a);
                             //join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { cm.Supplier_Id, cm.CountryCode }
@@ -4010,7 +4010,7 @@ namespace DataLayer
                     if (isCountryCodeCheck || isCountryNameCheck || isCodeCheck || isNameCheck || isLatLongCheck)
                     {
                         res = (from a in prodMapSearch
-                               join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName} equals new { m.Supplier_Id, m.CountryName }
+                               join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName } equals new { m.Supplier_Id, m.CountryName }
                                join ms in context.m_CountryMaster on m.Country_Id equals ms.Country_Id
                                where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
                                select new DataContracts.Mapping.DC_CityMapping
@@ -4228,7 +4228,7 @@ namespace DataLayer
                                 search.Edit_Date = CM.Edit_Date;
                                 search.Edit_User = CM.Edit_User;
                                 search.Remarks = CM.Remarks;
-                                if (search.StateCode  == null)
+                                if (search.StateCode == null)
                                     search.StateCode = CM.StateCode;
                                 if (search.StateName == null)
                                     search.StateName = CM.StateName;
@@ -5087,14 +5087,15 @@ namespace DataLayer
                     var searchReturn = (from map in m_MasterAttributeMapping
                                         join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
                                         join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
-                                        join mavv in m_masterattributevalue on mav.ParentAttributeValue_Id equals mavv.MasterAttributeValue_Id
-                                        orderby mav.AttributeValue.Trim().TrimStart()
+                                        join mavp in context.m_masterattributevalue on mav.ParentAttributeValue_Id equals mavp.MasterAttributeValue_Id into mavploj
+                                        from mavplojr in mavploj
+                                        orderby mavplojr.AttributeValue.Trim(), mav.AttributeValue.Trim()
                                         where mav.IsActive == true
                                         select new DataContracts.Mapping.DC_MasterAttributeValueMappingRS
                                         {
                                             MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
-                                            ParentAttributeValue=mavv.AttributeValue,
-                                            SystemMasterAttributeValue = mav.AttributeValue,
+                                            ParentAttributeValue = mavplojr.AttributeValue,
+                                            SystemMasterAttributeValue =  mav.AttributeValue ,
                                             SystemMasterAttributeValue_Id = mav.MasterAttributeValue_Id,
                                             TotalRecords = total,
                                             SupplierAttributeValues = (from imavm in m_MasterAttributeValueMapping
