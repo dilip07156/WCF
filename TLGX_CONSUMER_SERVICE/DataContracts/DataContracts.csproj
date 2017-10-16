@@ -77,6 +77,9 @@
     <Compile Include="DC_Master_Country.cs" />
     <Compile Include="DC_GooglePlaceNearBy.cs" />
     <Compile Include="FileTransfer\DC_FileData.cs" />
+    <Compile Include="FileTransfer\DC_FileDownloadRequest.cs" />
+    <Compile Include="FileTransfer\DC_FileUploadResponse.cs" />
+    <Compile Include="FileTransfer\DC_RemoteFileInfo.cs" />
     <Compile Include="FileTransfer\DC_UploadResponse.cs" />
     <Compile Include="Mapping\DC_Accommodation_SupplierRoomTypeMap_SearchRS.cs" />
     <Compile Include="Mapping\DC_Accommodation_SupplierRoomTypeMap_SearchRQ.cs" />

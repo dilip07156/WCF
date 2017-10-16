@@ -2933,6 +2933,7 @@ namespace DataLayer
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
                     var result = from a in search
+                                 orderby a.Create_Date
                                  select new DataContracts.Masters.DC_Activity_ReviewsAndScores
                                  {
                                     Activity_ReviewsAndScores_Id = a.Activity_ReviewsAndScores_Id,
@@ -2940,6 +2941,7 @@ namespace DataLayer
                                     Activity_Id=a.Activity_Id,
                                     Review_Author=a.Review_Author,
                                     IsCustomerReview=a.IsCustomerReview,
+                                    IsActive=a.IsActive,
                                     Review_Description=a.Review_Description,
                                     Review_PostedDate=a.Review_PostedDate,
                                     Review_Score=a.Review_Score,

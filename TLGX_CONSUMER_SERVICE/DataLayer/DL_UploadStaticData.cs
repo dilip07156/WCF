@@ -2303,6 +2303,24 @@ namespace DataLayer
             DataContracts.DC_Message dc = new DataContracts.DC_Message();
             try
             {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var FileRecord = (from a in context.SupplierImportFileDetails
+                                      where a.SupplierImportFile_Id == obj.SupplierImportFile_Id && a.STATUS == "UPLOADED"
+                                      select a).FirstOrDefault();
+                    if (FileRecord != null)
+                    {
+                        FileRecord.STATUS = "PROCESSING";
+                        FileRecord.PROCESS_USER = obj.PROCESS_USER;
+                        FileRecord.PROCESS_DATE = DateTime.Now;
+                        context.SaveChanges();
+                    }
+                    else
+                    {
+                        return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Duplicate, StatusMessage = "File is already processed." };
+                    }
+                }
+
                 DHSVC.DC_SupplierImportFileDetails_TestProcess file = new DHSVC.DC_SupplierImportFileDetails_TestProcess();
                 file.SupplierImportFile_Id = obj.SupplierImportFile_Id;
                 file.Supplier_Id = obj.Supplier_Id;

@@ -70,7 +70,7 @@
     <Compile Include="ISchedule.cs" />
     <Compile Include="IStaticData.cs" />
     <Compile Include="IStaticDataHandler.cs" />
-    <Compile Include="ITransferService.cs" />
+    <Compile Include="IFileTransfer.cs" />
     <Compile Include="IUploadStaticData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
