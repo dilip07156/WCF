@@ -48,12 +48,12 @@ namespace ConsumerSvc
         #endregion
 
         #region "Activity conatct"
-        public IList<DC_Activity_Contact> GetActivityContacts(string Activity_Id, string DataKey_Id)
+        public IList<DC_Activity_Contact> GetActivityContacts(string Activity_Flavour_Id, string DataKey_Id)
         {
             using (BL_Activity objBL = new BL_Activity())
             {
                 List<DC_Activity_Contact> searchResults = new List<DC_Activity_Contact>();
-                searchResults = objBL.GetActivityContacts(Guid.Parse(Activity_Id), Guid.Parse(DataKey_Id));
+                searchResults = objBL.GetActivityContacts(Guid.Parse(Activity_Flavour_Id), Guid.Parse(DataKey_Id));
 
                 if (searchResults == null)
                 {
@@ -79,22 +79,22 @@ namespace ConsumerSvc
             }
         }
         
-        public string GetLegacyProductId(string Activity_Id)
+        public int GetLegacyProductId(string Activity_Flavour_Id)
         {
             using (BL_Activity obj = new BL_Activity())
             {
-                return obj.GetLegacyProductId(Guid.Parse(Activity_Id));
+                return obj.GetLegacyProductId(Guid.Parse(Activity_Flavour_Id));
             }
         }
         #endregion
 
         #region "Activity Status"
-        public IList<DC_Activity_Status> GetActivityStatus(string Activity_Id, string DataKey_Id)
+        public IList<DC_Activity_Status> GetActivityStatus(string Activity_Flavour_Id, string DataKey_Id)
         {
             using (BL_Activity objBL = new BL_Activity())
             {
                 List<DC_Activity_Status> searchResults = new List<DC_Activity_Status>();
-                searchResults = objBL.GetActivityStatus(Guid.Parse(Activity_Id), Guid.Parse(DataKey_Id));
+                searchResults = objBL.GetActivityStatus(Guid.Parse(Activity_Flavour_Id), Guid.Parse(DataKey_Id));
 
                 if (searchResults == null)
                 {
@@ -196,11 +196,20 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
-        public DC_Message AddUpdateActivityClassifiationAttributes(DC_Activity_ClassificationAttributes RQ)
+
+        public bool AddActivityClassifiationAttributes(DataContracts.Masters.DC_Activity_ClassificationAttributes RQ)
         {
-            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            using (BL_Activity obj = new BL_Activity())
             {
-                return obj.AddUpdateActivityClassifiationAttributes(RQ);
+                return obj.AddActivityClassifiationAttributes(RQ);
+            }
+        }
+
+         public bool UpdateActivityClassifiationAttributes(DataContracts.Masters.DC_Activity_ClassificationAttributes RQ)
+        {
+            using (BL_Activity obj = new BL_Activity())
+            {
+                return obj.UpdateActivityClassifiationAttributes(RQ);
             }
         }
         #endregion
@@ -249,28 +258,28 @@ namespace ConsumerSvc
         #endregion
 
         #region Activity Description
-        //public IList<DataContracts.Masters.DC_Activity_Descriptions> GetActivityDescription(DataContracts.Masters.DC_Activity_Descriptions_RQ RQ)
-        //{
-        //    using (BL_Activity objBL = new BL_Activity())
-        //    {
-        //        List<DC_Activity_Descriptions> searchResults = new List<DC_Activity_Descriptions>();
-        //        searchResults = objBL.GetActivityDescription(RQ);
-        //        if (searchResults.Count == 0)
-        //            throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
-        //        return searchResults;
-        //    }
-        //}
-        //public DataContracts.DC_Message AddUpdateActivityDescription(DC_Activity_Descriptions RQ)
-        //{
-        //    using (BusinessLayer.BL_Activity obj = new BL_Activity())
-        //    {
-        //        return obj.AddUpdateActivityDescription(RQ);
-        //    }
-        //}
+        public IList<DataContracts.Masters.DC_Activity_Descriptions> GetActivityDescription(DataContracts.Masters.DC_Activity_Descriptions_RQ RQ)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                List<DC_Activity_Descriptions> searchResults = new List<DC_Activity_Descriptions>();
+                searchResults = objBL.GetActivityDescription(RQ);
+                if (searchResults.Count == 0)
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                return searchResults;
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityDescription(DC_Activity_Descriptions RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateActivityDescription(RQ);
+            }
+        }
         #endregion
 
         #region Activity Flavour
-        public IList<DataContracts.Masters.DC_Activity_Flavour> GetActivityFlavour(DataContracts.Masters.DC_Activity_Flavour_RQ RQ)
+        public List<DataContracts.Masters.DC_Activity_Flavour> GetActivityFlavour(DataContracts.Masters.DC_Activity_Flavour_RQ RQ)
         {
             using (BL_Activity objBL = new BL_Activity())
             {
@@ -374,7 +383,6 @@ namespace ConsumerSvc
         }
         #endregion
 
-
         #region Supplier Product mapping_CA
         public IList<DataContracts.Masters.DC_Activity_SupplierProductMapping_CA> GetActSupplierProdMapping_CA(DataContracts.Masters.DC_Activity_SupplierProductMapping_CA_RQ RQ)
         {
@@ -416,5 +424,7 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
+       
     }
 }

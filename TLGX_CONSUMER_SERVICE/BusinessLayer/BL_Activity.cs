@@ -43,11 +43,11 @@ namespace BusinessLayer
         #endregion
 
         #region "Activity Contact"
-        public List<DC_Activity_Contact> GetActivityContacts(Guid Activity_Id, Guid DataKey_Id)
+        public List<DC_Activity_Contact> GetActivityContacts(Guid Activity_Flavour_Id, Guid DataKey_Id)
         {
             using (DataLayer.DL_Activity _obj = new DataLayer.DL_Activity())
             {
-                return _obj.GetActivityContacts(Activity_Id, DataKey_Id);
+                return _obj.GetActivityContacts(Activity_Flavour_Id, DataKey_Id);
             }
         }
 
@@ -67,21 +67,21 @@ namespace BusinessLayer
             }
         }
         
-        public string GetLegacyProductId(Guid Activity_Id)
+        public int GetLegacyProductId(Guid Activity_Flavour_Id)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
-                return obj.GetLegacyProductId(Activity_Id);
+                return obj.GetLegacyProductId(Activity_Flavour_Id);
             }
         }
         #endregion
 
         #region "Activity Status"
-        public List<DC_Activity_Status> GetActivityStatus(Guid Activity_Id, Guid DataKey_Id)
+        public List<DC_Activity_Status> GetActivityStatus(Guid Activity_Flavour_Id, Guid DataKey_Id)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
-                return obj.GetActivityStatus(Activity_Id, DataKey_Id);
+                return obj.GetActivityStatus(Activity_Flavour_Id, DataKey_Id);
             }
         }
 
@@ -164,11 +164,19 @@ namespace BusinessLayer
             }
         }
 
-        public DC_Message AddUpdateActivityClassifiationAttributes(DC_Activity_ClassificationAttributes RQ)
+        public bool AddActivityClassifiationAttributes(DataContracts.Masters.DC_Activity_ClassificationAttributes RQ)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
-                return obj.AddUpdateActivityClassifiationAttributes(RQ);
+                return obj.AddActivityClassifiationAttributes(RQ);
+            }
+        }
+
+        public bool UpdateActivityClassifiationAttributes(DataContracts.Masters.DC_Activity_ClassificationAttributes RQ)
+        {
+            using(DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.UpdateActivityClassifiationAttributes(RQ);
             }
         }
         #endregion
@@ -208,20 +216,20 @@ namespace BusinessLayer
         #endregion
 
         #region Activity Description
-        //public List<DataContracts.Masters.DC_Activity_Descriptions> GetActivityDescription(DataContracts.Masters.DC_Activity_Descriptions_RQ RQ)
-        //{
-        //    using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
-        //    {
-        //        return obj.GetActivityDescription(RQ);
-        //    }
-        //}
-        //public DataContracts.DC_Message AddUpdateActivityDescription(DC_Activity_Descriptions RQ)
-        //{
-        //    using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
-        //    {
-        //        return obj.AddUpdateActivityDescription(RQ);
-        //    }
-        //}
+        public List<DataContracts.Masters.DC_Activity_Descriptions> GetActivityDescription(DataContracts.Masters.DC_Activity_Descriptions_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityDescription(RQ);
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityDescription(DC_Activity_Descriptions RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdateActivityDescription(RQ);
+            }
+        }
         #endregion
 
         #region Activity Flavour

@@ -16,6 +16,7 @@ namespace DataLayer
     {
         public System.Guid Activity_Contact_Id { get; set; }
         public Nullable<System.Guid> Activity_Id { get; set; }
+        public Nullable<System.Guid> Activity_Flavour_Id { get; set; }
         public Nullable<int> Legacy_Product_ID { get; set; }
         public string Telephone { get; set; }
         public string Fax { get; set; }

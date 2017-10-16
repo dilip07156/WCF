@@ -725,7 +725,8 @@ namespace DataContracts.Masters
     {
         [DataMember]
         public Guid Activity_Contact_Id { get; set; }
-
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
         [DataMember]
         public Guid? Activity_Id { get; set; }
 
@@ -769,7 +770,11 @@ namespace DataContracts.Masters
         public Guid Activity_Status_Id { get; set; }
         [DataMember]
         public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
 
+        [DataMember]
+        public int? Legacy_Product_ID { get; set; }
         [DataMember]
         public DateTime? From { get; set; }
 
@@ -931,6 +936,8 @@ namespace DataContracts.Masters
         [DataMember]
         public string Edit_User { get; set; }
         [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
         public int? TotalRecords { get; set; }
     }
     [DataContract]
@@ -1005,6 +1012,8 @@ namespace DataContracts.Masters
         public DateTime? CreateDate { get; set; }
         [DataMember]
         public DateTime? EditDate { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
         [DataMember]
         public int? TotalRecords { get; set; }
     }
@@ -1417,7 +1426,11 @@ namespace DataContracts.Masters
         [DataMember]
         public string ProductCategory { get; set; }
         [DataMember]
+        public string ProductCategorySubType { get; set; }
+        [DataMember]
         public string ProductType { get; set; }
+        [DataMember]
+        public string ProductNameSubType { get; set; }
         [DataMember]
         public int? Legacy_Product_ID { get; set; }
         [DataMember]
@@ -1656,6 +1669,8 @@ namespace DataContracts.Masters
         [DataMember]
         public string Area { get; set; }
         [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
         public int? TotalRecords { get; set; }
     }
     [DataContract]
@@ -1724,6 +1739,8 @@ namespace DataContracts.Masters
         public DateTime? Create_Date { get; set; }
         [DataMember]
         public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
         [DataMember]
         public int? Totalrecords { get; set; }
     }
@@ -1815,6 +1832,8 @@ namespace DataContracts.Masters
         [DataMember]
         public Guid? Activity_Id { get; set; }
         [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
         public int? Legacy_Product_ID { get; set; }
         [DataMember]
         public string Policy_Type { get; set; }
@@ -1833,6 +1852,8 @@ namespace DataContracts.Masters
         [DataMember]
         public DateTime? Edit_Date { get; set; }
         [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
         public int? Totalrecords { get; set; }
     }
     [DataContract]
@@ -1842,6 +1863,8 @@ namespace DataContracts.Masters
         public Guid? Activity_Policy_Id { get; set; }
         [DataMember]
         public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
         [DataMember]
         public int? Legacy_Product_ID { get; set; }
         [DataMember]
