@@ -482,7 +482,7 @@ namespace BusinessLayer
             }
         }
 
-        public List<DataContracts.Mapping.DC_MasterAttributeValueMapping> GetMasterAttributeValueMapping(DataContracts.Mapping.DC_MasterAttributeValueMapping_RQ RQ)
+        public List<DataContracts.Mapping.DC_MasterAttributeValueMappingRS> GetMasterAttributeValueMapping(DataContracts.Mapping.DC_MasterAttributeValueMapping_RQ RQ)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
@@ -512,6 +512,13 @@ namespace BusinessLayer
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
                 return objBL.UpdateMasterAttributeValueMapping(param);
+            }
+        }
+        public DataContracts.DC_Message DeleteMasterAttributeValueMapping(DC_SupplierAttributeValues_RQ param)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.DeleteMasterAttributeValueMapping(param);
             }
         }
 

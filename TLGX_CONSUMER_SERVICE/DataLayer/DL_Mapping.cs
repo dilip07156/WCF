@@ -3176,6 +3176,7 @@ namespace DataLayer
                             isCodeCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CountryMaster on a.CountryCode equals m.Code
+                                             where a.CountryCode != null && m.Code != null
                                              select a);
                         }
                         if (CurrConfig == "NAME")
@@ -3183,6 +3184,7 @@ namespace DataLayer
                             isNameCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CountryMaster on a.CountryName equals m.Name
+                                             where a.CountryName != null && m.Name != null
                                              select a);
                         }
                         if (CurrConfig == "ISO3166-1-Alpha-2".Trim().ToUpper())
@@ -3190,6 +3192,7 @@ namespace DataLayer
                             isCodeCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CountryMaster on a.CountryCode equals m.ISO3166_1_Alpha_2
+                                             where a.CountryCode != null && m.ISO3166_1_Alpha_2 != null
                                              select a);
                         }
                         if (CurrConfig == "ISO3166-1-Alpha-3".Trim().ToUpper())
@@ -3197,6 +3200,7 @@ namespace DataLayer
                             isCodeCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CountryMaster on a.CountryCode equals m.ISO3166_1_Alpha_3
+                                             where a.CountryCode != null && m.ISO3166_1_Alpha_3 != null
                                              select a);
                         }
                         if (CurrConfig == "LATITUDE")
@@ -3838,8 +3842,9 @@ namespace DataLayer
                         oldCityName = g.CityName,
                         ActionType = "INSERT",
                         stg_City_Id = g.stg_City_Id,
-                        Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
-
+                        Remarks = "", //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
+                        StateCode = g.StateCode,
+                        StateName = g.StateName
                     }));
 
                 lstobj.InsertRange(lstobj.Count, clsMappingCity.Where(a => a.stg_City_Id != null && a.ActionType == "INSERT"
@@ -3943,7 +3948,8 @@ namespace DataLayer
                             isCountryCodeCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CountryMapping on a.Supplier_Id equals m.Supplier_Id
-                                             where a.CountryCode.Trim().ToUpper() == m.CountryCode.Trim().ToUpper()
+                                             where a.CountryCode != null && m.CountryCode != null 
+                                             && a.CountryCode.Trim().ToUpper() == m.CountryCode.Trim().ToUpper()
                                              select a);
                             //join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { cm.Supplier_Id, cm.CountryCode }
                             //join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
@@ -3954,7 +3960,8 @@ namespace DataLayer
                             isCountryNameCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CountryMapping on a.Supplier_Id equals m.Supplier_Id
-                                             where a.CountryName.Trim().ToUpper() == m.CountryName.Trim().ToUpper()
+                                             where a.CountryName != null && m.CountryName != null
+                                             && a.CountryName.Trim().ToUpper() == m.CountryName.Trim().ToUpper()
                                              select a);
                             //join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName } equals new { cm.Supplier_Id, cm.CountryName }
                             //join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
@@ -3968,7 +3975,8 @@ namespace DataLayer
                                              join m in context.m_CityMaster on mc.Country_Id equals m.Country_Id
                                              //join mc in context.m_CountryMaster on m.Country_Id equals mc.Country_Id
                                              //join cm in context.m_CountryMapping on new { a.Country_Id, a.Supplier_Id } equals new { cm.Country_Id, cm.Supplier_Id }
-                                             where a.CityCode == m.Code
+                                             where a.CityCode != null && m.Code != null
+                                              && a.CityCode == m.Code
                                              select a);
                         }
                         if (CurrConfig == "NAME")
@@ -3977,7 +3985,8 @@ namespace DataLayer
                             prodMapSearch = (from a in prodMapSearch
                                              join mc in context.m_CountryMaster on a.Country_Id equals mc.Country_Id
                                              join m in context.m_CityMaster on mc.Country_Id equals m.Country_Id // a.CityName equals m.Name
-                                             where a.CityName.Trim().ToUpper() == m.Name
+                                             where a.CityName != null && m.Name != null
+                                             && a.CityName.Trim().ToUpper().Replace("(","").Replace(")","").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == m.Name.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")
                                              select a);
                         }
                         if (CurrConfig == "LATITUDE")
@@ -4001,6 +4010,9 @@ namespace DataLayer
                     if (isCountryCodeCheck || isCountryNameCheck || isCodeCheck || isNameCheck || isLatLongCheck)
                     {
                         res = (from a in prodMapSearch
+                               join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName} equals new { m.Supplier_Id, m.CountryName }
+                               join ms in context.m_CountryMaster on m.Country_Id equals ms.Country_Id
+                               where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
                                select new DataContracts.Mapping.DC_CityMapping
                                {
                                    CityMapping_Id = a.CityMapping_Id,
@@ -4011,8 +4023,8 @@ namespace DataLayer
                                    StateName = a.StateName,
                                    Country_Id = a.Country_Id,
                                    Supplier_Id = a.Supplier_Id,
-                                   CountryCode = a.CountryCode,
-                                   CountryName = a.CountryName,
+                                   CountryCode = ms.Code,
+                                   CountryName = ms.Name,
                                    Create_Date = a.Create_Date,
                                    Create_User = a.Create_User,
                                    Edit_Date = a.Edit_Date,
@@ -4023,6 +4035,36 @@ namespace DataLayer
                                    Latitude = a.Latitude,
                                    Longitude = a.Longitude
                                }).ToList();
+
+                        if (res.Count == 0)
+                        {
+                            res = (from a in prodMapSearch
+                                   join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { m.Supplier_Id, m.CountryCode }
+                                   join ms in context.m_CountryMaster on m.Country_Id equals ms.Country_Id
+                                   where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
+                                   select new DataContracts.Mapping.DC_CityMapping
+                                   {
+                                       CityMapping_Id = a.CityMapping_Id,
+                                       CityCode = a.CityCode,
+                                       CityName = a.CityName,
+                                       City_Id = a.City_Id,
+                                       StateCode = a.StateCode,
+                                       StateName = a.StateName,
+                                       Country_Id = a.Country_Id,
+                                       Supplier_Id = a.Supplier_Id,
+                                       CountryCode = ms.Code,
+                                       CountryName = ms.Name,
+                                       Create_Date = a.Create_Date,
+                                       Create_User = a.Create_User,
+                                       Edit_Date = a.Edit_Date,
+                                       Edit_User = a.Edit_User,
+                                       MapID = a.MapID,
+                                       Status = a.Status,
+                                       SupplierName = a.SupplierName,
+                                       Latitude = a.Latitude,
+                                       Longitude = a.Longitude
+                                   }).ToList();
+                        }
 
                         if (totPriorities == curPriority)
                         {
@@ -4064,9 +4106,9 @@ namespace DataLayer
                                                             //    && s.Code == c.CityCode)
 
                                                             ((isCountryCodeCheck && s.CountryCode == c.CountryCode) || (!isCountryCodeCheck)) &&
-                                                            ((isCountryNameCheck && s.CountryName == c.CountryName) || (!isCountryNameCheck)) &&
+                                                            ((isCountryNameCheck && s.CountryName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == c.CountryName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isCountryNameCheck)) &&
                                                             ((isCodeCheck && s.Code == c.CityCode) || (!isCodeCheck)) &&
-                                                            ((isNameCheck && s.Name == c.CityName) || (!isNameCheck)) &&
+                                                            ((isNameCheck && s.Name.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == c.CityName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isNameCheck)) &&
                                                             ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck))
 
 
@@ -4186,10 +4228,10 @@ namespace DataLayer
                                 search.Edit_Date = CM.Edit_Date;
                                 search.Edit_User = CM.Edit_User;
                                 search.Remarks = CM.Remarks;
-                                //if (CM.StateCode != null)
-                                //    search.StateCode = CM.StateCode;
-                                //if (CM.StateName != null)
-                                //    search.StateName = CM.StateName;
+                                if (search.StateCode  == null)
+                                    search.StateCode = CM.StateCode;
+                                if (search.StateName == null)
+                                    search.StateName = CM.StateName;
                                 //}
                                 context.SaveChanges();
 
@@ -4216,6 +4258,8 @@ namespace DataLayer
                                 objNew.Remarks = CM.Remarks;
                                 objNew.Latitude = CM.Latitude;
                                 objNew.Longitude = CM.Longitude;
+                                objNew.StateCode = CM.StateCode;
+                                objNew.StateName = CM.StateName;
                                 // objNew.Country_Id = CM.Country_Id;
                                 objNew.Country_Id = (from a in context.m_CountryMapping.AsNoTracking()
                                                      where
@@ -4990,7 +5034,7 @@ namespace DataLayer
             }
         }
 
-        public List<DataContracts.Mapping.DC_MasterAttributeValueMapping> GetMasterAttributeValueMapping(DataContracts.Mapping.DC_MasterAttributeValueMapping_RQ RQ)
+        public List<DataContracts.Mapping.DC_MasterAttributeValueMappingRS> GetMasterAttributeValueMapping(DataContracts.Mapping.DC_MasterAttributeValueMapping_RQ RQ)
         {
             try
             {
@@ -5027,18 +5071,11 @@ namespace DataLayer
                     var search = (from map in m_MasterAttributeMapping
                                   join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
                                   join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
-                                  join mavm in m_MasterAttributeValueMapping on new { mavmid = map.MasterAttributeMapping_Id, mavid = mav.MasterAttributeValue_Id } equals new { mavmid = mavm.MasterAttributeMapping_Id, mavid = mavm.SystemMasterAttributeValue_Id } into mavm_l
-                                  from lr in mavm_l.DefaultIfEmpty()
-                                  select new DataContracts.Mapping.DC_MasterAttributeValueMapping
+                                  orderby mav.AttributeValue.Trim().TrimStart()
+                                  where mav.IsActive == true
+                                  select new
                                   {
                                       MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
-                                      Create_Date = map.Create_Date,
-                                      Create_User = map.Create_User,
-                                      Edit_Date = map.Edit_Date,
-                                      Edit_User = map.Edit_User,
-                                      IsActive = lr.IsActive,
-                                      MasterAttributeValueMapping_Id = (lr == null ? Guid.NewGuid() : lr.MasterAttributeValueMapping_Id),
-                                      SupplierMasterAttributeValue = (lr == null ? string.Empty : lr.SupplierMasterAttributeValue),
                                       SystemMasterAttributeValue = mav.AttributeValue,
                                       SystemMasterAttributeValue_Id = mav.MasterAttributeValue_Id
                                   }).AsQueryable();
@@ -5050,28 +5087,37 @@ namespace DataLayer
                     var searchReturn = (from map in m_MasterAttributeMapping
                                         join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
                                         join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
-                                        join mavm in m_MasterAttributeValueMapping on new { mavmid = map.MasterAttributeMapping_Id, mavid = mav.MasterAttributeValue_Id } equals new { mavmid = mavm.MasterAttributeMapping_Id, mavid = mavm.SystemMasterAttributeValue_Id } into mavm_l
-                                        from lr in mavm_l.DefaultIfEmpty()
-                                        orderby mav.AttributeValue
-                                        select new DataContracts.Mapping.DC_MasterAttributeValueMapping
+                                        join mavv in m_masterattributevalue on mav.ParentAttributeValue_Id equals mavv.MasterAttributeValue_Id
+                                        orderby mav.AttributeValue.Trim().TrimStart()
+                                        where mav.IsActive == true
+                                        select new DataContracts.Mapping.DC_MasterAttributeValueMappingRS
                                         {
                                             MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
-                                            Create_Date = map.Create_Date,
-                                            Create_User = map.Create_User,
-                                            Edit_Date = map.Edit_Date,
-                                            Edit_User = map.Edit_User,
-                                            IsActive = lr.IsActive,
-                                            MasterAttributeValueMapping_Id = (lr == null ? Guid.NewGuid() : lr.MasterAttributeValueMapping_Id),
-                                            SupplierMasterAttributeValue = (lr == null ? string.Empty : lr.SupplierMasterAttributeValue),
+                                            ParentAttributeValue=mavv.AttributeValue,
                                             SystemMasterAttributeValue = mav.AttributeValue,
                                             SystemMasterAttributeValue_Id = mav.MasterAttributeValue_Id,
-                                            TotalRecords = total
+                                            TotalRecords = total,
+                                            SupplierAttributeValues = (from imavm in m_MasterAttributeValueMapping
+                                                                       where imavm.MasterAttributeMapping_Id == map.MasterAttributeMapping_Id
+                                                                       && imavm.SystemMasterAttributeValue_Id == mav.MasterAttributeValue_Id
+                                                                       select new DataContracts.Mapping.DC_SupplierAttributeValues
+                                                                       {
+                                                                           MasterAttributeValueMapping_Id = imavm.MasterAttributeValueMapping_Id,
+                                                                           SupplierMasterAttributeValue = imavm.SupplierMasterAttributeValue,
+                                                                           SupplierMasterAttributeCode = imavm.SupplierMasterAttributeCode,
+                                                                           Create_User = imavm.Create_User,
+                                                                           Create_Date = imavm.Create_Date,
+                                                                           Edit_Date = imavm.Edit_Date,
+                                                                           Edit_User = imavm.Edit_User,
+                                                                           IsActive = imavm.IsActive
+                                                                       }).ToList(),
+
                                         }).Skip(skip).Take(RQ.PageSize);
 
                     return searchReturn.ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching master attribute value mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -5223,6 +5269,7 @@ namespace DataLayer
                             search.Edit_Date = DateTime.Now;
                             search.Edit_User = param.Edit_User;
                             search.SupplierMasterAttributeValue = param.SupplierMasterAttributeValue;
+                            search.SupplierMasterAttributeCode = param.SupplierMasterAttributeCode;
                             context.SaveChanges();
                         }
                         else
@@ -5231,6 +5278,7 @@ namespace DataLayer
                             newObj.MasterAttributeMapping_Id = param.MasterAttributeMapping_Id;
                             newObj.MasterAttributeValueMapping_Id = param.MasterAttributeValueMapping_Id ?? Guid.NewGuid();
                             newObj.SupplierMasterAttributeValue = param.SupplierMasterAttributeValue;
+                            newObj.SupplierMasterAttributeCode = param.SupplierMasterAttributeCode;
                             newObj.SystemMasterAttributeValue_Id = param.SystemMasterAttributeValue_Id;
                             newObj.IsActive = param.IsActive ?? false;
                             newObj.Create_Date = DateTime.Now;
@@ -5252,6 +5300,44 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating master attribute value mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        public DataContracts.DC_Message DeleteMasterAttributeValueMapping(DC_SupplierAttributeValues_RQ param)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (param.MasterAttributeValueMapping_Id != null)
+                    {
+                        var search = context.m_MasterAttributeValueMapping.Find(param.MasterAttributeValueMapping_Id);
+                        if (search != null)
+                        {
+                            context.m_MasterAttributeValueMapping.Remove(search);
+                        }
+                        context.SaveChanges();
+                        return new DataContracts.DC_Message
+                        {
+                            StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success,
+                            StatusMessage = "Data Deleted successfully."
+                        };
+                    }
+                    else
+                    {
+                        return new DataContracts.DC_Message
+                        {
+                            StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning,
+                            StatusMessage = "No data found to delete."
+                        };
+                    }
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while Deleting Supplier attribute value", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+
 
         #endregion
 

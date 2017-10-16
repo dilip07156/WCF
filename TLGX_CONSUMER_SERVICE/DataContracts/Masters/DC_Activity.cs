@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 
 namespace DataContracts.Masters
 {
+    #region "Activity"
     [DataContract]
     public class DC_Activity
     {
@@ -642,7 +643,7 @@ namespace DataContracts.Masters
         public string CommonProductNameSubType_Id { get; set; }
 
     }
-    
+
     [DataContract]
     public class DC_Activity_Search_RQ
     {
@@ -674,7 +675,9 @@ namespace DataContracts.Masters
         public string Keyword { get; set; }
 
     }
+    #endregion
 
+    #region "Activity Content"
     [DataContract]
     public class DC_Activity_Content
     {
@@ -714,18 +717,22 @@ namespace DataContracts.Masters
 
 
     }
+    #endregion
+
+    #region "Activity Contacts"
     [DataContract]
     public class DC_Activity_Contact
     {
         [DataMember]
         public Guid Activity_Contact_Id { get; set; }
-
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
         [DataMember]
         public Guid? Activity_Id { get; set; }
 
         [DataMember]
         public int? Legacy_Product_ID { get; set; }
-        
+
         [DataMember]
         public string Telephone { get; set; }
 
@@ -738,7 +745,7 @@ namespace DataContracts.Masters
         [DataMember]
         public string Email { get; set; }
 
-        [DataMember] 
+        [DataMember]
         public string Create_User { get; set; }
 
         [DataMember]
@@ -753,4 +760,1123 @@ namespace DataContracts.Masters
         [DataMember]
         public bool IsActive { get; set; }
     }
+    #endregion
+
+    #region "Activity Status"
+    [DataContract]
+    public class DC_Activity_Status
+    {
+        [DataMember]
+        public Guid Activity_Status_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+
+        [DataMember]
+        public int? Legacy_Product_ID { get; set; }
+        [DataMember]
+        public DateTime? From { get; set; }
+
+        [DataMember]
+        public DateTime? To { get; set; }
+
+        [DataMember]
+        public string DeactivationReason { get; set; }
+
+        [DataMember]
+        public string Status { get; set; }
+
+        [DataMember]
+        public string CompanyMarket { get; set; }
+
+        [DataMember]
+        public bool IsActive { get; set; }
+
+        [DataMember]
+        public string Create_User { get; set; }
+
+        [DataMember]
+        public string Edit_User { get; set; }
+
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+
+    }
+    #endregion
+
+    #region Activity Media
+    [DataContract]
+    public class DC_Activity_Media
+    {
+        [DataMember]
+        public Guid? Activity_Media_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public string MediaName { get; set; }
+        [DataMember]
+        public string MediaType { get; set; }
+        [DataMember]
+        public string RoomCategory { get; set; }
+        [DataMember]
+        public DateTime? ValidFrom { get; set; }
+        [DataMember]
+        public DateTime? ValidTo { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Media_Path { get; set; }
+        [DataMember]
+        public string Media_URL { get; set; }
+        [DataMember]
+        public int? Media_Position { get; set; }
+        [DataMember]
+        public string Category { get; set; }
+        [DataMember]
+        public string SubCategory { get; set; }
+        [DataMember]
+        public string Description { get; set; }
+        [DataMember]
+        public string FileFormat { get; set; }
+        [DataMember]
+        public string MediaID { get; set; }
+        [DataMember]
+        public string MediaFileMaster { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public int? Media_Width { get; set; }
+        [DataMember]
+        public int? Media_Height { get; set; }
+        [DataMember]
+        public string Media_Caption { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_Media_Search_RQ
+    {
+        [DataMember]
+        public Guid? Activity_Media_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string MediaName { get; set; }
+        [DataMember]
+        public string Category { get; set; }
+        [DataMember]
+        public string SubCategory { get; set; }
+        [DataMember]
+        public DateTime? ValidFrom { get; set; }
+        [DataMember]
+        public DateTime? ValidTo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public string MediaType { get; set; }
+    }
+    #endregion
+
+    #region inclusions
+    [DataContract]
+    public class DC_Activity_Inclusions
+    {
+        [DataMember]
+        public Guid? Activity_Inclusions_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public bool? IsInclusion { get; set; }
+        [DataMember]
+        public string InclusionFor { get; set; }
+        [DataMember]
+        public bool? IsDriver { get; set; }
+        [DataMember]
+        public bool? IsAudioCommentary { get; set; }
+        [DataMember]
+        public string InclusionDescription { get; set; }
+        [DataMember]
+        public string InclusionName { get; set; }
+        [DataMember]
+        public string RestaurantStyle { get; set; }
+        [DataMember]
+        public string InclusionType { get; set; }
+        [DataMember]
+        public DateTime? InclusionFrom { get; set; }
+        [DataMember]
+        public DateTime? InclusionTo { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_Inclusions_RQ
+    {
+        [DataMember]
+        public Guid? Activity_Inclusions_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public bool? IsInclusion { get; set; }
+        [DataMember]
+        public string InclusionName { get; set; }
+        [DataMember]
+        public string InclusionType { get; set; }
+        [DataMember]
+        public DateTime? InclusionFrom { get; set; }
+        [DataMember]
+        public DateTime? InclusionTo { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
+    #region Inclusion Details
+    [DataContract]
+    public class DC_Activity_InclusionsDetails
+    {
+        [DataMember]
+        public Guid? Activity_InclusionDetails_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Inclusion_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string InclusionDetailFor { get; set; }
+        [DataMember]
+        public string GuideLanguage { get; set; }
+        [DataMember]
+        public string GuideLanguageCode { get; set; }
+        [DataMember]
+        public string InclusionDetailType { get; set; }
+        [DataMember]
+        public string InclusionDetailName { get; set; }
+        [DataMember]
+        public string InclusionDetailDescription { get; set; }
+        [DataMember]
+        public DateTime? InclusionDetailFrom { get; set; }
+        [DataMember]
+        public DateTime? InclusionDetailTo { get; set; }
+        [DataMember]
+        public string DaysOfWeek { get; set; }
+        [DataMember]
+        public string FromTime { get; set; }
+        [DataMember]
+        public string ToTime { get; set; }
+        [DataMember]
+        public string CreateUser { get; set; }
+        [DataMember]
+        public string EditUser { get; set; }
+        [DataMember]
+        public DateTime? CreateDate { get; set; }
+        [DataMember]
+        public DateTime? EditDate { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_InclusionDetails_RQ
+    {
+        public Guid? Activity_InclusionDetails_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Inclusion_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public DateTime? InclusionDetailFrom { get; set; }
+        [DataMember]
+        public DateTime? InclusionDetailTo { get; set; }
+        [DataMember]
+        public string InclusionDetailType { get; set; }
+        [DataMember]
+        public string InclusionDetailName { get; set; }
+        [DataMember]
+        public string GuideLanguage { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
+    #region Activiy Clasification Attributes
+    [DataContract]
+    public class DC_Activity_ClassificationAttributes
+    {
+        [DataMember]
+        public Guid? Activity_ClassificationAttribute_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public string AttributeType { get; set; }
+        [DataMember]
+        public string AttributeValue { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public bool? InternalOnly { get; set; }
+        [DataMember]
+        public string AttributeSubType { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string CreateUser { get; set; }
+        [DataMember]
+        public string EditUser { get; set; }
+        [DataMember]
+        public DateTime? CreateDate { get; set; }
+        [DataMember]
+        public DateTime? EditDate { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_ClassificationAttributes_RQ
+    {
+        [DataMember]
+        public Guid? Activity_ClassificationAttribute_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public string AttributeType { get; set; }
+        [DataMember]
+        public string AttributeSubType { get; set; }
+        [DataMember]
+        public string AttributeValue { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
+    #region pickUpDrop
+    [DataContract]
+    public class DC_Activity_PickUpDrop
+    {
+        [DataMember]
+        public Guid? Activity_PickUpDrop_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public Guid? Supplier_Id { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+        [DataMember]
+        public string TransferType { get; set; }
+        [DataMember]
+        public string VehicleType { get; set; }
+        [DataMember]
+        public string VehicleCategory { get; set; }
+        [DataMember]
+        public string VehicleName { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public bool? IsAC { get; set; }
+        [DataMember]
+        public string ForSupplier { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_PickUpDrop_RQ
+    {
+        [DataMember]
+        public Guid? Activity_PickUpDrop_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public Guid? Supplier_Id { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
+    #region pickUpDrop Details
+    [DataContract]
+    public class DC_Activity_PickUpDropDetails
+    {
+        [DataMember]
+        public Guid? Activity_PickUpDropDetail_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_PickUpDrop_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public string PickUpDropType { get; set; }
+        [DataMember]
+        public string FromToType { get; set; }
+        [DataMember]
+        public string LocationType { get; set; }
+        [DataMember]
+        public string LocationName { get; set; }
+        [DataMember]
+        public string AreaSearchFor { get; set; }
+        [DataMember]
+        public string AreaNameofPlace { get; set; }
+        [DataMember]
+        public Guid? Accommodation_Id { get; set; }
+        [DataMember]
+        public string Acco_Name { get; set; }
+        [DataMember]
+        public string Acco_Address { get; set; }
+        [DataMember]
+        public string Acco_PostalCode { get; set; }
+        [DataMember]
+        public string Acco_Country { get; set; }
+        [DataMember]
+        public string Acco_City { get; set; }
+        [DataMember]
+        public string Acco_State { get; set; }
+        [DataMember]
+        public string Acco_Area { get; set; }
+        [DataMember]
+        public string Acco_Location { get; set; }
+        [DataMember]
+        public string Acco_Telephone { get; set; }
+        [DataMember]
+        public string Acco_Fax { get; set; }
+        [DataMember]
+        public string Acco_Website { get; set; }
+        [DataMember]
+        public string Acco_Email { get; set; }
+        [DataMember]
+        public string Acco_ContactNotes { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_PickUpDropDetails_RQ
+    {
+        [DataMember]
+        public Guid? Activity_PickUpDropDetail_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_PickUpDrop_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_Id { get; set; }
+        [DataMember]
+        public string PickUpDropType { get; set; }
+        [DataMember]
+        public string FromToType { get; set; }
+        [DataMember]
+        public string LocationName { get; set; }
+        [DataMember]
+        public string Acco_Country { get; set; }
+        [DataMember]
+        public string Acco_City { get; set; }
+        [DataMember]
+        public string Acco_State { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+        [DataMember]
+        public Guid? Accommodation_Id { get; set; }
+    }
+    #endregion
+
+    #region Activity Description
+    [DataContract]
+    public class DC_Activity_Descriptions
+    {
+        [DataMember]
+        public Guid? Activity_Description_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_ID { get; set; }
+        [DataMember]
+        public string Description { get; set; }
+        [DataMember]
+        public string Language_Code { get; set; }
+        [DataMember]
+        public string DescriptionFor { get; set; }
+        [DataMember]
+        public string DescriptionType { get; set; }
+        [DataMember]
+        public string DescriptionSubType { get; set; }
+        [DataMember]
+        public DateTime? FromDate { get; set; }
+        [DataMember]
+        public DateTime? ToDate { get; set; }
+        [DataMember]
+        public string Source { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Description_Name { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_Descriptions_RQ
+    {
+        [DataMember]
+        public Guid? Activity_Description_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_ID { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string DescriptionFor { get; set; }
+        [DataMember]
+        public string DescriptionType { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
+    #region Activity Flavour
+    [DataContract]
+    public class DC_Activity_Flavour
+    {
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public string ProductName { get; set; }
+        [DataMember]
+        public string Country { get; set; }
+        [DataMember]
+        public string City { get; set; }
+        [DataMember]
+        public string ProductCategory { get; set; }
+        [DataMember]
+        public string ProductCategorySubType { get; set; }
+        [DataMember]
+        public string ProductType { get; set; }
+        [DataMember]
+        public int? Legacy_Product_ID { get; set; }
+        [DataMember]
+        public string CommonProductNameSubType_Id { get; set; }
+        [DataMember]
+        public string CompanyProductNameSubType_Id { get; set; }
+        [DataMember]
+        public string FinanceControlId { get; set; }
+        [DataMember]
+        public string ProductNameSubType { get; set; }
+        [DataMember]
+        public string PlaceOfEvent { get; set; }
+        [DataMember]
+        public string StartingPoint { get; set; }
+        [DataMember]
+        public string EndingPoint { get; set; }
+        [DataMember]
+        public string USP { get; set; }
+        [DataMember]
+        public bool? IsPickUpDropDefined { get; set; }
+        [DataMember]
+        public bool? MustSeeInCountry { get; set; }
+        [DataMember]
+        public bool? CompanyReccom { get; set; }
+        [DataMember]
+        public string Duration { get; set; }
+        [DataMember]
+        public string CountryCode { get; set; }
+        [DataMember]
+        public string CityCode { get; set; }
+        [DataMember]
+        public decimal? Latitude { get; set; }
+        [DataMember]
+        public decimal? Longitude { get; set; }
+        [DataMember]
+        public string Street { get; set; }
+        [DataMember]
+        public string Street2 { get; set; }
+        [DataMember]
+        public string Street3 { get; set; }
+        [DataMember]
+        public string Street4 { get; set; }
+        [DataMember]
+        public string Street5 { get; set; }
+        [DataMember]
+        public string PostalCode { get; set; }
+        [DataMember]
+        public Guid? City_Id { get; set; }
+        [DataMember]
+        public Guid? Country_Id { get; set; }
+        [DataMember]
+        public string Area { get; set; }
+        [DataMember]
+        public string Location { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+
+    }
+    [DataContract]
+    public class DC_Activity_Flavour_RQ
+    {
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public string ProductName { get; set; }
+        [DataMember]
+        public string Country { get; set; }
+        [DataMember]
+        public string City { get; set; }
+        [DataMember]
+        public string ProductCategory { get; set; }
+        [DataMember]
+        public string ProductCategorySubType { get; set; }
+        [DataMember]
+        public string ProductType { get; set; }
+        [DataMember]
+        public string ProductNameSubType { get; set; }
+        [DataMember]
+        public int? Legacy_Product_ID { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
+    #region Activity Deals
+    [DataContract]
+    public class DC_Activity_Deals
+    {
+        [DataMember]
+        public Guid? Activity_Deals_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string DealCode { get; set; }
+        [DataMember]
+        public string DealText { get; set; }
+        [DataMember]
+        public string DealName { get; set; }
+        [DataMember]
+        public string Deal_TnC { get; set; }
+        [DataMember]
+        public decimal? Deal_Price { get; set; }
+        [DataMember]
+        public string Deal_Currency { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_Deals_RQ
+    {
+        [DataMember]
+        public Guid? Activity_Deals_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string DealCode { get; set; }
+        [DataMember]
+        public string DealName { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
+    #region Activity Prices
+    [DataContract]
+    public class DC_Activity_Prices
+    {
+        [DataMember]
+        public Guid? Activity_Prices_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string PriceCode { get; set; }
+        [DataMember]
+        public string PriceBasis { get; set; }
+        [DataMember]
+        public decimal? PriceNet { get; set; }
+        [DataMember]
+        public string PriceCurrency { get; set; }
+        [DataMember]
+        public int? Totalrecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_Prices_RQ
+    {
+        [DataMember]
+        public Guid? Activity_Prices_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
+    #region Supplier Product mapping
+    [DataContract]
+    public class DC_Activity_SupplierProductMapping
+    {
+        [DataMember]
+        public Guid? ActivitySupplierProductMapping_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_ID { get; set; }
+        [DataMember]
+        public Guid? Supplier_ID { get; set; }
+        [DataMember]
+        public string SupplierCode { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+        [DataMember]
+        public string SuplierProductCode { get; set; }
+        [DataMember]
+        public string SupplierProductType { get; set; }
+        [DataMember]
+        public string SupplierType { get; set; }
+        [DataMember]
+        public string SupplierLocationId { get; set; }
+        [DataMember]
+        public string SupplierLocationName { get; set; }
+        [DataMember]
+        public string SupplierCountryName { get; set; }
+        [DataMember]
+        public string SupplierCityName { get; set; }
+        [DataMember]
+        public string SupplierCountryCode { get; set; }
+        [DataMember]
+        public string SupplierCityCode { get; set; }
+        [DataMember]
+        public string SupplierStateName { get; set; }
+        [DataMember]
+        public string SupplierStateCode { get; set; }
+        [DataMember]
+        public string SupplierCityIATACode { get; set; }
+        [DataMember]
+        public string Duration { get; set; }
+        [DataMember]
+        public string SupplierProductName { get; set; }
+        [DataMember]
+        public string SupplierDataLangaugeCode { get; set; }
+        [DataMember]
+        public string Introduction { get; set; }
+        [DataMember]
+        public string Conditions { get; set; }
+        [DataMember]
+        public string Inclusions { get; set; }
+        [DataMember]
+        public string Exclusions { get; set; }
+        [DataMember]
+        public string AdditionalInformation { get; set; }
+        [DataMember]
+        public string DeparturePoint { get; set; }
+        [DataMember]
+        public string TicketingDetails { get; set; }
+        [DataMember]
+        public string Currency { get; set; }
+        [DataMember]
+        public string DepartureTime { get; set; }
+        [DataMember]
+        public string DepartureDate { get; set; }
+        [DataMember]
+        public string DateFrom { get; set; }
+        [DataMember]
+        public string DateTo { get; set; }
+        [DataMember]
+        public string BlockOutDateFrom { get; set; }
+        [DataMember]
+        public string BlockOutDateTo { get; set; }
+        [DataMember]
+        public string OptionTitle { get; set; }
+        [DataMember]
+        public string OptionCode { get; set; }
+        [DataMember]
+        public string OptionDescription { get; set; }
+        [DataMember]
+        public string TourActivityLangauageCode { get; set; }
+        [DataMember]
+        public string ProductDescription { get; set; }
+        [DataMember]
+        public string TourActivityLanguage { get; set; }
+        [DataMember]
+        public string ImgURL { get; set; }
+        [DataMember]
+        public string ProductValidFor { get; set; }
+        [DataMember]
+        public string Address { get; set; }
+        [DataMember]
+        public string Latitude { get; set; }
+        [DataMember]
+        public string Longitude { get; set; }
+        [DataMember]
+        public string DayPattern { get; set; }
+        [DataMember]
+        public string Theme { get; set; }
+        [DataMember]
+        public string Distance { get; set; }
+        [DataMember]
+        public string SupplierTourType { get; set; }
+        [DataMember]
+        public string MappingStatus { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public int? MapID { get; set; }
+        [DataMember]
+        public decimal? Price { get; set; }
+        [DataMember]
+        public int? TotalActivities { get; set; }
+        [DataMember]
+        public string PhysicalIntensity { get; set; }
+        [DataMember]
+        public string PassengerNumbers { get; set; }
+        [DataMember]
+        public string DurationLength { get; set; }
+        [DataMember]
+        public string Timing { get; set; }
+        [DataMember]
+        public string Session { get; set; }
+        [DataMember]
+        public string Specials { get; set; }
+        [DataMember]
+        public bool? Recommonded { get; set; }
+        [DataMember]
+        public double? Rating { get; set; }
+        [DataMember]
+        public string Location { get; set; }
+        [DataMember]
+        public string Area { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_SupplierProductMapping_RQ
+    {
+        [DataMember]
+        public Guid? ActivitySupplierProductMapping_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_ID { get; set; }
+        [DataMember]
+        public Guid? Supplier_ID { get; set; }
+        [DataMember]
+        public string SupplierCode { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+        [DataMember]
+        public string SuplierProductCode { get; set; }
+        [DataMember]
+        public string SupplierProductType { get; set; }
+        [DataMember]
+        public string SupplierType { get; set; }
+        [DataMember]
+        public string SupplierCountryName { get; set; }
+        [DataMember]
+        public string SupplierCityName { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
+    #region Reviews And Scores
+    [DataContract]
+    public class DC_Activity_ReviewsAndScores
+    {
+        [DataMember]
+        public Guid? Activity_ReviewsAndScores_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string Review_Source { get; set; }
+        [DataMember]
+        public string Review_Type { get; set; }
+        [DataMember]
+        public decimal? Review_Score { get; set; }
+        [DataMember]
+        public bool? IsCustomerReview { get; set; }
+        [DataMember]
+        public string Review_Author { get; set; }
+        [DataMember]
+        public DateTime? Review_PostedDate { get; set; }
+        [DataMember]
+        public string Review_Title { get; set; }
+        [DataMember]
+        public string Review_Description { get; set; }
+        [DataMember]
+        public string Review_Status { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public int? Totalrecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_ReviewsAndScores_RQ
+    {
+        [DataMember]
+        public Guid? Activity_ReviewsAndScores_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string Review_Title { get; set; }
+        [DataMember]
+        public string Review_Author { get; set; }
+        [DataMember]
+        public string Review_Status { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
+    #region Supplier Product mapping_CA
+    [DataContract]
+    public class DC_Activity_SupplierProductMapping_CA
+    {
+        [DataMember]
+        public Guid? Activity_SupplierProductMapping_CA_Id { get; set; }
+        [DataMember]
+        public Guid? Supplier_ID { get; set; }
+        [DataMember]
+        public string SupplierCode { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+        [DataMember]
+        public string SuplierProductCode { get; set; }
+        [DataMember]
+        public string SupplierProductName { get; set; }
+        [DataMember]
+        public string AttributeType { get; set; }
+        [DataMember]
+        public string AttributeSubType { get; set; }
+        [DataMember]
+        public string AttributeValue { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public int? Totalrecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_SupplierProductMapping_CA_RQ
+    {
+        [DataMember]
+        public Guid? Activity_SupplierProductMapping_CA_Id { get; set; }
+        [DataMember]
+        public Guid? Supplier_ID { get; set; }
+        [DataMember]
+        public string SupplierCode { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+        [DataMember]
+        public string AttributeType { get; set; }
+        [DataMember]
+        public string AttributeSubType { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
+    #region Activity Policy
+    [DataContract]
+    public class DC_Activity_Policy
+    {
+        [DataMember]
+        public Guid? Activity_Policy_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_ID { get; set; }
+        [DataMember]
+        public string Policy_Type { get; set; }
+        [DataMember]
+        public bool? AllowedYN { get; set; }
+        [DataMember]
+        public string PolicyName { get; set; }
+        [DataMember]
+        public string PolicyDescription { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public int? Totalrecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_Policy_RQ
+    {
+        [DataMember]
+        public Guid? Activity_Policy_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public int? Legacy_Product_ID { get; set; }
+        [DataMember]
+        public string PolicyName { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
 }
+
+
+

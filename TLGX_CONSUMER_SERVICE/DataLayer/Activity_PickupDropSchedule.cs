@@ -21,5 +21,16 @@ namespace DataLayer
         public string ForSupplier { get; set; }
         public Nullable<System.Guid> Supplier_Id { get; set; }
         public string SupplierName { get; set; }
+        public Nullable<bool> IsDateRange { get; set; }
+        public Nullable<System.DateTime> FromDate { get; set; }
+        public Nullable<System.DateTime> ToDate { get; set; }
+        public string DaysOfWeek { get; set; }
+        public string TimeFrom { get; set; }
+        public string TimeTo { get; set; }
+        public string TimeOfDay { get; set; }
+        public Nullable<System.DateTime> Create_Date { get; set; }
+        public Nullable<System.DateTime> Edit_Date { get; set; }
+        public string Create_User { get; set; }
+        public string Edit_User { get; set; }
     }
 }

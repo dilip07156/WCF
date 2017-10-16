@@ -128,6 +128,7 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "UploadStaticData/TestFile/Transform", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataSet StaticFileUpload_TestFile_Transform(DataContracts.UploadStaticData.DC_SupplierImportFileDetails_TestProcess obj);
         #endregion
+
         #region File Progress DashBoard
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]

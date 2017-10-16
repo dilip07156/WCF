@@ -21,6 +21,7 @@ namespace DataLayer
         public Nullable<System.Guid> Activity_Flavour_Id { get; set; }
         public string InclusionDetailFor { get; set; }
         public string GuideLanguage { get; set; }
+        public string GuideLanguageCode { get; set; }
         public string InclusionDetailType { get; set; }
         public string InclusionDetailName { get; set; }
         public string InclusionDetailDescription { get; set; }
@@ -33,5 +34,6 @@ namespace DataLayer
         public Nullable<System.DateTime> Edit_Date { get; set; }
         public string Create_User { get; set; }
         public string Edit_User { get; set; }
+        public Nullable<bool> IsActive { get; set; }
     }
 }

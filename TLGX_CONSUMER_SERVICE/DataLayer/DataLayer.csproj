@@ -169,6 +169,9 @@
     <Compile Include="Activity.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Activity_Ancillary.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Activity_ClassificationAttributes.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
@@ -176,6 +179,9 @@
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Activity_Content.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Activity_Deals.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Activity_Descriptions.cs">
@@ -199,9 +205,6 @@
     <Compile Include="Activity_Media.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Activity_OldSchema.cs">
-      <DependentUpon>ConsumerModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Activity_PickUpDrop.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
@@ -214,10 +217,34 @@
     <Compile Include="Activity_Policy.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Activity_Prices.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Activity_ReviewsAndScores.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Activity_Status.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Activity_SupplierActivityImageMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Activity_SupplierActivityMetaDataMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Activity_SupplierActivityReviews.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Activity_SupplierActivityTypeMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Activity_SupplierProductMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Activity_SupplierProductMapping_CA.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Activity_SupplierProductMapping_Deals.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Activity_Tips.cs">
@@ -273,6 +300,7 @@
     <Compile Include="DL_Accomodation.cs" />
     <Compile Include="DL_Activity.cs" />
     <Compile Include="DL_Admin.cs" />
+    <Compile Include="DL_FileTransfer.cs" />
     <Compile Include="DL_GeoLocation.cs" />
     <Compile Include="DL_Mapping.cs" />
     <Compile Include="DL_Masters.cs" />
@@ -484,19 +512,25 @@
       <DependentUpon>ConsumerModel.edmx</DependentUpon>
       <LastGenOutput>ConsumerModel.cs</LastGenOutput>
     </Content>
-    <None Include="Service References\DHSVC\DataHandlerService1.disco" />
-    <None Include="Service References\DHSVC\DataHandlerService1.wsdl" />
-    <None Include="Service References\DHSVC\DataHandlerService5.xsd">
+    <None Include="Service References\DHSVC\DataHandlerService.disco" />
+    <None Include="Service References\DHSVC\DataHandlerService.wsdl" />
+    <None Include="Service References\DHSVC\DataHandlerService.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\DHSVC\DataHandlerService51.xsd">
+    <None Include="Service References\DHSVC\DataHandlerService1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\DHSVC\DataHandlerService52.xsd">
+    <None Include="Service References\DHSVC\DataHandlerService2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\DHSVC\DataHandlerService53.xsd">
+    <None Include="Service References\DHSVC\DataHandlerService3.xsd">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DHSVC\DataHandlerService4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DHSVC\DataLayer.DHSVC.DC_UploadResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\DHSVC\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>

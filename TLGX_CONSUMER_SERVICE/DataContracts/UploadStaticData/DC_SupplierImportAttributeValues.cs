@@ -91,7 +91,7 @@ namespace DataContracts.UploadStaticData
         public int PageSize { get; set; }
 
         [DataMember]
-        public int Priority { get; set; }
+        public int? Priority { get; set; }
 
         [DataMember]
         public string Description { get; set; }

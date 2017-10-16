@@ -448,11 +448,14 @@ namespace DataLayer
                                         where a.STATUS.Trim().TrimStart().ToUpper() != RQ.StatusExcept.Trim().TrimStart().ToUpper()
                                         select a;
                     }
-                    if (RQ.Priority != -1)
+                    if (RQ.Priority != null)
                     {
-                        AttrMapSearch = from a in AttrMapSearch
-                                        where a.Priority == RQ.Priority
-                                        select a;
+                        if (RQ.Priority != -1)
+                        {
+                            AttrMapSearch = from a in AttrMapSearch
+                                            where a.Priority == RQ.Priority
+                                            select a;
+                        }
                     }
 
 
@@ -463,7 +466,7 @@ namespace DataLayer
                     var skip = RQ.PageSize * RQ.PageNo;
 
                     var AttrMapResult = (from a in AttrMapSearch
-                                         orderby (a.Priority ?? 0) descending, a.AttributeType,a.CREATE_DATE descending //, a.AttributeName, a.AttributeValue
+                                         orderby (a.Priority ?? 0) descending, a.AttributeType, a.CREATE_DATE descending //, a.AttributeName, a.AttributeValue
                                          select new DataContracts.UploadStaticData.DC_SupplierImportAttributeValues
                                          {
                                              SupplierImportAttributeValue_Id = a.SupplierImportAttributeValue_Id,
@@ -756,7 +759,7 @@ namespace DataLayer
                     total = FileSearch.Count();
 
                     var skip = RQ.PageSize * RQ.PageNo;
-                    if(RQ.PageSize==0)
+                    if (RQ.PageSize == 0)
                     {
                         RQ.PageSize = int.MaxValue;
                     }
@@ -764,7 +767,7 @@ namespace DataLayer
                     var FileSearchResult = (from a in FileSearch
                                             join s in context.Suppliers on a.Supplier_Id equals s.Supplier_Id
                                             where s.StatusCode.ToUpper() == "ACTIVE"
-                                            orderby s.Name, a.Entity
+                                            orderby a.CREATE_DATE descending
                                             select new DataContracts.UploadStaticData.DC_SupplierImportFileDetails
                                             {
                                                 SupplierImportFile_Id = a.SupplierImportFile_Id,
@@ -1022,7 +1025,7 @@ namespace DataLayer
                 {
                     if (obj.SupplierImportFile_Id != null && !string.IsNullOrWhiteSpace(obj.Step))
                     {
-                        if (obj.CurrentBatch != 0)
+                        if (obj.CurrentBatch != 0 && obj.Step != "READ")
                         {
                             context.SupplierImportFile_Progress.RemoveRange(context.SupplierImportFile_Progress.Where(w => w.SupplierImportFile_Id == obj.SupplierImportFile_Id && w.CurrentBatch != 0 && w.Step.ToString().ToUpper() == obj.Step.ToString().ToUpper() && w.CurrentBatch != obj.CurrentBatch));
                         }
@@ -1035,6 +1038,8 @@ namespace DataLayer
                         {
                             progress.PercentageValue = obj.PercentageValue;
                             progress.LastCheckedOn = DateTime.Now;
+                            progress.CurrentBatch = obj.CurrentBatch;
+                            progress.TotalBatch = obj.TotalBatch;
                         }
                         else
                         {
@@ -2298,6 +2303,24 @@ namespace DataLayer
             DataContracts.DC_Message dc = new DataContracts.DC_Message();
             try
             {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var FileRecord = (from a in context.SupplierImportFileDetails
+                                      where a.SupplierImportFile_Id == obj.SupplierImportFile_Id && a.STATUS == "UPLOADED"
+                                      select a).FirstOrDefault();
+                    if (FileRecord != null)
+                    {
+                        FileRecord.STATUS = "PROCESSING";
+                        FileRecord.PROCESS_USER = obj.PROCESS_USER;
+                        FileRecord.PROCESS_DATE = DateTime.Now;
+                        context.SaveChanges();
+                    }
+                    else
+                    {
+                        return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Duplicate, StatusMessage = "File is already processed." };
+                    }
+                }
+
                 DHSVC.DC_SupplierImportFileDetails_TestProcess file = new DHSVC.DC_SupplierImportFileDetails_TestProcess();
                 file.SupplierImportFile_Id = obj.SupplierImportFile_Id;
                 file.Supplier_Id = obj.Supplier_Id;
@@ -2380,7 +2403,7 @@ namespace DataLayer
                 obj.VerboseLog = GetStaticDataUploadVerboseLog(new DataContracts.UploadStaticData.DC_SupplierImportFile_VerboseLog_RQ { SupplierImportFile_Id = fileid });
                 obj.FileStatistics = GetStaticDataUploadStatistics(new DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics_RQ { SupplierImportFile_Id = fileid });
                 obj.FileDetails = GetStaticDataFileDetail(new DataContracts.UploadStaticData.DC_SupplierImportFileDetails_RQ { SupplierImportFile_Id = fileid });
-                obj.ErrorLog= GetStaticDataUploadErrorLog(new DataContracts.UploadStaticData.DC_SupplierImportFile_ErrorLog_RQ {SupplierImportFile_Id=fileid });
+                obj.ErrorLog = GetStaticDataUploadErrorLog(new DataContracts.UploadStaticData.DC_SupplierImportFile_ErrorLog_RQ { SupplierImportFile_Id = fileid });
                 return obj;
             }
             catch (Exception ex)

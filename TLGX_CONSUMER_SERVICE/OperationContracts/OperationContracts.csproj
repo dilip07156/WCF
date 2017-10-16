@@ -48,6 +48,7 @@
       <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Xml.Linq" />
@@ -69,6 +70,7 @@
     <Compile Include="ISchedule.cs" />
     <Compile Include="IStaticData.cs" />
     <Compile Include="IStaticDataHandler.cs" />
+    <Compile Include="IFileTransfer.cs" />
     <Compile Include="IUploadStaticData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
