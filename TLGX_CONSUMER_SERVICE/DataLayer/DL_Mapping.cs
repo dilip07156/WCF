@@ -5087,11 +5087,13 @@ namespace DataLayer
                     var searchReturn = (from map in m_MasterAttributeMapping
                                         join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
                                         join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
+                                        join mavv in m_masterattributevalue on mav.ParentAttributeValue_Id equals mavv.MasterAttributeValue_Id
                                         orderby mav.AttributeValue.Trim().TrimStart()
                                         where mav.IsActive == true
                                         select new DataContracts.Mapping.DC_MasterAttributeValueMappingRS
                                         {
                                             MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
+                                            ParentAttributeValue=mavv.AttributeValue,
                                             SystemMasterAttributeValue = mav.AttributeValue,
                                             SystemMasterAttributeValue_Id = mav.MasterAttributeValue_Id,
                                             TotalRecords = total,
