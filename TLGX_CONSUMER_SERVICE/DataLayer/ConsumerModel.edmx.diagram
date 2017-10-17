@@ -135,7 +135,6 @@
         <EntityTypeShape EntityType="ConsumerModel.Activity_Deals" Width="1.5" PointX="15.75" PointY="9.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_Descriptions" Width="1.5" PointX="15.75" PointY="14.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_Media" Width="1.5" PointX="7.75" PointY="16.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Prices" Width="1.5" PointX="17.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierActivityImageMapping" Width="1.5" PointX="11.375" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierActivityMetaDataMapping" Width="1.5" PointX="9.75" PointY="17.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierActivityReviews" Width="1.5" PointX="17.75" PointY="15.75" />
@@ -149,6 +148,7 @@
         <EntityTypeShape EntityType="ConsumerModel.Activity_Inclusions" Width="1.5" PointX="20.375" PointY="15.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_Policy" Width="1.5" PointX="18.375" PointY="5.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_ReviewsAndScores" Width="1.5" PointX="17.375" PointY="21.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Prices" Width="1.5" PointX="19.375" PointY="21.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
