@@ -3986,7 +3986,7 @@ namespace DataLayer
                                              join mc in context.m_CountryMaster on a.Country_Id equals mc.Country_Id
                                              join m in context.m_CityMaster on mc.Country_Id equals m.Country_Id // a.CityName equals m.Name
                                              where a.CityName != null && m.Name != null
-                                             && a.CityName.Trim().ToUpper() == m.Name.Trim().ToUpper()
+                                             //&& a.CityName == m.Name
                                              select a);
                         }
                         if (CurrConfig == "LATITUDE")
