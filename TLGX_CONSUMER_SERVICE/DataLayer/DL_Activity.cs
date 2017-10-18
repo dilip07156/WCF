@@ -2446,7 +2446,10 @@ namespace DataLayer
                                      PriceCode=a.PriceCode,
                                      PriceCurrency=a.PriceCurrency,
                                       PriceNet=a.PriceNet,
-                                     Totalrecords = total
+                                     Totalrecords = total,
+                                     Create_Date=a.Create_Date,
+                                     IsActive=a.IsActive
+
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -2471,6 +2474,22 @@ namespace DataLayer
                         var res = context.Activity_Prices.Find(RQ.Activity_Prices_Id);
                         if (res != null)
                         {
+                            if ((RQ.IsActive) != (res.IsActive ?? true))
+                            {
+                                res.IsActive = RQ.IsActive;
+                                res.Edit_Date = RQ.Edit_Date;
+                                res.Edit_User = RQ.Edit_User;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUnDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
+                            }
                             res.Activity_Prices_Id = RQ.Activity_Prices_Id ?? Guid.Empty;
                             res.Activity_Id = RQ.Activity_Id;
                             res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
@@ -2478,6 +2497,8 @@ namespace DataLayer
                             res.PriceCode = RQ.PriceCode;
                             res.PriceCurrency = RQ.PriceCurrency;
                             res.PriceNet = RQ.PriceNet;
+                            res.Edit_Date = DateTime.Now;
+                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
                             if (context.SaveChanges() == 1)
                             {
                                 _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
@@ -2503,7 +2524,11 @@ namespace DataLayer
                         obj.PriceCode = RQ.PriceCode;
                         obj.PriceCurrency = RQ.PriceCurrency;
                         obj.PriceNet = RQ.PriceNet;
+                        obj.IsActive = RQ.IsActive;
+                        obj.Create_Date = DateTime.Now;
+                        obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
                         context.Activity_Prices.Add(obj);
+                        
                         if (context.SaveChanges() == 1)
                         {
                             _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;

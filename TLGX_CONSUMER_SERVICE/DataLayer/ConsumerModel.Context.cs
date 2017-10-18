@@ -124,7 +124,6 @@ namespace DataLayer
         public virtual DbSet<Activity_Deals> Activity_Deals { get; set; }
         public virtual DbSet<Activity_Descriptions> Activity_Descriptions { get; set; }
         public virtual DbSet<Activity_Media> Activity_Media { get; set; }
-        public virtual DbSet<Activity_Prices> Activity_Prices { get; set; }
         public virtual DbSet<Activity_SupplierActivityImageMapping> Activity_SupplierActivityImageMapping { get; set; }
         public virtual DbSet<Activity_SupplierActivityMetaDataMapping> Activity_SupplierActivityMetaDataMapping { get; set; }
         public virtual DbSet<Activity_SupplierActivityReviews> Activity_SupplierActivityReviews { get; set; }
@@ -138,6 +137,7 @@ namespace DataLayer
         public virtual DbSet<Activity_Inclusions> Activity_Inclusions { get; set; }
         public virtual DbSet<Activity_Policy> Activity_Policy { get; set; }
         public virtual DbSet<Activity_ReviewsAndScores> Activity_ReviewsAndScores { get; set; }
+        public virtual DbSet<Activity_Prices> Activity_Prices { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

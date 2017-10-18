@@ -21,5 +21,10 @@ namespace DataLayer
         public string PriceBasis { get; set; }
         public Nullable<decimal> PriceNet { get; set; }
         public string PriceCurrency { get; set; }
+        public Nullable<System.DateTime> Create_Date { get; set; }
+        public string Create_User { get; set; }
+        public Nullable<System.DateTime> Edit_Date { get; set; }
+        public string Edit_User { get; set; }
+        public Nullable<bool> IsActive { get; set; }
     }
 }

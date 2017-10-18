@@ -1513,6 +1513,16 @@ namespace DataContracts.Masters
         public string PriceCurrency { get; set; }
         [DataMember]
         public int? Totalrecords { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
     }
     [DataContract]
     public class DC_Activity_Prices_RQ
