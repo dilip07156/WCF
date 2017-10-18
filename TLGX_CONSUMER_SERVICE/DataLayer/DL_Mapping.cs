@@ -3984,8 +3984,8 @@ namespace DataLayer
                             isNameCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join mc in context.m_CountryMaster on a.Country_Id equals mc.Country_Id
-                                             join m in context.m_CityMaster on mc.Country_Id equals m.Country_Id // a.CityName equals m.Name
-                                             where a.CityName != null && m.Name != null
+                                             //join m in context.m_CityMaster on mc.Country_Id equals m.Country_Id // a.CityName equals m.Name
+                                             where a.CityName != null //&& m.Name != null
                                              //&& a.CityName == m.Name
                                              select a);
                         }
