@@ -2558,6 +2558,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var search = from a in context.Activity_SupplierProductMapping
+                                 join af in context.Activity_Flavour on a.Activity_ID equals af.Activity_Flavour_Id
                                  select a;
 
                     if (RQ.ActivitySupplierProductMapping_Id != null)
@@ -2656,6 +2657,7 @@ namespace DataLayer
                                      ImgURL = a.ImgURL,
                                      Inclusions = a.Inclusions,
                                      Introduction = a.Introduction,
+                                     IsActive=a.IsActive,
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude,
                                      Location = a.Location,
