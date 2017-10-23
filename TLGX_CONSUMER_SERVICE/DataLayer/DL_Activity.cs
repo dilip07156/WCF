@@ -3382,6 +3382,7 @@ namespace DataLayer
                     {
                         DataLayer.Activity_Policy obj = new DataLayer.Activity_Policy();
                         obj.Activity_Policy_Id = RQ.Activity_Policy_Id ?? Guid.Empty;
+                        obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
                         obj.Activity_Id = RQ.Activity_Id;
                         obj.AllowedYN = RQ.AllowedYN;
                         obj.PolicyName = RQ.PolicyName;
