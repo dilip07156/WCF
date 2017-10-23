@@ -3984,9 +3984,9 @@ namespace DataLayer
                             isNameCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join mc in context.m_CountryMaster on a.Country_Id equals mc.Country_Id
-                                             join m in context.m_CityMaster on mc.Country_Id equals m.Country_Id // a.CityName equals m.Name
-                                             where a.CityName != null && m.Name != null
-                                             && a.CityName.Trim().ToUpper() == m.Name.Trim().ToUpper()
+                                             //join m in context.m_CityMaster on mc.Country_Id equals m.Country_Id // a.CityName equals m.Name
+                                             where a.CityName != null //&& m.Name != null
+                                             //&& a.CityName == m.Name
                                              select a);
                         }
                         if (CurrConfig == "LATITUDE")
@@ -4106,7 +4106,7 @@ namespace DataLayer
                                                             //    && s.Code == c.CityCode)
 
                                                             ((isCountryCodeCheck && s.CountryCode == c.CountryCode) || (!isCountryCodeCheck)) &&
-                                                            ((isCountryNameCheck && s.CountryName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == c.CountryName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isCountryNameCheck)) &&
+                                                            ((isCountryNameCheck && s.CountryName == c.CountryName) || (!isCountryNameCheck)) &&
                                                             ((isCodeCheck && s.Code == c.CityCode) || (!isCodeCheck)) &&
                                                             ((isNameCheck && s.Name.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == c.CityName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isNameCheck)) &&
                                                             ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck))
