@@ -2437,6 +2437,7 @@ namespace DataLayer
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
                     var result = from a in search
+                                 orderby a.PriceCode
                                  select new DataContracts.Masters.DC_Activity_Prices
                                  {
                                      Activity_Prices_Id = a.Activity_Prices_Id,
@@ -2454,7 +2455,7 @@ namespace DataLayer
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity prices", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
