@@ -204,6 +204,14 @@ namespace ConsumerSvc
             }
         }
 
+        public bool HotelTTFUTelephone(DC_Supplier sup)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.HotelTTFUTelephone(sup);
+            }
+        }
+
         public bool RoomTypeMappingMatch(DC_Supplier sup)
         {
             using (BL_Mapping objBL = new BL_Mapping())

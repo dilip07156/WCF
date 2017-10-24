@@ -269,7 +269,51 @@ namespace DataLayer
             }
         }
 
+        public bool HotelTTFUTelephone(DataContracts.Masters.DC_Supplier obj)
+        {
+            bool ret = true;
+            if (obj != null)
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    Guid File_Id = new Guid();
+                    File_Id = Guid.Parse(obj.File_Id.ToString());
+                    string CurSupplierName = obj.Name;
+                    Guid? CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
+                    List<DC_Accomodation_ProductMapping> telephones = new List<DC_Accomodation_ProductMapping>();
+                    telephones = (from a in context.Accommodation_ProductMapping.AsNoTracking()
+                                  join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
+                                  where a.Supplier_Id == CurSupplier_Id && s.File_Id == obj.File_Id
+                                  select new DC_Accomodation_ProductMapping
+                                  {
+                                      Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
+                                      TelephoneNumber = a.TelephoneNumber ?? "",
+                                      TelephoneNumber_tx = a.TelephoneNumber_tx ?? ""
+                                  }
+                                  ).ToList();
 
+                    telephones = telephones.Select(c =>
+                    {
+                        c.TelephoneNumber = CommonFunctions.GetDigits(c.TelephoneNumber, 8);
+                        return c;
+                    }).ToList();
+
+                    telephones.RemoveAll(p => p.TelephoneNumber == p.TelephoneNumber_tx);
+                    foreach (var telephone in telephones)
+                    {
+                        var search = (from a in context.Accommodation_ProductMapping
+                                      where a.Accommodation_ProductMapping_Id == telephone.Accommodation_ProductMapping_Id
+                                      select a).FirstOrDefault();
+                        if (search != null)
+                        {
+                            search.TelephoneNumber_tx = telephone.TelephoneNumber;
+                            context.SaveChanges();
+                        }
+                    }
+                }
+            }
+            return ret;
+        }
         public bool HotelMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             bool ret = true;
@@ -5095,7 +5139,7 @@ namespace DataLayer
                                         {
                                             MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
                                             ParentAttributeValue = mavplojr.AttributeValue,
-                                            SystemMasterAttributeValue =  mav.AttributeValue ,
+                                            SystemMasterAttributeValue = mav.AttributeValue,
                                             SystemMasterAttributeValue_Id = mav.MasterAttributeValue_Id,
                                             TotalRecords = total,
                                             SupplierAttributeValues = (from imavm in m_MasterAttributeValueMapping
