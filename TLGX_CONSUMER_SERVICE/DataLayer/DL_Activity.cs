@@ -2437,6 +2437,7 @@ namespace DataLayer
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
                     var result = from a in search
+                                 orderby a.PriceCode
                                  select new DataContracts.Masters.DC_Activity_Prices
                                  {
                                      Activity_Prices_Id = a.Activity_Prices_Id,
@@ -2454,7 +2455,7 @@ namespace DataLayer
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity prices", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -2558,6 +2559,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var search = from a in context.Activity_SupplierProductMapping
+                                 join af in context.Activity_Flavour on a.Activity_ID equals af.Activity_Flavour_Id
                                  select a;
 
                     if (RQ.ActivitySupplierProductMapping_Id != null)
@@ -2656,6 +2658,7 @@ namespace DataLayer
                                      ImgURL = a.ImgURL,
                                      Inclusions = a.Inclusions,
                                      Introduction = a.Introduction,
+                                     IsActive=a.IsActive,
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude,
                                      Location = a.Location,
@@ -3382,6 +3385,7 @@ namespace DataLayer
                     {
                         DataLayer.Activity_Policy obj = new DataLayer.Activity_Policy();
                         obj.Activity_Policy_Id = RQ.Activity_Policy_Id ?? Guid.Empty;
+                        obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
                         obj.Activity_Id = RQ.Activity_Id;
                         obj.AllowedYN = RQ.AllowedYN;
                         obj.PolicyName = RQ.PolicyName;
