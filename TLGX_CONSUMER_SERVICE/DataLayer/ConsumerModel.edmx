@@ -296,6 +296,7 @@
           <Property Name="Country_Id" Type="uniqueidentifier" />
           <Property Name="City_Id" Type="uniqueidentifier" />
           <Property Name="stg_AccoMapping_Id" Type="uniqueidentifier" />
+          <Property Name="TLGXProductCode" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Accommodation_RoomFacility">
           <Key>
@@ -2035,6 +2036,7 @@
           <Property Name="Country_Id" Type="uniqueidentifier" />
           <Property Name="City_Id" Type="uniqueidentifier" />
           <Property Name="Supplier_Id" Type="uniqueidentifier" />
+          <Property Name="TLGXProductCode" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Supplier">
           <Key>
@@ -2912,6 +2914,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Country_Id" Type="Guid" />
           <Property Name="City_Id" Type="Guid" />
           <Property Name="stg_AccoMapping_Id" Type="Guid" />
+          <Property Name="TLGXProductCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_CityMapping">
           <Key>
@@ -3922,6 +3925,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Country_Id" Type="Guid" />
           <Property Name="City_Id" Type="Guid" />
           <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="TLGXProductCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_keyword">
           <Key>
@@ -5150,6 +5154,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodation_ProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_ProductMapping">
               <MappingFragment StoreEntitySet="Accommodation_ProductMapping">
+                <ScalarProperty Name="TLGXProductCode" ColumnName="TLGXProductCode" />
                 <ScalarProperty Name="stg_AccoMapping_Id" ColumnName="stg_AccoMapping_Id" />
                 <ScalarProperty Name="City_Id" ColumnName="City_Id" />
                 <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
@@ -6182,6 +6187,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="stg_SupplierProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierProductMapping">
               <MappingFragment StoreEntitySet="stg_SupplierProductMapping">
+                <ScalarProperty Name="TLGXProductCode" ColumnName="TLGXProductCode" />
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
                 <ScalarProperty Name="City_Id" ColumnName="City_Id" />
                 <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />

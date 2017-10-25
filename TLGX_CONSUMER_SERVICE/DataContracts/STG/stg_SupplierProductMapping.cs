@@ -137,6 +137,9 @@ namespace DataContracts.STG
         [DataMember]
         public Nullable<System.Guid> Supplier_Id { get; set; }
 
+        [DataMember]
+        public string TLGXProductCode { get; set; }
+
 
     }
 
