@@ -16,6 +16,22 @@ namespace DataLayer
             char[] arr = str.Where(c => (char.IsLetterOrDigit(c))).ToArray();
             return new string(arr);
         }
+        public static string RemoveSpecialCharactersAndAlphabates(string str)
+        {
+            StringBuilder sb = new StringBuilder();
+            char[] arr = str.Where(c => (char.IsDigit(c))).ToArray();
+            return new string(arr);
+        }
+
+        public static string GetDigits(string str, int lenghth)
+        {
+            str = RemoveSpecialCharactersAndAlphabates(str);
+            int len = str.Length;
+            if (len > lenghth)
+                return str.Substring(len - lenghth);
+            else
+                return str;
+        }
 
         public static string GetCharacter(string str,int lenghth)
         {
