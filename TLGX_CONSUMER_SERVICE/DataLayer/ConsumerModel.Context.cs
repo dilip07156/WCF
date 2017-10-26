@@ -138,6 +138,7 @@ namespace DataLayer
         public virtual DbSet<Activity_Policy> Activity_Policy { get; set; }
         public virtual DbSet<Activity_ReviewsAndScores> Activity_ReviewsAndScores { get; set; }
         public virtual DbSet<Activity_Prices> Activity_Prices { get; set; }
+        public virtual DbSet<Activity_FlavourOptions> Activity_FlavourOptions { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

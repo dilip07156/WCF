@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="e642f146ce78487cbc5fadc8604f597a" Name="WorkFlow_Masters" ZoomLevel="99">
+      <Diagram DiagramId="e642f146ce78487cbc5fadc8604f597a" Name="WorkFlow_Masters" ZoomLevel="80">
         <EntityTypeShape EntityType="ConsumerModel.m_Activity_Master" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.m_Approval_RoleMaster" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.m_Approval_StatusFlow" Width="1.5" PointX="4.75" PointY="0.75" />
@@ -16,6 +16,7 @@
         <EntityTypeShape EntityType="ConsumerModel.m_WorkflowSteps" Width="1.5" PointX="8.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.m_EntityType" Width="1.5" PointX="0.75" PointY="8.75" />
         <EntityTypeShape EntityType="ConsumerModel.Counter" Width="1.5" PointX="3.375" PointY="8.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_FlavourOptions" Width="1.5" PointX="5.375" PointY="8.75" />
       </Diagram>
       <Diagram DiagramId="71315cf0089e483d98a8ea653619edde" Name="Accomodation" ZoomLevel="44" >
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_Contact" Width="1.875" PointX="2.75" PointY="0.75" />

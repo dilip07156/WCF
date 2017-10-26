@@ -2260,6 +2260,163 @@ namespace DataLayer
         }
         #endregion
 
+        #region Activity Flavour Options
+        public List<DataContracts.Masters.DC_Activity_Flavour_Options> GetActivityFlavourOptions(DataContracts.Masters.DC_Activity_Flavour_Options_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_FlavourOptions
+                                 select a;
+
+                    if (RQ.Activity_FlavourOptions_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_FlavourOptions_Id == RQ.Activity_FlavourOptions_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_Flavour_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
+                                 select a;
+                    }
+                    if (RQ.Activity_FlavourName != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_FlavourName.Trim().TrimStart().ToUpper() == RQ.Activity_FlavourName.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.Activity_DealText != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_DealText.Trim().TrimStart().ToUpper()==RQ.Activity_DealText.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if (RQ.Activity_OptionCode != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_OptionCode.Trim().TrimStart().ToUpper() == RQ.Activity_OptionCode.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if(RQ.Activity_OptionName!=null)
+                    {
+                        search = from a in search
+                                 where a.Activity_OptionName.Trim().TrimStart().ToUpper() == RQ.Activity_OptionName.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+                    if(RQ.Activity_Type!=null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Type.Trim().TrimStart().ToUpper() == RQ.Activity_Type.Trim().TrimStart().ToUpper()
+                                 select a;
+                    }
+
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+                    var result = from a in search
+                                 orderby a.Activity_FlavourName
+                                 select new DataContracts.Masters.DC_Activity_Flavour_Options
+                                 {
+                                     Activity_FlavourOptions_Id=a.Activity_FlavourOptions_Id,
+                                     Activity_Flavour_Id=a.Activity_Flavour_Id,
+                                     Activity_FlavourName=a.Activity_FlavourName,
+                                     Activity_OptionCode=a.Activity_OptionCode,
+                                     Activity_OptionName=a.Activity_OptionName,
+                                     Activity_DealText=a.Activity_DealText,
+                                     Activity_Type=a.Activity_Type,
+                                     Create_Date=a.Create_Date,
+                                     Status=a.Status,
+                                     Edit_Date=a.Edit_Date,
+                                     Edit_User=a.Edit_User,
+                                     Create_User=a.Create_User,
+                                     TotalRecords=total
+                                 };
+                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                }
+            }
+            catch(Exception e)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Flavour Options", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityFlavourOptions(DC_Activity_Flavour_Options RQ)
+        {
+            bool IsInsert = false;
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    if (RQ.Activity_Flavour_Id != null)
+                    {
+                        var res = context.Activity_FlavourOptions.Find(RQ.Activity_FlavourOptions_Id);
+                        if (res != null)
+                        {
+                            res.Activity_FlavourOptions_Id = RQ.Activity_FlavourOptions_Id ?? Guid.Empty;
+                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id ?? Guid.Empty;
+                            res.Activity_FlavourName = RQ.Activity_FlavourName;
+                            res.Activity_DealText = RQ.Activity_DealText;
+                            res.Activity_OptionCode = RQ.Activity_OptionCode;
+                            res.Activity_OptionName = RQ.Activity_OptionName;
+                            res.Activity_Type = RQ.Activity_Type;
+                            res.Status = RQ.Status;
+                            res.Edit_Date = DateTime.Now;
+                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                            if (context.SaveChanges() == 1)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
+                        }
+                        else IsInsert = true;
+                    }
+                    else IsInsert = true;
+
+                    if (IsInsert)
+                    {
+                        DataLayer.Activity_FlavourOptions obj = new DataLayer.Activity_FlavourOptions();
+
+                        obj.Activity_FlavourOptions_Id = RQ.Activity_FlavourOptions_Id ?? Guid.NewGuid();
+                        obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id ?? Guid.NewGuid();
+                        obj.Activity_FlavourName = RQ.Activity_FlavourName;
+                        obj.Activity_OptionCode = RQ.Activity_OptionCode;
+                        obj.Activity_OptionName = RQ.Activity_OptionName;
+                        obj.Activity_DealText = RQ.Activity_DealText;
+                        obj.Activity_Type = RQ.Activity_Type;
+                        obj.Status = RQ.Status;
+                        obj.Create_Date = DateTime.Now;
+                        obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                        context.Activity_FlavourOptions.Add(obj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                    return _msg;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity Flavour Options", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
+
         #region Activity Deals
         public List<DataContracts.Masters.DC_Activity_Deals> GetActivityDeals(DataContracts.Masters.DC_Activity_Deals_RQ RQ)
         {
@@ -2446,7 +2603,10 @@ namespace DataLayer
                                      PriceBasis=a.PriceBasis,
                                      PriceCode=a.PriceCode,
                                      PriceCurrency=a.PriceCurrency,
-                                      PriceNet=a.PriceNet,
+                                     Price=a.Price,
+                                     Price_For=a.Price_For,
+                                     Price_Type=a.Price_Type,
+                                     Price_OptionCode=a.Price_OptionCode,
                                      Totalrecords = total,
                                      Create_Date=a.Create_Date,
                                      IsActive=a.IsActive
@@ -2497,7 +2657,10 @@ namespace DataLayer
                             res.PriceBasis = RQ.PriceBasis;
                             res.PriceCode = RQ.PriceCode;
                             res.PriceCurrency = RQ.PriceCurrency;
-                            res.PriceNet = RQ.PriceNet;
+                            res.Price = RQ.Price;
+                            res.Price_For = RQ.Price_For;
+                            res.Price_Type = RQ.Price_Type;
+                            res.Price_OptionCode = RQ.Price_OptionCode;
                             res.Edit_Date = DateTime.Now;
                             res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
                             if (context.SaveChanges() == 1)
@@ -2524,7 +2687,10 @@ namespace DataLayer
                         obj.PriceBasis = RQ.PriceBasis;
                         obj.PriceCode = RQ.PriceCode;
                         obj.PriceCurrency = RQ.PriceCurrency;
-                        obj.PriceNet = RQ.PriceNet;
+                        obj.Price = RQ.Price;
+                        obj.Price_For = RQ.Price_For;
+                        obj.Price_Type = RQ.Price_Type;
+                        obj.Price_OptionCode = RQ.Price_OptionCode;
                         obj.IsActive = RQ.IsActive;
                         obj.Create_Date = DateTime.Now;
                         obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
