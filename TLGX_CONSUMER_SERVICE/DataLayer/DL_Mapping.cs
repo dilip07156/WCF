@@ -455,6 +455,14 @@ namespace DataLayer
                         Website = g.Website,
                         ActionType = "INSERT",
                         stg_AccoMapping_Id = g.stg_AccoMapping_Id,
+                        FullAddress = (g.StreetNo ?? "") + (((g.StreetNo ?? "") == "") ? ", " : "")
+                                       + (g.StreetName ?? "") + (((g.StreetName ?? "") == "") ? ", " : "")
+                                       + (g.Street2 ?? "") + (((g.Street2 ?? "") == "") ? ", " : "")
+                                       + (g.Street3 ?? "") + (((g.Street3 ?? "") == "") ? ", " : "")
+                                       + (g.Street4 ?? "") + (((g.Street4 ?? "") == "") ? ", " : "")
+                                       + (g.Street5 ?? "") + (((g.Street5 ?? "") == "") ? ", " : "")
+                                       + (g.PostalCode ?? "") + (((g.PostalCode ?? "") == "") ? ", " : "")
+                        ,
                         Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
                     }));
 
@@ -725,6 +733,7 @@ namespace DataLayer
                     bool isCodeCheck = false;
                     bool isNameCheck = false;
                     bool isPlaceIdCheck = false;
+                    bool isAddressCheck = false;
 
                     totConfigs = configs.Count;
                     curConfig = 0;
@@ -865,14 +874,27 @@ namespace DataLayer
                                                  select a).Distinct().ToList();
                             }
                         }
+                        if (CurrConfig == "Address_Tx".ToUpper())
+                        {
+                            isAddressCheck = true;
+                            prodMapSearch = (from a in prodMapSearch
+                                                 //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
+                                             join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
+                                             where (a.address_tx ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "") == (ac.FullAddress ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "")
+                                             select a).Distinct().ToList();
+                        }
+                        if (CurrConfig == "TelephoneNumber_tx".ToUpper())
+                        {
 
-                        //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
-                        PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + ((PerForEachPriority / totConfigs) * curConfig);
+                        }
+
+                            //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
+                            PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + ((PerForEachPriority / totConfigs) * curConfig);
                         USD.AddStaticDataUploadProcessLog(PLog);
                     }
                     List<DC_Accomodation_ProductMapping> res = new List<DC_Accomodation_ProductMapping>();
 
-                    if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isPlaceIdCheck)
+                    if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isPlaceIdCheck || isAddressCheck)
                     {
                         res = (from a in prodMapSearch
                                select new DataContracts.Mapping.DC_Accomodation_ProductMapping
@@ -931,7 +953,8 @@ namespace DataLayer
                                                             ((isCodeCheck && s.CompanyHotelID.ToString() == c.SupplierProductReference) || (!isCodeCheck)) &&
                                                             ((isNameCheck && s.HotelName.Trim().ToUpper() == c.ProductName.Trim().ToUpper()) || (!isNameCheck)) &&
                                                             ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck)) &&
-                                                            ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck))
+                                                            ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck)) &&
+                                                            ((isAddressCheck && s.FullAddress == c.Address_tx) || (!isAddressCheck))
                                                         )
                                                    )
                                             .Select(s1 => s1.Accommodation_Id)

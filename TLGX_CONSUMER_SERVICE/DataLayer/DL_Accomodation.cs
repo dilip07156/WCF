@@ -1294,6 +1294,12 @@ namespace DataLayer
                         search.YearBuilt = AccomodationDetails.YearBuilt;
                         search.Google_Place_Id = AccomodationDetails.Google_Place_Id;
                         search.InsertFrom = AccomodationDetails.InsertFrom;
+                        search.FullAddress = (AccomodationDetails.StreetNumber ?? "") + (((AccomodationDetails.StreetNumber ?? "") == "") ? ", " : "")
+                                       + (AccomodationDetails.StreetName ?? "") + (((AccomodationDetails.StreetName ?? "") == "") ? ", " : "")
+                                       + (AccomodationDetails.Street3 ?? "") + (((AccomodationDetails.Street3 ?? "") == "") ? ", " : "")
+                                       + (AccomodationDetails.Street4 ?? "") + (((AccomodationDetails.Street4 ?? "") == "") ? ", " : "")
+                                       + (AccomodationDetails.Street5 ?? "") + (((AccomodationDetails.Street5 ?? "") == "") ? ", " : "")
+                                       + (AccomodationDetails.PostalCode ?? "") + (((AccomodationDetails.PostalCode ?? "") == "") ? ", " : "")
                         context.SaveChanges();
 
                     }
