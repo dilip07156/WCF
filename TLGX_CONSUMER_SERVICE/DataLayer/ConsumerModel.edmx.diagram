@@ -16,7 +16,6 @@
         <EntityTypeShape EntityType="ConsumerModel.m_WorkflowSteps" Width="1.5" PointX="8.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.m_EntityType" Width="1.5" PointX="0.75" PointY="8.75" />
         <EntityTypeShape EntityType="ConsumerModel.Counter" Width="1.5" PointX="3.375" PointY="8.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_FlavourOptions" Width="1.5" PointX="5.375" PointY="8.75" />
       </Diagram>
       <Diagram DiagramId="71315cf0089e483d98a8ea653619edde" Name="Accomodation" ZoomLevel="44" >
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_Contact" Width="1.875" PointX="2.75" PointY="0.75" />
@@ -119,37 +118,43 @@
       </Diagram>
       <Diagram DiagramId="ad5d32e919304d73b1be35615e39e317" Name="Diagram1" />
       <Diagram DiagramId="0653c78854a345c5ae84516693c7176c" Name="Activity" ZoomLevel="86" >
-        <EntityTypeShape EntityType="ConsumerModel.Activity_ClassificationAttributes" Width="1.5" PointX="2.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Content" Width="1.5" PointX="2.75" PointY="5.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Facility" Width="1.5" PointX="6.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Flavour" Width="1.5" PointX="6.75" PointY="5.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Itinerary" Width="1.5" PointX="0.75" PointY="9.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_PickUpDrop" Width="1.5" PointX="10.75" PointY="6.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_PickUpDropDetail" Width="1.5" PointX="4.75" PointY="11.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_PickupDropSchedule" Width="1.5" PointX="10.75" PointY="11.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Tips" Width="1.5" PointX="6.75" PointY="12.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Types" Width="1.5" PointX="12.75" PointY="9.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Updates" Width="1.5" PointX="12.75" PointY="13.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_WeatherInformation" Width="1.5" PointX="14.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity" Width="1.5" PointX="0.75" PointY="14.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Ancillary" Width="1.5" PointX="15.75" PointY="5.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Deals" Width="1.5" PointX="15.75" PointY="9.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Descriptions" Width="1.5" PointX="15.75" PointY="14.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Media" Width="1.5" PointX="7.75" PointY="16.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierActivityImageMapping" Width="1.5" PointX="11.375" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierActivityMetaDataMapping" Width="1.5" PointX="9.75" PointY="17.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierActivityReviews" Width="1.5" PointX="17.75" PointY="15.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierActivityTypeMapping" Width="1.5" PointX="11.75" PointY="18.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierProductMapping_CA" Width="1.5" PointX="19.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierProductMapping_Deals" Width="1.5" PointX="2.75" PointY="19.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Accommodation_Descriptions" Width="2.875" PointX="21.25" PointY="5.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Contact" Width="1.5" PointX="20.375" PointY="10.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Status" Width="2.125" PointX="14.375" PointY="20.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_InclusionDetails" Width="1.5" PointX="9.375" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Inclusions" Width="1.5" PointX="20.375" PointY="15.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Policy" Width="1.5" PointX="18.375" PointY="5.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_ReviewsAndScores" Width="1.5" PointX="17.375" PointY="21.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Prices" Width="1.5" PointX="19.375" PointY="21.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_ClassificationAttributes" Width="1.5" PointX="0.5" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Content" Width="1.5" PointX="0.5" PointY="4.25" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Facility" Width="1.5" PointX="2.125" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Flavour" Width="1.5" PointX="2.125" PointY="4.375" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Itinerary" Width="1.5" PointX="0.5" PointY="7.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_PickUpDrop" Width="1.5" PointX="10.25" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_PickUpDropDetail" Width="1.5" PointX="3.75" PointY="5.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_PickupDropSchedule" Width="1.5" PointX="11.875" PointY="3.875" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Tips" Width="1.5" PointX="5.375" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Types" Width="1.5" PointX="10.25" PointY="4.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Updates" Width="1.5" PointX="10.25" PointY="7.25" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_WeatherInformation" Width="1.5" PointX="11.875" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity" Width="1.5" PointX="5.375" PointY="3.625" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Ancillary" Width="1.5" PointX="13.5" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Deals" Width="1.5" PointX="13.5" PointY="3.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Descriptions" Width="1.5" PointX="13.5" PointY="7.375" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Media" Width="1.5" PointX="7" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierActivityImageMapping" Width="1.5" PointX="8.625" PointY="4.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierActivityMetaDataMapping" Width="1.5" PointX="7" PointY="6.625" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierActivityReviews" Width="1.5" PointX="15.125" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierActivityTypeMapping" Width="1.5" PointX="15.125" PointY="5.25" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierProductMapping_CA" Width="1.5" PointX="16.75" PointY="4.125" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierProductMapping_Deals" Width="1.5" PointX="8.625" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Accommodation_Descriptions" Width="1.5" PointX="18.375" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Contact" Width="1.5" PointX="18.375" PointY="4.375" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Status" Width="1.5" PointX="15.125" PointY="8.875" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_InclusionDetails" Width="1.5" PointX="3.75" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Inclusions" Width="1.5" PointX="20" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Policy" Width="1.5" PointX="16.75" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_ReviewsAndScores" Width="1.5" PointX="16.75" PointY="8" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_FlavourOptions" Width="1.5" PointX="6.75" PointY="11.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Prices" Width="1.5" PointX="8.75" PointY="11.75" />
+        <EntityTypeShape EntityType="ConsumerModel.ActivityGeneralInfo" Width="1.5" PointX="10.75" PointY="11.75" />
+        <EntityTypeShape EntityType="ConsumerModel.stg_ActivitySupplierProductMapping" Width="1.5" PointX="12.75" PointY="12.75" />
+        <EntityTypeShape EntityType="ConsumerModel.stg_SupplierActivityImageMapping" Width="1.5" PointX="0.75" PointY="13.75" />
+        <EntityTypeShape EntityType="ConsumerModel.STG_SupplierActivityMetaDataMapping" Width="1.5" PointX="2.75" PointY="13.75" />
+        <EntityTypeShape EntityType="ConsumerModel.STG_SupplierActivityTypeMapping" Width="1.5" PointX="14.75" PointY="13.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
