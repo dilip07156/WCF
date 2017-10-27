@@ -3069,7 +3069,7 @@ namespace DataLayer
                                      City = a.City,
                                      ProductType = a.ProductType,
                                      ProductCategory = a.ProductCategory,
-                                     ProductCategorySubType = a.ProductCategorySubType,                                     
+                                     ProductCategorySubType = a.ProductCategorySubType,
                                      Create_Date = a.Create_Date,
                                      Edit_Date = a.Edit_Date,
                                      Create_User = a.Create_User,
@@ -3337,29 +3337,29 @@ namespace DataLayer
                     {
                         actSearch = from a in actSearch
                                     where a.ProductCategory.Trim().TrimStart().ToUpper() == RQ.ProductCategory.Trim().TrimStart().ToUpper()
-                                 select a;
+                                    select a;
                     }
 
                     if (RQ.ProductCategorySubType != null)
                     {
                         actSearch = from a in actSearch
                                     where a.ProductCategorySubType.Trim().TrimStart().ToUpper() == RQ.ProductCategorySubType.Trim().TrimStart().ToUpper()
-                                 select a;
+                                    select a;
                     }
 
                     if (RQ.ProductType != null)
                     {
                         actSearch = from a in actSearch
                                     where a.ProductType.Trim().TrimStart().ToUpper() == RQ.ProductType.Trim().TrimStart().ToUpper()
-                                 select a;
+                                    select a;
                     }
 
                     if (RQ.ProductNameSubType != null)
                     {
                         actSearch = from a in actSearch
                                     join at in context.Activity_Flavour on a.Activity_Id equals at.Activity_Id
-                                 where at.ProductNameSubType.Trim().TrimStart().ToUpper() == RQ.ProductNameSubType.Trim().TrimStart().ToUpper()
-                                 select a;
+                                    where at.ProductNameSubType.Trim().TrimStart().ToUpper() == RQ.ProductNameSubType.Trim().TrimStart().ToUpper()
+                                    select a;
                     }
 
                     var acco = (from a in actSearch
@@ -4205,6 +4205,13 @@ namespace DataLayer
                                  select r;
                     }
 
+                    if (!string.IsNullOrWhiteSpace(obj.EntityFor))
+                    {
+                        search = from r in search
+                                 where r.EntityFor.Trim().ToUpper() == obj.EntityFor.Trim().ToUpper()
+                                 select r;
+                    }
+
                     if (!string.IsNullOrWhiteSpace(obj.systemWord))
                     {
                         search = from r in search
@@ -4372,6 +4379,350 @@ namespace DataLayer
             }
         }
 
+        public DC_Message ApplyKeyword(DC_keywordApply_RQ RQ)
+        {
+            try
+            {
+                bool bIsProgressLog = false;
+                bool bRunAttributeExtraction = false;
+
+                if (RQ.File_Id.HasValue)
+                    bIsProgressLog = true;
+
+                DataContracts.UploadStaticData.DC_SupplierImportFile_Progress PLog = new DataContracts.UploadStaticData.DC_SupplierImportFile_Progress();
+                DL_UploadStaticData USD = new DL_UploadStaticData();
+
+                if (bIsProgressLog)
+                {
+                    PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
+                    PLog.SupplierImportFile_Id = RQ.File_Id;
+                    PLog.Step = "KEYWORD";
+                    PLog.Status = "KEYWORDREPLACE";
+                    PLog.CurrentBatch = RQ.CurrentBatch;
+                    PLog.TotalBatch = RQ.TotalBatch;
+                }
+
+                #region Get all entity related Keywords 
+
+                List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
+                using (DL_Masters objDL = new DL_Masters())
+                {
+                    Keywords = objDL.SearchKeyword(new DC_Keyword_RQ { EntityFor = RQ.KeywordEntity, PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
+                }
+
+                List<DataContracts.Masters.DC_Keyword> Attributes = Keywords.Where(w => w.Attribute == true).ToList();
+
+                #endregion
+
+                #region Update Progress to 15%
+
+                if (bIsProgressLog)
+                {
+                    PLog.PercentageValue = 15;
+                    USD.AddStaticDataUploadProcessLog(PLog);
+                }
+
+                #endregion
+
+                #region Fetch the data which needs to be TTFU
+
+                if (string.IsNullOrWhiteSpace(RQ.SearchTable) || string.IsNullOrWhiteSpace(RQ.TakeColumn) || string.IsNullOrWhiteSpace(RQ.UpdateColumn) || RQ.TablePrimaryKeys.Length == 0)
+                {
+                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Danger, StatusMessage = "Bad Request" };
+                }
+
+                List<DC_keywordApplyToTarget> targetStructure = new List<DC_keywordApplyToTarget>();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (RQ.SearchTable.Trim().ToUpper() == "ACCOMMODATION" && RQ.TakeColumn.Trim().ToUpper() == "FULLADDRESS")
+                    {
+                        var PKIdsFilter = RQ.TablePrimaryKeys.Select(x => Guid.Parse(x)).ToList();
+                        targetStructure = context.Accommodations.AsQueryable()
+                                    .Where(w => PKIdsFilter.Contains(w.Accommodation_Id))
+                                    .Select(s => new DC_keywordApplyToTarget
+                                    {
+                                        EditUser = RQ.EditUser,
+                                        PrimaryKey = s.Accommodation_Id.ToString(),
+                                        SourceColumnName = RQ.TakeColumn,
+                                        SourceColumnValue = s.FullAddress,
+                                        TableName = RQ.SearchTable,
+                                        TargetColumnName = RQ.UpdateColumn
+                                    }).ToList();
+
+                    }
+                    else if (RQ.SearchTable.Trim().ToUpper() == "ACCOMMODATION_PRODUCTMAPPING" && RQ.TakeColumn.Trim().ToUpper() == "ADDRESS")
+                    {
+                        var PKIdsFilter = RQ.TablePrimaryKeys.Select(x => Guid.Parse(x)).ToList();
+                        targetStructure = context.Accommodation_ProductMapping.AsQueryable()
+                                    .Where(w => PKIdsFilter.Contains(w.Accommodation_ProductMapping_Id))
+                                    .Select(s => new DC_keywordApplyToTarget
+                                    {
+                                        EditUser = RQ.EditUser,
+                                        PrimaryKey = s.Accommodation_ProductMapping_Id.ToString(),
+                                        SourceColumnName = RQ.TakeColumn,
+                                        SourceColumnValue = s.address,
+                                        TableName = RQ.SearchTable,
+                                        TargetColumnName = RQ.UpdateColumn
+                                    }).ToList();
+                    }
+                }
+
+                #endregion
+
+                #region Update Progress to 25%
+                if (bIsProgressLog)
+                {
+                    PLog.PercentageValue = 25;
+                    USD.AddStaticDataUploadProcessLog(PLog);
+                }
+                #endregion
+
+                #region Loop through the data to TTFU
+                int i = 0;
+                foreach (var inputData in targetStructure)
+                {
+                    i = i + 1;
+
+                    List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList> AttributeList = new List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList>();
+
+                    string BaseValue = inputData.SourceColumnValue;
+
+                    #region PRE TTFU
+
+                    //HTML Decode
+                    BaseValue = System.Web.HttpUtility.HtmlDecode(BaseValue);
+
+                    //To Upper
+                    BaseValue = BaseValue.ToUpper();
+
+                    //Replace the braces
+                    BaseValue = BaseValue.Replace('{', '(');
+                    BaseValue = BaseValue.Replace('}', ')');
+                    BaseValue = BaseValue.Replace('[', '(');
+                    BaseValue = BaseValue.Replace(']', ')');
+
+                    BaseValue = BaseValue.Replace("( ", "(");
+                    BaseValue = BaseValue.Replace(" )", ")");
+
+                    //Replace UnNecessary chars to space
+                    BaseValue = BaseValue.Replace('<', ' ');
+                    BaseValue = BaseValue.Replace('>', ' ');
+                    BaseValue = BaseValue.Replace('?', ' ');
+                    BaseValue = BaseValue.Replace('#', ' ');
+                    BaseValue = BaseValue.Replace('!', ' ');
+                    BaseValue = BaseValue.Replace('@', ' ');
+                    BaseValue = BaseValue.Replace("&", " AND ");
+                    BaseValue = BaseValue.Replace('(', ' ');
+                    BaseValue = BaseValue.Replace(')', ' ');
+                    BaseValue = BaseValue.Replace('-', ' ');
+                    BaseValue = BaseValue.Replace(',', ' ');
+                    BaseValue = BaseValue.Replace('.', ' ');
+                    BaseValue = BaseValue.Replace('"', ' ');
+
+                    //Necessary Replace
+                    //BaseValue = BaseValue.Replace("/", " OR ");
+                    //BaseValue = BaseValue.Replace("+", " INCLUDING ");
+
+                    //Replace Multiple whitespaces into One Whitespace
+                    BaseValue = System.Text.RegularExpressions.Regex.Replace(BaseValue, @"\s{2,}", " ");
+
+                    //trim both end
+                    BaseValue = BaseValue.Trim();
+
+                    //Take only valid characters
+                    string BaseValue_ValidChars = string.Empty;
+                    foreach (char c in BaseValue)
+                    {
+                        if ((Convert.ToInt16(c) >= 32 && Convert.ToInt16(c) <= 196))// || (Convert.ToInt16(c) >= 97 && Convert.ToInt16(c) <= 122) || Convert.ToInt16(c) == 32)
+                        {
+                            BaseValue_ValidChars = BaseValue_ValidChars + c;
+                        }
+                    }
+
+                    BaseValue = BaseValue_ValidChars;
+
+                    //Check for Spaced Keyword and Replace
+                    List<DataContracts.Masters.DC_Keyword> SpacedKeywords = Keywords.Where(w => w.Attribute == false && w.Alias.Any(a => a.Value.Contains(' '))).ToList();
+                    foreach (DataContracts.Masters.DC_Keyword spacedkey in SpacedKeywords.OrderBy(o => o.Sequence))
+                    {
+                        var spacedAliases = spacedkey.Alias.Where(w => w.Value.Contains(' ')).OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
+                        foreach (var alias in spacedAliases)
+                        {
+                            if (BaseValue.Contains(alias.Value.ToUpper()))
+                            {
+                                BaseValue = BaseValue.Replace(alias.Value.ToUpper(), spacedkey.Keyword);
+                                BaseValue = BaseValue.Replace("()", string.Empty);
+                                BaseValue = BaseValue.Trim();
+
+                                alias.NewHits += 1;
+
+                                break;
+                            }
+                        }
+                    }
+
+                    //Split words and replace keywords
+                    string[] BaseValueWords = BaseValue.Split(' ');
+
+                    foreach (string word in BaseValueWords)
+                    {
+                        DataContracts.Masters.DC_Keyword keywordSearch = Keywords.Where(k => k.Alias.Any(a => a.Value.ToUpper() == word.ToUpper()) && k.Attribute == false).FirstOrDefault();
+
+                        if (keywordSearch != null)
+                        {
+                            BaseValue = BaseValue.Replace(word, keywordSearch.Keyword);
+                            var foundAlias = keywordSearch.Alias.Where(w => w.Value.ToUpper() == word.ToUpper()).FirstOrDefault();
+                            foundAlias.NoOfHits += 1;
+                        }
+
+                        keywordSearch = null;
+                    }
+
+                    //Attribute Extraction
+                    if (bRunAttributeExtraction)
+                    {
+                        foreach (var Attribute in Attributes.OrderBy(o => o.Sequence))
+                        {
+                            var aliases = Attribute.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
+                            foreach (var alias in aliases)
+                            {
+                                if (BaseValue.Contains(alias.Value.ToUpper()))
+                                {
+                                    AttributeList.Add(new DataContracts.Mapping.DC_SupplierRoomName_AttributeList
+                                    {
+                                        SystemAttributeKeywordID = Attribute.Keyword_Id,
+                                        SupplierRoomTypeAttribute = alias.Value,
+                                        SystemAttributeKeyword = Attribute.Keyword
+                                    });
+
+                                    if ((Attribute.AttributeType ?? string.Empty).ToUpper().Contains("STRIP"))
+                                    {
+                                        BaseValue = BaseValue.Replace(alias.Value.ToUpper(), string.Empty);
+                                    }
+
+                                    BaseValue = BaseValue.Replace("()", string.Empty);
+                                    BaseValue = BaseValue.Trim();
+
+                                    alias.NewHits += 1;
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    #endregion
+
+                    #region POST TTFU
+                    //Replace UnNecessary chars to space
+                    BaseValue = BaseValue.Replace('<', ' ');
+                    BaseValue = BaseValue.Replace('>', ' ');
+                    BaseValue = BaseValue.Replace('?', ' ');
+                    BaseValue = BaseValue.Replace('#', ' ');
+                    BaseValue = BaseValue.Replace('!', ' ');
+                    BaseValue = BaseValue.Replace('@', ' ');
+                    BaseValue = BaseValue.Replace("&", " AND ");
+                    //BaseRoomName = BaseRoomName.Replace("+", " INCLUDING ");
+                    BaseValue = BaseValue.Replace('(', ' ');
+                    BaseValue = BaseValue.Replace(')', ' ');
+                    BaseValue = BaseValue.Replace('-', ' ');
+                    BaseValue = BaseValue.Replace(',', ' ');
+                    BaseValue = BaseValue.Replace('.', ' ');
+                    BaseValue = BaseValue.Replace('"', ' ');
+
+                    //Replace Multiple whitespaces into One Whitespace
+                    BaseValue = System.Text.RegularExpressions.Regex.Replace(BaseValue, @"\s{2,}", " ");
+
+                    //trim both end
+                    BaseValue = BaseValue.Trim();
+                    #endregion
+
+                    //Value assignment
+                    inputData.TargetColumnValue = BaseValue;
+                    //inputData.AttributeList = AttributeList.ToList(); //This may come later on so, kept the structure
+
+                    #region UpdateToDB
+
+                    //Update keyword replaced values to DB
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        #region ForFutureUse
+                        //Remove Existing Attribute List Records
+                        //context.Accommodation_SupplierRoomTypeAttributes.RemoveRange(context.Accommodation_SupplierRoomTypeAttributes.Where(w => w.RoomTypeMap_Id == srn.RoomTypeMap_Id));
+
+                        //context.Accommodation_SupplierRoomTypeAttributes.AddRange((from a in inputData.AttributeList
+                        //                                                           select new Accommodation_SupplierRoomTypeAttributes
+                        //                                                           {
+                        //                                                               RoomTypeMapAttribute_Id = Guid.NewGuid(),
+                        //                                                               RoomTypeMap_Id = inputData.RoomTypeMap_Id,
+                        //                                                               SupplierRoomTypeAttribute = a.SupplierRoomTypeAttribute,
+                        //                                                               SystemAttributeKeyword = a.SystemAttributeKeyword,
+                        //                                                               SystemAttributeKeyword_Id = a.SystemAttributeKeywordID
+                        //                                                           }).ToList());
+                        #endregion
+
+                        if (inputData.TableName.Trim().ToUpper() == "ACCOMMODATION" && inputData.TargetColumnName.Trim().ToUpper() == "ADDRESS_TX")
+                        {
+                            var search = context.Accommodations.Find(Guid.Parse(inputData.PrimaryKey));
+                            if (search != null)
+                            {
+                                search.Address_Tx = inputData.TargetColumnValue;
+                            }
+                        }
+                        else if (inputData.TableName.Trim().ToUpper() == "ACCOMMODATION_PRODUCTMAPPING" && inputData.TargetColumnName.Trim().ToUpper() == "ADDRESS_TX")
+                        {
+                            var search = context.Accommodation_ProductMapping.Find(Guid.Parse(inputData.PrimaryKey));
+                            if (search != null)
+                            {
+                                search.address_tx = inputData.TargetColumnValue;
+                            }
+                        }
+
+                        context.SaveChanges();
+                    }
+
+                    #endregion
+
+                    if (bIsProgressLog)
+                    {
+                        if (i % 5 == 0)
+                        {
+                            PLog.PercentageValue = 25 + ((60 * i) / targetStructure.Count);
+                            USD.AddStaticDataUploadProcessLog(PLog);
+                        }
+                    }
+
+                }
+                #endregion
+
+                #region Update No Of Hits
+                var updatableAliases = (from k in Keywords
+                                        from ka in k.Alias
+                                        where ka.NewHits != 0
+                                        select ka).ToList();
+                if (updatableAliases.Count > 0)
+                {
+                    using (DL_Masters objDL = new DL_Masters())
+                    {
+                        objDL.DataHandler_Keyword_Update_NoOfHits(updatableAliases);
+                    }
+                }
+
+                #endregion
+
+                if (bIsProgressLog)
+                {
+                    PLog.PercentageValue = 100;
+                    USD.AddStaticDataUploadProcessLog(PLog);
+                }
+
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword Replace has been done." };
+
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while Keyword Replace", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
         #endregion
 
         public string[] GetColumnNames(string TableName)

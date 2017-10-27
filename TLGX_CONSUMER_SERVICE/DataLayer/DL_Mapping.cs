@@ -2861,8 +2861,7 @@ namespace DataLayer
                         }
                     }
                 }
-
-
+                
                 #region Update No Of Hits
                 var updatableAliases = (from k in Keywords
                                         from ka in k.Alias
