@@ -734,6 +734,7 @@ namespace DataLayer
                     bool isNameCheck = false;
                     bool isPlaceIdCheck = false;
                     bool isAddressCheck = false;
+                    bool isTelephoneCheck = false;
 
                     totConfigs = configs.Count;
                     curConfig = 0;
@@ -885,7 +886,12 @@ namespace DataLayer
                         }
                         if (CurrConfig == "TelephoneNumber_tx".ToUpper())
                         {
-
+                            isTelephoneCheck = true;
+                            prodMapSearch = (from a in prodMapSearch
+                                             join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
+                                             join acc in context.Accommodation_Contact.AsNoTracking() on ac.Accommodation_Id equals acc.Accommodation_Id
+                                             where a.TelephoneNumber_tx == acc.Telephone_Tx
+                                             select a).Distinct().ToList();
                         }
 
                             //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
@@ -894,7 +900,7 @@ namespace DataLayer
                     }
                     List<DC_Accomodation_ProductMapping> res = new List<DC_Accomodation_ProductMapping>();
 
-                    if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isPlaceIdCheck || isAddressCheck)
+                    if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isPlaceIdCheck || isAddressCheck || isTelephoneCheck)
                     {
                         res = (from a in prodMapSearch
                                select new DataContracts.Mapping.DC_Accomodation_ProductMapping
@@ -962,6 +968,22 @@ namespace DataLayer
                                             );
                             return c;
                         }).ToList();
+
+                        if (isTelephoneCheck)
+                        {
+                            res = res.Where(a => a.Accommodation_Id == null).Select(c =>
+                            {
+                                c.Accommodation_Id = (context.Accommodation_Contact.AsNoTracking()
+                                                .Where(s => (
+                                                                s.Telephone_Tx == c.TelephoneNumber_tx
+                                                            )
+                                                       )
+                                                .Select(s1 => s1.Accommodation_Id)
+                                                .FirstOrDefault()
+                                                );
+                                return c;
+                            }).ToList();
+                        }
                         if (totPriorities == curPriority)
                         {
                             PLog.PercentageValue = 70;
