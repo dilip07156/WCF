@@ -1299,7 +1299,7 @@ namespace DataLayer
                                        + (AccomodationDetails.Street3 ?? "") + (((AccomodationDetails.Street3 ?? "") == "") ? ", " : "")
                                        + (AccomodationDetails.Street4 ?? "") + (((AccomodationDetails.Street4 ?? "") == "") ? ", " : "")
                                        + (AccomodationDetails.Street5 ?? "") + (((AccomodationDetails.Street5 ?? "") == "") ? ", " : "")
-                                       + (AccomodationDetails.PostalCode ?? "") + (((AccomodationDetails.PostalCode ?? "") == "") ? ", " : "")
+                                       + (AccomodationDetails.PostalCode ?? "") + (((AccomodationDetails.PostalCode ?? "") == "") ? ", " : "");
                         context.SaveChanges();
 
                     }
