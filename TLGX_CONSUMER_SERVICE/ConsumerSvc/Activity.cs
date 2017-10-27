@@ -299,6 +299,27 @@ namespace ConsumerSvc
         }
         #endregion
 
+        #region Activity Flavour Options
+        public List<DataContracts.Masters.DC_Activity_Flavour_Options> GetActivityFlavourOptions(DataContracts.Masters.DC_Activity_Flavour_Options_RQ RQ)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                List<DC_Activity_Flavour_Options> searchResults = new List<DC_Activity_Flavour_Options>();
+                searchResults = objBL.GetActivityFlavourOptions(RQ);
+                if (searchResults.Count == 0)
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                return searchResults;
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityFlavourOptions(DC_Activity_Flavour_Options RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateActivityFlavourOptions(RQ);
+            }
+        }
+        #endregion
+
         #region Activity Deals
         public IList<DataContracts.Masters.DC_Activity_Deals> GetActivityDeals(DataContracts.Masters.DC_Activity_Deals_RQ RQ)
         {

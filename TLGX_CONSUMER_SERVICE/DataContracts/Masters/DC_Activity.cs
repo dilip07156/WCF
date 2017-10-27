@@ -1440,6 +1440,63 @@ namespace DataContracts.Masters
     }
     #endregion
 
+    #region Activity Flavour Options
+    [DataContract]
+    public class DC_Activity_Flavour_Options
+    {
+        [DataMember]
+        public Guid? Activity_FlavourOptions_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string Activity_FlavourName { get; set; }
+        [DataMember]
+        public string Activity_OptionName { get; set; }
+        [DataMember]
+        public string Activity_OptionCode { get; set; }
+        [DataMember]
+        public string Activity_Type { get; set; }
+        [DataMember]
+        public string Activity_DealText { get; set; }
+        [DataMember]
+        public string Status { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+    [DataContract]
+    public class DC_Activity_Flavour_Options_RQ
+    {
+        [DataMember]
+        public Guid? Activity_FlavourOptions_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string Activity_FlavourName { get; set; }
+        [DataMember]
+        public string Activity_OptionName { get; set; }
+        [DataMember]
+        public string Activity_OptionCode { get; set; }
+        [DataMember]
+        public string Activity_Type { get; set; }
+        [DataMember]
+        public string Activity_DealText { get; set; }
+        [DataMember]
+        public string Status { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    #endregion
+
     #region Activity Deals
     [DataContract]
     public class DC_Activity_Deals
@@ -1508,7 +1565,13 @@ namespace DataContracts.Masters
         [DataMember]
         public string PriceBasis { get; set; }
         [DataMember]
-        public decimal? PriceNet { get; set; }
+        public decimal? Price { get; set; }
+        [DataMember]
+        public string Price_For { get; set; }
+        [DataMember]
+        public string Price_Type { get; set; }
+        [DataMember]
+        public string Price_OptionCode { get; set; }
         [DataMember]
         public string PriceCurrency { get; set; }
         [DataMember]

@@ -249,6 +249,23 @@ namespace BusinessLayer
         }
         #endregion
 
+        #region Activity Flavour
+        public List<DataContracts.Masters.DC_Activity_Flavour_Options> GetActivityFlavourOptions(DataContracts.Masters.DC_Activity_Flavour_Options_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityFlavourOptions(RQ);
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityFlavourOptions(DC_Activity_Flavour_Options RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdateActivityFlavourOptions(RQ);
+            }
+        }
+        #endregion
+
         #region Activity Deals
         public List<DataContracts.Masters.DC_Activity_Deals> GetActivityDeals(DataContracts.Masters.DC_Activity_Deals_RQ RQ)
         {
