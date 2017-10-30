@@ -727,6 +727,10 @@ namespace DataContracts.Mapping
                 _Location = value;
             }
         }
+
+
+        [DataMember]
+        public string TLGXProductCode { get; set; }
     }
 
     [DataContract]

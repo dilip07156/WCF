@@ -269,7 +269,51 @@ namespace DataLayer
             }
         }
 
+        public bool HotelTTFUTelephone(DataContracts.Masters.DC_Supplier obj)
+        {
+            bool ret = true;
+            if (obj != null)
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    Guid File_Id = new Guid();
+                    File_Id = Guid.Parse(obj.File_Id.ToString());
+                    string CurSupplierName = obj.Name;
+                    Guid? CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
+                    List<DC_Accomodation_ProductMapping> telephones = new List<DC_Accomodation_ProductMapping>();
+                    telephones = (from a in context.Accommodation_ProductMapping.AsNoTracking()
+                                  join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
+                                  where a.Supplier_Id == CurSupplier_Id && s.File_Id == obj.File_Id
+                                  select new DC_Accomodation_ProductMapping
+                                  {
+                                      Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
+                                      TelephoneNumber = a.TelephoneNumber ?? "",
+                                      TelephoneNumber_tx = a.TelephoneNumber_tx ?? ""
+                                  }
+                                  ).ToList();
 
+                    telephones = telephones.Select(c =>
+                    {
+                        c.TelephoneNumber = CommonFunctions.GetDigits(c.TelephoneNumber, 8);
+                        return c;
+                    }).ToList();
+
+                    telephones.RemoveAll(p => p.TelephoneNumber == p.TelephoneNumber_tx);
+                    foreach (var telephone in telephones)
+                    {
+                        var search = (from a in context.Accommodation_ProductMapping
+                                      where a.Accommodation_ProductMapping_Id == telephone.Accommodation_ProductMapping_Id
+                                      select a).FirstOrDefault();
+                        if (search != null)
+                        {
+                            search.TelephoneNumber_tx = telephone.TelephoneNumber;
+                            context.SaveChanges();
+                        }
+                    }
+                }
+            }
+            return ret;
+        }
         public bool HotelMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             bool ret = true;
@@ -411,6 +455,14 @@ namespace DataLayer
                         Website = g.Website,
                         ActionType = "INSERT",
                         stg_AccoMapping_Id = g.stg_AccoMapping_Id,
+                        FullAddress = (g.StreetNo ?? "") + (((g.StreetNo ?? "") == "") ? ", " : "")
+                                       + (g.StreetName ?? "") + (((g.StreetName ?? "") == "") ? ", " : "")
+                                       + (g.Street2 ?? "") + (((g.Street2 ?? "") == "") ? ", " : "")
+                                       + (g.Street3 ?? "") + (((g.Street3 ?? "") == "") ? ", " : "")
+                                       + (g.Street4 ?? "") + (((g.Street4 ?? "") == "") ? ", " : "")
+                                       + (g.Street5 ?? "") + (((g.Street5 ?? "") == "") ? ", " : "")
+                                       + (g.PostalCode ?? "") + (((g.PostalCode ?? "") == "") ? ", " : "")
+                        ,
                         Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
                     }));
 
@@ -681,6 +733,8 @@ namespace DataLayer
                     bool isCodeCheck = false;
                     bool isNameCheck = false;
                     bool isPlaceIdCheck = false;
+                    bool isAddressCheck = false;
+                    bool isTelephoneCheck = false;
 
                     totConfigs = configs.Count;
                     curConfig = 0;
@@ -821,14 +875,32 @@ namespace DataLayer
                                                  select a).Distinct().ToList();
                             }
                         }
+                        if (CurrConfig == "Address_Tx".ToUpper())
+                        {
+                            isAddressCheck = true;
+                            prodMapSearch = (from a in prodMapSearch
+                                                 //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
+                                             join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
+                                             where (a.address_tx ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "") == (ac.FullAddress ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "")
+                                             select a).Distinct().ToList();
+                        }
+                        if (CurrConfig == "TelephoneNumber_tx".ToUpper())
+                        {
+                            isTelephoneCheck = true;
+                            prodMapSearch = (from a in prodMapSearch
+                                             join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
+                                             join acc in context.Accommodation_Contact.AsNoTracking() on ac.Accommodation_Id equals acc.Accommodation_Id
+                                             where a.TelephoneNumber_tx == acc.Telephone_Tx
+                                             select a).Distinct().ToList();
+                        }
 
-                        //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
-                        PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + ((PerForEachPriority / totConfigs) * curConfig);
+                            //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
+                            PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + ((PerForEachPriority / totConfigs) * curConfig);
                         USD.AddStaticDataUploadProcessLog(PLog);
                     }
                     List<DC_Accomodation_ProductMapping> res = new List<DC_Accomodation_ProductMapping>();
 
-                    if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isPlaceIdCheck)
+                    if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isPlaceIdCheck || isAddressCheck || isTelephoneCheck)
                     {
                         res = (from a in prodMapSearch
                                select new DataContracts.Mapping.DC_Accomodation_ProductMapping
@@ -887,7 +959,8 @@ namespace DataLayer
                                                             ((isCodeCheck && s.CompanyHotelID.ToString() == c.SupplierProductReference) || (!isCodeCheck)) &&
                                                             ((isNameCheck && s.HotelName.Trim().ToUpper() == c.ProductName.Trim().ToUpper()) || (!isNameCheck)) &&
                                                             ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck)) &&
-                                                            ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck))
+                                                            ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck)) &&
+                                                            ((isAddressCheck && s.FullAddress == c.Address_tx) || (!isAddressCheck))
                                                         )
                                                    )
                                             .Select(s1 => s1.Accommodation_Id)
@@ -895,6 +968,22 @@ namespace DataLayer
                                             );
                             return c;
                         }).ToList();
+
+                        if (isTelephoneCheck)
+                        {
+                            res = res.Where(a => a.Accommodation_Id == null).Select(c =>
+                            {
+                                c.Accommodation_Id = (context.Accommodation_Contact.AsNoTracking()
+                                                .Where(s => (
+                                                                s.Telephone_Tx == c.TelephoneNumber_tx
+                                                            )
+                                                       )
+                                                .Select(s1 => s1.Accommodation_Id)
+                                                .FirstOrDefault()
+                                                );
+                                return c;
+                            }).ToList();
+                        }
                         if (totPriorities == curPriority)
                         {
                             PLog.PercentageValue = 70;
@@ -2794,8 +2883,7 @@ namespace DataLayer
                         }
                     }
                 }
-
-
+                
                 #region Update No Of Hits
                 var updatableAliases = (from k in Keywords
                                         from ka in k.Alias
@@ -3984,9 +4072,9 @@ namespace DataLayer
                             isNameCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join mc in context.m_CountryMaster on a.Country_Id equals mc.Country_Id
-                                             join m in context.m_CityMaster on mc.Country_Id equals m.Country_Id // a.CityName equals m.Name
-                                             where a.CityName != null && m.Name != null
-                                             && a.CityName.Trim().ToUpper().Replace("(","").Replace(")","").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == m.Name.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")
+                                             //join m in context.m_CityMaster on mc.Country_Id equals m.Country_Id // a.CityName equals m.Name
+                                             where a.CityName != null //&& m.Name != null
+                                             //&& a.CityName == m.Name
                                              select a);
                         }
                         if (CurrConfig == "LATITUDE")
@@ -4106,7 +4194,7 @@ namespace DataLayer
                                                             //    && s.Code == c.CityCode)
 
                                                             ((isCountryCodeCheck && s.CountryCode == c.CountryCode) || (!isCountryCodeCheck)) &&
-                                                            ((isCountryNameCheck && s.CountryName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == c.CountryName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isCountryNameCheck)) &&
+                                                            ((isCountryNameCheck && s.CountryName == c.CountryName) || (!isCountryNameCheck)) &&
                                                             ((isCodeCheck && s.Code == c.CityCode) || (!isCodeCheck)) &&
                                                             ((isNameCheck && s.Name.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == c.CityName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isNameCheck)) &&
                                                             ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck))
@@ -5095,7 +5183,7 @@ namespace DataLayer
                                         {
                                             MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
                                             ParentAttributeValue = mavplojr.AttributeValue,
-                                            SystemMasterAttributeValue =  mav.AttributeValue ,
+                                            SystemMasterAttributeValue = mav.AttributeValue,
                                             SystemMasterAttributeValue_Id = mav.MasterAttributeValue_Id,
                                             TotalRecords = total,
                                             SupplierAttributeValues = (from imavm in m_MasterAttributeValueMapping

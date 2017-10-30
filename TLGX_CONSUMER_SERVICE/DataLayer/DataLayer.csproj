@@ -169,6 +169,9 @@
     <Compile Include="Activity.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ActivityGeneralInfo.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Activity_Ancillary.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
@@ -191,6 +194,9 @@
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Activity_Flavour.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Activity_FlavourOptions.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Activity_InclusionDetails.cs">
@@ -423,10 +429,22 @@
     <Compile Include="SiteMap.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="stg_ActivitySupplierProductMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="STG_Mapping_TableIds.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="stg_SupplierActivityImageMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="stg_SupplierActivityMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="STG_SupplierActivityMetaDataMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="STG_SupplierActivityTypeMapping.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="stg_SupplierCityMapping.cs">

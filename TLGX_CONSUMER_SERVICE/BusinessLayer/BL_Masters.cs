@@ -274,7 +274,7 @@ namespace BusinessLayer
                 return obj.GetAllAttributeAndValuesByParentAttributeValue(_obj);
             }
         }
-        
+
         public IList<DataContracts.Masters.DC_MasterAttribute> GetAllAttributeAndValues(DataContracts.Masters.DC_MasterAttribute _obj)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
@@ -443,7 +443,6 @@ namespace BusinessLayer
         }
         #endregion
 
-
         #region "Activity Master"
         public List<DataContracts.Masters.DC_Activity> GetActivityMaster(DataContracts.Masters.DC_Activity_Search_RQ RQ)
         {
@@ -475,7 +474,6 @@ namespace BusinessLayer
         }
         #endregion
 
-
         #region Common Funciton to Get Codes by Entity Type
         public string GetCodeById(string objName, Guid obj_Id)
         {
@@ -500,6 +498,7 @@ namespace BusinessLayer
         }
 
         #endregion
+
         #region To Fill DropDown
         public List<DC_Accomodation_DDL> GetProductByCity(DC_Accomodation_DDL _obj)
         {
@@ -554,7 +553,7 @@ namespace BusinessLayer
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
-                return obj.GetSupplierDataByMapping_Id(objName,Mapping_Id);
+                return obj.GetSupplierDataByMapping_Id(objName, Mapping_Id);
             }
 
         }
@@ -584,7 +583,7 @@ namespace BusinessLayer
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
-                return obj.GetActivityByCountryCity(CountryName,CityName);
+                return obj.GetActivityByCountryCity(CountryName, CityName);
             }
         }
         #endregion
@@ -650,6 +649,14 @@ namespace BusinessLayer
             using (DataLayer.DL_Masters objDL = new DataLayer.DL_Masters())
             {
                 objDL.DataHandler_Keyword_Update_NoOfHits(NoOfHits);
+            }
+        }
+
+        public DC_Message ApplyKeyword(DC_keywordApply_RQ RQ)
+        {
+            using (DataLayer.DL_Masters objDL = new DataLayer.DL_Masters())
+            {
+                return objDL.ApplyKeyword(RQ);
             }
         }
 
