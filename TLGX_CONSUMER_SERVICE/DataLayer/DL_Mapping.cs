@@ -894,8 +894,8 @@ namespace DataLayer
                                              select a).Distinct().ToList();
                         }
 
-                            //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
-                            PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + ((PerForEachPriority / totConfigs) * curConfig);
+                        //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
+                        PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + ((PerForEachPriority / totConfigs) * curConfig);
                         USD.AddStaticDataUploadProcessLog(PLog);
                     }
                     List<DC_Accomodation_ProductMapping> res = new List<DC_Accomodation_ProductMapping>();
@@ -2324,7 +2324,7 @@ namespace DataLayer
                             {
                                 if (!string.IsNullOrWhiteSpace(item.Tx_StrippedName))
                                 {
-                                    var resultRoomCategory = Accommodation_RoomInfo.Where(w => w.Accommodation_Id == item.Accommodation_Id && w.RoomCategory.ToLower() == item.Tx_StrippedName.ToLower()).Select(s => s).FirstOrDefault();
+                                    var resultRoomCategory = Accommodation_RoomInfo.Where(w => w.Accommodation_Id == item.Accommodation_Id && w.RoomCategory.ToLower().Replace("room","").Trim() == item.Tx_StrippedName.ToLower().Replace("room", "").Trim()).Select(s => s).FirstOrDefault();
                                     if (resultRoomCategory != null)
                                     {
                                         item.Accommodation_RoomInfo_Id = resultRoomCategory.Accommodation_RoomInfo_Id;
@@ -2628,17 +2628,14 @@ namespace DataLayer
                     ISProgressLog = true;
 
                 #region Get All Keywords & Room Names
+
                 List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
                 using (DL_Masters objDL = new DL_Masters())
                 {
                     Keywords = objDL.SearchKeyword(null);
                 }
-                if (ISProgressLog)
-                {
-                    PLog.PercentageValue = 15;
-                    USD.AddStaticDataUploadProcessLog(PLog);
-                }
-                List<DataContracts.Masters.DC_Keyword> Attributes = Keywords.Where(w => w.Attribute == true).ToList();
+               
+                List<DataContracts.Masters.DC_Keyword> Attributes = Keywords.Where(w => w.Attribute == true && !w.Keyword.StartsWith("##")).ToList();
 
                 //Get All Supplier Room Type Name
                 List<DC_SupplierRoomName_Details> asrtmd;
@@ -2690,10 +2687,17 @@ namespace DataLayer
                     }
                 }
 
-
+                if (ISProgressLog)
+                {
+                    PLog.PercentageValue = 15;
+                    USD.AddStaticDataUploadProcessLog(PLog);
+                }
                 #endregion
+
+
                 int i = 0;
                 List<DC_SupplierRoomName_AttributeList> AttributeList;
+                var unitNumerMap = new[] { "ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN" };
                 foreach (DC_SupplierRoomName_Details srn in asrtmd)
                 {
                     i = i + 1;
@@ -2704,13 +2708,15 @@ namespace DataLayer
 
                     #region PRE TTFU
 
-                    //HTML Decode
+                    #region HTML Decode
                     BaseRoomName = System.Web.HttpUtility.HtmlDecode(BaseRoomName);
+                    #endregion
 
-                    //To Upper
+                    #region To Upper
                     BaseRoomName = BaseRoomName.ToUpper();
+                    #endregion
 
-                    //Replace the braces
+                    #region Replace the braces
                     BaseRoomName = BaseRoomName.Replace('{', '(');
                     BaseRoomName = BaseRoomName.Replace('}', ')');
                     BaseRoomName = BaseRoomName.Replace('[', '(');
@@ -2718,17 +2724,22 @@ namespace DataLayer
 
                     BaseRoomName = BaseRoomName.Replace("( ", "(");
                     BaseRoomName = BaseRoomName.Replace(" )", ")");
+                    #endregion
 
                     //Necessary Replace
                     //BaseRoomName = BaseRoomName.Replace("/", " OR ");
 
-                    //Replace Multiple whitespaces into One Whitespace
+                    #region Replace Multiple whitespaces into One Whitespace
                     BaseRoomName = System.Text.RegularExpressions.Regex.Replace(BaseRoomName, @"\s{2,}", " ");
+                    #endregion
 
-                    //trim both end
+                    #region trim both end
                     BaseRoomName = BaseRoomName.Trim();
+                    #endregion
 
-                    //Take only valid characters
+                    #endregion
+
+                    #region Take only valid characters
                     string RoomName_ValidChars = string.Empty;
                     foreach (char c in BaseRoomName)
                     {
@@ -2739,9 +2750,10 @@ namespace DataLayer
                     }
 
                     BaseRoomName = RoomName_ValidChars;
+                    #endregion
 
-                    //Check for Spaced Keyword and Replace
-                    List<DataContracts.Masters.DC_Keyword> SpacedKeywords = Keywords.Where(w => w.Attribute == false && w.Alias.Any(a => a.Value.Contains(' '))).ToList();
+                    #region Check for Spaced Keyword and Replace
+                    List<DataContracts.Masters.DC_Keyword> SpacedKeywords = Keywords.Where(w => !w.Keyword.StartsWith("##") && w.Attribute == false && w.Alias.Any(a => a.Value.Contains(' '))).ToList();
                     foreach (DataContracts.Masters.DC_Keyword spacedkey in SpacedKeywords.OrderBy(o => o.Sequence))
                     {
                         var spacedAliases = spacedkey.Alias.Where(w => w.Value.Contains(' ')).OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
@@ -2754,18 +2766,18 @@ namespace DataLayer
                                 BaseRoomName = BaseRoomName.Trim();
 
                                 alias.NewHits += 1;
-
-                                break;
                             }
                         }
                     }
+                    #endregion
 
+                    #region Keyword Replacement
                     //Split words and replace keywords
                     string[] roomWords = BaseRoomName.Split(' ');
 
                     foreach (string word in roomWords)
                     {
-                        DataContracts.Masters.DC_Keyword keywordSearch = Keywords.Where(k => k.Alias.Any(a => a.Value.ToUpper() == word.ToUpper()) && k.Attribute == false).FirstOrDefault();
+                        DataContracts.Masters.DC_Keyword keywordSearch = Keywords.Where(k => k.Alias.Any(a => a.Value.ToUpper() == word.ToUpper()) && k.Attribute == false && !k.Keyword.StartsWith("##")).FirstOrDefault();
 
                         if (keywordSearch != null)
                         {
@@ -2776,11 +2788,12 @@ namespace DataLayer
 
                         keywordSearch = null;
                     }
+                    #endregion
 
                     //Transformed Supplier RoomName
                     srn.TX_SupplierRoomName = BaseRoomName;
 
-                    //Attribute Extraction
+                    #region Attribute Extraction
                     foreach (var Attribute in Attributes.OrderBy(o => o.Sequence))
                     {
                         var aliases = Attribute.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
@@ -2804,16 +2817,67 @@ namespace DataLayer
                                 BaseRoomName = BaseRoomName.Trim();
 
                                 alias.NewHits += 1;
-
-                                break;
                             }
                         }
                     }
+                    #endregion
 
+                    #region Perform Special Operations
+                    //List<DataContracts.Masters.DC_Keyword> SpecialKeywords = Keywords.Where(w => w.Keyword.StartsWith("##") && w.Attribute == false).ToList();
+                    //foreach(var keyword in SpecialKeywords)
+                    //{
+                    //    if (keyword.Keyword.ToUpper() == "##_REMOVE_WORD_FROM_START")
+                    //    {
+                    //        foreach(var alias in keyword.Alias)
+                    //        {
+                                 
+                    //        }
+                    //    }
+
+                    //    if (keyword.Keyword.ToUpper() == "##_REMOVE_WORD_FROM_END")
+                    //    {
+                    //        foreach (var alias in keyword.Alias)
+                    //        {
+
+                    //        }
+                    //    }
+
+                    //    if (keyword.Keyword.ToUpper() == "##_REMOVE_WORD_FROM_STRING")
+                    //    {
+                    //        foreach (var alias in keyword.Alias)
+                    //        {
+
+                    //        }
+                    //    }
+
+                    //    if (keyword.Keyword.ToUpper() == "##_REMOVE_ANYWHERE_IN_STRING")
+                    //    {
+                    //        foreach (var alias in keyword.Alias)
+                    //        {
+
+                    //        }
+                    //    }
+                    //}
+                    #endregion
+
+                    #region Replace 1 to 10 with words
+                    roomWords = BaseRoomName.Split(' ');
+                    foreach (string word in roomWords)
+                    {
+                        int numCheck;
+                        if (int.TryParse(word, out numCheck))
+                        {
+                            if (numCheck >= 0 && numCheck <= 10)
+                            {
+                                BaseRoomName = BaseRoomName.Replace(word, unitNumerMap[numCheck]);
+                            }
+                        }
+                    }
                     #endregion
 
                     #region POST TTFU
-                    //Replace UnNecessary chars
+
+                    #region Replace UnNecessary chars
                     BaseRoomName = BaseRoomName.Replace('<', ' ');
                     BaseRoomName = BaseRoomName.Replace('>', ' ');
                     BaseRoomName = BaseRoomName.Replace('?', ' ');
@@ -2828,12 +2892,27 @@ namespace DataLayer
                     BaseRoomName = BaseRoomName.Replace(',', ' ');
                     BaseRoomName = BaseRoomName.Replace('.', ' ');
                     BaseRoomName = BaseRoomName.Replace('"', ' ');
+                    #endregion
 
-                    //Replace Multiple whitespaces into One Whitespace
+                    #region Replace Multiple whitespaces into One Whitespace
                     BaseRoomName = System.Text.RegularExpressions.Regex.Replace(BaseRoomName, @"\s{2,}", " ");
+                    #endregion
 
-                    //trim both end
+                    #region trim whitespace both end
                     BaseRoomName = BaseRoomName.Trim();
+                    #endregion
+
+                    #region Remove logical words from end
+                    int lastIndex = BaseRoomName.LastIndexOf(" ");
+                    if (BaseRoomName.EndsWith(" AND") || BaseRoomName.EndsWith(" OR"))
+                    {
+                        if (lastIndex != -1)
+                        {
+                            BaseRoomName = BaseRoomName.Substring(0, lastIndex).Trim();
+                        }
+                    }
+                    #endregion
+
                     #endregion
 
                     #region UpdateToDB
@@ -2874,6 +2953,7 @@ namespace DataLayer
 
                     #endregion
 
+                    #region Update Progress Log
                     if (ISProgressLog)
                     {
                         if (i % 5 == 0)
@@ -2882,8 +2962,9 @@ namespace DataLayer
                             USD.AddStaticDataUploadProcessLog(PLog);
                         }
                     }
+                    #endregion
                 }
-                
+
                 #region Update No Of Hits
                 var updatableAliases = (from k in Keywords
                                         from ka in k.Alias
@@ -2899,11 +2980,13 @@ namespace DataLayer
 
                 #endregion
 
+                #region Update Progress Log
                 if (ISProgressLog)
                 {
                     PLog.PercentageValue = 100;
                     USD.AddStaticDataUploadProcessLog(PLog);
                 }
+                #endregion
 
                 return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword Replace and Attribute Extraction has been done." };
 
