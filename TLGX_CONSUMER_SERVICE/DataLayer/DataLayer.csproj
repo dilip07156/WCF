@@ -319,6 +319,7 @@
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="DynamicLibrary.cs" />
+    <Compile Include="ExpressionBuilder.cs" />
     <Compile Include="GoogleGeoCode.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>

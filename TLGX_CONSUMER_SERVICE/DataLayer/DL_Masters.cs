@@ -4195,20 +4195,13 @@ namespace DataLayer
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = from ka in context.m_keyword
-                                 select ka;
+                    var search = (from ka in context.m_keyword
+                                  select ka).AsQueryable();
 
                     if (obj.Keyword_Id != null)
                     {
                         search = from r in search
                                  where r.Keyword_Id == obj.Keyword_Id
-                                 select r;
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(obj.EntityFor))
-                    {
-                        search = from r in search
-                                 where r.EntityFor.Trim().ToUpper() == obj.EntityFor.Trim().ToUpper()
                                  select r;
                     }
 
@@ -4231,6 +4224,26 @@ namespace DataLayer
                         search = from r in search
                                  where (r.Attribute ?? false) == obj.Attribute
                                  select r;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(obj.EntityFor))
+                    {
+                        var EntityForArray = obj.EntityFor.Split(',');
+
+                        List<DynamicFilter> filter = new List<DynamicFilter>();
+
+                        foreach (var entity in EntityForArray)
+                        {
+                            filter.Add(new DynamicFilter
+                            {
+                                PropertyName = "EntityFor",
+                                Operation = DynamicFilterOp.Contains,
+                                Value = entity
+                            });
+                        }
+
+                        var deleg = ExpressionBuilder.GetExpressionOr<m_keyword>(filter).Compile();
+                        search = search.Where(deleg).AsQueryable();
                     }
 
                     int total = search.Count();
@@ -4305,6 +4318,8 @@ namespace DataLayer
 
             }
         }
+
+
 
         public List<DC_keyword_alias> SearchKeywordAlias(DC_Keyword_RQ obj)
         {
