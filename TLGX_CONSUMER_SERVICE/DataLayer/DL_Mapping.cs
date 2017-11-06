@@ -4432,12 +4432,16 @@ namespace DataLayer
                                 objNew.StateCode = CM.StateCode;
                                 objNew.StateName = CM.StateName;
                                 // objNew.Country_Id = CM.Country_Id;
-                                objNew.Country_Id = (from a in context.m_CountryMapping.AsNoTracking()
-                                                     where
-                                                     ((CM.CountryName != null && a.CountryName == CM.CountryName) || CM.CountryName == null)
-                                                     && ((CM.CountryCode != null && a.CountryCode == CM.CountryCode) || CM.CountryCode == null)
-                                                     && a.Supplier_Id == CM.Supplier_Id
-                                                     select a.Country_Id).FirstOrDefault();
+                                objNew.Country_Id = ((from a in context.m_CountryMapping.AsNoTracking()
+                                                     where a.Supplier_Id == CM.Supplier_Id  &&
+                                                     ((a.CountryName == CM.CountryName) && a.CountryName != null && CM.CountryName != null)
+                                                     //&& ((CM.CountryName != null && a.CountryName == CM.CountryName) || CM.CountryName == null)
+                                                     //&& ((CM.CountryCode != null && a.CountryCode == CM.CountryCode) || CM.CountryCode == null)
+                                                     //&& a.Supplier_Id == CM.Supplier_Id
+                                                     select a.Country_Id).FirstOrDefault()) ?? ((from a in context.m_CountryMapping.AsNoTracking()
+                                                                                                 where a.Supplier_Id == CM.Supplier_Id &&
+                                                                                                 ((a.CountryCode == CM.CountryCode) && a.CountryCode != null && CM.CountryCode != null)
+                                                                                                 select a.Country_Id).FirstOrDefault());
                                 context.m_CityMapping.Add(objNew);
                             }
 
