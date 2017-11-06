@@ -3491,21 +3491,26 @@ namespace DataLayer
                         #endregion
 
                         CallLogVerbose(File_Id, "MATCH", "Setting Appropriate Status.");
-                        foreach (DC_CountryMapping v in res)
+                        //foreach (DC_CountryMapping v in res)
+                        //{
+                        //    if (v.Country_Id != null)
+                        //    {
+                        //        if (v.Country_Id != Guid.Empty)
+                        //            v.Status = "REVIEW";
+                        //        else
+                        //        {
+                        //            v.Country_Id = null;
+                        //            res.Remove(v);
+                        //        }
+                        //    }
+                        //    else
+                        //        res.Remove(v);
+                        //}
+                        res.RemoveAll(p => p.Country_Id == Guid.Empty);
+                        res = res.Select(c =>
                         {
-                            if (v.Country_Id != null)
-                            {
-                                if (v.Country_Id != Guid.Empty)
-                                    v.Status = "REVIEW";
-                                else
-                                {
-                                    v.Country_Id = null;
-                                    res.Remove(v);
-                                }
-                            }
-                            else
-                                res.Remove(v);
-                        }
+                            c.Status = ("REVIEW"); return c;
+                        }).ToList();
 
                         if (totPriorities == curPriority)
                         {
