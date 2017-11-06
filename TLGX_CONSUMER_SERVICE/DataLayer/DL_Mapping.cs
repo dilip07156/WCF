@@ -2817,6 +2817,8 @@ namespace DataLayer
                                 BaseRoomName = BaseRoomName.Trim();
 
                                 alias.NewHits += 1;
+
+                                break;
                             }
                         }
                     }
