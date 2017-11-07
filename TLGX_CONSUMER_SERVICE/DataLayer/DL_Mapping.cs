@@ -197,17 +197,15 @@ namespace DataLayer
                                Accommodation_ProductMapping_Id = s.Mapping_Id ?? Guid.Empty
                            });
                     lstProdMap = prodMapList.ToList();
-
+                    List<string> str = new List<string>();
                     if (lstProdMap.Count > 0)
                     {
-                        int i = 0;
                         foreach (DC_Accomodation_ProductMapping rec in lstProdMap)
                         {
-                            ret[i] = rec.Accommodation_ProductMapping_Id.ToString();
-                            i = i + 1;
+                            str.Add(rec.Accommodation_ProductMapping_Id.ToString());
                         }
                     }
-
+                    ret = str.ToArray();
                 }
             }
             return ret;
