@@ -2324,7 +2324,7 @@ namespace DataLayer
                             {
                                 if (!string.IsNullOrWhiteSpace(item.Tx_StrippedName))
                                 {
-                                    var resultRoomCategory = Accommodation_RoomInfo.Where(w => w.Accommodation_Id == item.Accommodation_Id && w.RoomCategory.ToLower().Replace("room","").Trim() == item.Tx_StrippedName.ToLower().Replace("room", "").Trim()).Select(s => s).FirstOrDefault();
+                                    var resultRoomCategory = Accommodation_RoomInfo.Where(w => w.Accommodation_Id == item.Accommodation_Id && w.RoomCategory.ToLower().Replace("room", "").Trim() == item.Tx_StrippedName.ToLower().Replace("room", "").Trim()).Select(s => s).FirstOrDefault();
                                     if (resultRoomCategory != null)
                                     {
                                         item.Accommodation_RoomInfo_Id = resultRoomCategory.Accommodation_RoomInfo_Id;
@@ -2634,7 +2634,7 @@ namespace DataLayer
                 {
                     Keywords = objDL.SearchKeyword(null);
                 }
-               
+
                 List<DataContracts.Masters.DC_Keyword> Attributes = Keywords.Where(w => w.Attribute == true && !w.Keyword.StartsWith("##")).ToList();
 
                 //Get All Supplier Room Type Name
@@ -2832,7 +2832,7 @@ namespace DataLayer
                     //    {
                     //        foreach(var alias in keyword.Alias)
                     //        {
-                                 
+
                     //        }
                     //    }
 
@@ -4440,15 +4440,15 @@ namespace DataLayer
                                 objNew.StateName = CM.StateName;
                                 // objNew.Country_Id = CM.Country_Id;
                                 objNew.Country_Id = ((from a in context.m_CountryMapping.AsNoTracking()
-                                                     where a.Supplier_Id == CM.Supplier_Id  &&
-                                                     ((a.CountryName == CM.CountryName) && a.CountryName != null && CM.CountryName != null)
-                                                     //&& ((CM.CountryName != null && a.CountryName == CM.CountryName) || CM.CountryName == null)
-                                                     //&& ((CM.CountryCode != null && a.CountryCode == CM.CountryCode) || CM.CountryCode == null)
-                                                     //&& a.Supplier_Id == CM.Supplier_Id
-                                                     select a.Country_Id).FirstOrDefault()) ?? ((from a in context.m_CountryMapping.AsNoTracking()
-                                                                                                 where a.Supplier_Id == CM.Supplier_Id &&
-                                                                                                 ((a.CountryCode == CM.CountryCode) && a.CountryCode != null && CM.CountryCode != null)
-                                                                                                 select a.Country_Id).FirstOrDefault());
+                                                      where a.Supplier_Id == CM.Supplier_Id &&
+                                                      ((a.CountryName == CM.CountryName) && a.CountryName != null && CM.CountryName != null)
+                                                      //&& ((CM.CountryName != null && a.CountryName == CM.CountryName) || CM.CountryName == null)
+                                                      //&& ((CM.CountryCode != null && a.CountryCode == CM.CountryCode) || CM.CountryCode == null)
+                                                      //&& a.Supplier_Id == CM.Supplier_Id
+                                                      select a.Country_Id).FirstOrDefault()) ?? ((from a in context.m_CountryMapping.AsNoTracking()
+                                                                                                  where a.Supplier_Id == CM.Supplier_Id &&
+                                                                                                  ((a.CountryCode == CM.CountryCode) && a.CountryCode != null && CM.CountryCode != null)
+                                                                                                  select a.Country_Id).FirstOrDefault());
                                 context.m_CityMapping.Add(objNew);
                             }
 
@@ -5226,6 +5226,7 @@ namespace DataLayer
                     var m_MasterAttributeMapping = (from a in context.m_MasterAttributeMapping select a).AsQueryable();
                     var m_masterattribute = (from a in context.m_masterattribute select a).AsQueryable();
                     var m_masterattributevalue = (from a in context.m_masterattributevalue select a).AsQueryable();
+                    var m_masterattributevalueGlobal = (from a in context.m_masterattributevalue select a).AsQueryable();
                     var m_MasterAttributeValueMapping = (from a in context.m_MasterAttributeValueMapping select a).AsQueryable();
 
                     if (RQ.MasterAttributeMapping_Id != null)
@@ -5250,34 +5251,26 @@ namespace DataLayer
                         m_masterattributevalue = from a in m_masterattributevalue where a.AttributeValue.ToUpper().Trim() == RQ.SystemMasterAttributeValue.ToUpper().Trim() select a;
                     }
 
-                    var search = (from map in m_MasterAttributeMapping
-                                  join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
-                                  join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
-                                  orderby mav.AttributeValue.Trim().TrimStart()
-                                  where mav.IsActive == true
-                                  select new
-                                  {
-                                      MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
-                                      SystemMasterAttributeValue = mav.AttributeValue,
-                                      SystemMasterAttributeValue_Id = mav.MasterAttributeValue_Id
-                                  }).AsQueryable();
-
-                    int total = search.Count();
+                    int total = (from map in m_MasterAttributeMapping
+                                 join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
+                                 join mav in m_masterattributevalue on ma.MasterAttribute_Id equals mav.MasterAttribute_Id
+                                 where mav.IsActive == true
+                                 select mav).Count();
 
                     var skip = RQ.PageSize * RQ.PageNo;
 
                     var searchReturn = (from map in m_MasterAttributeMapping
                                         join ma in m_masterattribute on map.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
-                                        join mav in m_masterattributevalue on map.SystemMasterAttribute_Id equals mav.MasterAttribute_Id
-                                        join mavp in context.m_masterattributevalue on mav.ParentAttributeValue_Id equals mavp.MasterAttributeValue_Id into mavploj
-                                        from mavplojr in mavploj
-                                        orderby mavplojr.AttributeValue.Trim(), mav.AttributeValue.Trim()
+                                        join mav in m_masterattributevalue on ma.MasterAttribute_Id equals mav.MasterAttribute_Id
+                                        join mavp in m_masterattributevalueGlobal on (mav.ParentAttributeValue_Id ?? Guid.Empty) equals mavp.MasterAttributeValue_Id into mavploj
+                                        from mavplojr in mavploj.DefaultIfEmpty()
                                         where mav.IsActive == true
+                                        orderby (mavplojr.AttributeValue ?? string.Empty).Trim(), mav.AttributeValue.Trim()
                                         select new DataContracts.Mapping.DC_MasterAttributeValueMappingRS
                                         {
                                             MasterAttributeMapping_Id = map.MasterAttributeMapping_Id,
-                                            ParentAttributeValue = mavplojr.AttributeValue,
-                                            SystemMasterAttributeValue = mav.AttributeValue,
+                                            ParentAttributeValue = (mavplojr.AttributeValue ?? string.Empty).Trim(),
+                                            SystemMasterAttributeValue = mav.AttributeValue.Trim(),
                                             SystemMasterAttributeValue_Id = mav.MasterAttributeValue_Id,
                                             TotalRecords = total,
                                             SupplierAttributeValues = (from imavm in m_MasterAttributeValueMapping
@@ -5286,15 +5279,14 @@ namespace DataLayer
                                                                        select new DataContracts.Mapping.DC_SupplierAttributeValues
                                                                        {
                                                                            MasterAttributeValueMapping_Id = imavm.MasterAttributeValueMapping_Id,
-                                                                           SupplierMasterAttributeValue = imavm.SupplierMasterAttributeValue,
-                                                                           SupplierMasterAttributeCode = imavm.SupplierMasterAttributeCode,
+                                                                           SupplierMasterAttributeValue = imavm.SupplierMasterAttributeValue.Trim(),
+                                                                           SupplierMasterAttributeCode = imavm.SupplierMasterAttributeCode.Trim(),
                                                                            Create_User = imavm.Create_User,
                                                                            Create_Date = imavm.Create_Date,
                                                                            Edit_Date = imavm.Edit_Date,
                                                                            Edit_User = imavm.Edit_User,
                                                                            IsActive = imavm.IsActive
-                                                                       }).ToList(),
-
+                                                                       }).ToList()
                                         }).Skip(skip).Take(RQ.PageSize);
 
                     return searchReturn.ToList();
