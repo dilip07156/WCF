@@ -1828,7 +1828,7 @@ namespace DataLayer
                             objNew.Country_Id = PM.Country_Id;
                             objNew.City_Id = PM.City_Id;
                             objNew.Website = PM.Website;
-
+                            objNew.address = PM.FullAddress;
                             context.Accommodation_ProductMapping.Add(objNew);
                         }
                     }
