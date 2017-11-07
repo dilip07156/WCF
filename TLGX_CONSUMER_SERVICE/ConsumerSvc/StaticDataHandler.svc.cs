@@ -330,5 +330,13 @@ namespace ConsumerSvc
                 return objBL.DeleteSTGMappingTableIDs(File_Id);
             }
         }
+
+        public DC_Message ApplyKeyword(DC_keywordApply_RQ RQ)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.ApplyKeyword(RQ);
+            }
+        }
     }
 }
