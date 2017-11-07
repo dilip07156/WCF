@@ -175,6 +175,43 @@ namespace DataLayer
         }
 
 
+        public string[] GetMappingHotelDataForTTFU(DataContracts.Masters.DC_Supplier obj)
+        {
+            string[] ret = new string[] { };
+            if (obj != null)
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    Guid File_Id = new Guid();
+                    File_Id = Guid.Parse(obj.File_Id.ToString());
+                    string CurSupplierName = obj.Name;
+                    Guid? CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
+
+                    System.Linq.IQueryable<DataContracts.Mapping.DC_Accomodation_ProductMapping> prodMapList;
+                    List<DC_Accomodation_ProductMapping> lstProdMap = new List<DC_Accomodation_ProductMapping>();
+                    prodMapList = (from s in context.STG_Mapping_TableIds.AsNoTracking()
+                           join stg in context.stg_SupplierProductMapping.AsNoTracking() on s.STG_Id equals stg.stg_AccoMapping_Id
+                           where s.File_Id == obj.File_Id
+                           select new DataContracts.Mapping.DC_Accomodation_ProductMapping
+                           {
+                               Accommodation_ProductMapping_Id = s.Mapping_Id ?? Guid.Empty
+                           });
+                    lstProdMap = prodMapList.ToList();
+
+                    if (lstProdMap.Count > 0)
+                    {
+                        int i = 0;
+                        foreach (DC_Accomodation_ProductMapping rec in lstProdMap)
+                        {
+                            ret[i] = rec.Accommodation_ProductMapping_Id.ToString();
+                            i = i + 1;
+                        }
+                    }
+
+                }
+            }
+            return ret;
+        }
         public List<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetAccomodationProductMappingById(Guid Accommodation_ProductMapping_Id)
         {
             try
@@ -1805,6 +1842,8 @@ namespace DataLayer
             }
             return true;
         }
+
+
         #endregion
 
         #region Supplier Room Type Mapping
