@@ -729,8 +729,8 @@ namespace DataLayer
                             prodMapSearch = (from a in prodMapSearch
                                                  //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
                                              join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
-                                             where a.address_tx != null && ac.FullAddress != null 
-                                             && a.address_tx.ToString().Trim().ToUpper().Replace("HOTEL", "") == ac.Address_Tx.ToString().Trim().ToUpper().Replace("HOTEL", "")
+                                             where a.address_tx != null && ac.Address_Tx != null 
+                                             //&& a.address_tx.ToString().Trim().ToUpper().Replace("HOTEL", "") == ac.Address_Tx.ToString().Trim().ToUpper().Replace("HOTEL", "")
                                              select a).Distinct().ToList();
                         }
                         if (CurrConfig == "TelephoneNumber_tx".ToUpper()) //|| CurrConfig == "---ALL---".ToUpper()
