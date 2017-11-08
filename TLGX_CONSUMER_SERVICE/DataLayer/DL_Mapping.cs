@@ -784,7 +784,10 @@ namespace DataLayer
 
                     foreach (DC_SupplierImportAttributeValues config in configs)
                     {
-                        configWhere = configWhere + " " + config.AttributeValue.Replace("Accommodation.", "").Trim() + ",";
+                        if (config.AttributeValue.Replace("Accommodation.", "").Trim() != "---ALL---")
+                            configWhere = configWhere + " " + config.AttributeValue.Replace("Accommodation.", "").Trim() + ",";
+                        else
+                            configWhere = configWhere + " " + config.AttributeName.Replace("Accommodation_ProductMapping.", "").Trim() + ",";
                     }
                     configWhere = configWhere.Remove(configWhere.Length - 1);
                     CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);
@@ -793,7 +796,10 @@ namespace DataLayer
                     {
                         curConfig = curConfig + 1;
                         string CurrConfig = "";
-                        CurrConfig = config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper();
+                        if (config.AttributeValue.Replace("Accommodation.", "").Trim() != "---ALL---")
+                            CurrConfig = config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper();
+                        else
+                            CurrConfig = config.AttributeName.Replace("Accommodation_ProductMapping.", "").Trim().ToUpper();
                         CallLogVerbose(File_Id, "MATCH", "Applying Check for " + CurrConfig);
                         //configWhere = " " + configWhere + config.AttributeName + " == " + config.AttributeValue + " AND";
                         //if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "COUNTRYCODE")
@@ -919,13 +925,12 @@ namespace DataLayer
                                              where (a.address_tx ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "") == (ac.FullAddress ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "")
                                              select a).Distinct().ToList();
                         }
-                        if (CurrConfig == "TelephoneNumber_tx".ToUpper())
+                        if (CurrConfig == "TelephoneNumber_tx".ToUpper()) //|| CurrConfig == "---ALL---".ToUpper()
                         {
                             isTelephoneCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
-                                             join acc in context.Accommodation_Contact.AsNoTracking() on ac.Accommodation_Id equals acc.Accommodation_Id
-                                             where a.TelephoneNumber_tx == acc.Telephone_Tx
+                                             where a.TelephoneNumber_tx != null && ac.Telephone_Tx != null &&  a.TelephoneNumber_tx == ac.Telephone_Tx
                                              select a).Distinct().ToList();
                         }
 
@@ -985,32 +990,20 @@ namespace DataLayer
                         }
 
                         CallLogVerbose(File_Id, "MATCH", "Looking for Match in Master Data for Matching Combination " + curPriority.ToString() + ".");
-                        res = res.Select(c =>
-                        {
-                            c.Accommodation_Id = (context.Accommodations.AsNoTracking()
-                                            .Where(s => (
-                                                            ((isCountryNameCheck && s.Country_Id == c.Country_Id) || (!isCountryNameCheck)) &&
-                                                            ((isCityNameCheck && s.City_Id == c.City_Id) || (!isCityNameCheck)) &&
-                                                            ((isCodeCheck && s.CompanyHotelID.ToString() == c.SupplierProductReference) || (!isCodeCheck)) &&
-                                                            ((isNameCheck && s.HotelName.Trim().ToUpper() == c.ProductName.Trim().ToUpper()) || (!isNameCheck)) &&
-                                                            ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck)) &&
-                                                            ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck)) &&
-                                                            ((isAddressCheck && s.FullAddress == c.Address_tx) || (!isAddressCheck))
-                                                        )
-                                                   )
-                                            .Select(s1 => s1.Accommodation_Id)
-                                            .FirstOrDefault()
-                                            );
-                            return c;
-                        }).ToList();
+                        
 
-                        if (isTelephoneCheck)
+                        /*if (isTelephoneCheck)
                         {
+                            IQueryable<Accommodation_Contact> acc = (from ac in context.Accommodation_Contact.AsNoTracking()
+                                                                     join a in context.Accommodations.AsNoTracking() on ac.Accommodation_Id equals a.Accommodation_Id
+                                                                     join m in res on new { a.Country_Id, a.City_Id } equals new { m.Country_Id, m.City_Id }
+                                                                     select ac);
+                            
                             res = res.Where(a => a.Accommodation_Id == null).Select(c =>
                             {
-                                c.Accommodation_Id = (context.Accommodation_Contact.AsNoTracking()
+                                c.Accommodation_Id = (acc
                                                 .Where(s => (
-                                                                s.Telephone_Tx == c.TelephoneNumber_tx
+                                                                s.Telephone_Tx == c.TelephoneNumber_tx 
                                                             )
                                                        )
                                                 .Select(s1 => s1.Accommodation_Id)
@@ -1019,6 +1012,28 @@ namespace DataLayer
                                 return c;
                             }).ToList();
                         }
+                        else
+                        {*/
+                            res = res.Select(c =>
+                            {
+                                c.Accommodation_Id = (context.Accommodations.AsNoTracking()
+                                                .Where(s => (
+                                                                ((isCountryNameCheck && s.Country_Id == c.Country_Id) || (!isCountryNameCheck)) &&
+                                                                ((isCityNameCheck && s.City_Id == c.City_Id) || (!isCityNameCheck)) &&
+                                                                ((isCodeCheck && s.CompanyHotelID.ToString() == c.SupplierProductReference) || (!isCodeCheck)) &&
+                                                                ((isNameCheck && s.HotelName.Trim().ToUpper() == c.ProductName.Trim().ToUpper()) || (!isNameCheck)) &&
+                                                                ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck)) &&
+                                                                ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck)) &&
+                                                                ((isAddressCheck && s.FullAddress == c.Address_tx) || (!isAddressCheck)) &&
+                                                                ((isTelephoneCheck && s.Telephone_Tx != null && c.TelephoneNumber_tx != null &&  s.Telephone_Tx == c.TelephoneNumber_tx) || (!isTelephoneCheck))
+                                                            )
+                                                       )
+                                                .Select(s1 => s1.Accommodation_Id)
+                                                .FirstOrDefault()
+                                                );
+                                return c;
+                            }).ToList();
+                        //}
                         if (totPriorities == curPriority)
                         {
                             PLog.PercentageValue = 70;
