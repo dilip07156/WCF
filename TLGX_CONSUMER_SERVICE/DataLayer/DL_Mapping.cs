@@ -4092,7 +4092,7 @@ namespace DataLayer
                 CallLogVerbose(File_Id, "MAP", "Updating / Inserting Database.");
                 if (clsMappingCity.Count > 0)
                 {
-                    ret = UpdateCityMapping(clsMappingCity);
+                    ret = UpdateCityMappingMatch(clsMappingCity, File_Id);
                 }
                 else
                     ret = true;
@@ -4100,6 +4100,129 @@ namespace DataLayer
             PLog.PercentageValue = 100;
             USD.AddStaticDataUploadProcessLog(PLog);
             CallLogVerbose(File_Id, "MAP", "MAP Process Complete for Batch " + (obj.CurrentBatch ?? 0).ToString());
+            return ret;
+        }
+
+
+        public bool UpdateCityMappingMatch(List<DataContracts.Mapping.DC_CityMapping> obj, Guid File_Id)
+        {
+            bool ret = false;
+            if (obj.Count > 0)
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    foreach (var CM in obj)
+                    {
+                        if (CM.CityMapping_Id == null || CM.Supplier_Id == null)
+                        {
+                            continue;
+                        }
+
+                        try
+                        {
+
+                            var search = (from a in context.m_CityMapping
+                                          where a.CityMapping_Id == CM.CityMapping_Id
+                                          select a).FirstOrDefault();
+                            if (search != null)
+                            {
+                                //if (CM.Status != (search.Status ?? string.Empty))
+                                //{
+                                //    search.City_Id = CM.City_Id;
+                                //    search.Status = CM.Status;
+                                //    search.Edit_Date = CM.Edit_Date;
+                                //    search.Edit_User = CM.Edit_User;
+                                //}
+                                //else
+                                //{
+                                search.City_Id = CM.City_Id;
+                                search.Country_Id = CM.Country_Id;
+                                search.Supplier_Id = CM.Supplier_Id;
+                                search.Status = CM.Status;
+                                search.Edit_Date = CM.Edit_Date;
+                                search.Edit_User = CM.Edit_User;
+                                search.Remarks = CM.Remarks;
+                                if (search.StateCode == null)
+                                    search.StateCode = CM.StateCode;
+                                if (search.StateName == null)
+                                    search.StateName = CM.StateName;
+                                //}
+                                context.SaveChanges();
+
+                                //context.SaveChanges();
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    DataLayer.m_CityMapping objNew = new m_CityMapping();
+                                    objNew.CityMapping_Id = CM.CityMapping_Id;
+                                    objNew.City_Id = CM.City_Id;
+                                    objNew.CityName = CM.CityName;
+                                    objNew.CityCode = CM.CityCode;
+                                    objNew.Supplier_Id = CM.Supplier_Id;
+                                    objNew.SupplierName = CM.SupplierName;
+                                    objNew.CountryName = CM.CountryName;
+                                    objNew.CountryCode = CM.CountryCode;
+                                    objNew.Status = CM.Status;
+                                    objNew.Create_Date = CM.Create_Date;
+                                    objNew.Create_User = CM.Create_User;
+                                    objNew.Edit_Date = CM.Edit_Date;
+                                    objNew.Edit_User = CM.Edit_User;
+                                    objNew.MapID = CM.MapID;
+                                    objNew.Remarks = CM.Remarks;
+                                    objNew.Latitude = CM.Latitude;
+                                    objNew.Longitude = CM.Longitude;
+                                    objNew.StateCode = CM.StateCode;
+                                    objNew.StateName = CM.StateName;
+                                    // objNew.Country_Id = CM.Country_Id;
+                                    objNew.Country_Id = ((from a in context.m_CountryMapping.AsNoTracking()
+                                                          where a.Supplier_Id == CM.Supplier_Id &&
+                                                          ((a.CountryName == CM.CountryName) && a.CountryName != null && CM.CountryName != null)
+                                                          //&& ((CM.CountryName != null && a.CountryName == CM.CountryName) || CM.CountryName == null)
+                                                          //&& ((CM.CountryCode != null && a.CountryCode == CM.CountryCode) || CM.CountryCode == null)
+                                                          //&& a.Supplier_Id == CM.Supplier_Id
+                                                          select a.Country_Id).FirstOrDefault()) ?? ((from a in context.m_CountryMapping.AsNoTracking()
+                                                                                                      where a.Supplier_Id == CM.Supplier_Id &&
+                                                                                                      ((a.CountryCode == CM.CountryCode) && a.CountryCode != null && CM.CountryCode != null)
+                                                                                                      select a.Country_Id).FirstOrDefault());
+                                    context.m_CityMapping.Add(objNew);
+                                }
+                                catch (Exception e)
+                                {
+                                    DC_SupplierImportFile_ErrorLog objE = new DC_SupplierImportFile_ErrorLog();
+                                    objE.SupplierImportFile_ErrorLog_Id = Guid.NewGuid();
+                                    objE.SupplierImportFile_Id = File_Id;
+                                    objE.ErrorCode = 0;
+                                    objE.ErrorDescription = e.Message.ToString() + ", " + e.StackTrace;
+                                    objE.ErrorMessage_UI = "Error while inserting city data for " + (CM.CountryName ?? (CM.CountryCode ?? "")) + " - " + (CM.CityName ?? (CM.CityCode ?? "")).ToString() ;
+                                    objE.Error_DATE = DateTime.Now;
+                                    objE.Error_USER = "TLGX_DataHandler";
+                                    DL_UploadStaticData ups = new DL_UploadStaticData();
+                                    DataContracts.DC_Message dc = new DataContracts.DC_Message();
+                                    dc = ups.AddStaticDataUploadErrorLog(objE);
+                                }
+                            }
+
+                            ret = true;
+
+
+                        }
+                        catch
+                        {
+                            ret = false;
+                            throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating city mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                        }
+                    }
+                    if (ret)
+                    {
+                        context.SaveChanges();
+                        context.USP_UpdateMapID("city");
+                    }
+                }
+            }
+            else
+                ret = true;
             return ret;
         }
 
