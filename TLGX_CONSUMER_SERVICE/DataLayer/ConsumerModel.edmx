@@ -72,6 +72,7 @@
           <Property Name="City_Id" Type="uniqueidentifier" />
           <Property Name="InsertFrom" Type="bit" />
           <Property Name="Address_Tx" Type="nvarchar(max)" />
+          <Property Name="Telephone_Tx" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Accommodation_ClassificationAttributes">
           <Key>
@@ -106,6 +107,8 @@
           <Property Name="Edit_Date" Type="datetime" />
           <Property Name="IsActive" Type="bit" />
           <Property Name="Telephone_Tx" Type="varchar" MaxLength="30" />
+          <Property Name="Country_Id" Type="uniqueidentifier" />
+          <Property Name="City_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Accommodation_Descriptions">
           <Key>
@@ -678,6 +681,7 @@
           <Property Name="Edit_Date" Type="datetime" />
           <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="TLGXActivityOptionCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Activity_InclusionDetails">
           <Key>
@@ -891,6 +895,9 @@
           <Property Name="Price_For" Type="nvarchar" MaxLength="255" />
           <Property Name="Price_Type" Type="nvarchar" MaxLength="255" />
           <Property Name="Price_OptionCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="Activity_FlavourOptions_Id" Type="uniqueidentifier" />
+          <Property Name="Price_ValidFrom" Type="datetime" />
+          <Property Name="Price_ValidTo" Type="datetime" />
         </EntityType>
         <EntityType Name="Activity_ReviewsAndScores">
           <Key>
@@ -1914,6 +1921,7 @@
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="FullMediaResponse" Type="nvarchar(max)" />
           <Property Name="FullReviewResponse" Type="nvarchar(max)" />
+          <Property Name="ProcessedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="STG_Mapping_TableIds">
           <Key>
@@ -2747,6 +2755,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="Telephone_Tx" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Country_Id" Type="Guid" />
+          <Property Name="City_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="Accommodation_Facility">
           <Key>
@@ -3524,6 +3534,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="City_Id" Type="Guid" />
           <Property Name="InsertFrom" Type="Boolean" />
           <Property Name="Address_Tx" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Telephone_Tx" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="GoogleGeoCode">
           <Key>
@@ -4993,6 +5004,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TLGXActivityOptionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Activity_Prices">
           <Key>
@@ -5013,6 +5025,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Price_For" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Price_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Price_OptionCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_FlavourOptions_Id" Type="Guid" />
+          <Property Name="Price_ValidFrom" Type="DateTime" Precision="3" />
+          <Property Name="Price_ValidTo" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="ActivityGeneralInfo">
           <Key>
@@ -5069,6 +5084,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FullMediaResponse" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FullReviewResponse" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProcessedDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="stg_SupplierActivityImageMapping">
           <Key>
@@ -5134,6 +5150,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodation_Contact">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_Contact">
               <MappingFragment StoreEntitySet="Accommodation_Contact">
+                <ScalarProperty Name="City_Id" ColumnName="City_Id" />
+                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
                 <ScalarProperty Name="Telephone_Tx" ColumnName="Telephone_Tx" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
@@ -5866,6 +5884,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodations">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation">
               <MappingFragment StoreEntitySet="Accommodation">
+                <ScalarProperty Name="Telephone_Tx" ColumnName="Telephone_Tx" />
                 <ScalarProperty Name="Address_Tx" ColumnName="Address_Tx" />
                 <ScalarProperty Name="InsertFrom" ColumnName="InsertFrom" />
                 <ScalarProperty Name="City_Id" ColumnName="City_Id" />
@@ -7456,6 +7475,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Activity_FlavourOptions">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_FlavourOptions">
               <MappingFragment StoreEntitySet="Activity_FlavourOptions">
+                <ScalarProperty Name="TLGXActivityOptionCode" ColumnName="TLGXActivityOptionCode" />
                 <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
                 <ScalarProperty Name="Create_User" ColumnName="Create_User" />
                 <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
@@ -7474,6 +7494,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Activity_Prices">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_Prices">
               <MappingFragment StoreEntitySet="Activity_Prices">
+                <ScalarProperty Name="Price_ValidTo" ColumnName="Price_ValidTo" />
+                <ScalarProperty Name="Price_ValidFrom" ColumnName="Price_ValidFrom" />
+                <ScalarProperty Name="Activity_FlavourOptions_Id" ColumnName="Activity_FlavourOptions_Id" />
                 <ScalarProperty Name="Price_OptionCode" ColumnName="Price_OptionCode" />
                 <ScalarProperty Name="Price_Type" ColumnName="Price_Type" />
                 <ScalarProperty Name="Price_For" ColumnName="Price_For" />
@@ -7533,6 +7556,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="stg_ActivitySupplierProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.stg_ActivitySupplierProductMapping">
               <MappingFragment StoreEntitySet="stg_ActivitySupplierProductMapping">
+                <ScalarProperty Name="ProcessedDate" ColumnName="ProcessedDate" />
                 <ScalarProperty Name="FullReviewResponse" ColumnName="FullReviewResponse" />
                 <ScalarProperty Name="FullMediaResponse" ColumnName="FullMediaResponse" />
                 <ScalarProperty Name="Status" ColumnName="Status" />

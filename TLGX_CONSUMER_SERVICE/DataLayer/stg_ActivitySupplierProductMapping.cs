@@ -28,5 +28,6 @@ namespace DataLayer
         public string Status { get; set; }
         public string FullMediaResponse { get; set; }
         public string FullReviewResponse { get; set; }
+        public Nullable<System.DateTime> ProcessedDate { get; set; }
     }
 }

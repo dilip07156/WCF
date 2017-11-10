@@ -37,6 +37,14 @@ namespace BusinessLayer
 
         }
 
+        public string[] GetMappingHotelDataForTTFU(DataContracts.Masters.DC_Supplier obj)
+        {
+            using (DataLayer.DL_Mapping objDL = new DataLayer.DL_Mapping())
+            {
+                return objDL.GetMappingHotelDataForTTFU(obj);
+            }
+        }
+
         public bool ShiftAccommodationMappings(DataContracts.Mapping.DC_Mapping_ShiftMapping_RQ obj)
         {
             Guid gAccommodation_From_Id;
