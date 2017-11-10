@@ -3915,7 +3915,6 @@ namespace DataLayer
                                                MasterStateCode = ctld.StateCode,
                                                StateCode = a.StateCode,
                                                StateName = a.StateName,
-                                               StateNameWithCode=a.StateName + "("+a.StateCode+")",
                                                Latitude = a.Latitude,
                                                Longitude = a.Longitude
                                            }).Skip(skip).Take(param.PageSize).ToList();
