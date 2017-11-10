@@ -4863,7 +4863,7 @@ namespace DataLayer
                         newmapstatsfor.MappingData = (from s in search
                                                       where s.MappinFor == mapfor
                                                       orderby s.Status
-                                                      select new DataContracts.Mapping.DC_MappingData { Status = s.Status, TotalCount = (s.totalcount ?? 0) }).ToList();
+                                                      select new DataContracts.Mapping.DC_MappingData { Status = s.Status, TotalCount = (s.totalcount ?? 0), SuppliersCount=s.SuppliersCount }).ToList();
 
                         newmapstatsforList.Add(newmapstatsfor);
                     }
