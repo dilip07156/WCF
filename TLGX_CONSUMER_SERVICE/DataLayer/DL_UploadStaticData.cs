@@ -1218,7 +1218,7 @@ namespace DataLayer
                                                select new { g.Key.Status, count = g.Count() };
 
                                 stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
-                                stat.TotalRows = obj.TotalRows ?? stat.TotalRows;
+                                stat.TotalRows = getcount.Select(a => a.count).FirstOrDefault(); //obj.TotalRows ?? stat.TotalRows;
                                 stat.Unmapped = getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
                                 stat.Mapped = getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
                             }
@@ -1231,7 +1231,7 @@ namespace DataLayer
                                                select new { g.Key.Status, count = g.Count() };
 
                                 stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
-                                stat.TotalRows = obj.TotalRows ?? stat.TotalRows;
+                                stat.TotalRows = getcount.Select(a => a.count).FirstOrDefault(); //obj.TotalRows ?? stat.TotalRows;
                                 stat.Unmapped = getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
                                 stat.Mapped = getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
                             }
@@ -1244,7 +1244,7 @@ namespace DataLayer
                                                select new { g.Key.Status, count = g.Count() };
 
                                 stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
-                                stat.TotalRows = obj.TotalRows ?? stat.TotalRows;
+                                stat.TotalRows = getcount.Select(a => a.count).FirstOrDefault(); //obj.TotalRows ?? stat.TotalRows;
                                 stat.Unmapped = getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
                                 stat.Mapped = getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
                             }
@@ -1257,7 +1257,7 @@ namespace DataLayer
                                                select new { g.Key.MappingStatus, count = g.Count() };
 
                                 stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
-                                stat.TotalRows = obj.TotalRows ?? stat.TotalRows;
+                                stat.TotalRows = getcount.Select(a => a.count).FirstOrDefault(); //obj.TotalRows ?? stat.TotalRows;
                                 stat.Unmapped = getcount.Where(g => g.MappingStatus.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
                                 stat.Mapped = getcount.Where(g => g.MappingStatus.Trim().ToUpper() == "MAPPED" || g.MappingStatus.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
                             }
