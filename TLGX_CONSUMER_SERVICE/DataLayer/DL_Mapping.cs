@@ -190,12 +190,12 @@ namespace DataLayer
                     System.Linq.IQueryable<DataContracts.Mapping.DC_Accomodation_ProductMapping> prodMapList;
                     List<DC_Accomodation_ProductMapping> lstProdMap = new List<DC_Accomodation_ProductMapping>();
                     prodMapList = (from s in context.STG_Mapping_TableIds.AsNoTracking()
-                           join stg in context.stg_SupplierProductMapping.AsNoTracking() on s.STG_Id equals stg.stg_AccoMapping_Id
-                           where s.File_Id == obj.File_Id
-                           select new DataContracts.Mapping.DC_Accomodation_ProductMapping
-                           {
-                               Accommodation_ProductMapping_Id = s.Mapping_Id ?? Guid.Empty
-                           });
+                                   join stg in context.stg_SupplierProductMapping.AsNoTracking() on s.STG_Id equals stg.stg_AccoMapping_Id
+                                   where s.File_Id == obj.File_Id
+                                   select new DataContracts.Mapping.DC_Accomodation_ProductMapping
+                                   {
+                                       Accommodation_ProductMapping_Id = s.Mapping_Id ?? Guid.Empty
+                                   });
                     lstProdMap = prodMapList.ToList();
                     List<string> str = new List<string>();
                     if (lstProdMap.Count > 0)
@@ -527,7 +527,7 @@ namespace DataLayer
             CallLogVerbose(File_Id, "MAP", "MAP Process Complete for Batch " + (obj.CurrentBatch ?? 0).ToString());
             return ret;
         }
-        
+
         //public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
         public bool UpdateHotelMappingStatus(DC_MappingMatch obj)
         {
@@ -729,7 +729,7 @@ namespace DataLayer
                             prodMapSearch = (from a in prodMapSearch
                                                  //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
                                              join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
-                                             where a.address_tx != null && ac.Address_Tx != null 
+                                             where a.address_tx != null && ac.Address_Tx != null
                                              //&& a.address_tx.ToString().Trim().ToUpper().Replace("HOTEL", "") == ac.Address_Tx.ToString().Trim().ToUpper().Replace("HOTEL", "")
                                              select a).Distinct().ToList();
                         }
@@ -738,7 +738,7 @@ namespace DataLayer
                             isTelephoneCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
-                                             where a.TelephoneNumber_tx != null && ac.Telephone_Tx != null &&  a.TelephoneNumber_tx == ac.Telephone_Tx
+                                             where a.TelephoneNumber_tx != null && ac.Telephone_Tx != null && a.TelephoneNumber_tx == ac.Telephone_Tx
                                              select a).Distinct().ToList();
                         }
 
@@ -798,7 +798,7 @@ namespace DataLayer
                         }
 
                         CallLogVerbose(File_Id, "MATCH", "Looking for Match in Master Data for Matching Combination " + curPriority.ToString() + ".");
-                        
+
 
                         /*if (isTelephoneCheck)
                         {
@@ -822,25 +822,25 @@ namespace DataLayer
                         }
                         else
                         {*/
-                            res = res.Select(c =>
-                            {
-                                c.Accommodation_Id = (context.Accommodations.AsNoTracking()
-                                                .Where(s => (
-                                                                ((isCountryNameCheck && s.Country_Id == c.Country_Id) || (!isCountryNameCheck)) &&
-                                                                ((isCityNameCheck && s.City_Id == c.City_Id) || (!isCityNameCheck)) &&
-                                                                ((isCodeCheck && s.CompanyHotelID.ToString() == c.SupplierProductReference) || (!isCodeCheck)) &&
-                                                                ((isNameCheck && s.HotelName.Trim().ToUpper() == c.ProductName.Trim().ToUpper()) || (!isNameCheck)) &&
-                                                                ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck)) &&
-                                                                ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck)) &&
-                                                                ((isAddressCheck && s.Address_Tx != null && c.Address_tx != null && s.Address_Tx == c.Address_tx) || (!isAddressCheck)) &&
-                                                                ((isTelephoneCheck && s.Telephone_Tx != null && c.TelephoneNumber_tx != null &&  s.Telephone_Tx == c.TelephoneNumber_tx) || (!isTelephoneCheck))
-                                                            )
-                                                       )
-                                                .Select(s1 => s1.Accommodation_Id)
-                                                .FirstOrDefault()
-                                                );
-                                return c;
-                            }).ToList();
+                        res = res.Select(c =>
+                        {
+                            c.Accommodation_Id = (context.Accommodations.AsNoTracking()
+                                            .Where(s => (
+                                                            ((isCountryNameCheck && s.Country_Id == c.Country_Id) || (!isCountryNameCheck)) &&
+                                                            ((isCityNameCheck && s.City_Id == c.City_Id) || (!isCityNameCheck)) &&
+                                                            ((isCodeCheck && s.CompanyHotelID.ToString() == c.SupplierProductReference) || (!isCodeCheck)) &&
+                                                            ((isNameCheck && s.HotelName.Trim().ToUpper() == c.ProductName.Trim().ToUpper()) || (!isNameCheck)) &&
+                                                            ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck)) &&
+                                                            ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck)) &&
+                                                            ((isAddressCheck && s.Address_Tx != null && c.Address_tx != null && s.Address_Tx == c.Address_tx) || (!isAddressCheck)) &&
+                                                            ((isTelephoneCheck && s.Telephone_Tx != null && c.TelephoneNumber_tx != null && s.Telephone_Tx == c.TelephoneNumber_tx) || (!isTelephoneCheck))
+                                                        )
+                                                   )
+                                            .Select(s1 => s1.Accommodation_Id)
+                                            .FirstOrDefault()
+                                            );
+                            return c;
+                        }).ToList();
                         //}
                         if (totPriorities == curPriority)
                         {
@@ -2583,6 +2583,8 @@ namespace DataLayer
 
                     BaseRoomName = BaseRoomName.Replace("( ", "(");
                     BaseRoomName = BaseRoomName.Replace(" )", ")");
+
+                    BaseRoomName = BaseRoomName.Replace(",", " ");
                     #endregion
 
                     //Necessary Replace
@@ -2653,12 +2655,50 @@ namespace DataLayer
                     srn.TX_SupplierRoomName = BaseRoomName;
 
                     #region Attribute Extraction
+
+                    bool isRoomHaveAttribute = false;
+                    string sAttributeAlias = string.Empty;
                     foreach (var Attribute in Attributes.OrderBy(o => o.Sequence))
                     {
+                        if (Attribute.Keyword == "NON-SMOKING-ROOM")
+                        {
+                            int ifdfs = 1;
+                        }
+
+                        isRoomHaveAttribute = false;
+
                         var aliases = Attribute.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
                         foreach (var alias in aliases)
                         {
-                            if (BaseRoomName.Contains(alias.Value.ToUpper()))
+
+                            isRoomHaveAttribute = false;
+                            sAttributeAlias = alias.Value.Replace(",", " ").Trim().ToUpper();
+                            sAttributeAlias = System.Text.RegularExpressions.Regex.Replace(sAttributeAlias, @"\s{2,}", " ");
+
+                            if (sAttributeAlias.StartsWith("(") || sAttributeAlias.EndsWith(")"))
+                            {
+                                if (BaseRoomName.Trim().Contains(sAttributeAlias))
+                                {
+                                    isRoomHaveAttribute = true;
+                                }
+                                else
+                                {
+                                    isRoomHaveAttribute = false;
+                                }
+                            }
+                            else
+                            {
+                                if ((" " + BaseRoomName.Trim() + " ").Contains(" " + sAttributeAlias + " "))
+                                {
+                                    isRoomHaveAttribute = true;
+                                }
+                                else
+                                {
+                                    isRoomHaveAttribute = false;
+                                }
+                            }
+
+                            if (isRoomHaveAttribute)
                             {
                                 AttributeList.Add(new DC_SupplierRoomName_AttributeList
                                 {
@@ -2669,16 +2709,27 @@ namespace DataLayer
 
                                 if ((Attribute.AttributeType ?? string.Empty).ToUpper().Contains("STRIP"))
                                 {
-                                    BaseRoomName = BaseRoomName.Replace(alias.Value.ToUpper(), string.Empty);
+                                    BaseRoomName = BaseRoomName.Replace(sAttributeAlias, string.Empty);
+                                }
+                                else if ((Attribute.AttributeType ?? string.Empty).ToUpper().Contains("REPLACE"))
+                                {
+                                    BaseRoomName = BaseRoomName.Replace(sAttributeAlias, Attribute.Keyword);
                                 }
 
+                                BaseRoomName = System.Text.RegularExpressions.Regex.Replace(BaseRoomName, @"\s{2,}", " ");
+                                BaseRoomName = BaseRoomName.Replace("( )", string.Empty);
                                 BaseRoomName = BaseRoomName.Replace("()", string.Empty);
+
                                 BaseRoomName = BaseRoomName.Trim();
 
                                 alias.NewHits += 1;
 
+                                isRoomHaveAttribute = false;
+
                                 break;
+
                             }
+
                         }
                     }
                     #endregion
@@ -2764,12 +2815,12 @@ namespace DataLayer
                     #endregion
 
                     #region Remove logical words from end
-                    int lastIndex = BaseRoomName.LastIndexOf(" ");
+                    int lastIndex = BaseRoomName.Trim().LastIndexOf(" ");
                     if (BaseRoomName.EndsWith(" AND") || BaseRoomName.EndsWith(" OR"))
                     {
                         if (lastIndex != -1)
                         {
-                            BaseRoomName = BaseRoomName.Substring(0, lastIndex).Trim();
+                            BaseRoomName = BaseRoomName.Trim().Substring(0, lastIndex).Trim();
                         }
                     }
                     #endregion
@@ -2857,7 +2908,7 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while TTFU", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-        
+
         public bool UpdateRoomTypeMappingStatus(DC_MappingMatch obj)
         {
             bool retrn = false;
@@ -3972,7 +4023,7 @@ namespace DataLayer
                 clsMappingCity = clsMappingCity.Select(c =>
                 {
                     c.CityName = (clsSTGCity
-                    .Where(s => s.CityCode == c.CityCode)
+                    .Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName))
                     .Select(s1 => s1.CityName)
                     .FirstOrDefault()
                     ) ?? c.CityName;
@@ -3980,7 +4031,7 @@ namespace DataLayer
                     c.Edit_User = "TLGX_DataHandler";
                     c.ActionType = "UPDATE";
                     c.stg_City_Id = (clsSTGCity
-                    .Where(s => s.CityCode == c.CityCode)
+                    .Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName))
                     .Select(s1 => s1.stg_City_Id)
                     .FirstOrDefault()
                     );
@@ -4127,29 +4178,45 @@ namespace DataLayer
                                           select a).FirstOrDefault();
                             if (search != null)
                             {
-                                //if (CM.Status != (search.Status ?? string.Empty))
-                                //{
-                                //    search.City_Id = CM.City_Id;
-                                //    search.Status = CM.Status;
-                                //    search.Edit_Date = CM.Edit_Date;
-                                //    search.Edit_User = CM.Edit_User;
-                                //}
-                                //else
-                                //{
-                                search.City_Id = CM.City_Id;
-                                search.Country_Id = CM.Country_Id;
-                                search.Supplier_Id = CM.Supplier_Id;
-                                search.Status = CM.Status;
-                                search.Edit_Date = CM.Edit_Date;
-                                search.Edit_User = CM.Edit_User;
-                                search.Remarks = CM.Remarks;
-                                if (search.StateCode == null)
-                                    search.StateCode = CM.StateCode;
-                                if (search.StateName == null)
-                                    search.StateName = CM.StateName;
-                                //}
-                                context.SaveChanges();
-
+                                try
+                                {
+                                    //if (CM.Status != (search.Status ?? string.Empty))
+                                    //{
+                                    //    search.City_Id = CM.City_Id;
+                                    //    search.Status = CM.Status;
+                                    //    search.Edit_Date = CM.Edit_Date;
+                                    //    search.Edit_User = CM.Edit_User;
+                                    //}
+                                    //else
+                                    //{
+                                    search.City_Id = CM.City_Id;
+                                    search.Country_Id = CM.Country_Id;
+                                    search.Supplier_Id = CM.Supplier_Id;
+                                    search.Status = CM.Status;
+                                    search.Edit_Date = CM.Edit_Date;
+                                    search.Edit_User = CM.Edit_User;
+                                    search.Remarks = CM.Remarks;
+                                    if (search.StateCode == null)
+                                        search.StateCode = CM.StateCode;
+                                    if (search.StateName == null)
+                                        search.StateName = CM.StateName;
+                                    //}
+                                    context.SaveChanges();
+                                }
+                                catch (Exception e)
+                                {
+                                    DC_SupplierImportFile_ErrorLog objE = new DC_SupplierImportFile_ErrorLog();
+                                    objE.SupplierImportFile_ErrorLog_Id = Guid.NewGuid();
+                                    objE.SupplierImportFile_Id = File_Id;
+                                    objE.ErrorCode = 0;
+                                    objE.ErrorDescription = e.Message.ToString() + ", " + e.StackTrace;
+                                    objE.ErrorMessage_UI = "Error while updating city data for " + (CM.CountryName ?? (CM.CountryCode ?? "")) + " - " + (CM.CityName ?? (CM.CityCode ?? "")).ToString() + " - " + CM.City_Id.ToString();
+                                    objE.Error_DATE = DateTime.Now;
+                                    objE.Error_USER = "TLGX_DataHandler";
+                                    DL_UploadStaticData ups = new DL_UploadStaticData();
+                                    DataContracts.DC_Message dc = new DataContracts.DC_Message();
+                                    dc = ups.AddStaticDataUploadErrorLog(objE);
+                                }
                                 //context.SaveChanges();
                             }
                             else
@@ -4196,7 +4263,7 @@ namespace DataLayer
                                     objE.SupplierImportFile_Id = File_Id;
                                     objE.ErrorCode = 0;
                                     objE.ErrorDescription = e.Message.ToString() + ", " + e.StackTrace;
-                                    objE.ErrorMessage_UI = "Error while inserting city data for " + (CM.CountryName ?? (CM.CountryCode ?? "")) + " - " + (CM.CityName ?? (CM.CityCode ?? "")).ToString() ;
+                                    objE.ErrorMessage_UI = "Error while inserting city data for " + (CM.CountryName ?? (CM.CountryCode ?? "")) + " - " + (CM.CityName ?? (CM.CityCode ?? "")).ToString();
                                     objE.Error_DATE = DateTime.Now;
                                     objE.Error_USER = "TLGX_DataHandler";
                                     DL_UploadStaticData ups = new DL_UploadStaticData();
