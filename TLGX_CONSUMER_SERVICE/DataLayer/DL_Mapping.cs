@@ -3971,7 +3971,7 @@ namespace DataLayer
                 clsMappingCity = clsMappingCity.Select(c =>
                 {
                     c.CityName = (clsSTGCity
-                    .Where(s => s.CityCode == c.CityCode)
+                    .Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName))
                     .Select(s1 => s1.CityName)
                     .FirstOrDefault()
                     ) ?? c.CityName;
@@ -3979,7 +3979,7 @@ namespace DataLayer
                     c.Edit_User = "TLGX_DataHandler";
                     c.ActionType = "UPDATE";
                     c.stg_City_Id = (clsSTGCity
-                    .Where(s => s.CityCode == c.CityCode)
+                    .Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName))
                     .Select(s1 => s1.stg_City_Id)
                     .FirstOrDefault()
                     );
