@@ -360,12 +360,16 @@ namespace DataLayer
             PLog.Status = "MAPPING";
             PLog.CurrentBatch = obj.CurrentBatch ?? 0;
             PLog.TotalBatch = obj.TotalBatch ?? 0;
+                DL_UploadStaticData staticdata = new DL_UploadStaticData();
+            List<DC_SupplierImportFileDetails> file = new List<DC_SupplierImportFileDetails>();
+            DC_SupplierImportFileDetails_RQ fileRQ = new DC_SupplierImportFileDetails_RQ();
+            fileRQ.SupplierImportFile_Id = File_Id;
+            file = staticdata.GetStaticDataFileDetail(fileRQ);
             if (obj != null)
             {
                 string CurSupplierName = obj.Name;
                 Guid CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
 
-                DL_UploadStaticData staticdata = new DL_UploadStaticData();
                 List<DataContracts.STG.DC_stg_SupplierProductMapping> clsSTGHotel = new List<DataContracts.STG.DC_stg_SupplierProductMapping>();
                 List<DataContracts.STG.DC_stg_SupplierProductMapping> clsSTGHotelInsert = new List<DataContracts.STG.DC_stg_SupplierProductMapping>();
                 List<DC_Accomodation_ProductMapping> clsMappingHotel = new List<DC_Accomodation_ProductMapping>();
@@ -394,7 +398,8 @@ namespace DataLayer
                 clsMappingHotel = clsMappingHotel.Select(c =>
                 {
                     c.ProductName = (clsSTGHotel
-                    .Where(s => s.ProductId == c.SupplierProductReference)
+                    .Where(s => (s.ProductId ?? s.ProductName) == (c.SupplierProductReference ?? c.ProductName) && s.Country_Id == c.Country_Id && s.City_Id == c.City_Id )
+                    //.Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
                     .Select(s1 => s1.ProductName)
                     .FirstOrDefault()
                     ) ?? c.ProductName;
@@ -402,7 +407,7 @@ namespace DataLayer
                     c.Edit_User = "TLGX_DataHandler";
                     c.ActionType = "UPDATE";
                     c.stg_AccoMapping_Id = (clsSTGHotel
-                    .Where(s => s.ProductId == c.SupplierProductReference)
+                    .Where(s => (s.ProductId ?? s.ProductName) == (c.SupplierProductReference ?? c.ProductName) && s.Country_Id == c.Country_Id && s.City_Id == c.City_Id)
                     .Select(s1 => s1.stg_AccoMapping_Id)
                     .FirstOrDefault()
                     );
@@ -519,6 +524,14 @@ namespace DataLayer
                 if (clsMappingHotel.Count > 0)
                 {
                     ret = UpdateAccomodationProductMapping(clsMappingHotel);
+                    DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
+                    objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
+                    objStat.SupplierImportFile_Id = obj.File_Id;
+                    objStat.FinalStatus = file[0].STATUS;
+                    objStat.TotalRows = clsMappingHotel.Count;
+                    objStat.Process_Date = DateTime.Now;
+                    objStat.Process_User = file[0].PROCESS_USER;
+                    DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
                 }
 
             }
@@ -1796,12 +1809,16 @@ namespace DataLayer
             PLog.Status = "MAPPING";
             PLog.CurrentBatch = obj.CurrentBatch ?? 0;
             PLog.TotalBatch = obj.TotalBatch ?? 0;
+            DL_UploadStaticData staticdata = new DL_UploadStaticData();
+            List<DC_SupplierImportFileDetails> file = new List<DC_SupplierImportFileDetails>() ;
+            DC_SupplierImportFileDetails_RQ fileRQ = new DC_SupplierImportFileDetails_RQ();
+            fileRQ.SupplierImportFile_Id = File_Id;
+            file = staticdata.GetStaticDataFileDetail(fileRQ);
             if (obj != null)
             {
                 string CurSupplierName = obj.Name;
                 Guid CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
 
-                DL_UploadStaticData staticdata = new DL_UploadStaticData();
                 List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> clsSTGHotel = new List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping>();
                 List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> clsSTGHotelInsert = new List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping>();
                 List<DC_Accommodation_SupplierRoomTypeMap_SearchRS> clsMappingHotel = new List<DC_Accommodation_SupplierRoomTypeMap_SearchRS>();
@@ -1938,6 +1955,14 @@ namespace DataLayer
                 if (clsMappingHotel.Count > 0)
                 {
                     ret = SupplierRoomTypeMapping_InsertUpdate(clsMappingHotel);
+                    DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
+                    objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
+                    objStat.SupplierImportFile_Id = obj.File_Id;
+                    objStat.FinalStatus = file[0].STATUS;
+                    objStat.TotalRows = clsMappingHotel.Count;
+                    objStat.Process_Date = DateTime.Now;
+                    objStat.Process_User = file[0].PROCESS_USER;
+                    DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
                 }
             }
 
@@ -3245,12 +3270,18 @@ namespace DataLayer
             PLog.Status = "MAPPING";
             PLog.CurrentBatch = obj.CurrentBatch ?? 0;
             PLog.TotalBatch = obj.TotalBatch ?? 0;
+
+                DL_UploadStaticData staticdata = new DL_UploadStaticData();
+            List<DC_SupplierImportFileDetails> file = new List<DC_SupplierImportFileDetails >();
+            DC_SupplierImportFileDetails_RQ fileRQ = new DC_SupplierImportFileDetails_RQ();
+            fileRQ.SupplierImportFile_Id = File_Id;
+            file = staticdata.GetStaticDataFileDetail(fileRQ);
+
             if (obj != null)
             {
                 string CurSupplierName = obj.Name;
                 Guid CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
 
-                DL_UploadStaticData staticdata = new DL_UploadStaticData();
                 List<DataContracts.STG.DC_stg_SupplierCountryMapping> clsSTGCountry = new List<DataContracts.STG.DC_stg_SupplierCountryMapping>();
                 List<DataContracts.STG.DC_stg_SupplierCountryMapping> clsSTGCountryInsert = new List<DataContracts.STG.DC_stg_SupplierCountryMapping>();
                 List<DC_CountryMapping> clsMappingCountry = new List<DC_CountryMapping>();
@@ -3279,7 +3310,7 @@ namespace DataLayer
                 clsMappingCountry = clsMappingCountry.Select(c =>
                 {
                     c.CountryCode = (clsSTGCountry
-                    .Where(s => s.CountryName == c.CountryName)
+                    .Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode))
                     .Select(s1 => s1.CountryCode)
                     .FirstOrDefault()
                     );
@@ -3287,7 +3318,7 @@ namespace DataLayer
                     c.Edit_User = "TLGX";
                     c.ActionType = "UPDATE";
                     c.stg_Country_Id = (clsSTGCountry
-                    .Where(s => s.CountryName == c.CountryName)
+                    .Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode))
                     .Select(s1 => s1.stg_Country_Id)
                     .FirstOrDefault()
                     );
@@ -3363,6 +3394,14 @@ namespace DataLayer
                 if (clsMappingCountry.Count > 0)
                 {
                     ret = UpdateCountryMapping(clsMappingCountry);
+                    DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
+                    objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
+                    objStat.SupplierImportFile_Id = obj.File_Id;
+                    objStat.FinalStatus = file[0].STATUS;
+                    objStat.TotalRows = clsMappingCountry.Count;
+                    objStat.Process_Date = DateTime.Now;
+                    objStat.Process_User = file[0].PROCESS_USER;
+                    DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
                 }
             }
 
@@ -3979,6 +4018,7 @@ namespace DataLayer
         public bool CityMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             bool ret = false;
+            DL_UploadStaticData staticdata = new DL_UploadStaticData();
             Guid File_Id = new Guid();
             File_Id = Guid.Parse(obj.File_Id.ToString());
             PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
@@ -3987,13 +4027,16 @@ namespace DataLayer
             PLog.Status = "MAPPING";
             PLog.CurrentBatch = obj.CurrentBatch ?? 0;
             PLog.TotalBatch = obj.TotalBatch ?? 0;
+            List<DC_SupplierImportFileDetails> file = new List<DC_SupplierImportFileDetails>();
+            DC_SupplierImportFileDetails_RQ fileRQ = new DC_SupplierImportFileDetails_RQ();
+            fileRQ.SupplierImportFile_Id = File_Id;
+            file = staticdata.GetStaticDataFileDetail(fileRQ);
             if (obj != null)
             {
 
                 string CurSupplierName = obj.Name;
                 Guid CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
 
-                DL_UploadStaticData staticdata = new DL_UploadStaticData();
                 List<DataContracts.STG.DC_stg_SupplierCityMapping> clsSTGCity = new List<DataContracts.STG.DC_stg_SupplierCityMapping>();
                 List<DataContracts.STG.DC_stg_SupplierCityMapping> clsSTGCityInsert = new List<DataContracts.STG.DC_stg_SupplierCityMapping>();
                 List<DC_CityMapping> clsMappingCity = new List<DC_CityMapping>();
@@ -4145,6 +4188,14 @@ namespace DataLayer
                 if (clsMappingCity.Count > 0)
                 {
                     ret = UpdateCityMappingMatch(clsMappingCity, File_Id);
+                    DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
+                    objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
+                    objStat.SupplierImportFile_Id = obj.File_Id;
+                    objStat.FinalStatus = file[0].STATUS;
+                    objStat.TotalRows = clsMappingCity.Count;
+                    objStat.Process_Date = DateTime.Now;
+                    objStat.Process_User = file[0].PROCESS_USER;
+                    DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
                 }
                 else
                     ret = true;
