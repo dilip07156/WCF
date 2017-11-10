@@ -4177,29 +4177,45 @@ namespace DataLayer
                                           select a).FirstOrDefault();
                             if (search != null)
                             {
-                                //if (CM.Status != (search.Status ?? string.Empty))
-                                //{
-                                //    search.City_Id = CM.City_Id;
-                                //    search.Status = CM.Status;
-                                //    search.Edit_Date = CM.Edit_Date;
-                                //    search.Edit_User = CM.Edit_User;
-                                //}
-                                //else
-                                //{
-                                search.City_Id = CM.City_Id;
-                                search.Country_Id = CM.Country_Id;
-                                search.Supplier_Id = CM.Supplier_Id;
-                                search.Status = CM.Status;
-                                search.Edit_Date = CM.Edit_Date;
-                                search.Edit_User = CM.Edit_User;
-                                search.Remarks = CM.Remarks;
-                                if (search.StateCode == null)
-                                    search.StateCode = CM.StateCode;
-                                if (search.StateName == null)
-                                    search.StateName = CM.StateName;
-                                //}
-                                context.SaveChanges();
-
+                                try
+                                {
+                                    //if (CM.Status != (search.Status ?? string.Empty))
+                                    //{
+                                    //    search.City_Id = CM.City_Id;
+                                    //    search.Status = CM.Status;
+                                    //    search.Edit_Date = CM.Edit_Date;
+                                    //    search.Edit_User = CM.Edit_User;
+                                    //}
+                                    //else
+                                    //{
+                                    search.City_Id = CM.City_Id;
+                                    search.Country_Id = CM.Country_Id;
+                                    search.Supplier_Id = CM.Supplier_Id;
+                                    search.Status = CM.Status;
+                                    search.Edit_Date = CM.Edit_Date;
+                                    search.Edit_User = CM.Edit_User;
+                                    search.Remarks = CM.Remarks;
+                                    if (search.StateCode == null)
+                                        search.StateCode = CM.StateCode;
+                                    if (search.StateName == null)
+                                        search.StateName = CM.StateName;
+                                    //}
+                                    context.SaveChanges();
+                                }
+                                catch (Exception e)
+                                {
+                                    DC_SupplierImportFile_ErrorLog objE = new DC_SupplierImportFile_ErrorLog();
+                                    objE.SupplierImportFile_ErrorLog_Id = Guid.NewGuid();
+                                    objE.SupplierImportFile_Id = File_Id;
+                                    objE.ErrorCode = 0;
+                                    objE.ErrorDescription = e.Message.ToString() + ", " + e.StackTrace;
+                                    objE.ErrorMessage_UI = "Error while updating city data for " + (CM.CountryName ?? (CM.CountryCode ?? "")) + " - " + (CM.CityName ?? (CM.CityCode ?? "")).ToString() + " - " + CM.City_Id.ToString();
+                                    objE.Error_DATE = DateTime.Now;
+                                    objE.Error_USER = "TLGX_DataHandler";
+                                    DL_UploadStaticData ups = new DL_UploadStaticData();
+                                    DataContracts.DC_Message dc = new DataContracts.DC_Message();
+                                    dc = ups.AddStaticDataUploadErrorLog(objE);
+                                }
                                 //context.SaveChanges();
                             }
                             else
