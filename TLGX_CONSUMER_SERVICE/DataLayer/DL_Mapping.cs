@@ -41,7 +41,7 @@ namespace DataLayer
                     {
                         DC_SupplierImportFileDetails_RQ RQ = new DC_SupplierImportFileDetails_RQ();
                         RQ.SupplierImportFile_Id = File_Id;
-                        RQ.PageNo = 1;
+                        RQ.PageNo = 0;
                         RQ.PageSize = int.MaxValue;
                         var FileDetails = USD.GetStaticDataFileDetail(RQ);
 
