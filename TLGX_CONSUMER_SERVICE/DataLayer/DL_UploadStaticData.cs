@@ -1232,8 +1232,8 @@ namespace DataLayer
 
                                 stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
                                 stat.TotalRows = stat.TotalRows + getcount.Select(a => a.count).Sum(); //obj.TotalRows ?? stat.TotalRows;
-                                stat.Unmapped = getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
-                                stat.Mapped = getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                                stat.Unmapped = stat.Unmapped + getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
+                                stat.Mapped = stat.Mapped + getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
                             }
                             else if (resstat[0].Entity.Trim().ToUpper() == "HOTEL")
                             {

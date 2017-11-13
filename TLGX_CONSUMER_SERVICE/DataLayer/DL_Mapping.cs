@@ -4516,9 +4516,9 @@ namespace DataLayer
                     if (isCountryCodeCheck || isCountryNameCheck || isCodeCheck || isNameCheck || isLatLongCheck)
                     {
                         res = (from a in prodMapSearch
-                               //join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName } equals new { m.Supplier_Id, m.CountryName }
-                               join ms in context.m_CountryMaster on a.Country_Id equals ms.Country_Id
-                               //where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
+                               join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName } equals new { m.Supplier_Id, m.CountryName }
+                               join ms in context.m_CountryMaster on m.Country_Id equals ms.Country_Id
+                               where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
                                select new DataContracts.Mapping.DC_CityMapping
                                {
                                    CityMapping_Id = a.CityMapping_Id,
@@ -4545,9 +4545,9 @@ namespace DataLayer
                         if (res.Count == 0)
                         {
                             res = (from a in prodMapSearch
-                                   //join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { m.Supplier_Id, m.CountryCode }
-                                   join ms in context.m_CountryMaster on a.Country_Id equals ms.Country_Id
-                                   //where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
+                                   join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { m.Supplier_Id, m.CountryCode }
+                                   join ms in context.m_CountryMaster on m.Country_Id equals ms.Country_Id
+                                   where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
                                    select new DataContracts.Mapping.DC_CityMapping
                                    {
                                        CityMapping_Id = a.CityMapping_Id,
@@ -4639,24 +4639,24 @@ namespace DataLayer
                             c.Status = ("REVIEW"); return c;
                         }).ToList();
 
-                        if (totPriorities == curPriority)
-                        {
-                            PLog.PercentageValue = 75;
-                            USD.AddStaticDataUploadProcessLog(PLog);
-                        }
+                        
                         CallLogVerbose(File_Id, "MATCH", res.Count.ToString() + " Matches Found for Combination " + curPriority.ToString() + ".");
                         CallLogVerbose(File_Id, "MATCH", "Updating into Database.");
                         if (UpdateCityMapping(res))
                         {
-                            using (ConsumerEntities context1 = new ConsumerEntities())
+                            if (totPriorities == curPriority)
                             {
-                                var oldRecords = (from y in context1.STG_Mapping_TableIds
-                                                  where y.File_Id == File_Id
-                                                  select y).ToList();
-                                context1.STG_Mapping_TableIds.RemoveRange(oldRecords);
-                                context1.SaveChanges();
+                                PLog.PercentageValue = 75;
+                                USD.AddStaticDataUploadProcessLog(PLog);
+                                using (ConsumerEntities context1 = new ConsumerEntities())
+                                {
+                                    var oldRecords = (from y in context1.STG_Mapping_TableIds
+                                                      where y.File_Id == File_Id
+                                                      select y).ToList();
+                                    context1.STG_Mapping_TableIds.RemoveRange(oldRecords);
+                                    context1.SaveChanges();
+                                }
                             }
-
                             DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
                             objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
                             objStat.SupplierImportFile_Id = obj.File_Id;
