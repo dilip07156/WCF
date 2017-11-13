@@ -524,14 +524,17 @@ namespace DataLayer
                 if (clsMappingHotel.Count > 0)
                 {
                     ret = UpdateAccomodationProductMapping(clsMappingHotel);
-                    DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
-                    objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
-                    objStat.SupplierImportFile_Id = obj.File_Id;
-                    objStat.FinalStatus = file[0].STATUS;
-                    objStat.TotalRows = clsMappingHotel.Count;
-                    objStat.Process_Date = DateTime.Now;
-                    objStat.Process_User = file[0].PROCESS_USER;
-                    DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
+                    if (obj.CurrentBatch == 1)
+                    {
+                        DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
+                        objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
+                        objStat.SupplierImportFile_Id = obj.File_Id;
+                        objStat.FinalStatus = file[0].STATUS;
+                        objStat.TotalRows = clsMappingHotel.Count;
+                        objStat.Process_Date = DateTime.Now;
+                        objStat.Process_User = file[0].PROCESS_USER;
+                        DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
+                    }
                 }
 
             }
@@ -886,10 +889,21 @@ namespace DataLayer
                         CallLogVerbose(File_Id, "MATCH", "Updating into Database.");
                         if (UpdateAccomodationProductMapping(res))
                         {
-                            DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
-                            objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
-                            objStat.SupplierImportFile_Id = obj.File_Id;
-                            DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
+                            if (totPriorities == curPriority)
+                            {
+                                DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
+                                objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
+                                objStat.SupplierImportFile_Id = obj.File_Id;
+                                DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
+                                using (ConsumerEntities context1 = new ConsumerEntities())
+                                {
+                                    var oldRecords = (from y in context1.STG_Mapping_TableIds
+                                                      where y.File_Id == File_Id
+                                                      select y).ToList();
+                                    context1.STG_Mapping_TableIds.RemoveRange(oldRecords);
+                                    context1.SaveChanges();
+                                }
+                            }
                             //bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
 
                             retrn = true;
@@ -1964,14 +1978,17 @@ namespace DataLayer
                 if (clsMappingHotel.Count > 0)
                 {
                     ret = SupplierRoomTypeMapping_InsertUpdate(clsMappingHotel);
-                    DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
-                    objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
-                    objStat.SupplierImportFile_Id = obj.File_Id;
-                    objStat.FinalStatus = file[0].STATUS;
-                    objStat.TotalRows = clsMappingHotel.Count;
-                    objStat.Process_Date = DateTime.Now;
-                    objStat.Process_User = file[0].PROCESS_USER;
-                    DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
+                    if (obj.CurrentBatch == 1)
+                    {
+                        DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
+                        objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
+                        objStat.SupplierImportFile_Id = obj.File_Id;
+                        objStat.FinalStatus = file[0].STATUS;
+                        objStat.TotalRows = clsMappingHotel.Count;
+                        objStat.Process_Date = DateTime.Now;
+                        objStat.Process_User = file[0].PROCESS_USER;
+                        DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
+                    }
                 }
             }
 
@@ -3118,11 +3135,22 @@ namespace DataLayer
 
                         if (SupplierRoomTypeMapping_InsertUpdate(res))
                         {
-                            DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
-                            objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
-                            objStat.SupplierImportFile_Id = obj.File_Id;
-                            DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
-                            //bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
+                            if (totPriorities == curPriority)
+                            {
+                                DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
+                                objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
+                                objStat.SupplierImportFile_Id = obj.File_Id;
+                                DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
+                                //bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
+                                using (ConsumerEntities context1 = new ConsumerEntities())
+                                {
+                                    var oldRecords = (from y in context1.STG_Mapping_TableIds
+                                                      where y.File_Id == File_Id
+                                                      select y).ToList();
+                                    context1.STG_Mapping_TableIds.RemoveRange(oldRecords);
+                                    context1.SaveChanges();
+                                }
+                            }
 
                             retrn = true;
                         }
@@ -3411,14 +3439,17 @@ namespace DataLayer
                 if (clsMappingCountry.Count > 0)
                 {
                     ret = UpdateCountryMapping(clsMappingCountry);
-                    DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
-                    objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
-                    objStat.SupplierImportFile_Id = obj.File_Id;
-                    objStat.FinalStatus = file[0].STATUS;
-                    objStat.TotalRows = clsMappingCountry.Count;
-                    objStat.Process_Date = DateTime.Now;
-                    objStat.Process_User = file[0].PROCESS_USER;
-                    DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
+                    if (obj.CurrentBatch == 1)
+                    {
+                        DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
+                        objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
+                        objStat.SupplierImportFile_Id = obj.File_Id;
+                        objStat.FinalStatus = file[0].STATUS;
+                        objStat.TotalRows = clsMappingCountry.Count;
+                        objStat.Process_Date = DateTime.Now;
+                        objStat.Process_User = file[0].PROCESS_USER;
+                        DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
+                    }
                 }
             }
 
@@ -3687,11 +3718,22 @@ namespace DataLayer
                         CallLogVerbose(File_Id, "MATCH", "Updating into Database.");
                         if (UpdateCountryMapping(res))
                         {
-                            DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
-                            objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
-                            objStat.SupplierImportFile_Id = obj.File_Id;
-                            DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
-                            //bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
+                            if (totPriorities == curPriority)
+                            {
+                                DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
+                                objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
+                                objStat.SupplierImportFile_Id = obj.File_Id;
+                                DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
+                                using (ConsumerEntities context1 = new ConsumerEntities())
+                                {
+                                    var oldRecords = (from y in context1.STG_Mapping_TableIds
+                                                      where y.File_Id == File_Id
+                                                      select y).ToList();
+                                    context1.STG_Mapping_TableIds.RemoveRange(oldRecords);
+                                    context1.SaveChanges();
+                                }
+                                //bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
+                            }
 
                             if (curSupplier_Id != null)
                             {
@@ -4212,14 +4254,17 @@ namespace DataLayer
                 if (clsMappingCity.Count > 0)
                 {
                     ret = UpdateCityMappingMatch(clsMappingCity, File_Id);
-                    DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
-                    objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
-                    objStat.SupplierImportFile_Id = obj.File_Id;
-                    objStat.FinalStatus = file[0].STATUS;
-                    objStat.TotalRows = clsMappingCity.Count;
-                    objStat.Process_Date = DateTime.Now;
-                    objStat.Process_User = file[0].PROCESS_USER;
-                    DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
+                    if (obj.CurrentBatch == 1)
+                    {
+                        DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
+                        objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
+                        objStat.SupplierImportFile_Id = obj.File_Id;
+                        objStat.FinalStatus = file[0].STATUS;
+                        objStat.TotalRows = clsMappingCity.Count;
+                        objStat.Process_Date = DateTime.Now;
+                        objStat.Process_User = file[0].PROCESS_USER;
+                        DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
+                    }
                 }
                 else
                     ret = true;
