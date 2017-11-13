@@ -4452,11 +4452,11 @@ namespace DataLayer
                         if (CurrConfig == "COUNTRYCODE")
                         {
                             isCountryCodeCheck = true;
-                            prodMapSearch = (from a in prodMapSearch
+                           /* prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CountryMapping on a.Supplier_Id equals m.Supplier_Id
                                              where a.CountryCode != null && m.CountryCode != null
                                              && a.CountryCode.Trim().ToUpper() == m.CountryCode.Trim().ToUpper()
-                                             select a);
+                                             select a);*/
                             //join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { cm.Supplier_Id, cm.CountryCode }
                             //join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
                             //select a);
@@ -4464,11 +4464,11 @@ namespace DataLayer
                         if (CurrConfig == "COUNTRYNAME")
                         {
                             isCountryNameCheck = true;
-                            prodMapSearch = (from a in prodMapSearch
+                            /*prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CountryMapping on a.Supplier_Id equals m.Supplier_Id
                                              where a.CountryName != null && m.CountryName != null
                                              && a.CountryName.Trim().ToUpper() == m.CountryName.Trim().ToUpper()
-                                             select a);
+                                             select a);*/
                             //join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName } equals new { cm.Supplier_Id, cm.CountryName }
                             //join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
                             //select a);
@@ -4476,34 +4476,34 @@ namespace DataLayer
                         if (CurrConfig == "CODE")
                         {
                             isCodeCheck = true;
-                            prodMapSearch = (from a in prodMapSearch
+                            /*prodMapSearch = (from a in prodMapSearch
                                              join mc in context.m_CountryMaster on a.Country_Id equals mc.Country_Id
                                              join m in context.m_CityMaster on mc.Country_Id equals m.Country_Id
                                              //join mc in context.m_CountryMaster on m.Country_Id equals mc.Country_Id
                                              //join cm in context.m_CountryMapping on new { a.Country_Id, a.Supplier_Id } equals new { cm.Country_Id, cm.Supplier_Id }
                                              where a.CityCode != null && m.Code != null
                                               && a.CityCode == m.Code
-                                             select a);
+                                             select a);*/
                         }
                         if (CurrConfig == "NAME")
                         {
                             isNameCheck = true;
-                            prodMapSearch = (from a in prodMapSearch
+                            /*prodMapSearch = (from a in prodMapSearch
                                              join mc in context.m_CountryMaster on a.Country_Id equals mc.Country_Id
                                              //join m in context.m_CityMaster on mc.Country_Id equals m.Country_Id // a.CityName equals m.Name
                                              where a.CityName != null //&& m.Name != null
                                              //&& a.CityName == m.Name
-                                             select a);
+                                             select a);*/
                         }
                         if (CurrConfig == "LATITUDE")
                         {
                             isLatLongCheck = true;
-                            prodMapSearch = (from a in prodMapSearch
+                            /*prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CityMaster on new { a.Latitude, a.Longitude } equals new { m.Latitude, m.Longitude }
                                              join mc in context.m_CountryMaster on a.Country_Id equals mc.Country_Id
                                              where mc.Country_Id == m.Country_Id
                                              && m.Latitude != null && a.Latitude != null && m.Longitude != null && a.Longitude != null
-                                             select a);
+                                             select a);*/
                         }
                         //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
                         PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + ((PerForEachPriority / totConfigs) * curConfig);
