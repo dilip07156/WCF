@@ -4318,6 +4318,7 @@ namespace DataLayer
                                     objNew.Longitude = CM.Longitude;
                                     objNew.StateCode = CM.StateCode;
                                     objNew.StateName = CM.StateName;
+                                    objNew.stg_City_Id = CM.stg_City_Id;
                                     // objNew.Country_Id = CM.Country_Id;
                                     objNew.Country_Id = ((from a in context.m_CountryMapping.AsNoTracking()
                                                           where a.Supplier_Id == CM.Supplier_Id &&
@@ -4413,7 +4414,8 @@ namespace DataLayer
                     if (obj.IsBatched)
                     {
                         prodMapSearch = (from a in prodMapSearch
-                                         join s in context.stg_SupplierCityMapping.AsNoTracking() on a.stg_City_Id equals s.stg_City_Id
+                                         join s in context.STG_Mapping_TableIds.AsNoTracking() on a.CityMapping_Id equals s.Mapping_Id
+                                         join stg in context.stg_SupplierCityMapping.AsNoTracking() on a.stg_City_Id equals stg.stg_City_Id
                                          select a);
                     }
 
