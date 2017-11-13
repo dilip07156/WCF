@@ -4648,19 +4648,22 @@ namespace DataLayer
                             {
                                 PLog.PercentageValue = 75;
                                 USD.AddStaticDataUploadProcessLog(PLog);
-                                //using (ConsumerEntities context1 = new ConsumerEntities())
-                                //{
-                                //    var oldRecords = (from y in context1.STG_Mapping_TableIds
-                                //                      where y.File_Id == File_Id
-                                //                      select y).ToList();
-                                //    context1.STG_Mapping_TableIds.RemoveRange(oldRecords);
-                                //    context1.SaveChanges();
-                                //}
                             }
-                            DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
+                                DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
                             objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
                             objStat.SupplierImportFile_Id = obj.File_Id;
                             DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
+                            if (totPriorities == curPriority)
+                            {
+                                using (ConsumerEntities context1 = new ConsumerEntities())
+                                {
+                                    var oldRecords = (from y in context1.STG_Mapping_TableIds
+                                                      where y.File_Id == File_Id
+                                                      select y).ToList();
+                                    context1.STG_Mapping_TableIds.RemoveRange(oldRecords);
+                                    context1.SaveChanges();
+                                }
+                            }
                             //bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
                             retrn = true;
                             CallLogVerbose(File_Id, "MATCH", "Update Done.");
