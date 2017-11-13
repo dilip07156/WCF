@@ -4648,14 +4648,14 @@ namespace DataLayer
                             {
                                 PLog.PercentageValue = 75;
                                 USD.AddStaticDataUploadProcessLog(PLog);
-                                using (ConsumerEntities context1 = new ConsumerEntities())
-                                {
-                                    var oldRecords = (from y in context1.STG_Mapping_TableIds
-                                                      where y.File_Id == File_Id
-                                                      select y).ToList();
-                                    context1.STG_Mapping_TableIds.RemoveRange(oldRecords);
-                                    context1.SaveChanges();
-                                }
+                                //using (ConsumerEntities context1 = new ConsumerEntities())
+                                //{
+                                //    var oldRecords = (from y in context1.STG_Mapping_TableIds
+                                //                      where y.File_Id == File_Id
+                                //                      select y).ToList();
+                                //    context1.STG_Mapping_TableIds.RemoveRange(oldRecords);
+                                //    context1.SaveChanges();
+                                //}
                             }
                             DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
                             objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
