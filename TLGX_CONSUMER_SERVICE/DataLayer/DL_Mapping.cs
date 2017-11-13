@@ -575,17 +575,17 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var prodMap = (from a in context.Accommodation_ProductMapping.AsNoTracking()
-                                         join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
-                                         where s.File_Id == supdata.File_Id && a.Accommodation_Id == null && a.Supplier_Id == curSupplier_Id
-                                         && a.Status.Trim().ToUpper() == "UNMAPPED"
-                                         select a);
+                                   join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
+                                   where s.File_Id == supdata.File_Id && a.Accommodation_Id == null && a.Supplier_Id == curSupplier_Id
+                                   && a.Status.Trim().ToUpper() == "UNMAPPED"
+                                   select a);
 
 
                     if (obj.IsBatched)
                     {
                         prodMap = (from a in prodMap
-                                         join s in context.stg_SupplierProductMapping.AsNoTracking() on a.stg_AccoMapping_Id equals s.stg_AccoMapping_Id
-                                         select a);
+                                   join s in context.stg_SupplierProductMapping.AsNoTracking() on a.stg_AccoMapping_Id equals s.stg_AccoMapping_Id
+                                   select a);
                     }
                     var prodMapSearch = prodMap.ToList();
 
@@ -2977,9 +2977,9 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var prodMap = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
-                                         where a.Accommodation_RoomInfo_Id == null && a.Supplier_Id == curSupplier_Id && a.Accommodation_Id != null
-                                         && a.MappingStatus.Trim().ToUpper() == "UNMAPPED"
-                                         select a);
+                                   where a.Accommodation_RoomInfo_Id == null && a.Supplier_Id == curSupplier_Id && a.Accommodation_Id != null
+                                   && a.MappingStatus.Trim().ToUpper() == "UNMAPPED"
+                                   select a);
 
 
                     if (obj.IsBatched)
@@ -4639,7 +4639,7 @@ namespace DataLayer
                             c.Status = ("REVIEW"); return c;
                         }).ToList();
 
-                        
+
                         CallLogVerbose(File_Id, "MATCH", res.Count.ToString() + " Matches Found for Combination " + curPriority.ToString() + ".");
                         CallLogVerbose(File_Id, "MATCH", "Updating into Database.");
                         if (UpdateCityMapping(res))
@@ -4648,13 +4648,12 @@ namespace DataLayer
                             {
                                 PLog.PercentageValue = 75;
                                 USD.AddStaticDataUploadProcessLog(PLog);
-                            }
+
                                 DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
-                            objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
-                            objStat.SupplierImportFile_Id = obj.File_Id;
-                            DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
-                            if (totPriorities == curPriority)
-                            {
+                                objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
+                                objStat.SupplierImportFile_Id = obj.File_Id;
+                                DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
+
                                 using (ConsumerEntities context1 = new ConsumerEntities())
                                 {
                                     var oldRecords = (from y in context1.STG_Mapping_TableIds

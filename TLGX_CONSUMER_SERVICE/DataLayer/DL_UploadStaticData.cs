@@ -1269,9 +1269,12 @@ namespace DataLayer
                                 SupplierImportFile_Statistics_Id = Guid.NewGuid(),
                                 SupplierImportFile_Id = obj.SupplierImportFile_Id,
                                 FinalStatus = obj.FinalStatus,
-                                TotalRows = obj.TotalRows ?? 0,
-                                Mapped = obj.Mapped ?? 0,
-                                Unmapped = obj.Unmapped ?? 0,
+                                TotalRows = 0,
+                                Mapped = 0,
+                                Unmapped = 0,
+                                //TotalRows = obj.TotalRows ?? 0,
+                                //Mapped = obj.Mapped ?? 0,
+                                //Unmapped = obj.Unmapped ?? 0,
                                 Process_Date = DateTime.Now,
                                 Process_User = obj.Process_User
                             };
