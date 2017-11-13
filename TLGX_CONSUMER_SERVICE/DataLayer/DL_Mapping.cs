@@ -4455,7 +4455,7 @@ namespace DataLayer
                             prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CountryMapping on a.Supplier_Id equals m.Supplier_Id
                                              where a.CountryCode != null && m.CountryCode != null
-                                             && a.CountryCode.Trim().ToUpper() == m.CountryCode.Trim().ToUpper()
+                                             //&& a.CountryCode.Trim().ToUpper() == m.CountryCode.Trim().ToUpper()
                                              select a);
                             //join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { cm.Supplier_Id, cm.CountryCode }
                             //join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
@@ -4467,7 +4467,7 @@ namespace DataLayer
                             prodMapSearch = (from a in prodMapSearch
                                              join m in context.m_CountryMapping on a.Supplier_Id equals m.Supplier_Id
                                              where a.CountryName != null && m.CountryName != null
-                                             && a.CountryName.Trim().ToUpper() == m.CountryName.Trim().ToUpper()
+                                             //&& a.CountryName.Trim().ToUpper() == m.CountryName.Trim().ToUpper()
                                              select a);
                             //join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName } equals new { cm.Supplier_Id, cm.CountryName }
                             //join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
@@ -4482,7 +4482,7 @@ namespace DataLayer
                                              //join mc in context.m_CountryMaster on m.Country_Id equals mc.Country_Id
                                              //join cm in context.m_CountryMapping on new { a.Country_Id, a.Supplier_Id } equals new { cm.Country_Id, cm.Supplier_Id }
                                              where a.CityCode != null && m.Code != null
-                                              && a.CityCode == m.Code
+                                             // && a.CityCode == m.Code
                                              select a);
                         }
                         if (CurrConfig == "NAME")
@@ -4516,9 +4516,9 @@ namespace DataLayer
                     if (isCountryCodeCheck || isCountryNameCheck || isCodeCheck || isNameCheck || isLatLongCheck)
                     {
                         res = (from a in prodMapSearch
-                               join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName } equals new { m.Supplier_Id, m.CountryName }
-                               join ms in context.m_CountryMaster on m.Country_Id equals ms.Country_Id
-                               where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
+                               //join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName } equals new { m.Supplier_Id, m.CountryName }
+                               join ms in context.m_CountryMaster on a.Country_Id equals ms.Country_Id
+                               //where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
                                select new DataContracts.Mapping.DC_CityMapping
                                {
                                    CityMapping_Id = a.CityMapping_Id,
@@ -4545,9 +4545,9 @@ namespace DataLayer
                         if (res.Count == 0)
                         {
                             res = (from a in prodMapSearch
-                                   join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { m.Supplier_Id, m.CountryCode }
-                                   join ms in context.m_CountryMaster on m.Country_Id equals ms.Country_Id
-                                   where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
+                                   //join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { m.Supplier_Id, m.CountryCode }
+                                   join ms in context.m_CountryMaster on a.Country_Id equals ms.Country_Id
+                                   //where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
                                    select new DataContracts.Mapping.DC_CityMapping
                                    {
                                        CityMapping_Id = a.CityMapping_Id,
