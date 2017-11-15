@@ -1931,7 +1931,8 @@ namespace DataLayer
         {
             using (ConsumerEntities context = new ConsumerEntities())
             {
-                var search = (from d in context.m_masterattribute select d);
+                var search = (from d in context.m_masterattribute select d).AsQueryable();
+
                 bool isActive = Convert.ToBoolean(Convert.ToInt32(_obj.IsActive));
                 if (!string.IsNullOrWhiteSpace(_obj.MasterFor))
                 {
