@@ -2362,6 +2362,7 @@ namespace DataLayer
                 file.Entity = obj.Entity;
                 file.STATUS = obj.STATUS;
                 file.Supplier = obj.Supplier;
+                file.Mode = obj.Mode;
 
                 DHSVCProxyAsync DHP = new DHSVCProxyAsync();
                 DHP.PostAsync(ProxyFor.DataHandler, System.Configuration.ConfigurationManager.AppSettings["Data_Handler_Process_File"], file, file.GetType());

@@ -30,6 +30,9 @@ namespace DataLayer.DHSVC {
         private string EntityField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ModeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int No_Of_Records_ToProcessField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -82,6 +85,19 @@ namespace DataLayer.DHSVC {
                 if ((object.ReferenceEquals(this.EntityField, value) != true)) {
                     this.EntityField = value;
                     this.RaisePropertyChanged("Entity");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Mode {
+            get {
+                return this.ModeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ModeField, value) != true)) {
+                    this.ModeField = value;
+                    this.RaisePropertyChanged("Mode");
                 }
             }
         }
