@@ -26,5 +26,6 @@ namespace DataLayer
         public Nullable<System.DateTime> PROCESS_DATE { get; set; }
         public string PROCESS_USER { get; set; }
         public Nullable<bool> IsActive { get; set; }
+        public string Mode { get; set; }
     }
 }

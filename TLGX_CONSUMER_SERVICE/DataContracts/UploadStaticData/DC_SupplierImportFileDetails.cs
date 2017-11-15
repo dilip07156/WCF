@@ -46,6 +46,9 @@ namespace DataContracts.UploadStaticData
 
         [DataMember]
         public bool? IsActive { get; set; }
+
+        [DataMember]
+        public string Mode { get; set; }
     }
 
     [DataContract]
@@ -80,5 +83,8 @@ namespace DataContracts.UploadStaticData
 
         [DataMember]
         public Nullable<System.DateTime> TO_Date { get; set; }
+
+        [DataMember]
+        public string Mode { get; set; }
     }
 }

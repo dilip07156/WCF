@@ -739,6 +739,13 @@ namespace DataLayer
                                      select a;
                     }
 
+                    if (!string.IsNullOrWhiteSpace(RQ.Mode))
+                    {
+                        FileSearch = from a in FileSearch
+                                     where a.Mode.Trim().TrimStart().ToUpper() == RQ.Mode.Trim().TrimStart().ToUpper()
+                                     select a;
+                    }
+
                     if (RQ.From_Date.HasValue && RQ.TO_Date.HasValue)
                     {
                         FileSearch = from a in FileSearch
@@ -782,6 +789,7 @@ namespace DataLayer
                                                 CREATE_USER = a.CREATE_USER,
                                                 PROCESS_DATE = a.PROCESS_DATE,
                                                 PROCESS_USER = a.PROCESS_USER,
+                                                Mode = a.Mode,
                                                 IsActive = a.IsActive ?? true,
                                                 TotalRecords = total
                                             }
@@ -819,6 +827,7 @@ namespace DataLayer
                     objNew.SavedFilePath = obj.SavedFilePath;
                     objNew.CREATE_DATE = obj.CREATE_DATE;
                     objNew.CREATE_USER = obj.CREATE_USER;
+                    objNew.Mode = obj.Mode;
                     context.SupplierImportFileDetails.Add(objNew);
                     context.SaveChanges();
                     dc.StatusCode = ReadOnlyMessage.StatusCode.Success;

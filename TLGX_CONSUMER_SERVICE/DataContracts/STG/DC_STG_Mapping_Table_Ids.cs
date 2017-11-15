@@ -21,5 +21,7 @@ namespace DataContracts.STG
 
         [DataMember]
         public Nullable<System.Guid> File_Id { get; set; }
+        [DataMember]
+        public int Batch { get; set; }
     }
 }

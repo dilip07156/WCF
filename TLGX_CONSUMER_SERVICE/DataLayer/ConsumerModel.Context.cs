@@ -87,7 +87,6 @@ namespace DataLayer
         public virtual DbSet<m_SupplierImportAttributes> m_SupplierImportAttributes { get; set; }
         public virtual DbSet<m_SupplierImportAttributeValues> m_SupplierImportAttributeValues { get; set; }
         public virtual DbSet<SupplierImportFile_ErrorLog> SupplierImportFile_ErrorLog { get; set; }
-        public virtual DbSet<SupplierImportFileDetail> SupplierImportFileDetails { get; set; }
         public virtual DbSet<Activity_SupplierProductMapping> Activity_SupplierProductMapping { get; set; }
         public virtual DbSet<stg_SupplierCityMapping> stg_SupplierCityMapping { get; set; }
         public virtual DbSet<stg_SupplierCountryMapping> stg_SupplierCountryMapping { get; set; }
@@ -101,7 +100,6 @@ namespace DataLayer
         public virtual DbSet<SupplierImportFile_VerboseLog> SupplierImportFile_VerboseLog { get; set; }
         public virtual DbSet<vwUserwisemappedStat> vwUserwisemappedStats { get; set; }
         public virtual DbSet<SupplierImportFile_Statistics> SupplierImportFile_Statistics { get; set; }
-        public virtual DbSet<STG_Mapping_TableIds> STG_Mapping_TableIds { get; set; }
         public virtual DbSet<Accommodation_SupplierRoomTypeAttributes> Accommodation_SupplierRoomTypeAttributes { get; set; }
         public virtual DbSet<stg_SupplierActivityMapping> stg_SupplierActivityMapping { get; set; }
         public virtual DbSet<Supplier_APILocation> Supplier_APILocation { get; set; }
@@ -144,6 +142,8 @@ namespace DataLayer
         public virtual DbSet<STG_SupplierActivityMetaDataMapping> STG_SupplierActivityMetaDataMapping { get; set; }
         public virtual DbSet<STG_SupplierActivityTypeMapping> STG_SupplierActivityTypeMapping { get; set; }
         public virtual DbSet<vwMappingStat> vwMappingStats { get; set; }
+        public virtual DbSet<STG_Mapping_TableIds> STG_Mapping_TableIds { get; set; }
+        public virtual DbSet<SupplierImportFileDetail> SupplierImportFileDetails { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {
