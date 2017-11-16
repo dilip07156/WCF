@@ -46,6 +46,9 @@ namespace DataContracts.UploadStaticData
         [DataMember]
         public string ProcessedBy { get; set; }
 
+        [DataMember]
+        public string From { get; set; }
+
 
     }
 

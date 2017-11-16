@@ -580,6 +580,29 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    if ((obj.FileMode ?? "ALL") != "ALL")
+                    {
+                        List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
+                        DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
+
+                        lstSMT = (from a in context.Accommodation_ProductMapping
+                                  where a.Supplier_Id == curSupplier_Id
+                                  && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
+                                  select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                                  {
+                                      STG_Mapping_Table_Id = Guid.NewGuid(),
+                                      File_Id = obj.File_Id,
+                                      Mapping_Id = a.Accommodation_ProductMapping_Id,
+                                      STG_Id = null,
+                                      Batch = 1
+                                  }).ToList();
+                        if (lstSMT.Count > 0)
+                        {
+                            bool idinsert = DeleteSTGMappingTableIDs(File_Id);
+                            idinsert = AddSTGMappingTableIDs(lstSMT);
+                        }
+                    }
+
                     var prodMap = (from a in context.Accommodation_ProductMapping.AsNoTracking()
                                    join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
                                    where s.File_Id == supdata.File_Id && a.Accommodation_Id == null && a.Supplier_Id == curSupplier_Id
@@ -899,6 +922,7 @@ namespace DataLayer
                                 DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
                                 objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
                                 objStat.SupplierImportFile_Id = obj.File_Id;
+                                objStat.From = "MATCHING";
                                 DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
                                 using (ConsumerEntities context1 = new ConsumerEntities())
                                 {
@@ -3000,6 +3024,29 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    if ((obj.FileMode ?? "ALL") != "ALL")
+                    {
+                        List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
+                        DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
+
+                        lstSMT = (from a in context.Accommodation_SupplierRoomTypeMapping
+                                  where a.Supplier_Id == curSupplier_Id
+                                  && (a.MappingStatus == "UNMAPPED" || a.Accommodation_RoomInfo_Id == null)
+                                  select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                                  {
+                                      STG_Mapping_Table_Id = Guid.NewGuid(),
+                                      File_Id = obj.File_Id,
+                                      Mapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                                      STG_Id = null,
+                                      Batch = 1
+                                  }).ToList();
+                        if (lstSMT.Count > 0)
+                        {
+                            bool idinsert = DeleteSTGMappingTableIDs(File_Id);
+                            idinsert = AddSTGMappingTableIDs(lstSMT);
+                        }
+                    }
+
                     var prodMap = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
                                    join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_SupplierRoomTypeMapping_Id equals s.Mapping_Id
                                    where s.File_Id == supdata.File_Id && a.Accommodation_RoomInfo_Id == null && a.Supplier_Id == curSupplier_Id && a.Accommodation_Id != null
@@ -3150,6 +3197,7 @@ namespace DataLayer
                                 DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
                                 objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
                                 objStat.SupplierImportFile_Id = obj.File_Id;
+                                objStat.From = "MATCHING";
                                 DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
                                 bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
                                 using (ConsumerEntities context1 = new ConsumerEntities())
@@ -3504,6 +3552,28 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    if ((obj.FileMode ?? "ALL") != "ALL")
+                    {
+                        List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
+                        DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
+
+                        lstSMT = (from a in context.m_CountryMapping
+                                  where a.Supplier_Id == curSupplier_Id
+                                  && (a.Status == "UNMAPPED" || a.Country_Id == null)
+                                  select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                                  {
+                                      STG_Mapping_Table_Id = Guid.NewGuid(),
+                                      File_Id = obj.File_Id,
+                                      Mapping_Id = a.CountryMapping_Id,
+                                      STG_Id = null,
+                                      Batch = 1
+                                  }).ToList();
+                        if (lstSMT.Count > 0)
+                        {
+                            bool idinsert = DeleteSTGMappingTableIDs(File_Id);
+                            idinsert = AddSTGMappingTableIDs(lstSMT);
+                        }
+                    }
                     //var prodMapSearch = from a in context.m_CountryMapping
                     //                    join m in context.m_CountryMaster on a.CountryName equals m.Name into j
                     //                    from jd in j.DefaultIfEmpty()
@@ -3737,6 +3807,7 @@ namespace DataLayer
                                 DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
                                 objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
                                 objStat.SupplierImportFile_Id = obj.File_Id;
+                                objStat.From = "MATCHING";
                                 DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
                                 using (ConsumerEntities context1 = new ConsumerEntities())
                                 {
@@ -4446,6 +4517,8 @@ namespace DataLayer
             Guid File_Id = new Guid();
             File_Id = Guid.Parse(obj.File_Id.ToString());
 
+            
+
             int totPriorities = obj.TotalPriorities;
             int curPriority = obj.CurrentPriority;
             int totConfigs = 0;
@@ -4465,6 +4538,29 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    if ((obj.FileMode ?? "ALL") != "ALL")
+                    {
+                        List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
+                        DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
+
+                        lstSMT = (from a in context.m_CityMapping
+                                  where a.Supplier_Id == curSupplier_Id
+                                  && (a.Status == "UNMAPPED" || a.City_Id == null)
+                                  select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                                  {
+                                      STG_Mapping_Table_Id = Guid.NewGuid(),
+                                      File_Id = obj.File_Id,
+                                      Mapping_Id = a.CityMapping_Id,
+                                      STG_Id = null,
+                                      Batch = 1
+                                  }).ToList();
+                        if (lstSMT.Count > 0)
+                        {
+                            bool idinsert = DeleteSTGMappingTableIDs(File_Id);
+                            idinsert = AddSTGMappingTableIDs(lstSMT);
+                        }                        
+                    }
+
                     var prodMapSearch = (from a in context.m_CityMapping
                                          join s in context.STG_Mapping_TableIds.AsNoTracking() on a.CityMapping_Id equals s.Mapping_Id
                                          where s.File_Id == obj.File_Id && a.City_Id == null && a.Supplier_Id == curSupplier_Id
@@ -4485,6 +4581,7 @@ namespace DataLayer
                     bool isCountryNameCheck = false;
                     bool isCodeCheck = false;
                     bool isNameCheck = false;
+                    bool isStateNameCheck = false;
                     bool isLatLongCheck = false;
                     totConfigs = configs.Count;
                     curConfig = 0;
@@ -4557,6 +4654,16 @@ namespace DataLayer
                                              //&& a.CityName == m.Name
                                              select a);
                         }
+                        if (CurrConfig == "STATENAME")
+                        {
+                            isStateNameCheck = true;
+                            prodMapSearch = (from a in prodMapSearch
+                                             join mc in context.m_CountryMaster on a.Country_Id equals mc.Country_Id
+                                             //join m in context.m_CityMaster on mc.Country_Id equals m.Country_Id // a.CityName equals m.Name
+                                             where a.CityName != null //&& m.Name != null
+                                             //&& a.CityName == m.Name
+                                             select a);
+                        }
                         if (CurrConfig == "LATITUDE")
                         {
                             isLatLongCheck = true;
@@ -4575,7 +4682,7 @@ namespace DataLayer
 
                     List<DC_CityMapping> res = new List<DC_CityMapping>();
 
-                    if (isCountryCodeCheck || isCountryNameCheck || isCodeCheck || isNameCheck || isLatLongCheck)
+                    if (isCountryCodeCheck || isCountryNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isStateNameCheck)
                     {
                         res = (from a in prodMapSearch
                                join m in context.m_CountryMapping on new { a.Supplier_Id, a.CountryName } equals new { m.Supplier_Id, m.CountryName }
@@ -4678,9 +4785,8 @@ namespace DataLayer
                                                             ((isCountryNameCheck && s.CountryName == c.CountryName) || (!isCountryNameCheck)) &&
                                                             ((isCodeCheck && s.Code == c.CityCode) || (!isCodeCheck)) &&
                                                             ((isNameCheck && s.Name.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == c.CityName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isNameCheck)) &&
+                                                            ((isStateNameCheck && s.StateName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == c.StateName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isStateNameCheck)) &&
                                                             ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck))
-
-
                                                         )
                                                    )
                                             .Select(s1 => s1.City_Id)
@@ -4715,6 +4821,7 @@ namespace DataLayer
                                 DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
                                 objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
                                 objStat.SupplierImportFile_Id = obj.File_Id;
+                                objStat.From = "MATCHING";
                                 DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
 
                                 using (ConsumerEntities context1 = new ConsumerEntities())

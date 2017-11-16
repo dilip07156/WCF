@@ -17,6 +17,7 @@
         </xs:complexType>
       </xs:element>
       <xs:element minOccurs="0" name="Entity" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Mode" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="No_Of_Records_ToProcess" type="xs:int" />
       <xs:element minOccurs="0" name="PROCESS_USER" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="STATUS" nillable="true" type="xs:string" />

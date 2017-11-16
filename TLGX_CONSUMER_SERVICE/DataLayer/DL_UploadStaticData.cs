@@ -1242,10 +1242,16 @@ namespace DataLayer
                                                group m by new { m.Status } into g
                                                select new { g.Key.Status, count = g.Count() };
 
-                                stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
-                                stat.TotalRows = getcount.Select(a => a.count).Sum(); //obj.TotalRows ?? stat.TotalRows;
-                                stat.Unmapped = getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
-                                stat.Mapped = getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                                if ((obj.From ?? "") == "MATCHING")
+                                {
+                                    stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();                                    
+                                    stat.Unmapped = getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
+                                    stat.Mapped = getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                                }
+                                else
+                                {
+                                    stat.TotalRows = getcount.Select(a => a.count).Sum(); //obj.TotalRows ?? stat.TotalRows;
+                                }
                             }
                             else if (resstat[0].Entity.Trim().ToUpper() == "CITY")
                             {
@@ -1254,11 +1260,16 @@ namespace DataLayer
                                                where j.File_Id == obj.SupplierImportFile_Id
                                                group m by new { m.Status } into g
                                                select new { g.Key.Status, count = g.Count() };
-
-                                stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
-                                stat.TotalRows = stat.TotalRows + getcount.Select(a => a.count).Sum(); //obj.TotalRows ?? stat.TotalRows;
-                                stat.Unmapped = stat.Unmapped + getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
-                                stat.Mapped = stat.Mapped + getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                                if ((obj.From ?? "") == "MATCHING")
+                                {
+                                    stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
+                                    stat.Unmapped = stat.Unmapped + getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
+                                    stat.Mapped = stat.Mapped + getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                                }
+                                else
+                                {
+                                    stat.TotalRows = stat.TotalRows + getcount.Select(a => a.count).Sum(); //obj.TotalRows ?? stat.TotalRows;
+                                }
                             }
                             else if (resstat[0].Entity.Trim().ToUpper() == "HOTEL")
                             {
@@ -1268,10 +1279,16 @@ namespace DataLayer
                                                group m by new { m.Status } into g
                                                select new { g.Key.Status, count = g.Count() };
 
-                                stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
-                                stat.TotalRows = getcount.Select(a => a.count).Sum(); //obj.TotalRows ?? stat.TotalRows;
-                                stat.Unmapped = getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
-                                stat.Mapped = getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                                if ((obj.From ?? "") == "MATCHING")
+                                {
+                                    stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
+                                    stat.Unmapped = getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
+                                    stat.Mapped = getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                                }
+                                else
+                                {
+                                    stat.TotalRows = getcount.Select(a => a.count).Sum(); //obj.TotalRows ?? stat.TotalRows;
+                                }
                             }
                             else if (resstat[0].Entity.Trim().ToUpper() == "ROOMTYPE")
                             {
@@ -1281,10 +1298,16 @@ namespace DataLayer
                                                group m by new { m.MappingStatus } into g
                                                select new { g.Key.MappingStatus, count = g.Count() };
 
-                                stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
-                                stat.TotalRows = getcount.Select(a => a.count).Sum(); //obj.TotalRows ?? stat.TotalRows;
-                                stat.Unmapped = getcount.Where(g => g.MappingStatus.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
-                                stat.Mapped = getcount.Where(g => g.MappingStatus.Trim().ToUpper() == "MAPPED" || g.MappingStatus.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                                if ((obj.From ?? "") == "MATCHING")
+                                {
+                                    stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
+                                    stat.Unmapped = getcount.Where(g => g.MappingStatus.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
+                                    stat.Mapped = getcount.Where(g => g.MappingStatus.Trim().ToUpper() == "MAPPED" || g.MappingStatus.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                                }
+                                else
+                                {
+                                    stat.TotalRows = getcount.Select(a => a.count).Sum(); //obj.TotalRows ?? stat.TotalRows;
+                                }
                             }
                         }
                         else
@@ -1294,12 +1317,12 @@ namespace DataLayer
                                 SupplierImportFile_Statistics_Id = Guid.NewGuid(),
                                 SupplierImportFile_Id = obj.SupplierImportFile_Id,
                                 FinalStatus = obj.FinalStatus,
-                                TotalRows = 0,
-                                Mapped = 0,
-                                Unmapped = 0,
-                                //TotalRows = obj.TotalRows ?? 0,
-                                //Mapped = obj.Mapped ?? 0,
-                                //Unmapped = obj.Unmapped ?? 0,
+                                //TotalRows = 0,
+                                //Mapped = 0,
+                                //Unmapped = 0,
+                                TotalRows = obj.TotalRows ?? 0,
+                                Mapped = obj.Mapped ?? 0,
+                                Unmapped = obj.Unmapped ?? 0,
                                 Process_Date = DateTime.Now,
                                 Process_User = obj.Process_User
                             };
@@ -2355,6 +2378,7 @@ namespace DataLayer
                 file.Entity = obj.Entity;
                 file.STATUS = obj.STATUS;
                 file.Supplier = obj.Supplier;
+                file.Mode = obj.Mode;
 
                 DHSVCProxyAsync DHP = new DHSVCProxyAsync();
                 DHP.PostAsync(ProxyFor.DataHandler, System.Configuration.ConfigurationManager.AppSettings["Data_Handler_Process_File"], file, file.GetType());

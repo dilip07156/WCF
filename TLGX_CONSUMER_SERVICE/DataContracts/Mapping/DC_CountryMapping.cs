@@ -480,6 +480,8 @@ namespace DataContracts.Mapping
         [DataMember]
         public bool IsBatched { get; set; }
 
+        [DataMember]
+        public string FileMode { get; set; }
 
     }
 }
