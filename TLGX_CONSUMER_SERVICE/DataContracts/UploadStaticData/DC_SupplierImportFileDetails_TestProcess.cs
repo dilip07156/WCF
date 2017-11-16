@@ -34,5 +34,8 @@ namespace DataContracts.UploadStaticData
 
         [DataMember]
         public DataSet Data { get; set; }
+
+        [DataMember]
+        public string Mode { get; set; }
     }
 }

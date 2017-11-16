@@ -359,7 +359,7 @@ namespace ConsumerSvc
         }
         #endregion
         #region velocity Dashboard
-        public IList<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(DataContracts.Mapping.DC_RollOFParams parm)
+        public IList<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(DataContracts.Mapping.DC_VelocityReport parm)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {

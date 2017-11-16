@@ -659,6 +659,53 @@ namespace DataContracts.Mapping
             }
         }
     }
+
+    [DataContract]
+    public class DC_VelocityReport
+    {
+        Guid _supplierID;
+        DateTime? _fromdate;
+        DateTime? _todate;
+        [DataMember]
+        public DateTime? Fromdate
+        {
+            get
+            {
+                return _fromdate;
+            }
+
+            set
+            {
+                _fromdate = value;
+            }
+        }
+        [DataMember]
+        public DateTime? ToDate
+        {
+            get
+            {
+                return _todate;
+            }
+
+            set
+            {
+                _todate = value;
+            }
+        }
+        [DataMember]
+        public Guid SupplierID
+        {
+            get
+            {
+                return _supplierID;
+            }
+
+            set
+            {
+                _supplierID = value;
+            }
+        }
+    }
     #endregion
     #region rdlc reports
     [DataContract]

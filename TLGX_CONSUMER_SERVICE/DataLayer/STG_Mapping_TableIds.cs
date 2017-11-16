@@ -18,5 +18,6 @@ namespace DataLayer
         public Nullable<System.Guid> STG_Id { get; set; }
         public Nullable<System.Guid> Mapping_Id { get; set; }
         public Nullable<System.Guid> File_Id { get; set; }
+        public Nullable<int> Batch { get; set; }
     }
 }

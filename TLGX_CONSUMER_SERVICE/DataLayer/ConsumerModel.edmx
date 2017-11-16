@@ -1931,6 +1931,7 @@
           <Property Name="STG_Id" Type="uniqueidentifier" />
           <Property Name="Mapping_Id" Type="uniqueidentifier" />
           <Property Name="File_Id" Type="uniqueidentifier" />
+          <Property Name="Batch" Type="int" />
         </EntityType>
         <EntityType Name="stg_SupplierActivityImageMapping">
           <Key>
@@ -2340,6 +2341,7 @@
           <Property Name="PROCESS_DATE" Type="datetime" />
           <Property Name="PROCESS_USER" Type="nvarchar" MaxLength="255" />
           <Property Name="IsActive" Type="bit" />
+          <Property Name="Mode" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="UserEntity">
           <Key>
@@ -2678,7 +2680,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="m_SupplierImportAttributes" EntityType="ConsumerModel.m_SupplierImportAttributes" />
           <EntitySet Name="m_SupplierImportAttributeValues" EntityType="ConsumerModel.m_SupplierImportAttributeValues" />
           <EntitySet Name="SupplierImportFile_ErrorLog" EntityType="ConsumerModel.SupplierImportFile_ErrorLog" />
-          <EntitySet Name="SupplierImportFileDetails" EntityType="ConsumerModel.SupplierImportFileDetail" />
           <EntitySet Name="Activity_SupplierProductMapping" EntityType="ConsumerModel.Activity_SupplierProductMapping" />
           <EntitySet Name="stg_SupplierCityMapping" EntityType="ConsumerModel.stg_SupplierCityMapping" />
           <EntitySet Name="stg_SupplierCountryMapping" EntityType="ConsumerModel.stg_SupplierCountryMapping" />
@@ -2692,7 +2693,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="SupplierImportFile_VerboseLog" EntityType="ConsumerModel.SupplierImportFile_VerboseLog" />
           <EntitySet Name="vwUserwisemappedStats" EntityType="ConsumerModel.vwUserwisemappedStat" />
           <EntitySet Name="SupplierImportFile_Statistics" EntityType="ConsumerModel.SupplierImportFile_Statistics" />
-          <EntitySet Name="STG_Mapping_TableIds" EntityType="ConsumerModel.STG_Mapping_TableIds" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
           <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />
           <EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
@@ -2735,6 +2735,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="STG_SupplierActivityMetaDataMapping" EntityType="ConsumerModel.STG_SupplierActivityMetaDataMapping" />
           <EntitySet Name="STG_SupplierActivityTypeMapping" EntityType="ConsumerModel.STG_SupplierActivityTypeMapping" />
           <EntitySet Name="vwMappingStats" EntityType="ConsumerModel.vwMappingStat" />
+          <EntitySet Name="STG_Mapping_TableIds" EntityType="ConsumerModel.STG_Mapping_TableIds" />
+          <EntitySet Name="SupplierImportFileDetails" EntityType="ConsumerModel.SupplierImportFileDetail" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -3856,23 +3858,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Error_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ErrorMessage_UI" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="SupplierImportFileDetail">
-          <Key>
-            <PropertyRef Name="SupplierImportFile_Id" />
-          </Key>
-          <Property Name="SupplierImportFile_Id" Type="Guid" Nullable="false" />
-          <Property Name="Supplier_Id" Type="Guid" Nullable="false" />
-          <Property Name="Entity" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="OriginalFilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="SavedFilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="ArchiveFilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="STATUS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
-          <Property Name="CREATE_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="PROCESS_DATE" Type="DateTime" Precision="3" />
-          <Property Name="PROCESS_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="IsActive" Type="Boolean" />
-        </EntityType>
         <EntityType Name="Activity_SupplierProductMapping">
           <Key>
             <PropertyRef Name="ActivitySupplierProductMapping_Id" />
@@ -4214,15 +4199,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Unmapped" Type="Int32" />
           <Property Name="Process_Date" Type="DateTime" Precision="3" />
           <Property Name="Process_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="STG_Mapping_TableIds">
-          <Key>
-            <PropertyRef Name="STG_Mapping_Table_Id" />
-          </Key>
-          <Property Name="STG_Mapping_Table_Id" Type="Guid" Nullable="false" />
-          <Property Name="STG_Id" Type="Guid" />
-          <Property Name="Mapping_Id" Type="Guid" />
-          <Property Name="File_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="Accommodation_SupplierRoomTypeAttributes">
           <Key>
@@ -5141,6 +5117,34 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="totalcount" Type="Int32" />
           <Property Name="SuppliersCount" Type="Int32" />
+        </EntityType>
+        <EntityType Name="STG_Mapping_TableIds">
+          <Key>
+            <PropertyRef Name="STG_Mapping_Table_Id" />
+          </Key>
+          <Property Name="STG_Mapping_Table_Id" Type="Guid" Nullable="false" />
+          <Property Name="STG_Id" Type="Guid" />
+          <Property Name="Mapping_Id" Type="Guid" />
+          <Property Name="File_Id" Type="Guid" />
+          <Property Name="Batch" Type="Int32" />
+        </EntityType>
+        <EntityType Name="SupplierImportFileDetail">
+          <Key>
+            <PropertyRef Name="SupplierImportFile_Id" />
+          </Key>
+          <Property Name="SupplierImportFile_Id" Type="Guid" Nullable="false" />
+          <Property Name="Supplier_Id" Type="Guid" Nullable="false" />
+          <Property Name="Entity" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OriginalFilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SavedFilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ArchiveFilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="STATUS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATE_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PROCESS_DATE" Type="DateTime" Precision="3" />
+          <Property Name="PROCESS_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Mode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -6294,24 +6298,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="SupplierImportFileDetails">
-            <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFileDetail">
-              <MappingFragment StoreEntitySet="SupplierImportFileDetails">
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="PROCESS_USER" ColumnName="PROCESS_USER" />
-                <ScalarProperty Name="PROCESS_DATE" ColumnName="PROCESS_DATE" />
-                <ScalarProperty Name="CREATE_USER" ColumnName="CREATE_USER" />
-                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
-                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
-                <ScalarProperty Name="ArchiveFilePath" ColumnName="ArchiveFilePath" />
-                <ScalarProperty Name="SavedFilePath" ColumnName="SavedFilePath" />
-                <ScalarProperty Name="OriginalFilePath" ColumnName="OriginalFilePath" />
-                <ScalarProperty Name="Entity" ColumnName="Entity" />
-                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
-                <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Activity_SupplierProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_SupplierProductMapping">
               <MappingFragment StoreEntitySet="Activity_SupplierProductMapping">
@@ -6662,16 +6648,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="FinalStatus" ColumnName="FinalStatus" />
                 <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
                 <ScalarProperty Name="SupplierImportFile_Statistics_Id" ColumnName="SupplierImportFile_Statistics_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="STG_Mapping_TableIds">
-            <EntityTypeMapping TypeName="ConsumerModel.STG_Mapping_TableIds">
-              <MappingFragment StoreEntitySet="STG_Mapping_TableIds">
-                <ScalarProperty Name="File_Id" ColumnName="File_Id" />
-                <ScalarProperty Name="Mapping_Id" ColumnName="Mapping_Id" />
-                <ScalarProperty Name="STG_Id" ColumnName="STG_Id" />
-                <ScalarProperty Name="STG_Mapping_Table_Id" ColumnName="STG_Mapping_Table_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7631,6 +7607,36 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
                 <ScalarProperty Name="supplier_id" ColumnName="supplier_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STG_Mapping_TableIds">
+            <EntityTypeMapping TypeName="ConsumerModel.STG_Mapping_TableIds">
+              <MappingFragment StoreEntitySet="STG_Mapping_TableIds">
+                <ScalarProperty Name="Batch" ColumnName="Batch" />
+                <ScalarProperty Name="File_Id" ColumnName="File_Id" />
+                <ScalarProperty Name="Mapping_Id" ColumnName="Mapping_Id" />
+                <ScalarProperty Name="STG_Id" ColumnName="STG_Id" />
+                <ScalarProperty Name="STG_Mapping_Table_Id" ColumnName="STG_Mapping_Table_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplierImportFileDetails">
+            <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFileDetail">
+              <MappingFragment StoreEntitySet="SupplierImportFileDetails">
+                <ScalarProperty Name="Mode" ColumnName="Mode" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="PROCESS_USER" ColumnName="PROCESS_USER" />
+                <ScalarProperty Name="PROCESS_DATE" ColumnName="PROCESS_DATE" />
+                <ScalarProperty Name="CREATE_USER" ColumnName="CREATE_USER" />
+                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="ArchiveFilePath" ColumnName="ArchiveFilePath" />
+                <ScalarProperty Name="SavedFilePath" ColumnName="SavedFilePath" />
+                <ScalarProperty Name="OriginalFilePath" ColumnName="OriginalFilePath" />
+                <ScalarProperty Name="Entity" ColumnName="Entity" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

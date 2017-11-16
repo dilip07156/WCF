@@ -469,8 +469,19 @@ namespace DataContracts.Mapping
         public int CurrentPriority { get; set; }
 
         [DataMember]
+        public Nullable<Int32> TotalBatch { get; set; }
+
+        [DataMember]
+        public Nullable<Int32> CurrentBatch { get; set; }
+
+        [DataMember]
         public Nullable<Guid> File_Id { get; set; }
 
+        [DataMember]
+        public bool IsBatched { get; set; }
+
+        [DataMember]
+        public string FileMode { get; set; }
 
     }
 }
