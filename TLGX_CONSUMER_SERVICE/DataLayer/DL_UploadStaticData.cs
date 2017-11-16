@@ -507,8 +507,23 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    //Check duplicate 
-                    var isDuplicate = (from attr in context.m_SupplierImportAttributeValues
+                    //Check duplicate
+                    var isDuplicate = false;
+                    if (obj.AttributeValue.ToLower() == "format")
+                    {
+                        isDuplicate = (from attr in context.m_SupplierImportAttributeValues
+                                           where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
+                                           (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                           // attr.AttributeName.Trim().TrimStart().ToUpper() == obj.AttributeName.Trim().TrimStart().ToUpper() &&
+                                            attr.AttributeValue_ID.Value == obj.AttributeValue_ID.Value &&
+                                            attr.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
+                                            attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id &&
+                                            attr.Priority == obj.Priority
+                                           )
+                                           select attr).Count() == 0 ? false : true;
+                    }
+                    else { 
+                    isDuplicate = (from attr in context.m_SupplierImportAttributeValues
                                        where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
                                        (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
                                         attr.AttributeName.Trim().TrimStart().ToUpper() == obj.AttributeName.Trim().TrimStart().ToUpper() &&
@@ -519,6 +534,7 @@ namespace DataLayer
                                        )
                                        select attr).Count() == 0 ? false : true;
 
+                    }
                     if (isDuplicate)
                     {
                         dc.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
