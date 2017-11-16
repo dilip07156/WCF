@@ -633,7 +633,7 @@ namespace BusinessLayer
         }
         #endregion
         #region velocity Dashboard
-        public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(DataContracts.Mapping.DC_RollOFParams parm)
+        public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(DataContracts.Mapping.DC_VelocityReport parm)
         {
 
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())

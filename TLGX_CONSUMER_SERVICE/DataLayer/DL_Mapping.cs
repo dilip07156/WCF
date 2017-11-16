@@ -6893,17 +6893,17 @@ namespace DataLayer
         #endregion
 
         #region velocity Dashboard
-        public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(DataContracts.Mapping.DC_RollOFParams parm)
+        public List<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(DataContracts.Mapping.DC_VelocityReport parm)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    DateTime fd = Convert.ToDateTime(parm.Fromdate);
-                    DateTime td = Convert.ToDateTime(parm.ToDate);
+                    //DateTime fd = Convert.ToDateTime(parm.Fromdate);
+                    //DateTime td = Convert.ToDateTime(parm.ToDate);
                     //List<vwUserwisemappedStat> search;
                     var search = (from p in context.vwUserwisemappedStats
-                                  where p.supplier_id == parm.SupplierID && p.SupplierName != null && (p.EditDate >= fd && p.EditDate <= td)
+                                  where p.supplier_id == parm.SupplierID && p.SupplierName != null && (p.EditDate >= parm.Fromdate && p.EditDate <= parm.ToDate)
                                   group p by new { p.supplier_id, p.Username, p.MappinFor, p.Sequence, p.Status, p.SupplierName } into g
                                   select new
                                   {
@@ -6941,11 +6941,18 @@ namespace DataLayer
                         var totalmappeddata = (from s in search
                                                where s.MappinFor == mapfor && s.Username == "Total" && s.Status == "Total"
                                                select s.totalcount).FirstOrDefault();
-                        if (unMappedDataCount.totalcount != null && totalmappeddata != 0)
+                        if (unMappedDataCount != null)
                         {
-                            var days = (Convert.ToDateTime(parm.ToDate) - Convert.ToDateTime(parm.Fromdate)).TotalDays;
-                            var perday = (totalmappeddata / days);
-                            newmapstatsfor.Estimate = Convert.ToInt32(unMappedDataCount.totalcount / perday);
+                            if (unMappedDataCount.totalcount != null && totalmappeddata != 0)
+                            {
+                                var days = (Convert.ToDateTime(parm.ToDate) - Convert.ToDateTime(parm.Fromdate)).TotalDays;
+                                var perday = (totalmappeddata / days);
+                                newmapstatsfor.Estimate = Convert.ToInt32(unMappedDataCount.totalcount / perday);
+                            }
+                            else
+                            {
+                                newmapstatsfor.Estimate = 0;
+                            }
                         }
                         else
                         {
