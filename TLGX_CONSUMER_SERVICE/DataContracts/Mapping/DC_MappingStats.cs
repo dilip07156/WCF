@@ -144,6 +144,7 @@ namespace DataContracts.Mapping
     {
         string _Status;
         int _TotalCount;
+        int? _SuppliersCount;
 
         [DataMember]
         public string Status
@@ -170,6 +171,19 @@ namespace DataContracts.Mapping
             set
             {
                 _TotalCount = value;
+            }
+        }
+        [DataMember]
+        public int? SuppliersCount
+        {
+            get
+            {
+                return _SuppliersCount;
+            }
+
+            set
+            {
+                _SuppliersCount = value;
             }
         }
     }

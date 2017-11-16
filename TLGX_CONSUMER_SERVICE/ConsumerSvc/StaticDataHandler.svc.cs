@@ -338,5 +338,13 @@ namespace ConsumerSvc
                 return obj.ApplyKeyword(RQ);
             }
         }
+
+        public string[] GetMappingHotelDataForTTFU(DC_Supplier obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetMappingHotelDataForTTFU(obj);
+            }
+        }
     }
 }

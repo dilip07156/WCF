@@ -66,6 +66,10 @@ namespace DataLayer
                             Guid.TryParse(callResult.id, out PentahoCallId);
                             getInsertedRow.PentahoCall_Id = PentahoCallId;
                             getInsertedRow.Message = callResult.message;
+                            if (PentahoCallId == Guid.Empty)
+                            {
+                                getInsertedRow.Status = "ERROR";
+                            }
                             context.SaveChanges();
 
                             return dc;
