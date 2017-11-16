@@ -4108,7 +4108,7 @@ namespace DataLayer
                                                StateName = a.StateName,
                                                Latitude = a.Latitude,
                                                Longitude = a.Longitude
-                                           }).Skip(skip).Take(param.PageSize).ToList();
+                                           }).Skip(skip).Take(param.PageSize).OrderBy(s => s.CityName).ToList();
 
                         //CityMapList = CityMapList.Select(c =>
                         //{
