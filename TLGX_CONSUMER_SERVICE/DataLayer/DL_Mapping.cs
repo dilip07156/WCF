@@ -7004,7 +7004,7 @@ namespace DataLayer
                         Guid _CityMapId = Guid.Parse(param.CityMapping_Id);
                         var selectedcity = (from c in context.m_CityMapping
                                             where c.CityMapping_Id == _CityMapId
-                                            select c);
+                                            select c).AsQueryable();
 
                         if (selectedcity != null)
                         {
@@ -7012,8 +7012,21 @@ namespace DataLayer
                             var suppliercitycode = selectedcity.Select(x => x.CityCode).FirstOrDefault();
                             var suppliercityname = selectedcity.Select(x => x.CityName).FirstOrDefault();
 
-                            var res = (from CM in context.Accommodation_ProductMapping
-                                       where CM.Supplier_Id == supplierid && (CM.CityCode == suppliercitycode || CM.CityName == suppliercityname)
+                            var query = (from CM in context.Accommodation_ProductMapping
+                                         where CM.Supplier_Id == supplierid
+                                         select CM).AsQueryable();
+
+                            if(!string.IsNullOrWhiteSpace(suppliercitycode))
+                            {
+                                query = query.Where(w => w.CityCode == suppliercitycode).Select(s => s);
+                            }
+                            else
+                            {
+                                query = query.Where(w => w.CityName == suppliercityname).Select(s => s);
+                            }
+
+
+                            var res = (from CM in query
                                        orderby CM.Street.Length descending
                                        select new DC_HotelListByCityCode
                                        {
