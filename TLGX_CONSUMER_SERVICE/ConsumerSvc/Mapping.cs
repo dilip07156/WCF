@@ -366,6 +366,17 @@ namespace ConsumerSvc
                 return objBL.GetVelocityDashboard( parm);
             }
         }
-       #endregion
+        #endregion
+
+
+        #region HotelListLinkedToCityCodeAndSupplierCode
+        public IList<DataContracts.Mapping.DC_HotelListByCityCode> GetHotelListByCityCode(DataContracts.Mapping.DC_HotelListByCityCode_RQ param)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetHotelListByCityCode(param);
+            }
+        }
+        #endregion
     }
 }

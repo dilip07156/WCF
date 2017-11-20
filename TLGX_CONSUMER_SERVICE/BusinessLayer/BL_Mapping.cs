@@ -643,5 +643,16 @@ namespace BusinessLayer
 
         }
         #endregion
+
+        #region HotelListLinkedToCityCodeAndSupplierCode
+        public IList<DataContracts.Mapping.DC_HotelListByCityCode> GetHotelListByCityCode(DataContracts.Mapping.DC_HotelListByCityCode_RQ param)
+        {
+
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetHotelListByCityCode(param);
+            }
+        }
+        #endregion
     }
 }

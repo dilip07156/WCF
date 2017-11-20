@@ -4517,7 +4517,7 @@ namespace DataLayer
             Guid File_Id = new Guid();
             File_Id = Guid.Parse(obj.File_Id.ToString());
 
-            
+
 
             int totPriorities = obj.TotalPriorities;
             int curPriority = obj.CurrentPriority;
@@ -4558,7 +4558,7 @@ namespace DataLayer
                         {
                             bool idinsert = DeleteSTGMappingTableIDs(File_Id);
                             idinsert = AddSTGMappingTableIDs(lstSMT);
-                        }                        
+                        }
                     }
 
                     var prodMapSearch = (from a in context.m_CityMapping
@@ -6987,6 +6987,61 @@ namespace DataLayer
             catch (Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching  Velocity mapping statistics", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
+
+        #region
+        public List<DC_HotelListByCityCode> GetHotelListByCityCode(DataContracts.Mapping.DC_HotelListByCityCode_RQ param)
+        {
+            try
+            {
+                List<DC_HotelListByCityCode> _lstresult = new List<DC_HotelListByCityCode>();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (!string.IsNullOrWhiteSpace(param.CityMapping_Id))
+                    {
+                        Guid _CityMapId = Guid.Parse(param.CityMapping_Id);
+                        var selectedcity = (from c in context.m_CityMapping
+                                            where c.CityMapping_Id == _CityMapId
+                                            select c);
+
+                        if (selectedcity != null)
+                        {
+                            var res = (from AM in context.Accommodation_ProductMapping
+                                       join scity in selectedcity on new { AM.CityCode, AM.Supplier_Id } equals new { scity.CityCode, scity.Supplier_Id }
+                                       join A in context.Accommodations on AM.Accommodation_Id equals A.Accommodation_Id
+                                       orderby A.FullAddress.Length
+                                       select new DC_HotelListByCityCode
+                                       {
+                                           HotelName = A.HotelName,
+                                           Address = A.FullAddress,
+                                           TotalRecords = 0
+                                       }).ToList();
+
+                            int total;
+                            total = res.Count();
+                            var skip = param.PageSize * param.PageNo;
+                            var canPage = skip < total;
+
+                            _lstresult = (from rst in res
+                                          select new DC_HotelListByCityCode
+                                          {
+                                              HotelName = rst.HotelName,
+                                              Address = rst.Address,
+                                              TotalRecords = total
+                                          }).Skip(skip).Take(param.PageSize).ToList();
+
+
+                        }
+                    }
+                }
+                return _lstresult;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
             }
         }
         #endregion
