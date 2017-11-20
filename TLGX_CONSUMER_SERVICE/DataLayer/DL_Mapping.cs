@@ -7008,29 +7008,52 @@ namespace DataLayer
 
                         if (selectedcity != null)
                         {
-                            var res = (from AM in context.Accommodation_ProductMapping
-                                       join scity in selectedcity on new { AM.CityCode, AM.Supplier_Id } equals new { scity.CityCode, scity.Supplier_Id }
-                                       join A in context.Accommodations on AM.Accommodation_Id equals A.Accommodation_Id
-                                       orderby A.FullAddress.Length
+                            var supplierid = selectedcity.Select(x => x.Supplier_Id).FirstOrDefault();
+                            var suppliercitycode = selectedcity.Select(x => x.CityCode).FirstOrDefault();
+                            var suppliercityname = selectedcity.Select(x => x.CityName).FirstOrDefault();
+
+                            var res = (from CM in context.Accommodation_ProductMapping
+                                       where CM.Supplier_Id == supplierid && (CM.CityCode == suppliercitycode || CM.CityName == suppliercityname)
+                                       orderby CM.Street.Length descending
                                        select new DC_HotelListByCityCode
                                        {
-                                           HotelName = A.HotelName,
-                                           Address = A.FullAddress,
-                                           TotalRecords = 0
-                                       }).ToList();
+                                           HotelName = CM.ProductName,
+                                           Street = CM.Street,
+                                           Street2 = CM.Street2,
+                                           Street3 = CM.Street3,
+                                           CityName = CM.CityName,
+                                           CityCode = CM.CityCode,
+                                           CountryCode = CM.CountryCode,
+                                           CountryName = CM.CountryName
+                                       }).Skip(0).Take(param.PageSize).ToList();
 
-                            int total;
-                            total = res.Count();
-                            var skip = param.PageSize * param.PageNo;
-                            var canPage = skip < total;
+
+                            foreach (var item in res)
+                            {
+                                string strAddress = !string.IsNullOrWhiteSpace(item.Street) ? item.Street + "," : string.Empty;
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street2) ? item.Street2 + "," : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street3) ? item.Street3 + "," : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CityName) ? item.CityName : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CityCode) ? ",(" + item.CityCode + " )," : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CountryName) ? item.CountryName : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CountryCode) ? ",(" + item.CountryCode + " )," : string.Empty);
+                                item.Address = strAddress;
+                                strAddress = string.Empty;
+                            }
+
+                            //int total;
+                            //total = res.Count();
+                            //var skip = param.PageSize * param.PageNo;
+                            //var canPage = skip < total;
 
                             _lstresult = (from rst in res
+                                          orderby rst.Address.Length descending
                                           select new DC_HotelListByCityCode
                                           {
                                               HotelName = rst.HotelName,
                                               Address = rst.Address,
-                                              TotalRecords = total
-                                          }).Skip(skip).Take(param.PageSize).ToList();
+                                              TotalRecords = 5
+                                          }).ToList();
 
 
                         }
