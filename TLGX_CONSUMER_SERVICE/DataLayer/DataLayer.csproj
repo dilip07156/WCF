@@ -280,6 +280,9 @@
     <Compile Include="AspNetUserLogin.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="AspNetUserRole.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Client.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>

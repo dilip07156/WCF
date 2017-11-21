@@ -17,15 +17,15 @@ namespace DataLayer
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public AspNetRole()
         {
-            this.AspNetUsers = new HashSet<AspNetUser>();
+            this.AspNetUserRoles = new HashSet<AspNetUserRole>();
         }
     
         public string Id { get; set; }
         public string Name { get; set; }
-        public string EntityTypeID { get; set; }
         public Nullable<System.Guid> ApplicationID { get; set; }
+        public string EntityTypeID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AspNetUser> AspNetUsers { get; set; }
+        public virtual ICollection<AspNetUserRole> AspNetUserRoles { get; set; }
     }
 }

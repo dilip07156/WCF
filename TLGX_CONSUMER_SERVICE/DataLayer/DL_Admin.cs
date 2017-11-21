@@ -35,15 +35,24 @@ namespace DataLayer
             try
             {
                 Guid _guidApplicationID = Guid.Empty;
-                if (applicationID != "0")  //Default Zero
-                    _guidApplicationID = Guid.Parse(applicationID);
+                var res = Guid.TryParse(applicationID, out _guidApplicationID);
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = from sm in context.SiteMaps
-                                 join smpt in context.SiteMaps on sm.Parent equals smpt.ID into smpar
+                    var sitemap = (from sm in context.SiteMaps select sm).AsQueryable();
+                    var sitemapfilter = sitemap;
+                    if (ID > 0)
+                    {
+                        sitemapfilter = from sm in sitemapfilter where sm.ID == ID select sm;
+                    }
+                    if (_guidApplicationID != Guid.Empty)
+                    {
+                        sitemapfilter = from sm in sitemapfilter where sm.applicationId == _guidApplicationID select sm;
+                    }
+
+                    var search = from sm in sitemapfilter
+                                 join smpt in sitemap on sm.Parent equals smpt.ID into smpar
                                  from smparval in smpar.DefaultIfEmpty()
-                                 where sm.ID == (ID == 0 ? sm.ID : ID) && sm.applicationId == (_guidApplicationID == Guid.Empty ? sm.applicationId : _guidApplicationID)
                                  orderby sm.ID
                                  select new DataContracts.Admin.DC_SiteMap
                                  {
@@ -58,7 +67,14 @@ namespace DataLayer
                                      IsActive = (sm.IsActive ?? true),
                                      ParentID = sm.Parent,
                                      ParentTitle = smparval.Title,
-                                     Roles = sm.Roles,
+                                     Roles = (from sir in context.SitemapInRoles
+                                              join rl in context.AspNetRoles on sir.Role_Id equals Guid.Parse(rl.Id)
+                                              where sir.Sitemap_Id == sm.SiteMap_ID
+                                              select new DC_SiteMap_Roles
+                                              {
+                                                  RoleId = sir.Role_Id,
+                                                  RoleName = rl.Name
+                                              }).ToList(), //sm.Roles,
                                      Title = sm.Title,
                                      Url = sm.Url,
                                      ApplicationID = sm.applicationId
@@ -76,57 +92,107 @@ namespace DataLayer
         {
             try
             {
-                using (var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
+                //string userid;
+                //IList<string> roleNames;
+                //using (var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
+                //{
+                //    userid = userManager.FindByName(UserName).Id;
+                //    roleNames = userManager.GetRoles(userid);
+
+                //}
+
+                using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    string userid = userManager.FindByName(UserName).Id;
-                    IList<string> roleNames = userManager.GetRoles(userid);
+                    var result = (from user in context.AspNetUsers
+                                  join userinroles in context.AspNetUserRoles on user.Id.ToString().ToLower() equals userinroles.UserId.ToString().ToLower()
+                                  join roles in context.AspNetRoles on userinroles.RoleId.ToString().ToLower() equals roles.Id.ToString().ToLower()
+                                  join sitemapinrole in context.SitemapInRoles on roles.Id.ToString().ToLower() equals sitemapinrole.Role_Id.ToString().ToLower()
+                                  join sitemap in context.SiteMaps on sitemapinrole.Sitemap_Id equals sitemap.SiteMap_ID
+                                  join sitemapparent in context.SiteMaps on sitemap.Parent equals sitemapparent.ID into smpar
+                                  from smparval in smpar.DefaultIfEmpty()
+                                  where ((user.UserName.ToLower() == UserName.ToLower() && (sitemap.IsActive ?? true)) || sitemap.Parent == null)
+                                  && (sitemap.IsSiteMapNode ?? false) == true && (sitemap.IsActive ?? false) == true
+                                  orderby sitemap.ID
+                                  select new DataContracts.Admin.DC_SiteMap
+                                  {
+                                      SiteMap_ID = sitemap.SiteMap_ID,
+                                      ID = sitemap.ID,
+                                      Create_Date = sitemap.Create_Date,
+                                      Create_User = sitemap.Create_User,
+                                      Description = sitemap.Description,
+                                      Edit_Date = sitemap.Edit_Date,
+                                      Edit_User = sitemap.Edit_User,
+                                      IsSiteMapNode = (sitemap.IsSiteMapNode ?? false),
+                                      IsActive = (sitemap.IsActive ?? true),
+                                      ParentID = sitemap.Parent,
+                                      ParentTitle = smparval.Title,
+                                      Roles = (from sir in context.SitemapInRoles
+                                               join rl in context.AspNetRoles on sir.Role_Id.ToString().ToLower() equals rl.Id.ToString().ToLower()
+                                               where sir.Sitemap_Id == sitemap.SiteMap_ID
+                                               select new DC_SiteMap_Roles
+                                               {
+                                                   RoleId = sir.Role_Id,
+                                                   RoleName = rl.Name
+                                               }).ToList(), //sm.Roles,
+                                      Title = sitemap.Title,
+                                      ApplicationID = sitemap.applicationId,
+                                      Url = sitemap.Url
+                                  }).ToList();
 
-
-                    List<DataContracts.Admin.DC_SiteMap> objSiteMap = new List<DataContracts.Admin.DC_SiteMap>();
-                    Guid applicationserarch = Guid.Empty;
-                    using (ConsumerEntities context = new ConsumerEntities())
-                    {
-
-                        var appsearch = (from user in context.AspNetUsers where user.UserName == UserName select user.applicationid).FirstOrDefault();
-                        applicationserarch = ((appsearch.HasValue) ? appsearch.Value : Guid.Empty);
-
-                        foreach (string role in roleNames)
-                        {
-                            //Get application ID for the role
-
-
-                            var search = from sm in context.SiteMaps
-                                         join smpt in context.SiteMaps on sm.Parent equals smpt.ID into smpar
-                                         from smparval in smpar.DefaultIfEmpty()
-                                         where (((sm.Roles.StartsWith(role) || sm.Roles.EndsWith(role) || sm.Roles.Contains(role))
-                                         && (sm.IsActive ?? true)) || sm.Parent == null) && (sm.IsSiteMapNode ?? false) == true && sm.applicationId == applicationserarch
-                                         orderby sm.ID
-                                         select new DataContracts.Admin.DC_SiteMap
-                                         {
-                                             SiteMap_ID = sm.SiteMap_ID,
-                                             ID = sm.ID,
-                                             Create_Date = sm.Create_Date,
-                                             Create_User = sm.Create_User,
-                                             Description = sm.Description,
-                                             Edit_Date = sm.Edit_Date,
-                                             Edit_User = sm.Edit_User,
-                                             IsSiteMapNode = (sm.IsSiteMapNode ?? false),
-                                             IsActive = (sm.IsActive ?? true),
-                                             ParentID = sm.Parent,
-                                             ParentTitle = smparval.Title,
-                                             Roles = sm.Roles,
-                                             Title = sm.Title,
-                                             ApplicationID = sm.applicationId,
-                                             Url = sm.Url
-                                         };
-                            objSiteMap.AddRange(search);
-
-                        }
-                        var resultDistinct = objSiteMap.Distinct(new Comparer()).ToList();
-                        var resultOrdered = (from r in resultDistinct orderby r.ID select r).ToList();
-                        return resultOrdered;
-                    }
+                    return result;
                 }
+
+                //using (var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
+                //{
+                //    string userid = userManager.FindByName(UserName).Id;
+                //    IList<string> roleNames = userManager.GetRoles(userid);
+
+                //    List<DataContracts.Admin.DC_SiteMap> objSiteMap = new List<DataContracts.Admin.DC_SiteMap>();
+                //    Guid applicationserarch = Guid.Empty;
+                //    using (ConsumerEntities context = new ConsumerEntities())
+                //    {
+
+                //        var appsearch = (from user in context.AspNetUsers where user.UserName == UserName select user.applicationid).FirstOrDefault();
+                //        applicationserarch = ((appsearch.HasValue) ? appsearch.Value : Guid.Empty);
+
+                //        foreach (string role in roleNames)
+                //        {
+                //            //Get application ID for the role
+
+                //            var search = from sm in context.SiteMaps
+                //                         join smpt in context.SiteMaps on sm.Parent equals smpt.ID into smpar
+                //                         from smparval in smpar.DefaultIfEmpty()
+                //                         where (((sm.Roles.StartsWith(role) || sm.Roles.EndsWith(role) || sm.Roles.Contains(role))
+                //                         && (sm.IsActive ?? true)) || sm.Parent == null)
+                //                         && (sm.IsSiteMapNode ?? false) == true
+                //                         && sm.applicationId == applicationserarch
+                //                         orderby sm.ID
+                //                         select new DataContracts.Admin.DC_SiteMap
+                //                         {
+                //                             SiteMap_ID = sm.SiteMap_ID,
+                //                             ID = sm.ID,
+                //                             Create_Date = sm.Create_Date,
+                //                             Create_User = sm.Create_User,
+                //                             Description = sm.Description,
+                //                             Edit_Date = sm.Edit_Date,
+                //                             Edit_User = sm.Edit_User,
+                //                             IsSiteMapNode = (sm.IsSiteMapNode ?? false),
+                //                             IsActive = (sm.IsActive ?? true),
+                //                             ParentID = sm.Parent,
+                //                             ParentTitle = smparval.Title,
+                //                             Roles = sm.Roles,
+                //                             Title = sm.Title,
+                //                             ApplicationID = sm.applicationId,
+                //                             Url = sm.Url
+                //                         };
+                //            objSiteMap.AddRange(search);
+
+                //        }
+                //        var resultDistinct = objSiteMap.Distinct(new Comparer()).ToList();
+                //        var resultOrdered = (from r in resultDistinct orderby r.ID select r).ToList();
+                //        return resultOrdered;
+                //    }
+                //}
             }
             catch (Exception ex)
             {
@@ -153,118 +219,130 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = (from sm in context.SiteMaps
-                                  where sm.SiteMap_ID == SM.SiteMap_ID
-                                  select sm).FirstOrDefault();
+                    var search = context.SiteMaps.Find(SM.SiteMap_ID);
+
                     if (search != null)
                     {
+                        //Removed existing roles to sitemap
+                        context.SitemapInRoles.RemoveRange(context.SitemapInRoles.Where(w => w.Sitemap_Id == search.SiteMap_ID));
+                        
+                        //Add new roles
+                        context.SitemapInRoles.AddRange((from roles in SM.Roles
+                                                         select new SitemapInRole
+                                                         {
+                                                             SitemapInRoles_Id = Guid.NewGuid(),
+                                                             Sitemap_Id = search.SiteMap_ID,
+                                                             Role_Id = roles.RoleId
+                                                         }).ToList());
 
-                        //Check removed or add role
-                        List<string> existingRole = new List<string>();
-                        List<string> newRole = new List<string>(); ;
+                        context.SaveChanges();
 
-                        if (search.Roles != null)
-                        {
-                            foreach (var searchitem in Convert.ToString(search.Roles).Split(','))
-                            {
-                                existingRole.Add(searchitem.ToString());
-                            }
-                        }
+                        ////Check removed or add role
+                        //List<string> existingRole = new List<string>();
+                        //List<string> newRole = new List<string>();
 
-                        if (SM.Roles != null)
-                        {
-                            foreach (var itemRole in Convert.ToString(SM.Roles).Split(','))
-                            {
-                                newRole.Add(itemRole.ToString());
-                            }
-                        }
+                        //if (search.Roles != null)
+                        //{
+                        //    foreach (var searchitem in Convert.ToString(search.Roles).Split(','))
+                        //    {
+                        //        existingRole.Add(searchitem.ToString());
+                        //    }
+                        //}
 
-                        bool blnRemoved = false;
-                        List<string> removedRole = new List<string>();
-                        bool blnAdded = false;
-                        List<string> AddedRole = new List<string>();
+                        //if (SM.Roles != null)
+                        //{
+                        //    foreach (var itemRole in Convert.ToString(SM.Roles).Split(','))
+                        //    {
+                        //        newRole.Add(itemRole.ToString());
+                        //    }
+                        //}
 
-                        #region if Removed
+                        //bool blnRemoved = false;
+                        //List<string> removedRole = new List<string>();
+                        //bool blnAdded = false;
+                        //List<string> AddedRole = new List<string>();
 
-                        foreach (var itemsearch in existingRole)
-                        {
-                            if (newRole.Contains(itemsearch))
-                            {
-                                if (!blnRemoved)
-                                    blnRemoved = false;
-                            }
-                            else
-                            {
-                                blnRemoved = true;
-                                removedRole.Add(itemsearch);
-                            }
-                        }
-                        if (blnRemoved)
-                        {
-                            //If role removed
-                            //Checking childs
-                            foreach (var item in removedRole)
-                            {
-                                var child = (from ch in context.SiteMaps
-                                             where ch.Parent == SM.ID
-                                             select ch).ToList();
-                                if (child.Count > 0) //have child so remove roles
-                                {
-                                    foreach (var ch in child)
-                                    {
-                                        List<string> _lstRole = ch.Roles.ToString().Split(',').ToList();
-                                        _lstRole.Remove(item.ToString());
-                                        ch.Roles = String.Join(",", _lstRole);
-                                    }
-                                }
-                            }
-                        }
+                        //#region if Removed
 
-                        #endregion
+                        //foreach (var itemsearch in existingRole)
+                        //{
+                        //    if (newRole.Contains(itemsearch))
+                        //    {
+                        //        if (!blnRemoved)
+                        //            blnRemoved = false;
+                        //    }
+                        //    else
+                        //    {
+                        //        blnRemoved = true;
+                        //        removedRole.Add(itemsearch);
+                        //    }
+                        //}
+                        //if (blnRemoved)
+                        //{
+                        //    //If role removed
+                        //    //Checking childs
+                        //    foreach (var item in removedRole)
+                        //    {
+                        //        var child = (from ch in context.SiteMaps
+                        //                     where ch.Parent == SM.ID
+                        //                     select ch).ToList();
+                        //        if (child.Count > 0) //have child so remove roles
+                        //        {
+                        //            foreach (var ch in child)
+                        //            {
+                        //                List<string> _lstRole = ch.Roles.ToString().Split(',').ToList();
+                        //                _lstRole.Remove(item.ToString());
+                        //                ch.Roles = String.Join(",", _lstRole);
+                        //            }
+                        //        }
+                        //    }
+                        //}
 
-                        #region if Added
-                        foreach (var itemSm in newRole)
-                        {
-                            if (existingRole.Contains(itemSm))
-                            {
-                                if (!blnAdded)
-                                    blnAdded = false;
-                            }
-                            else
-                            {
-                                blnAdded = true;
-                                AddedRole.Add(itemSm);
-                            }
-                        }
+                        //#endregion
 
-                        if (blnAdded)
-                        {
-                            //Role add
-                            //File parents for the 
-                            foreach (var adrl in AddedRole)
-                            {
-                                var parent = (from ch in context.SiteMaps
-                                              join pt in context.SiteMaps on ch.Parent equals pt.ID
-                                              where ch.ID == SM.ID
-                                              select pt).ToList();
+                        //#region if Added
+                        //foreach (var itemSm in newRole)
+                        //{
+                        //    if (existingRole.Contains(itemSm))
+                        //    {
+                        //        if (!blnAdded)
+                        //            blnAdded = false;
+                        //    }
+                        //    else
+                        //    {
+                        //        blnAdded = true;
+                        //        AddedRole.Add(itemSm);
+                        //    }
+                        //}
 
-                                if (parent.Count > 0)
-                                {
-                                    foreach (var pt in parent)
-                                    {
-                                        List<string> _lstRole = new List<string>();
-                                        if (Convert.ToString(pt.Roles) != null)
-                                        {
-                                            _lstRole = pt.Roles.ToString().Split(',').ToList();
-                                        }
-                                        _lstRole.Add(adrl.ToString());
-                                        pt.Roles = String.Join(",", _lstRole);
-                                    }
-                                }
+                        //if (blnAdded)
+                        //{
+                        //    //Role add
+                        //    //File parents for the 
+                        //    foreach (var adrl in AddedRole)
+                        //    {
+                        //        var parent = (from ch in context.SiteMaps
+                        //                      join pt in context.SiteMaps on ch.Parent equals pt.ID
+                        //                      where ch.ID == SM.ID
+                        //                      select pt).ToList();
 
-                            }
-                        }
-                        #endregion
+                        //        if (parent.Count > 0)
+                        //        {
+                        //            foreach (var pt in parent)
+                        //            {
+                        //                List<string> _lstRole = new List<string>();
+                        //                if (Convert.ToString(pt.Roles) != null)
+                        //                {
+                        //                    _lstRole = pt.Roles.ToString().Split(',').ToList();
+                        //                }
+                        //                _lstRole.Add(adrl.ToString());
+                        //                pt.Roles = String.Join(",", _lstRole);
+                        //            }
+                        //        }
+
+                        //    }
+                        //}
+                        //#endregion
 
                         if (SM.IsActive != (search.IsActive ?? true))
                         {
@@ -287,7 +365,7 @@ namespace DataLayer
                             search.IsSiteMapNode = SM.IsSiteMapNode;
                             search.IsActive = SM.IsActive;
                             search.Parent = SM.ParentID;
-                            search.Roles = SM.Roles;
+                            //search.Roles = SM.Roles;
                             search.Title = SM.Title;
                             search.Url = SM.Url;
                             search.applicationId = SM.ApplicationID;
@@ -312,7 +390,7 @@ namespace DataLayer
                     var search = (from sm in context.SiteMaps
                                   where sm.ID == sM.ParentID
                                   select sm).FirstOrDefault();
-                    if(search != null)
+                    if (search != null)
                     {
                         //Check parent node
                         int _intparent = Convert.ToInt32(search.ID);
@@ -345,7 +423,7 @@ namespace DataLayer
                                   select sm).ToList();
                     if (search != null && search.Count > 0)
                     {
-                        foreach(var item in search)
+                        foreach (var item in search)
                         {
                             item.IsSiteMapNode = sM.IsSiteMapNode;
                         }
@@ -377,33 +455,44 @@ namespace DataLayer
                     newObj.IsSiteMapNode = SM.IsSiteMapNode;
                     newObj.IsActive = SM.IsActive;
                     newObj.Parent = SM.ParentID;
-                    newObj.Roles = SM.Roles;
+                    //newObj.Roles = SM.Roles;
                     newObj.Title = SM.Title;
                     newObj.Url = SM.Url;
                     newObj.applicationId = SM.ApplicationID;
 
-                    if (Convert.ToString(SM.ParentID) != null)
-                    {
-                        //Have parents
-                        var parent = (from prnt in context.SiteMaps
-                                      where prnt.ID == SM.ParentID
-                                      select prnt).ToList();
-                        if (parent.Count > 0)
-                        {
-                            foreach (var pt in parent)
-                            {
-                                List<string> _lstRole = pt.Roles.ToString().Split(',').ToList();
-                                foreach (var item in SM.Roles.ToString().Split(','))
-                                {
-                                    if (!_lstRole.Contains(item.ToString()))
-                                    {
-                                        _lstRole.Add(item.ToString());
-                                    }
-                                }
-                                pt.Roles = String.Join(",", _lstRole);
-                            }
-                        }
-                    }
+
+                    //Add new roles
+                    context.SitemapInRoles.AddRange((from roles in SM.Roles
+                                                     select new SitemapInRole
+                                                     {
+                                                         SitemapInRoles_Id = Guid.NewGuid(),
+                                                         Sitemap_Id = SM.SiteMap_ID,
+                                                         Role_Id = roles.RoleId
+                                                     }).ToList());
+
+                    //if (Convert.ToString(SM.ParentID) != null)
+                    //{
+                    //    //Have parents
+                    //    var parent = (from prnt in context.SiteMaps
+                    //                  where prnt.ID == SM.ParentID
+                    //                  select prnt).ToList();
+                    //    if (parent.Count > 0)
+                    //    {
+                    //        foreach (var pt in parent)
+                    //        {
+                    //            List<string> _lstRole = pt.Roles.ToString().Split(',').ToList();
+                    //            foreach (var item in SM.Roles.ToString().Split(','))
+                    //            {
+                    //                if (!_lstRole.Contains(item.ToString()))
+                    //                {
+                    //                    _lstRole.Add(item.ToString());
+                    //                }
+                    //            }
+                    //            pt.Roles = String.Join(",", _lstRole);
+                    //        }
+                    //    }
+                    //}
+
                     context.SiteMaps.Add(newObj);
                     context.SaveChanges();
 

@@ -15,7 +15,7 @@ namespace DataContracts.Admin
         string _Title;
         string _Description;
         string _Url;
-        string _Roles;
+        List<DC_SiteMap_Roles> _Roles;
         Nullable<int> _ParentID;
         string _ParentTitle;
         Nullable<System.DateTime> _Create_Date;
@@ -83,7 +83,7 @@ namespace DataContracts.Admin
         }
 
         [DataMember]
-        public string Roles
+        public List<DC_SiteMap_Roles> Roles
         {
             get
             {
@@ -233,5 +233,14 @@ namespace DataContracts.Admin
                 _SiteMap_ID = value;
             }
         }
+    }
+
+    [DataContract]
+    public class DC_SiteMap_Roles
+    {
+        [DataMember]
+        public string RoleName { get; set; }
+        [DataMember]
+        public Guid RoleId { get; set; }
     }
 }
