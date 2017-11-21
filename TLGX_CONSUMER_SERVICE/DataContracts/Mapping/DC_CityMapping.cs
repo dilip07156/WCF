@@ -676,7 +676,8 @@ namespace DataContracts.Mapping
     {
         [DataMember]
         public string CityMapping_Id { get; set; }
-        public string Status { get; set; }
+        [DataMember]
+        public string GoFor { get; set; }
         [DataMember]
         public int PageNo { get; set; }
         [DataMember]

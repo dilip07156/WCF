@@ -1903,6 +1903,14 @@
           <Property Name="IsActive" Type="bit" />
           <Property Name="applicationId" Type="uniqueidentifier" Nullable="false" />
         </EntityType>
+        <EntityType Name="SitemapInRoles">
+          <Key>
+            <PropertyRef Name="SitemapInRoles_Id" />
+          </Key>
+          <Property Name="SitemapInRoles_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Sitemap_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Role_Id" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
         <EntityType Name="stg_ActivitySupplierProductMapping">
           <Key>
             <PropertyRef Name="stg_ActivitySupplierProductMappingId" />
@@ -2538,6 +2546,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Places" EntityType="Self.Places" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule_NextOccurance" EntityType="Self.Schedule_NextOccurance" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SiteMap" EntityType="Self.SiteMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SitemapInRoles" EntityType="Self.SitemapInRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_ActivitySupplierProductMapping" EntityType="Self.stg_ActivitySupplierProductMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="STG_Mapping_TableIds" EntityType="Self.STG_Mapping_TableIds" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="stg_SupplierActivityImageMapping" EntityType="Self.stg_SupplierActivityImageMapping" Schema="dbo" store:Type="Tables" />
@@ -2737,6 +2746,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="vwMappingStats" EntityType="ConsumerModel.vwMappingStat" />
           <EntitySet Name="STG_Mapping_TableIds" EntityType="ConsumerModel.STG_Mapping_TableIds" />
           <EntitySet Name="SupplierImportFileDetails" EntityType="ConsumerModel.SupplierImportFileDetail" />
+          <EntitySet Name="SitemapInRoles" EntityType="ConsumerModel.SitemapInRole" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -5145,6 +5155,14 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="PROCESS_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="Mode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SitemapInRole">
+          <Key>
+            <PropertyRef Name="SitemapInRoles_Id" />
+          </Key>
+          <Property Name="SitemapInRoles_Id" Type="Guid" Nullable="false" />
+          <Property Name="Sitemap_Id" Type="Guid" Nullable="false" />
+          <Property Name="Role_Id" Type="Guid" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -7637,6 +7655,15 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Entity" ColumnName="Entity" />
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
                 <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SitemapInRoles">
+            <EntityTypeMapping TypeName="ConsumerModel.SitemapInRole">
+              <MappingFragment StoreEntitySet="SitemapInRoles">
+                <ScalarProperty Name="Role_Id" ColumnName="Role_Id" />
+                <ScalarProperty Name="Sitemap_Id" ColumnName="Sitemap_Id" />
+                <ScalarProperty Name="SitemapInRoles_Id" ColumnName="SitemapInRoles_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
