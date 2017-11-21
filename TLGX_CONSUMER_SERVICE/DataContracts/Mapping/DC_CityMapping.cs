@@ -669,4 +669,33 @@ namespace DataContracts.Mapping
             }
         }
     }
+
+
+    [DataContract]
+    public class DC_HotelListByCityCode_RQ
+    {
+        [DataMember]
+        public string CityMapping_Id { get; set; }
+        [DataMember]
+        public string GoFor { get; set; }
+        [DataMember]
+        public int PageNo { get; set; }
+        [DataMember]
+        public int PageSize { get; set; }
+
+    }
+
+    [DataContract]
+    public class DC_HotelListByCityCode
+    {
+        [DataMember]
+        public string HotelName { get; set; }
+        [DataMember]
+        public string Address { get; set; }
+        [DataMember]
+        public int TotalRecords { get; set; }
+
+    }
+
+
 }

@@ -497,13 +497,13 @@ namespace DataLayer
                         Website = g.Website,
                         ActionType = "INSERT",
                         stg_AccoMapping_Id = g.stg_AccoMapping_Id,
-                        FullAddress = (g.StreetNo ?? "") + (((g.StreetNo ?? "") == "") ? ", " : "")
-                                       + (g.StreetName ?? "") + (((g.StreetName ?? "") == "") ? ", " : "")
-                                       + (g.Street2 ?? "") + (((g.Street2 ?? "") == "") ? ", " : "")
-                                       + (g.Street3 ?? "") + (((g.Street3 ?? "") == "") ? ", " : "")
-                                       + (g.Street4 ?? "") + (((g.Street4 ?? "") == "") ? ", " : "")
-                                       + (g.Street5 ?? "") + (((g.Street5 ?? "") == "") ? ", " : "")
-                                       + (g.PostalCode ?? "") + (((g.PostalCode ?? "") == "") ? ", " : "")
+                        FullAddress = (g.StreetNo ?? "") + (((g.StreetNo ?? "") != "") ? ", " : "")
+                                       + (g.StreetName ?? "") + (((g.StreetName ?? "") != "") ? ", " : "")
+                                       + (g.Street2 ?? "") + (((g.Street2 ?? "") != "") ? ", " : "")
+                                       + (g.Street3 ?? "") + (((g.Street3 ?? "") != "") ? ", " : "")
+                                       + (g.Street4 ?? "") + (((g.Street4 ?? "") != "") ? ", " : "")
+                                       + (g.Street5 ?? "") + (((g.Street5 ?? "") != "") ? ", " : "")
+                                       + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")
                         ,
                         Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
                     }));
@@ -4454,7 +4454,7 @@ namespace DataLayer
                                     // objNew.Country_Id = CM.Country_Id;
                                     objNew.Country_Id = ((from a in context.m_CountryMapping.AsNoTracking()
                                                           where a.Supplier_Id == CM.Supplier_Id &&
-                                                          ((a.CountryName == CM.CountryName) && a.CountryName != null && CM.CountryName != null)
+                                                          ((a.CountryName.Trim().ToUpper() == CM.CountryName.Trim().ToUpper()) && a.CountryName != null && CM.CountryName != null)
                                                           //&& ((CM.CountryName != null && a.CountryName == CM.CountryName) || CM.CountryName == null)
                                                           //&& ((CM.CountryCode != null && a.CountryCode == CM.CountryCode) || CM.CountryCode == null)
                                                           //&& a.Supplier_Id == CM.Supplier_Id
@@ -4517,7 +4517,7 @@ namespace DataLayer
             Guid File_Id = new Guid();
             File_Id = Guid.Parse(obj.File_Id.ToString());
 
-            
+
 
             int totPriorities = obj.TotalPriorities;
             int curPriority = obj.CurrentPriority;
@@ -4558,7 +4558,7 @@ namespace DataLayer
                         {
                             bool idinsert = DeleteSTGMappingTableIDs(File_Id);
                             idinsert = AddSTGMappingTableIDs(lstSMT);
-                        }                        
+                        }
                     }
 
                     var prodMapSearch = (from a in context.m_CityMapping
@@ -6987,6 +6987,101 @@ namespace DataLayer
             catch (Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching  Velocity mapping statistics", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
+
+        #region
+        public List<DC_HotelListByCityCode> GetHotelListByCityCode(DataContracts.Mapping.DC_HotelListByCityCode_RQ param)
+        {
+            try
+            {
+                List<DC_HotelListByCityCode> _lstresult = new List<DC_HotelListByCityCode>();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (!string.IsNullOrWhiteSpace(param.CityMapping_Id))
+                    {
+                        Guid _CityMapId = Guid.Parse(param.CityMapping_Id);
+                        var selectedcity = (from c in context.m_CityMapping
+                                            where c.CityMapping_Id == _CityMapId
+                                            select c).AsQueryable();
+
+                        if (selectedcity != null)
+                        {
+                            var supplierid = selectedcity.Select(x => x.Supplier_Id).FirstOrDefault();
+                            var suppliercitycode = selectedcity.Select(x => x.CityCode).FirstOrDefault();
+                            var suppliercityname = selectedcity.Select(x => x.CityName).FirstOrDefault();
+
+                            var query = (from CM in context.Accommodation_ProductMapping
+                                         where CM.Supplier_Id == supplierid
+                                         select CM).AsQueryable();
+
+                            string strGoFor = string.IsNullOrWhiteSpace(param.GoFor) ? string.Empty : param.GoFor.Trim().ToUpper();
+                            if (strGoFor == string.Empty)
+                            {
+                                if (!string.IsNullOrWhiteSpace(suppliercitycode))
+                                {
+                                    if (query.Where(w => w.CityCode == suppliercitycode).Select(s => s).Count() > 0)
+                                    {
+                                        query = query.Where(w => w.CityCode == suppliercitycode).Select(s => s);
+                                    }
+                                    else 
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(suppliercityname)){
+                                            query = query.Where(w => w.CityName == suppliercityname).Select(s => s);
+                                        }
+                                        else
+                                        {
+                                            query = null;
+                                        }
+                                    }
+                                }
+                                
+                            }
+                            else if (strGoFor == "CITYCODE")
+                            {
+                                query = query.Where(w => w.CityCode == suppliercitycode).Select(s => s);
+                            }
+                            else if (strGoFor == "CITYNAME")
+                            {
+                                query = query.Where(w => w.CityName == suppliercityname).Select(s => s);
+                            }
+
+                            var res = (from CM in query
+                                       orderby CM.Street.Length descending
+                                       select CM
+                                   ).Skip(0).Take(param.PageSize).ToList();
+
+                            foreach (var item in res)
+                            {
+
+                                string strAddress = !string.IsNullOrWhiteSpace(item.Street) ? item.Street + ", " : string.Empty;
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street2) ? item.Street2 + ", " : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street3) ? item.Street3 + ", " : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CityName) ? item.CityName + ", " : string.Empty);
+                                // strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CityCode) ? ",(" + item.CityCode + " )," : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.StateName) ? item.StateName : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.StateCode) ? ",(" + item.StateCode + " ), " : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CountryName) ? item.CountryName : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CountryCode) ? ",(" + item.CountryCode + " ), " : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.PostCode) ? item.PostCode : string.Empty);
+                                _lstresult.Add(new DC_HotelListByCityCode
+                                {
+                                    HotelName = item.ProductName,
+                                    Address = strAddress,
+                                    TotalRecords = 5
+                                });
+                                strAddress = string.Empty;
+                            }
+                        }
+                    }
+                }
+                return _lstresult;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
             }
         }
         #endregion

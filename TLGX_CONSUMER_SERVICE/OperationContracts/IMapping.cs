@@ -98,6 +98,7 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "Mapping/City/Update", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool UpdateCityMapping(List<DataContracts.Mapping.DC_CityMapping> CM);
+
         #endregion
 
         #region Master Attribute Mapping
@@ -184,5 +185,13 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "Mapping/Statistics/GetVelocityDashboard", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         IList<DataContracts.Mapping.DC_VelocityMappingStats> GetVelocityDashboard(DataContracts.Mapping.DC_VelocityReport parm);
         #endregion
+
+        #region HotelListLinkedToCityCodeAndSupplierCode
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Mapping/City/GetHotelListByCityCode", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Mapping.DC_HotelListByCityCode> GetHotelListByCityCode(DataContracts.Mapping.DC_HotelListByCityCode_RQ param);
+        #endregion
     }
 }
+
