@@ -497,13 +497,13 @@ namespace DataLayer
                         Website = g.Website,
                         ActionType = "INSERT",
                         stg_AccoMapping_Id = g.stg_AccoMapping_Id,
-                        FullAddress = (g.StreetNo ?? "") + (((g.StreetNo ?? "") == "") ? ", " : "")
-                                       + (g.StreetName ?? "") + (((g.StreetName ?? "") == "") ? ", " : "")
-                                       + (g.Street2 ?? "") + (((g.Street2 ?? "") == "") ? ", " : "")
-                                       + (g.Street3 ?? "") + (((g.Street3 ?? "") == "") ? ", " : "")
-                                       + (g.Street4 ?? "") + (((g.Street4 ?? "") == "") ? ", " : "")
-                                       + (g.Street5 ?? "") + (((g.Street5 ?? "") == "") ? ", " : "")
-                                       + (g.PostalCode ?? "") + (((g.PostalCode ?? "") == "") ? ", " : "")
+                        FullAddress = (g.StreetNo ?? "") + (((g.StreetNo ?? "") != "") ? ", " : "")
+                                       + (g.StreetName ?? "") + (((g.StreetName ?? "") != "") ? ", " : "")
+                                       + (g.Street2 ?? "") + (((g.Street2 ?? "") != "") ? ", " : "")
+                                       + (g.Street3 ?? "") + (((g.Street3 ?? "") != "") ? ", " : "")
+                                       + (g.Street4 ?? "") + (((g.Street4 ?? "") != "") ? ", " : "")
+                                       + (g.Street5 ?? "") + (((g.Street5 ?? "") != "") ? ", " : "")
+                                       + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")
                         ,
                         Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
                     }));

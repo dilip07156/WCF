@@ -64,6 +64,7 @@
         <EntityTypeShape EntityType="ConsumerModel.Organisation_Company" Width="1.5" PointX="7.375" PointY="6.75" />
         <EntityTypeShape EntityType="ConsumerModel.UserEntity" Width="1.5" PointX="0.75" PointY="9.75" />
         <EntityTypeShape EntityType="ConsumerModel.SiteMap" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.SitemapInRole" Width="1.5" PointX="9.375" PointY="6.75" />
       </Diagram>
       <Diagram DiagramId="126ae2806a9947d181b4fd5044a5e5aa" Name="Masters" >
         <EntityTypeShape EntityType="ConsumerModel.m_CityArea" Width="1.5" PointX="0.75" PointY="0.75" />
