@@ -7016,24 +7016,45 @@ namespace DataLayer
                                          where CM.Supplier_Id == supplierid
                                          select CM).AsQueryable();
 
-                            if(!string.IsNullOrWhiteSpace(suppliercitycode))
+                            string strGoFor = string.IsNullOrWhiteSpace(param.GoFor) ? string.Empty : param.GoFor.Trim().ToUpper();
+                            if (strGoFor == string.Empty)
+                            {
+                                if (!string.IsNullOrWhiteSpace(suppliercitycode))
+                                {
+                                    if (query.Where(w => w.CityCode == suppliercitycode).Select(s => s).Count() > 0)
+                                    {
+                                        query = query.Where(w => w.CityCode == suppliercitycode).Select(s => s);
+                                    }
+                                    else 
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(suppliercityname)){
+                                            query = query.Where(w => w.CityName == suppliercityname).Select(s => s);
+                                        }
+                                        else
+                                        {
+                                            query = null;
+                                        }
+                                    }
+                                }
+                                
+                            }
+                            else if (strGoFor == "CITYCODE")
                             {
                                 query = query.Where(w => w.CityCode == suppliercitycode).Select(s => s);
                             }
-                            else
+                            else if (strGoFor == "CITYNAME")
                             {
                                 query = query.Where(w => w.CityName == suppliercityname).Select(s => s);
                             }
 
-
                             var res = (from CM in query
                                        orderby CM.Street.Length descending
                                        select CM
-                                       ).Skip(0).Take(param.PageSize).ToList();
+                                   ).Skip(0).Take(param.PageSize).ToList();
 
                             foreach (var item in res)
                             {
-                                
+
                                 string strAddress = !string.IsNullOrWhiteSpace(item.Street) ? item.Street + ", " : string.Empty;
                                 strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street2) ? item.Street2 + ", " : string.Empty);
                                 strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street3) ? item.Street3 + ", " : string.Empty);
@@ -7046,9 +7067,9 @@ namespace DataLayer
                                 strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.PostCode) ? item.PostCode : string.Empty);
                                 _lstresult.Add(new DC_HotelListByCityCode
                                 {
-                                   HotelName = item.ProductName,
-                                   Address = strAddress,
-                                   TotalRecords = 5
+                                    HotelName = item.ProductName,
+                                    Address = strAddress,
+                                    TotalRecords = 5
                                 });
                                 strAddress = string.Empty;
                             }
