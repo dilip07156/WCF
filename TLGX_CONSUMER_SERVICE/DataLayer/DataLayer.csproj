@@ -430,6 +430,9 @@
     <Compile Include="SiteMap.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="SitemapInRole.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="stg_ActivitySupplierProductMapping.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
