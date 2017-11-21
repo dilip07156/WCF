@@ -4454,7 +4454,7 @@ namespace DataLayer
                                     // objNew.Country_Id = CM.Country_Id;
                                     objNew.Country_Id = ((from a in context.m_CountryMapping.AsNoTracking()
                                                           where a.Supplier_Id == CM.Supplier_Id &&
-                                                          ((a.CountryName == CM.CountryName) && a.CountryName != null && CM.CountryName != null)
+                                                          ((a.CountryName.Trim().ToUpper() == CM.CountryName.Trim().ToUpper()) && a.CountryName != null && CM.CountryName != null)
                                                           //&& ((CM.CountryName != null && a.CountryName == CM.CountryName) || CM.CountryName == null)
                                                           //&& ((CM.CountryCode != null && a.CountryCode == CM.CountryCode) || CM.CountryCode == null)
                                                           //&& a.Supplier_Id == CM.Supplier_Id
