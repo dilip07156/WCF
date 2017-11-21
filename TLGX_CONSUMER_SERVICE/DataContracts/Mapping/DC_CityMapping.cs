@@ -690,24 +690,10 @@ namespace DataContracts.Mapping
         [DataMember]
         public string HotelName { get; set; }
         [DataMember]
-        public string Street { get; set; }
-        [DataMember]
-        public string Street2 { get; set; }
-        [DataMember]
-        public string Street3 { get; set; }
-        [DataMember]
-        public string CityName { get; set; }
-        [DataMember]
-        public string CityCode { get; set; }
-        [DataMember]
-        public string CountryName { get; set; }
-        [DataMember]
-        public string CountryCode { get; set; }
-        [DataMember]
         public string Address { get; set; }
         [DataMember]
         public int TotalRecords { get; set; }
-       
+
     }
 
 

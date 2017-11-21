@@ -7028,47 +7028,30 @@ namespace DataLayer
 
                             var res = (from CM in query
                                        orderby CM.Street.Length descending
-                                       select new DC_HotelListByCityCode
-                                       {
-                                           HotelName = CM.ProductName,
-                                           Street = CM.Street,
-                                           Street2 = CM.Street2,
-                                           Street3 = CM.Street3,
-                                           CityName = CM.CityName,
-                                           CityCode = CM.CityCode,
-                                           CountryCode = CM.CountryCode,
-                                           CountryName = CM.CountryName
-                                       }).Skip(0).Take(param.PageSize).ToList();
-
+                                       select CM
+                                       ).Skip(0).Take(param.PageSize).ToList();
 
                             foreach (var item in res)
                             {
-                                string strAddress = !string.IsNullOrWhiteSpace(item.Street) ? item.Street + "," : string.Empty;
-                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street2) ? item.Street2 + "," : string.Empty);
-                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street3) ? item.Street3 + "," : string.Empty);
-                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CityName) ? item.CityName : string.Empty);
-                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CityCode) ? ",(" + item.CityCode + " )," : string.Empty);
+                                
+                                string strAddress = !string.IsNullOrWhiteSpace(item.Street) ? item.Street + ", " : string.Empty;
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street2) ? item.Street2 + ", " : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street3) ? item.Street3 + ", " : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CityName) ? item.CityName + ", " : string.Empty);
+                                // strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CityCode) ? ",(" + item.CityCode + " )," : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.StateName) ? item.StateName : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.StateCode) ? ",(" + item.StateCode + " ), " : string.Empty);
                                 strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CountryName) ? item.CountryName : string.Empty);
-                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CountryCode) ? ",(" + item.CountryCode + " )," : string.Empty);
-                                item.Address = strAddress;
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CountryCode) ? ",(" + item.CountryCode + " ), " : string.Empty);
+                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.PostCode) ? item.PostCode : string.Empty);
+                                _lstresult.Add(new DC_HotelListByCityCode
+                                {
+                                   HotelName = item.ProductName,
+                                   Address = strAddress,
+                                   TotalRecords = 5
+                                });
                                 strAddress = string.Empty;
                             }
-
-                            //int total;
-                            //total = res.Count();
-                            //var skip = param.PageSize * param.PageNo;
-                            //var canPage = skip < total;
-
-                            _lstresult = (from rst in res
-                                          orderby rst.Address.Length descending
-                                          select new DC_HotelListByCityCode
-                                          {
-                                              HotelName = rst.HotelName,
-                                              Address = rst.Address,
-                                              TotalRecords = 5
-                                          }).ToList();
-
-
                         }
                     }
                 }
