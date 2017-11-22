@@ -52,21 +52,19 @@
       </Diagram>
       <Diagram DiagramId="9053f2c6e79c4c20b47e93053c1904d5" Name="Projects" />
       <Diagram DiagramId="c43918edb11c45ab899ecee9d6c63952" Name="Admin" >
-        <EntityTypeShape EntityType="ConsumerModel.Application" Width="1.5" PointX="8.25" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Client" Width="1.5" PointX="2.5" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Organisation_Company" Width="1.5" PointX="4.5" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.UserEntity" Width="1.5" PointX="10" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.SiteMap" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.SitemapInRole" Width="1.5" PointX="6.5" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.AspNetRole" Width="1.5" PointX="6.5" PointY="2.625" />
-        <EntityTypeShape EntityType="ConsumerModel.AspNetUserClaim" Width="1.5" PointX="5.75" PointY="10.625" />
-        <EntityTypeShape EntityType="ConsumerModel.AspNetUserLogin" Width="1.5" PointX="5.75" PointY="5.25" />
-        <EntityTypeShape EntityType="ConsumerModel.AspNetUserRole" Width="1.5" PointX="8.75" PointY="6.625" />
-        <EntityTypeShape EntityType="ConsumerModel.AspNetUser" Width="1.5" PointX="3.5" PointY="4.875" />
-        <AssociationConnector Association="ConsumerModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" />
+        <EntityTypeShape EntityType="ConsumerModel.Application" Width="1.5" PointX="0.75" PointY="7" />
+        <EntityTypeShape EntityType="ConsumerModel.AspNetRole" PointX="3.75" PointY="2.5" Width="1.5" />
+        <EntityTypeShape EntityType="ConsumerModel.AspNetUserClaim" Width="1.5" PointX="8.25" PointY="1" />
+        <EntityTypeShape EntityType="ConsumerModel.AspNetUserLogin" Width="1.5" PointX="8.875" PointY="3.75" />
+        <EntityTypeShape EntityType="ConsumerModel.AspNetUser" Width="1.5" PointX="6" PointY="1.375" />
         <AssociationConnector Association="ConsumerModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="ConsumerModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
-        <AssociationConnector Association="ConsumerModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="ConsumerModel.AspNetUserRoles" />
+        <EntityTypeShape EntityType="ConsumerModel.Client" Width="1.5" PointX="5.375" PointY="6.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Organisation_Company" Width="1.5" PointX="7.375" PointY="6.75" />
+        <EntityTypeShape EntityType="ConsumerModel.UserEntity" Width="1.5" PointX="0.75" PointY="9.75" />
+        <EntityTypeShape EntityType="ConsumerModel.SiteMap" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.SitemapInRole" Width="1.5" PointX="9.375" PointY="6.75" />
       </Diagram>
       <Diagram DiagramId="126ae2806a9947d181b4fd5044a5e5aa" Name="Masters" >
         <EntityTypeShape EntityType="ConsumerModel.m_CityArea" Width="1.5" PointX="0.75" PointY="0.75" />

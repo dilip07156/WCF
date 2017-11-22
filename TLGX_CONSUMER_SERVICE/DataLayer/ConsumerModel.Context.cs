@@ -54,6 +54,10 @@ namespace DataLayer
         public virtual DbSet<m_WorkFlowMessage> m_WorkFlowMessage { get; set; }
         public virtual DbSet<m_WorkflowSteps> m_WorkflowSteps { get; set; }
         public virtual DbSet<Application> Applications { get; set; }
+        public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
+        public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
+        public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
+        public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<Media_Attributes> Media_Attributes { get; set; }
         public virtual DbSet<m_CityArea> m_CityArea { get; set; }
         public virtual DbSet<m_CityAreaLocation> m_CityAreaLocation { get; set; }
@@ -141,11 +145,6 @@ namespace DataLayer
         public virtual DbSet<STG_Mapping_TableIds> STG_Mapping_TableIds { get; set; }
         public virtual DbSet<SupplierImportFileDetail> SupplierImportFileDetails { get; set; }
         public virtual DbSet<SitemapInRole> SitemapInRoles { get; set; }
-        public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
-        public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
-        public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
-        public virtual DbSet<AspNetUserRole> AspNetUserRoles { get; set; }
-        public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {
