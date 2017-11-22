@@ -693,6 +693,10 @@ namespace DataContracts.Mapping
         [DataMember]
         public string Address { get; set; }
         [DataMember]
+        public string CityMapping_Id { get; set; }
+        [DataMember]
+        public string GoFor { get; set; }
+        [DataMember]
         public int TotalRecords { get; set; }
 
     }
