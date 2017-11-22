@@ -6997,113 +6997,158 @@ namespace DataLayer
             try
             {
                 List<DC_HotelListByCityCode> _lstresult = new List<DC_HotelListByCityCode>();
+
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     if (!string.IsNullOrWhiteSpace(param.CityMapping_Id))
                     {
+                        string strGoFor = string.IsNullOrWhiteSpace(param.GoFor) ? string.Empty : param.GoFor.Trim().ToUpper();
+                        IQueryable<Accommodation_ProductMapping> query = context.Accommodation_ProductMapping.Where(w => false).Select(s => s).AsQueryable();
+
                         Guid _CityMapId = Guid.Parse(param.CityMapping_Id);
-                        var selectedcity = (from c in context.m_CityMapping
-                                            where c.CityMapping_Id == _CityMapId
-                                            select c).AsQueryable();
+                        var selectedcity = context.m_CityMapping.Find(_CityMapId);
 
                         if (selectedcity != null)
                         {
-                            var supplierid = selectedcity.Select(x => x.Supplier_Id).FirstOrDefault();
-                            var suppliercitycode = selectedcity.Select(x => x.CityCode).FirstOrDefault();
-                            var suppliercityname = selectedcity.Select(x => x.CityName).FirstOrDefault();
-                            var supplierCountryname = selectedcity.Select(x => x.CountryName).FirstOrDefault();
-                            var supplierCountryCode = selectedcity.Select(x => x.CountryCode).FirstOrDefault();
+                            var supplierid = selectedcity.Supplier_Id;
+                            var suppliercitycode = (selectedcity.CityCode ?? string.Empty).Trim().ToLower();
+                            var suppliercityname = (selectedcity.CityName ?? string.Empty).Trim().ToLower();
+                            var supplierCountryname = (selectedcity.CountryName ?? string.Empty).Trim().ToLower();
+                            var supplierCountryCode = (selectedcity.CountryCode ?? string.Empty).Trim().ToLower();
 
-                            var query = (from CM in context.Accommodation_ProductMapping
-                                         where CM.Supplier_Id == supplierid
-                                         select CM).AsQueryable();
-
-                            string strGoFor = string.IsNullOrWhiteSpace(param.GoFor) ? string.Empty : param.GoFor.Trim().ToUpper();
-                            if (strGoFor == string.Empty)
+                            if (strGoFor == "CITYCODE")
                             {
                                 if (!string.IsNullOrWhiteSpace(suppliercitycode))
                                 {
-                                    if (query.Where(w => w.CityCode == suppliercitycode).Select(s => s).Count() > 0)
-                                    {
-                                        query = query.Where(w => w.CityCode == suppliercitycode).Select(s => s);
-                                    }
-                                    else
-                                    {
-                                        if (!string.IsNullOrWhiteSpace(suppliercityname))
-                                        {
-                                            query = query.Where(w => w.CityName == suppliercityname).Select(s => s);
-                                        }
-                                        //else
-                                        //{
-                                        //    query = null;
-                                        //}
-                                    }
+                                    query = context.Accommodation_ProductMapping.Where(w => w.CityCode.Trim().ToLower() == suppliercitycode && w.Supplier_Id == supplierid).Select(s => s).AsQueryable();
                                 }
-
-                            }
-                            else if (strGoFor == "CITYCODE")
-                            {
-                                query = query.Where(w => w.CityCode == suppliercitycode).Select(s => s);
                             }
                             else if (strGoFor == "CITYNAME")
                             {
-                                query = query.Where(w => w.CityName == suppliercityname).Select(s => s);
+                                if (!string.IsNullOrWhiteSpace(suppliercityname))
+                                {
+                                    query = context.Accommodation_ProductMapping.Where(w => w.CityName.Trim().ToLower() == suppliercityname && w.Supplier_Id == supplierid).Select(s => s).AsQueryable();
+                                }
                             }
-                            //Country check
-                            if (!string.IsNullOrWhiteSpace(supplierCountryname))
+                            else if (strGoFor == string.Empty)
                             {
-                                query = query.Where(w => w.CountryName == supplierCountryname).Select(s => s);
-                            }
-                            else if (!string.IsNullOrWhiteSpace(supplierCountryCode))
-                            {
-                                query = query.Where(w => w.CountryCode == supplierCountryCode).Select(s => s);
+                                if (!string.IsNullOrWhiteSpace(suppliercitycode))
+                                {
+                                    query = context.Accommodation_ProductMapping.Where(w => w.CityCode.Trim().ToLower() == suppliercitycode && w.Supplier_Id == supplierid).Select(s => s).AsQueryable();
+                                }
+
+                                if (query.Count() == 0)
+                                {
+                                    if (!string.IsNullOrWhiteSpace(suppliercityname))
+                                    {
+                                        query = context.Accommodation_ProductMapping.Where(w => w.CityName.Trim().ToLower() == suppliercityname && w.Supplier_Id == supplierid).Select(s => s).AsQueryable();
+                                    }
+                                }
                             }
 
 
-                            int total;
+                            int total = query.Count();
+
+                            //Supplier Country Filter check
+                            if (total > 0)
+                            {
+                                if (!string.IsNullOrWhiteSpace(supplierCountryCode))
+                                {
+                                    if (query.Where(w => w.CountryCode.Trim().ToLower() == supplierCountryCode).Select(s => s).Count() > 0)
+                                    {
+                                        query = query.Where(w => w.CountryCode.Trim().ToLower() == supplierCountryCode).Select(s => s);
+                                    }
+                                    else
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(supplierCountryname))
+                                        {
+                                            if (query.Where(w => w.CountryName.Trim().ToLower() == supplierCountryname).Select(s => s).Count() > 0)
+                                            {
+                                                query = query.Where(w => w.CountryName.Trim().ToLower() == supplierCountryname).Select(s => s);
+                                            }
+                                            else
+                                            {
+                                                return _lstresult;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            return _lstresult;
+                                        }
+                                    }
+                                }
+                                else if (!string.IsNullOrWhiteSpace(supplierCountryname))
+                                {
+                                    if (query.Where(w => w.CountryName.Trim().ToLower() == supplierCountryname).Select(s => s).Count() > 0)
+                                    {
+                                        query = query.Where(w => w.CountryName.Trim().ToLower() == supplierCountryname).Select(s => s);
+                                    }
+                                    else
+                                    {
+                                        return _lstresult;
+                                    }
+                                }
+                                else
+                                {
+                                    return _lstresult;
+                                }
+                            }
 
                             total = query.Count();
-
-                            var skip = param.PageSize * param.PageNo;
-
-                            var canPage = skip < total;
-
-                            var res = (from CM in query
-                                       orderby CM.Street.Length descending
-                                       select CM
-                                   ).Skip(skip).Take(param.PageSize).ToList();
-
-                            foreach (var item in res)
+                            if (total > 0)
                             {
+                                var skip = param.PageSize * param.PageNo;
 
-                                string strAddress = !string.IsNullOrWhiteSpace(item.Street) ? item.Street + ", " : string.Empty;
-                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street2) ? item.Street2 + ", " : string.Empty);
-                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street3) ? item.Street3 + ", " : string.Empty);
-                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CityName) ? item.CityName + ", " : string.Empty);
-                                // strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CityCode) ? ",(" + item.CityCode + " )," : string.Empty);
-                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.StateName) ? item.StateName : string.Empty);
-                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.StateCode) ? ",(" + item.StateCode + " ), " : string.Empty);
-                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CountryName) ? item.CountryName : string.Empty);
-                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CountryCode) ? ",(" + item.CountryCode + " ), " : string.Empty);
-                                strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.PostCode) ? item.PostCode : string.Empty);
-                                _lstresult.Add(new DC_HotelListByCityCode
+                                var res = (from CM in query
+                                           orderby CM.Street.Length descending
+                                           select CM
+                                       ).Skip(skip).Take(param.PageSize).ToList();
+
+                                foreach (var item in res)
                                 {
-                                    HotelName = item.ProductName,
-                                    Address = strAddress,
-                                    CityMapping_Id = param.CityMapping_Id,
-                                    GoFor = strGoFor,
-                                    TotalRecords = total
-                                });
-                                strAddress = string.Empty;
+
+                                    string strAddress = !string.IsNullOrWhiteSpace(item.Street) ? item.Street + ", " : string.Empty;
+                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street2) ? item.Street2 + ", " : string.Empty);
+                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street3) ? item.Street3 + ", " : string.Empty);
+                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CityName) ? item.CityName + ", " : string.Empty);
+                                    // strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CityCode) ? ",(" + item.CityCode + " )," : string.Empty);
+                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.StateName) ? item.StateName : string.Empty);
+                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.StateCode) ? ",(" + item.StateCode + " ), " : string.Empty);
+                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CountryName) ? item.CountryName : string.Empty);
+                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CountryCode) ? ",(" + item.CountryCode + " ), " : string.Empty);
+                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.PostCode) ? item.PostCode : string.Empty);
+                                    _lstresult.Add(new DC_HotelListByCityCode
+                                    {
+                                        HotelName = item.ProductName,
+                                        Address = strAddress,
+                                        CityMapping_Id = param.CityMapping_Id,
+                                        GoFor = strGoFor,
+                                        TotalRecords = total
+                                    });
+                                    strAddress = string.Empty;
+                                }
+
+                                return _lstresult;
+                            }
+                            else
+                            {
+                                return _lstresult;
                             }
                         }
+                        else
+                        {
+                            return _lstresult;
+                        }
+                    }
+                    else
+                    {
+                        return _lstresult;
                     }
                 }
-                return _lstresult;
+
             }
             catch (Exception ex)
             {
-
                 throw;
             }
         }
