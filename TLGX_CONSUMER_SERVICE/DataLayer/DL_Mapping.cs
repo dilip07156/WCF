@@ -7011,6 +7011,8 @@ namespace DataLayer
                             var supplierid = selectedcity.Select(x => x.Supplier_Id).FirstOrDefault();
                             var suppliercitycode = selectedcity.Select(x => x.CityCode).FirstOrDefault();
                             var suppliercityname = selectedcity.Select(x => x.CityName).FirstOrDefault();
+                            var supplierCountryname = selectedcity.Select(x => x.CountryName).FirstOrDefault();
+                            var supplierCountryCode = selectedcity.Select(x => x.CountryCode).FirstOrDefault();
 
                             var query = (from CM in context.Accommodation_ProductMapping
                                          where CM.Supplier_Id == supplierid
@@ -7025,18 +7027,19 @@ namespace DataLayer
                                     {
                                         query = query.Where(w => w.CityCode == suppliercitycode).Select(s => s);
                                     }
-                                    else 
+                                    else
                                     {
-                                        if (!string.IsNullOrWhiteSpace(suppliercityname)){
+                                        if (!string.IsNullOrWhiteSpace(suppliercityname))
+                                        {
                                             query = query.Where(w => w.CityName == suppliercityname).Select(s => s);
                                         }
-                                        else
-                                        {
-                                            query = null;
-                                        }
+                                        //else
+                                        //{
+                                        //    query = null;
+                                        //}
                                     }
                                 }
-                                
+
                             }
                             else if (strGoFor == "CITYCODE")
                             {
@@ -7046,11 +7049,29 @@ namespace DataLayer
                             {
                                 query = query.Where(w => w.CityName == suppliercityname).Select(s => s);
                             }
+                            //Country check
+                            if (!string.IsNullOrWhiteSpace(supplierCountryname))
+                            {
+                                query = query.Where(w => w.CountryName == supplierCountryname).Select(s => s);
+                            }
+                            else if (!string.IsNullOrWhiteSpace(supplierCountryCode))
+                            {
+                                query = query.Where(w => w.CountryCode == supplierCountryCode).Select(s => s);
+                            }
+
+
+                            int total;
+
+                            total = query.Count();
+
+                            var skip = param.PageSize * param.PageNo;
+
+                            var canPage = skip < total;
 
                             var res = (from CM in query
                                        orderby CM.Street.Length descending
                                        select CM
-                                   ).Skip(0).Take(param.PageSize).ToList();
+                                   ).Skip(skip).Take(param.PageSize).ToList();
 
                             foreach (var item in res)
                             {
@@ -7069,7 +7090,9 @@ namespace DataLayer
                                 {
                                     HotelName = item.ProductName,
                                     Address = strAddress,
-                                    TotalRecords = 5
+                                    CityMapping_Id = param.CityMapping_Id,
+                                    GoFor = strGoFor,
+                                    TotalRecords = total
                                 });
                                 strAddress = string.Empty;
                             }
