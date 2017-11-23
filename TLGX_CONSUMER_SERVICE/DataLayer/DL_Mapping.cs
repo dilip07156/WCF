@@ -3953,7 +3953,14 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var prodMapSearch = from a in context.m_CityMapping select a;
+
+
+                    var prodMapSearch = (from a in context.m_CityMapping select a).AsQueryable();
+                    var countrymaster = context.m_CountryMaster.Select(s => s).AsQueryable();
+
+                    var SuppliersMaster = context.Suppliers.Select(s => s).AsQueryable();
+                    var CityMaster = context.m_CityMaster.Select(s => s).AsQueryable();
+
 
                     if (param.Supplier_Id != null)
                     {
@@ -4007,7 +4014,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(param.SupplierCountryName))
                     {
                         prodMapSearch = from a in prodMapSearch
-                                        join c in context.m_CountryMaster on a.Country_Id equals c.Country_Id
+                                        join c in countrymaster on a.Country_Id equals c.Country_Id
                                         where (a.CountryName.ToUpper().Contains(param.SupplierCountryName.ToUpper())
                                         || c.Name.ToUpper().Contains(param.SupplierCountryName.ToUpper())
                                         )
@@ -4015,7 +4022,7 @@ namespace DataLayer
                         if (param.IsExact)
                         {
                             prodMapSearch = from a in prodMapSearch
-                                            join c in context.m_CountryMaster on a.Country_Id equals c.Country_Id
+                                            join c in countrymaster on a.Country_Id equals c.Country_Id
                                             where (a.CountryName.ToUpper() == param.SupplierCountryName.ToUpper()
                                             || c.Name.ToUpper() == param.SupplierCountryName.ToUpper()
                                             )
@@ -4050,17 +4057,17 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(param.ResultSet))
                     {
                         total = (from a in prodMapSearch
-                                 join s in context.Suppliers on a.Supplier_Id equals s.Supplier_Id
-                                 join ct in context.m_CityMaster on a.City_Id equals ct.City_Id into ctl
+                                 join s in SuppliersMaster on a.Supplier_Id equals s.Supplier_Id
+                                 join ct in CityMaster on a.City_Id equals ct.City_Id into ctl
                                  from ctld in ctl.DefaultIfEmpty()
-                                 join m in context.m_CountryMaster on a.Country_Id equals m.Country_Id into j
+                                 join m in countrymaster on a.Country_Id equals m.Country_Id into j
                                  from jd in j.DefaultIfEmpty()
                                  select a.CityName).Distinct().Count();
                         var prodMapList = (from a in prodMapSearch
-                                           join s in context.Suppliers on a.Supplier_Id equals s.Supplier_Id
-                                           join ct in context.m_CityMaster on a.City_Id equals ct.City_Id into ctl
+                                           join s in SuppliersMaster on a.Supplier_Id equals s.Supplier_Id
+                                           join ct in CityMaster on a.City_Id equals ct.City_Id into ctl
                                            from ctld in ctl.DefaultIfEmpty()
-                                           join m in context.m_CountryMaster on a.Country_Id equals m.Country_Id into j
+                                           join m in countrymaster on a.Country_Id equals m.Country_Id into j
                                            from jd in j.DefaultIfEmpty()
                                            select new DataContracts.Mapping.DC_CityMapping
                                            {
@@ -4072,10 +4079,10 @@ namespace DataLayer
                     else
                     {
                         var CityMapList = (from a in prodMapSearch
-                                           join s in context.Suppliers on a.Supplier_Id equals s.Supplier_Id
-                                           join ct in context.m_CityMaster on a.City_Id equals ct.City_Id into ctl
+                                           join s in SuppliersMaster on a.Supplier_Id equals s.Supplier_Id
+                                           join ct in CityMaster on a.City_Id equals ct.City_Id into ctl
                                            from ctld in ctl.DefaultIfEmpty()
-                                           join m in context.m_CountryMaster on a.Country_Id equals m.Country_Id into j
+                                           join m in countrymaster on a.Country_Id equals m.Country_Id into j
                                            from jd in j.DefaultIfEmpty()
                                                //orderby (param.SortBy)
                                            orderby a.CityName
@@ -4108,7 +4115,7 @@ namespace DataLayer
                                                StateName = a.StateName,
                                                Latitude = a.Latitude,
                                                Longitude = a.Longitude
-                                           }).Skip(skip).Take(param.PageSize).OrderBy(s => s.CityName).ToList();
+                                           }).Skip(skip).Take(param.PageSize).ToList();
 
                         //CityMapList = CityMapList.Select(c =>
                         //{
@@ -4134,15 +4141,15 @@ namespace DataLayer
                                         {
                                             var cityName = item.CityName.Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("city", "").ToUpper();
                                             var cityCode = item.CityCode.Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("city", "").ToUpper();
-                                            var searchCity = context.m_CityMaster.Where(a => a.Country_Id == item.Country_Id && (a.Name.ToUpper().Trim() == cityName.ToUpper().Trim())).FirstOrDefault();
+                                            var searchCity = CityMaster.Where(a => a.Country_Id == item.Country_Id && (a.Name.ToUpper().Trim() == cityName.ToUpper().Trim())).FirstOrDefault();
                                             if (searchCity == null)
                                             {
-                                                searchCity = context.m_CityMaster.Where(a => a.Country_Id == item.Country_Id && a.Name.ToUpper().Trim().Contains(cityName.ToUpper().Trim())).FirstOrDefault();
+                                                searchCity = CityMaster.Where(a => a.Country_Id == item.Country_Id && a.Name.ToUpper().Trim().Contains(cityName.ToUpper().Trim())).FirstOrDefault();
                                                 if (searchCity == null)
                                                 {
-                                                    searchCity = context.m_CityMaster.Where(a => a.Country_Id == item.Country_Id && (a.Name.ToUpper().Trim() == cityCode.ToUpper().Trim())).FirstOrDefault();
+                                                    searchCity = CityMaster.Where(a => a.Country_Id == item.Country_Id && (a.Name.ToUpper().Trim() == cityCode.ToUpper().Trim())).FirstOrDefault();
                                                     if (searchCity == null)
-                                                        searchCity = context.m_CityMaster.Where(a => a.Country_Id == item.Country_Id && a.Name.ToUpper().Trim().Contains(cityCode.ToUpper().Trim())).FirstOrDefault();
+                                                        searchCity = CityMaster.Where(a => a.Country_Id == item.Country_Id && a.Name.ToUpper().Trim().Contains(cityCode.ToUpper().Trim())).FirstOrDefault();
                                                 }
                                             }
                                             if (searchCity != null)

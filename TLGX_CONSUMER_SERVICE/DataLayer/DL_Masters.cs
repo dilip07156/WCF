@@ -3647,7 +3647,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
 
-                    var citymaster = (from ct in context.m_CityMaster
+                    var citymaster = (from ct in context.m_CityMaster.AsQueryable()
                                       where ct.Status.ToUpper() == "ACTIVE"
                                           && ct.Country_Id == _guidCountry_Id
                                       orderby ct.Name ascending
