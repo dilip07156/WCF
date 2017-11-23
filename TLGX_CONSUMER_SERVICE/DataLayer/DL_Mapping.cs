@@ -7007,7 +7007,6 @@ namespace DataLayer
 
                         Guid _CityMapId = Guid.Parse(param.CityMapping_Id);
                         var selectedcity = context.m_CityMapping.Find(_CityMapId);
-
                         if (selectedcity != null)
                         {
                             var supplierid = selectedcity.Supplier_Id;
@@ -7022,6 +7021,7 @@ namespace DataLayer
                                 {
                                     query = context.Accommodation_ProductMapping.Where(w => w.CityCode.Trim().ToLower() == suppliercitycode && w.Supplier_Id == supplierid).Select(s => s).AsQueryable();
                                 }
+
                             }
                             else if (strGoFor == "CITYNAME")
                             {
@@ -7029,12 +7029,14 @@ namespace DataLayer
                                 {
                                     query = context.Accommodation_ProductMapping.Where(w => w.CityName.Trim().ToLower() == suppliercityname && w.Supplier_Id == supplierid).Select(s => s).AsQueryable();
                                 }
+
                             }
                             else if (strGoFor == string.Empty)
                             {
                                 if (!string.IsNullOrWhiteSpace(suppliercitycode))
                                 {
                                     query = context.Accommodation_ProductMapping.Where(w => w.CityCode.Trim().ToLower() == suppliercitycode && w.Supplier_Id == supplierid).Select(s => s).AsQueryable();
+
                                 }
 
                                 if (query.Count() == 0)
@@ -7042,6 +7044,7 @@ namespace DataLayer
                                     if (!string.IsNullOrWhiteSpace(suppliercityname))
                                     {
                                         query = context.Accommodation_ProductMapping.Where(w => w.CityName.Trim().ToLower() == suppliercityname && w.Supplier_Id == supplierid).Select(s => s).AsQueryable();
+
                                     }
                                 }
                             }
@@ -7106,26 +7109,34 @@ namespace DataLayer
 
                                 foreach (var item in res)
                                 {
-
-                                    string strAddress = !string.IsNullOrWhiteSpace(item.Street) ? item.Street + ", " : string.Empty;
-                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street2) ? item.Street2 + ", " : string.Empty);
-                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.Street3) ? item.Street3 + ", " : string.Empty);
-                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CityName) ? item.CityName + ", " : string.Empty);
-                                    // strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CityCode) ? ",(" + item.CityCode + " )," : string.Empty);
-                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.StateName) ? item.StateName : string.Empty);
-                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.StateCode) ? ",(" + item.StateCode + " ), " : string.Empty);
-                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CountryName) ? item.CountryName : string.Empty);
-                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.CountryCode) ? ",(" + item.CountryCode + " ), " : string.Empty);
-                                    strAddress = strAddress + (!string.IsNullOrWhiteSpace(item.PostCode) ? item.PostCode : string.Empty);
+                                    StringBuilder sb = new StringBuilder();
+                                    sb.Append(item.Street);
+                                    sb.Append(", ");
+                                    sb.Append(item.Street2);
+                                    sb.Append(", ");
+                                    sb.Append(item.Street3);
+                                    sb.Append(", ");
+                                    sb.Append(item.CityName);
+                                    sb.Append(", ");
+                                    sb.Append(item.StateName);
+                                    sb.Append(", ");
+                                    sb.Append(item.StateCode);
+                                    sb.Append(", ");
+                                    sb.Append(item.CountryName);
+                                    sb.Append(", ");
+                                    sb.Append(item.CountryCode);
+                                    sb.Append(", ");
+                                    sb.Append(item.PostCode);
                                     _lstresult.Add(new DC_HotelListByCityCode
                                     {
                                         HotelName = item.ProductName,
-                                        Address = strAddress,
+                                        Address = Convert.ToString(sb),
                                         CityMapping_Id = param.CityMapping_Id,
                                         GoFor = strGoFor,
                                         TotalRecords = total
                                     });
-                                    strAddress = string.Empty;
+                                    sb.Clear();
+
                                 }
 
                                 return _lstresult;
