@@ -4891,6 +4891,8 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    var CountryMapping = context.m_CountryMapping.Where(w => w.CountryName != null || w.CountryCode != null).AsQueryable();
+                    var CityMapping = context.m_CityMapping.Select(s => s).AsQueryable();
                     foreach (var CM in obj)
                     {
                         if (CM.CityMapping_Id == null || CM.Supplier_Id == null)
@@ -4901,7 +4903,7 @@ namespace DataLayer
                         try
                         {
 
-                            var search = (from a in context.m_CityMapping
+                            var search = (from a in CityMapping
                                           where a.CityMapping_Id == CM.CityMapping_Id
                                           select a).FirstOrDefault();
                             if (search != null)
@@ -4955,15 +4957,14 @@ namespace DataLayer
                                 objNew.StateCode = CM.StateCode;
                                 objNew.StateName = CM.StateName;
                                 // objNew.Country_Id = CM.Country_Id;
-                                objNew.Country_Id = ((from a in context.m_CountryMapping.AsNoTracking()
-                                                      where a.Supplier_Id == CM.Supplier_Id &&
-                                                      ((a.CountryName == CM.CountryName) && a.CountryName != null && CM.CountryName != null)
+                                objNew.Country_Id = ((from a in CountryMapping
+                                                      where a.Supplier_Id == CM.Supplier_Id && a.CountryName == CM.CountryName
+                                                      //((a.CountryName == CM.CountryName) && a.CountryName != null && CM.CountryName != null)
                                                       //&& ((CM.CountryName != null && a.CountryName == CM.CountryName) || CM.CountryName == null)
                                                       //&& ((CM.CountryCode != null && a.CountryCode == CM.CountryCode) || CM.CountryCode == null)
                                                       //&& a.Supplier_Id == CM.Supplier_Id
-                                                      select a.Country_Id).FirstOrDefault()) ?? ((from a in context.m_CountryMapping.AsNoTracking()
-                                                                                                  where a.Supplier_Id == CM.Supplier_Id &&
-                                                                                                  ((a.CountryCode == CM.CountryCode) && a.CountryCode != null && CM.CountryCode != null)
+                                                      select a.Country_Id).FirstOrDefault()) ?? ((from a in CountryMapping
+                                                                                                  where a.Supplier_Id == CM.Supplier_Id && a.CountryCode == CM.CountryCode
                                                                                                   select a.Country_Id).FirstOrDefault());
                                 context.m_CityMapping.Add(objNew);
                             }
