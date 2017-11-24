@@ -3647,7 +3647,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
 
-                    var citymaster = (from ct in context.m_CityMaster
+                    var citymaster = (from ct in context.m_CityMaster.AsQueryable()
                                       where ct.Status.ToUpper() == "ACTIVE"
                                           && ct.Country_Id == _guidCountry_Id
                                       orderby ct.Name ascending
@@ -3752,10 +3752,14 @@ namespace DataLayer
             DC_Supplier_DDL supdata = new DC_Supplier_DDL();
             using (ConsumerEntities context = new ConsumerEntities())
             {
+                var SuppliersMaster = context.Suppliers.Select(s => s).AsQueryable();
+                var CountryMappingMaster = context.m_CountryMapping.Select(s => s).AsQueryable();
+                var CityMappingMaster = context.m_CityMapping.Select(s => s).AsQueryable();
+
                 if (objName.ToUpper().Trim() == "COUNTRY")
                 {
-                    var sdata = (from m in context.m_CountryMapping
-                                 join s in context.Suppliers on m.Supplier_Id equals s.Supplier_Id
+                    var sdata = (from m in CountryMappingMaster
+                                 join s in SuppliersMaster on m.Supplier_Id equals s.Supplier_Id
                                  where m.CountryMapping_Id == Mapping_Id
                                  orderby s.Name ascending
                                  select new DC_Supplier_DDL
@@ -3768,8 +3772,8 @@ namespace DataLayer
                 }
                 if (objName.ToUpper().Trim() == "CITY")
                 {
-                    var sdata = (from m in context.m_CityMapping
-                                 join s in context.Suppliers on m.Supplier_Id equals s.Supplier_Id
+                    var sdata = (from m in CityMappingMaster
+                                 join s in SuppliersMaster on m.Supplier_Id equals s.Supplier_Id
                                  where m.CityMapping_Id == Mapping_Id
                                  orderby s.Name ascending
                                  select new DC_Supplier_DDL
