@@ -144,6 +144,14 @@ namespace ConsumerSvc
             }
         }
 
+        public DC_State_Master_DDL GetStateNameAndCode(DC_State_Master_DDL_RQ _obj)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetStateNameAndCode(_obj);
+            }
+        }
+
         #endregion
 
         #region State Master

@@ -2060,7 +2060,7 @@ namespace DataLayer
                     if (RQ.ProductName != null)
                     {
                         search = from a in search
-                                 where a.ProductName.Trim().TrimStart().ToUpper() == RQ.ProductName.Trim().TrimStart().ToUpper()
+                                 where a.ProductName.Trim().ToUpper().Contains(RQ.ProductName.Trim().ToUpper())
                                  select a;
                     }
 
