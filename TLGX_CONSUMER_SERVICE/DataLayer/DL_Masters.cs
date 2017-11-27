@@ -7,6 +7,7 @@ using System.ServiceModel;
 using DataContracts.Masters;
 using DataContracts;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace DataLayer
 {
@@ -470,8 +471,6 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Country Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-
-
         public List<State_AlphaPage> GetStatesAlphaPaging(DC_State_Search_RQ RQ)
         {
             try
@@ -595,7 +594,6 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding state master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-
         public DataContracts.DC_Message UpdateStatesMaster(DC_Master_State param)
         {
             DataContracts.DC_Message _msg = new DataContracts.DC_Message();
@@ -647,6 +645,8 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating state master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+
         #endregion
 
         #region CityMaster
@@ -993,6 +993,7 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating city master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
         #endregion
 
         #region DynamicAttributes
@@ -3386,47 +3387,54 @@ namespace DataLayer
             {
                 if (objName == "supplier")
                 {
-                    var supcode = (from ct in context.Suppliers
-                                   where ct.Supplier_Id == obj_Id
-                                   select new { ct.Code }).FirstOrDefault();
-                    if (supcode != null)
-                        ObjCode = supcode.Code;
+                    ObjCode = context.Suppliers.Find(obj_Id).Code;
+                        //(from ct in context.Suppliers.AsNoTracking()
+                        //           where ct.Supplier_Id == obj_Id
+                        //           select new { ct.Code }).FirstOrDefault();
+                    //if (supcode != null)
+                    //    ObjCode = supcode.Code;
                 }
                 if (objName == "country")
                 {
-                    var countrycode = (from ct in context.m_CountryMaster
-                                       where ct.Country_Id == obj_Id
-                                       select new { ct.Code }).FirstOrDefault();
+                    ObjCode = context.m_CountryMaster.Find(obj_Id).Code;
 
-                    if (countrycode != null)
-                        ObjCode = countrycode.Code;
+                    //var countrycode = (from ct in context.m_CountryMaster.AsNoTracking()
+                    //                   where ct.Country_Id == obj_Id
+                    //                   select new { ct.Code }).FirstOrDefault();
+
+                    //if (countrycode != null)
+                    //    ObjCode = countrycode.Code;
                 }
                 if (objName == "city")
                 {
-                    var citycode = (from ct in context.m_CityMaster
-                                    where ct.City_Id == obj_Id
-                                    select new { ct.Code }).FirstOrDefault();
+                    ObjCode = context.m_CityMaster.Find(obj_Id).Code;
 
-                    if (citycode != null)
-                        ObjCode = citycode.Code;
+                    //var citycode = (from ct in context.m_CityMaster.AsNoTracking()
+                    //                where ct.City_Id == obj_Id
+                    //                select new { ct.Code }).FirstOrDefault();
+
+                    //if (citycode != null)
+                    //    ObjCode = citycode.Code;
                 }
                 if (objName == "state")
                 {
-                    var statecode = (from ct in context.m_States
-                                     where ct.State_Id == obj_Id
-                                     select new { ct.StateCode }).FirstOrDefault();
+                    ObjCode = context.m_States.Find(obj_Id).StateCode;
+                    //var statecode = (from ct in context.m_States.AsNoTracking()
+                    //                 where ct.State_Id == obj_Id
+                    //                 select new { ct.StateCode }).FirstOrDefault();
 
-                    if (statecode != null)
-                        ObjCode = statecode.StateCode;
+                    //if (statecode != null)
+                    //    ObjCode = statecode.StateCode;
                 }
                 if (objName == "product")
                 {
-                    var citycode = (from ct in context.Accommodations
-                                    where ct.Accommodation_Id == obj_Id
-                                    select new { ct.CompanyHotelID }).FirstOrDefault();
+                    ObjCode = context.Accommodations.Find(obj_Id).CompanyHotelID.ToString();
+                    //var citycode = (from ct in context.Accommodations.AsNoTracking()
+                    //                where ct.Accommodation_Id == obj_Id
+                    //                select new { ct.CompanyHotelID }).FirstOrDefault();
 
-                    if (citycode != null)
-                        ObjCode = citycode.CompanyHotelID.ToString();
+                    //if (citycode != null)
+                    //    ObjCode = citycode.CompanyHotelID.ToString();
                 }
                 return ObjCode;
             }
@@ -3646,7 +3654,8 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-
+                    Stopwatch timer = new Stopwatch();
+                    timer.Start();
                     var citymaster = (from ct in context.m_CityMaster.AsQueryable()
                                       where ct.Status.ToUpper() == "ACTIVE"
                                           && ct.Country_Id == _guidCountry_Id
@@ -3657,6 +3666,9 @@ namespace DataLayer
                                           City_Id = ct.City_Id,
                                           Code = ct.Code
                                       }).ToList();
+                    timer.Stop();
+                    var ElapsedTicks = timer.ElapsedMilliseconds;
+                    citymaster[0].Time = Convert.ToString(ElapsedTicks);
                     return citymaster;
                 }
 
@@ -3794,7 +3806,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var citycode = (from ct in context.m_CityMaster
+                    var citycode = (from ct in context.m_CityMaster.AsNoTracking()
                                     where ct.City_Id == City_Id
                                     select new DC_State_Master_DDL
                                     {
@@ -3906,6 +3918,45 @@ namespace DataLayer
             }
         }
 
+        public DC_State_Master_DDL GetStateNameAndCode(DC_State_Master_DDL_RQ RQ)
+        {
+            DC_State_Master_DDL _obj = new DC_State_Master_DDL();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var stateMaster = context.m_States.Select(s => s).AsQueryable();
+                    if (!string.IsNullOrEmpty(RQ.State_ID))
+                    {
+
+                        Guid _stateId = Guid.Parse(RQ.State_ID);
+                        if (_stateId != Guid.Empty)
+                        {
+                            stateMaster = from x in stateMaster where x.State_Id == _stateId select x;
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(RQ.StateName))
+                    {
+                        stateMaster = from x in stateMaster where x.StateName.ToLower() == RQ.StateName.ToLower() select x;
+                    }
+                    if (!string.IsNullOrEmpty(RQ.StateCode))
+                    {
+                        stateMaster = from x in stateMaster where x.StateCode.ToLower() == RQ.StateCode.ToLower() select x;
+                    }
+
+                    if (stateMaster.Count() == 1)
+                    {
+                        _obj.StateCode = stateMaster.Select(s => s.StateCode).FirstOrDefault();
+                        _obj.StateName = stateMaster.Select(s => s.StateName).FirstOrDefault();
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            return _obj;
+        }
         #endregion
 
         #region City Area and Location

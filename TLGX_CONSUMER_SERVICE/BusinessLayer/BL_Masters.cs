@@ -96,7 +96,14 @@ namespace BusinessLayer
                 return obj.UpdateCityMaster(param);
             }
         }
+        public DC_State_Master_DDL GetStateNameAndCode(DC_State_Master_DDL_RQ _obj)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetStateNameAndCode(_obj);
+            }
 
+        }
         #endregion
 
         #region State Master

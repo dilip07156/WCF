@@ -301,4 +301,15 @@ namespace DataContracts.Masters
         [DataMember]
         public string StateCode { get; set; }
     }
+
+    [DataContract]
+    public class DC_State_Master_DDL_RQ
+    {
+        [DataMember]
+        public string State_ID { get; set; }
+        [DataMember]
+        public string StateName { get; set; }
+        [DataMember]
+        public string StateCode { get; set; }
+    }
 }

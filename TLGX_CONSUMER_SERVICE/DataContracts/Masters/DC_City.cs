@@ -451,6 +451,8 @@ namespace DataContracts.Masters
         public Guid City_Id { get; set; }
         [DataMember]
         public string Code { get; set; }
+        [DataMember]
+        public string Time { get; set; }
     }
 
     [DataContract]
