@@ -145,6 +145,8 @@ namespace DataLayer
         public virtual DbSet<STG_Mapping_TableIds> STG_Mapping_TableIds { get; set; }
         public virtual DbSet<SupplierImportFileDetail> SupplierImportFileDetails { get; set; }
         public virtual DbSet<SitemapInRole> SitemapInRoles { get; set; }
+        public virtual DbSet<Activity_DaysOfWeek> Activity_DaysOfWeek { get; set; }
+        public virtual DbSet<Activity_DaysOfOperation> Activity_DaysOfOperation { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

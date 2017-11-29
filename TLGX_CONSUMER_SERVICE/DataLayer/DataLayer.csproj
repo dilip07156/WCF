@@ -184,6 +184,12 @@
     <Compile Include="Activity_Content.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Activity_DaysOfOperation.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Activity_DaysOfWeek.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Activity_Deals.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>

@@ -256,6 +256,17 @@ namespace OperationContracts
         DataContracts.DC_Message AddUpdateActivityPolicy(DataContracts.Masters.DC_Activity_Policy RQ);
         #endregion
 
+        #region Activity DaysOfWeek
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Activity/ActivityDaysOfWeek/Get", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Masters.DC_Activity_DaysOfWeek_RS> GetActivityDaysOfWeek(DataContracts.Masters.DC_Activity_DaysOfWeek_RQ RQ);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Activity/ActivityDaysOfWeek/AddUpdate", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message AddUpdateActivityDaysOfWeek(DataContracts.Masters.DC_Activity_DaysOfWeek RQ);
+        #endregion
         
     }
 }
