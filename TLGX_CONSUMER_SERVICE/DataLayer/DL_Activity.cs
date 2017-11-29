@@ -3582,5 +3582,171 @@ namespace DataLayer
             }
         }
         #endregion
+
+        #region Activity DaysOfWeek
+        public List<DataContracts.Masters.DC_Activity_DaysOfWeek_RS> GetActivityDaysOfWeek(DataContracts.Masters.DC_Activity_DaysOfWeek_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_DaysOfWeek
+                                 select a;
+                    if (RQ.Activity_DaysOfWeek_ID != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_DaysOfWeek_ID == RQ.Activity_DaysOfWeek_ID
+                                 select a;
+                    }
+                    if (RQ.Activity_Flavor_ID != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_Flavor_ID == RQ.Activity_Flavor_ID
+                                 select a;
+                    }
+                    if (RQ.Activity_DaysOfOperation_Id != null)
+                    {
+                        search = from a in search
+                                 where a.Activity_DaysOfOperation_Id == RQ.Activity_DaysOfOperation_Id
+                                 select a;
+                    }
+                    //int total = search.Count();
+                    //int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+                    
+                    var result = from adw in search
+                                 orderby adw.CreateDate
+                                 join ado in context.Activity_DaysOfOperation on adw.Activity_DaysOfOperation_Id equals ado.Activity_DaysOfOperation_Id into adwo
+                                 from adawo in adwo.DefaultIfEmpty()
+                                 select new DataContracts.Masters.DC_Activity_DaysOfWeek_RS
+                                 {
+                                     Activity_DaysOfOperation_Id = adw.Activity_DaysOfOperation_Id,
+                                     Activity_DaysOfWeek_ID = adw.Activity_DaysOfWeek_ID,
+                                     Activity_Flavor_ID = adw.Activity_Flavor_ID,
+                                     Duration = adw.Duration,
+                                     StartTime = adw.StartTime,
+                                     EndTime = adw.EndTime,
+                                     Session = adw.Session,
+                                     SupplierStartTime = adw.SupplierStartTime,
+                                     SupplierEndTime = adw.SupplierEndTime,
+                                     SupplierDuration = adw.SupplierDuration,
+                                     SupplierFrequency = adw.SupplierFrequency,
+                                     SupplierSession = adw.SupplierSession,
+                                     Mon = adw.Mon,
+                                     Tues = adw.Tues,
+                                     Wed = adw.Wed,
+                                     Thur = adw.Thur,
+                                     Fri = adw.Fri,
+                                     Sat = adw.Sat,
+                                     Sun = adw.Sun,
+                                     IsActive = adw.IsActive,
+                                     CreateDate = adw.CreateDate,
+                                     CreateUser = adw.CreateUser,
+                                     EditDate = adw.EditDate,
+                                     EditUser = adw.EditUser,
+                                     FromDate=adawo.FromDate,
+                                     ToDate = adawo.ToDate,
+                                     IsOperatingDays = adawo.IsOperatingDays
+                                 };
+                    return result.ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity SupplierProductMapping_CA", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityDaysOfWeek(DataContracts.Masters.DC_Activity_DaysOfWeek RQ)
+        {
+            bool IsInsert = false;
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    if (RQ.Activity_DaysOfWeek_ID != null)
+                    {
+                        var res = context.Activity_DaysOfWeek.Find(RQ.Activity_DaysOfWeek_ID);
+                        if (res != null)
+                        {
+                            if ((RQ.IsActive) != (res.IsActive ?? true))
+                            {
+                                res.IsActive = RQ.IsActive;
+                                res.EditDate = RQ.EditDate;
+                                res.EditUser = RQ.EditUser;
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUnDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
+                            }
+                            else
+                            {
+                                //res.Activity_DaysOfWeek_ID = RQ.Activity_DaysOfWeek_ID ?? Guid.Empty;
+                                //res.Activity_DaysOfOperation_Id = RQ.Activity_DaysOfOperation_Id;
+                                //res.Activity_Flavor_ID = RQ.Activity_Flavor_ID;
+                                //res. = RQ.PolicyName;
+                                //res.Policy_Type = RQ.Policy_Type;
+                                //res.PolicyDescription = RQ.PolicyDescription;
+                                //res.Legacy_Product_ID = RQ.Legacy_Product_ID;
+                                //res.Edit_Date = DateTime.Now;
+                                //res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                                //if (context.SaveChanges() == 1)
+                                //{
+                                //    _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                //    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                //}
+                                //else
+                                //{
+                                //    _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                //    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                //}
+                            }
+                        }
+                        else IsInsert = true;
+                    }
+                    else IsInsert = true;
+
+                    if (IsInsert)
+                    {
+                        //DataLayer.Activity_Policy obj = new DataLayer.Activity_Policy();
+                        //obj.Activity_Policy_Id = RQ.Activity_Policy_Id ?? Guid.Empty;
+                        //obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                        //obj.Activity_Id = RQ.Activity_Id;
+                        //obj.AllowedYN = RQ.AllowedYN;
+                        //obj.PolicyName = RQ.PolicyName;
+                        //obj.Policy_Type = RQ.Policy_Type;
+                        //obj.PolicyDescription = RQ.PolicyDescription;
+                        //obj.Legacy_Product_ID = RQ.Legacy_Product_ID;
+                        //obj.IsActive = RQ.IsActive;
+                        //obj.Create_Date = DateTime.Now;
+                        //obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                        //context.Activity_Policy.Add(obj);
+                        //if (context.SaveChanges() == 1)
+                        //{
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        //}
+                        //else
+                        //{
+                        //    _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                        //    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        //}
+                    }
+                    return _msg;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity Days Of Week", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
+        
     }
 }
