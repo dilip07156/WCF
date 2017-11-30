@@ -447,22 +447,18 @@ namespace ConsumerSvc
         #endregion
 
         #region Activity DaysOfWeek
-        public IList<DataContracts.Masters.DC_Activity_DaysOfWeek_RS> GetActivityDaysOfWeek(DataContracts.Masters.DC_Activity_DaysOfWeek_RQ RQ)
+        public List<DataContracts.Masters.DC_Activity_OperatingDays> GetActivityOperatingDays(string Activity_Flavour_Id)
         {
             using (BL_Activity objBL = new BL_Activity())
             {
-                List<DC_Activity_DaysOfWeek_RS> searchResults = new List<DC_Activity_DaysOfWeek_RS>();
-                searchResults = objBL.GetActivityDaysOfWeek(RQ);
-                if (searchResults == null)
-                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
-                return searchResults;
+                return objBL.GetActivityOperatingDays(Activity_Flavour_Id);
             }
         }
-        public DataContracts.DC_Message AddUpdateActivityDaysOfWeek(DataContracts.Masters.DC_Activity_DaysOfWeek RQ)
+        public DataContracts.DC_Message AddUpdateActivityOperatingDays(List<DataContracts.Masters.DC_Activity_OperatingDays> RQ)
         {
             using (BusinessLayer.BL_Activity obj = new BL_Activity())
             {
-                return obj.AddUpdateActivityDaysOfWeek(RQ);
+                return obj.AddUpdateActivityOperatingDays(RQ);
             }
         }
         #endregion

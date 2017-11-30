@@ -2793,8 +2793,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="STG_Mapping_TableIds" EntityType="ConsumerModel.STG_Mapping_TableIds" />
           <EntitySet Name="SupplierImportFileDetails" EntityType="ConsumerModel.SupplierImportFileDetail" />
           <EntitySet Name="SitemapInRoles" EntityType="ConsumerModel.SitemapInRole" />
-          <EntitySet Name="Activity_DaysOfWeek" EntityType="ConsumerModel.Activity_DaysOfWeek" />
           <EntitySet Name="Activity_DaysOfOperation" EntityType="ConsumerModel.Activity_DaysOfOperation" />
+          <EntitySet Name="Activity_DaysOfWeek" EntityType="ConsumerModel.Activity_DaysOfWeek" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -5212,6 +5212,21 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Sitemap_Id" Type="Guid" Nullable="false" />
           <Property Name="Role_Id" Type="Guid" Nullable="false" />
         </EntityType>
+        <EntityType Name="Activity_DaysOfOperation">
+          <Key>
+            <PropertyRef Name="Activity_DaysOfOperation_Id" />
+          </Key>
+          <Property Name="Activity_DaysOfOperation_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Flavor_ID" Type="Guid" Nullable="false" />
+          <Property Name="FromDate" Type="DateTime" Precision="3" />
+          <Property Name="ToDate" Type="DateTime" Precision="3" />
+          <Property Name="IsOperatingDays" Type="Boolean" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreateUser" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EditUser" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="EditDate" Type="DateTime" Precision="3" />
+        </EntityType>
         <EntityType Name="Activity_DaysOfWeek">
           <Key>
             <PropertyRef Name="Activity_DaysOfWeek_ID" />
@@ -5235,21 +5250,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Duration" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="SupplierSession" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Session" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="IsActive" Type="Boolean" />
-          <Property Name="CreateUser" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="EditUser" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="EditDate" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="Activity_DaysOfOperation">
-          <Key>
-            <PropertyRef Name="Activity_DaysOfOperation_Id" />
-          </Key>
-          <Property Name="Activity_DaysOfOperation_Id" Type="Guid" Nullable="false" />
-          <Property Name="Activity_Flavor_ID" Type="Guid" Nullable="false" />
-          <Property Name="FromDate" Type="DateTime" Precision="3" />
-          <Property Name="ToDate" Type="DateTime" Precision="3" />
-          <Property Name="IsOperatingDays" Type="Boolean" />
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="CreateUser" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
@@ -7759,6 +7759,22 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Activity_DaysOfOperation">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_DaysOfOperation">
+              <MappingFragment StoreEntitySet="Activity_DaysOfOperation">
+                <ScalarProperty Name="EditDate" ColumnName="EditDate" />
+                <ScalarProperty Name="EditUser" ColumnName="EditUser" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsOperatingDays" ColumnName="IsOperatingDays" />
+                <ScalarProperty Name="ToDate" ColumnName="ToDate" />
+                <ScalarProperty Name="FromDate" ColumnName="FromDate" />
+                <ScalarProperty Name="Activity_Flavor_ID" ColumnName="Activity_Flavor_ID" />
+                <ScalarProperty Name="Activity_DaysOfOperation_Id" ColumnName="Activity_DaysOfOperation_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Activity_DaysOfWeek">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_DaysOfWeek">
               <MappingFragment StoreEntitySet="Activity_DaysOfWeek">
@@ -7789,23 +7805,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Activity_DaysOfOperation">
-            <EntityTypeMapping TypeName="ConsumerModel.Activity_DaysOfOperation">
-              <MappingFragment StoreEntitySet="Activity_DaysOfOperation">
-                <ScalarProperty Name="EditDate" ColumnName="EditDate" />
-                <ScalarProperty Name="EditUser" ColumnName="EditUser" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="IsOperatingDays" ColumnName="IsOperatingDays" />
-                <ScalarProperty Name="ToDate" ColumnName="ToDate" />
-                <ScalarProperty Name="FromDate" ColumnName="FromDate" />
-                <ScalarProperty Name="Activity_Flavor_ID" ColumnName="Activity_Flavor_ID" />
-                <ScalarProperty Name="Activity_DaysOfOperation_Id" ColumnName="Activity_DaysOfOperation_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-        </EntityContainerMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>
