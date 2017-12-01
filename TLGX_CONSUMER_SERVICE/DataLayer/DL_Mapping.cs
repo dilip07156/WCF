@@ -487,22 +487,24 @@ namespace DataLayer
                         Fax = g.Fax,
                         Google_Place_Id = g.Google_Place_Id,
                         PostCode = g.PostalCode,
-                        Street = (g.Address ?? (g.StreetNo + " " + g.StreetName)),
-                        Street2 = (g.Address == null ? g.Street2 : (g.StreetNo + " " + g.StreetName + " " + g.Street2)),
-                        Street3 = g.Street3,
-                        Street4 = g.Street4,
+                        Street = (g.Address == null ? (g.StreetNo + " " + g.StreetName) : ""),
+                        //Street2 = (g.Address == null ? g.Street2 : (g.StreetNo + " " + g.StreetName + " " + g.Street2)),
+                        Street2 = (g.Address == null ? g.Street2 : ""),
+                        Street3 = (g.Address == null ? g.Street3 : ""),
+                        Street4 = (g.Street4 ?? "") + " " + (g.Street5 ?? ""),
                         StarRating = g.StarRating,
                         SupplierId = g.SupplierId,
                         TelephoneNumber = g.TelephoneNumber,
                         Website = g.Website,
                         ActionType = "INSERT",
                         stg_AccoMapping_Id = g.stg_AccoMapping_Id,
-                        FullAddress = (g.StreetNo ?? "") + (((g.StreetNo ?? "") != "") ? ", " : "")
+                        FullAddress = g.Address == null ? ((g.StreetNo ?? "") + (((g.StreetNo ?? "") != "") ? ", " : "")
                                        + (g.StreetName ?? "") + (((g.StreetName ?? "") != "") ? ", " : "")
                                        + (g.Street2 ?? "") + (((g.Street2 ?? "") != "") ? ", " : "")
                                        + (g.Street3 ?? "") + (((g.Street3 ?? "") != "") ? ", " : "")
                                        + (g.Street4 ?? "") + (((g.Street4 ?? "") != "") ? ", " : "")
                                        + (g.Street5 ?? "") + (((g.Street5 ?? "") != "") ? ", " : "")
+                                       + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")) : g.Address
                                        + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")
                         ,
                         Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
@@ -779,12 +781,17 @@ namespace DataLayer
                         if (CurrConfig == "Address_Tx".ToUpper())
                         {
                             isAddressCheck = true;
+                            //prodMapSearch = (from a in prodMapSearch
+                            //                     //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
+                            //                 join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
+                            //                 where a.address_tx != null && ac.Address_Tx != null
+                            //                 //&& a.address_tx.ToString().Trim().ToUpper().Replace("HOTEL", "") == ac.Address_Tx.ToString().Trim().ToUpper().Replace("HOTEL", "")
+                            //                 select a).Distinct().ToList();
+
                             prodMapSearch = (from a in prodMapSearch
-                                                 //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
-                                             join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
-                                             where a.address_tx != null && ac.Address_Tx != null
-                                             //&& a.address_tx.ToString().Trim().ToUpper().Replace("HOTEL", "") == ac.Address_Tx.ToString().Trim().ToUpper().Replace("HOTEL", "")
+                                             join ac in context.Accommodations.AsNoTracking() on a.address_tx equals ac.Address_Tx
                                              select a).Distinct().ToList();
+
                         }
                         if (CurrConfig == "TelephoneNumber_tx".ToUpper()) //|| CurrConfig == "---ALL---".ToUpper()
                         {
@@ -882,7 +889,7 @@ namespace DataLayer
                                                             ((isCountryNameCheck && s.Country_Id == c.Country_Id) || (!isCountryNameCheck)) &&
                                                             ((isCityNameCheck && s.City_Id == c.City_Id) || (!isCityNameCheck)) &&
                                                             ((isCodeCheck && s.CompanyHotelID.ToString() == c.SupplierProductReference) || (!isCodeCheck)) &&
-                                                            ((isNameCheck && s.HotelName.Trim().ToUpper() == c.ProductName.Trim().ToUpper()) || (!isNameCheck)) &&
+                                                            ((isNameCheck && s.HotelName.Trim().ToUpper().Replace("HOTEL","") == c.ProductName.Trim().ToUpper().Replace("HOTEL","")) || (!isNameCheck)) &&
                                                             ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck)) &&
                                                             ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck)) &&
                                                             ((isAddressCheck && s.Address_Tx != null && c.Address_tx != null && s.Address_Tx == c.Address_tx) || (!isAddressCheck)) &&
