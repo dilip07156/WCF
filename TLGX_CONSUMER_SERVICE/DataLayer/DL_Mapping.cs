@@ -4692,7 +4692,7 @@ namespace DataLayer
                                {
                                    CityMapping_Id = a.CityMapping_Id,
                                    CityCode = a.CityCode,
-                                   CityName = a.CityName,
+                                   CityName = string.IsNullOrWhiteSpace(a.CityName.Replace(a.CountryName.Trim(),"")) ? a.CityName : a.CityName.Replace(a.CountryName.Trim(), ""),
                                    City_Id = a.City_Id,
                                    StateCode = a.StateCode,
                                    StateName = a.StateName,
