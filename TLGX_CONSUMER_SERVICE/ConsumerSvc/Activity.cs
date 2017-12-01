@@ -128,7 +128,7 @@ namespace ConsumerSvc
             {
                 List<DataContracts.Masters.DC_Activity_Media> searchResults = new List<DC_Activity_Media>();
                 searchResults = objBL.GetActivityMedia(RQ);
-                if (searchResults.Count == 0)
+                if (searchResults == null)
                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
             }
@@ -149,7 +149,7 @@ namespace ConsumerSvc
             {
                 List<DC_Activity_Inclusions> searchResults = new List<DC_Activity_Inclusions>();
                 searchResults = objBL.GetActivityInclusions(RQ);
-                if (searchResults.Count == 0)
+                if (searchResults == null)
                      throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
             }
@@ -170,7 +170,7 @@ namespace ConsumerSvc
             {
                 List<DC_Activity_InclusionsDetails> searchResults = new List<DC_Activity_InclusionsDetails>();
                 searchResults = objBL.GetActivityInclusionDetails(RQ);
-                if (searchResults.Count == 0)
+                if (searchResults == null)
                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
             }
@@ -191,7 +191,7 @@ namespace ConsumerSvc
             {
                 List<DC_Activity_ClassificationAttributes> searchResults = new List<DC_Activity_ClassificationAttributes>();
                 searchResults = objBL.GetActivityClasificationAttributes(RQ);
-                if (searchResults.Count == 0)
+                if (searchResults == null)
                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
             }
@@ -221,7 +221,7 @@ namespace ConsumerSvc
             {
                 List<DC_Activity_PickUpDrop> searchResults = new List<DC_Activity_PickUpDrop>();
                 searchResults = objBL.GetActivityPickUpDrop(RQ);
-                if (searchResults.Count == 0)
+                if (searchResults == null)
                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
             }
@@ -243,7 +243,7 @@ namespace ConsumerSvc
             {
                 List<DC_Activity_PickUpDropDetails> searchResults = new List<DC_Activity_PickUpDropDetails>();
                 searchResults = objBL.GetPickUpDropDetails(RQ);
-                if (searchResults.Count == 0)
+                if (searchResults == null)
                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
             }
@@ -264,7 +264,7 @@ namespace ConsumerSvc
             {
                 List<DC_Activity_Descriptions> searchResults = new List<DC_Activity_Descriptions>();
                 searchResults = objBL.GetActivityDescription(RQ);
-                if (searchResults.Count == 0)
+                if (searchResults == null)
                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
             }
@@ -285,7 +285,7 @@ namespace ConsumerSvc
             {
                 List<DC_Activity_Flavour> searchResults = new List<DC_Activity_Flavour>();
                 searchResults = objBL.GetActivityFlavour(RQ);
-                if (searchResults.Count == 0)
+                if (searchResults == null)
                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
             }
@@ -306,7 +306,7 @@ namespace ConsumerSvc
             {
                 List<DC_Activity_Flavour_Options> searchResults = new List<DC_Activity_Flavour_Options>();
                 searchResults = objBL.GetActivityFlavourOptions(RQ);
-                if (searchResults.Count == 0)
+                if (searchResults == null)
                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
             }
@@ -327,7 +327,7 @@ namespace ConsumerSvc
             {
                 List<DC_Activity_Deals> searchResults = new List<DC_Activity_Deals>();
                 searchResults = objBL.GetActivityDeals(RQ);
-                if (searchResults.Count == 0)
+                if (searchResults == null)
                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
             }
@@ -348,7 +348,7 @@ namespace ConsumerSvc
             {
                 List<DC_Activity_Prices> searchResults = new List<DC_Activity_Prices>();
                 searchResults = objBL.GetActivityPrices(RQ);
-                if (searchResults.Count == 0)
+                if (searchResults == null)
                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
             }
@@ -369,7 +369,7 @@ namespace ConsumerSvc
             {
                 List<DC_Activity_SupplierProductMapping> searchResults = new List<DC_Activity_SupplierProductMapping>();
                 searchResults = objBL.GetActSupplierProdMapping(RQ);
-                if (searchResults.Count == 0)
+                if (searchResults == null)
                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
             }
@@ -390,7 +390,7 @@ namespace ConsumerSvc
             {
                 List<DC_Activity_ReviewsAndScores> searchResults = new List<DC_Activity_ReviewsAndScores>();
                 searchResults = objBL.GetActReviewsAndScores(RQ);
-                if (searchResults.Count == 0)
+                if (searchResults == null)
                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
             }
@@ -411,7 +411,7 @@ namespace ConsumerSvc
             {
                 List<DC_Activity_SupplierProductMapping_CA> searchResults = new List<DC_Activity_SupplierProductMapping_CA>();
                 searchResults = objBL.GetActSupplierProdMapping_CA(RQ);
-                if (searchResults.Count == 0)
+                if (searchResults == null)
                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
             }
@@ -432,7 +432,7 @@ namespace ConsumerSvc
             {
                 List<DC_Activity_Policy> searchResults = new List<DC_Activity_Policy>();
                 searchResults = objBL.GetActivityPolicy(RQ);
-                if (searchResults.Count == 0)
+                if (searchResults == null)
                     throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
                 return searchResults;
             }
@@ -446,6 +446,22 @@ namespace ConsumerSvc
         }
         #endregion
 
-       
+        #region Activity DaysOfWeek
+        public List<DataContracts.Masters.DC_Activity_OperatingDays> GetActivityOperatingDays(string Activity_Flavour_Id)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                return objBL.GetActivityOperatingDays(Activity_Flavour_Id);
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityOperatingDays(List<DataContracts.Masters.DC_Activity_OperatingDays> RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateActivityOperatingDays(RQ);
+            }
+        }
+        #endregion
+
     }
 }
