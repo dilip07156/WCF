@@ -4706,7 +4706,8 @@ namespace DataLayer
                                {
                                    CityMapping_Id = a.CityMapping_Id,
                                    CityCode = a.CityCode,
-                                   CityName = string.IsNullOrWhiteSpace(a.CityName.Replace(a.CountryName.Trim(),"")) ? a.CityName : a.CityName.Replace(a.CountryName.Trim(), ""),
+                                   CityName = a.CityName,
+                                   //CityName = (a.CityName.Replace(a.CountryName.Trim(),"") == "") ? a.CityName : a.CityName.Replace(a.CountryName.Trim(), ""),
                                    City_Id = a.City_Id,
                                    StateCode = a.StateCode,
                                    StateName = a.StateName,
@@ -4798,7 +4799,7 @@ namespace DataLayer
                                                             ((isCountryCodeCheck && s.CountryCode == c.CountryCode) || (!isCountryCodeCheck)) &&
                                                             ((isCountryNameCheck && s.CountryName == c.CountryName) || (!isCountryNameCheck)) &&
                                                             ((isCodeCheck && s.Code == c.CityCode) || (!isCodeCheck)) &&
-                                                            ((isNameCheck && s.Name.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == c.CityName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isNameCheck)) &&
+                                                            ((isNameCheck && s.Name.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == ((c.CityName.Replace(c.CountryName.Trim(), "") == "") ? c.CityName : c.CityName.Replace(c.CountryName.Trim(), "")).Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isNameCheck)) &&
                                                             ((isStateNameCheck && s.StateName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == c.StateName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isStateNameCheck)) &&
                                                             ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck))
                                                         )
