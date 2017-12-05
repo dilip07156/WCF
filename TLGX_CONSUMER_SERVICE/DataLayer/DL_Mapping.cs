@@ -733,7 +733,7 @@ namespace DataLayer
                             prodMapSearch = (from a in prodMapSearch
                                                  //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
                                              join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
-                                             where (a.ProductName ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "") == (ac.HotelName ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "")
+                                             where (a.ProductName ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "").Replace("  ", " ") == (ac.HotelName ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "").Replace("  ", " ")
                                              select a).Distinct().ToList();
                             //prodMapSearch = (from a in prodMapSearch
                             //                 join m in context.m_CountryMapping.AsNoTracking() on new { a.Supplier_Id, a.CountryName } equals new { m.Supplier_Id, m.CountryName }
@@ -889,7 +889,7 @@ namespace DataLayer
                                                             ((isCountryNameCheck && s.Country_Id == c.Country_Id) || (!isCountryNameCheck)) &&
                                                             ((isCityNameCheck && s.City_Id == c.City_Id) || (!isCityNameCheck)) &&
                                                             ((isCodeCheck && s.CompanyHotelID.ToString() == c.SupplierProductReference) || (!isCodeCheck)) &&
-                                                            ((isNameCheck && s.HotelName.Trim().ToUpper().Replace("HOTEL","") == c.ProductName.Trim().ToUpper().Replace("HOTEL","")) || (!isNameCheck)) &&
+                                                            ((isNameCheck && s.HotelName.Trim().ToUpper().Replace("HOTEL","").Replace("  ", " ") == c.ProductName.Trim().ToUpper().Replace("HOTEL","").Replace("  ", " ")) || (!isNameCheck)) &&
                                                             ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck)) &&
                                                             ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck)) &&
                                                             ((isAddressCheck && s.Address_Tx != null && c.Address_tx != null && s.Address_Tx == c.Address_tx) || (!isAddressCheck)) &&
