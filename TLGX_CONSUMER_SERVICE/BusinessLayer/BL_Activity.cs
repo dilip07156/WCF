@@ -369,18 +369,27 @@ namespace BusinessLayer
         #endregion
 
         #region Activity DaysOfWeek
-        public List<DataContracts.Masters.DC_Activity_DaysOfWeek_RS> GetActivityDaysOfWeek(DataContracts.Masters.DC_Activity_DaysOfWeek_RQ RQ)
+        public List<DataContracts.Masters.DC_Activity_OperatingDays> GetActivityOperatingDays(string Activity_Flavour_Id)
         {
-            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            Guid gActivity_Flavour_Id;
+
+            if(Guid.TryParse(Activity_Flavour_Id, out gActivity_Flavour_Id))
             {
-                return obj.GetActivityDaysOfWeek(RQ);
+                using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+                {
+                    return obj.GetActivityOperatingDays(gActivity_Flavour_Id);
+                }
+            }
+            else
+            {
+                return new List<DC_Activity_OperatingDays>();
             }
         }
-        public DataContracts.DC_Message AddUpdateActivityDaysOfWeek(DataContracts.Masters.DC_Activity_DaysOfWeek RQ)
+        public DataContracts.DC_Message AddUpdateActivityOperatingDays(List<DataContracts.Masters.DC_Activity_OperatingDays> RQ)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
-                return obj.AddUpdateActivityDaysOfWeek(RQ);
+                return obj.AddUpdateActivityOperatingDays(RQ);
             }
         }
         #endregion

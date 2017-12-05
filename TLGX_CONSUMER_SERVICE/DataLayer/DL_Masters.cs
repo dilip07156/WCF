@@ -4604,7 +4604,7 @@ namespace DataLayer
                     string BaseValue_ValidChars = string.Empty;
                     foreach (char c in BaseValue)
                     {
-                        if ((Convert.ToInt16(c) >= 32 && Convert.ToInt16(c) <= 196))// || (Convert.ToInt16(c) >= 97 && Convert.ToInt16(c) <= 122) || Convert.ToInt16(c) == 32)
+                        if ((Convert.ToInt32(c) >= 32 && Convert.ToInt32(c) <= 196))// || (Convert.ToInt16(c) >= 97 && Convert.ToInt16(c) <= 122) || Convert.ToInt16(c) == 32)
                         {
                             BaseValue_ValidChars = BaseValue_ValidChars + c;
                         }

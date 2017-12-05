@@ -1949,12 +1949,12 @@ namespace DataContracts.Masters
     }
     #endregion
 
-    #region Activity DaysOfWeek
+    #region Activity DaysOfWeek & Operating Days
     [DataContract]
     public class DC_Activity_DaysOfWeek
     {
         [DataMember]
-        public Guid? Activity_DaysOfWeek_ID { get; set; }
+        public Guid Activity_DaysOfWeek_ID { get; set; }
         [DataMember]
         public Guid Activity_Flavor_ID { get; set; }
         [DataMember]
@@ -1962,19 +1962,19 @@ namespace DataContracts.Masters
         [DataMember]
         public string SupplierFrequency { get; set; }
         [DataMember]
-        public bool? Mon { get; set; }
+        public bool Mon { get; set; }
         [DataMember]
-        public bool? Tues { get; set; }
+        public bool Tues { get; set; }
         [DataMember]
-        public bool? Wed { get; set; }
+        public bool Wed { get; set; }
         [DataMember]
-        public bool? Thur { get; set; }
+        public bool Thur { get; set; }
         [DataMember]
-        public bool? Fri { get; set; }
+        public bool Fri { get; set; }
         [DataMember]
-        public bool? Sat { get; set; }
+        public bool Sat { get; set; }
         [DataMember]
-        public bool? Sun { get; set; }
+        public bool Sun { get; set; }
         [DataMember]
         public string SupplierStartTime { get; set; }
         [DataMember]
@@ -1992,7 +1992,7 @@ namespace DataContracts.Masters
         [DataMember]
         public string Session { get; set; }
         [DataMember]
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
         [DataMember]
         public string CreateUser { get; set; }
         [DataMember]
@@ -2002,132 +2002,35 @@ namespace DataContracts.Masters
         [DataMember]
         public DateTime? EditDate { get; set; }
     }
-    [DataContract]
-    public class DC_Activity_DaysOfWeek_RQ
-    {
-        [DataMember]
-        public Guid? Activity_DaysOfWeek_ID { get; set; }
-        [DataMember]
-        public Guid Activity_Flavor_ID { get; set; }
-        [DataMember]
-        public Guid? Activity_DaysOfOperation_Id { get; set; }
-        [DataMember]
-        public string SupplierStartTime { get; set; }
-        [DataMember]
-        public string StartTime { get; set; }
-        [DataMember]
-        public string SupplierEndTime { get; set; }
-        [DataMember]
-        public string EndTime { get; set; }
-        [DataMember]
-        public string SupplierDuration { get; set; }
-        [DataMember]
-        public string Duration { get; set; }
-        [DataMember]
-        public string SupplierSession { get; set; }
-        [DataMember]
-        public string Session { get; set; }
-        [DataMember]
-        public bool? IsActive { get; set; }
-    }
 
-    public class DC_Activity_DaysOfWeek_RS
-    {
-        [DataMember]
-        public Guid? Activity_DaysOfWeek_ID { get; set; }
-        [DataMember]
-        public Guid Activity_Flavor_ID { get; set; }
-        [DataMember]
-        public Guid? Activity_DaysOfOperation_Id { get; set; }
-        [DataMember]
-        public string SupplierFrequency { get; set; }
-        [DataMember]
-        public bool? Mon { get; set; }
-        [DataMember]
-        public bool? Tues { get; set; }
-        [DataMember]
-        public bool? Wed { get; set; }
-        [DataMember]
-        public bool? Thur { get; set; }
-        [DataMember]
-        public bool? Fri { get; set; }
-        [DataMember]
-        public bool? Sat { get; set; }
-        [DataMember]
-        public bool? Sun { get; set; }
-        [DataMember]
-        public string SupplierStartTime { get; set; }
-        [DataMember]
-        public string StartTime { get; set; }
-        [DataMember]
-        public string SupplierEndTime { get; set; }
-        [DataMember]
-        public string EndTime { get; set; }
-        [DataMember]
-        public string SupplierDuration { get; set; }
-        [DataMember]
-        public string Duration { get; set; }
-        [DataMember]
-        public string SupplierSession { get; set; }
-        [DataMember]
-        public string Session { get; set; }
-        [DataMember]
-        public bool? IsActive { get; set; }
-        [DataMember]
-        public string CreateUser { get; set; }
-        [DataMember]
-        public DateTime? CreateDate { get; set; }
-        [DataMember]
-        public string EditUser { get; set; }
-        [DataMember]
-        public DateTime? EditDate { get; set; }
-        public DateTime? FromDate { get; set; }
-        [DataMember]
-        public DateTime? ToDate { get; set; }
-        [DataMember]
-        public bool? IsOperatingDays { get; set; }
-    }
-    #endregion
-
-    #region Activity DaysOfOperation
     [DataContract]
-    public class DC_Activity_DaysOfOperation
-    {
-        [DataMember]
-        public Guid Activity_DaysOfOperation_Id {get; set;}
-        [DataMember]
-        public Guid Activity_Flavor_ID {get; set;}
-        [DataMember]
-        public string FromDate {get; set;}
-        [DataMember]
-        public string ToDate {get; set;}
-        [DataMember]
-        public bool? IsOperatingDays {get; set;}
-        [DataMember]
-        public bool? IsActive {get; set;}
-        [DataMember]
-        public string CreateUser {get; set;}
-        [DataMember]
-        public DateTime CreateDate {get; set;}
-        [DataMember]
-        public string EditUser {get; set;}
-        [DataMember]
-        public DateTime? EditDate {get; set;}
-    }
-    [DataContract]
-    public class DC_Activity_DaysOfOperation_RQ
+    public class DC_Activity_OperatingDays
     {
         [DataMember]
         public Guid Activity_DaysOfOperation_Id { get; set; }
         [DataMember]
         public Guid Activity_Flavor_ID { get; set; }
         [DataMember]
-        public string FromDate { get; set; }
+        public DateTime? FromDate { get; set; }
         [DataMember]
-        public string ToDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        [DataMember]
+        public bool? IsOperatingDays { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public string CreateUser { get; set; }
+        [DataMember]
+        public DateTime CreateDate { get; set; }
+        [DataMember]
+        public string EditUser { get; set; }
+        [DataMember]
+        public DateTime? EditDate { get; set; }
+        [DataMember]
+        public List<DC_Activity_DaysOfWeek> Activity_DaysOfWeek { get; set; }
     }
     #endregion
-
+    
 }
 
 

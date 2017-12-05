@@ -393,7 +393,7 @@ namespace DataLayer
                                  {
                                      Activity_Contact_Id = ac.Activity_Contact_Id,
                                      Activity_Id = ac.Activity_Id,
-                                     Activity_Flavour_Id=ac.Activity_Flavour_Id,
+                                     Activity_Flavour_Id = ac.Activity_Flavour_Id,
                                      Create_Date = ac.Create_Date,
                                      Create_User = ac.Create_User,
                                      Edit_Date = ac.Edit_Date,
@@ -493,7 +493,7 @@ namespace DataLayer
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-        
+
         public int GetLegacyProductId(Guid Activity_Flavour_Id)
         {
             try
@@ -504,8 +504,8 @@ namespace DataLayer
                                   where ac.Activity_Flavour_Id == Activity_Flavour_Id
                                   select new { ac.Legacy_Product_ID }).FirstOrDefault();
 
-                    return Convert.ToInt32( search);
-                    
+                    return Convert.ToInt32(search);
+
                 }
             }
             catch (Exception e)
@@ -529,8 +529,8 @@ namespace DataLayer
                                  {
                                      Activity_Id = ast.Activity_Id,
                                      Activity_Status_Id = ast.Activity_Status_Id,
-                                     Activity_Flavour_Id=ast.Activity_Flavour_Id,
-                                     Legacy_Product_ID=ast.Legacy_Product_ID,
+                                     Activity_Flavour_Id = ast.Activity_Flavour_Id,
+                                     Legacy_Product_ID = ast.Legacy_Product_ID,
                                      CompanyMarket = ast.CompanyMarket,
                                      DeactivationReason = ast.DeactivationReason,
                                      From = ast.From,
@@ -606,7 +606,7 @@ namespace DataLayer
 
                     Activity_Status objNew = new Activity_Status();
 
-                    if (AS.Activity_Status_Id== null)
+                    if (AS.Activity_Status_Id == null)
                     {
                         AS.Activity_Status_Id = Guid.NewGuid();
                     }
@@ -688,7 +688,7 @@ namespace DataLayer
                     if (RQ.ValidFrom != null)
                     {
                         search = from a in search
-                                 where a.ValidFrom== RQ.ValidFrom
+                                 where a.ValidFrom == RQ.ValidFrom
                                  select a;
                     }
 
@@ -711,33 +711,33 @@ namespace DataLayer
                                  orderby a.MediaName
                                  select new DataContracts.Masters.DC_Activity_Media
                                  {
-                                     Activity_Id=a.Activity_Id,
-                                     Activity_Media_Id=a.Activity_Media_Id,
-                                      IsActive=a.IsActive,
-                                      MediaName=a.MediaName,
-                                      Create_Date=a.Create_Date,
-                                      Create_User=a.Create_User,
-                                      Edit_Date=a.Edit_Date,
-                                      Edit_User=a.Edit_User,
-                                      MediaType=a.MediaType,
-                                      Category=a.Category,
-                                      SubCategory=a.SubCategory,
-                                      Description=a.Description,
-                                      FileFormat=a.FileFormat,
-                                      Legacy_Product_Id=a.Legacy_Product_Id,
-                                      MediaFileMaster=a.MediaFileMaster,
-                                      MediaID=a.MediaID,
-                                      Media_Path=a.Media_Path,
-                                      Media_Position=a.Media_Position,
-                                      Media_URL=a.Media_URL,
-                                      RoomCategory=a.RoomCategory,
-                                      ValidFrom=a.ValidFrom,
-                                      ValidTo=a.ValidTo,
-                                      Activity_Flavour_Id=a.Activity_Flavour_Id,
-                                      Media_Caption=a.Media_Caption,
-                                      Media_Height=a.Media_Height,
-                                      Media_Width=a.Media_Width,
-                                      TotalRecords=total
+                                     Activity_Id = a.Activity_Id,
+                                     Activity_Media_Id = a.Activity_Media_Id,
+                                     IsActive = a.IsActive,
+                                     MediaName = a.MediaName,
+                                     Create_Date = a.Create_Date,
+                                     Create_User = a.Create_User,
+                                     Edit_Date = a.Edit_Date,
+                                     Edit_User = a.Edit_User,
+                                     MediaType = a.MediaType,
+                                     Category = a.Category,
+                                     SubCategory = a.SubCategory,
+                                     Description = a.Description,
+                                     FileFormat = a.FileFormat,
+                                     Legacy_Product_Id = a.Legacy_Product_Id,
+                                     MediaFileMaster = a.MediaFileMaster,
+                                     MediaID = a.MediaID,
+                                     Media_Path = a.Media_Path,
+                                     Media_Position = a.Media_Position,
+                                     Media_URL = a.Media_URL,
+                                     RoomCategory = a.RoomCategory,
+                                     ValidFrom = a.ValidFrom,
+                                     ValidTo = a.ValidTo,
+                                     Activity_Flavour_Id = a.Activity_Flavour_Id,
+                                     Media_Caption = a.Media_Caption,
+                                     Media_Height = a.Media_Height,
+                                     Media_Width = a.Media_Width,
+                                     TotalRecords = total
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -811,7 +811,7 @@ namespace DataLayer
                                     _msg.StatusMessage = ReadOnlyMessage.strFailed;
                                     _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                                 }
-                            }  
+                            }
                         }
                         else IsInsert = true;
                     }
@@ -870,7 +870,8 @@ namespace DataLayer
         #region  Activity Inclusions
         public List<DC_Activity_Inclusions> GetActivityInclusions(DC_Activity_Inclusions_RQ RQ)
         {
-            try {
+            try
+            {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var search = from a in context.Activity_Inclusions
@@ -897,7 +898,7 @@ namespace DataLayer
                     if (RQ.Activity_Flavour_Id != null)
                     {
                         search = from a in search
-                                 where a.Activity_Flavour_Id== RQ.Activity_Flavour_Id
+                                 where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
                                  select a;
                     }
                     if (RQ.InclusionFrom != null)
@@ -947,12 +948,13 @@ namespace DataLayer
                                            RestaurantStyle = s.RestaurantStyle,
                                            TotalRecords = total,
                                            Activity_Id = s.Activity_Id,
-                                           IsActive=s.IsActive
+                                           IsActive = s.IsActive
                                        };
-                     return searchresult.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                    return searchresult.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Inclusions", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
@@ -1014,7 +1016,7 @@ namespace DataLayer
                                     _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                                 }
                             }
-                           
+
                         }
                         else isinsert = true;
                     }
@@ -1055,7 +1057,7 @@ namespace DataLayer
                     return _msg;
                 }
             }
-            catch(Exception EX)
+            catch (Exception EX)
             {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity inclusions", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -1144,13 +1146,13 @@ namespace DataLayer
                                            InclusionDetailDescription = s.InclusionDetailDescription,
                                            InclusionDetailType = s.InclusionDetailType,
                                            FromTime = s.FromTime,
-                                           ToTime  = s.ToTime,
+                                           ToTime = s.ToTime,
                                            CreateDate = s.Create_Date,
                                            GuideLanguage = s.GuideLanguage,
                                            Activity_Flavour_Id = s.Activity_Flavour_Id,
                                            DaysOfWeek = s.DaysofWeek,
                                            Legacy_Product_Id = s.Legacy_Product_Id,
-                                           GuideLanguageCode=s.GuideLanguageCode,
+                                           GuideLanguageCode = s.GuideLanguageCode,
                                            TotalRecords = total,
                                            IsActive = s.IsActive
                                        };
@@ -1336,16 +1338,16 @@ namespace DataLayer
                                      IsActive = a.IsActive,
                                      CreateDate = a.Create_Date,
                                      Legacy_Product_Id = a.Legacy_Product_ID,
-                                     AttributeType=a.AttributeType,
-                                     AttributeSubType=a.AttributeSubType,
-                                     AttributeValue=a.AttributeValue,
-                                     InternalOnly=a.InternalOnly,
+                                     AttributeType = a.AttributeType,
+                                     AttributeSubType = a.AttributeSubType,
+                                     AttributeValue = a.AttributeValue,
+                                     InternalOnly = a.InternalOnly,
                                      TotalRecords = total
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Classification Attributes", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
 
@@ -1408,8 +1410,8 @@ namespace DataLayer
                         if ((RQ.IsActive) != (search.IsActive ?? true))
                         {
                             search.IsActive = RQ.IsActive;
-                            search.Edit_Date =RQ.EditDate;
-                            search.Edit_User =RQ.EditUser;
+                            search.Edit_Date = RQ.EditDate;
+                            search.Edit_User = RQ.EditUser;
                         }
                         else
                         {
@@ -1491,20 +1493,20 @@ namespace DataLayer
                                  orderby a.SupplierName
                                  select new DataContracts.Masters.DC_Activity_PickUpDrop
                                  {
-                                     Activity_PickUpDrop_Id=a.Activity_PickUpDrop_Id,
+                                     Activity_PickUpDrop_Id = a.Activity_PickUpDrop_Id,
                                      Activity_Id = a.Activity_Id,
                                      IsAC = a.IsAC,
                                      Create_Date = a.Create_Date,
                                      Legacy_Product_Id = a.Legacy_Product_Id,
-                                    Supplier_Id=a.Supplier_Id,
-                                    SupplierName=a.SupplierName,
-                                    Activity_Flavour_Id=a.Activity_Flavour_Id,
-                                    TransferType=a.TransferType,
-                                    VehicleCategory=a.VehicleCategory,
-                                     VehicleName=a.VehicleName,
-                                     VehicleType=a.VehicleType,
+                                     Supplier_Id = a.Supplier_Id,
+                                     SupplierName = a.SupplierName,
+                                     Activity_Flavour_Id = a.Activity_Flavour_Id,
+                                     TransferType = a.TransferType,
+                                     VehicleCategory = a.VehicleCategory,
+                                     VehicleName = a.VehicleName,
+                                     VehicleType = a.VehicleType,
                                      TotalRecords = total,
-                                     ForSupplier=a.ForSupplier,
+                                     ForSupplier = a.ForSupplier,
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -1529,7 +1531,7 @@ namespace DataLayer
                         var res = context.Activity_PickUpDrop.Find(RQ.Activity_PickUpDrop_Id);
                         if (res != null)
                         {
-                            res.Activity_PickUpDrop_Id = RQ.Activity_PickUpDrop_Id??Guid.Empty;
+                            res.Activity_PickUpDrop_Id = RQ.Activity_PickUpDrop_Id ?? Guid.Empty;
                             res.Activity_Id = RQ.Activity_Id;
                             res.Legacy_Product_Id = RQ.Legacy_Product_Id;
                             res.IsAC = RQ.IsAC;
@@ -1562,7 +1564,7 @@ namespace DataLayer
                     {
                         DataLayer.Activity_PickUpDrop obj = new DataLayer.Activity_PickUpDrop();
 
-                        obj.Activity_PickUpDrop_Id =RQ.Activity_PickUpDrop_Id??Guid.NewGuid();
+                        obj.Activity_PickUpDrop_Id = RQ.Activity_PickUpDrop_Id ?? Guid.NewGuid();
                         obj.Activity_Id = RQ.Activity_Id;
                         obj.Legacy_Product_Id = RQ.Legacy_Product_Id;
                         obj.IsAC = RQ.IsAC;
@@ -1662,8 +1664,8 @@ namespace DataLayer
                                      Language_Code = a.Language_Code,
                                      Source = a.Source,
                                      TotalRecords = total,
-                                     
-                                     
+
+
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -1704,19 +1706,19 @@ namespace DataLayer
                             }
                             else
                             {
-                               res.Activity_Description_Id = RQ.Activity_Description_Id ?? Guid.NewGuid();
-                               res.Activity_Id = RQ.Activity_Id;
-                               res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
-                               res.Legacy_Product_ID = RQ.Legacy_Product_ID;
-                               res.DescriptionType = RQ.DescriptionType;
-                               res.DescriptionSubType = RQ.DescriptionSubType;
-                               res.Description = RQ.Description;
-                               res.Description_Name = RQ.Description_Name;
-                               res.DescriptionFor = RQ.DescriptionFor;
-                               res.FromDate = RQ.FromDate;
-                               res.ToDate = RQ.ToDate;
-                               res.Language_Code = RQ.Language_Code;
-                               res.Source = RQ.Source;
+                                res.Activity_Description_Id = RQ.Activity_Description_Id ?? Guid.NewGuid();
+                                res.Activity_Id = RQ.Activity_Id;
+                                res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                                res.Legacy_Product_ID = RQ.Legacy_Product_ID;
+                                res.DescriptionType = RQ.DescriptionType;
+                                res.DescriptionSubType = RQ.DescriptionSubType;
+                                res.Description = RQ.Description;
+                                res.Description_Name = RQ.Description_Name;
+                                res.DescriptionFor = RQ.DescriptionFor;
+                                res.FromDate = RQ.FromDate;
+                                res.ToDate = RQ.ToDate;
+                                res.Language_Code = RQ.Language_Code;
+                                res.Source = RQ.Source;
                                 res.Edit_Date = DateTime.Now;
                                 res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
                                 if (context.SaveChanges() == 1)
@@ -1737,7 +1739,7 @@ namespace DataLayer
                     if (IsInsert)
                     {
                         Activity_Descriptions newmed = new Activity_Descriptions();
-                        newmed.Activity_Description_Id = RQ.Activity_Description_Id??Guid.NewGuid();
+                        newmed.Activity_Description_Id = RQ.Activity_Description_Id ?? Guid.NewGuid();
                         newmed.Activity_Id = RQ.Activity_Id;
                         newmed.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
                         newmed.IsActive = RQ.IsActive;
@@ -1816,7 +1818,7 @@ namespace DataLayer
                                  where a.Accommodation_Id == RQ.Accommodation_Id
                                  select a;
                     }
-                    if (RQ.FromToType!= null)
+                    if (RQ.FromToType != null)
                     {
                         search = from a in search
                                  where a.FromToType.Trim().TrimStart().ToUpper() == RQ.FromToType.Trim().TrimStart().ToUpper()
@@ -1840,7 +1842,7 @@ namespace DataLayer
                                  where a.Acco_City.Trim().TrimStart().ToUpper() == RQ.Acco_City.Trim().TrimStart().ToUpper()
                                  select a;
                     }
-                    if (RQ.LocationName!= null)
+                    if (RQ.LocationName != null)
                     {
                         search = from a in search
                                  where a.LocationName.Trim().TrimStart().ToUpper() == RQ.LocationName.Trim().TrimStart().ToUpper()
@@ -1875,16 +1877,16 @@ namespace DataLayer
                                      Acco_City = a.Acco_City,
                                      Acco_State = a.Acco_State,
                                      Acco_Country = a.Acco_Country,
-                                     Acco_ContactNotes=a.Acco_ContactNotes,
-                                     Acco_Email=a.Acco_Email,
-                                     Acco_Fax=a.Acco_Fax,
-                                     Acco_PostalCode=a.Acco_PostalCode,
-                                     Acco_Location=a.Acco_Location,
-                                     Acco_Name=a.Acco_Name,
-                                     Acco_Telephone=a.Acco_Telephone,
-                                     Acco_Website=a.Acco_Website,
-                                     AreaNameofPlace=a.AreaNameofPlace,
-                                     AreaSearchFor=a.AreaSearchFor
+                                     Acco_ContactNotes = a.Acco_ContactNotes,
+                                     Acco_Email = a.Acco_Email,
+                                     Acco_Fax = a.Acco_Fax,
+                                     Acco_PostalCode = a.Acco_PostalCode,
+                                     Acco_Location = a.Acco_Location,
+                                     Acco_Name = a.Acco_Name,
+                                     Acco_Telephone = a.Acco_Telephone,
+                                     Acco_Website = a.Acco_Website,
+                                     AreaNameofPlace = a.AreaNameofPlace,
+                                     AreaSearchFor = a.AreaSearchFor
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -1910,7 +1912,7 @@ namespace DataLayer
                         if (res != null)
                         {
                             res.Activity_PickUpDropDetail_Id = RQ.Activity_PickUpDropDetail_Id ?? Guid.Empty;
-                            res.Activity_PickUpDrop_Id = RQ.Activity_PickUpDrop_Id ;
+                            res.Activity_PickUpDrop_Id = RQ.Activity_PickUpDrop_Id;
                             res.Activity_Id = RQ.Activity_Id;
                             res.Legacy_Product_Id = RQ.Legacy_Product_Id;
                             res.LocationName = RQ.LocationName;
@@ -2108,18 +2110,18 @@ namespace DataLayer
                                      FinanceControlId = a.FinanceControlId,
                                      IsPickUpDropDefined = a.IsPickUpDropDefined ?? false,
                                      Latitude = a.Latitude,
-                                     Longitude=a.Longitude,
-                                     Location=a.Location,
-                                     MustSeeInCountry=a.MustSeeInCountry ?? false,
-                                     PlaceOfEvent=a.PlaceOfEvent,
-                                     PostalCode=a.PostalCode,
-                                     StartingPoint=a.StartingPoint,
-                                     Street=a.Street,
+                                     Longitude = a.Longitude,
+                                     Location = a.Location,
+                                     MustSeeInCountry = a.MustSeeInCountry ?? false,
+                                     PlaceOfEvent = a.PlaceOfEvent,
+                                     PostalCode = a.PostalCode,
+                                     StartingPoint = a.StartingPoint,
+                                     Street = a.Street,
                                      Street2 = a.Street2,
                                      Street3 = a.Street3,
                                      Street4 = a.Street4,
                                      Street5 = a.Street5,
-                                     USP=a.USP,
+                                     USP = a.USP,
                                      Create_Date = a.Create_Date,
                                      TotalRecords = total
                                  };
@@ -2291,7 +2293,7 @@ namespace DataLayer
                     if (RQ.Activity_DealText != null)
                     {
                         search = from a in search
-                                 where a.Activity_DealText.Trim().TrimStart().ToUpper()==RQ.Activity_DealText.Trim().TrimStart().ToUpper()
+                                 where a.Activity_DealText.Trim().TrimStart().ToUpper() == RQ.Activity_DealText.Trim().TrimStart().ToUpper()
                                  select a;
                     }
                     if (RQ.Activity_OptionCode != null)
@@ -2300,13 +2302,13 @@ namespace DataLayer
                                  where a.Activity_OptionCode.Trim().TrimStart().ToUpper() == RQ.Activity_OptionCode.Trim().TrimStart().ToUpper()
                                  select a;
                     }
-                    if(RQ.Activity_OptionName!=null)
+                    if (RQ.Activity_OptionName != null)
                     {
                         search = from a in search
                                  where a.Activity_OptionName.Trim().TrimStart().ToUpper() == RQ.Activity_OptionName.Trim().TrimStart().ToUpper()
                                  select a;
                     }
-                    if(RQ.Activity_Type!=null)
+                    if (RQ.Activity_Type != null)
                     {
                         search = from a in search
                                  where a.Activity_Type.Trim().TrimStart().ToUpper() == RQ.Activity_Type.Trim().TrimStart().ToUpper()
@@ -2320,24 +2322,24 @@ namespace DataLayer
                                  orderby a.Activity_FlavourName
                                  select new DataContracts.Masters.DC_Activity_Flavour_Options
                                  {
-                                     Activity_FlavourOptions_Id=a.Activity_FlavourOptions_Id,
-                                     Activity_Flavour_Id=a.Activity_Flavour_Id,
-                                     Activity_FlavourName=a.Activity_FlavourName,
-                                     Activity_OptionCode=a.Activity_OptionCode,
-                                     Activity_OptionName=a.Activity_OptionName,
-                                     Activity_DealText=a.Activity_DealText,
-                                     Activity_Type=a.Activity_Type,
-                                     Create_Date=a.Create_Date,
-                                     Status=a.Status,
-                                     Edit_Date=a.Edit_Date,
-                                     Edit_User=a.Edit_User,
-                                     Create_User=a.Create_User,
-                                     TotalRecords=total
+                                     Activity_FlavourOptions_Id = a.Activity_FlavourOptions_Id,
+                                     Activity_Flavour_Id = a.Activity_Flavour_Id,
+                                     Activity_FlavourName = a.Activity_FlavourName,
+                                     Activity_OptionCode = a.Activity_OptionCode,
+                                     Activity_OptionName = a.Activity_OptionName,
+                                     Activity_DealText = a.Activity_DealText,
+                                     Activity_Type = a.Activity_Type,
+                                     Create_Date = a.Create_Date,
+                                     Status = a.Status,
+                                     Edit_Date = a.Edit_Date,
+                                     Edit_User = a.Edit_User,
+                                     Create_User = a.Create_User,
+                                     TotalRecords = total
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Flavour Options", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -2444,7 +2446,7 @@ namespace DataLayer
                                  where a.Activity_Id == RQ.Activity_Id
                                  select a;
                     }
-                   
+
                     if (RQ.DealName != null)
                     {
                         search = from a in search
@@ -2464,15 +2466,15 @@ namespace DataLayer
                                  orderby a.DealName
                                  select new DataContracts.Masters.DC_Activity_Deals
                                  {
-                                     Activity_Deals_Id=a.Activity_Deals_Id,
+                                     Activity_Deals_Id = a.Activity_Deals_Id,
                                      Activity_Flavour_Id = a.Activity_Flavour_Id,
                                      Activity_Id = a.Activity_Id,
-                                     DealName=a.DealName,
-                                     DealCode=a.DealCode,
-                                     DealText =a.DealText,
-                                     Deal_Price=a.Deal_Price,
-                                     Deal_Currency=a.Deal_Currency,
-                                     Deal_TnC=a.Deal_TnC,
+                                     DealName = a.DealName,
+                                     DealCode = a.DealCode,
+                                     DealText = a.DealText,
+                                     Deal_Price = a.Deal_Price,
+                                     Deal_Currency = a.Deal_Currency,
+                                     Deal_TnC = a.Deal_TnC,
                                      Create_Date = a.Create_Date,
                                      TotalRecords = total
                                  };
@@ -2600,22 +2602,22 @@ namespace DataLayer
                                      Activity_Prices_Id = a.Activity_Prices_Id,
                                      Activity_Flavour_Id = a.Activity_Flavour_Id,
                                      Activity_Id = a.Activity_Id,
-                                     PriceBasis=a.PriceBasis,
-                                     PriceCode=a.PriceCode,
-                                     PriceCurrency=a.PriceCurrency,
-                                     Price=a.Price,
-                                     Price_For=a.Price_For,
-                                     Price_Type=a.Price_Type,
-                                     Price_OptionCode=a.Price_OptionCode,
+                                     PriceBasis = a.PriceBasis,
+                                     PriceCode = a.PriceCode,
+                                     PriceCurrency = a.PriceCurrency,
+                                     Price = a.Price,
+                                     Price_For = a.Price_For,
+                                     Price_Type = a.Price_Type,
+                                     Price_OptionCode = a.Price_OptionCode,
                                      Totalrecords = total,
-                                     Create_Date=a.Create_Date,
-                                     IsActive=a.IsActive
+                                     Create_Date = a.Create_Date,
+                                     IsActive = a.IsActive
 
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity prices", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -2695,7 +2697,7 @@ namespace DataLayer
                         obj.Create_Date = DateTime.Now;
                         obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
                         context.Activity_Prices.Add(obj);
-                        
+
                         if (context.SaveChanges() == 1)
                         {
                             _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
@@ -2824,7 +2826,7 @@ namespace DataLayer
                                      ImgURL = a.ImgURL,
                                      Inclusions = a.Inclusions,
                                      Introduction = a.Introduction,
-                                     IsActive=a.IsActive,
+                                     IsActive = a.IsActive,
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude,
                                      Location = a.Location,
@@ -2850,19 +2852,19 @@ namespace DataLayer
                                      SupplierCountryCode = a.SupplierCountryCode,
                                      SupplierCode = a.SupplierCode,
                                      SupplierDataLangaugeCode = a.SupplierLocationId,
-                                     SupplierLocationId=a.SupplierLocationId,
-                                     SupplierLocationName=a.SupplierLocationName,
-                                     SupplierProductName=a.SupplierProductName,
-                                     SupplierProductType=a.SupplierProductType,
-                                     SupplierStateCode=a.SupplierStateCode,
-                                     SupplierStateName=a.SupplierStateName,
-                                     SupplierTourType=a.SupplierTourType,
-                                    Theme=a.Theme,
-                                    TicketingDetails=a.TicketingDetails,
-                                    Timing=a.Timing,
-                                    TourActivityLangauageCode=a.TourActivityLangauageCode,
-                                    TourActivityLanguage=a.TourActivityLanguage,   
-                                    TotalRecords = total
+                                     SupplierLocationId = a.SupplierLocationId,
+                                     SupplierLocationName = a.SupplierLocationName,
+                                     SupplierProductName = a.SupplierProductName,
+                                     SupplierProductType = a.SupplierProductType,
+                                     SupplierStateCode = a.SupplierStateCode,
+                                     SupplierStateName = a.SupplierStateName,
+                                     SupplierTourType = a.SupplierTourType,
+                                     Theme = a.Theme,
+                                     TicketingDetails = a.TicketingDetails,
+                                     Timing = a.Timing,
+                                     TourActivityLangauageCode = a.TourActivityLangauageCode,
+                                     TourActivityLanguage = a.TourActivityLanguage,
+                                     TotalRecords = total
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -2981,7 +2983,7 @@ namespace DataLayer
                                     _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                                 }
                             }
-                           
+
                         }
                         else IsInsert = true;
                     }
@@ -3130,20 +3132,20 @@ namespace DataLayer
                                  orderby a.Create_Date
                                  select new DataContracts.Masters.DC_Activity_ReviewsAndScores
                                  {
-                                    Activity_ReviewsAndScores_Id = a.Activity_ReviewsAndScores_Id,
-                                    Activity_Flavour_Id =a.Activity_ReviewsAndScores_Id,
-                                    Activity_Id=a.Activity_Id,
-                                    Review_Author=a.Review_Author,
-                                    IsCustomerReview=a.IsCustomerReview,
-                                    IsActive=a.IsActive,
-                                    Review_Description=a.Review_Description,
-                                    Review_PostedDate=a.Review_PostedDate,
-                                    Review_Score=a.Review_Score,
-                                    Review_Title=a.Review_Title,
-                                    Review_Type=a.Review_Type,
-                                    Review_Source=a.Review_Source,
-                                    Create_Date=a.Create_Date,                                    
-                                    Totalrecords = total
+                                     Activity_ReviewsAndScores_Id = a.Activity_ReviewsAndScores_Id,
+                                     Activity_Flavour_Id = a.Activity_ReviewsAndScores_Id,
+                                     Activity_Id = a.Activity_Id,
+                                     Review_Author = a.Review_Author,
+                                     IsCustomerReview = a.IsCustomerReview,
+                                     IsActive = a.IsActive,
+                                     Review_Description = a.Review_Description,
+                                     Review_PostedDate = a.Review_PostedDate,
+                                     Review_Score = a.Review_Score,
+                                     Review_Title = a.Review_Title,
+                                     Review_Type = a.Review_Type,
+                                     Review_Source = a.Review_Source,
+                                     Create_Date = a.Create_Date,
+                                     Totalrecords = total
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -3210,7 +3212,7 @@ namespace DataLayer
                                     _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                                 }
                             }
-                           
+
                         }
                         else IsInsert = true;
                     }
@@ -3225,14 +3227,14 @@ namespace DataLayer
                         obj.IsCustomerReview = RQ.IsCustomerReview;
                         obj.Review_Author = RQ.Review_Author;
                         obj.Review_Description = RQ.Review_Description;
-                        obj.Review_PostedDate = RQ.Review_PostedDate;      
+                        obj.Review_PostedDate = RQ.Review_PostedDate;
                         obj.Review_Author = RQ.Review_Author;
                         obj.Review_Description = RQ.Review_Description;
                         obj.Review_Title = RQ.Review_Title;
                         obj.Review_Status = RQ.Review_Status;
-                        obj.Review_Type = RQ.Review_Type;                                 
+                        obj.Review_Type = RQ.Review_Type;
                         obj.Create_Date = DateTime.Now;
-                        obj.Create_User= System.Web.HttpContext.Current.User.Identity.Name;
+                        obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
                         context.Activity_ReviewsAndScores.Add(obj);
                         if (context.SaveChanges() == 1)
                         {
@@ -3306,16 +3308,16 @@ namespace DataLayer
                     var result = from a in search
                                  select new DataContracts.Masters.DC_Activity_SupplierProductMapping_CA
                                  {
-                                     Activity_SupplierProductMapping_CA_Id=a.Activity_SupplierProductMapping_CA_Id,
-                                     Supplier_ID=a.Supplier_ID,
-                                     AttributeSubType=a.AttributeSubType,
-                                     AttributeType=a.AttributeType,
-                                     AttributeValue=a.AttributeValue,
-                                     SupplierCode=a.SupplierCode,
-                                     SupplierName=a.SupplierName,
-                                     SuplierProductCode=a.SuplierProductCode,
-                                     SupplierProductName=a.SupplierProductName,
-                                     IsActive=a.IsActive,
+                                     Activity_SupplierProductMapping_CA_Id = a.Activity_SupplierProductMapping_CA_Id,
+                                     Supplier_ID = a.Supplier_ID,
+                                     AttributeSubType = a.AttributeSubType,
+                                     AttributeType = a.AttributeType,
+                                     AttributeValue = a.AttributeValue,
+                                     SupplierCode = a.SupplierCode,
+                                     SupplierName = a.SupplierName,
+                                     SuplierProductCode = a.SuplierProductCode,
+                                     SupplierProductName = a.SupplierProductName,
+                                     IsActive = a.IsActive,
                                      Create_Date = a.Create_Date,
                                      Totalrecords = total
                                  };
@@ -3381,7 +3383,7 @@ namespace DataLayer
                                     _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                                 }
                             }
-                           
+
                         }
                         else IsInsert = true;
                     }
@@ -3470,15 +3472,15 @@ namespace DataLayer
                                  orderby a.Create_Date
                                  select new DataContracts.Masters.DC_Activity_Policy
                                  {
-                                     Activity_Policy_Id=a.Activity_Policy_Id,
-                                     Activity_Flavour_Id=a.Activity_Flavour_Id,
-                                     Activity_Id=a.Activity_Id,
-                                     IsActive=a.IsActive,
-                                     AllowedYN=a.AllowedYN,
-                                     PolicyName=a.PolicyName,
-                                     Policy_Type=a.Policy_Type,
-                                     PolicyDescription=a.PolicyDescription,
-                                     Legacy_Product_ID=a.Legacy_Product_ID,
+                                     Activity_Policy_Id = a.Activity_Policy_Id,
+                                     Activity_Flavour_Id = a.Activity_Flavour_Id,
+                                     Activity_Id = a.Activity_Id,
+                                     IsActive = a.IsActive,
+                                     AllowedYN = a.AllowedYN,
+                                     PolicyName = a.PolicyName,
+                                     Policy_Type = a.Policy_Type,
+                                     PolicyDescription = a.PolicyDescription,
+                                     Legacy_Product_ID = a.Legacy_Product_ID,
                                      Create_Date = a.Create_Date,
                                      Totalrecords = total
                                  };
@@ -3584,169 +3586,54 @@ namespace DataLayer
         #endregion
 
         #region Activity DaysOfWeek
-        public List<DataContracts.Masters.DC_Activity_DaysOfWeek_RS> GetActivityDaysOfWeek(DataContracts.Masters.DC_Activity_DaysOfWeek_RQ RQ)
+        public List<DataContracts.Masters.DC_Activity_OperatingDays> GetActivityOperatingDays(Guid Activity_Flavour_Id)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = from a in context.Activity_DaysOfWeek
-                                 select a;
-                    if (RQ.Activity_DaysOfWeek_ID != null)
+                    List<DataContracts.Masters.DC_Activity_OperatingDays> returnData = new List<DataContracts.Masters.DC_Activity_OperatingDays>();
+
+                    var DaysOfOperation = context.Activity_DaysOfOperation.Where(w => w.Activity_Flavor_ID == Activity_Flavour_Id).Select(s => s);
+                    if (DaysOfOperation.Count() > 0)
                     {
-                        search = from a in search
-                                 where a.Activity_DaysOfWeek_ID == RQ.Activity_DaysOfWeek_ID
-                                 select a;
+                        foreach(var perdayofOps in DaysOfOperation)
+                        {
+                            DataContracts.Masters.DC_Activity_OperatingDays OperatingDay = new DC_Activity_OperatingDays();
+                            OperatingDay.Activity_DaysOfOperation_Id = perdayofOps.Activity_DaysOfOperation_Id;
+                            OperatingDay.Activity_Flavor_ID = perdayofOps.Activity_Flavor_ID;
+                            OperatingDay.FromDate = perdayofOps.FromDate;
+                            //OperatingDay.EndDate = perdayofOps.ToDate;
+                            OperatingDay.IsOperatingDays = perdayofOps.IsOperatingDays;
+                            OperatingDay.IsActive = perdayofOps.IsActive;
+                            //OperatingDay.Activity_DaysOfWeek = perdayofOps;
+                            returnData.Add(OperatingDay);
+                        }
                     }
-                    if (RQ.Activity_Flavor_ID != null)
-                    {
-                        search = from a in search
-                                 where a.Activity_Flavor_ID == RQ.Activity_Flavor_ID
-                                 select a;
-                    }
-                    if (RQ.Activity_DaysOfOperation_Id != null)
-                    {
-                        search = from a in search
-                                 where a.Activity_DaysOfOperation_Id == RQ.Activity_DaysOfOperation_Id
-                                 select a;
-                    }
-                    //int total = search.Count();
-                    //int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
-                    
-                    var result = from adw in search
-                                 orderby adw.CreateDate
-                                 join ado in context.Activity_DaysOfOperation on adw.Activity_DaysOfOperation_Id equals ado.Activity_DaysOfOperation_Id into adwo
-                                 from adawo in adwo.DefaultIfEmpty()
-                                 select new DataContracts.Masters.DC_Activity_DaysOfWeek_RS
-                                 {
-                                     Activity_DaysOfOperation_Id = adw.Activity_DaysOfOperation_Id,
-                                     Activity_DaysOfWeek_ID = adw.Activity_DaysOfWeek_ID,
-                                     Activity_Flavor_ID = adw.Activity_Flavor_ID,
-                                     Duration = adw.Duration,
-                                     StartTime = adw.StartTime,
-                                     EndTime = adw.EndTime,
-                                     Session = adw.Session,
-                                     SupplierStartTime = adw.SupplierStartTime,
-                                     SupplierEndTime = adw.SupplierEndTime,
-                                     SupplierDuration = adw.SupplierDuration,
-                                     SupplierFrequency = adw.SupplierFrequency,
-                                     SupplierSession = adw.SupplierSession,
-                                     Mon = adw.Mon,
-                                     Tues = adw.Tues,
-                                     Wed = adw.Wed,
-                                     Thur = adw.Thur,
-                                     Fri = adw.Fri,
-                                     Sat = adw.Sat,
-                                     Sun = adw.Sun,
-                                     IsActive = adw.IsActive,
-                                     CreateDate = adw.CreateDate,
-                                     CreateUser = adw.CreateUser,
-                                     EditDate = adw.EditDate,
-                                     EditUser = adw.EditUser,
-                                     FromDate=adawo.FromDate,
-                                     ToDate = adawo.ToDate,
-                                     IsOperatingDays = adawo.IsOperatingDays
-                                 };
-                    return result.ToList();
+                    return returnData.ToList();
                 }
             }
             catch (Exception e)
             {
-                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity SupplierProductMapping_CA", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity OperatingDays", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-        public DataContracts.DC_Message AddUpdateActivityDaysOfWeek(DataContracts.Masters.DC_Activity_DaysOfWeek RQ)
+        public DataContracts.DC_Message AddUpdateActivityOperatingDays(List<DataContracts.Masters.DC_Activity_OperatingDays> RQ)
         {
-            bool IsInsert = false;
             DataContracts.DC_Message _msg = new DataContracts.DC_Message();
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-
-                    if (RQ.Activity_DaysOfWeek_ID != null)
-                    {
-                        var res = context.Activity_DaysOfWeek.Find(RQ.Activity_DaysOfWeek_ID);
-                        if (res != null)
-                        {
-                            if ((RQ.IsActive) != (res.IsActive ?? true))
-                            {
-                                res.IsActive = RQ.IsActive;
-                                res.EditDate = RQ.EditDate;
-                                res.EditUser = RQ.EditUser;
-                                if (context.SaveChanges() == 1)
-                                {
-                                    _msg.StatusMessage = ReadOnlyMessage.strDeleted;
-                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
-                                }
-                                else
-                                {
-                                    _msg.StatusMessage = ReadOnlyMessage.strUnDeleted;
-                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
-                                }
-                            }
-                            else
-                            {
-                                //res.Activity_DaysOfWeek_ID = RQ.Activity_DaysOfWeek_ID ?? Guid.Empty;
-                                //res.Activity_DaysOfOperation_Id = RQ.Activity_DaysOfOperation_Id;
-                                //res.Activity_Flavor_ID = RQ.Activity_Flavor_ID;
-                                //res. = RQ.PolicyName;
-                                //res.Policy_Type = RQ.Policy_Type;
-                                //res.PolicyDescription = RQ.PolicyDescription;
-                                //res.Legacy_Product_ID = RQ.Legacy_Product_ID;
-                                //res.Edit_Date = DateTime.Now;
-                                //res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
-                                //if (context.SaveChanges() == 1)
-                                //{
-                                //    _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
-                                //    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
-                                //}
-                                //else
-                                //{
-                                //    _msg.StatusMessage = ReadOnlyMessage.strFailed;
-                                //    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
-                                //}
-                            }
-                        }
-                        else IsInsert = true;
-                    }
-                    else IsInsert = true;
-
-                    if (IsInsert)
-                    {
-                        //DataLayer.Activity_Policy obj = new DataLayer.Activity_Policy();
-                        //obj.Activity_Policy_Id = RQ.Activity_Policy_Id ?? Guid.Empty;
-                        //obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
-                        //obj.Activity_Id = RQ.Activity_Id;
-                        //obj.AllowedYN = RQ.AllowedYN;
-                        //obj.PolicyName = RQ.PolicyName;
-                        //obj.Policy_Type = RQ.Policy_Type;
-                        //obj.PolicyDescription = RQ.PolicyDescription;
-                        //obj.Legacy_Product_ID = RQ.Legacy_Product_ID;
-                        //obj.IsActive = RQ.IsActive;
-                        //obj.Create_Date = DateTime.Now;
-                        //obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
-                        //context.Activity_Policy.Add(obj);
-                        //if (context.SaveChanges() == 1)
-                        //{
-                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
-                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
-                        //}
-                        //else
-                        //{
-                        //    _msg.StatusMessage = ReadOnlyMessage.strFailed;
-                        //    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
-                        //}
-                    }
-                    return _msg;
+                    return null;
                 }
             }
             catch (Exception ex)
             {
-                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity Days Of Week", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while updating Activity Days Of Week", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
         #endregion
-        
+
     }
 }

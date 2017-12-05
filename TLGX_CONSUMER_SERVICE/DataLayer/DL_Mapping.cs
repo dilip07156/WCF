@@ -487,22 +487,24 @@ namespace DataLayer
                         Fax = g.Fax,
                         Google_Place_Id = g.Google_Place_Id,
                         PostCode = g.PostalCode,
-                        Street = (g.Address ?? (g.StreetNo + " " + g.StreetName)),
-                        Street2 = (g.Address == null ? g.Street2 : (g.StreetNo + " " + g.StreetName + " " + g.Street2)),
-                        Street3 = g.Street3,
-                        Street4 = g.Street4,
+                        Street = (g.Address == null ? (g.StreetNo + " " + g.StreetName) : ""),
+                        //Street2 = (g.Address == null ? g.Street2 : (g.StreetNo + " " + g.StreetName + " " + g.Street2)),
+                        Street2 = (g.Address == null ? g.Street2 : ""),
+                        Street3 = (g.Address == null ? g.Street3 : ""),
+                        Street4 = (g.Street4 ?? "") + " " + (g.Street5 ?? ""),
                         StarRating = g.StarRating,
                         SupplierId = g.SupplierId,
                         TelephoneNumber = g.TelephoneNumber,
                         Website = g.Website,
                         ActionType = "INSERT",
                         stg_AccoMapping_Id = g.stg_AccoMapping_Id,
-                        FullAddress = (g.StreetNo ?? "") + (((g.StreetNo ?? "") != "") ? ", " : "")
+                        FullAddress = g.Address == null ? ((g.StreetNo ?? "") + (((g.StreetNo ?? "") != "") ? ", " : "")
                                        + (g.StreetName ?? "") + (((g.StreetName ?? "") != "") ? ", " : "")
                                        + (g.Street2 ?? "") + (((g.Street2 ?? "") != "") ? ", " : "")
                                        + (g.Street3 ?? "") + (((g.Street3 ?? "") != "") ? ", " : "")
                                        + (g.Street4 ?? "") + (((g.Street4 ?? "") != "") ? ", " : "")
                                        + (g.Street5 ?? "") + (((g.Street5 ?? "") != "") ? ", " : "")
+                                       + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")) : g.Address
                                        + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")
                         ,
                         Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
@@ -580,7 +582,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if ((obj.FileMode ?? "ALL") != "ALL")
+                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
                     {
                         List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                         DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
@@ -731,7 +733,7 @@ namespace DataLayer
                             prodMapSearch = (from a in prodMapSearch
                                                  //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
                                              join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
-                                             where (a.ProductName ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "") == (ac.HotelName ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "")
+                                             where (a.ProductName ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "").Replace("  ", " ") == (ac.HotelName ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "").Replace("  ", " ")
                                              select a).Distinct().ToList();
                             //prodMapSearch = (from a in prodMapSearch
                             //                 join m in context.m_CountryMapping.AsNoTracking() on new { a.Supplier_Id, a.CountryName } equals new { m.Supplier_Id, m.CountryName }
@@ -779,12 +781,17 @@ namespace DataLayer
                         if (CurrConfig == "Address_Tx".ToUpper())
                         {
                             isAddressCheck = true;
+                            //prodMapSearch = (from a in prodMapSearch
+                            //                     //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
+                            //                 join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
+                            //                 where a.address_tx != null && ac.Address_Tx != null
+                            //                 //&& a.address_tx.ToString().Trim().ToUpper().Replace("HOTEL", "") == ac.Address_Tx.ToString().Trim().ToUpper().Replace("HOTEL", "")
+                            //                 select a).Distinct().ToList();
+
                             prodMapSearch = (from a in prodMapSearch
-                                                 //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
-                                             join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
-                                             where a.address_tx != null && ac.Address_Tx != null
-                                             //&& a.address_tx.ToString().Trim().ToUpper().Replace("HOTEL", "") == ac.Address_Tx.ToString().Trim().ToUpper().Replace("HOTEL", "")
+                                             join ac in context.Accommodations.AsNoTracking() on a.address_tx equals ac.Address_Tx
                                              select a).Distinct().ToList();
+
                         }
                         if (CurrConfig == "TelephoneNumber_tx".ToUpper()) //|| CurrConfig == "---ALL---".ToUpper()
                         {
@@ -882,7 +889,7 @@ namespace DataLayer
                                                             ((isCountryNameCheck && s.Country_Id == c.Country_Id) || (!isCountryNameCheck)) &&
                                                             ((isCityNameCheck && s.City_Id == c.City_Id) || (!isCityNameCheck)) &&
                                                             ((isCodeCheck && s.CompanyHotelID.ToString() == c.SupplierProductReference) || (!isCodeCheck)) &&
-                                                            ((isNameCheck && s.HotelName.Trim().ToUpper() == c.ProductName.Trim().ToUpper()) || (!isNameCheck)) &&
+                                                            ((isNameCheck && s.HotelName.Trim().ToUpper().Replace("HOTEL","").Replace("  ", " ") == c.ProductName.Trim().ToUpper().Replace("HOTEL","").Replace("  ", " ")) || (!isNameCheck)) &&
                                                             ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck)) &&
                                                             ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck)) &&
                                                             ((isAddressCheck && s.Address_Tx != null && c.Address_tx != null && s.Address_Tx == c.Address_tx) || (!isAddressCheck)) &&
@@ -3024,7 +3031,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if ((obj.FileMode ?? "ALL") != "ALL")
+                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
                     {
                         List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                         DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
@@ -3552,7 +3559,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if ((obj.FileMode ?? "ALL") != "ALL")
+                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
                     {
                         List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                         DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
@@ -4545,7 +4552,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if ((obj.FileMode ?? "ALL") != "ALL")
+                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
                     {
                         List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                         DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
@@ -4700,6 +4707,7 @@ namespace DataLayer
                                    CityMapping_Id = a.CityMapping_Id,
                                    CityCode = a.CityCode,
                                    CityName = a.CityName,
+                                   //CityName = (a.CityName.Replace(a.CountryName.Trim(),"") == "") ? a.CityName : a.CityName.Replace(a.CountryName.Trim(), ""),
                                    City_Id = a.City_Id,
                                    StateCode = a.StateCode,
                                    StateName = a.StateName,
@@ -4791,7 +4799,7 @@ namespace DataLayer
                                                             ((isCountryCodeCheck && s.CountryCode == c.CountryCode) || (!isCountryCodeCheck)) &&
                                                             ((isCountryNameCheck && s.CountryName == c.CountryName) || (!isCountryNameCheck)) &&
                                                             ((isCodeCheck && s.Code == c.CityCode) || (!isCodeCheck)) &&
-                                                            ((isNameCheck && s.Name.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == c.CityName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isNameCheck)) &&
+                                                            ((isNameCheck && s.Name.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == ((c.CityName.Replace(c.CountryName.Trim(), "") == "") ? c.CityName : c.CityName.Replace(c.CountryName.Trim(), "")).Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isNameCheck)) &&
                                                             ((isStateNameCheck && s.StateName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == c.StateName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isStateNameCheck)) &&
                                                             ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck))
                                                         )
