@@ -6961,7 +6961,11 @@ namespace DataLayer
                         {
                             if (unMappedDataCount.totalcount != null && totalmappeddata != 0)
                             {
-                                var days = (Convert.ToDateTime(parm.ToDate) - Convert.ToDateTime(parm.Fromdate)).TotalDays;
+                                double days;
+                                if (parm.Fromdate == parm.ToDate)
+                                     days = 1;
+                                else
+                                    days = (Convert.ToDateTime(parm.ToDate) - Convert.ToDateTime(parm.Fromdate)).TotalDays;
                                 var perday = (totalmappeddata / days);
                                 newmapstatsfor.Estimate = Convert.ToInt32(unMappedDataCount.totalcount / perday);
                             }
