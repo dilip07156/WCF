@@ -582,7 +582,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if ((obj.FileMode ?? "ALL") != "ALL")
+                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
                     {
                         List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                         DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
@@ -3031,7 +3031,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if ((obj.FileMode ?? "ALL") != "ALL")
+                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
                     {
                         List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                         DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
@@ -3559,7 +3559,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if ((obj.FileMode ?? "ALL") != "ALL")
+                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
                     {
                         List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                         DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
