@@ -1447,9 +1447,9 @@ namespace DataLayer
                     {
                         if (!string.IsNullOrWhiteSpace(obj.Source) && obj.Source.ToUpper() == "SYSTEMDATA")
                         {
-                            var distCityMapping = (from a in context.m_CityMapping.AsNoTracking() select new { a.City_Id, a.CityName, a.Supplier_Id }).Distinct();
+                            var distCityMapping = (from a in context.m_CityMapping.AsNoTracking() select new { a.City_Id, a.CityName, a.Supplier_Id, a.Country_Id }).Distinct();
                             prodMapSearch = from a in prodMapSearch
-                                            join ct in distCityMapping on new { a.Supplier_Id, a.CityName } equals new { ct.Supplier_Id, ct.CityName}
+                                            join ct in distCityMapping on new { a.Supplier_Id, a.Country_Id,  a.CityName } equals new { ct.Supplier_Id, ct.Country_Id, ct.CityName}
                                             join mct in context.m_CityMaster on ct.City_Id equals mct.City_Id
                                             where mct.Name == obj.CityName
                                             select a;
