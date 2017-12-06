@@ -1545,6 +1545,10 @@ namespace DataLayer
                     var prodMapList = (from a in prodMapSearch
                                        join ma in context.Accommodations.AsNoTracking() on a.Accommodation_Id equals ma.Accommodation_Id into ja
                                        from jda in ja.DefaultIfEmpty()
+                                       join mact in context.m_CityMaster.AsNoTracking() on a.City_Id equals mact.City_Id into jact
+                                       from jdact in jact.DefaultIfEmpty()
+                                       join mac in context.m_CountryMaster.AsNoTracking() on a.Country_Id equals mac.Country_Id into jac
+                                       from jdac in jac.DefaultIfEmpty()
                                            //where jda.Location != null
                                        orderby a.SupplierName, a.ProductName, a.SupplierProductReference
                                        select new DataContracts.Mapping.DC_Accomodation_ProductMapping
@@ -1584,8 +1588,10 @@ namespace DataLayer
                                            ProductId = a.SupplierProductReference,
                                            Remarks = a.Remarks,
                                            SystemProductName = jda.HotelName,
-                                           SystemCityName = (jda.city ?? (context.Accommodations.Where(x => x.city == a.CityName).Select(x => x.city)).FirstOrDefault()),
-                                           SystemCountryName = (jda.country ?? (context.Accommodations.Where(x => x.country == a.CountryName).Select(x => x.country)).FirstOrDefault()),
+                                           //SystemCityName = (jda.city ?? (context.Accommodations.Where(x => x.city == a.CityName).Select(x => x.city)).FirstOrDefault()),
+                                           SystemCityName = (jda.city ?? jdact.Name),
+                                           //SystemCountryName = (jda.country ?? (context.Accommodations.Where(x => x.country == a.CountryName).Select(x => x.country)).FirstOrDefault()),
+                                           SystemCountryName = (jda.country ?? jdac.Name) ?? (context.m_CountryMaster.Where(x => x.Country_Id == jdact.Country_Id).Select(c => c.Name).FirstOrDefault()),
                                            MapId = a.MapId,
                                            FullAddress = (a.address ?? string.Empty) + ", " + (a.Street ?? string.Empty) + ", " + (a.Street2 ?? string.Empty) + " " + (a.Street3 ?? string.Empty) + " " + (a.Street4 ?? string.Empty) + " " + (a.PostCode ?? string.Empty) + ", " + (a.CityName ?? string.Empty) + ", " + (a.StateName ?? string.Empty) + ", " + (a.CountryName ?? string.Empty),
                                            SystemFullAddress = (jda.FullAddress ?? string.Empty),
