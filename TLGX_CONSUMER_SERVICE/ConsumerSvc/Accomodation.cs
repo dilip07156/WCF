@@ -37,10 +37,10 @@ namespace ConsumerSvc
                 List<string> searchResults = new List<string>();
                 searchResults = objBL.GetAccomodationNames(RQ);
 
-                if (searchResults.Count == 0)
-                {
-                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
-                }
+                //if (searchResults.Count == 0)
+                //{
+                //    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                //}
 
                 return searchResults;
             }
