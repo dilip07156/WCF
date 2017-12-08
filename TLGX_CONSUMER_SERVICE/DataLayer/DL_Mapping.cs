@@ -388,6 +388,8 @@ namespace DataLayer
                 DC_Mapping_ProductSupplier_Search_RQ RQM = new DC_Mapping_ProductSupplier_Search_RQ();
                 if (CurSupplier_Id != Guid.Empty)
                     RQM.SupplierName = CurSupplierName;
+                else
+                    RQM.Supplier_Id = CurSupplier_Id;
                 RQM.PageNo = 0;
                 RQM.PageSize = int.MaxValue;
                 RQM.CalledFromTLGX = "TLGX";
@@ -1146,6 +1148,13 @@ namespace DataLayer
                     {
                         prodMapSearch = from a in prodMapSearch
                                         where a.SupplierName == obj.SupplierName
+                                        select a;
+                    }
+
+                    if (obj.Supplier_Id != null)
+                    {
+                        prodMapSearch = from a in prodMapSearch
+                                        where a.Supplier_Id == obj.Supplier_Id
                                         select a;
                     }
 
