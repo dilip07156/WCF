@@ -761,6 +761,11 @@ namespace DataContracts.Mapping
         string _address_tx;
         string _TelephoneNumber_tx;
 
+
+
+        [DataMember]
+        public Nullable<System.Guid> Supplier_Id { get; set; }
+
         [DataMember]
         public Nullable<System.Guid> Accommodation_Id { get; set; }
 
