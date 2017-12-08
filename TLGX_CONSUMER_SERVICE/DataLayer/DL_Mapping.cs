@@ -1428,9 +1428,9 @@ namespace DataLayer
                     {
                         if (!string.IsNullOrWhiteSpace(obj.Source) && obj.Source.ToUpper() == "SYSTEMDATA")
                         {
-                            var distCountryMapping = (from a in context.m_CountryMapping.AsNoTracking() select new { a.Country_Id, a.CountryName }).Distinct();
+                            var distCountryMapping = (from a in context.m_CountryMapping.AsNoTracking() select new { a.Country_Id, a.CountryName, a.Supplier_Id }).Distinct();
                             prodMapSearch = from a in prodMapSearch
-                                            join ct in distCountryMapping on a.CountryName equals ct.CountryName
+                                            join ct in distCountryMapping on new { a.Supplier_Id, a.CountryName }  equals new { ct.Supplier_Id, ct.CountryName }
                                             join mct in context.m_CountryMaster on ct.Country_Id equals mct.Country_Id
                                             where mct.Name == obj.CountryName
                                             select a;
@@ -1447,9 +1447,9 @@ namespace DataLayer
                     {
                         if (!string.IsNullOrWhiteSpace(obj.Source) && obj.Source.ToUpper() == "SYSTEMDATA")
                         {
-                            var distCityMapping = (from a in context.m_CityMapping.AsNoTracking() select new { a.City_Id, a.CityName }).Distinct();
+                            var distCityMapping = (from a in context.m_CityMapping.AsNoTracking() select new { a.City_Id, a.CityName, a.Supplier_Id, a.Country_Id }).Distinct();
                             prodMapSearch = from a in prodMapSearch
-                                            join ct in distCityMapping on a.CityName equals ct.CityName
+                                            join ct in distCityMapping on new { a.Supplier_Id, a.Country_Id,  a.CityName } equals new { ct.Supplier_Id, ct.Country_Id, ct.CityName}
                                             join mct in context.m_CityMaster on ct.City_Id equals mct.City_Id
                                             where mct.Name == obj.CityName
                                             select a;
@@ -1545,6 +1545,10 @@ namespace DataLayer
                     var prodMapList = (from a in prodMapSearch
                                        join ma in context.Accommodations.AsNoTracking() on a.Accommodation_Id equals ma.Accommodation_Id into ja
                                        from jda in ja.DefaultIfEmpty()
+                                       join mact in context.m_CityMaster.AsNoTracking() on a.City_Id equals mact.City_Id into jact
+                                       from jdact in jact.DefaultIfEmpty()
+                                       join mac in context.m_CountryMaster.AsNoTracking() on a.Country_Id equals mac.Country_Id into jac
+                                       from jdac in jac.DefaultIfEmpty()
                                            //where jda.Location != null
                                        orderby a.SupplierName, a.ProductName, a.SupplierProductReference
                                        select new DataContracts.Mapping.DC_Accomodation_ProductMapping
@@ -1584,8 +1588,10 @@ namespace DataLayer
                                            ProductId = a.SupplierProductReference,
                                            Remarks = a.Remarks,
                                            SystemProductName = jda.HotelName,
-                                           SystemCityName = (jda.city ?? (context.Accommodations.Where(x => x.city == a.CityName).Select(x => x.city)).FirstOrDefault()),
-                                           SystemCountryName = (jda.country ?? (context.Accommodations.Where(x => x.country == a.CountryName).Select(x => x.country)).FirstOrDefault()),
+                                           //SystemCityName = (jda.city ?? (context.Accommodations.Where(x => x.city == a.CityName).Select(x => x.city)).FirstOrDefault()),
+                                           SystemCityName = (jda.city ?? jdact.Name),
+                                           //SystemCountryName = (jda.country ?? (context.Accommodations.Where(x => x.country == a.CountryName).Select(x => x.country)).FirstOrDefault()),
+                                           SystemCountryName = (jda.country ?? jdac.Name) ?? (context.m_CountryMaster.Where(x => x.Country_Id == jdact.Country_Id).Select(c => c.Name).FirstOrDefault()),
                                            MapId = a.MapId,
                                            FullAddress = (a.address ?? string.Empty) + ", " + (a.Street ?? string.Empty) + ", " + (a.Street2 ?? string.Empty) + " " + (a.Street3 ?? string.Empty) + " " + (a.Street4 ?? string.Empty) + " " + (a.PostCode ?? string.Empty) + ", " + (a.CityName ?? string.Empty) + ", " + (a.StateName ?? string.Empty) + ", " + (a.CountryName ?? string.Empty),
                                            SystemFullAddress = (jda.FullAddress ?? string.Empty),
@@ -6961,7 +6967,11 @@ namespace DataLayer
                         {
                             if (unMappedDataCount.totalcount != null && totalmappeddata != 0)
                             {
-                                var days = (Convert.ToDateTime(parm.ToDate) - Convert.ToDateTime(parm.Fromdate)).TotalDays;
+                                double days;
+                                if (parm.Fromdate == parm.ToDate)
+                                     days = 1;
+                                else
+                                    days = (Convert.ToDateTime(parm.ToDate) - Convert.ToDateTime(parm.Fromdate)).TotalDays;
                                 var perday = (totalmappeddata / days);
                                 newmapstatsfor.Estimate = Convert.ToInt32(unMappedDataCount.totalcount / perday);
                             }
