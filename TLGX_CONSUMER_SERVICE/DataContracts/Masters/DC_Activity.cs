@@ -1101,6 +1101,21 @@ namespace DataContracts.Masters
         [DataMember]
         public int? PageSize { get; set; }
     }
+
+    [DataContract]
+    public class DC_Activity_CA_CRUD
+    {
+        [DataMember]
+        public Guid Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string AttributeType { get; set; }
+        [DataMember]
+        public string AttributeSubType { get; set; }
+        [DataMember]
+        public string User { get; set; }
+        [DataMember]
+        public List<string> AttributeValues { get; set; }
+    }
     #endregion
 
     #region pickUpDrop
@@ -1335,15 +1350,33 @@ namespace DataContracts.Masters
         [DataMember]
         public string ProductName { get; set; }
         [DataMember]
+        public string SupplierProductCode { get; set; }
+        [DataMember]
         public string Country { get; set; }
+        [DataMember]
+        public string SupplierCountry { get; set; }
         [DataMember]
         public string City { get; set; }
         [DataMember]
+        public string SupplierCity { get; set; }
+        [DataMember]
         public string ProductCategory { get; set; }
+        [DataMember]
+        public string SupplierProductCategory { get; set; }
         [DataMember]
         public string ProductCategorySubType { get; set; }
         [DataMember]
+        public string SupplierProductCategorySubType { get; set; }
+        [DataMember]
         public string ProductType { get; set; }
+        [DataMember]
+        public string SupplierProductType { get; set; }
+        [DataMember]
+        public string ProductNameSubType { get; set; }
+        [DataMember]
+        public string SupplierProductNameSubType { get; set; }
+
+
         [DataMember]
         public int? Legacy_Product_ID { get; set; }
         [DataMember]
@@ -1352,8 +1385,6 @@ namespace DataContracts.Masters
         public string CompanyProductNameSubType_Id { get; set; }
         [DataMember]
         public string FinanceControlId { get; set; }
-        [DataMember]
-        public string ProductNameSubType { get; set; }
         [DataMember]
         public string PlaceOfEvent { get; set; }
         [DataMember]
@@ -1993,14 +2024,6 @@ namespace DataContracts.Masters
         public string Session { get; set; }
         [DataMember]
         public bool IsActive { get; set; }
-        [DataMember]
-        public string CreateUser { get; set; }
-        [DataMember]
-        public DateTime? CreateDate { get; set; }
-        [DataMember]
-        public string EditUser { get; set; }
-        [DataMember]
-        public DateTime? EditDate { get; set; }
     }
 
     [DataContract]
@@ -2021,13 +2044,9 @@ namespace DataContracts.Masters
         [DataMember]
         public string CreateUser { get; set; }
         [DataMember]
-        public DateTime CreateDate { get; set; }
-        [DataMember]
         public string EditUser { get; set; }
         [DataMember]
-        public DateTime? EditDate { get; set; }
-        [DataMember]
-        public List<DC_Activity_DaysOfWeek> Activity_DaysOfWeek { get; set; }
+        public List<DC_Activity_DaysOfWeek> DaysOfWeek { get; set; }
     }
     #endregion
     

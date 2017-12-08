@@ -2084,6 +2084,8 @@ namespace DataLayer
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
                     var result = from a in search
+                                 join spm in context.Activity_SupplierProductMapping on a.Activity_Flavour_Id equals spm.Activity_ID into spmlj
+                                 from spmljl in spmlj
                                  orderby a.ProductName
                                  select new DataContracts.Masters.DC_Activity_Flavour
                                  {
@@ -2123,7 +2125,17 @@ namespace DataLayer
                                      Street5 = a.Street5,
                                      USP = a.USP,
                                      Create_Date = a.Create_Date,
-                                     TotalRecords = total
+                                     TotalRecords = total,
+                                     Create_User = a.Create_User,
+                                     Edit_Date = a.Edit_Date,
+                                     Edit_User = a.Edit_User,
+                                     SupplierCity = spmljl.SupplierCityName + " (" + spmljl.SupplierCityCode + ")",
+                                     SupplierCountry = spmljl.SupplierCountryName + " (" + spmljl.SupplierCountryCode + ")",
+                                     SupplierProductCategory = "Activities",
+                                     SupplierProductCategorySubType = spmljl.SupplierType,
+                                     SupplierProductCode = spmljl.SuplierProductCode,
+                                     SupplierProductNameSubType = spmljl.SupplierProductType,
+                                     SupplierProductType = spmljl.SupplierType
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -2145,45 +2157,118 @@ namespace DataLayer
                     if (RQ.Activity_Flavour_Id != null)
                     {
                         var res = context.Activity_Flavour.Find(RQ.Activity_Flavour_Id);
+
                         if (res != null)
                         {
-                            res.Activity_Flavour_Id = RQ.Activity_Flavour_Id ?? Guid.Empty;
-                            res.Activity_Id = RQ.Activity_Id;
-                            res.Legacy_Product_ID = RQ.Legacy_Product_ID;
-                            res.ProductName = RQ.ProductName;
-                            res.ProductNameSubType = RQ.ProductNameSubType;
-                            res.ProductType = RQ.ProductType;
-                            res.Country = RQ.Country;
-                            res.City = RQ.City;
-                            res.Country_Id = RQ.Country_Id;
-                            res.City_Id = RQ.City_Id;
-                            res.CityCode = RQ.CityCode;
-                            res.CountryCode = RQ.CountryCode;
-                            res.ProductCategory = RQ.ProductCategory;
-                            res.ProductCategorySubType = RQ.ProductCategorySubType;
-                            res.Area = RQ.Area;
-                            res.CommonProductNameSubType_Id = RQ.CommonProductNameSubType_Id;
-                            res.CompanyProductNameSubType_Id = RQ.CompanyProductNameSubType_Id;
-                            res.CompanyReccom = RQ.CompanyReccom;
-                            res.Duration = RQ.Duration;
-                            res.EndingPoint = RQ.EndingPoint;
-                            res.FinanceControlId = RQ.FinanceControlId;
-                            res.IsPickUpDropDefined = RQ.IsPickUpDropDefined;
-                            res.Latitude = RQ.Latitude;
-                            res.Longitude = RQ.Longitude;
-                            res.Location = RQ.Location;
-                            res.MustSeeInCountry = RQ.MustSeeInCountry;
-                            res.PlaceOfEvent = RQ.PlaceOfEvent;
-                            res.PostalCode = RQ.PostalCode;
-                            res.StartingPoint = RQ.StartingPoint;
-                            res.Street = RQ.Street;
-                            res.Street2 = RQ.Street2;
-                            res.Street3 = RQ.Street3;
-                            res.Street4 = RQ.Street4;
-                            res.Street5 = RQ.Street5;
-                            res.USP = RQ.USP;
                             res.Edit_Date = DateTime.Now;
-                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                            res.Edit_User = RQ.Edit_User;
+
+                            res.ProductCategory = RQ.ProductCategory;
+
+                            if (!string.IsNullOrWhiteSpace(RQ.ProductCategorySubType))
+                            {
+                                res.ProductCategorySubType = string.Empty;
+                                foreach (var str in RQ.ProductCategorySubType.Split(','))
+                                {
+                                    Guid strGuid = Guid.Parse(str);
+                                    res.ProductCategorySubType = res.ProductCategorySubType + context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == strGuid).Select(s => s.AttributeValue).First() + ",";
+                                }
+                                res.ProductCategorySubType = res.ProductCategorySubType.TrimEnd(',');
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(RQ.ProductType))
+                            {
+                                res.ProductType = string.Empty;
+                                foreach (var str in RQ.ProductType.Split(','))
+                                {
+                                    Guid strGuid = Guid.Parse(str);
+                                    res.ProductType = res.ProductType + context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == strGuid).Select(s => s.AttributeValue).First() + ",";
+                                }
+                                res.ProductType = res.ProductType.TrimEnd(',');
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(RQ.ProductNameSubType))
+                            {
+                                res.ProductNameSubType = string.Empty;
+                                foreach (var str in RQ.ProductNameSubType.Split(','))
+                                {
+                                    Guid strGuid = Guid.Parse(str);
+                                    res.ProductNameSubType = res.ProductNameSubType + context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == strGuid).Select(s => s.AttributeValue).First() + ",";
+                                }
+                                res.ProductNameSubType = res.ProductNameSubType.TrimEnd(',');
+                            }
+
+                            if ((RQ.Country_Id ?? Guid.Empty) != Guid.Empty)
+                            {
+                                var country = context.m_CountryMaster.AsNoTracking().Where(w => w.Country_Id == RQ.Country_Id).Select(s => s).FirstOrDefault();
+                                if (country != null)
+                                {
+                                    res.Country_Id = country.Country_Id;
+                                    res.Country = country.Name;
+                                    res.CountryCode = country.Code;
+                                }
+                                else
+                                {
+                                    res.Country_Id = null;
+                                    res.Country = null;
+                                    res.CountryCode = null;
+                                }
+                            }
+                            else
+                            {
+                                res.Country_Id = null;
+                                res.Country = null;
+                                res.CountryCode = null;
+                            }
+
+                            if ((RQ.City_Id ?? Guid.Empty) != Guid.Empty)
+                            {
+                                var city = context.m_CityMaster.AsNoTracking().Where(w => w.City_Id == RQ.City_Id).Select(s => s).FirstOrDefault();
+                                if (city != null)
+                                {
+                                    res.City_Id = city.City_Id;
+                                    res.City = city.Name;
+                                    res.CityCode = city.Code;
+                                }
+                                else
+                                {
+                                    res.City_Id = null;
+                                    res.City = null;
+                                    res.CityCode = null;
+                                }
+                            }
+                            else
+                            {
+                                res.City_Id = null;
+                                res.City = null;
+                                res.CityCode = null;
+                            }
+
+                            //res.Activity_Id = RQ.Activity_Id;
+                            //res.Legacy_Product_ID = RQ.Legacy_Product_ID;
+                            //res.ProductName = RQ.ProductName;
+                            //res.Area = RQ.Area;
+                            //res.CommonProductNameSubType_Id = RQ.CommonProductNameSubType_Id;
+                            //res.CompanyProductNameSubType_Id = RQ.CompanyProductNameSubType_Id;
+                            //res.CompanyReccom = RQ.CompanyReccom;
+                            //res.Duration = RQ.Duration;
+                            //res.EndingPoint = RQ.EndingPoint;
+                            //res.FinanceControlId = RQ.FinanceControlId;
+                            //res.IsPickUpDropDefined = RQ.IsPickUpDropDefined;
+                            //res.Latitude = RQ.Latitude;
+                            //res.Longitude = RQ.Longitude;
+                            //res.Location = RQ.Location;
+                            //res.MustSeeInCountry = RQ.MustSeeInCountry;
+                            //res.PlaceOfEvent = RQ.PlaceOfEvent;
+                            //res.PostalCode = RQ.PostalCode;
+                            //res.StartingPoint = RQ.StartingPoint;
+                            //res.Street = RQ.Street;
+                            //res.Street2 = RQ.Street2;
+                            //res.Street3 = RQ.Street3;
+                            //res.Street4 = RQ.Street4;
+                            //res.Street5 = RQ.Street5;
+                            //res.USP = RQ.USP;
+
                             if (context.SaveChanges() == 1)
                             {
                                 _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
@@ -2197,7 +2282,6 @@ namespace DataLayer
                         }
                         else IsInsert = true;
                     }
-                    else IsInsert = true;
 
                     if (IsInsert)
                     {
@@ -2260,6 +2344,61 @@ namespace DataLayer
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity flavour", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+        public DataContracts.DC_Message AddUpdateActivityCA(List<DC_Activity_CA_CRUD> RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (RQ != null)
+                    {
+                        foreach (var item in RQ)
+                        {
+
+                            context.Activity_ClassificationAttributes.RemoveRange(context.Activity_ClassificationAttributes.Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.AttributeType == item.AttributeType && w.AttributeSubType == item.AttributeSubType).Select(s => s));
+
+                            foreach (var str in item.AttributeValues)
+                            {
+                                context.Activity_ClassificationAttributes.Add(new Activity_ClassificationAttributes
+                                {
+                                    Activity_ClassificationAttribute_Id = Guid.NewGuid(),
+                                    Activity_Flavour_Id = item.Activity_Flavour_Id,
+                                    AttributeType = item.AttributeType,
+                                    AttributeSubType = item.AttributeSubType,
+                                    AttributeValue = str,
+                                    IsActive = true,
+                                    InternalOnly = false,
+                                    Create_Date = DateTime.Now,
+                                    Create_User = item.User
+                                });
+                            }
+                        }
+                    }
+
+                    if (context.SaveChanges() == 1)
+                    {
+                        return new DC_Message
+                        {
+                            StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully,
+                            StatusCode = ReadOnlyMessage.StatusCode.Success
+                        };
+                    }
+                    else
+                    {
+                        return new DC_Message
+                        {
+                            StatusMessage = ReadOnlyMessage.strFailed,
+                            StatusCode = ReadOnlyMessage.StatusCode.Failed
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while updating Activity CAs", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
         #endregion
 
         #region Activity Flavour Options
@@ -3594,23 +3733,92 @@ namespace DataLayer
                 {
                     List<DataContracts.Masters.DC_Activity_OperatingDays> returnData = new List<DataContracts.Masters.DC_Activity_OperatingDays>();
 
-                    var DaysOfOperation = context.Activity_DaysOfOperation.Where(w => w.Activity_Flavor_ID == Activity_Flavour_Id).Select(s => s);
+                    var DaysOfOperation = context.Activity_DaysOfOperation.AsNoTracking().Where(w => w.Activity_Flavor_ID == Activity_Flavour_Id).Select(s => s);
                     if (DaysOfOperation.Count() > 0)
                     {
-                        foreach(var perdayofOps in DaysOfOperation)
+                        foreach (var perdayofOps in DaysOfOperation)
                         {
-                            DataContracts.Masters.DC_Activity_OperatingDays OperatingDay = new DC_Activity_OperatingDays();
-                            OperatingDay.Activity_DaysOfOperation_Id = perdayofOps.Activity_DaysOfOperation_Id;
-                            OperatingDay.Activity_Flavor_ID = perdayofOps.Activity_Flavor_ID;
-                            OperatingDay.FromDate = perdayofOps.FromDate;
-                            //OperatingDay.EndDate = perdayofOps.ToDate;
-                            OperatingDay.IsOperatingDays = perdayofOps.IsOperatingDays;
-                            OperatingDay.IsActive = perdayofOps.IsActive;
-                            //OperatingDay.Activity_DaysOfWeek = perdayofOps;
+                            DataContracts.Masters.DC_Activity_OperatingDays OperatingDay = new DC_Activity_OperatingDays
+                            {
+                                Activity_DaysOfOperation_Id = perdayofOps.Activity_DaysOfOperation_Id,
+                                Activity_Flavor_ID = perdayofOps.Activity_Flavor_ID,
+                                CreateUser = perdayofOps.CreateUser,
+                                EditUser = perdayofOps.EditUser,
+                                EndDate = perdayofOps.ToDate,
+                                FromDate = perdayofOps.FromDate,
+                                IsActive = perdayofOps.IsActive,
+                                IsOperatingDays = perdayofOps.IsOperatingDays,
+                                DaysOfWeek = (from s in context.Activity_DaysOfWeek.AsNoTracking()
+                                              where s.Activity_DaysOfOperation_Id == perdayofOps.Activity_DaysOfOperation_Id && s.Activity_Flavor_ID == Activity_Flavour_Id
+                                              select new DC_Activity_DaysOfWeek
+                                              {
+                                                  Activity_DaysOfOperation_Id = s.Activity_DaysOfOperation_Id,
+                                                  Activity_Flavor_ID = s.Activity_Flavor_ID,
+                                                  Activity_DaysOfWeek_ID = s.Activity_DaysOfWeek_ID,
+                                                  Duration = s.Duration,
+                                                  EndTime = s.EndTime,
+                                                  Fri = s.Fri ?? false,
+                                                  IsActive = s.IsActive ?? false,
+                                                  Mon = s.Mon ?? false,
+                                                  Sat = s.Sat ?? false,
+                                                  Session = s.Session,
+                                                  StartTime = s.StartTime,
+                                                  Sun = s.Sun ?? false,
+                                                  SupplierDuration = s.SupplierDuration,
+                                                  SupplierEndTime = s.SupplierEndTime,
+                                                  SupplierFrequency = s.SupplierFrequency,
+                                                  SupplierSession = s.SupplierSession,
+                                                  SupplierStartTime = s.SupplierStartTime,
+                                                  Thur = s.Thur ?? false,
+                                                  Tues = s.Tues ?? false,
+                                                  Wed = s.Wed ?? false
+                                              }).ToList()
+                            };
                             returnData.Add(OperatingDay);
                         }
                     }
-                    return returnData.ToList();
+
+                    var DaysOfWeekNotLinkedToOperatingDays = context.Activity_DaysOfWeek.AsNoTracking().Where(w => w.Activity_Flavor_ID == Activity_Flavour_Id && w.Activity_DaysOfOperation_Id == null).Count();
+                    if (DaysOfWeekNotLinkedToOperatingDays > 0)
+                    {
+                        Guid DaysOfOperation_Id = Guid.NewGuid();
+
+                        DataContracts.Masters.DC_Activity_OperatingDays OperatingDay = new DC_Activity_OperatingDays
+                        {
+                            Activity_DaysOfOperation_Id = DaysOfOperation_Id,
+                            Activity_Flavor_ID = Activity_Flavour_Id,
+                            IsActive = true,
+                            IsOperatingDays = true,
+                            DaysOfWeek = (from s in context.Activity_DaysOfWeek.AsNoTracking()
+                                          where s.Activity_DaysOfOperation_Id == null && s.Activity_Flavor_ID == Activity_Flavour_Id
+                                          select new DC_Activity_DaysOfWeek
+                                          {
+                                              Activity_DaysOfOperation_Id = s.Activity_DaysOfOperation_Id,
+                                              Activity_Flavor_ID = s.Activity_Flavor_ID,
+                                              Activity_DaysOfWeek_ID = s.Activity_DaysOfWeek_ID,
+                                              Duration = s.Duration,
+                                              EndTime = s.EndTime,
+                                              Fri = s.Fri ?? false,
+                                              IsActive = s.IsActive ?? false,
+                                              Mon = s.Mon ?? false,
+                                              Sat = s.Sat ?? false,
+                                              Session = s.Session,
+                                              StartTime = s.StartTime,
+                                              Sun = s.Sun ?? false,
+                                              SupplierDuration = s.SupplierDuration,
+                                              SupplierEndTime = s.SupplierEndTime,
+                                              SupplierFrequency = s.SupplierFrequency,
+                                              SupplierSession = s.SupplierSession,
+                                              SupplierStartTime = s.SupplierStartTime,
+                                              Thur = s.Thur ?? false,
+                                              Tues = s.Tues ?? false,
+                                              Wed = s.Wed ?? false
+                                          }).ToList()
+                        };
+                        returnData.Add(OperatingDay);
+                    }
+
+                    return returnData;
                 }
             }
             catch (Exception e)
@@ -3625,7 +3833,84 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    return null;
+                    foreach (var OD in RQ)
+                    {
+                        var searchOD = context.Activity_DaysOfOperation.Find(OD.Activity_DaysOfOperation_Id);
+                        if (searchOD == null)
+                        {
+                            context.Activity_DaysOfOperation.Add(new Activity_DaysOfOperation
+                            {
+                                Activity_DaysOfOperation_Id = OD.Activity_DaysOfOperation_Id,
+                                Activity_Flavor_ID = OD.Activity_Flavor_ID,
+                                FromDate = OD.FromDate,
+                                ToDate = OD.EndDate,
+                                CreateDate = DateTime.Now,
+                                CreateUser = OD.EditUser,
+                                IsActive = true,
+                                IsOperatingDays = true
+                            });
+                        }
+                        else
+                        {
+                            searchOD.ToDate = OD.EndDate;
+                            searchOD.EditDate = DateTime.Now;
+                            searchOD.EditUser = OD.EditUser;
+                            searchOD.IsActive = true;
+                            searchOD.IsOperatingDays = true;
+                        }
+
+                        foreach (var DOW in OD.DaysOfWeek)
+                        {
+                            var searchDOW = context.Activity_DaysOfWeek.Find(DOW.Activity_DaysOfWeek_ID);
+                            if (searchDOW == null)
+                            {
+                                context.Activity_DaysOfWeek.Add(new Activity_DaysOfWeek
+                                {
+                                    Activity_DaysOfOperation_Id = DOW.Activity_DaysOfOperation_Id,
+                                    Activity_DaysOfWeek_ID = DOW.Activity_DaysOfWeek_ID,
+                                    CreateDate = DateTime.Now,
+                                    CreateUser = OD.EditUser,
+                                    Activity_Flavor_ID = DOW.Activity_Flavor_ID,
+                                    Duration = DOW.Duration,
+                                    EndTime = DOW.EndTime,
+                                    Fri = DOW.Fri,
+                                    IsActive = true,
+                                    Mon = DOW.Mon,
+                                    Sat = DOW.Sat,
+                                    Session = DOW.Session,
+                                    Sun = DOW.Sun,
+                                    StartTime = DOW.StartTime,
+                                    Thur = DOW.Thur,
+                                    Tues = DOW.Tues,
+                                    Wed = DOW.Wed
+                                });
+                            }
+                            else
+                            {
+                                searchDOW.Activity_DaysOfOperation_Id = DOW.Activity_DaysOfOperation_Id;
+                                searchDOW.Activity_DaysOfWeek_ID = DOW.Activity_DaysOfWeek_ID;
+                                searchDOW.EditDate = DateTime.Now;
+                                searchDOW.EditUser = OD.EditUser;
+                                searchDOW.Activity_Flavor_ID = DOW.Activity_Flavor_ID;
+                                searchDOW.Duration = DOW.Duration;
+                                searchDOW.EndTime = DOW.EndTime;
+                                searchDOW.Fri = DOW.Fri;
+                                searchDOW.IsActive = true;
+                                searchDOW.Mon = DOW.Mon;
+                                searchDOW.Sat = DOW.Sat;
+                                searchDOW.Session = DOW.Session;
+                                searchDOW.Sun = DOW.Sun;
+                                searchDOW.StartTime = DOW.StartTime;
+                                searchDOW.Thur = DOW.Thur;
+                                searchDOW.Tues = DOW.Tues;
+                                searchDOW.Wed = DOW.Wed;
+                            }
+                        }
+
+                        context.SaveChanges();
+                    }
+
+                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Saved Successfully" };
                 }
             }
             catch (Exception ex)
