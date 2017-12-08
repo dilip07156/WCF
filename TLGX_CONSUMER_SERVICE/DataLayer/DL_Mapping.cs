@@ -1665,18 +1665,18 @@ namespace DataLayer
                             {
                                 if (!string.IsNullOrWhiteSpace(item.ProductName))
                                 {
-                                    var prodname = item.ProductName.ToLower().Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper();
+                                    var prodname = item.ProductName.ToLower().Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").Replace(item.CityName.ToLower(), "").Replace(item.CountryName.ToLower(), "").ToUpper();
                                     var prodcode = item.ProductId;
                                     if (!string.IsNullOrWhiteSpace(prodname) && prodname.ToUpper() != "&NBSP;")
                                     {
-                                        var searchprod = context.Accommodations.Where(a => (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper().Equals(item.ProductName.ToLower().Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper())).FirstOrDefault();
+                                        var searchprod = context.Accommodations.Where(a => (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper().Equals(prodname)).FirstOrDefault();
                                         if (searchprod == null)
-                                            searchprod = context.Accommodations.Where(a => (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper().Contains(item.ProductName.ToLower().Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper())).FirstOrDefault();
-                                        if (!string.IsNullOrWhiteSpace(prodcode) && prodname.ToUpper() != "&NBSP;")
-                                        {
-                                            if (searchprod == null)
-                                                searchprod = context.Accommodations.Where(a => (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).ToUpper().Equals(prodcode)).FirstOrDefault();
-                                        }
+                                            searchprod = context.Accommodations.Where(a => (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper().Contains(prodname)).FirstOrDefault();
+                                        //if (!string.IsNullOrWhiteSpace(prodcode) && prodname.ToUpper() != "&NBSP;")
+                                        //{
+                                        //    if (searchprod == null)
+                                        //        searchprod = context.Accommodations.Where(a => (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).ToUpper().Equals(prodcode)).FirstOrDefault();
+                                        //}
                                         if (searchprod != null)
                                         {
                                             item.mstAcco_Id = Convert.ToString(searchprod.Accommodation_Id);
@@ -4214,12 +4214,12 @@ namespace DataLayer
                                             if (searchCity == null)
                                             {
                                                 searchCity = CityMaster.Where(a => a.Country_Id == item.Country_Id && a.Name.ToUpper().Trim().Contains(cityName.ToUpper().Trim())).FirstOrDefault();
-                                                if (searchCity == null)
-                                                {
-                                                    searchCity = CityMaster.Where(a => a.Country_Id == item.Country_Id && (a.Name.ToUpper().Trim() == cityCode.ToUpper().Trim())).FirstOrDefault();
-                                                    if (searchCity == null)
-                                                        searchCity = CityMaster.Where(a => a.Country_Id == item.Country_Id && a.Name.ToUpper().Trim().Contains(cityCode.ToUpper().Trim())).FirstOrDefault();
-                                                }
+                                                //if (searchCity == null)
+                                                //{
+                                                //    searchCity = CityMaster.Where(a => a.Country_Id == item.Country_Id && (a.Name.ToUpper().Trim() == cityCode.ToUpper().Trim())).FirstOrDefault();
+                                                //    if (searchCity == null)
+                                                //        searchCity = CityMaster.Where(a => a.Country_Id == item.Country_Id && a.Name.ToUpper().Trim().Contains(cityCode.ToUpper().Trim())).FirstOrDefault();
+                                                //}
                                             }
                                             if (searchCity != null)
                                             {
