@@ -297,6 +297,14 @@ namespace ConsumerSvc
                 return obj.AddUpdateActivityFlavour(RQ);
             }
         }
+
+        public DataContracts.DC_Message AddUpdateActivityCA(List<DC_Activity_CA_CRUD> RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateActivityCA(RQ);
+            }
+        }
         #endregion
 
         #region Activity Flavour Options

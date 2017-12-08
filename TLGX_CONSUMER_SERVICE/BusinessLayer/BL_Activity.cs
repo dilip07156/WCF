@@ -247,6 +247,14 @@ namespace BusinessLayer
                 return obj.AddUpdateActivityFlavour(RQ);
             }
         }
+
+        public DataContracts.DC_Message AddUpdateActivityCA(List<DC_Activity_CA_CRUD> RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdateActivityCA(RQ);
+            }
+        }
         #endregion
 
         #region Activity Flavour
