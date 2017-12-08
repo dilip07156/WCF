@@ -1474,16 +1474,17 @@ namespace DataLayer
                                         where a.TelephoneNumber_tx == telephoneNumber_tx
                                         select a;
                     }
-                    
+
                     if (!string.IsNullOrWhiteSpace(obj.CountryName))
                     {
                         if (!string.IsNullOrWhiteSpace(obj.Source) && obj.Source.ToUpper() == "SYSTEMDATA")
                         {
-                            var distCountryMapping = (from a in context.m_CountryMapping.AsNoTracking() select new { a.Country_Id, a.CountryName, a.Supplier_Id }).Distinct();
+                            var distCountryMapping = (from a in context.m_CountryMapping.AsNoTracking() select new { a.Country_Id, a.CountryCode, a.CountryName, a.Supplier_Id }).Distinct();
                             prodMapSearch = from a in prodMapSearch
-                                            join ct in distCountryMapping on new { a.Supplier_Id, a.CountryName }  equals new { ct.Supplier_Id, ct.CountryName }
+                                            join ct in distCountryMapping on new { a.Supplier_Id } equals new { ct.Supplier_Id }
                                             join mct in context.m_CountryMaster on ct.Country_Id equals mct.Country_Id
                                             where mct.Name == obj.CountryName
+                                            && ((a.CountryName == null) ? (a.CountryCode == ct.CountryCode) : (a.CountryName == ct.CountryName))
                                             select a;
                         }
                         else
@@ -1493,7 +1494,7 @@ namespace DataLayer
                                             select a;
                         }
                     }
-                    
+
 
                     if (!string.IsNullOrWhiteSpace(obj.CityName))
                     {
@@ -1501,7 +1502,7 @@ namespace DataLayer
                         {
                             var distCityMapping = (from a in context.m_CityMapping.AsNoTracking() select new { a.City_Id, a.CityName, a.Supplier_Id, a.Country_Id }).Distinct();
                             prodMapSearch = from a in prodMapSearch
-                                            join ct in distCityMapping on new { a.Supplier_Id, a.Country_Id,  a.CityName } equals new { ct.Supplier_Id, ct.Country_Id, ct.CityName}
+                                            join ct in distCityMapping on new { a.Supplier_Id, a.Country_Id, a.CityName } equals new { ct.Supplier_Id, ct.Country_Id, ct.CityName }
                                             join mct in context.m_CityMaster on ct.City_Id equals mct.City_Id
                                             where mct.Name == obj.CityName
                                             select a;
@@ -1513,7 +1514,7 @@ namespace DataLayer
                                             select a;
                         }
                     }
-                    
+
 
                     if (!string.IsNullOrWhiteSpace(obj.CityCode))
                     {
