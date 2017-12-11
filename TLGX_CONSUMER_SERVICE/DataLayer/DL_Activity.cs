@@ -2011,8 +2011,10 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = from a in context.Activity_Flavour
-                                 select a;
+                    var search = (from a in context.Activity_Flavour
+                                  select a).AsQueryable();
+
+                    var spmQ = context.Activity_SupplierProductMapping.AsQueryable();
 
                     if (RQ.Activity_Flavour_Id != null)
                     {
@@ -2020,72 +2022,116 @@ namespace DataLayer
                                  where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
                                  select a;
                     }
-                    if (RQ.Activity_Id != null)
+                    else
                     {
-                        search = from a in search
-                                 where a.Activity_Id == RQ.Activity_Id
-                                 select a;
-                    }
-                    if (RQ.Legacy_Product_ID != null)
-                    {
-                        search = from a in search
-                                 where a.Legacy_Product_ID == RQ.Legacy_Product_ID
-                                 select a;
-                    }
-                    if (RQ.City != null)
-                    {
-                        search = from a in search
-                                 where a.City.Trim().TrimStart().ToUpper() == RQ.City.Trim().TrimStart().ToUpper()
-                                 select a;
-                    }
-                    if (RQ.Country != null)
-                    {
-                        search = from a in search
-                                 where a.Country.Trim().TrimStart().ToUpper() == RQ.Country.Trim().TrimStart().ToUpper()
-                                 select a;
-                    }
+                        if (RQ.Supplier_Id != null)
+                        {
+                            spmQ = spmQ.Where(w => w.Supplier_ID == RQ.Supplier_Id);
+                        }
 
-                    if (RQ.ProductCategory != null)
-                    {
-                        search = from a in search
-                                 where a.ProductCategory.Trim().TrimStart().ToUpper() == RQ.ProductCategory.Trim().TrimStart().ToUpper()
-                                 select a;
-                    }
+                        if (!string.IsNullOrWhiteSpace(RQ.ProductName))
+                        {
+                            search = from a in search
+                                     where a.ProductName.Trim().ToUpper().Contains(RQ.ProductName.Trim().ToUpper())
+                                     select a;
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrWhiteSpace(RQ.Country))
+                            {
+                                if (RQ.Country.Contains("UNMAPPED"))
+                                {
+                                    search = from a in search
+                                             where a.Country_Id == null
+                                             select a;
+                                }
+                                else
+                                {
+                                    if (RQ.Country_Id != null)
+                                    {
+                                        search = from a in search
+                                                 where a.Country_Id == RQ.Country_Id
+                                                 select a;
+                                    }
+                                }
+                            }
 
-                    if (RQ.ProductCategorySubType != null)
-                    {
-                        search = from a in search
-                                 where a.ProductCategorySubType.Trim().TrimStart().ToUpper() == RQ.ProductCategorySubType.Trim().TrimStart().ToUpper()
-                                 select a;
-                    }
+                            if (!string.IsNullOrWhiteSpace(RQ.City))
+                            {
+                                if (RQ.City.Contains("UNMAPPED"))
+                                {
+                                    search = from a in search
+                                             where a.City_Id == null
+                                             select a;
+                                }
+                                else
+                                {
+                                    if (RQ.City_Id != null)
+                                    {
+                                        search = from a in search
+                                                 where a.City_Id == RQ.City_Id
+                                                 select a;
+                                    }
+                                }
+                            }
+                            
+                            if (!string.IsNullOrWhiteSpace(RQ.ProductCategorySubType))
+                            {
+                                if (RQ.ProductCategorySubType.Contains("UNMAPPED"))
+                                {
+                                    search = from a in search
+                                             where a.ProductCategorySubType == null || a.ProductCategorySubType.Trim() == string.Empty
+                                             select a;
+                                }
+                                else if (RQ.ProductCategorySubType != "-ALL-")
+                                {
+                                    search = from a in search
+                                             where a.ProductCategorySubType.Trim().ToUpper().Contains(RQ.ProductCategorySubType.Trim().ToUpper())
+                                             select a;
+                                }
+                            }
 
-                    if (RQ.ProductName != null)
-                    {
-                        search = from a in search
-                                 where a.ProductName.Trim().ToUpper().Contains(RQ.ProductName.Trim().ToUpper())
-                                 select a;
-                    }
+                            if (!string.IsNullOrWhiteSpace(RQ.ProductType))
+                            {
+                                if (RQ.ProductType.Contains("UNMAPPED"))
+                                {
+                                    search = from a in search
+                                             where a.ProductType == null || a.ProductType.Trim() == string.Empty
+                                             select a;
+                                }
+                                else if (RQ.ProductType != "-ALL-")
+                                {
+                                    search = from a in search
+                                             where a.ProductType.Trim().ToUpper().Contains(RQ.ProductType.Trim().ToUpper())
+                                             select a;
+                                }
+                            }
 
-                    if (RQ.ProductType != null)
-                    {
-                        search = from a in search
-                                 where a.ProductType.Trim().TrimStart().ToUpper() == RQ.ProductType.Trim().TrimStart().ToUpper()
-                                 select a;
+                            if (!string.IsNullOrWhiteSpace(RQ.ProductNameSubType))
+                            {
+                                if (RQ.ProductNameSubType.Contains("UNMAPPED"))
+                                {
+                                    search = from a in search
+                                             where a.ProductNameSubType == null || a.ProductNameSubType.Trim() == string.Empty
+                                             select a;
+                                }
+                                else if (RQ.ProductNameSubType != "-ALL-")
+                                {
+                                    search = from a in search
+                                             where a.ProductNameSubType.Trim().ToUpper().Contains(RQ.ProductNameSubType.Trim().ToUpper())
+                                             select a;
+                                }
+                            }
+                        }
                     }
-                    if (RQ.ProductNameSubType != null)
-                    {
-                        search = from a in search
-                                 where a.ProductNameSubType.Trim().TrimStart().ToUpper() == RQ.ProductNameSubType.Trim().TrimStart().ToUpper()
-                                 select a;
-                    }
-
 
                     int total = search.Count();
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
                     var result = from a in search
-                                 join spm in context.Activity_SupplierProductMapping on a.Activity_Flavour_Id equals spm.Activity_ID into spmlj
+                                 join spm in spmQ on a.Activity_Flavour_Id equals spm.Activity_ID into spmlj
                                  from spmljl in spmlj
+                                 join s in context.Supplier on spmljl.Supplier_ID equals s.Supplier_Id
                                  orderby a.ProductName
                                  select new DataContracts.Masters.DC_Activity_Flavour
                                  {
@@ -2135,7 +2181,10 @@ namespace DataLayer
                                      SupplierProductCategorySubType = spmljl.SupplierType,
                                      SupplierProductCode = spmljl.SuplierProductCode,
                                      SupplierProductNameSubType = spmljl.SupplierProductType,
-                                     SupplierProductType = spmljl.SupplierType
+                                     SupplierProductType = spmljl.SupplierType,
+                                     Supplier_Id = s.Supplier_Id,
+                                     SupplierCode = s.Code,
+                                     SupplierName = s.Name
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }

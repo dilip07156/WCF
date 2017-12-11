@@ -4027,7 +4027,7 @@ namespace DataLayer
                     var prodMapSearch = (from a in context.m_CityMapping select a).AsQueryable();
                     var countrymaster = context.m_CountryMaster.Select(s => s).AsQueryable();
 
-                    var SuppliersMaster = context.Suppliers.Select(s => s).AsQueryable();
+                    var SuppliersMaster = context.Supplier.Select(s => s).AsQueryable();
                     var CityMaster = context.m_CityMaster.Select(s => s).AsQueryable();
 
 
@@ -5742,7 +5742,7 @@ namespace DataLayer
                     var skip = RQ.PageSize * RQ.PageNo;
 
                     var searchList = (from a in search
-                                      join sup in context.Suppliers on a.Supplier_Id equals sup.Supplier_Id
+                                      join sup in context.Supplier on a.Supplier_Id equals sup.Supplier_Id
                                       join ma in context.m_masterattribute on a.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
                                       orderby sup.Name
                                       select new DataContracts.Mapping.DC_MasterAttributeMapping_RS
@@ -5773,7 +5773,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var search = (from a in context.m_MasterAttributeMapping
-                                  join sup in context.Suppliers on a.Supplier_Id equals sup.Supplier_Id
+                                  join sup in context.Supplier on a.Supplier_Id equals sup.Supplier_Id
                                   join mav in context.m_masterattributevalue on a.SystemMasterAttribute_Id equals mav.MasterAttributeValue_Id
                                   where a.MasterAttributeMapping_Id == MasterAttributeMapping_Id
                                   select new DataContracts.Mapping.DC_MasterAttributeMapping
@@ -6510,7 +6510,7 @@ namespace DataLayer
                                         select a;
                     }
                     prodMapSearch = from a in prodMapSearch
-                                    join sup in context.Suppliers on a.Supplier_ID equals sup.Supplier_Id
+                                    join sup in context.Supplier on a.Supplier_ID equals sup.Supplier_Id
                                     select a;
 
                     int total;
@@ -6661,7 +6661,7 @@ namespace DataLayer
                         prodMapSearch = from a in prodMapSearch
                                         join mas in distCountryMapping on a.SupplierCountryName.ToLower().Trim() equals mas.CountryName.ToLower().Trim()
                                         join mct in context.m_CountryMaster on mas.Country_Id equals mct.Country_Id
-                                        join sup in context.Suppliers on a.Supplier_ID equals sup.Supplier_Id
+                                        join sup in context.Supplier on a.Supplier_ID equals sup.Supplier_Id
                                         where mct.Name == obj.SystemCountryName
                                         select a;
                     }
