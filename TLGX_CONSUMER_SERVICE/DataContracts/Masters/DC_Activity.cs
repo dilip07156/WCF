@@ -1439,6 +1439,12 @@ namespace DataContracts.Masters
         public string Edit_User { get; set; }
         [DataMember]
         public int? TotalRecords { get; set; }
+        [DataMember]
+        public Guid? Supplier_Id { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+        [DataMember]
+        public string SupplierCode { get; set; }
 
     }
     [DataContract]
@@ -1447,7 +1453,11 @@ namespace DataContracts.Masters
         [DataMember]
         public Guid? Activity_Flavour_Id { get; set; }
         [DataMember]
-        public Guid? Activity_Id { get; set; }
+        public Guid? Supplier_Id { get; set; }
+        [DataMember]
+        public Guid? Country_Id { get; set; }
+        [DataMember]
+        public Guid? City_Id { get; set; }
         [DataMember]
         public string ProductName { get; set; }
         [DataMember]
@@ -1455,15 +1465,11 @@ namespace DataContracts.Masters
         [DataMember]
         public string City { get; set; }
         [DataMember]
-        public string ProductCategory { get; set; }
-        [DataMember]
         public string ProductCategorySubType { get; set; }
         [DataMember]
         public string ProductType { get; set; }
         [DataMember]
         public string ProductNameSubType { get; set; }
-        [DataMember]
-        public int? Legacy_Product_ID { get; set; }
         [DataMember]
         public int? PageNo { get; set; }
         [DataMember]

@@ -401,8 +401,9 @@ namespace DataLayer
                 clsMappingHotel = clsMappingHotel.Select(c =>
                 {
                     c.ProductName = (clsSTGHotel
-                    .Where(s => (s.ProductId ?? s.ProductName) == (c.SupplierProductReference ?? c.ProductName) && s.Country_Id == c.Country_Id && s.City_Id == c.City_Id)
+                    //.Where(s => (s.ProductId ?? s.ProductName) == (c.SupplierProductReference ?? c.ProductName) && s.Country_Id == c.Country_Id && s.City_Id == c.City_Id)
                     //.Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
+                    .Where(s => (s.ProductId == c.SupplierProductReference) && ((s.CityCode == null) ? (s.CityName == c.CityName) : (s.CityCode == c.CityCode)) && ((s.CountryCode == null) ? (s.CountryName == c.CountryName) : (s.CountryCode == c.CountryCode)))
                     .Select(s1 => s1.ProductName)
                     .FirstOrDefault()
                     ) ?? c.ProductName;
@@ -410,7 +411,8 @@ namespace DataLayer
                     c.Edit_User = "TLGX_DataHandler";
                     c.ActionType = "UPDATE";
                     c.stg_AccoMapping_Id = (clsSTGHotel
-                    .Where(s => (s.ProductId ?? s.ProductName) == (c.SupplierProductReference ?? c.ProductName) && s.Country_Id == c.Country_Id && s.City_Id == c.City_Id)
+                    //.Where(s => (s.ProductId ?? s.ProductName) == (c.SupplierProductReference ?? c.ProductName) && s.Country_Id == c.Country_Id && s.City_Id == c.City_Id)
+                    .Where(s => (s.ProductId == c.SupplierProductReference) && ((s.CityCode == null) ? (s.CityName == c.CityName) : (s.CityCode == c.CityCode)) && ((s.CountryCode == null) ? (s.CountryName == c.CountryName) : (s.CountryCode == c.CountryCode)))
                     .Select(s1 => s1.stg_AccoMapping_Id)
                     .FirstOrDefault()
                     );
@@ -440,11 +442,15 @@ namespace DataLayer
                 CallLogVerbose(File_Id, "MAP", "Checking for New Hotels in File.");
                 clsSTGHotelInsert = clsSTGHotel.Where(p => !clsMappingHotel.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                  && (
+                    p2.SupplierProductReference == p.ProductId
+                    && ((p2.CityCode == null) ? (p2.CityName == p.CityName) : (p2.CityCode == p.CityCode))
+                    && ((p2.CountryCode == null) ? (p2.CountryName == p.CountryName) : (p2.CountryCode == p.CountryCode))
+                    /*&& 
                     (((p2.ProductName ?? string.Empty).ToString().Trim().ToUpper() == (p.ProductName ?? string.Empty).ToString().Trim().ToUpper()))
                     && (((p2.PostCode ?? string.Empty).ToString().Trim().ToUpper() == (p.PostalCode ?? string.Empty).ToString().Trim().ToUpper()))
                     && (((p2.StateName ?? string.Empty).ToString().Trim().ToUpper() == (p.StateName ?? string.Empty).ToString().Trim().ToUpper()))
                     && (((p2.Country_Id ?? Guid.Empty) == (p.Country_Id ?? Guid.Empty)))
-                    && (((p2.City_Id ?? Guid.Empty) == (p.City_Id ?? Guid.Empty)))
+                    && (((p2.City_Id ?? Guid.Empty) == (p.City_Id ?? Guid.Empty)))*/
                 ))).ToList();
                 PLog.PercentageValue = 48;
                 USD.AddStaticDataUploadProcessLog(PLog);
@@ -735,7 +741,7 @@ namespace DataLayer
                             prodMapSearch = (from a in prodMapSearch
                                                  //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
                                              join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
-                                             where (a.ProductName ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "").Replace("  ", " ") == (ac.HotelName ?? string.Empty).ToString().Trim().ToUpper().Replace("HOTEL", "").Replace("  ", " ")
+                                             where (a.ProductName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace("  ", " ").Trim() == (ac.HotelName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace("  ", " ").Trim()
                                              select a).Distinct().ToList();
                             //prodMapSearch = (from a in prodMapSearch
                             //                 join m in context.m_CountryMapping.AsNoTracking() on new { a.Supplier_Id, a.CountryName } equals new { m.Supplier_Id, m.CountryName }
@@ -891,7 +897,7 @@ namespace DataLayer
                                                             ((isCountryNameCheck && s.Country_Id == c.Country_Id) || (!isCountryNameCheck)) &&
                                                             ((isCityNameCheck && s.City_Id == c.City_Id) || (!isCityNameCheck)) &&
                                                             ((isCodeCheck && s.CompanyHotelID.ToString() == c.SupplierProductReference) || (!isCodeCheck)) &&
-                                                            ((isNameCheck && s.HotelName.Trim().ToUpper().Replace("HOTEL","").Replace("  ", " ") == c.ProductName.Trim().ToUpper().Replace("HOTEL","").Replace("  ", " ")) || (!isNameCheck)) &&
+                                                            ((isNameCheck && s.HotelName.ToUpper().Replace("HOTEL","").Replace("  ", " ").Trim() == c.ProductName.ToUpper().Replace("HOTEL","").Replace("  ", " ").Trim()) || (!isNameCheck)) &&
                                                             ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck)) &&
                                                             ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck)) &&
                                                             ((isAddressCheck && s.Address_Tx != null && c.Address_tx != null && s.Address_Tx == c.Address_tx) || (!isAddressCheck)) &&
@@ -1456,7 +1462,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(obj.ProductName))
                     {
                         prodMapSearch = from a in prodMapSearch
-                                        where a.ProductName.Contains(obj.ProductName)
+                                        where a.ProductName.ToLower().Replace("hotel","").Trim().Contains(obj.ProductName.ToLower().Replace("hotel", "").Trim())
                                         select a;
                     }
 
@@ -1537,7 +1543,6 @@ namespace DataLayer
                                         select a;
                     }
 
-                    var res4 = prodMapSearch.ToList();
 
                     if (!string.IsNullOrWhiteSpace(obj.Chain))
                     {
@@ -4027,7 +4032,7 @@ namespace DataLayer
                     var prodMapSearch = (from a in context.m_CityMapping select a).AsQueryable();
                     var countrymaster = context.m_CountryMaster.Select(s => s).AsQueryable();
 
-                    var SuppliersMaster = context.Suppliers.Select(s => s).AsQueryable();
+                    var SuppliersMaster = context.Supplier.Select(s => s).AsQueryable();
                     var CityMaster = context.m_CityMaster.Select(s => s).AsQueryable();
 
 
@@ -5742,7 +5747,7 @@ namespace DataLayer
                     var skip = RQ.PageSize * RQ.PageNo;
 
                     var searchList = (from a in search
-                                      join sup in context.Suppliers on a.Supplier_Id equals sup.Supplier_Id
+                                      join sup in context.Supplier on a.Supplier_Id equals sup.Supplier_Id
                                       join ma in context.m_masterattribute on a.SystemMasterAttribute_Id equals ma.MasterAttribute_Id
                                       orderby sup.Name
                                       select new DataContracts.Mapping.DC_MasterAttributeMapping_RS
@@ -5773,7 +5778,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var search = (from a in context.m_MasterAttributeMapping
-                                  join sup in context.Suppliers on a.Supplier_Id equals sup.Supplier_Id
+                                  join sup in context.Supplier on a.Supplier_Id equals sup.Supplier_Id
                                   join mav in context.m_masterattributevalue on a.SystemMasterAttribute_Id equals mav.MasterAttributeValue_Id
                                   where a.MasterAttributeMapping_Id == MasterAttributeMapping_Id
                                   select new DataContracts.Mapping.DC_MasterAttributeMapping
@@ -6510,7 +6515,7 @@ namespace DataLayer
                                         select a;
                     }
                     prodMapSearch = from a in prodMapSearch
-                                    join sup in context.Suppliers on a.Supplier_ID equals sup.Supplier_Id
+                                    join sup in context.Supplier on a.Supplier_ID equals sup.Supplier_Id
                                     select a;
 
                     int total;
@@ -6661,7 +6666,7 @@ namespace DataLayer
                         prodMapSearch = from a in prodMapSearch
                                         join mas in distCountryMapping on a.SupplierCountryName.ToLower().Trim() equals mas.CountryName.ToLower().Trim()
                                         join mct in context.m_CountryMaster on mas.Country_Id equals mct.Country_Id
-                                        join sup in context.Suppliers on a.Supplier_ID equals sup.Supplier_Id
+                                        join sup in context.Supplier on a.Supplier_ID equals sup.Supplier_Id
                                         where mct.Name == obj.SystemCountryName
                                         select a;
                     }

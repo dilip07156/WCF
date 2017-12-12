@@ -2251,7 +2251,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = from sup in context.Suppliers
+                    var search = from sup in context.Supplier
                                  select sup;
 
                     if (RQ.Supplier_Id.HasValue)
@@ -2497,7 +2497,7 @@ namespace DataLayer
             DC_Message _msg = new DC_Message();
             using (ConsumerEntities context = new ConsumerEntities())
             {
-                var isduplicate = (from sup in context.Suppliers
+                var isduplicate = (from sup in context.Supplier
                                    where sup.Supplier_Id != (_objSup.Supplier_Id ?? Guid.Empty) && sup.Name == _objSup.Name
                                    select sup).Count() == 0 ? false : true;
 
@@ -2510,7 +2510,7 @@ namespace DataLayer
 
                 if (_objSup.Supplier_Id.HasValue && _objSup.Supplier_Id.Value != Guid.Empty)
                 {
-                    var result = context.Suppliers.Find(_objSup.Supplier_Id);
+                    var result = context.Supplier.Find(_objSup.Supplier_Id);
 
                     if (result != null)
                     {
@@ -2550,7 +2550,7 @@ namespace DataLayer
                         StatusCode = _objSup.StatusCode
                     };
 
-                    context.Suppliers.Add(_obj);
+                    context.Supplier.Add(_obj);
                     if (context.SaveChanges() == 1)
                     {
                         _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
@@ -2572,7 +2572,7 @@ namespace DataLayer
             DC_Message _msg = new DC_Message();
             using (ConsumerEntities context = new ConsumerEntities())
             {
-                var isduplicate = (from sup in context.Suppliers
+                var isduplicate = (from sup in context.Supplier
                                    join supmkt in context.Supplier_Market on sup.Supplier_Id equals supmkt.Supplier_Id
                                    where supmkt.Supplier_Market_Id != (_objSupMkt.Supplier_Market_Id ?? Guid.Empty) && supmkt.Name == _objSupMkt.Name
                                    && supmkt.Supplier_Id == _objSupMkt.Supplier_Id
@@ -2671,7 +2671,7 @@ namespace DataLayer
             DC_Message _msg = new DC_Message();
             using (ConsumerEntities context = new ConsumerEntities())
             {
-                var isduplicate = (from sup in context.Suppliers
+                var isduplicate = (from sup in context.Supplier
                                    join supcat in context.Supplier_ProductCategory on sup.Supplier_Id equals supcat.Supplier_Id
                                    where supcat.Supplier_ProductCategory_Id != (_objSupCat.Supplier_ProductCategory_Id ?? Guid.Empty) && supcat.ProductCategory == _objSupCat.ProductCategory
                                    && supcat.Supplier_Id == _objSupCat.Supplier_Id
@@ -2806,7 +2806,7 @@ namespace DataLayer
 
                     var result = from a in search
                                  join mav in context.m_masterattributevalue on a.Entity_Id equals mav.MasterAttributeValue_Id
-                                 join sup in context.Suppliers on a.Supplier_Id equals sup.Supplier_Id
+                                 join sup in context.Supplier on a.Supplier_Id equals sup.Supplier_Id
                                  select new DataContracts.Masters.DC_Supplier_ApiLocation
                                  {
                                      Supplier_Id = a.Supplier_Id ?? Guid.Empty,
@@ -2846,7 +2846,7 @@ namespace DataLayer
 
                         if (dupeRecord != null)
                         {
-                            string Supplier = context.Suppliers.Where(w => w.Supplier_Id == dupeRecord.Supplier_Id).Select(s => s.Name).FirstOrDefault();
+                            string Supplier = context.Supplier.Where(w => w.Supplier_Id == dupeRecord.Supplier_Id).Select(s => s.Name).FirstOrDefault();
                             string Entity = context.m_masterattributevalue.Where(w => w.MasterAttributeValue_Id == dupeRecord.Entity_Id).Select(s => s.AttributeValue).FirstOrDefault();
 
                             return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Duplicate, StatusMessage = "This Api Location already exists for Supplier : " + Supplier + " and Entity : " + Entity };
@@ -2894,7 +2894,7 @@ namespace DataLayer
                     var dupeRecord = context.Supplier_APILocation.Where(w => w.API_Path.ToLower().Trim() == objApiLoc.ApiEndPoint.Trim().ToLower()).Select(r => r).FirstOrDefault();
                     if (dupeRecord != null)
                     {
-                        string Supplier = context.Suppliers.Where(w => w.Supplier_Id == dupeRecord.Supplier_Id).Select(s => s.Name).FirstOrDefault();
+                        string Supplier = context.Supplier.Where(w => w.Supplier_Id == dupeRecord.Supplier_Id).Select(s => s.Name).FirstOrDefault();
                         string Entity = context.m_masterattributevalue.Where(w => w.MasterAttributeValue_Id == dupeRecord.Entity_Id).Select(s => s.AttributeValue).FirstOrDefault();
 
                         return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Duplicate, StatusMessage = "This Api Location already exists for Supplier : " + Supplier + " and Entity : " + Entity };
@@ -3387,7 +3387,7 @@ namespace DataLayer
             {
                 if (objName == "supplier")
                 {
-                    ObjCode = context.Suppliers.Find(obj_Id).Code;
+                    ObjCode = context.Supplier.Find(obj_Id).Code;
                         //(from ct in context.Suppliers.AsNoTracking()
                         //           where ct.Supplier_Id == obj_Id
                         //           select new { ct.Code }).FirstOrDefault();
@@ -3558,7 +3558,7 @@ namespace DataLayer
                 }
                 else if (_obj.ObjName == EntityType.supplier)
                 {
-                    var supcode = (from ct in context.Suppliers
+                    var supcode = (from ct in context.Supplier
                                    where ct.Supplier_Id == _obj.ID
                                    select new { ct.Code }).FirstOrDefault();
                     if (supcode != null)
@@ -3741,7 +3741,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var suppliers = (from sm in context.Suppliers
+                    var suppliers = (from sm in context.Supplier
                                      where sm.StatusCode.ToUpper().Trim() == "ACTIVE"
                                      orderby sm.Name ascending
                                      select new DC_Supplier_DDL
@@ -3764,7 +3764,7 @@ namespace DataLayer
             DC_Supplier_DDL supdata = new DC_Supplier_DDL();
             using (ConsumerEntities context = new ConsumerEntities())
             {
-                var SuppliersMaster = context.Suppliers.Select(s => s).AsQueryable();
+                var SuppliersMaster = context.Supplier.Select(s => s).AsQueryable();
                 var CountryMappingMaster = context.m_CountryMapping.Select(s => s).AsQueryable();
                 var CityMappingMaster = context.m_CityMapping.Select(s => s).AsQueryable();
 

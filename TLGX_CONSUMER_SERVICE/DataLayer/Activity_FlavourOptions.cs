@@ -27,5 +27,7 @@ namespace DataLayer
         public string Create_User { get; set; }
         public string Edit_User { get; set; }
         public string TLGXActivityOptionCode { get; set; }
+        public string Activity_LanguageCode { get; set; }
+        public string Activity_Language { get; set; }
     }
 }

@@ -726,6 +726,8 @@
           <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
           <Property Name="TLGXActivityOptionCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Activity_LanguageCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="Activity_Language" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="Activity_InclusionDetails">
           <Key>
@@ -2187,6 +2189,8 @@
           <Property Name="RatePlanCode" Type="nvarchar" MaxLength="50" />
           <Property Name="TX_RoomName" Type="nvarchar" MaxLength="255" />
           <Property Name="Supplier_Id" Type="uniqueidentifier" />
+          <Property Name="SupplierRoomTypeName" Type="nvarchar" MaxLength="100" />
+          <Property Name="MinGuestOccupancy" Type="int" />
         </EntityType>
         <EntityType Name="stg_SupplierProductMapping">
           <Key>
@@ -2727,7 +2731,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="m_FrequencyType" EntityType="ConsumerModel.m_FrequencyType" />
           <EntitySet Name="Schedule_NextOccurance" EntityType="ConsumerModel.Schedule_NextOccurance" />
           <EntitySet Name="Supplier_Schedule" EntityType="ConsumerModel.Supplier_Schedule" />
-          <EntitySet Name="Suppliers" EntityType="ConsumerModel.Supplier" />
           <EntitySet Name="Supplier_Market" EntityType="ConsumerModel.Supplier_Market" />
           <EntitySet Name="Supplier_ProductCategory" EntityType="ConsumerModel.Supplier_ProductCategory" />
           <EntitySet Name="m_MasterAttributeMapping" EntityType="ConsumerModel.m_MasterAttributeMapping" />
@@ -2795,6 +2798,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="SitemapInRoles" EntityType="ConsumerModel.SitemapInRole" />
           <EntitySet Name="Activity_DaysOfOperation" EntityType="ConsumerModel.Activity_DaysOfOperation" />
           <EntitySet Name="Activity_DaysOfWeek" EntityType="ConsumerModel.Activity_DaysOfWeek" />
+          <EntitySet Name="Supplier" EntityType="ConsumerModel.Supplier" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -3792,21 +3796,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="Edit_User" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="Supplier">
-          <Key>
-            <PropertyRef Name="Supplier_Id" />
-          </Key>
-          <Property Name="Supplier_Id" Type="Guid" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierOwner" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="StatusCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="Supplier_Market">
           <Key>
             <PropertyRef Name="Supplier_Market_Id" />
@@ -4072,6 +4061,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="RatePlanCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TX_RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="SupplierRoomTypeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MinGuestOccupancy" Type="Int32" />
         </EntityType>
         <EntityType Name="stg_SupplierProductMapping">
           <Key>
@@ -5028,6 +5019,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="TLGXActivityOptionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_LanguageCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_Language" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Activity_Prices">
           <Key>
@@ -5255,6 +5248,21 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="EditUser" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="EditDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Supplier">
+          <Key>
+            <PropertyRef Name="Supplier_Id" />
+          </Key>
+          <Property Name="Supplier_Id" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierOwner" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="StatusCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -6276,22 +6284,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Suppliers">
-            <EntityTypeMapping TypeName="ConsumerModel.Supplier">
-              <MappingFragment StoreEntitySet="Supplier">
-                <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
-                <ScalarProperty Name="SupplierOwner" ColumnName="SupplierOwner" />
-                <ScalarProperty Name="SupplierType" ColumnName="SupplierType" />
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Supplier_Market">
             <EntityTypeMapping TypeName="ConsumerModel.Supplier_Market">
               <MappingFragment StoreEntitySet="Supplier_Market">
@@ -6531,6 +6523,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="stg_SupplierHotelRoomMapping">
             <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierHotelRoomMapping">
               <MappingFragment StoreEntitySet="stg_SupplierHotelRoomMapping">
+                <ScalarProperty Name="MinGuestOccupancy" ColumnName="MinGuestOccupancy" />
+                <ScalarProperty Name="SupplierRoomTypeName" ColumnName="SupplierRoomTypeName" />
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
                 <ScalarProperty Name="TX_RoomName" ColumnName="TX_RoomName" />
                 <ScalarProperty Name="RatePlanCode" ColumnName="RatePlanCode" />
@@ -7551,6 +7545,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Activity_FlavourOptions">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_FlavourOptions">
               <MappingFragment StoreEntitySet="Activity_FlavourOptions">
+                <ScalarProperty Name="Activity_Language" ColumnName="Activity_Language" />
+                <ScalarProperty Name="Activity_LanguageCode" ColumnName="Activity_LanguageCode" />
                 <ScalarProperty Name="TLGXActivityOptionCode" ColumnName="TLGXActivityOptionCode" />
                 <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
                 <ScalarProperty Name="Create_User" ColumnName="Create_User" />
@@ -7802,6 +7798,22 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Activity_DaysOfOperation_Id" ColumnName="Activity_DaysOfOperation_Id" />
                 <ScalarProperty Name="Activity_Flavor_ID" ColumnName="Activity_Flavor_ID" />
                 <ScalarProperty Name="Activity_DaysOfWeek_ID" ColumnName="Activity_DaysOfWeek_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Supplier">
+            <EntityTypeMapping TypeName="ConsumerModel.Supplier">
+              <MappingFragment StoreEntitySet="Supplier">
+                <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
+                <ScalarProperty Name="SupplierOwner" ColumnName="SupplierOwner" />
+                <ScalarProperty Name="SupplierType" ColumnName="SupplierType" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
