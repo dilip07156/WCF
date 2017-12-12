@@ -401,8 +401,9 @@ namespace DataLayer
                 clsMappingHotel = clsMappingHotel.Select(c =>
                 {
                     c.ProductName = (clsSTGHotel
-                    .Where(s => (s.ProductId ?? s.ProductName) == (c.SupplierProductReference ?? c.ProductName) && s.Country_Id == c.Country_Id && s.City_Id == c.City_Id)
+                    //.Where(s => (s.ProductId ?? s.ProductName) == (c.SupplierProductReference ?? c.ProductName) && s.Country_Id == c.Country_Id && s.City_Id == c.City_Id)
                     //.Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
+                    .Where(s => (s.ProductId == c.SupplierProductReference) && ((s.CityCode == null) ? (s.CityName == c.CityName) : (s.CityCode == c.CityCode)) && ((s.CountryCode == null) ? (s.CountryName == c.CountryName) : (s.CountryCode == c.CountryCode)))
                     .Select(s1 => s1.ProductName)
                     .FirstOrDefault()
                     ) ?? c.ProductName;
@@ -410,7 +411,8 @@ namespace DataLayer
                     c.Edit_User = "TLGX_DataHandler";
                     c.ActionType = "UPDATE";
                     c.stg_AccoMapping_Id = (clsSTGHotel
-                    .Where(s => (s.ProductId ?? s.ProductName) == (c.SupplierProductReference ?? c.ProductName) && s.Country_Id == c.Country_Id && s.City_Id == c.City_Id)
+                    //.Where(s => (s.ProductId ?? s.ProductName) == (c.SupplierProductReference ?? c.ProductName) && s.Country_Id == c.Country_Id && s.City_Id == c.City_Id)
+                    .Where(s => (s.ProductId == c.SupplierProductReference) && ((s.CityCode == null) ? (s.CityName == c.CityName) : (s.CityCode == c.CityCode)) && ((s.CountryCode == null) ? (s.CountryName == c.CountryName) : (s.CountryCode == c.CountryCode)))
                     .Select(s1 => s1.stg_AccoMapping_Id)
                     .FirstOrDefault()
                     );
@@ -440,11 +442,15 @@ namespace DataLayer
                 CallLogVerbose(File_Id, "MAP", "Checking for New Hotels in File.");
                 clsSTGHotelInsert = clsSTGHotel.Where(p => !clsMappingHotel.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                  && (
+                    p2.SupplierProductReference == p.ProductId
+                    && ((p2.CityCode == null) ? (p2.CityName == p.CityName) : (p2.CityCode == p.CityCode))
+                    && ((p2.CountryCode == null) ? (p2.CountryName == p.CountryName) : (p2.CountryCode == p.CountryCode))
+                    /*&& 
                     (((p2.ProductName ?? string.Empty).ToString().Trim().ToUpper() == (p.ProductName ?? string.Empty).ToString().Trim().ToUpper()))
                     && (((p2.PostCode ?? string.Empty).ToString().Trim().ToUpper() == (p.PostalCode ?? string.Empty).ToString().Trim().ToUpper()))
                     && (((p2.StateName ?? string.Empty).ToString().Trim().ToUpper() == (p.StateName ?? string.Empty).ToString().Trim().ToUpper()))
                     && (((p2.Country_Id ?? Guid.Empty) == (p.Country_Id ?? Guid.Empty)))
-                    && (((p2.City_Id ?? Guid.Empty) == (p.City_Id ?? Guid.Empty)))
+                    && (((p2.City_Id ?? Guid.Empty) == (p.City_Id ?? Guid.Empty)))*/
                 ))).ToList();
                 PLog.PercentageValue = 48;
                 USD.AddStaticDataUploadProcessLog(PLog);
