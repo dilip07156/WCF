@@ -1279,8 +1279,8 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = from a in context.Activity_ClassificationAttributes
-                                 select a;
+                    var search = (from a in context.Activity_ClassificationAttributes
+                                  select a).AsQueryable();
 
                     if (RQ.Activity_ClassificationAttribute_Id != null)
                     {
@@ -1288,12 +1288,7 @@ namespace DataLayer
                                  where a.Activity_ClassificationAttribute_Id == RQ.Activity_ClassificationAttribute_Id
                                  select a;
                     }
-                    if (RQ.Activity_Id != null)
-                    {
-                        search = from a in search
-                                 where a.Activity_Id == RQ.Activity_Id
-                                 select a;
-                    }
+
                     if (RQ.Activity_Flavour_Id != null)
                     {
                         search = from a in search
@@ -1319,12 +1314,19 @@ namespace DataLayer
                                  select a;
                     }
 
-                    if (RQ.Legacy_Product_Id != null)
+                    if (RQ.Activity_FlavourOptions_Id == null)
                     {
                         search = from a in search
-                                 where a.Legacy_Product_ID == RQ.Legacy_Product_Id
+                                 where a.Activity_FlavourOptions_Id == null
                                  select a;
                     }
+                    else
+                    {
+                        search = from a in search
+                                 where a.Activity_FlavourOptions_Id == RQ.Activity_FlavourOptions_Id
+                                 select a;
+                    }
+
                     int total = search.Count();
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
@@ -1334,6 +1336,10 @@ namespace DataLayer
                                  {
                                      Activity_ClassificationAttribute_Id = a.Activity_ClassificationAttribute_Id,
                                      Activity_Flavour_Id = a.Activity_Flavour_Id,
+                                     Activity_FlavourOptions_Id = a.Activity_FlavourOptions_Id,
+                                     CreateUser = a.Create_User,
+                                     EditDate = a.Edit_Date,
+                                     EditUser = a.Edit_User,
                                      Activity_Id = a.Activity_Id,
                                      IsActive = a.IsActive,
                                      CreateDate = a.Create_Date,
@@ -2074,7 +2080,7 @@ namespace DataLayer
                                     }
                                 }
                             }
-                            
+
                             if (!string.IsNullOrWhiteSpace(RQ.ProductCategorySubType))
                             {
                                 if (RQ.ProductCategorySubType.Contains("UNMAPPED"))
@@ -2403,8 +2409,20 @@ namespace DataLayer
                     {
                         foreach (var item in RQ)
                         {
-
-                            context.Activity_ClassificationAttributes.RemoveRange(context.Activity_ClassificationAttributes.Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.AttributeType == item.AttributeType && w.AttributeSubType == item.AttributeSubType).Select(s => s));
+                            IEnumerable<Activity_ClassificationAttributes> dataToRemove = null;
+                            if(item.Activity_FlavourOptions_Id == null)
+                            {
+                                dataToRemove = context.Activity_ClassificationAttributes.Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null && w.AttributeType == item.AttributeType && w.AttributeSubType == item.AttributeSubType).Select(s => s);
+                            }
+                            else
+                            {
+                                dataToRemove = context.Activity_ClassificationAttributes.Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == item.Activity_FlavourOptions_Id && w.AttributeType == item.AttributeType && w.AttributeSubType == item.AttributeSubType).Select(s => s);
+                            }
+                                
+                            if(dataToRemove != null)
+                            {
+                                context.Activity_ClassificationAttributes.RemoveRange(dataToRemove);
+                            }
 
                             foreach (var str in item.AttributeValues)
                             {
@@ -2412,6 +2430,7 @@ namespace DataLayer
                                 {
                                     Activity_ClassificationAttribute_Id = Guid.NewGuid(),
                                     Activity_Flavour_Id = item.Activity_Flavour_Id,
+                                    Activity_FlavourOptions_Id = item.Activity_FlavourOptions_Id,
                                     AttributeType = item.AttributeType,
                                     AttributeSubType = item.AttributeSubType,
                                     AttributeValue = str,
@@ -2472,36 +2491,14 @@ namespace DataLayer
                                  where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
                                  select a;
                     }
-                    if (RQ.Activity_FlavourName != null)
-                    {
-                        search = from a in search
-                                 where a.Activity_FlavourName.Trim().TrimStart().ToUpper() == RQ.Activity_FlavourName.Trim().TrimStart().ToUpper()
-                                 select a;
-                    }
-                    if (RQ.Activity_DealText != null)
-                    {
-                        search = from a in search
-                                 where a.Activity_DealText.Trim().TrimStart().ToUpper() == RQ.Activity_DealText.Trim().TrimStart().ToUpper()
-                                 select a;
-                    }
+                    
                     if (RQ.Activity_OptionCode != null)
                     {
                         search = from a in search
                                  where a.Activity_OptionCode.Trim().TrimStart().ToUpper() == RQ.Activity_OptionCode.Trim().TrimStart().ToUpper()
                                  select a;
                     }
-                    if (RQ.Activity_OptionName != null)
-                    {
-                        search = from a in search
-                                 where a.Activity_OptionName.Trim().TrimStart().ToUpper() == RQ.Activity_OptionName.Trim().TrimStart().ToUpper()
-                                 select a;
-                    }
-                    if (RQ.Activity_Type != null)
-                    {
-                        search = from a in search
-                                 where a.Activity_Type.Trim().TrimStart().ToUpper() == RQ.Activity_Type.Trim().TrimStart().ToUpper()
-                                 select a;
-                    }
+                    
 
                     int total = search.Count();
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
@@ -2522,7 +2519,9 @@ namespace DataLayer
                                      Edit_Date = a.Edit_Date,
                                      Edit_User = a.Edit_User,
                                      Create_User = a.Create_User,
-                                     TotalRecords = total
+                                     TotalRecords = total,
+                                     Activity_OptionDescription = a.Activity_OptionDescription,
+                                     Activity_OptionInternalCode  = a.TLGXActivityOptionCode
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -2761,6 +2760,9 @@ namespace DataLayer
                 {
                     var search = from a in context.Activity_Prices
                                  select a;
+
+                    var flavourOptions = context.Activity_FlavourOptions.AsNoTracking().Where(w => w.Activity_Flavour_Id == RQ.Activity_Flavour_Id);
+
                     if (RQ.Activity_Prices_Id != null)
                     {
                         search = from a in search
@@ -2784,6 +2786,8 @@ namespace DataLayer
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
                     var result = from a in search
+                                 join fo in flavourOptions on a.Activity_FlavourOptions_Id equals fo.Activity_FlavourOptions_Id into folj
+                                 from foljd in folj.DefaultIfEmpty()
                                  orderby a.PriceCode
                                  select new DataContracts.Masters.DC_Activity_Prices
                                  {
@@ -2799,8 +2803,8 @@ namespace DataLayer
                                      Price_OptionCode = a.Price_OptionCode,
                                      Totalrecords = total,
                                      Create_Date = a.Create_Date,
-                                     IsActive = a.IsActive
-
+                                     IsActive = a.IsActive,
+                                     Price_InternalOptionCode = foljd.TLGXActivityOptionCode
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -3820,7 +3824,8 @@ namespace DataLayer
                                                   SupplierStartTime = s.SupplierStartTime,
                                                   Thur = s.Thur ?? false,
                                                   Tues = s.Tues ?? false,
-                                                  Wed = s.Wed ?? false
+                                                  Wed = s.Wed ?? false,
+                                                  DurationType = s.DurationType
                                               }).ToList()
                             };
                             returnData.Add(OperatingDay);
@@ -3861,7 +3866,8 @@ namespace DataLayer
                                               SupplierStartTime = s.SupplierStartTime,
                                               Thur = s.Thur ?? false,
                                               Tues = s.Tues ?? false,
-                                              Wed = s.Wed ?? false
+                                              Wed = s.Wed ?? false,
+                                              DurationType = s.DurationType
                                           }).ToList()
                         };
                         returnData.Add(OperatingDay);
@@ -3931,7 +3937,8 @@ namespace DataLayer
                                     StartTime = DOW.StartTime,
                                     Thur = DOW.Thur,
                                     Tues = DOW.Tues,
-                                    Wed = DOW.Wed
+                                    Wed = DOW.Wed,
+                                    DurationType = DOW.DurationType
                                 });
                             }
                             else
@@ -3953,6 +3960,7 @@ namespace DataLayer
                                 searchDOW.Thur = DOW.Thur;
                                 searchDOW.Tues = DOW.Tues;
                                 searchDOW.Wed = DOW.Wed;
+                                searchDOW.DurationType = DOW.DurationType;
                             }
                         }
 

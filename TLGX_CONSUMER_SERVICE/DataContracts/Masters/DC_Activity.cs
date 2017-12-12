@@ -1069,6 +1069,8 @@ namespace DataContracts.Masters
         [DataMember]
         public Guid? Activity_Flavour_Id { get; set; }
         [DataMember]
+        public Guid? Activity_FlavourOptions_Id { get; set; }
+        [DataMember]
         public string CreateUser { get; set; }
         [DataMember]
         public string EditUser { get; set; }
@@ -1085,17 +1087,15 @@ namespace DataContracts.Masters
         [DataMember]
         public Guid? Activity_ClassificationAttribute_Id { get; set; }
         [DataMember]
-        public Guid? Activity_Id { get; set; }
-        [DataMember]
         public string AttributeType { get; set; }
         [DataMember]
         public string AttributeSubType { get; set; }
         [DataMember]
         public string AttributeValue { get; set; }
         [DataMember]
-        public int? Legacy_Product_Id { get; set; }
-        [DataMember]
         public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_FlavourOptions_Id { get; set; }
         [DataMember]
         public int? PageNo { get; set; }
         [DataMember]
@@ -1107,6 +1107,8 @@ namespace DataContracts.Masters
     {
         [DataMember]
         public Guid Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_FlavourOptions_Id { get; set; }
         [DataMember]
         public string AttributeType { get; set; }
         [DataMember]
@@ -1490,11 +1492,15 @@ namespace DataContracts.Masters
         [DataMember]
         public string Activity_OptionName { get; set; }
         [DataMember]
+        public string Activity_OptionDescription { get; set; }
+        [DataMember]
         public string Activity_OptionCode { get; set; }
         [DataMember]
         public string Activity_Type { get; set; }
         [DataMember]
         public string Activity_DealText { get; set; }
+        [DataMember]
+        public string Activity_OptionInternalCode { get; set; }
         [DataMember]
         public string Status { get; set; }
         [DataMember]
@@ -1515,16 +1521,10 @@ namespace DataContracts.Masters
         public Guid? Activity_FlavourOptions_Id { get; set; }
         [DataMember]
         public Guid? Activity_Flavour_Id { get; set; }
-        [DataMember]
-        public string Activity_FlavourName { get; set; }
-        [DataMember]
-        public string Activity_OptionName { get; set; }
+        
         [DataMember]
         public string Activity_OptionCode { get; set; }
-        [DataMember]
-        public string Activity_Type { get; set; }
-        [DataMember]
-        public string Activity_DealText { get; set; }
+        
         [DataMember]
         public string Status { get; set; }
         [DataMember]
@@ -1609,6 +1609,8 @@ namespace DataContracts.Masters
         public string Price_Type { get; set; }
         [DataMember]
         public string Price_OptionCode { get; set; }
+        [DataMember]
+        public string Price_InternalOptionCode { get; set; }
         [DataMember]
         public string PriceCurrency { get; set; }
         [DataMember]
@@ -2024,6 +2026,8 @@ namespace DataContracts.Masters
         public string SupplierDuration { get; set; }
         [DataMember]
         public string Duration { get; set; }
+        [DataMember]
+        public string DurationType { get; set; }
         [DataMember]
         public string SupplierSession { get; set; }
         [DataMember]
