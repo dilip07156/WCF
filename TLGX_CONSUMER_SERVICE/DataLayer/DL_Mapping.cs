@@ -628,7 +628,7 @@ namespace DataLayer
                                    where s.Batch == obj.CurrentBatch
                                    select a);
                     }
-                    var prodMapSearch = prodMap.ToList();
+                    var prodMapSearch = prodMap; //.ToList();
 
                     bool isCountryCodeCheck = false;
                     bool isCountryNameCheck = false;
@@ -686,14 +686,11 @@ namespace DataLayer
                         {
                             isCountryNameCheck = true;
                             prodMapSearch = (from a in prodMapSearch
-                                             join m in context.m_CountryMapping on new { a.Supplier_Id, a.Country_Id } equals new { m.Supplier_Id, m.Country_Id }
-                                             //where a.CountryName.Trim().ToUpper() == m.CountryName.Trim().ToUpper()
-
-
-                                             //join cm in context.m_CountryMapping.AsNoTracking() on new { a.Supplier_Id, a.CountryName } equals new { cm.Supplier_Id, cm.CountryName }
-                                             //join m in context.m_CountryMaster.AsNoTracking() on cm.Country_Id equals m.Country_Id
+                                             join cm in context.m_CountryMapping.AsNoTracking() on new { a.Supplier_Id } equals new { cm.Supplier_Id }
+                                             join m in context.m_CountryMaster.AsNoTracking() on cm.Country_Id equals m.Country_Id
+                                             where ((a.CountryName == null) ? (a.CountryCode == cm.CountryCode) : (a.CountryName == cm.CountryName))
                                              //join ac in context.Accommodations.AsNoTracking() on m.Name equals ac.country
-                                             select a).Distinct().ToList();
+                                             select a).Distinct();//.ToList();
                         }
                         //if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "CITYCODE")
                         //{
@@ -712,10 +709,12 @@ namespace DataLayer
                                           where cm.Supplier_Id == curSupplier_Id
                                           select cm);
                             prodMapSearch = (from a in prodMapSearch
-                                             join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
-                                             //join m in context.m_CityMaster on ctm.City_Id equals m.City_Id // a.CityName equals m.Name
+                                             join ctm in cities on new { a.Country_Id } equals new { ctm.Country_Id }
+                                             join m in context.m_CityMaster on ctm.City_Id equals m.City_Id // a.CityName equals m.Name
+                                             where ((a.CityName == null) ? (a.CityCode == ctm.CityCode) : (a.CityName == ctm.CityName))
+
                                              //where a.CityName.Trim().ToUpper() == m.Name
-                                             select a).Distinct().ToList();
+                                             select a).Distinct();//.ToList();
                             //var newprodMapSearch = (from a in prodMapSearch
                             //                        join ctm in cities on new { a.CountryName, a.CityName } equals new { ctm.CountryName, ctm.CityName }
                             //                        join c in context.m_CityMaster.AsNoTracking() on ctm.City_Id equals c.City_Id
@@ -729,7 +728,7 @@ namespace DataLayer
                             prodMapSearch = (from a in prodMapSearch
                                              join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
                                              where a.SupplierProductReference.Trim().ToUpper() == ac.CompanyHotelID.ToString()
-                                             select a).Distinct().ToList();
+                                             select a).Distinct();//.ToList();
                         }
                         if (CurrConfig == "HotelName".ToUpper())
                         {
@@ -742,7 +741,7 @@ namespace DataLayer
                                                  //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
                                              join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
                                              where (a.ProductName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace("  ", " ").Trim() == (ac.HotelName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace("  ", " ").Trim()
-                                             select a).Distinct().ToList();
+                                             select a).Distinct();//.ToList();
                             //prodMapSearch = (from a in prodMapSearch
                             //                 join m in context.m_CountryMapping.AsNoTracking() on new { a.Supplier_Id, a.CountryName } equals new { m.Supplier_Id, m.CountryName }
                             //                 join mm in context.m_CountryMaster.AsNoTracking() on m.Country_Id equals mm.Country_Id
@@ -758,16 +757,16 @@ namespace DataLayer
                             isLatLongCheck = true;
                             prodMapSearch = (from a in prodMapSearch
                                              where a.Latitude != null && a.Longitude != null
-                                             select a).Distinct().ToList();
+                                             select a).Distinct();//.ToList();
 
-                            if (prodMapSearch.Count > 0)
+                            if (prodMapSearch.Count() > 0)
                             {
                                 prodMapSearch = (from a in prodMapSearch
                                                      //join m in context.Accommodations.AsNoTracking() on new { a.Latitude, a.Longitude } equals new { m.Latitude, m.Longitude }
                                                  join m in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { m.Country_Id, m.City_Id }
                                                  where m.Latitude != null && a.Latitude != null && m.Longitude != null && a.Longitude != null
                                                  && a.Latitude == m.Latitude && a.Longitude == m.Longitude
-                                                 select a).Distinct().ToList();
+                                                 select a);//.Distinct().ToList();
                             }
                         }
                         if (CurrConfig == "GOOGLE_PLACE_ID")
@@ -776,14 +775,14 @@ namespace DataLayer
 
                             prodMapSearch = (from a in prodMapSearch
                                              where a.Google_Place_Id != null
-                                             select a).Distinct().ToList();
+                                             select a);//.Distinct().ToList();
 
-                            if (prodMapSearch.Count > 0)
+                            if (prodMapSearch.Count() > 0)
                             {
                                 prodMapSearch = (from a in prodMapSearch
                                                  join m in context.Accommodations.AsNoTracking() on a.Google_Place_Id equals m.Google_Place_Id
                                                  where m.Google_Place_Id != null && a.Google_Place_Id != null
-                                                 select a).Distinct().ToList();
+                                                 select a);//.Distinct().ToList();
                             }
                         }
                         if (CurrConfig == "Address_Tx".ToUpper())
@@ -798,7 +797,7 @@ namespace DataLayer
 
                             prodMapSearch = (from a in prodMapSearch
                                              join ac in context.Accommodations.AsNoTracking() on a.address_tx equals ac.Address_Tx
-                                             select a).Distinct().ToList();
+                                             select a);//.Distinct().ToList();
 
                         }
                         if (CurrConfig == "TelephoneNumber_tx".ToUpper()) //|| CurrConfig == "---ALL---".ToUpper()
@@ -807,7 +806,7 @@ namespace DataLayer
                             prodMapSearch = (from a in prodMapSearch
                                              join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
                                              where a.TelephoneNumber_tx != null && ac.Telephone_Tx != null && a.TelephoneNumber_tx == ac.Telephone_Tx
-                                             select a).Distinct().ToList();
+                                             select a);//.Distinct().ToList();
                         }
 
                         //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
@@ -819,6 +818,13 @@ namespace DataLayer
                     if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isPlaceIdCheck || isAddressCheck || isTelephoneCheck)
                     {
                         res = (from a in prodMapSearch
+                               join act in context.m_CityMapping.AsNoTracking() on a.Supplier_Id equals act.Supplier_Id
+                               join mact in context.m_CityMaster.AsNoTracking() on a.City_Id equals mact.City_Id into jact
+                               from jdact in jact.DefaultIfEmpty()
+                               //join mac in context.m_CountryMaster.AsNoTracking() on jdact.Country_Id equals mac.Country_Id into jac
+                               //from jdac in jac.DefaultIfEmpty()
+                               where ((a.CityName == null) ? (a.CityCode == act.CityCode) : (a.CityName == act.CityName))
+                               && ((a.CountryName == null) ? (a.CountryCode == act.CountryCode) : (a.CountryName == act.CountryName))
                                select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                {
                                    Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
@@ -855,8 +861,10 @@ namespace DataLayer
                                    TelephoneNumber = a.TelephoneNumber,
                                    TelephoneNumber_tx = a.TelephoneNumber_tx,
                                    Website = a.Website,
-                                   Country_Id = a.Country_Id,
-                                   City_Id = a.City_Id
+                                   Country_Id = jdact.Country_Id,
+                                   City_Id = jdact.City_Id,
+                                   //SystemCityName = jdact.Name,
+                                   //SystemCountryName = jdac.Name
                                }).Distinct().ToList();
 
                         if (totPriorities == curPriority)
@@ -894,6 +902,8 @@ namespace DataLayer
                         {
                             c.Accommodation_Id = (context.Accommodations.AsNoTracking()
                                             .Where(s => (
+                                                            //((isCountryNameCheck && s.country.ToUpper().Trim() == c.SystemCountryName.ToUpper().Trim()) || (!isCountryNameCheck)) &&
+                                                            //((isCityNameCheck && s.city.ToUpper().Trim() == c.SystemCityName.ToUpper().Trim()) || (!isCityNameCheck)) &&
                                                             ((isCountryNameCheck && s.Country_Id == c.Country_Id) || (!isCountryNameCheck)) &&
                                                             ((isCityNameCheck && s.City_Id == c.City_Id) || (!isCityNameCheck)) &&
                                                             ((isCodeCheck && s.CompanyHotelID.ToString() == c.SupplierProductReference) || (!isCodeCheck)) &&
