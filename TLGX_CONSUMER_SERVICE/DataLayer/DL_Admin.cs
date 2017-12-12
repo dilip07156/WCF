@@ -764,7 +764,7 @@ namespace DataLayer
                     }
                     else if (ED.EntityTypeID == Convert.ToInt32(EntityType.Suppliers)) //Suppliers Table
                     {
-                        var search = from sup in context.Suppliers
+                        var search = from sup in context.Supplier
                                      select new DataContracts.Admin.DC_EntityDetails
                                      {
                                          EntityID = sup.Supplier_Id,

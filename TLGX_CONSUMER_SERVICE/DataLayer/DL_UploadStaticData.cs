@@ -62,7 +62,7 @@ namespace DataLayer
                         if (isFor)
                         {
                             AttrMapSearch = from a in AttrMapSearch
-                                            join sup in context.Suppliers on a.Supplier_Id equals sup.Supplier_Id
+                                            join sup in context.Supplier on a.Supplier_Id equals sup.Supplier_Id
                                             where sup.Name.Trim().TrimStart().ToUpper() == RQ.Supplier.Trim().TrimStart().ToUpper()
                                             select a;
                         }
@@ -103,7 +103,7 @@ namespace DataLayer
                     var skip = RQ.PageSize * RQ.PageNo;
 
                     var AttrMapResult = (from a in AttrMapSearch
-                                         join sup in context.Suppliers on a.Supplier_Id equals sup.Supplier_Id into s
+                                         join sup in context.Supplier on a.Supplier_Id equals sup.Supplier_Id into s
                                          from lsup in s.DefaultIfEmpty()
                                          orderby lsup.Name, a.Entity
                                          select new DataContracts.UploadStaticData.DC_SupplierImportAttributes
@@ -392,7 +392,7 @@ namespace DataLayer
                         {
                             AttrMapSearch = from a in AttrMapSearch
                                             join at in context.m_SupplierImportAttributes on a.SupplierImportAttribute_Id equals at.SupplierImportAttribute_Id
-                                            join s in context.Suppliers on at.Supplier_Id equals s.Supplier_Id
+                                            join s in context.Supplier on at.Supplier_Id equals s.Supplier_Id
                                             where s.Name.Trim().TrimStart().ToUpper() == RQ.Supplier.Trim().TrimStart().ToUpper()
                                             select a;
                         }
@@ -736,7 +736,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(RQ.Supplier))
                     {
                         FileSearch = from a in FileSearch
-                                     join s in context.Suppliers on a.Supplier_Id equals s.Supplier_Id
+                                     join s in context.Supplier on a.Supplier_Id equals s.Supplier_Id
                                      where s.Name.Trim().TrimStart().ToUpper() == RQ.Supplier.Trim().TrimStart().ToUpper()
                                      select a;
                     }
@@ -788,7 +788,7 @@ namespace DataLayer
                     }
 
                     var FileSearchResult = (from a in FileSearch
-                                            join s in context.Suppliers on a.Supplier_Id equals s.Supplier_Id
+                                            join s in context.Supplier on a.Supplier_Id equals s.Supplier_Id
                                             where s.StatusCode.ToUpper() == "ACTIVE"
                                             orderby a.CREATE_DATE descending
                                             select new DataContracts.UploadStaticData.DC_SupplierImportFileDetails
@@ -1121,7 +1121,7 @@ namespace DataLayer
                     {
                         StatSearch = from a in StatSearch
                                      join f in context.SupplierImportFileDetails.AsNoTracking() on a.SupplierImportFile_Id equals f.SupplierImportFile_Id
-                                     join s in context.Suppliers.AsNoTracking() on f.Supplier_Id equals s.Supplier_Id
+                                     join s in context.Supplier.AsNoTracking() on f.Supplier_Id equals s.Supplier_Id
                                      where s.Name.Trim().ToUpper() == RQ.Supplier.Trim().ToUpper()
                                      select a;
                     }
@@ -1175,7 +1175,7 @@ namespace DataLayer
 
                     var StatResult = (from a in StatSearch
                                       join f in context.SupplierImportFileDetails.AsNoTracking() on a.SupplierImportFile_Id equals f.SupplierImportFile_Id
-                                      join s in context.Suppliers.AsNoTracking() on f.Supplier_Id equals s.Supplier_Id
+                                      join s in context.Supplier.AsNoTracking() on f.Supplier_Id equals s.Supplier_Id
                                       orderby s.Name, f.Entity
                                       select new DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics
                                       {
@@ -1579,7 +1579,7 @@ namespace DataLayer
                     if (!(RQ.Supplier_Id == Guid.Empty))
                     {
                         stgSearch = from a in stgSearch
-                                    join s in context.Suppliers on a.SupplierName.Trim().TrimStart().ToUpper() equals s.Name.Trim().TrimStart().ToUpper()
+                                    join s in context.Supplier on a.SupplierName.Trim().TrimStart().ToUpper() equals s.Name.Trim().TrimStart().ToUpper()
                                     where s.Supplier_Id == RQ.Supplier_Id
                                     select a;
                     }
@@ -1661,7 +1661,7 @@ namespace DataLayer
                     if (!(RQ.Supplier_Id == Guid.Empty))
                     {
                         stgSearch = from a in stgSearch
-                                    join s in context.Suppliers on a.SupplierName.Trim().TrimStart().ToUpper() equals s.Name.Trim().TrimStart().ToUpper()
+                                    join s in context.Supplier on a.SupplierName.Trim().TrimStart().ToUpper() equals s.Name.Trim().TrimStart().ToUpper()
                                     where s.Supplier_Id == RQ.Supplier_Id
                                     select a;
                     }
@@ -2052,7 +2052,7 @@ namespace DataLayer
                     if (!(RQ.Supplier_Id == Guid.Empty))
                     {
                         stgSearch = from a in stgSearch
-                                    join s in context.Suppliers on a.SupplierName.Trim().TrimStart().ToUpper() equals s.Name.Trim().TrimStart().ToUpper()
+                                    join s in context.Supplier on a.SupplierName.Trim().TrimStart().ToUpper() equals s.Name.Trim().TrimStart().ToUpper()
                                     where s.Supplier_Id == RQ.Supplier_Id
                                     select a;
                     }
@@ -2224,7 +2224,7 @@ namespace DataLayer
                     if (!(RQ.Supplier_Id == Guid.Empty))
                     {
                         stgSearch = from a in stgSearch
-                                    join s in context.Suppliers on a.SupplierName.Trim().TrimStart().ToUpper() equals s.Name.Trim().TrimStart().ToUpper()
+                                    join s in context.Supplier on a.SupplierName.Trim().TrimStart().ToUpper() equals s.Name.Trim().TrimStart().ToUpper()
                                     where s.Supplier_Id == RQ.Supplier_Id
                                     select a;
                     }

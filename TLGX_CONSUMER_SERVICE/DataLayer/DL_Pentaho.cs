@@ -134,7 +134,7 @@ namespace DataLayer
 
                         var result = from a in search
                                      join mav in context.m_masterattributevalue on a.Entity_Id equals mav.MasterAttributeValue_Id
-                                     join sup in context.Suppliers on a.Supplier_Id equals sup.Supplier_Id
+                                     join sup in context.Supplier on a.Supplier_Id equals sup.Supplier_Id
                                      select new DataContracts.Masters.DC_Supplier_ApiLocation
                                      {
                                          Supplier_Id = a.Supplier_Id ?? Guid.Empty,
@@ -261,7 +261,7 @@ namespace DataLayer
 
                     var result = (from log in Supplier_ApiCallLog
                                   join loc in Supplier_APILocation on log.SupplierApiLocation_Id equals loc.Supplier_APILocation_Id
-                                  join sup in context.Suppliers.AsNoTracking() on loc.Supplier_Id equals sup.Supplier_Id
+                                  join sup in context.Supplier.AsNoTracking() on loc.Supplier_Id equals sup.Supplier_Id
                                   join ent in context.m_masterattributevalue.AsNoTracking() on loc.Entity_Id equals ent.MasterAttributeValue_Id
                                   select new DataContracts.Pentaho.DC_PentahoApiCallLogDetails
                                   {
