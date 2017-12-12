@@ -1462,7 +1462,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(obj.ProductName))
                     {
                         prodMapSearch = from a in prodMapSearch
-                                        where a.ProductName.Contains(obj.ProductName)
+                                        where a.ProductName.ToLower().Replace("hotel","").Trim().Contains(obj.ProductName.ToLower().Replace("hotel", "").Trim())
                                         select a;
                     }
 
@@ -1543,7 +1543,6 @@ namespace DataLayer
                                         select a;
                     }
 
-                    var res4 = prodMapSearch.ToList();
 
                     if (!string.IsNullOrWhiteSpace(obj.Chain))
                     {
