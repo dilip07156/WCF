@@ -526,6 +526,7 @@
           <Property Name="AttributeSubType" Type="nvarchar" MaxLength="255" />
           <Property Name="Activity_Flavour_Id" Type="uniqueidentifier" />
           <Property Name="Legacy_Product_ID" Type="int" />
+          <Property Name="Activity_FlavourOptions_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Activity_Contact">
           <Key>
@@ -584,13 +585,6 @@
           <Property Name="Activity_Flavor_ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Activity_DaysOfOperation_Id" Type="uniqueidentifier" />
           <Property Name="SupplierFrequency" Type="nvarchar(max)" />
-          <Property Name="Mon" Type="bit" />
-          <Property Name="Tues" Type="bit" />
-          <Property Name="Wed" Type="bit" />
-          <Property Name="Thur" Type="bit" />
-          <Property Name="Fri" Type="bit" />
-          <Property Name="Sat" Type="bit" />
-          <Property Name="Sun" Type="bit" />
           <Property Name="SupplierStartTime" Type="nvarchar(max)" />
           <Property Name="StartTime" Type="nvarchar" MaxLength="100" />
           <Property Name="SupplierEndTime" Type="nvarchar(max)" />
@@ -604,6 +598,14 @@
           <Property Name="CreateDate" Type="datetime" Nullable="false" />
           <Property Name="EditUser" Type="nvarchar" MaxLength="100" />
           <Property Name="EditDate" Type="datetime" />
+          <Property Name="DurationType" Type="varchar" MaxLength="50" />
+          <Property Name="Mon" Type="bit" />
+          <Property Name="Tues" Type="bit" />
+          <Property Name="Wed" Type="bit" />
+          <Property Name="Thur" Type="bit" />
+          <Property Name="Fri" Type="bit" />
+          <Property Name="Sat" Type="bit" />
+          <Property Name="Sun" Type="bit" />
         </EntityType>
         <EntityType Name="Activity_Deals">
           <Key>
@@ -708,6 +710,8 @@
           <Property Name="Edit_Date" Type="datetime" />
           <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Activity_Language" Type="nvarchar" MaxLength="100" />
+          <Property Name="Activity_LanguageCode" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="Activity_FlavourOptions">
           <Key>
@@ -728,6 +732,7 @@
           <Property Name="TLGXActivityOptionCode" Type="nvarchar" MaxLength="50" />
           <Property Name="Activity_LanguageCode" Type="nvarchar" MaxLength="20" />
           <Property Name="Activity_Language" Type="nvarchar" MaxLength="100" />
+          <Property Name="Activity_OptionDescription" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Activity_InclusionDetails">
           <Key>
@@ -1144,6 +1149,8 @@
           <Property Name="Location" Type="nvarchar" MaxLength="255" />
           <Property Name="Area" Type="nvarchar" MaxLength="255" />
           <Property Name="IsActive" Type="bit" />
+          <Property Name="SupplierProductID" Type="nvarchar" MaxLength="50" />
+          <Property Name="SupplierProductUniqueID" Type="nchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="Activity_SupplierProductMapping_CA">
           <Key>
@@ -3977,6 +3984,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Location" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="Area" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="IsActive" Type="Boolean" />
+          <Property Name="SupplierProductID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierProductUniqueID" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
         </EntityType>
         <EntityType Name="stg_SupplierCityMapping">
           <Key>
@@ -4369,6 +4378,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="AttributeSubType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Activity_Flavour_Id" Type="Guid" />
           <Property Name="Legacy_Product_ID" Type="Int32" />
+          <Property Name="Activity_FlavourOptions_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="Activity_Content">
           <Key>
@@ -4448,6 +4458,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_Language" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_LanguageCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Activity_Itinerary">
           <Key>
@@ -5021,6 +5033,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="TLGXActivityOptionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Activity_LanguageCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Activity_Language" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_OptionDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Activity_Prices">
           <Key>
@@ -5248,6 +5261,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="EditUser" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="EditDate" Type="DateTime" Precision="3" />
+          <Property Name="DurationType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Supplier">
           <Key>
@@ -6403,6 +6417,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Activity_SupplierProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_SupplierProductMapping">
               <MappingFragment StoreEntitySet="Activity_SupplierProductMapping">
+                <ScalarProperty Name="SupplierProductUniqueID" ColumnName="SupplierProductUniqueID" />
+                <ScalarProperty Name="SupplierProductID" ColumnName="SupplierProductID" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="Area" ColumnName="Area" />
                 <ScalarProperty Name="Location" ColumnName="Location" />
@@ -6865,6 +6881,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Activity_ClassificationAttributes">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_ClassificationAttributes">
               <MappingFragment StoreEntitySet="Activity_ClassificationAttributes">
+                <ScalarProperty Name="Activity_FlavourOptions_Id" ColumnName="Activity_FlavourOptions_Id" />
                 <ScalarProperty Name="Legacy_Product_ID" ColumnName="Legacy_Product_ID" />
                 <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
                 <ScalarProperty Name="AttributeSubType" ColumnName="AttributeSubType" />
@@ -6921,6 +6938,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Activity_Flavour">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_Flavour">
               <MappingFragment StoreEntitySet="Activity_Flavour">
+                <ScalarProperty Name="Activity_LanguageCode" ColumnName="Activity_LanguageCode" />
+                <ScalarProperty Name="Activity_Language" ColumnName="Activity_Language" />
                 <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
                 <ScalarProperty Name="Create_User" ColumnName="Create_User" />
                 <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
@@ -7545,6 +7564,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Activity_FlavourOptions">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_FlavourOptions">
               <MappingFragment StoreEntitySet="Activity_FlavourOptions">
+                <ScalarProperty Name="Activity_OptionDescription" ColumnName="Activity_OptionDescription" />
                 <ScalarProperty Name="Activity_Language" ColumnName="Activity_Language" />
                 <ScalarProperty Name="Activity_LanguageCode" ColumnName="Activity_LanguageCode" />
                 <ScalarProperty Name="TLGXActivityOptionCode" ColumnName="TLGXActivityOptionCode" />
@@ -7774,6 +7794,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Activity_DaysOfWeek">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_DaysOfWeek">
               <MappingFragment StoreEntitySet="Activity_DaysOfWeek">
+                <ScalarProperty Name="DurationType" ColumnName="DurationType" />
                 <ScalarProperty Name="EditDate" ColumnName="EditDate" />
                 <ScalarProperty Name="EditUser" ColumnName="EditUser" />
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
