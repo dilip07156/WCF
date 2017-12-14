@@ -567,18 +567,63 @@ namespace DataLayer
                 List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                 DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
 
-                lstSMT = (from a in context.Accommodation_ProductMapping
-                          where a.Supplier_Id == Supplier_Id
-                          && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
-                          select new DataContracts.STG.DC_STG_Mapping_Table_Ids
-                          {
-                              STG_Mapping_Table_Id = Guid.NewGuid(),
-                              File_Id = File_Id,
-                              Mapping_Id = a.Accommodation_ProductMapping_Id,
-                              STG_Id = null,
-                              Batch = 1
-                          }).ToList();
+                if (file.Entity.ToUpper().Trim() == "HOTEL")
+                {
 
+                    lstSMT = (from a in context.Accommodation_ProductMapping
+                              where a.Supplier_Id == Supplier_Id
+                              && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
+                              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                              {
+                                  STG_Mapping_Table_Id = Guid.NewGuid(),
+                                  File_Id = File_Id,
+                                  Mapping_Id = a.Accommodation_ProductMapping_Id,
+                                  STG_Id = null,
+                                  Batch = 1
+                              }).ToList();
+                }
+                else if (file.Entity.ToUpper().Trim() == "COUNTRY")
+                {
+                    lstSMT = (from a in context.m_CountryMapping
+                              where a.Supplier_Id == Supplier_Id
+                              && (a.Status == "UNMAPPED" || a.Country_Id == null)
+                              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                              {
+                                  STG_Mapping_Table_Id = Guid.NewGuid(),
+                                  File_Id = File_Id,
+                                  Mapping_Id = a.CountryMapping_Id,
+                                  STG_Id = null,
+                                  Batch = 1
+                              }).ToList();
+                }
+                else if (file.Entity.ToUpper().Trim() == "CITY")
+                {
+                    lstSMT = (from a in context.m_CityMapping
+                              where a.Supplier_Id == Supplier_Id
+                              && (a.Status == "UNMAPPED" || a.City_Id == null)
+                              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                              {
+                                  STG_Mapping_Table_Id = Guid.NewGuid(),
+                                  File_Id = File_Id,
+                                  Mapping_Id = a.CityMapping_Id,
+                                  STG_Id = null,
+                                  Batch = 1
+                              }).ToList();
+                }
+                else if (file.Entity.ToUpper().Trim() == "ROOMTYPE")
+                {
+                    lstSMT = (from a in context.Accommodation_SupplierRoomTypeMapping
+                              where a.Supplier_Id == Supplier_Id
+                              && (a.MappingStatus == "UNMAPPED" || a.Accommodation_RoomInfo_Id == null)
+                              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                              {
+                                  STG_Mapping_Table_Id = Guid.NewGuid(),
+                                  File_Id = File_Id,
+                                  Mapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                                  STG_Id = null,
+                                  Batch = 1
+                              }).ToList();
+                }
                 if (lstSMT.Count > 0)
                 {
                     bool idinsert = DeleteSTGMappingTableIDs(File_Id);
