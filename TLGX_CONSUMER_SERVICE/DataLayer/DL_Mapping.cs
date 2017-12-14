@@ -567,21 +567,34 @@ namespace DataLayer
                 List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                 DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
 
-                int i = 1;
+                int i = 0;
                 if (file.Entity.ToUpper().Trim() == "HOTEL")
                 {
+                    //var chkcount = (from a in context.Accommodation_ProductMapping
+                    //                where a.Supplier_Id == Supplier_Id
+                    //                && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
+                    //                orderby a.Create_Date descending
+                    //                let rank = (i+ 1)
+                    //                select new
+                    //                {
+                    //                    i = rank,
+                    //                    id = a.Accommodation_ProductMapping_Id,
+                    //                    batch = (rank / 250) + 1
+                    //                }).ToList();
                     lstSMT = (from a in context.Accommodation_ProductMapping
                               where a.Supplier_Id == Supplier_Id
                               && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
-                              let Rank = (i + 1)
                               select new DataContracts.STG.DC_STG_Mapping_Table_Ids
                               {                                  
                                   STG_Mapping_Table_Id = Guid.NewGuid(),
                                   File_Id = File_Id,
                                   Mapping_Id = a.Accommodation_ProductMapping_Id,
                                   STG_Id = null,
-                                  Batch = (Rank / 250) + 1
+                                  //Batch = (Rank / 250) + 1
                               }).ToList();
+
+                    
+
                 }
                 else if (file.Entity.ToUpper().Trim() == "COUNTRY")
                 {
@@ -630,8 +643,24 @@ namespace DataLayer
                 }
                 if (lstSMT.Count > 0)
                 {
+                    var lstMst1 = lstSMT
+                    .Select((x, index) => new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                    {
+                        Batch = (index + 1 / 250) + 1,
+                        File_Id = x.File_Id,
+                        Mapping_Id = x.Mapping_Id,
+                        STG_Id = x.STG_Id,
+                        STG_Mapping_Table_Id = x.STG_Mapping_Table_Id
+                    }).ToList();
+
+                    lstMst1 = lstMst1.Select(c =>
+                    {
+                        c.Batch = (c.Batch / 250) + 1;
+                        return c;
+                    }).ToList();
+
                     bool idinsert = DeleteSTGMappingTableIDs(File_Id);
-                    idinsert = AddSTGMappingTableIDs(lstSMT);
+                    idinsert = AddSTGMappingTableIDs(lstMst1);
 
                     if (idinsert)
                     {
