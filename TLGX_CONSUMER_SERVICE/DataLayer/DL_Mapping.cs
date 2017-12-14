@@ -1055,8 +1055,8 @@ namespace DataLayer
                         CallLogVerbose(File_Id, "MATCH", res.Count.ToString() + " Matches Found for Combination " + curPriority.ToString() + ".");
                         CallLogVerbose(File_Id, "MATCH", "Updating into Database.");
                         if (UpdateAccomodationProductMapping(res))
-                        {
-                            if (totPriorities == curPriority)
+                        {                            
+                            if ((obj.FileMode ?? "ALL") != "ALL" && totPriorities == curPriority)
                             {
                                 DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
                                 objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
