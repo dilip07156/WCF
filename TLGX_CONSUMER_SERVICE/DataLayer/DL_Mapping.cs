@@ -567,19 +567,20 @@ namespace DataLayer
                 List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                 DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
 
+                int i = 1;
                 if (file.Entity.ToUpper().Trim() == "HOTEL")
                 {
-
                     lstSMT = (from a in context.Accommodation_ProductMapping
                               where a.Supplier_Id == Supplier_Id
                               && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
+                              let Rank = (i + 1)
                               select new DataContracts.STG.DC_STG_Mapping_Table_Ids
-                              {
+                              {                                  
                                   STG_Mapping_Table_Id = Guid.NewGuid(),
                                   File_Id = File_Id,
                                   Mapping_Id = a.Accommodation_ProductMapping_Id,
                                   STG_Id = null,
-                                  Batch = 1
+                                  Batch = (Rank / 250) + 1
                               }).ToList();
                 }
                 else if (file.Entity.ToUpper().Trim() == "COUNTRY")
@@ -587,13 +588,14 @@ namespace DataLayer
                     lstSMT = (from a in context.m_CountryMapping
                               where a.Supplier_Id == Supplier_Id
                               && (a.Status == "UNMAPPED" || a.Country_Id == null)
+                              let Rank = (i + 1)
                               select new DataContracts.STG.DC_STG_Mapping_Table_Ids
                               {
                                   STG_Mapping_Table_Id = Guid.NewGuid(),
                                   File_Id = File_Id,
                                   Mapping_Id = a.CountryMapping_Id,
                                   STG_Id = null,
-                                  Batch = 1
+                                  Batch = (Rank / 250) + 1
                               }).ToList();
                 }
                 else if (file.Entity.ToUpper().Trim() == "CITY")
@@ -601,13 +603,14 @@ namespace DataLayer
                     lstSMT = (from a in context.m_CityMapping
                               where a.Supplier_Id == Supplier_Id
                               && (a.Status == "UNMAPPED" || a.City_Id == null)
+                              let Rank = (i + 1)
                               select new DataContracts.STG.DC_STG_Mapping_Table_Ids
                               {
                                   STG_Mapping_Table_Id = Guid.NewGuid(),
                                   File_Id = File_Id,
                                   Mapping_Id = a.CityMapping_Id,
                                   STG_Id = null,
-                                  Batch = 1
+                                  Batch = (Rank / 250) + 1
                               }).ToList();
                 }
                 else if (file.Entity.ToUpper().Trim() == "ROOMTYPE")
@@ -615,13 +618,14 @@ namespace DataLayer
                     lstSMT = (from a in context.Accommodation_SupplierRoomTypeMapping
                               where a.Supplier_Id == Supplier_Id
                               && (a.MappingStatus == "UNMAPPED" || a.Accommodation_RoomInfo_Id == null)
+                              let Rank = (i + 1)
                               select new DataContracts.STG.DC_STG_Mapping_Table_Ids
                               {
                                   STG_Mapping_Table_Id = Guid.NewGuid(),
                                   File_Id = File_Id,
                                   Mapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
                                   STG_Id = null,
-                                  Batch = 1
+                                  Batch = (Rank / 250) + 1
                               }).ToList();
                 }
                 if (lstSMT.Count > 0)
@@ -673,7 +677,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
+                    /*if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
                     {
                         List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                         DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
@@ -694,19 +698,9 @@ namespace DataLayer
                             bool idinsert = DeleteSTGMappingTableIDs(File_Id);
                             idinsert = AddSTGMappingTableIDs(lstSMT);
                         }
-                    }
+                    }*/
 
-                    var lstSMT1 = (from a in context.Accommodation_ProductMapping
-                              where a.Supplier_Id == curSupplier_Id
-                              && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
-                              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
-                              {
-                                  STG_Mapping_Table_Id = Guid.NewGuid(),
-                                  File_Id = obj.File_Id,
-                                  Mapping_Id = a.Accommodation_ProductMapping_Id,
-                                  STG_Id = null,
-                                  Batch = 1
-                              }).ToList();
+                   
                     var prodMap = (from a in context.Accommodation_ProductMapping.AsNoTracking()
                                    join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
                                    where s.File_Id == supdata.File_Id && a.Accommodation_Id == null && a.Supplier_Id == curSupplier_Id
@@ -3199,7 +3193,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
+                    /*if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
                     {
                         List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                         DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
@@ -3220,7 +3214,7 @@ namespace DataLayer
                             bool idinsert = DeleteSTGMappingTableIDs(File_Id);
                             idinsert = AddSTGMappingTableIDs(lstSMT);
                         }
-                    }
+                    }*/
 
                     var prodMap = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
                                    join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_SupplierRoomTypeMapping_Id equals s.Mapping_Id
@@ -3727,7 +3721,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
+                    /*if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
                     {
                         List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                         DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
@@ -3748,7 +3742,7 @@ namespace DataLayer
                             bool idinsert = DeleteSTGMappingTableIDs(File_Id);
                             idinsert = AddSTGMappingTableIDs(lstSMT);
                         }
-                    }
+                    }*/
                     //var prodMapSearch = from a in context.m_CountryMapping
                     //                    join m in context.m_CountryMaster on a.CountryName equals m.Name into j
                     //                    from jd in j.DefaultIfEmpty()
@@ -4720,7 +4714,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
+                    /*if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
                     {
                         List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                         DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
@@ -4741,7 +4735,7 @@ namespace DataLayer
                             bool idinsert = DeleteSTGMappingTableIDs(File_Id);
                             idinsert = AddSTGMappingTableIDs(lstSMT);
                         }
-                    }
+                    }*/
 
                     var prodMapSearch = (from a in context.m_CityMapping
                                          join s in context.STG_Mapping_TableIds.AsNoTracking() on a.CityMapping_Id equals s.Mapping_Id
