@@ -71,7 +71,7 @@
           <Property Name="Country_Id" Type="uniqueidentifier" />
           <Property Name="City_Id" Type="uniqueidentifier" />
           <Property Name="InsertFrom" Type="bit" />
-          <Property Name="Address_Tx" Type="nvarchar(max)" />
+          <Property Name="Address_Tx" Type="nvarchar" MaxLength="510" />
           <Property Name="Telephone_Tx" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Accommodation_ClassificationAttributes">
@@ -294,7 +294,7 @@
           <Property Name="Remarks" Type="nvarchar(max)" />
           <Property Name="Legacy_Htl_ID" Type="int" />
           <Property Name="address" Type="nvarchar(max)" />
-          <Property Name="address_tx" Type="nvarchar(max)" />
+          <Property Name="address_tx" Type="nvarchar" MaxLength="510" />
           <Property Name="TelephoneNumber_tx" Type="nvarchar" MaxLength="225" />
           <Property Name="StarRating" Type="nvarchar" MaxLength="255" />
           <Property Name="Google_Place_Id" Type="nvarchar" MaxLength="255" />
@@ -508,6 +508,31 @@
           <Property Name="Edit_Date" Type="datetime" />
           <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Activity_CategoriesType">
+          <Key>
+            <PropertyRef Name="Activity_CategoriesType_ID" />
+          </Key>
+          <Property Name="Activity_CategoriesType_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Flavour_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_FlavourOptions_Id" Type="uniqueidentifier" />
+          <Property Name="SupplierProductCategory" Type="nvarchar" MaxLength="250" />
+          <Property Name="SupplierProductCategorySubType" Type="nvarchar" MaxLength="250" />
+          <Property Name="SupplierProductType" Type="nvarchar" MaxLength="250" />
+          <Property Name="SupplierProductNameSubType" Type="nvarchar" MaxLength="250" />
+          <Property Name="SystemProductCategory" Type="nvarchar" MaxLength="250" />
+          <Property Name="SystemProductCategorySubType" Type="nvarchar" MaxLength="250" />
+          <Property Name="SystemProductType" Type="nvarchar" MaxLength="250" />
+          <Property Name="SystemProductNameSubType" Type="nvarchar" MaxLength="250" />
+          <Property Name="SystemProductCategory_ID" Type="uniqueidentifier" />
+          <Property Name="SystemProductCategorySubType_ID" Type="uniqueidentifier" />
+          <Property Name="SystemProductType_ID" Type="uniqueidentifier" />
+          <Property Name="SystemProductNameSubType_ID" Type="uniqueidentifier" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="Create_Date" Type="datetime" Nullable="false" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Create_User" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="Activity_ClassificationAttributes">
           <Key>
@@ -2527,6 +2552,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Accommodation_SupplierRoomTypeMapping" EntityType="Self.Accommodation_SupplierRoomTypeMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity" EntityType="Self.Activity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_Ancillary" EntityType="Self.Activity_Ancillary" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_CategoriesType" EntityType="Self.Activity_CategoriesType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_ClassificationAttributes" EntityType="Self.Activity_ClassificationAttributes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_Contact" EntityType="Self.Activity_Contact" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_Content" EntityType="Self.Activity_Content" Schema="dbo" store:Type="Tables" />
@@ -2806,6 +2832,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Activity_DaysOfOperation" EntityType="ConsumerModel.Activity_DaysOfOperation" />
           <EntitySet Name="Activity_DaysOfWeek" EntityType="ConsumerModel.Activity_DaysOfWeek" />
           <EntitySet Name="Supplier" EntityType="ConsumerModel.Supplier" />
+          <EntitySet Name="Activity_CategoriesType" EntityType="ConsumerModel.Activity_CategoriesType" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -3135,7 +3162,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Legacy_Htl_ID" Type="Int32" />
           <Property Name="address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="address_tx" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="address_tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
           <Property Name="TelephoneNumber_tx" Type="String" MaxLength="225" FixedLength="false" Unicode="true" />
           <Property Name="StarRating" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Google_Place_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -3605,7 +3632,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Country_Id" Type="Guid" />
           <Property Name="City_Id" Type="Guid" />
           <Property Name="InsertFrom" Type="Boolean" />
-          <Property Name="Address_Tx" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Address_Tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
           <Property Name="Telephone_Tx" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="GoogleGeoCode">
@@ -5277,6 +5304,31 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="SupplierType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="SupplierOwner" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="StatusCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Activity_CategoriesType">
+          <Key>
+            <PropertyRef Name="Activity_CategoriesType_ID" />
+          </Key>
+          <Property Name="Activity_CategoriesType_ID" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Flavour_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_FlavourOptions_Id" Type="Guid" />
+          <Property Name="SupplierProductCategory" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierProductCategorySubType" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierProductType" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierProductNameSubType" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="SystemProductCategory" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="SystemProductCategorySubType" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="SystemProductType" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="SystemProductNameSubType" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="SystemProductCategory_ID" Type="Guid" />
+          <Property Name="SystemProductCategorySubType_ID" Type="Guid" />
+          <Property Name="SystemProductType_ID" Type="Guid" />
+          <Property Name="SystemProductNameSubType_ID" Type="Guid" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Create_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -7835,6 +7887,32 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_CategoriesType">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_CategoriesType">
+              <MappingFragment StoreEntitySet="Activity_CategoriesType">
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="SystemProductNameSubType_ID" ColumnName="SystemProductNameSubType_ID" />
+                <ScalarProperty Name="SystemProductType_ID" ColumnName="SystemProductType_ID" />
+                <ScalarProperty Name="SystemProductCategorySubType_ID" ColumnName="SystemProductCategorySubType_ID" />
+                <ScalarProperty Name="SystemProductCategory_ID" ColumnName="SystemProductCategory_ID" />
+                <ScalarProperty Name="SystemProductNameSubType" ColumnName="SystemProductNameSubType" />
+                <ScalarProperty Name="SystemProductType" ColumnName="SystemProductType" />
+                <ScalarProperty Name="SystemProductCategorySubType" ColumnName="SystemProductCategorySubType" />
+                <ScalarProperty Name="SystemProductCategory" ColumnName="SystemProductCategory" />
+                <ScalarProperty Name="SupplierProductNameSubType" ColumnName="SupplierProductNameSubType" />
+                <ScalarProperty Name="SupplierProductType" ColumnName="SupplierProductType" />
+                <ScalarProperty Name="SupplierProductCategorySubType" ColumnName="SupplierProductCategorySubType" />
+                <ScalarProperty Name="SupplierProductCategory" ColumnName="SupplierProductCategory" />
+                <ScalarProperty Name="Activity_FlavourOptions_Id" ColumnName="Activity_FlavourOptions_Id" />
+                <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
+                <ScalarProperty Name="Activity_CategoriesType_ID" ColumnName="Activity_CategoriesType_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

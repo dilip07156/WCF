@@ -175,6 +175,9 @@
     <Compile Include="Activity_Ancillary.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Activity_CategoriesType.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Activity_ClassificationAttributes.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
