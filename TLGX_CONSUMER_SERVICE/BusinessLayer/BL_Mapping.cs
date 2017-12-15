@@ -112,6 +112,14 @@ namespace BusinessLayer
             }
         }
 
+        public int GetSTGMappingIDTableCount(DC_SupplierImportFileDetails file)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetSTGMappingIDTableCount(file);
+            }
+        }
+
         public bool HotelTTFUTelephone(DataContracts.Masters.DC_Supplier obj)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
