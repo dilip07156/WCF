@@ -147,6 +147,7 @@ namespace DataLayer
         public virtual DbSet<Activity_DaysOfOperation> Activity_DaysOfOperation { get; set; }
         public virtual DbSet<Activity_DaysOfWeek> Activity_DaysOfWeek { get; set; }
         public virtual DbSet<Supplier> Supplier { get; set; }
+        public virtual DbSet<Activity_CategoriesType> Activity_CategoriesType { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

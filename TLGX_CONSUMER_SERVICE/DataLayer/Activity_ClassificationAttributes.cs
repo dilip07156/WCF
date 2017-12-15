@@ -27,5 +27,6 @@ namespace DataLayer
         public string AttributeSubType { get; set; }
         public Nullable<System.Guid> Activity_Flavour_Id { get; set; }
         public Nullable<int> Legacy_Product_ID { get; set; }
+        public Nullable<System.Guid> Activity_FlavourOptions_Id { get; set; }
     }
 }

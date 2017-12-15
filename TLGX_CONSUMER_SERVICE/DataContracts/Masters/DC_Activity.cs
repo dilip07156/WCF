@@ -1069,6 +1069,8 @@ namespace DataContracts.Masters
         [DataMember]
         public Guid? Activity_Flavour_Id { get; set; }
         [DataMember]
+        public Guid? Activity_FlavourOptions_Id { get; set; }
+        [DataMember]
         public string CreateUser { get; set; }
         [DataMember]
         public string EditUser { get; set; }
@@ -1085,17 +1087,15 @@ namespace DataContracts.Masters
         [DataMember]
         public Guid? Activity_ClassificationAttribute_Id { get; set; }
         [DataMember]
-        public Guid? Activity_Id { get; set; }
-        [DataMember]
         public string AttributeType { get; set; }
         [DataMember]
         public string AttributeSubType { get; set; }
         [DataMember]
         public string AttributeValue { get; set; }
         [DataMember]
-        public int? Legacy_Product_Id { get; set; }
-        [DataMember]
         public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_FlavourOptions_Id { get; set; }
         [DataMember]
         public int? PageNo { get; set; }
         [DataMember]
@@ -1107,6 +1107,8 @@ namespace DataContracts.Masters
     {
         [DataMember]
         public Guid Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_FlavourOptions_Id { get; set; }
         [DataMember]
         public string AttributeType { get; set; }
         [DataMember]
@@ -1446,6 +1448,8 @@ namespace DataContracts.Masters
         [DataMember]
         public string SupplierCode { get; set; }
 
+        [DataMember]
+        public List<DC_Activity_CategoryTypes> Categories { get; set; }
     }
     [DataContract]
     public class DC_Activity_Flavour_RQ
@@ -1467,13 +1471,80 @@ namespace DataContracts.Masters
         [DataMember]
         public string ProductCategorySubType { get; set; }
         [DataMember]
+        public Guid? ProductCategorySubTypeId { get; set; }
+        [DataMember]
         public string ProductType { get; set; }
         [DataMember]
+        public Guid? ProductTypeId { get; set; }
+        [DataMember]
         public string ProductNameSubType { get; set; }
+        [DataMember]
+        public Guid? ProductNameSubTypeId { get; set; }
         [DataMember]
         public int? PageNo { get; set; }
         [DataMember]
         public int? PageSize { get; set; }
+
+        [DataMember]
+        public bool NoSuitableFor { get; set; }
+        [DataMember]
+        public bool NoPhysicalIntensity { get; set; }
+        [DataMember]
+        public bool NoOpsSchedule { get; set; }
+        [DataMember]
+        public bool NoSession { get; set; }
+        [DataMember]
+        public bool NoSpecials { get; set; }
+    }
+
+    [DataContract]
+    public class DC_Activity_CategoryTypes
+    {
+        [DataMember]
+        public Guid Activity_CategoriesType_ID { get; set; }
+
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+
+        [DataMember]
+        public Guid? Activity_FlavourOptions_Id { get; set; }
+
+        [DataMember]
+        public string SupProdCat { get; set; }
+
+        [DataMember]
+        public string SupProdSubCat{ get; set; }
+
+        [DataMember]
+        public string SupProdType { get; set; }
+
+        [DataMember]
+        public string SupProdSubType { get; set; }
+
+
+        [DataMember]
+        public string SysProdCat { get; set; }
+        [DataMember]
+        public Guid? SysProdCatId { get; set; }
+
+        [DataMember]
+        public string SysProdSubCat { get; set; }
+        [DataMember]
+        public Guid? SysProdSubCatId { get; set; }
+
+        [DataMember]
+        public string SysProdType { get; set; }
+        [DataMember]
+        public Guid? SysProdTypeId { get; set; }
+
+        [DataMember]
+        public string SysProdSubType { get; set; }
+        [DataMember]
+        public Guid? SysProdSubTypeId { get; set; }
+
+        [DataMember]
+        public string User { get; set; }
+
     }
     #endregion
 
@@ -1490,11 +1561,15 @@ namespace DataContracts.Masters
         [DataMember]
         public string Activity_OptionName { get; set; }
         [DataMember]
+        public string Activity_OptionDescription { get; set; }
+        [DataMember]
         public string Activity_OptionCode { get; set; }
         [DataMember]
         public string Activity_Type { get; set; }
         [DataMember]
         public string Activity_DealText { get; set; }
+        [DataMember]
+        public string Activity_OptionInternalCode { get; set; }
         [DataMember]
         public string Status { get; set; }
         [DataMember]
@@ -1515,16 +1590,10 @@ namespace DataContracts.Masters
         public Guid? Activity_FlavourOptions_Id { get; set; }
         [DataMember]
         public Guid? Activity_Flavour_Id { get; set; }
-        [DataMember]
-        public string Activity_FlavourName { get; set; }
-        [DataMember]
-        public string Activity_OptionName { get; set; }
+        
         [DataMember]
         public string Activity_OptionCode { get; set; }
-        [DataMember]
-        public string Activity_Type { get; set; }
-        [DataMember]
-        public string Activity_DealText { get; set; }
+        
         [DataMember]
         public string Status { get; set; }
         [DataMember]
@@ -1609,6 +1678,8 @@ namespace DataContracts.Masters
         public string Price_Type { get; set; }
         [DataMember]
         public string Price_OptionCode { get; set; }
+        [DataMember]
+        public string Price_InternalOptionCode { get; set; }
         [DataMember]
         public string PriceCurrency { get; set; }
         [DataMember]
@@ -2024,6 +2095,8 @@ namespace DataContracts.Masters
         public string SupplierDuration { get; set; }
         [DataMember]
         public string Duration { get; set; }
+        [DataMember]
+        public string DurationType { get; set; }
         [DataMember]
         public string SupplierSession { get; set; }
         [DataMember]

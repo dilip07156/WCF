@@ -29,5 +29,6 @@ namespace DataLayer
         public string TLGXActivityOptionCode { get; set; }
         public string Activity_LanguageCode { get; set; }
         public string Activity_Language { get; set; }
+        public string Activity_OptionDescription { get; set; }
     }
 }

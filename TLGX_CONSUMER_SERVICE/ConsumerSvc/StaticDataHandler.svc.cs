@@ -204,6 +204,14 @@ namespace ConsumerSvc
             }
         }
 
+        public int GetSTGMappingIDTableCount(DC_SupplierImportFileDetails file)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetSTGMappingIDTableCount(file);
+            }
+        }
+
         public bool HotelTTFUTelephone(DC_Supplier sup)
         {
             using (BL_Mapping objBL = new BL_Mapping())

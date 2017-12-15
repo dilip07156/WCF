@@ -1279,8 +1279,8 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = from a in context.Activity_ClassificationAttributes
-                                 select a;
+                    var search = (from a in context.Activity_ClassificationAttributes
+                                  select a).AsQueryable();
 
                     if (RQ.Activity_ClassificationAttribute_Id != null)
                     {
@@ -1288,12 +1288,7 @@ namespace DataLayer
                                  where a.Activity_ClassificationAttribute_Id == RQ.Activity_ClassificationAttribute_Id
                                  select a;
                     }
-                    if (RQ.Activity_Id != null)
-                    {
-                        search = from a in search
-                                 where a.Activity_Id == RQ.Activity_Id
-                                 select a;
-                    }
+
                     if (RQ.Activity_Flavour_Id != null)
                     {
                         search = from a in search
@@ -1319,12 +1314,19 @@ namespace DataLayer
                                  select a;
                     }
 
-                    if (RQ.Legacy_Product_Id != null)
+                    if (RQ.Activity_FlavourOptions_Id == null)
                     {
                         search = from a in search
-                                 where a.Legacy_Product_ID == RQ.Legacy_Product_Id
+                                 where a.Activity_FlavourOptions_Id == null
                                  select a;
                     }
+                    else
+                    {
+                        search = from a in search
+                                 where a.Activity_FlavourOptions_Id == RQ.Activity_FlavourOptions_Id
+                                 select a;
+                    }
+
                     int total = search.Count();
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
@@ -1334,6 +1336,10 @@ namespace DataLayer
                                  {
                                      Activity_ClassificationAttribute_Id = a.Activity_ClassificationAttribute_Id,
                                      Activity_Flavour_Id = a.Activity_Flavour_Id,
+                                     Activity_FlavourOptions_Id = a.Activity_FlavourOptions_Id,
+                                     CreateUser = a.Create_User,
+                                     EditDate = a.Edit_Date,
+                                     EditUser = a.Edit_User,
                                      Activity_Id = a.Activity_Id,
                                      IsActive = a.IsActive,
                                      CreateDate = a.Create_Date,
@@ -2014,7 +2020,22 @@ namespace DataLayer
                     var search = (from a in context.Activity_Flavour
                                   select a).AsQueryable();
 
+                    var ActFlv = search;
+
                     var spmQ = context.Activity_SupplierProductMapping.AsQueryable();
+
+                    var ActTypes = context.Activity_CategoriesType.AsQueryable();
+
+                    var ActTypeUnMap = ActTypes;
+
+                    var aCA = context.Activity_ClassificationAttributes.AsQueryable();
+
+                    var aDOW = context.Activity_DaysOfWeek.AsQueryable();
+
+                    bool isCAFilter = false;
+                    bool isDurationFilter = false;
+                    bool isTypeUnMap = false;
+                    bool isTypeMap = false;
 
                     if (RQ.Activity_Flavour_Id != null)
                     {
@@ -2024,6 +2045,49 @@ namespace DataLayer
                     }
                     else
                     {
+                        if (RQ.NoPhysicalIntensity)
+                        {
+                            aCA = aCA.Where(w => w.AttributeType == "Product" && w.AttributeSubType == "Physicalntensity");
+                            isCAFilter = true;
+                        }
+
+                        if (RQ.NoSpecials)
+                        {
+                            aCA = aCA.Where(w => w.AttributeType == "Product" && w.AttributeSubType == "Specials");
+                            isCAFilter = true;
+                        }
+
+                        if (RQ.NoSuitableFor)
+                        {
+                            aCA = aCA.Where(w => w.AttributeType == "Product" && w.AttributeSubType == "SuitableFor");
+                            isCAFilter = true;
+                        }
+
+                        if (isCAFilter)
+                        {
+                            search = search.Except((from a in ActFlv
+                                                    join ca in aCA on a.Activity_Flavour_Id equals ca.Activity_Flavour_Id
+                                                    select a).AsQueryable());
+                        }
+
+                        if (RQ.NoOpsSchedule)
+                        {
+                            isDurationFilter = true;
+                        }
+
+                        if (RQ.NoSession)
+                        {
+                            aDOW = aDOW.Where(w => w.Session != null);
+                            isDurationFilter = true;
+                        }
+
+                        if (isDurationFilter)
+                        {
+                            search = search.Except((from a in ActFlv
+                                                    join ca in aDOW on a.Activity_Flavour_Id equals ca.Activity_Flavor_ID
+                                                    select a).AsQueryable());
+                        }
+
                         if (RQ.Supplier_Id != null)
                         {
                             spmQ = spmQ.Where(w => w.Supplier_ID == RQ.Supplier_Id);
@@ -2035,103 +2099,171 @@ namespace DataLayer
                                      where a.ProductName.Trim().ToUpper().Contains(RQ.ProductName.Trim().ToUpper())
                                      select a;
                         }
-                        else
+
+                        if (!string.IsNullOrWhiteSpace(RQ.Country))
                         {
-                            if (!string.IsNullOrWhiteSpace(RQ.Country))
+                            if (RQ.Country.Contains("UNMAPPED"))
                             {
-                                if (RQ.Country.Contains("UNMAPPED"))
-                                {
-                                    search = from a in search
-                                             where a.Country_Id == null
-                                             select a;
-                                }
-                                else
-                                {
-                                    if (RQ.Country_Id != null)
-                                    {
-                                        search = from a in search
-                                                 where a.Country_Id == RQ.Country_Id
-                                                 select a;
-                                    }
-                                }
+                                search = from a in search
+                                         where a.Country_Id == null
+                                         select a;
                             }
-
-                            if (!string.IsNullOrWhiteSpace(RQ.City))
+                            else
                             {
-                                if (RQ.City.Contains("UNMAPPED"))
+                                if (RQ.Country_Id != null)
                                 {
                                     search = from a in search
-                                             where a.City_Id == null
-                                             select a;
-                                }
-                                else
-                                {
-                                    if (RQ.City_Id != null)
-                                    {
-                                        search = from a in search
-                                                 where a.City_Id == RQ.City_Id
-                                                 select a;
-                                    }
-                                }
-                            }
-                            
-                            if (!string.IsNullOrWhiteSpace(RQ.ProductCategorySubType))
-                            {
-                                if (RQ.ProductCategorySubType.Contains("UNMAPPED"))
-                                {
-                                    search = from a in search
-                                             where a.ProductCategorySubType == null || a.ProductCategorySubType.Trim() == string.Empty
-                                             select a;
-                                }
-                                else if (RQ.ProductCategorySubType != "-ALL-")
-                                {
-                                    search = from a in search
-                                             where a.ProductCategorySubType.Trim().ToUpper().Contains(RQ.ProductCategorySubType.Trim().ToUpper())
-                                             select a;
-                                }
-                            }
-
-                            if (!string.IsNullOrWhiteSpace(RQ.ProductType))
-                            {
-                                if (RQ.ProductType.Contains("UNMAPPED"))
-                                {
-                                    search = from a in search
-                                             where a.ProductType == null || a.ProductType.Trim() == string.Empty
-                                             select a;
-                                }
-                                else if (RQ.ProductType != "-ALL-")
-                                {
-                                    search = from a in search
-                                             where a.ProductType.Trim().ToUpper().Contains(RQ.ProductType.Trim().ToUpper())
-                                             select a;
-                                }
-                            }
-
-                            if (!string.IsNullOrWhiteSpace(RQ.ProductNameSubType))
-                            {
-                                if (RQ.ProductNameSubType.Contains("UNMAPPED"))
-                                {
-                                    search = from a in search
-                                             where a.ProductNameSubType == null || a.ProductNameSubType.Trim() == string.Empty
-                                             select a;
-                                }
-                                else if (RQ.ProductNameSubType != "-ALL-")
-                                {
-                                    search = from a in search
-                                             where a.ProductNameSubType.Trim().ToUpper().Contains(RQ.ProductNameSubType.Trim().ToUpper())
+                                             where a.Country_Id == RQ.Country_Id
                                              select a;
                                 }
                             }
                         }
+
+                        if (!string.IsNullOrWhiteSpace(RQ.City))
+                        {
+                            if (RQ.City.Contains("UNMAPPED"))
+                            {
+                                search = from a in search
+                                         where a.City_Id == null
+                                         select a;
+                            }
+                            else
+                            {
+                                if (RQ.City_Id != null)
+                                {
+                                    search = from a in search
+                                             where a.City_Id == RQ.City_Id
+                                             select a;
+                                }
+                            }
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(RQ.ProductCategorySubType))
+                        {
+                            if (RQ.ProductCategorySubType.Contains("UNMAPPED"))
+                            {
+                                //search = from a in search
+                                //         where a.ProductCategorySubType == null || a.ProductCategorySubType.Trim() == string.Empty
+                                //         select a;
+
+                                isTypeUnMap = true;
+                                ActTypeUnMap = ActTypeUnMap.Where(w => w.SystemProductCategorySubType_ID != null);
+
+                                //search = search.Except((from a in ActFlv
+                                //                        join at in ActTypes on a.Activity_Flavour_Id equals at.Activity_Flavour_Id
+                                //                        where at.Activity_FlavourOptions_Id == null && at.SystemProductCategorySubType_ID != null
+                                //                        select a).AsQueryable());
+
+                            }
+                            else if (RQ.ProductCategorySubType != "-ALL-")
+                            {
+                                //search = from a in search
+                                //         where a.ProductCategorySubType.Trim().ToUpper().Contains(RQ.ProductCategorySubType.Trim().ToUpper())
+                                //         select a;
+
+                                isTypeMap = true;
+                                ActTypes = ActTypes.Where(w => w.SystemProductCategorySubType_ID == RQ.ProductCategorySubTypeId);
+
+                                //search = from a in search
+                                //         join at in ActTypes on a.Activity_Flavour_Id equals at.Activity_Flavour_Id
+                                //         where at.Activity_FlavourOptions_Id == null && at.SystemProductCategorySubType_ID == RQ.ProductCategorySubTypeId
+                                //         select a;
+                            }
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(RQ.ProductType))
+                        {
+                            if (RQ.ProductType.Contains("UNMAPPED"))
+                            {
+                                //search = from a in search
+                                //         where a.ProductType == null || a.ProductType.Trim() == string.Empty
+                                //         select a;
+
+                                isTypeUnMap = true;
+                                ActTypeUnMap = ActTypeUnMap.Where(w => w.SystemProductType_ID != null);
+
+                                //search = search.Except((from a in ActFlv
+                                //                        join at in ActTypes on a.Activity_Flavour_Id equals at.Activity_Flavour_Id
+                                //                        where at.Activity_FlavourOptions_Id == null && at.SystemProductType_ID != null
+                                //                        select a).AsQueryable());
+                            }
+                            else if (RQ.ProductType != "-ALL-")
+                            {
+                                //search = from a in search
+                                //         where a.ProductType.Trim().ToUpper().Contains(RQ.ProductType.Trim().ToUpper())
+                                //         select a;
+
+                                isTypeMap = true;
+                                ActTypes = ActTypes.Where(w => w.SystemProductType_ID == RQ.ProductTypeId);
+
+                                //search = from a in search
+                                //         join at in ActTypes on a.Activity_Flavour_Id equals at.Activity_Flavour_Id
+                                //         where at.Activity_FlavourOptions_Id == null && at.SystemProductType_ID == RQ.ProductTypeId
+                                //         select a;
+                            }
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(RQ.ProductNameSubType))
+                        {
+                            if (RQ.ProductNameSubType.Contains("UNMAPPED"))
+                            {
+                                //search = from a in search
+                                //         where a.ProductNameSubType == null || a.ProductNameSubType.Trim() == string.Empty
+                                //         select a;
+
+                                isTypeUnMap = true;
+                                ActTypeUnMap = ActTypeUnMap.Where(w => w.SystemProductNameSubType_ID != null);
+
+                                //search = search.Except((from a in ActFlv
+                                //                        join at in ActTypes on a.Activity_Flavour_Id equals at.Activity_Flavour_Id
+                                //                        where at.Activity_FlavourOptions_Id == null && at.SystemProductNameSubType_ID != null
+                                //                        select a).AsQueryable());
+                            }
+                            else if (RQ.ProductNameSubType != "-ALL-")
+                            {
+                                //search = from a in search
+                                //         where a.ProductNameSubType.Trim().ToUpper().Contains(RQ.ProductNameSubType.Trim().ToUpper())
+                                //         select a;
+
+                                isTypeMap = true;
+                                ActTypes = ActTypes.Where(w => w.SystemProductNameSubType_ID == RQ.ProductNameSubTypeId);
+
+                                //search = from a in search
+                                //         join at in ActTypes on a.Activity_Flavour_Id equals at.Activity_Flavour_Id
+                                //         where at.Activity_FlavourOptions_Id == null && at.SystemProductNameSubType_ID == RQ.ProductNameSubTypeId
+                                //         select a;
+                            }
+
+                        }
+
+                        if (isTypeUnMap)
+                        {
+                            search = search.Except((from a in ActFlv
+                                                    join at in ActTypeUnMap on a.Activity_Flavour_Id equals at.Activity_Flavour_Id
+                                                    where at.Activity_FlavourOptions_Id == null
+                                                    select a));
+                        }
+
+                        if (isTypeMap)
+                        {
+                            search = from a in search
+                                     join at in ActTypes on a.Activity_Flavour_Id equals at.Activity_Flavour_Id
+                                     where at.Activity_FlavourOptions_Id == null
+                                     select a;
+                        }
+
                     }
 
-                    int total = search.Count();
+                    int total = (from a in search
+                                 join spm in spmQ on a.Activity_Flavour_Id equals spm.Activity_ID
+                                 join s in context.Supplier on spm.Supplier_ID equals s.Supplier_Id
+                                 select a).Count();
+
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
                     var result = from a in search
-                                 join spm in spmQ on a.Activity_Flavour_Id equals spm.Activity_ID into spmlj
-                                 from spmljl in spmlj
-                                 join s in context.Supplier on spmljl.Supplier_ID equals s.Supplier_Id
+                                 join spm in spmQ on a.Activity_Flavour_Id equals spm.Activity_ID
+                                 join s in context.Supplier on spm.Supplier_ID equals s.Supplier_Id
                                  orderby a.ProductName
                                  select new DataContracts.Masters.DC_Activity_Flavour
                                  {
@@ -2139,16 +2271,14 @@ namespace DataLayer
                                      Activity_Id = a.Activity_Id,
                                      Legacy_Product_ID = a.Legacy_Product_ID,
                                      ProductName = a.ProductName,
-                                     ProductNameSubType = a.ProductNameSubType,
-                                     ProductType = a.ProductType,
+
                                      Country = a.Country,
                                      City = a.City,
                                      Country_Id = a.Country_Id,
                                      City_Id = a.City_Id,
                                      CityCode = a.CityCode,
                                      CountryCode = a.CountryCode,
-                                     ProductCategory = a.ProductCategory,
-                                     ProductCategorySubType = a.ProductCategorySubType,
+
                                      Area = a.Area,
                                      CommonProductNameSubType_Id = a.CommonProductNameSubType_Id,
                                      CompanyProductNameSubType_Id = a.CompanyProductNameSubType_Id,
@@ -2175,23 +2305,91 @@ namespace DataLayer
                                      Create_User = a.Create_User,
                                      Edit_Date = a.Edit_Date,
                                      Edit_User = a.Edit_User,
-                                     SupplierCity = spmljl.SupplierCityName + " (" + spmljl.SupplierCityCode + ")",
-                                     SupplierCountry = spmljl.SupplierCountryName + " (" + spmljl.SupplierCountryCode + ")",
+
+                                     ProductCategory = a.ProductCategory,
+
+                                     //ProductCategorySubType = a.ProductCategorySubType,
+                                     //ProductNameSubType = a.ProductNameSubType,
+                                     //ProductType = a.ProductType,
+
+                                     //ProductCategorySubType = string.Join(",", context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == a.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s.SupplierProductCategorySubType).Distinct().ToArray()),
+                                     //ProductNameSubType = string.Join(",", context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == a.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s.SupplierProductNameSubType).Distinct().ToArray()),
+                                     //ProductType = string.Join(",", context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == a.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s.SupplierProductType).Distinct().ToArray()),
+
+                                     SupplierCity = spm.SupplierCityName + " (" + spm.SupplierCityCode + ")",
+                                     SupplierCountry = spm.SupplierCountryName + " (" + spm.SupplierCountryCode + ")",
                                      SupplierProductCategory = "Activities",
-                                     SupplierProductCategorySubType = spmljl.SupplierType,
-                                     SupplierProductCode = spmljl.SuplierProductCode,
-                                     SupplierProductNameSubType = spmljl.SupplierProductType,
-                                     SupplierProductType = spmljl.SupplierType,
+                                     SupplierProductCategorySubType = spm.SupplierType,
+                                     SupplierProductCode = spm.SuplierProductCode,
+                                     SupplierProductNameSubType = spm.SupplierProductType,
+                                     SupplierProductType = spm.SupplierType,
                                      Supplier_Id = s.Supplier_Id,
                                      SupplierCode = s.Code,
-                                     SupplierName = s.Name
+                                     SupplierName = s.Name,
+                                     Categories = (from ct in context.Activity_CategoriesType
+                                                   where ct.Activity_Flavour_Id == a.Activity_Flavour_Id && ct.Activity_FlavourOptions_Id == null
+                                                   select new DC_Activity_CategoryTypes
+                                                   {
+                                                       Activity_CategoriesType_ID = ct.Activity_CategoriesType_ID,
+                                                       Activity_FlavourOptions_Id = ct.Activity_FlavourOptions_Id,
+                                                       Activity_Flavour_Id = ct.Activity_Flavour_Id,
+                                                       SupProdCat = ct.SupplierProductCategory,
+                                                       SupProdSubCat = ct.SupplierProductCategory,
+                                                       SupProdSubType = ct.SupplierProductNameSubType,
+                                                       SupProdType = ct.SupplierProductType,
+                                                       SysProdCat = ct.SystemProductCategory,
+                                                       SysProdCatId = ct.SystemProductCategory_ID,
+                                                       SysProdSubCat = ct.SystemProductCategorySubType,
+                                                       SysProdSubCatId = ct.SystemProductCategorySubType_ID,
+                                                       SysProdSubType = ct.SystemProductNameSubType,
+                                                       SysProdSubTypeId = ct.SystemProductNameSubType_ID,
+                                                       SysProdType = ct.SystemProductType,
+                                                       SysProdTypeId = ct.SystemProductType_ID
+                                                   }).ToList()
                                  };
-                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+
+
+                    var returnResult = result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+
+                    foreach (var item in returnResult)
+                    {
+                        item.ProductCategorySubType = string.Join(",", context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s.SystemProductCategorySubType).Distinct().ToArray());
+                        item.ProductNameSubType = string.Join(",", context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s.SystemProductNameSubType).Distinct().ToArray());
+                        item.ProductType = string.Join(",", context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s.SystemProductType).Distinct().ToArray());
+
+                        //item.Categories = (from ct in context.Activity_CategoriesType
+                        //                   where ct.Activity_Flavour_Id == item.Activity_Flavour_Id && ct.Activity_FlavourOptions_Id == null
+                        //                   select new DC_Activity_CategoryTypes
+                        //                   {
+                        //                       Activity_CategoriesType_ID = ct.Activity_CategoriesType_ID,
+                        //                       Activity_FlavourOptions_Id = ct.Activity_FlavourOptions_Id,
+                        //                       Activity_Flavour_Id = ct.Activity_Flavour_Id,
+                        //                       SupProdCat = ct.SupplierProductCategory,
+                        //                       SupProdSubCat = ct.SupplierProductCategory,
+                        //                       SupProdSubType = ct.SupplierProductNameSubType,
+                        //                       SupProdType = ct.SupplierProductType,
+                        //                       SysProdCat = ct.SystemProductCategory,
+                        //                       SysProdCatId = ct.SystemProductCategory_ID,
+                        //                       SysProdSubCat = ct.SystemProductCategorySubType,
+                        //                       SysProdSubCatId = ct.SystemProductCategorySubType_ID,
+                        //                       SysProdSubType = ct.SystemProductNameSubType,
+                        //                       SysProdSubTypeId = ct.SystemProductNameSubType_ID,
+                        //                       SysProdType = ct.SystemProductType,
+                        //                       SysProdTypeId = ct.SystemProductType_ID
+                        //                   }).ToList();
+                    }
+
+
+                    return returnResult;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Flavour", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while fetching Activity Flavour",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
             }
         }
         public DataContracts.DC_Message AddUpdateActivityFlavour(DC_Activity_Flavour RQ)
@@ -2291,6 +2489,39 @@ namespace DataLayer
                                 res.City_Id = null;
                                 res.City = null;
                                 res.CityCode = null;
+                            }
+
+                            context.Activity_CategoriesType.RemoveRange(context.Activity_CategoriesType.Where(w => w.Activity_Flavour_Id == RQ.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null));
+
+                            foreach(var type in RQ.Categories)
+                            {
+                                var subtype = context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == type.SysProdSubTypeId).Select(s => s).FirstOrDefault();
+                                if(subtype != null)
+                                {
+                                    var prodtype = context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == subtype.ParentAttributeValue_Id).Select(s => s).FirstOrDefault();
+                                    if (prodtype != null)
+                                    {
+                                        var subcat = context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == prodtype.ParentAttributeValue_Id).Select(s => s).FirstOrDefault();
+                                        if (subcat != null)
+                                        {
+                                            context.Activity_CategoriesType.Add(new Activity_CategoriesType
+                                            {
+                                                Activity_CategoriesType_ID = Guid.NewGuid(),
+                                                Activity_FlavourOptions_Id = null,
+                                                Activity_Flavour_Id = type.Activity_Flavour_Id ?? RQ.Activity_Flavour_Id ?? Guid.Empty,
+                                                SystemProductNameSubType_ID = subtype.MasterAttributeValue_Id,
+                                                SystemProductNameSubType = subtype.AttributeValue,
+                                                SystemProductType_ID = prodtype.MasterAttributeValue_Id,
+                                                SystemProductType = prodtype.AttributeValue,
+                                                SystemProductCategorySubType_ID = subcat.MasterAttributeValue_Id,
+                                                SystemProductCategorySubType = subcat.AttributeValue,
+                                                SystemProductCategory = "ACTIVITIES",
+                                                Create_Date = DateTime.Now,
+                                                Create_User = type.User
+                                            });
+                                        }
+                                    }
+                                }
                             }
 
                             //res.Activity_Id = RQ.Activity_Id;
@@ -2403,8 +2634,20 @@ namespace DataLayer
                     {
                         foreach (var item in RQ)
                         {
+                            IEnumerable<Activity_ClassificationAttributes> dataToRemove = null;
+                            if (item.Activity_FlavourOptions_Id == null)
+                            {
+                                dataToRemove = context.Activity_ClassificationAttributes.Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null && w.AttributeType == item.AttributeType && w.AttributeSubType == item.AttributeSubType).Select(s => s);
+                            }
+                            else
+                            {
+                                dataToRemove = context.Activity_ClassificationAttributes.Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == item.Activity_FlavourOptions_Id && w.AttributeType == item.AttributeType && w.AttributeSubType == item.AttributeSubType).Select(s => s);
+                            }
 
-                            context.Activity_ClassificationAttributes.RemoveRange(context.Activity_ClassificationAttributes.Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.AttributeType == item.AttributeType && w.AttributeSubType == item.AttributeSubType).Select(s => s));
+                            if (dataToRemove != null)
+                            {
+                                context.Activity_ClassificationAttributes.RemoveRange(dataToRemove);
+                            }
 
                             foreach (var str in item.AttributeValues)
                             {
@@ -2412,6 +2655,7 @@ namespace DataLayer
                                 {
                                     Activity_ClassificationAttribute_Id = Guid.NewGuid(),
                                     Activity_Flavour_Id = item.Activity_Flavour_Id,
+                                    Activity_FlavourOptions_Id = item.Activity_FlavourOptions_Id,
                                     AttributeType = item.AttributeType,
                                     AttributeSubType = item.AttributeSubType,
                                     AttributeValue = str,
@@ -2472,36 +2716,14 @@ namespace DataLayer
                                  where a.Activity_Flavour_Id == RQ.Activity_Flavour_Id
                                  select a;
                     }
-                    if (RQ.Activity_FlavourName != null)
-                    {
-                        search = from a in search
-                                 where a.Activity_FlavourName.Trim().TrimStart().ToUpper() == RQ.Activity_FlavourName.Trim().TrimStart().ToUpper()
-                                 select a;
-                    }
-                    if (RQ.Activity_DealText != null)
-                    {
-                        search = from a in search
-                                 where a.Activity_DealText.Trim().TrimStart().ToUpper() == RQ.Activity_DealText.Trim().TrimStart().ToUpper()
-                                 select a;
-                    }
+
                     if (RQ.Activity_OptionCode != null)
                     {
                         search = from a in search
                                  where a.Activity_OptionCode.Trim().TrimStart().ToUpper() == RQ.Activity_OptionCode.Trim().TrimStart().ToUpper()
                                  select a;
                     }
-                    if (RQ.Activity_OptionName != null)
-                    {
-                        search = from a in search
-                                 where a.Activity_OptionName.Trim().TrimStart().ToUpper() == RQ.Activity_OptionName.Trim().TrimStart().ToUpper()
-                                 select a;
-                    }
-                    if (RQ.Activity_Type != null)
-                    {
-                        search = from a in search
-                                 where a.Activity_Type.Trim().TrimStart().ToUpper() == RQ.Activity_Type.Trim().TrimStart().ToUpper()
-                                 select a;
-                    }
+
 
                     int total = search.Count();
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
@@ -2522,7 +2744,9 @@ namespace DataLayer
                                      Edit_Date = a.Edit_Date,
                                      Edit_User = a.Edit_User,
                                      Create_User = a.Create_User,
-                                     TotalRecords = total
+                                     TotalRecords = total,
+                                     Activity_OptionDescription = a.Activity_OptionDescription,
+                                     Activity_OptionInternalCode = a.TLGXActivityOptionCode
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -2761,6 +2985,9 @@ namespace DataLayer
                 {
                     var search = from a in context.Activity_Prices
                                  select a;
+
+                    var flavourOptions = context.Activity_FlavourOptions.AsNoTracking().Where(w => w.Activity_Flavour_Id == RQ.Activity_Flavour_Id);
+
                     if (RQ.Activity_Prices_Id != null)
                     {
                         search = from a in search
@@ -2784,6 +3011,8 @@ namespace DataLayer
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
                     var result = from a in search
+                                 join fo in flavourOptions on a.Activity_FlavourOptions_Id equals fo.Activity_FlavourOptions_Id into folj
+                                 from foljd in folj.DefaultIfEmpty()
                                  orderby a.PriceCode
                                  select new DataContracts.Masters.DC_Activity_Prices
                                  {
@@ -2799,8 +3028,8 @@ namespace DataLayer
                                      Price_OptionCode = a.Price_OptionCode,
                                      Totalrecords = total,
                                      Create_Date = a.Create_Date,
-                                     IsActive = a.IsActive
-
+                                     IsActive = a.IsActive,
+                                     Price_InternalOptionCode = foljd.TLGXActivityOptionCode
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -3820,7 +4049,8 @@ namespace DataLayer
                                                   SupplierStartTime = s.SupplierStartTime,
                                                   Thur = s.Thur ?? false,
                                                   Tues = s.Tues ?? false,
-                                                  Wed = s.Wed ?? false
+                                                  Wed = s.Wed ?? false,
+                                                  DurationType = s.DurationType
                                               }).ToList()
                             };
                             returnData.Add(OperatingDay);
@@ -3861,7 +4091,8 @@ namespace DataLayer
                                               SupplierStartTime = s.SupplierStartTime,
                                               Thur = s.Thur ?? false,
                                               Tues = s.Tues ?? false,
-                                              Wed = s.Wed ?? false
+                                              Wed = s.Wed ?? false,
+                                              DurationType = s.DurationType
                                           }).ToList()
                         };
                         returnData.Add(OperatingDay);
@@ -3931,7 +4162,8 @@ namespace DataLayer
                                     StartTime = DOW.StartTime,
                                     Thur = DOW.Thur,
                                     Tues = DOW.Tues,
-                                    Wed = DOW.Wed
+                                    Wed = DOW.Wed,
+                                    DurationType = DOW.DurationType
                                 });
                             }
                             else
@@ -3953,6 +4185,7 @@ namespace DataLayer
                                 searchDOW.Thur = DOW.Thur;
                                 searchDOW.Tues = DOW.Tues;
                                 searchDOW.Wed = DOW.Wed;
+                                searchDOW.DurationType = DOW.DurationType;
                             }
                         }
 

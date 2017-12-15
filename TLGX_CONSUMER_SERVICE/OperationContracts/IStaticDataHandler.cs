@@ -153,8 +153,11 @@ namespace OperationContracts
         bool UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj);
         //List<DataContracts.Mapping.DC_CityMapping> UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj);
 
-
-
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "DataHandler/Mapping/GetSTGMappingTableIDCount", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        int GetSTGMappingIDTableCount(DataContracts.UploadStaticData.DC_SupplierImportFileDetails file);
+        
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
