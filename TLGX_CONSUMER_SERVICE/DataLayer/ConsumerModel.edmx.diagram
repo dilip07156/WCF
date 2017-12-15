@@ -158,6 +158,7 @@
         <EntityTypeShape EntityType="ConsumerModel.STG_SupplierActivityTypeMapping" Width="1.5" PointX="14.75" PointY="13.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_DaysOfOperation" Width="1.5" PointX="5.25" PointY="16" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_DaysOfWeek" Width="1.5" PointX="6.875" PointY="16" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_CategoriesType" Width="1.5" PointX="17.375" PointY="13.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
