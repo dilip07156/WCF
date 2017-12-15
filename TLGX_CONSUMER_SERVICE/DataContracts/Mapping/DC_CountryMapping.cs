@@ -483,5 +483,8 @@ namespace DataContracts.Mapping
         [DataMember]
         public string FileMode { get; set; }
 
+        [DataMember]
+        public bool Match_Direct_Master { get; set; }
+
     }
 }
