@@ -1934,7 +1934,7 @@ namespace DataLayer
                             if (obj.CountryCode == null)
                             {
                                 obj.CountryName = ((geo.Where(s => s.CityName == obj.CityName).Select(s1 => s1.CountryCode).FirstOrDefault())) ??
-                                (geo.Where(s => s.CityCode == obj.CountryCode).Select(s1 => s1.CountryName).FirstOrDefault());
+                                (geo.Where(s => s.CityCode == obj.CityCode).Select(s1 => s1.CountryCode).FirstOrDefault());
                             }
                             if (objNew.City_Id != null)
                             {
