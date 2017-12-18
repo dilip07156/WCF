@@ -266,6 +266,9 @@ namespace DataLayer
                                        Remarks = a.Remarks,
                                        MapId = a.MapId,
                                        FullAddress = (a.address ?? string.Empty) + ", " + (a.Street ?? string.Empty) + ", " + (a.Street2 ?? string.Empty) + " " + (a.Street3 ?? string.Empty) + " " + (a.Street4 ?? string.Empty) + " " + (a.PostCode ?? string.Empty) + ", " + (a.CityName ?? string.Empty) + ", " + (a.StateName ?? string.Empty) + ", " + (a.CountryName ?? string.Empty),
+                                       SystemFullAddress = ((jd.FullAddress != string.Empty) ? jd.FullAddress : 
+                                       (jd.StreetNumber ?? string.Empty) + ", " + (jd.StreetName ?? string.Empty) + ", " + (jd.Street3 ?? string.Empty) + ", " + (jd.Street4 ?? string.Empty) + ", " + (jd.Street5 ?? string.Empty) + ", " + (jd.PostalCode ?? string.Empty) + ", " + (jd.city ?? string.Empty) + ", " + (jd.country ?? string.Empty)
+                                       ),
                                        StarRating = a.StarRating
                                    });
 
@@ -290,7 +293,8 @@ namespace DataLayer
                                 if (searchprod != null)
                                 {
                                     item.SystemProductName = searchprod.HotelName;
-                                    item.FullAddress = searchprod.FullAddress;
+                                    //item.FullAddress = searchprod.FullAddress;
+                                    item.SystemFullAddress = searchprod.FullAddress;
                                 }
                             }
                         }
@@ -841,7 +845,10 @@ namespace DataLayer
 
                             prodMapSearch = (from a in prodMapSearch
                                                  //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
-                                             join ctm in context.m_CityMapping on new { SupplierId = a.Supplier_Id, Country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim(), City = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim() } equals new { SupplierId = ctm.Supplier_Id, Country = ((ctm.CountryName == null) ? ctm.CountryCode : ctm.CountryName).ToUpper().Trim(), City = ((ctm.CityName == null) ? ctm.CityCode : ctm.CityName).ToUpper().Trim() } //a.Supplier_Id equals ctm.Supplier_Id
+                                             join ctm in context.m_CityMapping on new { SupplierId = a.Supplier_Id, Country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim()
+                                             , City = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim() } 
+                                             equals new { SupplierId = ctm.Supplier_Id, Country = ((ctm.CountryName == null) ? ctm.CountryCode : ctm.CountryName).ToUpper().Trim()
+                                             , City = ((ctm.CityName == null) ? ctm.CityCode : ctm.CityName).ToUpper().Trim() } //a.Supplier_Id equals ctm.Supplier_Id
                                              join ac in context.Accommodations.AsNoTracking() on new { city = ctm.CityName.ToUpper().Trim(), hotel = (a.ProductName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(ctm.CityName, "").Replace(ctm.CountryName, "").Replace("  ", " ").Trim() } equals new { city = ac.city.ToUpper().Trim(), hotel = (ac.HotelName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(ac.city, "").Replace(ac.country, "").Replace("  ", " ").Trim() }
                                              select a).Distinct();//.ToList();
                             
