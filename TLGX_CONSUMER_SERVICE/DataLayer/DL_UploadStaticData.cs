@@ -1926,6 +1926,11 @@ namespace DataLayer
                                 (geo.Where(s => s.CityCode == obj.CityCode).Select(s1 => s1.City_Id).FirstOrDefault());
                             objNew.Supplier_Id = obj.Supplier_Id;
 
+                            if (obj.CityName == null)
+                            {
+                                obj.CityName = (geo.Where(s => s.CityCode == obj.CityCode).Select(s1 => s1.CityName).FirstOrDefault());
+                            }
+
                             if (obj.CountryName == null)
                             {
                                 obj.CountryName = ((geo.Where(s => s.CityName == obj.CityName).Select(s1 => s1.CountryName).FirstOrDefault())) ??
