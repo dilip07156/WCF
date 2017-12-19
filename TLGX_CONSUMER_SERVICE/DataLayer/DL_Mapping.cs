@@ -570,7 +570,7 @@ namespace DataLayer
             {
                 List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                 DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
-
+                IQueryable<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT1;
                 int i = 0;
                 if (file.Entity.ToUpper().Trim() == "HOTEL")
                 {
@@ -585,67 +585,74 @@ namespace DataLayer
                     //                    id = a.Accommodation_ProductMapping_Id,
                     //                    batch = (rank / 250) + 1
                     //                }).ToList();
-                    lstSMT = (from a in context.Accommodation_ProductMapping
-                              where a.Supplier_Id == Supplier_Id
-                              && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
-                              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
-                              {                                  
-                                  STG_Mapping_Table_Id = Guid.NewGuid(),
-                                  File_Id = File_Id,
-                                  Mapping_Id = a.Accommodation_ProductMapping_Id,
-                                  STG_Id = null,
-                                  //Batch = (Rank / 250) + 1
-                              }).ToList();
+                    lstSMT1 = (from a in context.Accommodation_ProductMapping
+                               where a.Supplier_Id == Supplier_Id
+                               && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
+                               select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                               {
+                                   STG_Mapping_Table_Id = Guid.NewGuid(),
+                                   File_Id = File_Id,
+                                   Mapping_Id = a.Accommodation_ProductMapping_Id,
+                                   STG_Id = null,
+                                   //Batch = (Rank / 250) + 1
+                               });//.ToList();
 
-                    
+
 
                 }
                 else if (file.Entity.ToUpper().Trim() == "COUNTRY")
                 {
-                    lstSMT = (from a in context.m_CountryMapping
-                              where a.Supplier_Id == Supplier_Id
-                              && (a.Status == "UNMAPPED" || a.Country_Id == null)
-                              let Rank = (i + 1)
-                              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
-                              {
-                                  STG_Mapping_Table_Id = Guid.NewGuid(),
-                                  File_Id = File_Id,
-                                  Mapping_Id = a.CountryMapping_Id,
-                                  STG_Id = null,
-                                  Batch = (Rank / 250) + 1
-                              }).ToList();
+                    lstSMT1 = (from a in context.m_CountryMapping
+                               where a.Supplier_Id == Supplier_Id
+                               && (a.Status == "UNMAPPED" || a.Country_Id == null)
+                               select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                               {
+                                   STG_Mapping_Table_Id = Guid.NewGuid(),
+                                   File_Id = File_Id,
+                                   Mapping_Id = a.CountryMapping_Id,
+                                   STG_Id = null
+                               });//.ToList();
                 }
                 else if (file.Entity.ToUpper().Trim() == "CITY")
                 {
-                    lstSMT = (from a in context.m_CityMapping
-                              where a.Supplier_Id == Supplier_Id
-                              && (a.Status == "UNMAPPED" || a.City_Id == null)
-                              let Rank = (i + 1)
-                              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
-                              {
-                                  STG_Mapping_Table_Id = Guid.NewGuid(),
-                                  File_Id = File_Id,
-                                  Mapping_Id = a.CityMapping_Id,
-                                  STG_Id = null,
-                                  Batch = (Rank / 250) + 1
-                              }).ToList();
+                    lstSMT1 = (from a in context.m_CityMapping
+                               where a.Supplier_Id == Supplier_Id
+                               && (a.Status == "UNMAPPED" || a.City_Id == null)
+                               select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                               {
+                                   STG_Mapping_Table_Id = Guid.NewGuid(),
+                                   File_Id = File_Id,
+                                   Mapping_Id = a.CityMapping_Id,
+                                   STG_Id = null
+                               });//.ToList();
                 }
                 else if (file.Entity.ToUpper().Trim() == "ROOMTYPE")
                 {
-                    lstSMT = (from a in context.Accommodation_SupplierRoomTypeMapping
-                              where a.Supplier_Id == Supplier_Id
-                              && (a.MappingStatus == "UNMAPPED" || a.Accommodation_RoomInfo_Id == null)
-                              let Rank = (i + 1)
-                              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
-                              {
-                                  STG_Mapping_Table_Id = Guid.NewGuid(),
-                                  File_Id = File_Id,
-                                  Mapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
-                                  STG_Id = null,
-                                  Batch = (Rank / 250) + 1
-                              }).ToList();
+                    lstSMT1 = (from a in context.Accommodation_SupplierRoomTypeMapping
+                               where a.Supplier_Id == Supplier_Id
+                               && (a.MappingStatus == "UNMAPPED" || a.Accommodation_RoomInfo_Id == null)
+                               select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                               {
+                                   STG_Mapping_Table_Id = Guid.NewGuid(),
+                                   File_Id = File_Id,
+                                   Mapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                                   STG_Id = null
+                               });//.ToList();
                 }
-                if (lstSMT.Count > 0)
+                else
+                {
+                    lstSMT1 = (from a in context.m_CountryMapping
+                               where a.Supplier_Id == Supplier_Id
+                               && (a.Status == "UNMAPPED" || a.Country_Id == null)
+                               select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                               {
+                                   STG_Mapping_Table_Id = Guid.NewGuid(),
+                                   File_Id = File_Id,
+                                   Mapping_Id = a.CountryMapping_Id,
+                                   STG_Id = null
+                               });//.ToList();
+                }
+                if (lstSMT1.Count() > 0)
                 {
                     var lstMst1 = lstSMT
                     .Select((x, index) => new DataContracts.STG.DC_STG_Mapping_Table_Ids
@@ -655,16 +662,16 @@ namespace DataLayer
                         Mapping_Id = x.Mapping_Id,
                         STG_Id = x.STG_Id,
                         STG_Mapping_Table_Id = x.STG_Mapping_Table_Id
-                    }).ToList();
+                    });//.ToList();
 
-                    lstMst1 = lstMst1.Select(c =>
+                    var lstMst2 = lstMst1.Select(c =>
                     {
                         c.Batch = (c.Batch / 250) + 1;
                         return c;
                     }).ToList();
 
                     bool idinsert = DeleteSTGMappingTableIDs(File_Id);
-                    idinsert = AddSTGMappingTableIDs(lstMst1);
+                    idinsert = AddSTGMappingTableIDs(lstMst2);
 
                     if (idinsert)
                     {
