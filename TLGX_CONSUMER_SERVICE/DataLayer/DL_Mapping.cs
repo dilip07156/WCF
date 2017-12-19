@@ -5005,8 +5005,8 @@ namespace DataLayer
                                   }).Take(250).ToList();
                         if (lstSMT.Count > 0)
                         {
-                            bool idinsert = DeleteSTGMappingTableIDs(File_Id);
-                            idinsert = AddSTGMappingTableIDs(lstSMT);
+                            //idinsert = DeleteSTGMappingTableIDs(File_Id);
+                            bool idinsert = AddSTGMappingTableIDs(lstSMT);
                         }
                     }
 
