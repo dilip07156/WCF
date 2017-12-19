@@ -1821,6 +1821,15 @@ namespace DataLayer
                             objNew.Country_Id =
                                 ((geo.Where(s => s.CountryName == obj.CountryName).Select(s1 => s1.Country_Id).FirstOrDefault())) ??
                                 (geo.Where(s => s.CountryCode == obj.CountryCode).Select(s1 => s1.Country_Id).FirstOrDefault());
+
+                            if (objNew.CountryCode == null)
+                            {
+                                objNew.CountryCode = geo.Where(s => s.Country_Id == objNew.Country_Id).Select(s1 => s1.CountryCode).FirstOrDefault();
+                            }
+                            if (objNew.CountryName == null)
+                            {
+                                objNew.CountryName = geo.Where(s => s.Country_Id == objNew.Country_Id).Select(s1 => s1.CountryName).FirstOrDefault();
+                            }
                             objNew.Supplier_Id = mySupplier_Id;
                             context.stg_SupplierCityMapping.Add(objNew);
 
@@ -1920,14 +1929,43 @@ namespace DataLayer
                             objNew.Action = obj.Action;
                             objNew.UpdateType = obj.UpdateType;
                             objNew.ActionText = obj.ActionText;
-                            objNew.StarRating = obj.StarRating;
-                            objNew.Country_Id =
-                                ((geo.Where(s => s.CountryName == obj.CountryName).Select(s1 => s1.Country_Id).FirstOrDefault())) ??
-                                (geo.Where(s => s.CountryCode == obj.CountryCode).Select(s1 => s1.Country_Id).FirstOrDefault());
+                            objNew.StarRating = obj.StarRating;                            
                             objNew.City_Id =
                                 ((geo.Where(s => s.CityName == obj.CityName).Select(s1 => s1.City_Id).FirstOrDefault())) ??
                                 (geo.Where(s => s.CityCode == obj.CityCode).Select(s1 => s1.City_Id).FirstOrDefault());
                             objNew.Supplier_Id = obj.Supplier_Id;
+
+                            if (objNew.CityName == null)
+                            {
+                                //objNew.CityName = (geo.Where(s => s.CityCode == obj.CityCode).Select(s1 => s1.CityName).FirstOrDefault());
+                                objNew.CityName = (geo.Where(s => s.City_Id == objNew.City_Id).Select(s1 => s1.CityName).FirstOrDefault());
+                            }
+                            if (objNew.CityCode == null)
+                            {
+                                //objNew.CityName = (geo.Where(s => s.CityCode == obj.CityCode).Select(s1 => s1.CityName).FirstOrDefault());
+                                objNew.CityCode = (geo.Where(s => s.City_Id == objNew.City_Id).Select(s1 => s1.CityCode).FirstOrDefault());
+                            }
+
+                            if (objNew.CountryName == null)
+                            {
+                                objNew.CountryName = ((geo.Where(s => s.CityName == objNew.CityName).Select(s1 => s1.CountryName).FirstOrDefault())) ??
+                                (geo.Where(s => s.CityCode == objNew.CityCode).Select(s1 => s1.CountryName).FirstOrDefault());
+                            }
+                            if (objNew.CountryCode == null)
+                            {
+                                objNew.CountryCode = ((geo.Where(s => s.CityName == objNew.CityName).Select(s1 => s1.CountryCode).FirstOrDefault())) ??
+                                (geo.Where(s => s.CityCode == objNew.CityCode).Select(s1 => s1.CountryCode).FirstOrDefault());
+                            }
+                            if (objNew.City_Id != null)
+                            {
+                                objNew.Country_Id = (context.m_CityMaster.Where(g => g.City_Id == objNew.City_Id).Select(a => a.Country_Id).FirstOrDefault());
+                            }
+                            else
+                            {
+                                objNew.Country_Id =
+                                ((geo.Where(s => s.CountryName == objNew.CountryName).Select(s1 => s1.Country_Id).FirstOrDefault())) ??
+                                (geo.Where(s => s.CountryCode == objNew.CountryCode).Select(s1 => s1.Country_Id).FirstOrDefault());
+                            }
                             context.stg_SupplierProductMapping.Add(objNew);
                         }
                         context.SaveChanges();
