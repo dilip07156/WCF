@@ -652,9 +652,10 @@ namespace DataLayer
                                    STG_Id = null
                                });//.ToList();
                 }
-                if (lstSMT1.Count() > 0)
-                {
-                    var lstMst1 = lstSMT
+                //if (lstSMT1.Count() > 0)
+                //{
+                ret = lstSMT1.Count();
+                    /*var lstMst1 = lstSMT1.ToList()
                     .Select((x, index) => new DataContracts.STG.DC_STG_Mapping_Table_Ids
                     {
                         Batch = (index + 1 / 250) + 1,
@@ -662,7 +663,7 @@ namespace DataLayer
                         Mapping_Id = x.Mapping_Id,
                         STG_Id = x.STG_Id,
                         STG_Mapping_Table_Id = x.STG_Mapping_Table_Id
-                    });//.ToList();
+                    }).ToList();                    
 
                     var lstMst2 = lstMst1.Select(c =>
                     {
@@ -678,8 +679,8 @@ namespace DataLayer
                         ret = (from a in context.STG_Mapping_TableIds.AsNoTracking()
                                where a.File_Id == File_Id
                                select a).Count();
-                    }
-                }
+                    }*/
+                //}
             }
 
             return ret;
@@ -4984,13 +4985,15 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    /*if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
+                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
                     {
                         List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                         DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
 
                         lstSMT = (from a in context.m_CityMapping
-                                  where a.Supplier_Id == curSupplier_Id
+                                  join j in context.STG_Mapping_TableIds.AsNoTracking() on a.CityMapping_Id equals j.Mapping_Id into jact
+                                  from jdact in jact.DefaultIfEmpty()
+                                  where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
                                   && (a.Status == "UNMAPPED" || a.City_Id == null)
                                   select new DataContracts.STG.DC_STG_Mapping_Table_Ids
                                   {
@@ -4998,14 +5001,14 @@ namespace DataLayer
                                       File_Id = obj.File_Id,
                                       Mapping_Id = a.CityMapping_Id,
                                       STG_Id = null,
-                                      Batch = 1
-                                  }).ToList();
+                                      Batch = obj.CurrentBatch ?? 1
+                                  }).Take(250).ToList();
                         if (lstSMT.Count > 0)
                         {
                             bool idinsert = DeleteSTGMappingTableIDs(File_Id);
                             idinsert = AddSTGMappingTableIDs(lstSMT);
                         }
-                    }*/
+                    }
 
                     var prodMapSearch = (from a in context.m_CityMapping
                                          join s in context.STG_Mapping_TableIds.AsNoTracking() on a.CityMapping_Id equals s.Mapping_Id
