@@ -5236,7 +5236,7 @@ namespace DataLayer
                         CallLogVerbose(File_Id, "MATCH", "Updating into Database.");
                         if (UpdateCityMapping(res))
                         {
-                            if (totPriorities == curPriority)
+                            if ((obj.FileMode ?? "ALL") == "ALL" && totPriorities == curPriority)
                             {
                                 PLog.PercentageValue = 75;
                                 USD.AddStaticDataUploadProcessLog(PLog);
