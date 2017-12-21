@@ -1938,12 +1938,12 @@ namespace DataLayer
                             if (objNew.CityName == null)
                             {
                                 //objNew.CityName = (geo.Where(s => s.CityCode == obj.CityCode).Select(s1 => s1.CityName).FirstOrDefault());
-                                objNew.CityName = (geo.Where(s => s.City_Id == objNew.City_Id).Select(s1 => s1.CityName).FirstOrDefault());
+                                objNew.CityName = (geo.Where(s => s.CityCode == obj.CityCode).Select(s1 => s1.CityName).FirstOrDefault());
                             }
                             if (objNew.CityCode == null)
                             {
                                 //objNew.CityName = (geo.Where(s => s.CityCode == obj.CityCode).Select(s1 => s1.CityName).FirstOrDefault());
-                                objNew.CityCode = (geo.Where(s => s.City_Id == objNew.City_Id).Select(s1 => s1.CityCode).FirstOrDefault());
+                                objNew.CityCode = (geo.Where(s => s.CityName == objNew.CityName).Select(s1 => s1.CityCode).FirstOrDefault());
                             }
 
                             if (objNew.CountryName == null)
