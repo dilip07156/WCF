@@ -1118,7 +1118,7 @@ namespace DataLayer
             if (totPriorities <= 0)
                 totPriorities = 1;
             int PerForEachPriority = 60 / totPriorities;
-
+            bool Match_Direct_Master = obj.Match_Direct_Master;
 
             if (supdata != null)
             {
@@ -1133,18 +1133,18 @@ namespace DataLayer
                     var prodMap = (from a in context.Accommodation_ProductMapping.AsNoTracking()
                                    join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
                                    where s.File_Id == supdata.File_Id && a.Accommodation_Id == null && a.Supplier_Id == curSupplier_Id
-                                   && a.Status.Trim().ToUpper() == "UNMAPPED"
+                                   && a.Status.Trim().ToUpper() == "UNMAPPED" && s.Batch == obj.CurrentBatch
                                    select a);
 
                     //var ct = prodMap.Count();
-                    if (obj.IsBatched)
+                    /*if (obj.IsBatched)
                     {
                         prodMap = (from a in prodMap
                                    join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
                                    //join s in context.stg_SupplierProductMapping.AsNoTracking() on a.stg_AccoMapping_Id equals s.stg_AccoMapping_Id
                                    where s.Batch == obj.CurrentBatch
                                    select a);
-                    }
+                    }*/
                     var prodMapSearch = prodMap; //.ToList();
                     //var ct1 = prodMap.Count();
 
