@@ -1118,7 +1118,7 @@ namespace DataLayer
             if (totPriorities <= 0)
                 totPriorities = 1;
             int PerForEachPriority = 60 / totPriorities;
-
+            bool Match_Direct_Master = obj.Match_Direct_Master;
 
             if (supdata != null)
             {
@@ -1133,18 +1133,18 @@ namespace DataLayer
                     var prodMap = (from a in context.Accommodation_ProductMapping.AsNoTracking()
                                    join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
                                    where s.File_Id == supdata.File_Id && a.Accommodation_Id == null && a.Supplier_Id == curSupplier_Id
-                                   && a.Status.Trim().ToUpper() == "UNMAPPED"
+                                   && a.Status.Trim().ToUpper() == "UNMAPPED" && s.Batch == obj.CurrentBatch
                                    select a);
 
                     //var ct = prodMap.Count();
-                    if (obj.IsBatched)
+                    /*if (obj.IsBatched)
                     {
                         prodMap = (from a in prodMap
                                    join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
                                    //join s in context.stg_SupplierProductMapping.AsNoTracking() on a.stg_AccoMapping_Id equals s.stg_AccoMapping_Id
                                    where s.Batch == obj.CurrentBatch
                                    select a);
-                    }
+                    }*/
                     var prodMapSearch = prodMap; //.ToList();
                     //var ct1 = prodMap.Count();
 
@@ -1270,8 +1270,8 @@ namespace DataLayer
                     if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isPlaceIdCheck || isAddressCheck || isTelephoneCheck || isPostCodeCheck)
                     {
                         res = (from a in prodMapSearch
-                               join mact in context.m_CityMaster.AsNoTracking() on new { country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim(), city = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim() } equals new { country = ((mact.CountryName == null) ? mact.CountryCode : mact.CountryName).ToUpper().Trim(), city = ((mact.Name == null) ? mact.Code : mact.Name).ToUpper().Trim() } into jact
-                               from jdact in jact.DefaultIfEmpty()
+                               join mact in context.m_CityMaster.AsNoTracking() on new { country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim(), city = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim() } equals new { country = ((mact.CountryName == null) ? mact.CountryCode : mact.CountryName).ToUpper().Trim(), city = ((mact.Name == null) ? mact.Code : mact.Name).ToUpper().Trim() } //into jact
+                               //from jdact in jact.DefaultIfEmpty()
                                select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                {
                                    Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
@@ -1308,8 +1308,8 @@ namespace DataLayer
                                    TelephoneNumber = a.TelephoneNumber,
                                    TelephoneNumber_tx = a.TelephoneNumber_tx,
                                    Website = a.Website,
-                                   Country_Id = jdact.Country_Id,
-                                   City_Id = jdact.City_Id,
+                                   Country_Id = mact.Country_Id,
+                                   City_Id = mact.City_Id,
                                    //SystemCityName = jdact.Name,
                                    //SystemCountryName = jdac.Name
                                }).Distinct().ToList();
