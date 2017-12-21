@@ -934,7 +934,7 @@ namespace DataLayer
                                              select a);//.Distinct().ToList();
 
                         }
-                        if (CurrConfig == "TelephoneNumber_tx".ToUpper()) //|| CurrConfig == "---ALL---".ToUpper()
+                        if (CurrConfig == "TelephoneNumber_tx".ToUpper() || CurrConfig == "Telephone_tx".ToUpper()) //|| CurrConfig == "---ALL---".ToUpper()
                         {
                             isTelephoneCheck = true;
                             prodMapSearch = (from a in prodMapSearch
