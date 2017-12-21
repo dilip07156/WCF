@@ -1270,8 +1270,8 @@ namespace DataLayer
                     if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isPlaceIdCheck || isAddressCheck || isTelephoneCheck || isPostCodeCheck)
                     {
                         res = (from a in prodMapSearch
-                               join mact in context.m_CityMaster.AsNoTracking() on new { country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim(), city = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim() } equals new { country = ((mact.CountryName == null) ? mact.CountryCode : mact.CountryName).ToUpper().Trim(), city = ((mact.Name == null) ? mact.Code : mact.Name).ToUpper().Trim() } into jact
-                               from jdact in jact.DefaultIfEmpty()
+                               join mact in context.m_CityMaster.AsNoTracking() on new { country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim(), city = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim() } equals new { country = ((mact.CountryName == null) ? mact.CountryCode : mact.CountryName).ToUpper().Trim(), city = ((mact.Name == null) ? mact.Code : mact.Name).ToUpper().Trim() } //into jact
+                               //from jdact in jact.DefaultIfEmpty()
                                select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                {
                                    Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
@@ -1308,8 +1308,8 @@ namespace DataLayer
                                    TelephoneNumber = a.TelephoneNumber,
                                    TelephoneNumber_tx = a.TelephoneNumber_tx,
                                    Website = a.Website,
-                                   Country_Id = jdact.Country_Id,
-                                   City_Id = jdact.City_Id,
+                                   Country_Id = mact.Country_Id,
+                                   City_Id = mact.City_Id,
                                    //SystemCityName = jdact.Name,
                                    //SystemCountryName = jdac.Name
                                }).Distinct().ToList();
