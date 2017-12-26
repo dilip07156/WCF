@@ -971,7 +971,7 @@ namespace DataLayer
                         var res = context.Activity_Inclusions.Find(RQ.Activity_Inclusions_Id);
                         if (res != null)
                         {
-                            if ((RQ.IsActive) != (res.IsActive ?? true))
+                            if ((RQ.IsActive) != (res.IsActive ?? false))
                             {
                                 res.IsActive = RQ.IsActive;
                                 res.Edit_Date = RQ.Edit_Date;
@@ -989,10 +989,10 @@ namespace DataLayer
                             }
                             else
                             {
-                                res.Activity_Inclusions_Id = RQ.Activity_Inclusions_Id ?? Guid.Empty;
-                                res.Activity_Id = RQ.Activity_Id;
-                                res.Legacy_Product_Id = RQ.Legacy_Product_Id;
-                                res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
+                                //res.Activity_Inclusions_Id = RQ.Activity_Inclusions_Id ?? Guid.Empty;
+                                //res.Activity_Id = RQ.Activity_Id;
+                                //res.Legacy_Product_Id = RQ.Legacy_Product_Id;
+                                //res.Activity_Flavour_Id = RQ.Activity_Flavour_Id;
                                 res.IsInclusion = RQ.IsInclusion;
                                 res.InclusionName = RQ.InclusionName;
                                 res.InclusionDescription = RQ.InclusionDescription;
@@ -1000,11 +1000,11 @@ namespace DataLayer
                                 res.InclusionFrom = RQ.InclusionFrom;
                                 res.InclusionTo = RQ.InclusionTo;
                                 res.InclusionType = RQ.InclusionType;
-                                res.IsDriver = RQ.IsDriver;
-                                res.IsAudioCommentary = RQ.IsAudioCommentary;
-                                res.RestaurantStyle = RQ.RestaurantStyle;
+                                //res.IsDriver = RQ.IsDriver;
+                                //res.IsAudioCommentary = RQ.IsAudioCommentary;
+                                //res.RestaurantStyle = RQ.RestaurantStyle;
                                 res.Edit_Date = DateTime.Now;
-                                res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                                res.Edit_User = RQ.Edit_User;
                                 if (context.SaveChanges() == 1)
                                 {
                                     _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
@@ -1041,7 +1041,8 @@ namespace DataLayer
                         obj.IsActive = RQ.IsActive;
                         obj.RestaurantStyle = RQ.RestaurantStyle;
                         obj.Create_Date = DateTime.Now;
-                        obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                        obj.Create_User = RQ.Create_User;
+
                         context.Activity_Inclusions.Add(obj);
                         if (context.SaveChanges() == 1)
                         {
