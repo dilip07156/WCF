@@ -400,6 +400,30 @@ namespace BusinessLayer
                 return obj.AddUpdateActivityOperatingDays(RQ);
             }
         }
+
+        public List<DataContracts.Masters.DC_Activity_OperatingDays> GetActivityNonOperatingDays(string Activity_Flavour_Id)
+        {
+            Guid gActivity_Flavour_Id;
+
+            if (Guid.TryParse(Activity_Flavour_Id, out gActivity_Flavour_Id))
+            {
+                using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+                {
+                    return obj.GetActivityNonOperatingDays(gActivity_Flavour_Id);
+                }
+            }
+            else
+            {
+                return new List<DC_Activity_OperatingDays>();
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityNonOperatingDays(List<DataContracts.Masters.DC_Activity_OperatingDays> RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdateActivityNonOperatingDays(RQ);
+            }
+        }
         #endregion
     }
 }

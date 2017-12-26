@@ -2493,10 +2493,10 @@ namespace DataLayer
 
                             context.Activity_CategoriesType.RemoveRange(context.Activity_CategoriesType.Where(w => w.Activity_Flavour_Id == RQ.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null));
 
-                            foreach(var type in RQ.Categories)
+                            foreach (var type in RQ.Categories)
                             {
                                 var subtype = context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == type.SysProdSubTypeId).Select(s => s).FirstOrDefault();
-                                if(subtype != null)
+                                if (subtype != null)
                                 {
                                     var prodtype = context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == subtype.ParentAttributeValue_Id).Select(s => s).FirstOrDefault();
                                     if (prodtype != null)
@@ -4011,7 +4011,7 @@ namespace DataLayer
                 {
                     List<DataContracts.Masters.DC_Activity_OperatingDays> returnData = new List<DataContracts.Masters.DC_Activity_OperatingDays>();
 
-                    var DaysOfOperation = context.Activity_DaysOfOperation.AsNoTracking().Where(w => w.Activity_Flavor_ID == Activity_Flavour_Id).Select(s => s);
+                    var DaysOfOperation = context.Activity_DaysOfOperation.AsNoTracking().Where(w => w.Activity_Flavor_ID == Activity_Flavour_Id && w.IsOperatingDays == true).Select(s => s);
                     if (DaysOfOperation.Count() > 0)
                     {
                         foreach (var perdayofOps in DaysOfOperation)
@@ -4111,10 +4111,17 @@ namespace DataLayer
             DataContracts.DC_Message _msg = new DataContracts.DC_Message();
             try
             {
+                Guid? Activity_Flavour_Id = null;
+
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     foreach (var OD in RQ)
                     {
+                        if (Activity_Flavour_Id == null)
+                        {
+                            Activity_Flavour_Id = OD.Activity_Flavor_ID;
+                        }
+
                         var searchOD = context.Activity_DaysOfOperation.Find(OD.Activity_DaysOfOperation_Id);
                         if (searchOD == null)
                         {
@@ -4132,6 +4139,7 @@ namespace DataLayer
                         }
                         else
                         {
+                            searchOD.FromDate = OD.FromDate;
                             searchOD.ToDate = OD.EndDate;
                             searchOD.EditDate = DateTime.Now;
                             searchOD.EditUser = OD.EditUser;
@@ -4192,12 +4200,113 @@ namespace DataLayer
                         context.SaveChanges();
                     }
 
+                    if (Activity_Flavour_Id != null)
+                    {
+                        var OD_VALID = (from a in RQ select a.Activity_DaysOfOperation_Id).Distinct();
+                        var OD_TO_REMOVE = context.Activity_DaysOfOperation.Where(p => p.Activity_Flavor_ID == Activity_Flavour_Id && p.IsOperatingDays == true && !OD_VALID.Any(p2 => p2 == p.Activity_DaysOfOperation_Id));
+                        context.Activity_DaysOfOperation.RemoveRange(OD_TO_REMOVE);
+
+                        var DOW_TO_REMOVE = context.Activity_DaysOfWeek.Where(p => p.Activity_Flavor_ID == Activity_Flavour_Id && !OD_VALID.Any(p2 => p2 == p.Activity_DaysOfOperation_Id));
+                        context.Activity_DaysOfWeek.RemoveRange(DOW_TO_REMOVE);
+
+                        context.SaveChanges();
+                    }
+
                     return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Saved Successfully" };
                 }
             }
             catch (Exception ex)
             {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while updating Activity Days Of Week", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public List<DataContracts.Masters.DC_Activity_OperatingDays> GetActivityNonOperatingDays(Guid Activity_Flavour_Id)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var DaysOfNonOperation = (from nod in context.Activity_DaysOfOperation.AsNoTracking()
+                                              where nod.Activity_Flavor_ID == Activity_Flavour_Id && nod.IsOperatingDays == false
+                                              select new DC_Activity_OperatingDays
+                                              {
+                                                  Activity_DaysOfOperation_Id = nod.Activity_DaysOfOperation_Id,
+                                                  Activity_Flavor_ID = nod.Activity_Flavor_ID,
+                                                  CreateUser = nod.CreateUser,
+                                                  EditUser = nod.EditUser,
+                                                  EndDate = nod.ToDate,
+                                                  FromDate = nod.FromDate,
+                                                  IsActive = nod.IsActive,
+                                                  IsOperatingDays = nod.IsOperatingDays
+                                              }).ToList();
+
+                    return DaysOfNonOperation;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while fetching Activity Non OperatingDays", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityNonOperatingDays(List<DataContracts.Masters.DC_Activity_OperatingDays> RQ)
+        {
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                Guid? Activity_Flavour_Id = null;
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    foreach (var NOD in RQ)
+                    {
+                        if (Activity_Flavour_Id == null)
+                        {
+                            Activity_Flavour_Id = NOD.Activity_Flavor_ID;
+                        }
+
+                        var searchNOD = context.Activity_DaysOfOperation.Find(NOD.Activity_DaysOfOperation_Id);
+                        if (searchNOD == null)
+                        {
+                            context.Activity_DaysOfOperation.Add(new Activity_DaysOfOperation
+                            {
+                                Activity_DaysOfOperation_Id = NOD.Activity_DaysOfOperation_Id,
+                                Activity_Flavor_ID = NOD.Activity_Flavor_ID,
+                                FromDate = NOD.FromDate,
+                                ToDate = NOD.EndDate,
+                                CreateDate = DateTime.Now,
+                                CreateUser = NOD.EditUser,
+                                IsActive = true,
+                                IsOperatingDays = false
+                            });
+                        }
+                        else
+                        {
+                            searchNOD.FromDate = NOD.FromDate;
+                            searchNOD.ToDate = NOD.EndDate;
+                            searchNOD.EditDate = DateTime.Now;
+                            searchNOD.EditUser = NOD.EditUser;
+                            searchNOD.IsActive = true;
+                            searchNOD.IsOperatingDays = false;
+                        }
+
+                        context.SaveChanges();
+                    }
+
+                    if (Activity_Flavour_Id != null)
+                    {
+                        var NOD_VALID = (from a in RQ select a.Activity_DaysOfOperation_Id).Distinct();
+                        var NOD_TO_REMOVE = context.Activity_DaysOfOperation.Where(p => p.Activity_Flavor_ID == Activity_Flavour_Id && p.IsOperatingDays == false && !NOD_VALID.Any(p2 => p2 == p.Activity_DaysOfOperation_Id));
+                        context.Activity_DaysOfOperation.RemoveRange(NOD_TO_REMOVE);
+
+                        context.SaveChanges();
+                    }
+
+                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Saved Successfully" };
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while updating Activity Non Operating Days", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
         #endregion

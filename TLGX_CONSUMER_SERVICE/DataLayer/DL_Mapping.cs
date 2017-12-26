@@ -541,7 +541,7 @@ namespace DataLayer
                 if (clsMappingHotel.Count > 0)
                 {
                     ret = UpdateAccomodationProductMapping(clsMappingHotel);
-                    if (obj.CurrentBatch == 1)
+                    /*if (obj.CurrentBatch == 1)
                     {
                         DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
                         objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
@@ -551,7 +551,7 @@ namespace DataLayer
                         objStat.Process_Date = DateTime.Now;
                         objStat.Process_User = file[0].PROCESS_USER;
                         DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
-                    }
+                    }*/
                 }
 
             }
@@ -2478,7 +2478,7 @@ namespace DataLayer
                 if (clsMappingHotel.Count > 0)
                 {
                     ret = SupplierRoomTypeMapping_InsertUpdate(clsMappingHotel);
-                    if (obj.CurrentBatch == 1)
+                    /*if (obj.CurrentBatch == 1)
                     {
                         DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
                         objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
@@ -2488,7 +2488,7 @@ namespace DataLayer
                         objStat.Process_Date = DateTime.Now;
                         objStat.Process_User = file[0].PROCESS_USER;
                         DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
-                    }
+                    }*/
                 }
             }
 
@@ -3970,7 +3970,7 @@ namespace DataLayer
                 if (clsMappingCountry.Count > 0)
                 {
                     ret = UpdateCountryMapping(clsMappingCountry);
-                    if (obj.CurrentBatch == 1)
+                   /* if (obj.CurrentBatch == 1)
                     {
                         DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
                         objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
@@ -3980,7 +3980,7 @@ namespace DataLayer
                         objStat.Process_Date = DateTime.Now;
                         objStat.Process_User = file[0].PROCESS_USER;
                         DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
-                    }
+                    }*/
                 }
             }
 
@@ -4813,7 +4813,7 @@ namespace DataLayer
                 if (clsMappingCity.Count > 0)
                 {
                     ret = UpdateCityMappingMatch(clsMappingCity, File_Id);
-                    if (obj.CurrentBatch == 1)
+                    /*if (obj.CurrentBatch == 1)
                     {
                         DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
                         objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
@@ -4823,7 +4823,7 @@ namespace DataLayer
                         objStat.Process_Date = DateTime.Now;
                         objStat.Process_User = file[0].PROCESS_USER;
                         DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
-                    }
+                    }*/
                 }
                 else
                     ret = true;
