@@ -469,6 +469,21 @@ namespace ConsumerSvc
                 return obj.AddUpdateActivityOperatingDays(RQ);
             }
         }
+
+        public List<DataContracts.Masters.DC_Activity_OperatingDays> GetActivityNonOperatingDays(string Activity_Flavour_Id)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                return objBL.GetActivityNonOperatingDays(Activity_Flavour_Id);
+            }
+        }
+        public DataContracts.DC_Message AddUpdateActivityNonOperatingDays(List<DataContracts.Masters.DC_Activity_OperatingDays> RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateActivityNonOperatingDays(RQ);
+            }
+        }
         #endregion
 
     }

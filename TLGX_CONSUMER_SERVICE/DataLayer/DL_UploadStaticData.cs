@@ -1245,8 +1245,8 @@ namespace DataLayer
                                 if ((obj.From ?? "") == "MATCHING")
                                 {
                                     stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();                                    
-                                    stat.Unmapped = getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
-                                    stat.Mapped = getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                                    stat.Unmapped = (stat.Unmapped ?? 0) +  getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
+                                    stat.Mapped = (stat.Mapped ?? 0) + getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
                                 }
                                 else
                                 {
@@ -1263,8 +1263,8 @@ namespace DataLayer
                                 if ((obj.From ?? "") == "MATCHING")
                                 {
                                     stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
-                                    stat.Unmapped = stat.Unmapped + getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
-                                    stat.Mapped = stat.Mapped + getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                                    stat.Unmapped = (stat.Unmapped ?? 0) + getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
+                                    stat.Mapped = (stat.Mapped ?? 0) + getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
                                 }
                                 else
                                 {
@@ -1282,8 +1282,8 @@ namespace DataLayer
                                 if ((obj.From ?? "") == "MATCHING")
                                 {
                                     stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
-                                    stat.Unmapped = getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
-                                    stat.Mapped = getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                                    stat.Unmapped = (stat.Unmapped ?? 0) + getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
+                                    stat.Mapped = (stat.Mapped ?? 0) + getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
                                 }
                                 else
                                 {
@@ -1301,8 +1301,8 @@ namespace DataLayer
                                 if ((obj.From ?? "") == "MATCHING")
                                 {
                                     stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
-                                    stat.Unmapped = getcount.Where(g => g.MappingStatus.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
-                                    stat.Mapped = getcount.Where(g => g.MappingStatus.Trim().ToUpper() == "MAPPED" || g.MappingStatus.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
+                                    stat.Unmapped = (stat.Unmapped ?? 0) + getcount.Where(g => g.MappingStatus.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
+                                    stat.Mapped = (stat.Mapped ?? 0) + getcount.Where(g => g.MappingStatus.Trim().ToUpper() == "MAPPED" || g.MappingStatus.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
                                 }
                                 else
                                 {
@@ -1938,12 +1938,12 @@ namespace DataLayer
                             if (objNew.CityName == null)
                             {
                                 //objNew.CityName = (geo.Where(s => s.CityCode == obj.CityCode).Select(s1 => s1.CityName).FirstOrDefault());
-                                objNew.CityName = (geo.Where(s => s.City_Id == objNew.City_Id).Select(s1 => s1.CityName).FirstOrDefault());
+                                objNew.CityName = (geo.Where(s => s.CityCode == obj.CityCode).Select(s1 => s1.CityName).FirstOrDefault());
                             }
                             if (objNew.CityCode == null)
                             {
                                 //objNew.CityName = (geo.Where(s => s.CityCode == obj.CityCode).Select(s1 => s1.CityName).FirstOrDefault());
-                                objNew.CityCode = (geo.Where(s => s.City_Id == objNew.City_Id).Select(s1 => s1.CityCode).FirstOrDefault());
+                                objNew.CityCode = (geo.Where(s => s.CityName == objNew.CityName).Select(s1 => s1.CityCode).FirstOrDefault());
                             }
 
                             if (objNew.CountryName == null)
