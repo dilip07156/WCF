@@ -240,3 +240,6 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/TLGX_CONSUMER_SERVICE/DataLayer/Startup.cs
+/TLGX_CONSUMER_SERVICE/DataLayer/IdentityModels.cs
+/TLGX_CONSUMER_SERVICE/DataLayer/IdentityConfig.cs
