@@ -107,7 +107,7 @@
         <EntityTypeShape EntityType="ConsumerModel.STG_Mapping_TableIds" Width="1.5" PointX="7.375" PointY="4.75" />
         <EntityTypeShape EntityType="ConsumerModel.SupplierImportFileDetail" Width="1.5" PointX="0.75" PointY="5.75" />
       </Diagram>
-      <Diagram DiagramId="0c8559498a504c079ba03bcadf58c262" Name="STG" >
+      <Diagram DiagramId="0c8559498a504c079ba03bcadf58c262" Name="STG" ZoomLevel="53" >
         <EntityTypeShape EntityType="ConsumerModel.stg_SupplierCityMapping" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.stg_SupplierCountryMapping" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.stg_SupplierHotelRoomMapping" Width="1.5" PointX="4.75" PointY="0.75" />
