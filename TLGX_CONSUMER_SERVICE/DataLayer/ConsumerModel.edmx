@@ -294,7 +294,7 @@
           <Property Name="Remarks" Type="nvarchar(max)" />
           <Property Name="Legacy_Htl_ID" Type="int" />
           <Property Name="address" Type="nvarchar(max)" />
-          <Property Name="address_tx" Type="nvarchar" MaxLength="510" />
+          <Property Name="address_tx" Type="nvarchar" MaxLength="1020" />
           <Property Name="TelephoneNumber_tx" Type="nvarchar" MaxLength="225" />
           <Property Name="StarRating" Type="nvarchar" MaxLength="255" />
           <Property Name="Google_Place_Id" Type="nvarchar" MaxLength="255" />
@@ -302,6 +302,7 @@
           <Property Name="City_Id" Type="uniqueidentifier" />
           <Property Name="stg_AccoMapping_Id" Type="uniqueidentifier" />
           <Property Name="TLGXProductCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsPentaho" Type="bit" />
         </EntityType>
         <EntityType Name="Accommodation_RoomFacility">
           <Key>
@@ -2221,7 +2222,6 @@
           <Property Name="RatePlanCode" Type="nvarchar" MaxLength="50" />
           <Property Name="TX_RoomName" Type="nvarchar" MaxLength="255" />
           <Property Name="Supplier_Id" Type="uniqueidentifier" />
-          <Property Name="SupplierRoomTypeName" Type="nvarchar" MaxLength="100" />
           <Property Name="MinGuestOccupancy" Type="int" />
         </EntityType>
         <EntityType Name="stg_SupplierProductMapping">
@@ -3162,7 +3162,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Legacy_Htl_ID" Type="Int32" />
           <Property Name="address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="address_tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
+          <Property Name="address_tx" Type="String" MaxLength="1020" FixedLength="false" Unicode="true" />
           <Property Name="TelephoneNumber_tx" Type="String" MaxLength="225" FixedLength="false" Unicode="true" />
           <Property Name="StarRating" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Google_Place_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -3170,6 +3170,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="City_Id" Type="Guid" />
           <Property Name="stg_AccoMapping_Id" Type="Guid" />
           <Property Name="TLGXProductCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsPentaho" Type="Boolean" />
         </EntityType>
         <EntityType Name="m_CityMapping">
           <Key>
@@ -4097,7 +4098,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="RatePlanCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TX_RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Supplier_Id" Type="Guid" />
-          <Property Name="SupplierRoomTypeName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="MinGuestOccupancy" Type="Int32" />
         </EntityType>
         <EntityType Name="stg_SupplierProductMapping">
@@ -5640,6 +5640,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodation_ProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_ProductMapping">
               <MappingFragment StoreEntitySet="Accommodation_ProductMapping">
+                <ScalarProperty Name="IsPentaho" ColumnName="IsPentaho" />
                 <ScalarProperty Name="TLGXProductCode" ColumnName="TLGXProductCode" />
                 <ScalarProperty Name="stg_AccoMapping_Id" ColumnName="stg_AccoMapping_Id" />
                 <ScalarProperty Name="City_Id" ColumnName="City_Id" />
@@ -6592,7 +6593,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
             <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierHotelRoomMapping">
               <MappingFragment StoreEntitySet="stg_SupplierHotelRoomMapping">
                 <ScalarProperty Name="MinGuestOccupancy" ColumnName="MinGuestOccupancy" />
-                <ScalarProperty Name="SupplierRoomTypeName" ColumnName="SupplierRoomTypeName" />
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
                 <ScalarProperty Name="TX_RoomName" ColumnName="TX_RoomName" />
                 <ScalarProperty Name="RatePlanCode" ColumnName="RatePlanCode" />
