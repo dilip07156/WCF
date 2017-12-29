@@ -4123,82 +4123,86 @@ namespace DataLayer
                             Activity_Flavour_Id = OD.Activity_Flavor_ID;
                         }
 
-                        var searchOD = context.Activity_DaysOfOperation.Find(OD.Activity_DaysOfOperation_Id);
-                        if (searchOD == null)
+                        //Check Activity_DaysOfOperation_Id
+                        if (OD.Activity_DaysOfOperation_Id != Guid.Empty)
                         {
-                            context.Activity_DaysOfOperation.Add(new Activity_DaysOfOperation
+                            var searchOD = context.Activity_DaysOfOperation.Find(OD.Activity_DaysOfOperation_Id);
+                            if (searchOD == null)
                             {
-                                Activity_DaysOfOperation_Id = OD.Activity_DaysOfOperation_Id,
-                                Activity_Flavor_ID = OD.Activity_Flavor_ID,
-                                FromDate = OD.FromDate,
-                                ToDate = OD.EndDate,
-                                CreateDate = DateTime.Now,
-                                CreateUser = OD.EditUser,
-                                IsActive = true,
-                                IsOperatingDays = true
-                            });
-                        }
-                        else
-                        {
-                            searchOD.FromDate = OD.FromDate;
-                            searchOD.ToDate = OD.EndDate;
-                            searchOD.EditDate = DateTime.Now;
-                            searchOD.EditUser = OD.EditUser;
-                            searchOD.IsActive = true;
-                            searchOD.IsOperatingDays = true;
-                        }
-
-                        foreach (var DOW in OD.DaysOfWeek)
-                        {
-                            var searchDOW = context.Activity_DaysOfWeek.Find(DOW.Activity_DaysOfWeek_ID);
-                            if (searchDOW == null)
-                            {
-                                context.Activity_DaysOfWeek.Add(new Activity_DaysOfWeek
+                                context.Activity_DaysOfOperation.Add(new Activity_DaysOfOperation
                                 {
-                                    Activity_DaysOfOperation_Id = DOW.Activity_DaysOfOperation_Id,
-                                    Activity_DaysOfWeek_ID = DOW.Activity_DaysOfWeek_ID,
+                                    Activity_DaysOfOperation_Id = OD.Activity_DaysOfOperation_Id,
+                                    Activity_Flavor_ID = OD.Activity_Flavor_ID,
+                                    FromDate = OD.FromDate,
+                                    ToDate = OD.EndDate,
                                     CreateDate = DateTime.Now,
                                     CreateUser = OD.EditUser,
-                                    Activity_Flavor_ID = DOW.Activity_Flavor_ID,
-                                    Duration = DOW.Duration,
-                                    EndTime = DOW.EndTime,
-                                    Fri = DOW.Fri,
                                     IsActive = true,
-                                    Mon = DOW.Mon,
-                                    Sat = DOW.Sat,
-                                    Session = DOW.Session,
-                                    Sun = DOW.Sun,
-                                    StartTime = DOW.StartTime,
-                                    Thur = DOW.Thur,
-                                    Tues = DOW.Tues,
-                                    Wed = DOW.Wed,
-                                    DurationType = DOW.DurationType
+                                    IsOperatingDays = true
                                 });
                             }
                             else
                             {
-                                searchDOW.Activity_DaysOfOperation_Id = DOW.Activity_DaysOfOperation_Id;
-                                searchDOW.Activity_DaysOfWeek_ID = DOW.Activity_DaysOfWeek_ID;
-                                searchDOW.EditDate = DateTime.Now;
-                                searchDOW.EditUser = OD.EditUser;
-                                searchDOW.Activity_Flavor_ID = DOW.Activity_Flavor_ID;
-                                searchDOW.Duration = DOW.Duration;
-                                searchDOW.EndTime = DOW.EndTime;
-                                searchDOW.Fri = DOW.Fri;
-                                searchDOW.IsActive = true;
-                                searchDOW.Mon = DOW.Mon;
-                                searchDOW.Sat = DOW.Sat;
-                                searchDOW.Session = DOW.Session;
-                                searchDOW.Sun = DOW.Sun;
-                                searchDOW.StartTime = DOW.StartTime;
-                                searchDOW.Thur = DOW.Thur;
-                                searchDOW.Tues = DOW.Tues;
-                                searchDOW.Wed = DOW.Wed;
-                                searchDOW.DurationType = DOW.DurationType;
+                                searchOD.FromDate = OD.FromDate;
+                                searchOD.ToDate = OD.EndDate;
+                                searchOD.EditDate = DateTime.Now;
+                                searchOD.EditUser = OD.EditUser;
+                                searchOD.IsActive = true;
+                                searchOD.IsOperatingDays = true;
                             }
-                        }
 
-                        context.SaveChanges();
+                            foreach (var DOW in OD.DaysOfWeek)
+                            {
+                                var searchDOW = context.Activity_DaysOfWeek.Find(DOW.Activity_DaysOfWeek_ID);
+                                if (searchDOW == null)
+                                {
+                                    context.Activity_DaysOfWeek.Add(new Activity_DaysOfWeek
+                                    {
+                                        Activity_DaysOfOperation_Id = DOW.Activity_DaysOfOperation_Id,
+                                        Activity_DaysOfWeek_ID = DOW.Activity_DaysOfWeek_ID,
+                                        CreateDate = DateTime.Now,
+                                        CreateUser = OD.EditUser,
+                                        Activity_Flavor_ID = DOW.Activity_Flavor_ID,
+                                        Duration = DOW.Duration,
+                                        EndTime = DOW.EndTime,
+                                        Fri = DOW.Fri,
+                                        IsActive = true,
+                                        Mon = DOW.Mon,
+                                        Sat = DOW.Sat,
+                                        Session = DOW.Session,
+                                        Sun = DOW.Sun,
+                                        StartTime = DOW.StartTime,
+                                        Thur = DOW.Thur,
+                                        Tues = DOW.Tues,
+                                        Wed = DOW.Wed,
+                                        DurationType = DOW.DurationType
+                                    });
+                                }
+                                else
+                                {
+                                    searchDOW.Activity_DaysOfOperation_Id = DOW.Activity_DaysOfOperation_Id;
+                                    searchDOW.Activity_DaysOfWeek_ID = DOW.Activity_DaysOfWeek_ID;
+                                    searchDOW.EditDate = DateTime.Now;
+                                    searchDOW.EditUser = OD.EditUser;
+                                    searchDOW.Activity_Flavor_ID = DOW.Activity_Flavor_ID;
+                                    searchDOW.Duration = DOW.Duration;
+                                    searchDOW.EndTime = DOW.EndTime;
+                                    searchDOW.Fri = DOW.Fri;
+                                    searchDOW.IsActive = true;
+                                    searchDOW.Mon = DOW.Mon;
+                                    searchDOW.Sat = DOW.Sat;
+                                    searchDOW.Session = DOW.Session;
+                                    searchDOW.Sun = DOW.Sun;
+                                    searchDOW.StartTime = DOW.StartTime;
+                                    searchDOW.Thur = DOW.Thur;
+                                    searchDOW.Tues = DOW.Tues;
+                                    searchDOW.Wed = DOW.Wed;
+                                    searchDOW.DurationType = DOW.DurationType;
+                                }
+                            }
+
+                            context.SaveChanges();
+                        }
                     }
 
                     if (Activity_Flavour_Id != null)
@@ -4207,7 +4211,11 @@ namespace DataLayer
                         var OD_TO_REMOVE = context.Activity_DaysOfOperation.Where(p => p.Activity_Flavor_ID == Activity_Flavour_Id && p.IsOperatingDays == true && !OD_VALID.Any(p2 => p2 == p.Activity_DaysOfOperation_Id));
                         context.Activity_DaysOfOperation.RemoveRange(OD_TO_REMOVE);
 
-                        var DOW_TO_REMOVE = context.Activity_DaysOfWeek.Where(p => p.Activity_Flavor_ID == Activity_Flavour_Id && !OD_VALID.Any(p2 => p2 == p.Activity_DaysOfOperation_Id));
+                        //var DOW_TO_REMOVE_WHERE_OD_REMOVED = context.Activity_DaysOfWeek.Where(p => p.Activity_Flavor_ID == Activity_Flavour_Id && !OD_VALID.Any(p2 => p2 == p.Activity_DaysOfOperation_Id));
+                        //context.Activity_DaysOfWeek.RemoveRange(DOW_TO_REMOVE_WHERE_OD_REMOVED);
+
+                        var DOW_VALID =   RQ.SelectMany(d => d.DaysOfWeek).Select(s => s.Activity_DaysOfWeek_ID);
+                        var DOW_TO_REMOVE = context.Activity_DaysOfWeek.Where(p => p.Activity_Flavor_ID == Activity_Flavour_Id && !DOW_VALID.Any(p2 => p2 == p.Activity_DaysOfWeek_ID));
                         context.Activity_DaysOfWeek.RemoveRange(DOW_TO_REMOVE);
 
                         context.SaveChanges();
