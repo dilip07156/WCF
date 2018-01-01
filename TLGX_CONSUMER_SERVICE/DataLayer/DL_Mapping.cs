@@ -98,40 +98,43 @@ namespace DataLayer
         public bool AddSTGMappingTableIDs(List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstobj)
         {
             bool ret = false;
-            Guid File_Id = Guid.Parse(lstobj[0].File_Id.ToString());
-            try
+            if (lstobj.Count > 0)
             {
-                if (File_Id != null && File_Id != Guid.Empty)
+                Guid File_Id = Guid.Parse(lstobj[0].File_Id.ToString());
+                try
                 {
-                    using (ConsumerEntities context = new ConsumerEntities())
+                    if (File_Id != null && File_Id != Guid.Empty)
                     {
-                        //var oldRecords = (from y in context.STG_Mapping_TableIds
-                        //                  where y.File_Id == File_Id
-                        //                  select y).ToList();
-                        //context.STG_Mapping_TableIds.RemoveRange(oldRecords);
-                        //context.SaveChanges();
-                        foreach (DataContracts.STG.DC_STG_Mapping_Table_Ids obj in lstobj)
+                        using (ConsumerEntities context = new ConsumerEntities())
                         {
-                            DataLayer.STG_Mapping_TableIds objnew = new STG_Mapping_TableIds()
+                            //var oldRecords = (from y in context.STG_Mapping_TableIds
+                            //                  where y.File_Id == File_Id
+                            //                  select y).ToList();
+                            //context.STG_Mapping_TableIds.RemoveRange(oldRecords);
+                            //context.SaveChanges();
+                            foreach (DataContracts.STG.DC_STG_Mapping_Table_Ids obj in lstobj)
                             {
-                                STG_Mapping_Table_Id = Guid.NewGuid(),
-                                File_Id = File_Id,
-                                Mapping_Id = obj.Mapping_Id,
-                                STG_Id = obj.STG_Id,
-                                Batch = obj.Batch
-                            };
-                            context.STG_Mapping_TableIds.Add(objnew);
+                                DataLayer.STG_Mapping_TableIds objnew = new STG_Mapping_TableIds()
+                                {
+                                    STG_Mapping_Table_Id = Guid.NewGuid(),
+                                    File_Id = File_Id,
+                                    Mapping_Id = obj.Mapping_Id,
+                                    STG_Id = obj.STG_Id,
+                                    Batch = obj.Batch
+                                };
+                                context.STG_Mapping_TableIds.Add(objnew);
+                            }
+                            context.SaveChanges();
+                            ret = true;
                         }
-                        context.SaveChanges();
-                        ret = true;
                     }
                 }
-                return ret;
+                catch (Exception e)
+                {
+                    return false;
+                }
             }
-            catch (Exception e)
-            {
-                return false;
-            }
+            return ret;
         }
 
         #region Accomodation Product Mapping
@@ -362,7 +365,62 @@ namespace DataLayer
             using (ConsumerEntities context = new ConsumerEntities())
             {
                 //var prodMapList = context.Accommodation_ProductMapping.AsNoTracking().Where(w => stg.Any(a => a.ProductId == w.SupplierProductReference)).Select(s => s.SupplierProductReference ).ToList();
+                var accomap = (from a in context.Accommodation_ProductMapping
+                               where a.Supplier_Id == CurSupplier_Id
+                               select a);
+                var toUpdate = (from a in accomap
+                               //join s in stg on a.SupplierProductReference equals s.ProductId
+                               join s in context.stg_SupplierProductMapping on new { Supplier_Id =  a.Supplier_Id, SupplierProductReference = a.SupplierProductReference} 
+                               equals new { Supplier_Id = s.Supplier_Id, SupplierProductReference = s.ProductId }
+                               select new DataContracts.Mapping.DC_Accomodation_ProductMapping
+                               {
+                                   Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
+                                   Accommodation_Id = a.Accommodation_Id,
+                                   Supplier_Id = a.Supplier_Id,
+                                   SupplierId = a.SupplierId,
+                                   SupplierName = a.SupplierName,
+                                   SupplierProductReference = a.SupplierProductReference,
+                                   ProductName = s.ProductName,
+                                   oldProductName = a.ProductName,
+                                   Street = a.Street,
+                                   Street2 = a.Street2,
+                                   Street3 = a.Street3,
+                                   Street4 = a.Street4,
+                                   CountryCode = a.CountryCode,
+                                   CountryName = a.CountryName,
+                                   CityCode = a.CityCode,
+                                   CityName = a.CityName,
+                                   StateCode = a.StateCode,
+                                   StateName = a.StateName,
+                                   PostCode = a.PostCode,
+                                   TelephoneNumber = a.TelephoneNumber,
+                                   Fax = a.Fax,
+                                   Email = a.Email,
+                                   Website = a.Website,
+                                   Latitude = a.Latitude,
+                                   Longitude = a.Longitude,
+                                   Status = a.Status,
+                                   Create_Date = a.Create_Date,
+                                   Create_User = a.Create_User,
+                                   Edit_Date = DateTime.Now,
+                                   Edit_User = a.Edit_User,
+                                   IsActive = (a.IsActive ?? true),
+                                   ProductId = a.SupplierProductReference,
+                                   Remarks = a.Remarks,
+                                   MapId = a.MapId,
+                                   StarRating = a.StarRating,
+                                   Country_Id = a.Country_Id,
+                                   City_Id = a.City_Id,
+                                   ActionType = (a.ProductName != s.ProductName ) ? "UPDATE" : "",
+                                   stg_AccoMapping_Id = (a.ProductName != s.ProductName) ? s.stg_AccoMapping_Id : Guid.Empty 
+                               }).ToList();
 
+
+                insertSTGList = stg.Where(w => !toUpdate.Any(a => a.SupplierProductReference == w.ProductId)).ToList();
+                updateMappingList = toUpdate.Where(w => w.ProductName != w.oldProductName).ToList();
+
+                #region "Commented Code"
+                /*
                 List<DataContracts.Mapping.DC_Accomodation_ProductMapping> prodMapRes = new List<DC_Accomodation_ProductMapping>();
                 foreach (DataContracts.STG.DC_stg_SupplierProductMapping curSTG in stg)
                 {
@@ -401,8 +459,8 @@ namespace DataLayer
                         Status = a.Status,
                         Create_Date = a.Create_Date,
                         Create_User = a.Create_User,
-                        Edit_Date = a.Edit_Date,
-                        Edit_User = a.Edit_User,
+                        Edit_Date = DateTime.Now,
+                        Edit_User = "TLGX_DataHandler",
                         IsActive = (a.IsActive ?? true),
                         ProductId = a.SupplierProductReference,
                         Remarks = a.Remarks,
@@ -438,10 +496,8 @@ namespace DataLayer
                     );
                     return c;
                 }).ToList();
-
-                insertSTGList = stg.Where(w => !prodMapRes.Any(a => a.SupplierProductReference == w.ProductId)).ToList();
-                updateMappingList = prodMapRes;
-
+                */
+                #endregion
             }
         }
         public bool HotelMappingMatch(DataContracts.Masters.DC_Supplier obj)
@@ -2412,6 +2468,62 @@ namespace DataLayer
             }
         }
 
+        public void CheckRoomTypeAlreadyExist(Guid CurSupplier_Id, List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> stg, out List<DC_Accommodation_SupplierRoomTypeMap_SearchRS> updateMappingList, out List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> insertSTGList)
+        {
+            bool ret = false;
+
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                //var prodMapList = context.Accommodation_ProductMapping.AsNoTracking().Where(w => stg.Any(a => a.ProductId == w.SupplierProductReference)).Select(s => s.SupplierProductReference ).ToList();
+                var accomap = (from a in context.Accommodation_SupplierRoomTypeMapping
+                               where a.Supplier_Id == CurSupplier_Id
+                               select a);
+                var toUpdate = (from a in accomap
+                                    //join s in stg on a.SupplierProductReference equals s.ProductId
+                                join s in context.stg_SupplierHotelRoomMapping on new { Supplier_Id = a.Supplier_Id, SupplierProductReference = a.SupplierRoomTypeCode, ProductId = a.SupplierProductId }
+                                equals new { Supplier_Id = s.Supplier_Id, SupplierProductReference = s.SupplierRoomTypeCode, ProductId = s.SupplierProductId }
+                                select new DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS
+                                {
+                                    ProductName = a.SupplierProductName,
+                                    Accommodation_Id = a.Accommodation_Id,
+                                    SupplierName = a.SupplierName,
+                                    Accommodation_RoomInfo_Id = a.Accommodation_RoomInfo_Id,
+                                    Accommodation_RoomInfo_Name = a.SupplierRoomName,
+                                    SupplierRoomName = s.RoomName,
+                                    OldSupplierRoomName = a.SupplierRoomName,
+                                    Accommodation_SupplierRoomTypeMapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                                    SupplierProductId = a.SupplierProductId,
+                                    MaxAdults = a.MaxAdults,
+                                    MaxChild = a.MaxChild,
+                                    MapId = a.MapId,
+                                    MappingStatus = a.MappingStatus,
+                                    MaxGuestOccupancy = a.MaxGuestOccupancy,
+                                    MaxInfants = a.MaxInfants,
+                                    Quantity = a.Quantity,
+                                    SupplierRoomCategory = a.SupplierRoomCategory,
+                                    RatePlan = a.RatePlan,
+                                    RatePlanCode = a.RatePlanCode,
+                                    SupplierProductName = a.SupplierProductName,
+                                    SupplierRoomCategoryId = a.SupplierRoomCategoryId,
+                                    SupplierRoomId = a.SupplierRoomId,
+                                    SupplierRoomTypeCode = a.SupplierRoomTypeCode,
+                                    Supplier_Id = a.Supplier_Id,
+                                    Tx_ReorderedName = a.Tx_ReorderedName,
+                                    TX_RoomName = a.TX_RoomName,
+                                    Tx_StrippedName = a.Tx_StrippedName,
+                                    RoomDescription = a.RoomDescription,
+                                    stg_SupplierHotelRoomMapping_Id = s.stg_SupplierHotelRoomMapping_Id,
+                                    Oldstg_SupplierHotelRoomMapping_Id = a.stg_SupplierHotelRoomMapping_Id,
+                                    ActionType = (a.SupplierRoomName != s.RoomName) ? "UPDATE" : ""
+                                    //stg_AccoMapping_Id = (a.ProductName != s.ProductName) ? s.stg_AccoMapping_Id : Guid.Empty
+                                }).ToList();
+
+
+                insertSTGList = stg.Where(w => !toUpdate.Any(a => a.SupplierProductId == w.SupplierProductId && a.SupplierRoomTypeCode == w.SupplierRoomTypeCode)).ToList();
+                updateMappingList = toUpdate.Where(w => w.SupplierRoomName != w.OldSupplierRoomName).ToList();                
+            }
+        }
+
         public bool RoomTypeMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             bool ret = true;
@@ -2448,7 +2560,7 @@ namespace DataLayer
                 USD.AddStaticDataUploadProcessLog(PLog);
 
                 CallLogVerbose(File_Id, "MAP", "Fetching Existing Mapping Data.");
-                DC_Accommodation_SupplierRoomTypeMap_SearchRQ RQM = new DC_Accommodation_SupplierRoomTypeMap_SearchRQ();
+                /*DC_Accommodation_SupplierRoomTypeMap_SearchRQ RQM = new DC_Accommodation_SupplierRoomTypeMap_SearchRQ();
                 if (CurSupplier_Id != Guid.Empty)
                     RQM.Supplier_Id = CurSupplier_Id;
                 if (!string.IsNullOrWhiteSpace(CurSupplierName))
@@ -2456,12 +2568,14 @@ namespace DataLayer
                 RQM.PageNo = 0;
                 RQM.PageSize = int.MaxValue;
                 RQM.CalledFromTLGX = "TLGX";
-                clsMappingHotel = SupplierRoomTypeMapping_Search(RQM);
+                clsMappingHotel = SupplierRoomTypeMapping_Search(RQM);*/
+
+                CheckRoomTypeAlreadyExist(CurSupplier_Id, clsSTGHotel, out clsMappingHotel, out clsSTGHotelInsert);
                 PLog.PercentageValue = 26;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
                 CallLogVerbose(File_Id, "MAP", "Updating Existing Room Types.");
-                clsMappingHotel = clsMappingHotel.Select(c =>
+                /*clsMappingHotel = clsMappingHotel.Select(c =>
                 {
                     c.SupplierRoomName = (clsSTGHotel
                     .Where(s => s.SupplierProductId == c.SupplierProductId && s.SupplierRoomTypeCode == c.SupplierRoomTypeCode && s.SupplierRoomId == c.SupplierRoomId)
@@ -2477,7 +2591,7 @@ namespace DataLayer
                     ); //?? c.stg_SupplierHotelRoomMapping_Id;
                     c.ActionType = "UPDATE";
                     return c;
-                }).ToList();
+                }).ToList();*/
 
                 List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstobj = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                 lstobj.InsertRange(lstobj.Count, clsMappingHotel.Where(a => a.stg_SupplierHotelRoomMapping_Id != null && a.ActionType == "UPDATE"
@@ -2496,15 +2610,15 @@ namespace DataLayer
                 USD.AddStaticDataUploadProcessLog(PLog);
 
                 CallLogVerbose(File_Id, "MAP", "Checking for New Room Types in File.");
-                clsSTGHotelInsert = clsSTGHotel.Where(p => !clsMappingHotel.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
-                 && (
-                    (((p2.SupplierProductName ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierProductName ?? string.Empty).ToString().Trim().ToUpper()))
-                    && (((p2.SupplierProductId ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierProductId ?? string.Empty).ToString().Trim().ToUpper()))
-                    && (((p2.SupplierRoomTypeCode ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierRoomTypeCode ?? string.Empty).ToString().Trim().ToUpper()))
-                    && (((p2.SupplierRoomId ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierRoomId ?? string.Empty).ToString().Trim().ToUpper()))
-                    && (((p2.SupplierRoomName ?? string.Empty).ToString().Trim().ToUpper() == (p.RoomName ?? string.Empty).ToString().Trim().ToUpper()))
-                    && (((p2.SupplierRoomCategoryId ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierRoomCategoryId ?? string.Empty).ToString().Trim().ToUpper()))
-                ))).ToList();
+                //clsSTGHotelInsert = clsSTGHotel.Where(p => !clsMappingHotel.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
+                // && (
+                //    (((p2.SupplierProductName ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierProductName ?? string.Empty).ToString().Trim().ToUpper()))
+                //    && (((p2.SupplierProductId ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierProductId ?? string.Empty).ToString().Trim().ToUpper()))
+                //    && (((p2.SupplierRoomTypeCode ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierRoomTypeCode ?? string.Empty).ToString().Trim().ToUpper()))
+                //    && (((p2.SupplierRoomId ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierRoomId ?? string.Empty).ToString().Trim().ToUpper()))
+                //    && (((p2.SupplierRoomName ?? string.Empty).ToString().Trim().ToUpper() == (p.RoomName ?? string.Empty).ToString().Trim().ToUpper()))
+                //    && (((p2.SupplierRoomCategoryId ?? string.Empty).ToString().Trim().ToUpper() == (p.SupplierRoomCategoryId ?? string.Empty).ToString().Trim().ToUpper()))
+                //))).ToList();
                 PLog.PercentageValue = 48;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
