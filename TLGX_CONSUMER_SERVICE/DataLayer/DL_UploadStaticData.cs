@@ -2012,7 +2012,7 @@ namespace DataLayer
                         context.stg_SupplierHotelRoomMapping.RemoveRange(oldRecords);
                         context.SaveChanges();
                         List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> dstobj = new List<DC_stg_SupplierHotelRoomMapping>();
-                        dstobj = lstobj.GroupBy(a => new { a.RoomName, a.SupplierID, a.SupplierName, a.SupplierProductId, a.SupplierProductName, a.SupplierRoomCategory, a.SupplierRoomTypeCode }).Select(grp => grp.First()).ToList();
+                        dstobj = lstobj.GroupBy(a => new { a.RoomName, a.SupplierID, a.SupplierName, a.SupplierProductId, a.SupplierProductName, a.SupplierRoomCategory, a.SupplierRoomTypeCode, a.RatePlanCode }).Select(grp => grp.First()).ToList();
 
                         foreach (DataContracts.STG.DC_stg_SupplierHotelRoomMapping obj in dstobj)
                         {
