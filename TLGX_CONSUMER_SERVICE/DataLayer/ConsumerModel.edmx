@@ -738,6 +738,10 @@
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Activity_Language" Type="nvarchar" MaxLength="100" />
           <Property Name="Activity_LanguageCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="Activity_Status" Type="nvarchar(max)" />
+          <Property Name="Activity_StatusNotes" Type="nvarchar(max)" />
+          <Property Name="Activity_Status_Edit_User" Type="nvarchar" MaxLength="255" />
+          <Property Name="Activity_Status_Edit_Date" Type="datetime" />
         </EntityType>
         <EntityType Name="Activity_FlavourOptions">
           <Key>
@@ -4487,6 +4491,10 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Activity_Language" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Activity_LanguageCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_StatusNotes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_Status_Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_Status_Edit_Date" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="Activity_Itinerary">
           <Key>
@@ -6990,6 +6998,10 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Activity_Flavour">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_Flavour">
               <MappingFragment StoreEntitySet="Activity_Flavour">
+                <ScalarProperty Name="Activity_Status_Edit_Date" ColumnName="Activity_Status_Edit_Date" />
+                <ScalarProperty Name="Activity_Status_Edit_User" ColumnName="Activity_Status_Edit_User" />
+                <ScalarProperty Name="Activity_StatusNotes" ColumnName="Activity_StatusNotes" />
+                <ScalarProperty Name="Activity_Status" ColumnName="Activity_Status" />
                 <ScalarProperty Name="Activity_LanguageCode" ColumnName="Activity_LanguageCode" />
                 <ScalarProperty Name="Activity_Language" ColumnName="Activity_Language" />
                 <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
