@@ -73,6 +73,8 @@ namespace DataContracts.Masters
         public int? Parent_Legacy_Id { get; set; }
         [DataMember]
         public int? TotalRecord { get; set; }
+        [DataMember]
+        public string Activity_Status { get; set; }
     }
     [DataContract]
     public class DC_Activity_OldSchema
@@ -641,6 +643,8 @@ namespace DataContracts.Masters
         public string ProductNameSubType { get; set; }
         [DataMember]
         public string CommonProductNameSubType_Id { get; set; }
+        [DataMember]
+        public string Activity_Status { get; set; }
 
     }
 
@@ -673,6 +677,8 @@ namespace DataContracts.Masters
         public string Supplier_Id { get; set; }
         [DataMember]
         public string Keyword { get; set; }
+        [DataMember]
+        public string Activity_Status { get; set; }
 
     }
     #endregion
@@ -1447,6 +1453,15 @@ namespace DataContracts.Masters
         public string SupplierName { get; set; }
         [DataMember]
         public string SupplierCode { get; set; }
+        [DataMember]
+        public string Activity_Status { get; set; }
+        [DataMember]
+        public string Activity_StatusNotes { get; set; }
+        [DataMember]
+        public string Activity_Status_Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Activity_Status_Edit_Date { get; set; }
+
 
         [DataMember]
         public List<DC_Activity_CategoryTypes> Categories { get; set; }
@@ -1495,6 +1510,8 @@ namespace DataContracts.Masters
         public bool NoSession { get; set; }
         [DataMember]
         public bool NoSpecials { get; set; }
+        [DataMember]
+        public string Activity_Status { get; set; }
     }
 
     [DataContract]
@@ -2128,7 +2145,25 @@ namespace DataContracts.Masters
         public List<DC_Activity_DaysOfWeek> DaysOfWeek { get; set; }
     }
     #endregion
-    
+
+    #region DC_ActivityStauts
+    [DataContract]
+    public class DC_ActivityFlavoursStatus
+    {
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }        
+        [DataMember]
+        public string Activity_Status { get; set; }
+        [DataMember]
+        public string Activity_StatusNotes { get; set; }
+        [DataMember]
+        public string Activity_Status_Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Activity_Status_Edit_Date { get; set; }
+
+    }
+    #endregion
+
 }
 
 

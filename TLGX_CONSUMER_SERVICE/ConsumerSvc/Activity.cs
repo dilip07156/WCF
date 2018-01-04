@@ -485,6 +485,15 @@ namespace ConsumerSvc
             }
         }
         #endregion
+        #region Activity_Status
+        public DataContracts.DC_Message AddUpdateActivityFlavoursStatus(DataContracts.Masters.DC_ActivityFlavoursStatus RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateActivityFlavoursStatus(RQ);
+            }
+        }
+        #endregion
 
     }
 }
