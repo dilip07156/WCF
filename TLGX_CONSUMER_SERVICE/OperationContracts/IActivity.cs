@@ -283,5 +283,12 @@ namespace OperationContracts
         DataContracts.DC_Message AddUpdateActivityNonOperatingDays(List<DataContracts.Masters.DC_Activity_OperatingDays> RQ);
         #endregion
 
+        #region Activity_Flavour_Status
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Activity/Flavours/AddUpdateStatus", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message AddUpdateActivityFlavoursStatus(DC_ActivityFlavoursStatus _obj);        
+        #endregion
+
     }
 }
