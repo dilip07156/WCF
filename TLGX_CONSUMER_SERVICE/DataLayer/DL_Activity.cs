@@ -2327,10 +2327,10 @@ namespace DataLayer
                                      SupplierCity = spm.SupplierCityName + " (" + spm.SupplierCityCode + ")",
                                      SupplierCountry = spm.SupplierCountryName + " (" + spm.SupplierCountryCode + ")",
                                      SupplierProductCategory = "Activities",
-                                     SupplierProductCategorySubType = spm.SupplierType,
+                                     //SupplierProductCategorySubType = spm.SupplierType,
                                      SupplierProductCode = spm.SuplierProductCode,
-                                     SupplierProductNameSubType = spm.SupplierProductType,
-                                     SupplierProductType = spm.SupplierType,
+                                     //SupplierProductNameSubType = spm.SupplierProductType,
+                                     //SupplierProductType = spm.SupplierType,
                                      Supplier_Id = s.Supplier_Id,
                                      SupplierCode = s.Code,
                                      SupplierName = s.Name,
@@ -2365,9 +2365,15 @@ namespace DataLayer
 
                     foreach (var item in returnResult)
                     {
-                        item.ProductCategorySubType = string.Join(",", context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s.SystemProductCategorySubType).Distinct().ToArray());
-                        item.ProductNameSubType = string.Join(",", context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s.SystemProductNameSubType).Distinct().ToArray());
-                        item.ProductType = string.Join(",", context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s.SystemProductType).Distinct().ToArray());
+                        var CatType = context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s);
+
+                        item.ProductCategorySubType = string.Join(",", CatType.Select(s => s.SystemProductCategorySubType).Distinct().ToArray());
+                        item.ProductNameSubType = string.Join(",", CatType.Select(s => s.SystemProductNameSubType).Distinct().ToArray());
+                        item.ProductType = string.Join(",", CatType.Select(s => s.SystemProductType).Distinct().ToArray());
+
+                        item.SupplierProductType = string.Join(",", CatType.Select(s => s.SupplierProductType).Distinct().ToArray());
+                        item.SupplierProductCategorySubType = string.Join(",", CatType.Select(s => s.SupplierProductCategorySubType).Distinct().ToArray());
+                        item.SupplierProductNameSubType = string.Join(",", CatType.Select(s => s.SupplierProductNameSubType).Distinct().ToArray());
 
                         //item.Categories = (from ct in context.Activity_CategoriesType
                         //                   where ct.Activity_Flavour_Id == item.Activity_Flavour_Id && ct.Activity_FlavourOptions_Id == null
