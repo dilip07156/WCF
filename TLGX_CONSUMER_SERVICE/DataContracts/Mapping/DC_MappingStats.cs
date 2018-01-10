@@ -1384,5 +1384,17 @@ namespace DataContracts.Mapping
             }
         }
     }
+
+    [DataContract]
+    public class DC_AllSupplierMappedData
+    {
+        public Guid? supplierid { get; set; }
+        public string SupplierName { get; set; }
+        public string Username { get; set; }
+        public int? totalcount { get; set; }
+        public string MappinFor { get; set; }
+        public int Sequence { get; set; }
+        public string Status { get; set; }
+    }
 }
 #endregion
