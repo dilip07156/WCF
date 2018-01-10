@@ -7611,23 +7611,23 @@ namespace DataLayer
                         
                             if (mapfor == "City")
                             {
-                                var unMappedDataCity = context.m_CityMapping.Where(cat => (cat.Status == "UNMAPPED" || cat.Status == "REVIEW" || cat.Status == string.Empty) && ((parm.SupplierID != Guid.Empty) ? (cat.Supplier_Id == parm.SupplierID) : (cat.Supplier_Id == cat.Supplier_Id))).Count();
+                                var unMappedDataCity = context.m_CityMapping.Where(cat => (cat.Status == "UNMAPPED" || cat.Status == "REVIEW" || (cat.Status ?? string.Empty) == string.Empty) && ((parm.SupplierID != Guid.Empty) ? (cat.Supplier_Id == parm.SupplierID) : (cat.Supplier_Id == cat.Supplier_Id))).Count();
                                 unMappedDataCount = unMappedDataCity;
                             }
                             else if (mapfor == "Country") {
-                                var unMappedDataCountry = context.m_CountryMapping.Where(cat => (cat.Status == "UNMAPPED" || cat.Status == "REVIEW" || cat.Status == string.Empty) && ((parm.SupplierID != Guid.Empty) ? (cat.Supplier_Id == parm.SupplierID) : (cat.Supplier_Id == cat.Supplier_Id))).Count();
+                                var unMappedDataCountry = context.m_CountryMapping.Where(cat => (cat.Status == "UNMAPPED" || cat.Status == "REVIEW" || (cat.Status ?? string.Empty) == string.Empty) && ((parm.SupplierID != Guid.Empty) ? (cat.Supplier_Id == parm.SupplierID) : (cat.Supplier_Id == cat.Supplier_Id))).Count();
                                 unMappedDataCount = unMappedDataCountry;
                             }
                             else if (mapfor == "Product") {
-                                var unMappedDataCity = context.Accommodation_ProductMapping.Where(cat => (cat.Status == "UNMAPPED" || cat.Status == "REVIEW" || cat.Status == string.Empty) && ((parm.SupplierID != Guid.Empty) ? (cat.Supplier_Id == parm.SupplierID) : (cat.Supplier_Id == cat.Supplier_Id))).Count();
+                                var unMappedDataCity = context.Accommodation_ProductMapping.Where(cat => (cat.Status == "UNMAPPED" || cat.Status == "REVIEW" || (cat.Status ?? string.Empty) == string.Empty) && ((parm.SupplierID != Guid.Empty) ? (cat.Supplier_Id == parm.SupplierID) : (cat.Supplier_Id == cat.Supplier_Id))).Count();
                                 unMappedDataCount = unMappedDataCity;
                             }
                             else if(mapfor == "Activity") {
-                                var unMappedDataCity = context.Activity_SupplierProductMapping.Where(cat => (cat.MappingStatus == "UNMAPPED" || cat.MappingStatus == "REVIEW" || cat.MappingStatus == string.Empty) && ((parm.SupplierID != Guid.Empty) ? (cat.Supplier_ID == parm.SupplierID) : (cat.Supplier_ID == cat.Supplier_ID))).Count();
+                                var unMappedDataCity = context.Activity_SupplierProductMapping.Where(cat => (cat.MappingStatus == "UNMAPPED" || cat.MappingStatus == "REVIEW" || (cat.MappingStatus ?? string.Empty) == string.Empty) && ((parm.SupplierID != Guid.Empty) ? (cat.Supplier_ID == parm.SupplierID) : (cat.Supplier_ID == cat.Supplier_ID))).Count();
                                 unMappedDataCount = unMappedDataCity;
                             }
                             else if(mapfor == "HotelRoom") {
-                                var unMappedDataCity = context.Accommodation_SupplierRoomTypeMapping.Where(cat => (cat.MappingStatus == "UNMAPPED" || cat.MappingStatus == "REVIEW" || cat.MappingStatus == string.Empty) && ((parm.SupplierID != Guid.Empty) ? (cat.Supplier_Id == parm.SupplierID) : (cat.Supplier_Id == cat.Supplier_Id))).Count();
+                                var unMappedDataCity = context.Accommodation_SupplierRoomTypeMapping.Where(cat => (cat.MappingStatus == "UNMAPPED" || cat.MappingStatus == "REVIEW" || (cat.MappingStatus ?? string.Empty) == string.Empty) && ((parm.SupplierID != Guid.Empty) ? (cat.Supplier_Id == parm.SupplierID) : (cat.Supplier_Id == cat.Supplier_Id))).Count();
                                 unMappedDataCount = unMappedDataCity;
                             }
                             else { unMappedDataCount = null; }
