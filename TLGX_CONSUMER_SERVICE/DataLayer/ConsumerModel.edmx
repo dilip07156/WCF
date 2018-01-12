@@ -1412,6 +1412,34 @@
           <Property Name="LastCounterNo" Type="int" />
           <Property Name="IncreaseBy" Type="int" />
         </EntityType>
+        <EntityType Name="Dashboard_MappingStat">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="supplier_id" Type="uniqueidentifier" />
+          <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Status" Type="nvarchar" MaxLength="10" />
+          <Property Name="MappingFor" Type="nvarchar" MaxLength="10" />
+          <Property Name="totalcount" Type="int" />
+          <Property Name="SuppliersCount" Type="int" />
+          <Property Name="Batch" Type="int" />
+        </EntityType>
+        <EntityType Name="Dashboard_UserwiseMappedStat">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Supplier_id" Type="uniqueidentifier" />
+          <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Username" Type="nvarchar" MaxLength="255" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="Status" Type="nvarchar" MaxLength="10" />
+          <Property Name="MappingFor" Type="nvarchar" MaxLength="10" />
+          <Property Name="Totalcount" Type="bigint" />
+          <Property Name="EditDate" Type="date" />
+          <Property Name="Batch" Type="int" />
+        </EntityType>
         <EntityType Name="DynamicAttribute">
           <Key>
             <PropertyRef Name="DynamicAttribute_Id" />
@@ -2598,6 +2626,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Client" EntityType="Self.Client" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Counters" EntityType="Self.Counters" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Dashboard_MappingStat" EntityType="Self.Dashboard_MappingStat" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Dashboard_UserwiseMappedStat" EntityType="Self.Dashboard_UserwiseMappedStat" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DynamicAttribute" EntityType="Self.DynamicAttribute" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GoogleGeoCode" EntityType="Self.GoogleGeoCode" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_Activity_Master" EntityType="Self.m_Activity_Master" Schema="dbo" store:Type="Tables" />
@@ -2837,6 +2867,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Activity_DaysOfWeek" EntityType="ConsumerModel.Activity_DaysOfWeek" />
           <EntitySet Name="Supplier" EntityType="ConsumerModel.Supplier" />
           <EntitySet Name="Activity_CategoriesType" EntityType="ConsumerModel.Activity_CategoriesType" />
+          <EntitySet Name="Dashboard_MappingStat" EntityType="ConsumerModel.Dashboard_MappingStat" />
+          <EntitySet Name="Dashboard_UserwiseMappedStat" EntityType="ConsumerModel.Dashboard_UserwiseMappedStat" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -5337,6 +5369,34 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="Create_User" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Edit_User" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Dashboard_MappingStat">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="supplier_id" Type="Guid" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MappingFor" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="totalcount" Type="Int32" />
+          <Property Name="SuppliersCount" Type="Int32" />
+          <Property Name="Batch" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Dashboard_UserwiseMappedStat">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Supplier_id" Type="Guid" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MappingFor" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Totalcount" Type="Int32" />
+          <Property Name="EditDate" Type="DateTime" Precision="0" />
+          <Property Name="Batch" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -7925,6 +7985,36 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Activity_FlavourOptions_Id" ColumnName="Activity_FlavourOptions_Id" />
                 <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
                 <ScalarProperty Name="Activity_CategoriesType_ID" ColumnName="Activity_CategoriesType_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dashboard_MappingStat">
+            <EntityTypeMapping TypeName="ConsumerModel.Dashboard_MappingStat">
+              <MappingFragment StoreEntitySet="Dashboard_MappingStat">
+                <ScalarProperty Name="Batch" ColumnName="Batch" />
+                <ScalarProperty Name="SuppliersCount" ColumnName="SuppliersCount" />
+                <ScalarProperty Name="totalcount" ColumnName="totalcount" />
+                <ScalarProperty Name="MappingFor" ColumnName="MappingFor" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="supplier_id" ColumnName="supplier_id" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dashboard_UserwiseMappedStat">
+            <EntityTypeMapping TypeName="ConsumerModel.Dashboard_UserwiseMappedStat">
+              <MappingFragment StoreEntitySet="Dashboard_UserwiseMappedStat">
+                <ScalarProperty Name="Batch" ColumnName="Batch" />
+                <ScalarProperty Name="EditDate" ColumnName="EditDate" />
+                <ScalarProperty Name="Totalcount" ColumnName="Totalcount" />
+                <ScalarProperty Name="MappingFor" ColumnName="MappingFor" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="Supplier_id" ColumnName="Supplier_id" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
