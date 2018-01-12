@@ -311,6 +311,12 @@
     <Compile Include="Counter.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Dashboard_MappingStat.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Dashboard_UserwiseMappedStat.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="DHSVCProxy.cs" />
     <Compile Include="DL_Accomodation.cs" />
     <Compile Include="DL_Activity.cs" />
