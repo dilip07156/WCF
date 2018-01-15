@@ -2235,8 +2235,11 @@ namespace DataLayer
                                 //         select a;
                             }
 
+                          
+
                         }
 
+                        
                         if (isTypeUnMap)
                         {
                             search = search.Except((from a in ActFlv
@@ -2251,6 +2254,10 @@ namespace DataLayer
                                      join at in ActTypes on a.Activity_Flavour_Id equals at.Activity_Flavour_Id
                                      where at.Activity_FlavourOptions_Id == null
                                      select a;
+                        }
+                        if (!string.IsNullOrWhiteSpace(RQ.Activity_Status))
+                        {
+                            search = search.Where(w => w.Activity_Status == RQ.Activity_Status);
                         }
 
                     }
@@ -2320,13 +2327,17 @@ namespace DataLayer
                                      SupplierCity = spm.SupplierCityName + " (" + spm.SupplierCityCode + ")",
                                      SupplierCountry = spm.SupplierCountryName + " (" + spm.SupplierCountryCode + ")",
                                      SupplierProductCategory = "Activities",
-                                     SupplierProductCategorySubType = spm.SupplierType,
+                                     //SupplierProductCategorySubType = spm.SupplierType,
                                      SupplierProductCode = spm.SuplierProductCode,
-                                     SupplierProductNameSubType = spm.SupplierProductType,
-                                     SupplierProductType = spm.SupplierType,
+                                     //SupplierProductNameSubType = spm.SupplierProductType,
+                                     //SupplierProductType = spm.SupplierType,
                                      Supplier_Id = s.Supplier_Id,
                                      SupplierCode = s.Code,
                                      SupplierName = s.Name,
+                                     Activity_Status = a.Activity_Status,
+                                     Activity_Status_Edit_Date = a.Activity_Status_Edit_Date,
+                                     Activity_Status_Edit_User = a.Activity_Status_Edit_User,
+                                     Activity_StatusNotes = a.Activity_StatusNotes,
                                      Categories = (from ct in context.Activity_CategoriesType
                                                    where ct.Activity_Flavour_Id == a.Activity_Flavour_Id && ct.Activity_FlavourOptions_Id == null
                                                    select new DC_Activity_CategoryTypes
@@ -2354,9 +2365,15 @@ namespace DataLayer
 
                     foreach (var item in returnResult)
                     {
-                        item.ProductCategorySubType = string.Join(",", context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s.SystemProductCategorySubType).Distinct().ToArray());
-                        item.ProductNameSubType = string.Join(",", context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s.SystemProductNameSubType).Distinct().ToArray());
-                        item.ProductType = string.Join(",", context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s.SystemProductType).Distinct().ToArray());
+                        var CatType = context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s);
+
+                        item.ProductCategorySubType = string.Join(",", CatType.Select(s => s.SystemProductCategorySubType).Distinct().ToArray());
+                        item.ProductNameSubType = string.Join(",", CatType.Select(s => s.SystemProductNameSubType).Distinct().ToArray());
+                        item.ProductType = string.Join(",", CatType.Select(s => s.SystemProductType).Distinct().ToArray());
+
+                        item.SupplierProductType = string.Join(",", CatType.Select(s => s.SupplierProductType).Distinct().ToArray());
+                        item.SupplierProductCategorySubType = string.Join(",", CatType.Select(s => s.SupplierProductCategorySubType).Distinct().ToArray());
+                        item.SupplierProductNameSubType = string.Join(",", CatType.Select(s => s.SupplierProductNameSubType).Distinct().ToArray());
 
                         //item.Categories = (from ct in context.Activity_CategoriesType
                         //                   where ct.Activity_Flavour_Id == item.Activity_Flavour_Id && ct.Activity_FlavourOptions_Id == null
@@ -4214,7 +4231,7 @@ namespace DataLayer
                         //var DOW_TO_REMOVE_WHERE_OD_REMOVED = context.Activity_DaysOfWeek.Where(p => p.Activity_Flavor_ID == Activity_Flavour_Id && !OD_VALID.Any(p2 => p2 == p.Activity_DaysOfOperation_Id));
                         //context.Activity_DaysOfWeek.RemoveRange(DOW_TO_REMOVE_WHERE_OD_REMOVED);
 
-                        var DOW_VALID =   RQ.SelectMany(d => d.DaysOfWeek).Select(s => s.Activity_DaysOfWeek_ID);
+                        var DOW_VALID = RQ.SelectMany(d => d.DaysOfWeek).Select(s => s.Activity_DaysOfWeek_ID);
                         var DOW_TO_REMOVE = context.Activity_DaysOfWeek.Where(p => p.Activity_Flavor_ID == Activity_Flavour_Id && !DOW_VALID.Any(p2 => p2 == p.Activity_DaysOfWeek_ID));
                         context.Activity_DaysOfWeek.RemoveRange(DOW_TO_REMOVE);
 
@@ -4317,6 +4334,44 @@ namespace DataLayer
             {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while updating Activity Non Operating Days", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
+        }
+        #endregion
+
+        #region Acitivity_Status
+        public DC_Message AddUpdateActivityFlavoursStatus(DataContracts.Masters.DC_ActivityFlavoursStatus _objAct)
+        {
+            DC_Message _msg = new DC_Message();
+
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                if (_objAct.Activity_Flavour_Id.HasValue) //&& _objAct.Activity_Id == Guid.Empty)|| _objAct.Activity_Id != Guid.Empty
+                {
+                    var results = context.Activity_Flavour.Find(_objAct.Activity_Flavour_Id);
+
+                    if (results != null)
+                    {
+
+                        results.Activity_Status = _objAct.Activity_Status;
+                        results.Activity_StatusNotes = _objAct.Activity_StatusNotes;
+                        results.Activity_Status_Edit_Date = _objAct.Activity_Status_Edit_Date;
+                        results.Activity_Status_Edit_User = _objAct.Activity_Status_Edit_User;
+
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                        return _msg;
+                    }
+
+                }
+            }
+            return _msg;
         }
         #endregion
 

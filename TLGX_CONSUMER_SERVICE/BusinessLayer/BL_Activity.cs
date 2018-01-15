@@ -425,5 +425,15 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        #region Activity_Status
+        public DataContracts.DC_Message AddUpdateActivityFlavoursStatus(DataContracts.Masters.DC_ActivityFlavoursStatus RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdateActivityFlavoursStatus(RQ);
+            }
+        }
+        #endregion
     }
 }
