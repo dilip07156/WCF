@@ -4908,7 +4908,8 @@ namespace DataLayer
                 clsMappingCity = clsMappingCity.Select(c =>
                 {
                     c.CityName = (clsSTGCity
-                    .Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
+                    //.Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
+                    .Where(s=> s.CityCode == c.CityCode)
                     .Select(s1 => s1.CityName)
                     .FirstOrDefault()
                     ) ?? c.CityName;
@@ -4916,7 +4917,8 @@ namespace DataLayer
                     c.Edit_User = "TLGX_DataHandler";
                     c.ActionType = "UPDATE";
                     c.stg_City_Id = (clsSTGCity
-                    .Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
+                    //.Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
+                    .Where(s => s.CityCode == c.CityCode)
                     .Select(s1 => s1.stg_City_Id)
                     .FirstOrDefault()
                     );
@@ -4940,11 +4942,11 @@ namespace DataLayer
                 CallLogVerbose(File_Id, "MAP", "Checking for New Cities in File.");
                 clsSTGCityInsert = clsSTGCity.Where(p => !clsMappingCity.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                     && (
-                        (((p2.StateName ?? string.Empty).ToString().Trim().ToUpper() == (p.StateName ?? string.Empty).ToString().Trim().ToUpper()))
-                        //&& (((p2.CountryCode ?? string.Empty).ToString().Trim().ToUpper() == (p.CountryCode ?? string.Empty).ToString().Trim().ToUpper()))
-                        //&& (((p2.CountryName ?? string.Empty).ToString().Trim().ToUpper() == (p.CountryName ?? string.Empty).ToString().Trim().ToUpper()))
-                        && (p2.Country_Id == p.Country_Id)
-                        && (((p2.CityName ?? string.Empty).ToString().Trim().ToUpper() == (p.CityName ?? string.Empty).ToString().Trim().ToUpper()))
+                        //(((p2.StateName ?? string.Empty).ToString().Trim().ToUpper() == (p.StateName ?? string.Empty).ToString().Trim().ToUpper()))
+                       
+                        //&& (p2.Country_Id == p.Country_Id)
+                        p2.CityCode == p.CityCode
+                        //&& (((p2.CityName ?? string.Empty).ToString().Trim().ToUpper() == (p.CityName ?? string.Empty).ToString().Trim().ToUpper()))
                     ))).ToList();
                 PLog.PercentageValue = 48;
                 USD.AddStaticDataUploadProcessLog(PLog);
