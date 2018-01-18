@@ -24,5 +24,6 @@ namespace DataLayer
         public string SupplierType { get; set; }
         public string SupplierOwner { get; set; }
         public string StatusCode { get; set; }
+        public Nullable<int> Priority { get; set; }
     }
 }

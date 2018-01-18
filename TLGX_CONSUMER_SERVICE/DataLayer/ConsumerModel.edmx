@@ -2314,6 +2314,7 @@
           <Property Name="SupplierType" Type="nvarchar" MaxLength="255" />
           <Property Name="SupplierOwner" Type="nvarchar" MaxLength="255" />
           <Property Name="StatusCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="Priority" Type="int" />
         </EntityType>
         <EntityType Name="Supplier_ApiCallLog">
           <Key>
@@ -5344,6 +5345,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="SupplierType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="SupplierOwner" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="StatusCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Priority" Type="Int32" />
         </EntityType>
         <EntityType Name="Activity_CategoriesType">
           <Key>
@@ -7949,6 +7951,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Supplier">
             <EntityTypeMapping TypeName="ConsumerModel.Supplier">
               <MappingFragment StoreEntitySet="Supplier">
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
                 <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
                 <ScalarProperty Name="SupplierOwner" ColumnName="SupplierOwner" />
                 <ScalarProperty Name="SupplierType" ColumnName="SupplierType" />
