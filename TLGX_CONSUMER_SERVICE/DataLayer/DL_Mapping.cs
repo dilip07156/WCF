@@ -5379,18 +5379,18 @@ namespace DataLayer
                     if (isCountryCodeCheck || isCountryNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isStateNameCheck)
                     {
                         res = (from a in prodMapSearch
-                               join m in context.m_CountryMapping on new
-                               {
-                                   supplier = a.Supplier_Id,
-                                   country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim()
-                               }
-                               equals new
-                               {
-                                   supplier = m.Supplier_Id,
-                                   country = ((m.CountryName == null) ? m.CountryCode : m.CountryName).ToUpper().Trim()
-                               }
-                               join ms in context.m_CountryMaster on m.Country_Id equals ms.Country_Id
-                               where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
+                               //join m in context.m_CountryMapping on new
+                               //{
+                               //    supplier = a.Supplier_Id,
+                               //    country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim()
+                               //}
+                               //equals new
+                               //{
+                               //    supplier = m.Supplier_Id,
+                               //    country = ((m.CountryName == null) ? m.CountryCode : m.CountryName).ToUpper().Trim()
+                               //}
+                               join ms in context.m_CountryMaster on a.Country_Id equals ms.Country_Id
+                               //where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
                                select new DataContracts.Mapping.DC_CityMapping
                                {
                                    CityMapping_Id = a.CityMapping_Id,
@@ -5455,8 +5455,10 @@ namespace DataLayer
                                                             //(!isCountryCodeCheck && isCountryNameCheck && isCodeCheck && !isNameCheck && s.CountryName == c.CountryName
                                                             //    && s.Code == c.CityCode)
                                             #endregion
-                                                            ((isCountryCodeCheck && s.CountryCode == c.CountryCode) || (!isCountryCodeCheck)) &&
-                                                            ((isCountryNameCheck && s.CountryName == c.CountryName) || (!isCountryNameCheck)) &&
+                                                            //((isCountryCodeCheck && s.CountryCode == c.CountryCode) || (!isCountryCodeCheck)) &&
+                                                            //((isCountryNameCheck && s.CountryName == c.CountryName) || (!isCountryNameCheck)) &&
+                                                            ((isCountryCodeCheck && s.Country_Id == c.Country_Id) || (!isCountryCodeCheck)) &&
+                                                            ((isCountryNameCheck && s.Country_Id == c.Country_Id) || (!isCountryNameCheck)) &&
                                                             ((isCodeCheck && s.Code == c.CityCode) || (!isCodeCheck)) &&
                                                             ((isNameCheck && s.Name.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == ((c.CityName.Replace(c.CountryName.Trim(), "") == "") ? c.CityName : c.CityName.Replace(c.CountryName.Trim(), "")).Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isNameCheck)) &&
                                                             ((isStateNameCheck && s.StateName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") == c.StateName.Trim().ToUpper().Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "")) || (!isStateNameCheck)) &&
