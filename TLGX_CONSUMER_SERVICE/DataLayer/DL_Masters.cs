@@ -2341,6 +2341,7 @@ namespace DataLayer
                                      SupplierOwner = a.SupplierOwner,
                                      ProductCategory = string.Empty, //sup2.AttributeValue,
                                      CategorySubType = string.Empty, //sup3.AttributeValue,
+                                     Priority=a.Priority,
                                      TotalRecords = total
                                  };
 
@@ -2521,6 +2522,7 @@ namespace DataLayer
                         result.StatusCode = _objSup.StatusCode;
                         result.SupplierOwner = _objSup.SupplierOwner;
                         result.SupplierType = _objSup.SupplierType;
+                        result.Priority = _objSup.Priority;
 
                         if (context.SaveChanges() == 1)
                         {
@@ -2547,7 +2549,8 @@ namespace DataLayer
                         Create_User = _objSup.Create_User,
                         SupplierOwner = _objSup.SupplierOwner,
                         SupplierType = _objSup.SupplierType,
-                        StatusCode = _objSup.StatusCode
+                        StatusCode = _objSup.StatusCode,
+                        Priority=_objSup.Priority,
                     };
 
                     context.Supplier.Add(_obj);

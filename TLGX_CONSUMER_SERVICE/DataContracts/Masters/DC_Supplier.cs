@@ -21,6 +21,7 @@ namespace DataContracts.Masters
         string _ProductCategory;
         string _CategorySubType;
         int _TotalRecords;
+        int? _Priority;
         Guid? _File_Id;
 
         [DataMember]
@@ -237,6 +238,20 @@ namespace DataContracts.Masters
                 _File_Id = value;
             }
         }
+        [DataMember]
+        public int? Priority
+        {
+            get
+            {
+                return _Priority;
+            }
+
+            set
+            {
+                _Priority = value;
+            }
+        }
+
         #endregion
     }
 
