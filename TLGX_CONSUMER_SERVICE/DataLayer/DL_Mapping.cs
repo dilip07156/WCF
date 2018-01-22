@@ -898,7 +898,7 @@ namespace DataLayer
                                    && a.Status.Trim().ToUpper() == "UNMAPPED"
                                    select a);
 
-                    //var ct = prodMap.Count();
+                    var ct = prodMap.Count();
                     /*if (obj.IsBatched)
                     {
                         prodMap = (from a in prodMap
@@ -973,7 +973,7 @@ namespace DataLayer
                                              //join ac in context.Accommodations.AsNoTracking() on m.Name equals ac.country
                                              select a).Distinct();//.ToList();
 
-                            //ct = prodMapSearch.Count();
+                            ct = prodMapSearch.Count();
                         }
                         //if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "CITYCODE")
                         //{
@@ -1009,7 +1009,7 @@ namespace DataLayer
                                                                   //                        select a).Distinct().ToList();  
                                                                   //prodMapSearch = newprodMapSearch.ToList();
 
-                            //ct = prodMapSearch.Count();
+                            ct = prodMapSearch.Count();
 
                         }
                         if (CurrConfig == "CompanyHotelID".ToUpper())
@@ -1030,33 +1030,34 @@ namespace DataLayer
                             //var cities = (from cm in context.m_CityMapping.AsNoTracking()
                             //              where cm.Supplier_Id == curSupplier_Id
                             //              select cm); 
+                            ct = prodMapSearch.Count();
                             prodMapSearch = (from a in prodMapSearch
                                                  //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
                                              join ctm in context.m_CityMapping on new
                                              {
                                                  SupplierId = a.Supplier_Id,
-                                                 Country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim()
-                                             ,
+                                                 //Country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper(),
                                                  City = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim()
                                              }
-                                             equals new
+                                            equals new
                                              {
                                                  SupplierId = ctm.Supplier_Id,
-                                                 Country = ((ctm.CountryName == null) ? ctm.CountryCode : ctm.CountryName).ToUpper().Trim()
-                                             ,
+                                                 //Country = ((ctm.CountryName == null) ? ctm.CountryCode : ctm.CountryName).ToUpper().Trim(),
                                                  City = ((ctm.CityName == null) ? ctm.CityCode : ctm.CityName).ToUpper().Trim()
                                              } //a.Supplier_Id equals ctm.Supplier_Id
                                              join ac in context.Accommodations.AsNoTracking() on new
-                                                    { //city = ctm.CityName.ToUpper().Trim(),
+                                                    { 
+                                                    //city = a.CityName.ToUpper().Trim(),
                                                     city = ctm.City_Id,
-                                                    hotel = (a.ProductName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(ctm.CityName, "").Replace(ctm.CountryName, "").Replace("  ", " ").Trim() } 
+                                                    hotel = (a.ProductName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(a.CityName ?? "", "").Replace(a.CountryName ?? "", "").Replace("  ", " ").Trim() } 
                                                 equals new
-                                                    { //city = ac.city.ToUpper().Trim(),
+                                                    { 
+                                                    //city = ac.city.ToUpper().Trim(),
                                                     city = ac.City_Id,
-                                                    hotel = (ac.HotelName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(ac.city, "").Replace(ac.country, "").Replace("  ", " ").Trim() }
+                                                    hotel = (ac.HotelName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(ac.city ?? "", "").Replace(ac.country ?? "", "").Replace("  ", " ").Trim() }
                                              select a).Distinct();//.ToList();
 
-                            //ct = prodMapSearch.Count();
+                            ct = prodMapSearch.Count();
                         }
                         if (CurrConfig == "LATITUDE")
                         {
@@ -1197,7 +1198,7 @@ namespace DataLayer
                                                             ((isCityNameCheck && s.city.ToUpper().Trim() == c.SystemCityName.ToUpper().Trim()) || (!isCityNameCheck)) &&
                                                             ((isCodeCheck && s.CompanyHotelID.ToString() == c.SupplierProductReference) || (!isCodeCheck)) &&
                                                             ((isPostCodeCheck && s.PostalCode.ToString() == c.PostCode) || (!isPostCodeCheck)) &&
-                                                            ((isNameCheck && s.HotelName.ToUpper().Replace("HOTEL", "").Replace(s.country, "").Replace(s.city, "").Replace("  ", " ").Trim() == c.ProductName.ToUpper().Replace("HOTEL", "").Replace(c.CountryName, "").Replace(c.CityName, "").Replace("  ", " ").Trim()) || (!isNameCheck)) &&
+                                                            ((isNameCheck && s.HotelName.ToUpper().Replace("HOTEL", "").Replace(s.country ?? "", "").Replace(s.city ?? "", "").Replace("  ", " ").Trim() == c.ProductName.ToUpper().Replace("HOTEL", "").Replace(c.CountryName ?? "", "").Replace(c.CityName ?? "", "").Replace("  ", " ").Trim()) || (!isNameCheck)) &&
                                                             ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck)) &&
                                                             ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck)) &&
                                                             ((isAddressCheck && s.Address_Tx != null && c.Address_tx != null && s.Address_Tx == c.Address_tx) || (!isAddressCheck)) &&
