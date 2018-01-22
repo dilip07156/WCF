@@ -5705,7 +5705,16 @@ namespace DataLayer
                     {
                         searchResult.AddRange(search.Where(w => w.supplier_id == SupplierID).ToList());
 
-                        newmapstats.NextRun = (from s in context.Schedule_NextOccurance where s.Schedule_ID == SupplierID select s.Execution_StartDate).FirstOrDefault().ToString();
+                        var run = (from s in context.Schedule_NextOccurance where s.Schedule_ID == SupplierID select s.Execution_StartDate).ToList();
+                        if (run.Count > 0)
+                        {
+                            newmapstats.NextRun = Convert.ToString(run[0].Date);
+                        }
+                        else
+                        {
+                            newmapstats.NextRun = null;
+                        }
+                        //newmapstats.NextRun = (from s in context.Schedule_NextOccurance where s.Schedule_ID == SupplierID select s.Execution_StartDate).FirstOrDefault().ToString();
                     }
                     else if (SupplierID == Guid.Empty)
                     {
