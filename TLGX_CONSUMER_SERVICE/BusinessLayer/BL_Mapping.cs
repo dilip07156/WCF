@@ -310,21 +310,25 @@ namespace BusinessLayer
         #endregion
 
         #region Mapping Stats
-        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(string SupplierID)
+        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(string SupplierID, string PriorityId)
         {
             Guid gSupplier_Id;
-
+            int iPriorityId;
             if (!Guid.TryParse(SupplierID, out gSupplier_Id))
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
             }
-            else
+
+            if (!int.TryParse(PriorityId, out iPriorityId))
             {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            
                 using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
                 {
-                    return objBL.GetMappingStatistics(gSupplier_Id);
+                    return objBL.GetMappingStatistics(gSupplier_Id, iPriorityId);
                 }
-            }
+            
         }
 
         public bool DeleteSTGMappingTableIDs(string file_Id)
@@ -342,11 +346,17 @@ namespace BusinessLayer
                 return false;
         }
 
-        public List<DataContracts.Mapping.DC_MappingStatsForSuppliers> GetMappingStatisticsForSuppliers()
+        public List<DataContracts.Mapping.DC_MappingStatsForSuppliers> GetMappingStatisticsForSuppliers(string PriorityId)
         {
+            int iPriorityId;
+            if (!int.TryParse(PriorityId, out iPriorityId))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
-                return objBL.GetMappingStatisticsForSuppliers();
+                return objBL.GetMappingStatisticsForSuppliers(iPriorityId);
             }
         }
         #endregion
