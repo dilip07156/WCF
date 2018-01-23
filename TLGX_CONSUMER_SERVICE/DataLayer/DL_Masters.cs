@@ -2674,11 +2674,18 @@ namespace DataLayer
             DC_Message _msg = new DC_Message();
             using (ConsumerEntities context = new ConsumerEntities())
             {
-                var isduplicate = (from sup in context.Supplier
-                                   join supcat in context.Supplier_ProductCategory on sup.Supplier_Id equals supcat.Supplier_Id
-                                   where supcat.Supplier_ProductCategory_Id != (_objSupCat.Supplier_ProductCategory_Id ?? Guid.Empty) && supcat.ProductCategory == _objSupCat.ProductCategory
+                //var isduplicate = (from sup in context.Supplier
+                //                   join supcat in context.Supplier_ProductCategory on sup.Supplier_Id equals supcat.Supplier_Id
+                //                   where supcat.Supplier_ProductCategory_Id != (_objSupCat.Supplier_ProductCategory_Id ?? Guid.Empty) 
+                //                   && supcat.Supplier_Id == _objSupCat.Supplier_Id 
+                //                   select sup).Count() == 0 ? false : true;
+
+                var isduplicate = (from supcat in context.Supplier_ProductCategory
+                                   join sup in context.Supplier on supcat.Supplier_Id equals sup.Supplier_Id
+                                   where supcat.ProductCategory == _objSupCat.ProductCategory && supcat.ProductCategorySubType == _objSupCat.ProductCategorySubType
                                    && supcat.Supplier_Id == _objSupCat.Supplier_Id
-                                   select sup).Count() == 0 ? false : true;
+                                   select supcat).Count() == 0 ? false : true;
+
 
                 if (isduplicate)
                 {
