@@ -2235,11 +2235,11 @@ namespace DataLayer
                                 //         select a;
                             }
 
-                          
+
 
                         }
 
-                        
+
                         if (isTypeUnMap)
                         {
                             search = search.Except((from a in ActFlv
@@ -4347,6 +4347,7 @@ namespace DataLayer
                 if (_objAct.Activity_Flavour_Id.HasValue) //&& _objAct.Activity_Id == Guid.Empty)|| _objAct.Activity_Id != Guid.Empty
                 {
                     var results = context.Activity_Flavour.Find(_objAct.Activity_Flavour_Id);
+                    var resultsSupplierMappingData = context.Activity_SupplierProductMapping.Where(x => x.Activity_ID == _objAct.Activity_Flavour_Id).FirstOrDefault();
 
                     if (results != null)
                     {
@@ -4356,10 +4357,26 @@ namespace DataLayer
                         results.Activity_Status_Edit_Date = _objAct.Activity_Status_Edit_Date;
                         results.Activity_Status_Edit_User = _objAct.Activity_Status_Edit_User;
 
+                        if (resultsSupplierMappingData != null)
+                        {
+                            if (_objAct.Activity_Status == "Review Completed")
+                            {
+                                resultsSupplierMappingData.MappingStatus = "MAPPED";
+                                resultsSupplierMappingData.Edit_Date = _objAct.Activity_Status_Edit_Date;
+                                resultsSupplierMappingData.Edit_User = _objAct.Activity_Status_Edit_User;
+                            }
+                            else
+                            {
+                                resultsSupplierMappingData.MappingStatus = "REVIEW";
+                                resultsSupplierMappingData.Edit_Date = _objAct.Activity_Status_Edit_Date;
+                                resultsSupplierMappingData.Edit_User = _objAct.Activity_Status_Edit_User;
+                            }
+                        }
                         if (context.SaveChanges() == 1)
                         {
                             _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
                             _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+
                         }
                         else
                         {
