@@ -233,5 +233,24 @@ namespace DataLayer
             StringContent json = new StringContent(body, Encoding.UTF8, "application/json");
             hc.PostAsync(requestUri, json);
         }
+
+        public void GetAsync(ProxyFor For, string URI)
+        {
+            string AbsPath = string.Empty;
+            if (For == ProxyFor.DataHandler)
+            {
+                AbsPath = DHSVCProxy.DHSVCURL;
+            }
+            else if (For == ProxyFor.SqlToMongo)
+            {
+                AbsPath = DHSVCProxy.MONGOSVCURL;
+            }
+
+            string requestUri = AbsPath + URI;
+
+            HttpClient hc = new HttpClient();
+            hc.GetAsync(requestUri);
+            hc.Dispose();
+        }
     }
 }

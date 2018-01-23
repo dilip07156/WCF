@@ -327,6 +327,7 @@
     <Compile Include="DL_Masters.cs" />
     <Compile Include="DL_Master_Country.cs" />
     <Compile Include="DL_Master_City.cs" />
+    <Compile Include="DL_MongoPush.cs" />
     <Compile Include="DL_Pentaho.cs" />
     <Compile Include="DL_Schedule.cs" />
     <Compile Include="DL_UploadStaticData.cs" />
