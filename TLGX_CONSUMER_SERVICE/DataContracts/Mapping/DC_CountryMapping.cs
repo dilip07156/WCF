@@ -45,6 +45,10 @@ namespace DataContracts.Mapping
         [DataMember]
         public string Longitude { get; set; }
 
+
+        [DataMember]
+        public Int32? MatchedBy { get; set; }
+
         [DataMember]
         public Guid CountryMapping_Id
         {
