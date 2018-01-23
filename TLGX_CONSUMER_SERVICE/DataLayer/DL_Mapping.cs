@@ -687,6 +687,29 @@ namespace DataLayer
                 PLog.PercentageValue = 58;
                 USD.AddStaticDataUploadProcessLog(PLog);
                 CallLogVerbose(File_Id, "MAP", "Updating / Inserting Database.");
+
+                var cities = clsMappingHotel.Select(x => ((x.CityCode ?? "") + (x.CityName ?? "")).ToUpper()).Distinct();
+
+                foreach(string city in cities)
+                {
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        var CityMapping = context.m_CityMapping.Select(s => s).AsQueryable();
+                        var search = (from a in CityMapping
+                                      where a.Supplier_Id == CurSupplier_Id 
+                                      && ((a.CityCode ?? "") + (a.CityName ?? "")).ToUpper() == city
+                                      select a).FirstOrDefault();
+                        if (search != null)
+                        {
+                            if (search.ListedService.IndexOf("H |") < 0)
+                            {
+                                search.ListedService = (search.ListedService ?? "") + " H |";
+                                context.SaveChanges();
+                            }
+                        }
+                    }
+                }
+
                 if (clsMappingHotel.Count > 0)
                 {
                     ret = UpdateAccomodationProductMapping(clsMappingHotel);
