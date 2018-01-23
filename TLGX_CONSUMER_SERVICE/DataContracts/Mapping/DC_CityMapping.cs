@@ -38,6 +38,12 @@ namespace DataContracts.Mapping
         string _StateName;
         string _StateNameWithCode;
 
+
+        [DataMember]
+        public Int32? MatchedBy { get; set; }
+        [DataMember]
+        public string ListedService { get; set; }
+
         [DataMember]
         public Nullable<System.Guid> stg_City_Id { get; set; }
 
@@ -435,6 +441,9 @@ namespace DataContracts.Mapping
         bool _IsExact;
         string _StateNameWithCode;
 
+
+        [DataMember]
+        public string ListedService { get; set; }
 
         [DataMember]
         public string CalledFromTLGX { get; set; }

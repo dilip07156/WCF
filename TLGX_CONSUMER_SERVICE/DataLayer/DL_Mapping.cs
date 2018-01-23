@@ -687,6 +687,29 @@ namespace DataLayer
                 PLog.PercentageValue = 58;
                 USD.AddStaticDataUploadProcessLog(PLog);
                 CallLogVerbose(File_Id, "MAP", "Updating / Inserting Database.");
+
+                var cities = clsMappingHotel.Select(x => ((x.CityCode ?? "") + (x.CityName ?? "")).ToUpper()).Distinct();
+
+                foreach(string city in cities)
+                {
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        var CityMapping = context.m_CityMapping.Select(s => s).AsQueryable();
+                        var search = (from a in CityMapping
+                                      where a.Supplier_Id == CurSupplier_Id 
+                                      && ((a.CityCode ?? "") + (a.CityName ?? "")).ToUpper() == city
+                                      select a).FirstOrDefault();
+                        if (search != null)
+                        {
+                            if (search.ListedService.IndexOf("H |") < 0)
+                            {
+                                search.ListedService = (search.ListedService ?? "") + " H |";
+                                context.SaveChanges();
+                            }
+                        }
+                    }
+                }
+
                 if (clsMappingHotel.Count > 0)
                 {
                     ret = UpdateAccomodationProductMapping(clsMappingHotel);
@@ -1030,30 +1053,31 @@ namespace DataLayer
                             //var cities = (from cm in context.m_CityMapping.AsNoTracking()
                             //              where cm.Supplier_Id == curSupplier_Id
                             //              select cm); 
+                            //ct = prodMapSearch.Count();
                             prodMapSearch = (from a in prodMapSearch
                                                  //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
                                              join ctm in context.m_CityMapping on new
                                              {
                                                  SupplierId = a.Supplier_Id,
-                                                 Country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim()
-                                             ,
+                                                 //Country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper(),
                                                  City = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim()
                                              }
-                                             equals new
+                                            equals new
                                              {
                                                  SupplierId = ctm.Supplier_Id,
-                                                 Country = ((ctm.CountryName == null) ? ctm.CountryCode : ctm.CountryName).ToUpper().Trim()
-                                             ,
+                                                 //Country = ((ctm.CountryName == null) ? ctm.CountryCode : ctm.CountryName).ToUpper().Trim(),
                                                  City = ((ctm.CityName == null) ? ctm.CityCode : ctm.CityName).ToUpper().Trim()
                                              } //a.Supplier_Id equals ctm.Supplier_Id
                                              join ac in context.Accommodations.AsNoTracking() on new
-                                                    { //city = ctm.CityName.ToUpper().Trim(),
+                                                    { 
+                                                    //city = a.CityName.ToUpper().Trim(),
                                                     city = ctm.City_Id,
-                                                    hotel = (a.ProductName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(ctm.CityName, "").Replace(ctm.CountryName, "").Replace("  ", " ").Trim() } 
+                                                    hotel = (a.ProductName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(a.CityName ?? "", "").Replace(a.CountryName ?? "", "").Replace("  ", " ").Trim() } 
                                                 equals new
-                                                    { //city = ac.city.ToUpper().Trim(),
+                                                    { 
+                                                    //city = ac.city.ToUpper().Trim(),
                                                     city = ac.City_Id,
-                                                    hotel = (ac.HotelName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(ac.city, "").Replace(ac.country, "").Replace("  ", " ").Trim() }
+                                                    hotel = (ac.HotelName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(ac.city ?? "", "").Replace(ac.country ?? "", "").Replace("  ", " ").Trim() }
                                              select a).Distinct();//.ToList();
 
                             //ct = prodMapSearch.Count();
@@ -1197,7 +1221,7 @@ namespace DataLayer
                                                             ((isCityNameCheck && s.city.ToUpper().Trim() == c.SystemCityName.ToUpper().Trim()) || (!isCityNameCheck)) &&
                                                             ((isCodeCheck && s.CompanyHotelID.ToString() == c.SupplierProductReference) || (!isCodeCheck)) &&
                                                             ((isPostCodeCheck && s.PostalCode.ToString() == c.PostCode) || (!isPostCodeCheck)) &&
-                                                            ((isNameCheck && s.HotelName.ToUpper().Replace("HOTEL", "").Replace(s.country, "").Replace(s.city, "").Replace("  ", " ").Trim() == c.ProductName.ToUpper().Replace("HOTEL", "").Replace(c.CountryName, "").Replace(c.CityName, "").Replace("  ", " ").Trim()) || (!isNameCheck)) &&
+                                                            ((isNameCheck && s.HotelName.ToUpper().Replace("HOTEL", "").Replace(s.country ?? "", "").Replace(s.city ?? "", "").Replace("  ", " ").Trim() == c.ProductName.ToUpper().Replace("HOTEL", "").Replace(c.CountryName ?? "", "").Replace(c.CityName ?? "", "").Replace("  ", " ").Trim()) || (!isNameCheck)) &&
                                                             ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck)) &&
                                                             ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck)) &&
                                                             ((isAddressCheck && s.Address_Tx != null && c.Address_tx != null && s.Address_Tx == c.Address_tx) || (!isAddressCheck)) &&
@@ -1220,6 +1244,7 @@ namespace DataLayer
                         res.RemoveAll(p => p.Accommodation_Id == Guid.Empty);
                         res = res.Select(c =>
                         {
+                            c.MatchedBy = curPriority - 1;
                             c.Status = ("REVIEW"); return c;
                         }).ToList();
 
@@ -1535,6 +1560,7 @@ namespace DataLayer
                         res.RemoveAll(p => p.Accommodation_Id == Guid.Empty);
                         res = res.Select(c =>
                         {
+                            c.MatchedBy = curPriority - 1;
                             c.Status = ("REVIEW"); return c;
                         }).ToList();
 
@@ -2313,6 +2339,8 @@ namespace DataLayer
                             search.Accommodation_Id = PM.Accommodation_Id;
                             if (PM.Supplier_Id != null)
                                 search.Supplier_Id = PM.Supplier_Id;
+                            if (PM.MatchedBy != null)
+                                search.MatchedBy = PM.MatchedBy;
                             search.Status = PM.Status;
                             search.IsActive = PM.IsActive;
                             search.Edit_Date = PM.Edit_Date;
@@ -4489,6 +4517,7 @@ namespace DataLayer
                         res.RemoveAll(p => p.Country_Id == Guid.Empty);
                         res = res.Select(c =>
                         {
+                            c.MatchedBy = curPriority - 1;
                             c.Status = ("REVIEW"); return c;
                         }).ToList();
 
@@ -4600,6 +4629,8 @@ namespace DataLayer
                             //{
                             search.Country_Id = CM.Country_Id;
                             search.Supplier_Id = CM.Supplier_Id;
+                            if (CM.MatchedBy != null)
+                                search.MatchedBy = CM.MatchedBy;
                             search.Status = CM.Status;
                             search.Edit_Date = CM.Edit_Date;
                             search.Edit_User = CM.Edit_User;
@@ -5496,6 +5527,7 @@ namespace DataLayer
                         res.RemoveAll(p => p.City_Id == Guid.Empty);
                         res = res.Select(c =>
                         {
+                            c.MatchedBy = curPriority - 1;
                             c.Status = ("REVIEW"); return c;
                         }).ToList();
 
@@ -5604,6 +5636,9 @@ namespace DataLayer
                                 search.City_Id = CM.City_Id;
                                 search.Country_Id = CM.Country_Id;
                                 search.Supplier_Id = CM.Supplier_Id;
+
+                                if (CM.MatchedBy != null)
+                                    search.MatchedBy = CM.MatchedBy;
                                 search.Status = CM.Status;
                                 search.Edit_Date = CM.Edit_Date;
                                 search.Edit_User = CM.Edit_User;
@@ -5705,7 +5740,16 @@ namespace DataLayer
                     {
                         searchResult.AddRange(search.Where(w => w.supplier_id == SupplierID).ToList());
 
-                        newmapstats.NextRun = (from s in context.Schedule_NextOccurance where s.Schedule_ID == SupplierID select s.Execution_StartDate).FirstOrDefault().ToString();
+                        var run = (from s in context.Schedule_NextOccurance where s.Schedule_ID == SupplierID select s.Execution_StartDate).ToList();
+                        if (run.Count > 0)
+                        {
+                            newmapstats.NextRun = Convert.ToString(run[0].Date);
+                        }
+                        else
+                        {
+                            newmapstats.NextRun = null;
+                        }
+                        //newmapstats.NextRun = (from s in context.Schedule_NextOccurance where s.Schedule_ID == SupplierID select s.Execution_StartDate).FirstOrDefault().ToString();
                     }
                     else if (SupplierID == Guid.Empty)
                     {

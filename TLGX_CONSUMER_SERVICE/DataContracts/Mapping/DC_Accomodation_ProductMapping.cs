@@ -60,6 +60,10 @@ namespace DataContracts.Mapping
         string _Google_Place_Id;
         string _Location;
 
+
+        [DataMember]
+        public Int32? MatchedBy { get; set; }
+
         [DataMember]
         public string ActionType { get; set; }
 
