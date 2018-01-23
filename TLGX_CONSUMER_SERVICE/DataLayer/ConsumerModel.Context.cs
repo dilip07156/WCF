@@ -41,9 +41,6 @@ namespace DataLayer
         public virtual DbSet<DynamicAttribute> DynamicAttributes { get; set; }
         public virtual DbSet<Accommodation_RoomFacility> Accommodation_RoomFacility { get; set; }
         public virtual DbSet<Accommodation_ClassificationAttributes> Accommodation_ClassificationAttributes { get; set; }
-        public virtual DbSet<Accommodation_ProductMapping> Accommodation_ProductMapping { get; set; }
-        public virtual DbSet<m_CityMapping> m_CityMapping { get; set; }
-        public virtual DbSet<m_CountryMapping> m_CountryMapping { get; set; }
         public virtual DbSet<m_Activity_Master> m_Activity_Master { get; set; }
         public virtual DbSet<m_Approval_RoleMaster> m_Approval_RoleMaster { get; set; }
         public virtual DbSet<m_Approval_StatusFlow> m_Approval_StatusFlow { get; set; }
@@ -140,6 +137,7 @@ namespace DataLayer
         public virtual DbSet<stg_SupplierActivityImageMapping> stg_SupplierActivityImageMapping { get; set; }
         public virtual DbSet<STG_SupplierActivityMetaDataMapping> STG_SupplierActivityMetaDataMapping { get; set; }
         public virtual DbSet<STG_SupplierActivityTypeMapping> STG_SupplierActivityTypeMapping { get; set; }
+        public virtual DbSet<vwMappingStat> vwMappingStats { get; set; }
         public virtual DbSet<STG_Mapping_TableIds> STG_Mapping_TableIds { get; set; }
         public virtual DbSet<SupplierImportFileDetail> SupplierImportFileDetails { get; set; }
         public virtual DbSet<SitemapInRole> SitemapInRoles { get; set; }
@@ -147,9 +145,11 @@ namespace DataLayer
         public virtual DbSet<Activity_DaysOfWeek> Activity_DaysOfWeek { get; set; }
         public virtual DbSet<Supplier> Supplier { get; set; }
         public virtual DbSet<Activity_CategoriesType> Activity_CategoriesType { get; set; }
-        public virtual DbSet<Dashboard_UserwiseMappedStat> Dashboard_UserwiseMappedStat { get; set; }
         public virtual DbSet<Dashboard_MappingStat> Dashboard_MappingStat { get; set; }
-        public virtual DbSet<vwMappingStat> vwMappingStats { get; set; }
+        public virtual DbSet<Dashboard_UserwiseMappedStat> Dashboard_UserwiseMappedStat { get; set; }
+        public virtual DbSet<Accommodation_ProductMapping> Accommodation_ProductMapping { get; set; }
+        public virtual DbSet<m_CityMapping> m_CityMapping { get; set; }
+        public virtual DbSet<m_CountryMapping> m_CountryMapping { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {
