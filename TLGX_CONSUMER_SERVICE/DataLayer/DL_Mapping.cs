@@ -1221,6 +1221,7 @@ namespace DataLayer
                         res.RemoveAll(p => p.Accommodation_Id == Guid.Empty);
                         res = res.Select(c =>
                         {
+                            c.MatchedBy = curPriority;
                             c.Status = ("REVIEW"); return c;
                         }).ToList();
 
@@ -1536,6 +1537,7 @@ namespace DataLayer
                         res.RemoveAll(p => p.Accommodation_Id == Guid.Empty);
                         res = res.Select(c =>
                         {
+                            c.MatchedBy = curPriority;
                             c.Status = ("REVIEW"); return c;
                         }).ToList();
 
@@ -2314,6 +2316,8 @@ namespace DataLayer
                             search.Accommodation_Id = PM.Accommodation_Id;
                             if (PM.Supplier_Id != null)
                                 search.Supplier_Id = PM.Supplier_Id;
+                            if (PM.MatchedBy != null)
+                                search.MatchedBy = PM.MatchedBy;
                             search.Status = PM.Status;
                             search.IsActive = PM.IsActive;
                             search.Edit_Date = PM.Edit_Date;
@@ -4490,6 +4494,7 @@ namespace DataLayer
                         res.RemoveAll(p => p.Country_Id == Guid.Empty);
                         res = res.Select(c =>
                         {
+                            c.MatchedBy = curPriority;
                             c.Status = ("REVIEW"); return c;
                         }).ToList();
 
@@ -4601,6 +4606,8 @@ namespace DataLayer
                             //{
                             search.Country_Id = CM.Country_Id;
                             search.Supplier_Id = CM.Supplier_Id;
+                            if (CM.MatchedBy != null)
+                                search.MatchedBy = CM.MatchedBy;
                             search.Status = CM.Status;
                             search.Edit_Date = CM.Edit_Date;
                             search.Edit_User = CM.Edit_User;
@@ -5497,6 +5504,7 @@ namespace DataLayer
                         res.RemoveAll(p => p.City_Id == Guid.Empty);
                         res = res.Select(c =>
                         {
+                            c.MatchedBy = curPriority;
                             c.Status = ("REVIEW"); return c;
                         }).ToList();
 
@@ -5605,6 +5613,9 @@ namespace DataLayer
                                 search.City_Id = CM.City_Id;
                                 search.Country_Id = CM.Country_Id;
                                 search.Supplier_Id = CM.Supplier_Id;
+
+                                if (CM.MatchedBy != null)
+                                    search.MatchedBy = CM.MatchedBy;
                                 search.Status = CM.Status;
                                 search.Edit_Date = CM.Edit_Date;
                                 search.Edit_User = CM.Edit_User;
