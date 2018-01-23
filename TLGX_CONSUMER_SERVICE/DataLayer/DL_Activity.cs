@@ -2635,13 +2635,7 @@ namespace DataLayer
                             _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                         }
                     }
-
-                    if (RQ.Activity_Flavour_Id != Guid.Empty)
-                    {
-                        DL_MongoPush _obj = new DL_MongoPush();
-                        _obj.SyncActivityFlavour(RQ.Activity_Flavour_Id ?? Guid.Empty);
-                    }
-
+                    
                     return _msg;
                 }
             }

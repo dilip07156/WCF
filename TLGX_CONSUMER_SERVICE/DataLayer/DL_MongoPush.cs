@@ -12,12 +12,9 @@ namespace DataLayer
         {
             if (Activity_Flavour_id != Guid.Empty)
             {
-
                 DHSVCProxyAsync DHP = new DHSVCProxyAsync();
                 string strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Sync_Activity_Flavour"], Convert.ToString(Activity_Flavour_id));
                 DHP.GetAsync(ProxyFor.SqlToMongo, strURI);
-
-
             }
 
         }

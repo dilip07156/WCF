@@ -250,7 +250,6 @@ namespace DataLayer
 
             HttpClient hc = new HttpClient();
             hc.GetAsync(requestUri);
-            hc.Dispose();
         }
     }
 }
