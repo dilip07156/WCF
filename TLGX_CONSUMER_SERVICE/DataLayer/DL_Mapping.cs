@@ -1221,7 +1221,7 @@ namespace DataLayer
                         res.RemoveAll(p => p.Accommodation_Id == Guid.Empty);
                         res = res.Select(c =>
                         {
-                            c.MatchedBy = curPriority;
+                            c.MatchedBy = curPriority - 1;
                             c.Status = ("REVIEW"); return c;
                         }).ToList();
 
@@ -1537,7 +1537,7 @@ namespace DataLayer
                         res.RemoveAll(p => p.Accommodation_Id == Guid.Empty);
                         res = res.Select(c =>
                         {
-                            c.MatchedBy = curPriority;
+                            c.MatchedBy = curPriority - 1;
                             c.Status = ("REVIEW"); return c;
                         }).ToList();
 
@@ -4494,7 +4494,7 @@ namespace DataLayer
                         res.RemoveAll(p => p.Country_Id == Guid.Empty);
                         res = res.Select(c =>
                         {
-                            c.MatchedBy = curPriority;
+                            c.MatchedBy = curPriority - 1;
                             c.Status = ("REVIEW"); return c;
                         }).ToList();
 
@@ -5504,7 +5504,7 @@ namespace DataLayer
                         res.RemoveAll(p => p.City_Id == Guid.Empty);
                         res = res.Select(c =>
                         {
-                            c.MatchedBy = curPriority;
+                            c.MatchedBy = curPriority - 1;
                             c.Status = ("REVIEW"); return c;
                         }).ToList();
 
