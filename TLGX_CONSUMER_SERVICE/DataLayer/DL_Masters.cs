@@ -2682,7 +2682,8 @@ namespace DataLayer
 
                 var isduplicate = (from supcat in context.Supplier_ProductCategory
                                    join sup in context.Supplier on supcat.Supplier_Id equals sup.Supplier_Id
-                                   where supcat.ProductCategory == _objSupCat.ProductCategory && supcat.ProductCategorySubType == _objSupCat.ProductCategorySubType
+                                   where supcat.ProductCategory == _objSupCat.ProductCategory && supcat.ProductCategorySubType == _objSupCat.ProductCategorySubType &&
+                                   supcat.Supplier_ProductCategory_Id != (_objSupCat.Supplier_ProductCategory_Id ?? Guid.Empty)
                                    && supcat.Supplier_Id == _objSupCat.Supplier_Id
                                    select supcat).Count() == 0 ? false : true;
 
