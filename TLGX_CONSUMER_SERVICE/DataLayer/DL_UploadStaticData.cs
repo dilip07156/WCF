@@ -1468,6 +1468,8 @@ namespace DataLayer
 
                     var total = ProgLogSearch.Count();
 
+                    if (RQ.PageSize == null)
+                        RQ.PageSize = 250;
                     var skip = RQ.PageSize * RQ.PageNo;
 
                     var ProgLogResult = (from a in ProgLogSearch
