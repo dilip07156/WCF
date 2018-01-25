@@ -7716,7 +7716,7 @@ namespace DataLayer
                                       MappinFor = g.Key.MappingFor,
                                       Sequence = g.Key.Sequence ?? 0,
                                       Status = g.Key.Status
-                                  }).ToList().AsQueryable(); ;
+                                  }).ToList().AsQueryable();
                     List<DataContracts.Mapping.DC_VelocityMappingStats> returnObj = new List<DataContracts.Mapping.DC_VelocityMappingStats>();
                     DataContracts.Mapping.DC_VelocityMappingStats newmapstats = new DataContracts.Mapping.DC_VelocityMappingStats();
                     newmapstats.SupplierId = parm.SupplierID;

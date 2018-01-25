@@ -2566,7 +2566,7 @@ namespace DataLayer
                             //res.Street4 = RQ.Street4;
                             //res.Street5 = RQ.Street5;
                             //res.USP = RQ.USP;
-
+                           
                             if (context.SaveChanges() == 1)
                             {
                                 _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
@@ -2585,6 +2585,7 @@ namespace DataLayer
                     {
                         DataLayer.Activity_Flavour obj = new DataLayer.Activity_Flavour();
 
+                        RQ.Activity_Flavour_Id = RQ.Activity_Flavour_Id ?? Guid.NewGuid();
                         obj.Activity_Flavour_Id = RQ.Activity_Flavour_Id ?? Guid.NewGuid();
                         obj.Activity_Id = RQ.Activity_Id;
                         obj.Legacy_Product_ID = RQ.Legacy_Product_ID;
@@ -2634,6 +2635,7 @@ namespace DataLayer
                             _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                         }
                     }
+                    
                     return _msg;
                 }
             }
@@ -2648,6 +2650,8 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    
+
                     if (RQ != null)
                     {
                         foreach (var item in RQ)
@@ -2683,11 +2687,14 @@ namespace DataLayer
                                     Create_User = item.User
                                 });
                             }
+
+                            
                         }
                     }
 
                     if (context.SaveChanges() == 1)
                     {
+                        
                         return new DC_Message
                         {
                             StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully,
@@ -3772,7 +3779,6 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-
                     if (RQ.Activity_SupplierProductMapping_CA_Id != null)
                     {
                         var res = context.Activity_SupplierProductMapping_CA.Find(RQ.Activity_SupplierProductMapping_CA_Id);
@@ -4236,6 +4242,12 @@ namespace DataLayer
                         context.Activity_DaysOfWeek.RemoveRange(DOW_TO_REMOVE);
 
                         context.SaveChanges();
+
+                        if (Activity_Flavour_Id != Guid.Empty)
+                        {
+                            DL_MongoPush _obj = new DL_MongoPush();
+                            _obj.SyncActivityFlavour(Activity_Flavour_Id ?? Guid.Empty);
+                        }
                     }
 
                     return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Saved Successfully" };
@@ -4372,8 +4384,15 @@ namespace DataLayer
                                 resultsSupplierMappingData.Edit_User = _objAct.Activity_Status_Edit_User;
                             }
                         }
+
                         if (context.SaveChanges() == 1)
                         {
+                            if (_objAct.Activity_Flavour_Id != Guid.Empty)
+                            {
+                                DL_MongoPush _obj = new DL_MongoPush();
+                                _obj.SyncActivityFlavour(_objAct.Activity_Flavour_Id ?? Guid.Empty);
+                            }
+
                             _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
                             _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
 
