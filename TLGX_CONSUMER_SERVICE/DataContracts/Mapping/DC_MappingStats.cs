@@ -666,6 +666,7 @@ namespace DataContracts.Mapping
         Guid _supplierID;
         DateTime? _fromdate;
         DateTime? _todate;
+        int _priority;
         [DataMember]
         public DateTime? Fromdate
         {
@@ -703,6 +704,19 @@ namespace DataContracts.Mapping
             set
             {
                 _supplierID = value;
+            }
+        }
+        [DataMember]
+        public int Priority
+        {
+            get
+            {
+                return _priority;
+            }
+
+            set
+            {
+                _priority = value;
             }
         }
     }

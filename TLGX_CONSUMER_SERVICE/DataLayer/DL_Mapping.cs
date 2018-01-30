@@ -696,7 +696,7 @@ namespace DataLayer
                     {
                         var CityMapping = context.m_CityMapping.Select(s => s).AsQueryable();
                         var search = (from a in CityMapping
-                                      where a.Supplier_Id == CurSupplier_Id 
+                                      where a.Supplier_Id == CurSupplier_Id
                                       && ((a.CityCode ?? "") + (a.CityName ?? "")).ToUpper() == city
                                       select a).FirstOrDefault();
                         if (search != null)
@@ -1015,9 +1015,9 @@ namespace DataLayer
                                           where cm.Supplier_Id == curSupplier_Id
                                           select cm);
 
-                            
+
                             prodMapSearch = (from a in prodMapSearch
-                                             join ctm in cities on new { a.Country_Id, city = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim() } 
+                                             join ctm in cities on new { a.Country_Id, city = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim() }
                                              equals new { ctm.Country_Id, city = ((ctm.CityName == null) ? ctm.CityCode : ctm.CityName).ToUpper().Trim() }
                                              //join m in context.m_CityMaster on new { Country_Id = (ctm.Country_Id ?? Guid.Empty), city = ctm.CityName.ToUpper().Trim() } 
                                              //equals new { Country_Id = m.Country_Id, city = m.Name.ToUpper().Trim() } //ctm.City_Id equals m.City_Id // a.CityName equals m.Name
@@ -1063,18 +1063,18 @@ namespace DataLayer
                                                  City = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim()
                                              }
                                             equals new
-                                             {
-                                                 SupplierId = ctm.Supplier_Id,
-                                                 //Country = ((ctm.CountryName == null) ? ctm.CountryCode : ctm.CountryName).ToUpper().Trim(),
-                                                 City = ((ctm.CityName == null) ? ctm.CityCode : ctm.CityName).ToUpper().Trim()
-                                             } //a.Supplier_Id equals ctm.Supplier_Id
+                                            {
+                                                SupplierId = ctm.Supplier_Id,
+                                                //Country = ((ctm.CountryName == null) ? ctm.CountryCode : ctm.CountryName).ToUpper().Trim(),
+                                                City = ((ctm.CityName == null) ? ctm.CityCode : ctm.CityName).ToUpper().Trim()
+                                            } //a.Supplier_Id equals ctm.Supplier_Id
                                              join ac in context.Accommodations.AsNoTracking() on new
-                                                    { 
-                                                    //city = a.CityName.ToUpper().Trim(),
-                                                    city = ctm.City_Id,
-                                                    hotel = (a.ProductName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(a.CityName ?? "", "").Replace(a.CountryName ?? "", "").Replace("  ", " ").Trim() } 
+                                             {
+                                                 //city = a.CityName.ToUpper().Trim(),
+                                                 city = ctm.City_Id,
+                                                 hotel = (a.ProductName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(a.CityName ?? "", "").Replace(a.CountryName ?? "", "").Replace("  ", " ").Trim() }
                                                 equals new
-                                                    { 
+                                                {
                                                     //city = ac.city.ToUpper().Trim(),
                                                     city = ac.City_Id,
                                                     hotel = (ac.HotelName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(ac.city ?? "", "").Replace(ac.country ?? "", "").Replace("  ", " ").Trim() }
@@ -1150,7 +1150,7 @@ namespace DataLayer
                         res = (from a in prodMapSearch
                                join act in context.m_CityMapping.AsNoTracking() on new { a.Supplier_Id, country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim(), city = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim() }
                                equals new { act.Supplier_Id, country = ((act.CountryName == null) ? act.CountryCode : act.CountryName).ToUpper().Trim(), city = ((act.CityName == null) ? act.CityCode : act.CityName).ToUpper().Trim() }
-                               join mact in context.m_CityMaster.AsNoTracking() on new { country = (act.Country_Id ?? Guid.Empty), city = act.CityName.ToUpper().Trim() } 
+                               join mact in context.m_CityMaster.AsNoTracking() on new { country = (act.Country_Id ?? Guid.Empty), city = act.CityName.ToUpper().Trim() }
                                equals new { country = mact.Country_Id, city = mact.Name.ToUpper().Trim() } into jact
                                from jdact in jact.DefaultIfEmpty()
                                    //join mac in context.m_CountryMaster.AsNoTracking() on jdact.Country_Id equals mac.Country_Id into jac
@@ -5425,16 +5425,16 @@ namespace DataLayer
                     if (isCountryCodeCheck || isCountryNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isStateNameCheck)
                     {
                         res = (from a in prodMapSearch
-                               //join m in context.m_CountryMapping on new
-                               //{
-                               //    supplier = a.Supplier_Id,
-                               //    country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim()
-                               //}
-                               //equals new
-                               //{
-                               //    supplier = m.Supplier_Id,
-                               //    country = ((m.CountryName == null) ? m.CountryCode : m.CountryName).ToUpper().Trim()
-                               //}
+                                   //join m in context.m_CountryMapping on new
+                                   //{
+                                   //    supplier = a.Supplier_Id,
+                                   //    country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim()
+                                   //}
+                                   //equals new
+                                   //{
+                                   //    supplier = m.Supplier_Id,
+                                   //    country = ((m.CountryName == null) ? m.CountryCode : m.CountryName).ToUpper().Trim()
+                                   //}
                                join ms in context.m_CountryMaster on a.Country_Id equals ms.Country_Id
                                //where m.Status.ToUpper() == "MAPPED" || m.Status.ToUpper() == "REVIEW"
                                select new DataContracts.Mapping.DC_CityMapping
@@ -5757,7 +5757,7 @@ namespace DataLayer
 
                         if (Priority > 0)
                         {
-                             CitySupplierCount = context.Supplier.Where(w => w.Priority == Priority && search.Where(sw => sw.MappingFor == "City").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
+                            CitySupplierCount = context.Supplier.Where(w => w.Priority == Priority && search.Where(sw => sw.MappingFor == "City").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
 
                             //int CitySupplierCountt = (from t1 in search
                             //                     join t2 in context.Supplier on t1.supplier_id equals t2.Supplier_Id
@@ -5888,7 +5888,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     context.Database.CommandTimeout = 0;
-                    
+
                     var dashBoard = context.Dashboard_MappingStat.Where(w => w.Status == "UNMAPPED" || w.Status == "REVIEW").AsQueryable();
                     dashBoard = dashBoard.Where(w => w.supplier_id != Guid.Empty);
                     dashBoard = dashBoard.Where(w => w.Batch == 1);
@@ -5909,7 +5909,7 @@ namespace DataLayer
                                     Mappingfor = group.Key.MappingFor,
                                     totalcount = group.Sum(x => x.totalcount) ?? 0
                                 }).OrderBy(x => x.SupplierName).ToList();
-                  
+
                 }
             }
             catch (Exception ex)
@@ -7683,9 +7683,21 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    List<DC_AllSupplierMappedData> searchResult = new List<DC_AllSupplierMappedData>();
+
                     context.Database.CommandTimeout = 0;
-                    var search = (from p in context.Dashboard_UserwiseMappedStat
-                                  where p.Supplier_id == parm.SupplierID && p.SupplierName != null && p.Batch == 1 &&(p.EditDate >= parm.Fromdate && p.EditDate <= parm.ToDate)
+                    List<DataContracts.Mapping.DC_VelocityMappingStats> returnObj = new List<DataContracts.Mapping.DC_VelocityMappingStats>();
+                    DataContracts.Mapping.DC_VelocityMappingStats newmapstats = new DataContracts.Mapping.DC_VelocityMappingStats();
+                    List<DataContracts.Mapping.DC_VelocityMappingStatsFor> newmapstatsforList = new List<DataContracts.Mapping.DC_VelocityMappingStatsFor>();
+
+                   
+                    newmapstats.SupplierId = parm.SupplierID;
+                    var unmapData = (from s in context.Dashboard_MappingStat.AsQueryable()
+                         .Where(cat => (cat.Batch == 1) && (cat.Status == "UNMAPPED" || cat.Status == "REVIEW"))
+                                     select s);
+
+                    var search = (from p in context.Dashboard_UserwiseMappedStat.AsQueryable()
+                                  where p.SupplierName != null && p.Batch == 1 && (p.EditDate >= parm.Fromdate && p.EditDate <= parm.ToDate)
                                   group p by new { p.Supplier_id, p.Username, p.MappingFor, p.Sequence, p.Status, p.SupplierName } into g
                                   select new DC_AllSupplierMappedData
                                   {
@@ -7696,14 +7708,48 @@ namespace DataLayer
                                       MappinFor = g.Key.MappingFor,
                                       Sequence = g.Key.Sequence ?? 0,
                                       Status = g.Key.Status
-                                  }).ToList().AsQueryable();
-                    List<DataContracts.Mapping.DC_VelocityMappingStats> returnObj = new List<DataContracts.Mapping.DC_VelocityMappingStats>();
-                    DataContracts.Mapping.DC_VelocityMappingStats newmapstats = new DataContracts.Mapping.DC_VelocityMappingStats();
-                    newmapstats.SupplierId = parm.SupplierID;
-                    var res_supplierName = (from s in context.Dashboard_UserwiseMappedStat where s.Supplier_id == parm.SupplierID && s.Batch == 1 select s).FirstOrDefault();
+                                  });
+                    if (parm.SupplierID != Guid.Empty)
+                    {
+                        searchResult.AddRange(search.Where(w => w.supplierid == parm.SupplierID).ToList());
+                        unmapData = (from s in unmapData
+                                     where s.supplier_id == parm.SupplierID
+                                     select s);
+                    }
+                    else if (parm.SupplierID == Guid.Empty)
+                    {
+                        if (parm.Priority > 0)
+                        {
+                            searchResult.AddRange((from t1 in search.ToList()
+                                                   join t2 in context.Supplier on t1.supplierid equals t2.Supplier_Id
+                                                   where t2.Priority == parm.Priority
+                                                   group t1 by new { t1.Username, t1.MappinFor, t1.Sequence, t1.Status, } into g
+                                                   select new DC_AllSupplierMappedData
+                                                   {
+                                                       supplierid = Guid.Empty,
+                                                       SupplierName = "ALL",
+                                                       Username = g.Key.Username,
+                                                       totalcount = (g.Sum(x => x.totalcount) ?? 0),
+                                                       MappinFor = g.Key.MappinFor,
+                                                       Sequence = g.Key.Sequence,
+                                                       Status = g.Key.Status
+                                                   }).ToList());
+                            unmapData = (from t in unmapData
+                                         join t2 in context.Supplier on t.supplier_id equals t2.Supplier_Id
+                                         where t2.Priority == parm.Priority
+                                         select t);
+                        }
+                        else if (parm.Priority == 0)
+                        {
+                            searchResult.AddRange(search.Where(w => w.SupplierName == "ALL").ToList());
+                            unmapData = (from t in unmapData
+                                         where t.supplier_id == Guid.Empty
+                                         select t);
+                        }
+                    }
+                    var res_supplierName = (from s in searchResult where s.supplierid == parm.SupplierID select s).FirstOrDefault();
                     if (res_supplierName != null)
-                        newmapstats.SupplierName = Convert.ToString(res_supplierName.SupplierName);
-                    List<DataContracts.Mapping.DC_VelocityMappingStatsFor> newmapstatsforList = new List<DataContracts.Mapping.DC_VelocityMappingStatsFor>();
+                        newmapstats.SupplierName = res_supplierName.SupplierName;
 
                     var MapForList = "City,Country,Product,Activity,HotelRoom".Split(','); //(from s in search select s.MappinFor).ToList().Distinct();
 
@@ -7712,49 +7758,18 @@ namespace DataLayer
                         DataContracts.Mapping.DC_VelocityMappingStatsFor newmapstatsfor = new DataContracts.Mapping.DC_VelocityMappingStatsFor();
 
                         newmapstatsfor.MappingFor = mapfor;
-                        var unMappedDataCount = (context.Dashboard_MappingStat
-                                                    .Where(cat => (cat.supplier_id == parm.SupplierID) && (cat.Batch == 1) && (cat.Status == "UNMAPPED" || cat.Status == "REVIEW") && (cat.MappingFor == mapfor))
-                           .GroupBy(cat => new { cat.SupplierName, cat.supplier_id })
-                                                        .Select(group => new
-                                                        {
-                                                            totalcount = group.Sum(x => x.totalcount)
-                                                        })).FirstOrDefault();
-                        //int? unMappedDataCount;
+                        var unMappedDataCount = (from s in unmapData
+                                                 where s.MappingFor==mapfor
+                                                 select s.totalcount).Sum();
 
-                        //    if (mapfor == "City")
-                        //    {
-                        //        var unMappedDataCity = context.m_CityMapping.Where(cat => (cat.Status == "UNMAPPED" || cat.Status == "REVIEW" || (cat.Status ?? string.Empty) == string.Empty) && ((parm.SupplierID != Guid.Empty) ? (cat.Supplier_Id == parm.SupplierID) : (cat.Supplier_Id == cat.Supplier_Id))).Count();
-                        //        unMappedDataCount = unMappedDataCity;
-                        //    }
-                        //    else if (mapfor == "Country") {
-                        //        var unMappedDataCountry = context.m_CountryMapping.Where(cat => (cat.Status == "UNMAPPED" || cat.Status == "REVIEW" || (cat.Status ?? string.Empty) == string.Empty) && ((parm.SupplierID != Guid.Empty) ? (cat.Supplier_Id == parm.SupplierID) : (cat.Supplier_Id == cat.Supplier_Id))).Count();
-                        //        unMappedDataCount = unMappedDataCountry;
-                        //    }
-                        //    else if (mapfor == "Product") {
-                        //        var unMappedDataCity = context.Accommodation_ProductMapping.Where(cat => (cat.Status == "UNMAPPED" || cat.Status == "REVIEW" || (cat.Status ?? string.Empty) == string.Empty) && ((parm.SupplierID != Guid.Empty) ? (cat.Supplier_Id == parm.SupplierID) : (cat.Supplier_Id == cat.Supplier_Id))).Count();
-                        //        unMappedDataCount = unMappedDataCity;
-                        //    }
-                        //    else if(mapfor == "Activity") {
-                        //        var unMappedDataCity = context.Activity_SupplierProductMapping.Where(cat => (cat.MappingStatus == "UNMAPPED" || cat.MappingStatus == "REVIEW" || (cat.MappingStatus ?? string.Empty) == string.Empty) && ((parm.SupplierID != Guid.Empty) ? (cat.Supplier_ID == parm.SupplierID) : (cat.Supplier_ID == cat.Supplier_ID))).Count();
-                        //        unMappedDataCount = unMappedDataCity;
-                        //    }
-                        //    else if(mapfor == "HotelRoom") {
-                        //        var unMappedDataCity = context.Accommodation_SupplierRoomTypeMapping.Where(cat => (cat.MappingStatus == "UNMAPPED" || cat.MappingStatus == "REVIEW" || (cat.MappingStatus ?? string.Empty) == string.Empty) && ((parm.SupplierID != Guid.Empty) ? (cat.Supplier_Id == parm.SupplierID) : (cat.Supplier_Id == cat.Supplier_Id))).Count();
-                        //        unMappedDataCount = unMappedDataCity;
-                        //    }
-                        //    else { unMappedDataCount = null; }
-
-
-
-
-                        //get estimate to complete mapping of unmapped data
-                        var totalmappeddata = (from s in search
+                       var totalmappeddata = (from s in searchResult
                                                where s.MappinFor == mapfor && s.Username == "Total" && s.Status == "Total"
                                                select s.totalcount).FirstOrDefault();
-                        if (unMappedDataCount != null )
+
+                        if (unMappedDataCount != null)
                         {
-                            newmapstatsfor.Unmappeddata = unMappedDataCount.totalcount ?? 0;
-                            if (unMappedDataCount.totalcount > 0 && totalmappeddata > 0)
+                            newmapstatsfor.Unmappeddata = unMappedDataCount.Value;
+                            if (unMappedDataCount.Value > 0 && totalmappeddata > 0)
                             {
                                 double days;
                                 if (parm.Fromdate == parm.ToDate)
@@ -7762,7 +7777,7 @@ namespace DataLayer
                                 else
                                     days = (Convert.ToDateTime(parm.ToDate) - Convert.ToDateTime(parm.Fromdate)).TotalDays;
                                 var perday = (totalmappeddata / days);
-                                newmapstatsfor.Estimate = Convert.ToInt32(unMappedDataCount.totalcount / perday);
+                                newmapstatsfor.Estimate = Convert.ToInt32(unMappedDataCount.Value / perday);
                             }
                             else
                             {
@@ -7776,12 +7791,11 @@ namespace DataLayer
                         }
                         if (totalmappeddata > 0)
                         {
-                            newmapstatsfor.MappingData = (from s in search
+                            newmapstatsfor.MappingData = (from s in searchResult
                                                           where s.MappinFor == mapfor
                                                           orderby s.MappinFor, s.Sequence
                                                           select new DataContracts.Mapping.DC_VelocityMappingdata { Username = s.Username, Sequence = s.Sequence, Totalcount = (s.totalcount ?? 0) }).ToList();
                         }
-
 
                         newmapstatsforList.Add(newmapstatsfor);
                     }
