@@ -921,7 +921,7 @@ namespace DataLayer
                                    && a.Status.Trim().ToUpper() == "UNMAPPED"
                                    select a);
 
-                    var ct = prodMap.Count();
+                    //var ct = prodMap.Count();
 
 
                     var cities = (from cm in context.m_CityMapping.AsNoTracking()
@@ -1066,7 +1066,7 @@ namespace DataLayer
                             //var cities = (from cm in context.m_CityMapping.AsNoTracking()
                             //              where cm.Supplier_Id == curSupplier_Id
                             //              select cm); 
-                            ct = prodMapSearch.Count();
+                            //ct = prodMapSearch.Count();
                             prodMapSearch = (from a in prodMapSearch
                                                  //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
                                              /*join ctm in context.m_CityMapping on new
@@ -1096,7 +1096,7 @@ namespace DataLayer
                                                     hotel = (ac.HotelName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(ac.city ?? "", "").Replace(ac.country ?? "", "").Replace("  ", " ").Trim() }
                                              select a).Distinct();//.ToList();
 
-                            ct = prodMapSearch.Count();
+                            //ct = prodMapSearch.Count();
                             //tempres = prodMapSearch.ToList();
                         }
                         if (CurrConfig == "LATITUDE")
