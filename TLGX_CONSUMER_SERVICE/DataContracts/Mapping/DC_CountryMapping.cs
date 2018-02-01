@@ -490,5 +490,7 @@ namespace DataContracts.Mapping
         [DataMember]
         public bool Match_Direct_Master { get; set; }
 
+        [DataMember]
+        public List<int> Priorities { get; set; }
     }
 }
