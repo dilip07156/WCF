@@ -1196,23 +1196,41 @@ namespace DataLayer
                             }
                             CallLogVerbose(File_Id, "MATCH", toupdate.Count.ToString() + " Matches Found for Combination " + curPriority.ToString() + ".");
                             //CallLogVerbose(File_Id, "MATCH", "Updating into Database.");
-                            
-                            var list = new List<System.Guid>();
+
                             foreach (DC_Accomodation_ProductMapping a in toupdate)
                             {
-                                list.Add(a.Accommodation_ProductMapping_Id);
+                                Guid curAccommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id;
+                                Guid curAccommodation_Id = a.Accommodation_Id ?? Guid.Empty;
+
+                                if (curAccommodation_Id != Guid.Empty)
+                                {
+                                    context.Accommodation_ProductMapping.Where(x => x.Accommodation_ProductMapping_Id == curAccommodation_ProductMapping_Id)
+                                       .Update(t => new Accommodation_ProductMapping() { MatchedBy = curPriority - 1, Status = "REVIEW",
+                                           Accommodation_Id = curAccommodation_Id
+                                       });
+                                }
                             }
 
-                            if (toupdate.Count > 0)
-                            {
-                                context.Accommodation_ProductMapping.Where(x => list.Contains(x.Accommodation_ProductMapping_Id))
-                                    //.Any(a => a.Accommodation_ProductMapping_Id == x.Accommodation_ProductMapping_Id))
-                                    .Update(t => new Accommodation_ProductMapping() { MatchedBy = curPriority - 1, Status = "REVIEW" });
-                            }
+                            var list = new List<System.Guid>();
+                            list = toupdate.Select(s =>  s.Accommodation_ProductMapping_Id).ToList();
+                            var newlist = toupdate.Select(s => new { Accommodation_ProductMapping_Id = s.Accommodation_ProductMapping_Id
+                                                                        , Accommodation_Id = s.Accommodation_Id });
+                            //if (toupdate.Count > 0)
+                            //{
+                            //    context.Accommodation_ProductMapping
+                            //         .Join(newlist, u => u.Accommodation_ProductMapping_Id, uir => uir.Accommodation_ProductMapping_Id,
+                            //         (u, uir) => new { u, uir })
+                            //         .Update(t => t.u);
+                            //        //.Where(x => list.Contains(x.Accommodation_ProductMapping_Id))
+                            //        //.Update(t => new Accommodation_ProductMapping() { MatchedBy = curPriority - 1, Status = "REVIEW"});
+
+                                
+                            //    //.Any(a => a.Accommodation_ProductMapping_Id == x.Accommodation_ProductMapping_Id))
+                            //}
 
                             //if (UpdateAccomodationProductMapping(toupdate))
                             //{
-                                if (Match_Direct_Master)
+                            if (Match_Direct_Master)
                                 {
                                     bool ismatchmasterdone = UpdateHotelMappingStatusDirectMaster(obj);
                                 }
