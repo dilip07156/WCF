@@ -37,7 +37,8 @@ namespace DataContracts.Mapping
         string _StateCode;
         string _StateName;
         string _StateNameWithCode;
-
+        [DataMember]
+        public List<DC_CityMapping_EntityCount> EntityTypeFlag { get; set; }
 
         [DataMember]
         public Int32? MatchedBy { get; set; }
@@ -440,8 +441,8 @@ namespace DataContracts.Mapping
         string _ResultSet;
         bool _IsExact;
         string _StateNameWithCode;
-
-
+        [DataMember]
+        public string EntityType { get; set; }
         [DataMember]
         public string ListedService { get; set; }
 
@@ -679,7 +680,18 @@ namespace DataContracts.Mapping
         }
     }
 
-
+    [DataContract]
+    public class DC_CityMapping_EntityCount
+    {
+        [DataMember]
+        public System.Guid EntityCityMapping_Id { get; set; }
+        [DataMember]
+        public System.Guid? CityMapping_Id { get; set; }
+        [DataMember]
+        public string EntityType { get; set; }
+        [DataMember]
+        public int? Count { get; set; }
+    }
     [DataContract]
     public class DC_HotelListByCityCode_RQ
     {

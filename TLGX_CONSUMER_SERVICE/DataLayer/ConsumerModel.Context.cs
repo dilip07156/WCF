@@ -150,6 +150,7 @@ namespace DataLayer
         public virtual DbSet<Accommodation_ProductMapping> Accommodation_ProductMapping { get; set; }
         public virtual DbSet<m_CityMapping> m_CityMapping { get; set; }
         public virtual DbSet<m_CountryMapping> m_CountryMapping { get; set; }
+        public virtual DbSet<m_CityMapping_EntityCount> m_CityMapping_EntityCount { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

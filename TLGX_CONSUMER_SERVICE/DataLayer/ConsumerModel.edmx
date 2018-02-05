@@ -1596,6 +1596,17 @@
           <Property Name="MatchedBy" Type="int" />
           <Property Name="ListedService" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="m_CityMapping_EntityCount">
+          <Key>
+            <PropertyRef Name="EntityCityMapping_Id" />
+          </Key>
+          <Property Name="EntityCityMapping_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CityMapping_Id" Type="uniqueidentifier" />
+          <Property Name="EntityType" Type="nvarchar" MaxLength="50" />
+          <Property Name="Count" Type="int" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Create_User" Type="varchar" MaxLength="100" />
+        </EntityType>
         <EntityType Name="m_CityMaster">
           <Key>
             <PropertyRef Name="City_Id" />
@@ -2642,6 +2653,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="m_CityArea" EntityType="Self.m_CityArea" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_CityAreaLocation" EntityType="Self.m_CityAreaLocation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_CityMapping" EntityType="Self.m_CityMapping" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="m_CityMapping_EntityCount" EntityType="Self.m_CityMapping_EntityCount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_CityMaster" EntityType="Self.m_CityMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_CountryMapping" EntityType="Self.m_CountryMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_CountryMaster" EntityType="Self.m_CountryMaster" Schema="dbo" store:Type="Tables" />
@@ -2874,6 +2886,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Accommodation_ProductMapping" EntityType="ConsumerModel.Accommodation_ProductMapping" />
           <EntitySet Name="m_CityMapping" EntityType="ConsumerModel.m_CityMapping" />
           <EntitySet Name="m_CountryMapping" EntityType="ConsumerModel.m_CountryMapping" />
+          <EntitySet Name="m_CityMapping_EntityCount" EntityType="ConsumerModel.m_CityMapping_EntityCount" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -5407,6 +5420,17 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="ContinentName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="stg_Country_Id" Type="Guid" />
           <Property Name="MatchedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="m_CityMapping_EntityCount">
+          <Key>
+            <PropertyRef Name="EntityCityMapping_Id" />
+          </Key>
+          <Property Name="EntityCityMapping_Id" Type="Guid" Nullable="false" />
+          <Property Name="CityMapping_Id" Type="Guid" />
+          <Property Name="EntityType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Count" Type="Int32" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -8030,6 +8054,18 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
                 <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
                 <ScalarProperty Name="CountryMapping_Id" ColumnName="CountryMapping_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="m_CityMapping_EntityCount">
+            <EntityTypeMapping TypeName="ConsumerModel.m_CityMapping_EntityCount">
+              <MappingFragment StoreEntitySet="m_CityMapping_EntityCount">
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="EntityType" ColumnName="EntityType" />
+                <ScalarProperty Name="CityMapping_Id" ColumnName="CityMapping_Id" />
+                <ScalarProperty Name="EntityCityMapping_Id" ColumnName="EntityCityMapping_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
