@@ -974,11 +974,11 @@ namespace DataLayer
                     #endregion
                     foreach (int priority in obj.Priorities)
                     {
-                        if (res.Count == 0)
-                        {
-                            retrn = true;
-                            break;
-                        }
+                        //if (res.Count == 0)
+                        //{
+                        //    retrn = true;
+                        //    break;
+                        //}
                         var curAttributeVals = obj.lstConfigs.Where(a => a.Priority == priority).ToList();
 
                         List<DC_SupplierImportAttributeValues> configs = curAttributeVals;
