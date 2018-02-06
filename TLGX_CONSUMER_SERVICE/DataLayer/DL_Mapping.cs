@@ -5650,11 +5650,11 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(param.EntityType))
                     {
                         string[] FilterArray = param.EntityType.Split(',');
-                        EntityMaster = (from x in EntityMaster
+                        var newEntityMaster = (from x in EntityMaster
                                       where FilterArray.Contains(x.EntityType)
                                       select x).AsQueryable();
                         prodMapSearch = (from p in prodMapSearch
-                                         join e in EntityMaster on p.CityMapping_Id equals e.CityMapping_Id
+                                         join e in newEntityMaster on p.CityMapping_Id equals e.CityMapping_Id
                                          select p);
                     }
 
@@ -5731,7 +5731,8 @@ namespace DataLayer
                                                Latitude = a.Latitude,
                                                Longitude = a.Longitude,
                                                EntityTypeFlag = (EntityMaster.Where(w => w.CityMapping_Id == a.CityMapping_Id)
-                                                                .Select(s => new DC_CityMapping_EntityCount { EntityCityMapping_Id = s.EntityCityMapping_Id, CityMapping_Id = s.CityMapping_Id, EntityType = s.EntityType, Count = s.Count }).ToList())
+                                                                .Select(s => new DC_CityMapping_EntityCount { EntityCityMapping_Id = s.EntityCityMapping_Id, CityMapping_Id = s.CityMapping_Id, EntityType = s.EntityType, Count = s.Count })
+                                                                .OrderBy(p=>p.EntityType).ToList()),
                                            }).Skip(skip).Take(param.PageSize).ToList();
 
                         //CityMapList = CityMapList.Select(c =>
