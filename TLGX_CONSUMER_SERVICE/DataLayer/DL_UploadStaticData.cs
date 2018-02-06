@@ -1539,6 +1539,8 @@ namespace DataLayer
                                 objNew.ActionText = obj.ActionText;
                                 objNew.Latitude = obj.Latitude;
                                 objNew.Longitude = obj.Longitude;
+                                objNew.ContinentCode = obj.ContinentCode;
+                                objNew.ContinentName = obj.ContinentName;
                                 context.stg_SupplierCountryMapping.Add(objNew);
                                 context.SaveChanges();
                             }
@@ -1627,7 +1629,9 @@ namespace DataLayer
                                          SupplierName = a.SupplierName,
                                          TotalRecords = total,
                                          Latitude = a.Latitude,
-                                         Longitude = a.Longitude
+                                         Longitude = a.Longitude,
+                                         ContinentCode = a.ContinentCode,
+                                         ContinentName = a.ContinentName
                                      }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 

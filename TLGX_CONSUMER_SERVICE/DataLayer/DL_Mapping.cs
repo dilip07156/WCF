@@ -4920,7 +4920,9 @@ namespace DataLayer
                                        Code = jd.Code,
                                        Name = jd.Name,
                                        Latitude = a.Latitude,
-                                       Longitude = a.Longitude
+                                       Longitude = a.Longitude,
+                                       ContinentCode = a.ContinentCode,
+                                       ContinentName = a.ContinentName
                                    }).Skip(skip).Take(RQ.PageSize);
                     var result = prodMapList.ToList();
 
@@ -5031,6 +5033,16 @@ namespace DataLayer
                     .Select(s1 => s1.stg_Country_Id)
                     .FirstOrDefault()
                     );
+                    c.ContinentCode = (clsSTGCountry
+                    .Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode))
+                    .Select(s1 => s1.ContinentCode)
+                    .FirstOrDefault()
+                    );
+                    c.ContinentName = (clsSTGCountry
+                    .Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode))
+                    .Select(s1 => s1.ContinentName)
+                    .FirstOrDefault()
+                    );
                     return c;
                 }).ToList();
 
@@ -5083,6 +5095,8 @@ namespace DataLayer
                     Longitude = g.Longitude,
                     ActionType = "INSERT",
                     stg_Country_Id = g.stg_Country_Id,
+                    ContinentCode = g.ContinentCode,
+                    ContinentName = g.ContinentName,
                     Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
                 }));
 
@@ -5508,6 +5522,10 @@ namespace DataLayer
                             search.Edit_Date = CM.Edit_Date;
                             search.Edit_User = CM.Edit_User;
                             search.Remarks = CM.Remarks;
+                            if(CM.ContinentCode != null)
+                                search.ContinentCode = CM.ContinentCode;
+                            if (CM.ContinentName != null)
+                                search.ContinentName = CM.ContinentName;
                             //}
 
                             context.SaveChanges();
@@ -5530,6 +5548,8 @@ namespace DataLayer
                             objNew.Remarks = CM.Remarks;
                             objNew.Latitude = CM.Latitude;
                             objNew.Longitude = CM.Longitude;
+                            objNew.ContinentCode = CM.ContinentCode;
+                            objNew.ContinentName = CM.ContinentName;
                             context.m_CountryMapping.Add(objNew);
                             context.SaveChanges();
 

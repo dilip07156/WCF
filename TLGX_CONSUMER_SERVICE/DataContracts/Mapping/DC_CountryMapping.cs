@@ -37,6 +37,12 @@ namespace DataContracts.Mapping
         public string ActionType { get; set; }
 
         [DataMember]
+        public string ContinentCode { get; set; }
+
+        [DataMember]
+        public string ContinentName { get; set; }
+
+        [DataMember]
         public Nullable<System.Guid> stg_Country_Id { get; set; }
 
         [DataMember]
