@@ -368,6 +368,9 @@
     <Compile Include="m_CityMapping.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="m_CityMapping_EntityCount.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="m_CityMaster.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>

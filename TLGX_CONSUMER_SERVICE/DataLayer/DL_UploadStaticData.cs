@@ -1630,7 +1630,9 @@ namespace DataLayer
                                          SupplierName = a.SupplierName,
                                          TotalRecords = total,
                                          Latitude = a.Latitude,
-                                         Longitude = a.Longitude
+                                         Longitude = a.Longitude,
+                                         ContinentCode = a.ContinentCode,
+                                         ContinentName = a.ContinentName
                                      }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 
