@@ -8743,7 +8743,8 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(param.CityMapping_Id))
                     {
                         string strGoFor = string.IsNullOrWhiteSpace(param.GoFor) ? string.Empty : param.GoFor.Trim().ToUpper();
-                        IQueryable<Accommodation_ProductMapping> query = context.Accommodation_ProductMapping.Where(w => false).Select(s => s).AsQueryable();
+                        IQueryable<Accommodation_ProductMapping> query;
+                        //context.Accommodation_ProductMapping.Where(w => false).Select(s => s).AsQueryable();
 
                         Guid _CityMapId = Guid.Parse(param.CityMapping_Id);
                         var selectedcity = context.m_CityMapping.Find(_CityMapId);
@@ -8755,11 +8756,13 @@ namespace DataLayer
                             var supplierCountryname = (selectedcity.CountryName ?? string.Empty).Trim().ToLower();
                             var supplierCountryCode = (selectedcity.CountryCode ?? string.Empty).Trim().ToLower();
 
+                            query = context.Accommodation_ProductMapping.Where(w => w.Supplier_Id == supplierid).Select(s => s).AsQueryable();
                             if (strGoFor == "CITYCODE")
                             {
                                 if (!string.IsNullOrWhiteSpace(suppliercitycode))
                                 {
-                                    query = context.Accommodation_ProductMapping.Where(w => w.CityCode.Trim().ToLower() == suppliercitycode && w.Supplier_Id == supplierid).Select(s => s).AsQueryable();
+                                    //query = context.Accommodation_ProductMapping.Where(w => w.CityCode.Trim().ToLower() == suppliercitycode && w.Supplier_Id == supplierid).Select(s => s).AsQueryable();
+                                    query = query.Where(w => w.CityCode.Trim().ToLower() == suppliercitycode).Select(s => s).AsQueryable();
                                 }
 
                             }
@@ -8767,7 +8770,16 @@ namespace DataLayer
                             {
                                 if (!string.IsNullOrWhiteSpace(suppliercityname))
                                 {
-                                    query = context.Accommodation_ProductMapping.Where(w => w.CityName.Trim().ToLower() == suppliercityname && w.Supplier_Id == supplierid).Select(s => s).AsQueryable();
+                                    //query = context.Accommodation_ProductMapping.Where(w => w.CityName.Trim().ToLower() == suppliercityname && w.Supplier_Id == supplierid).Select(s => s).AsQueryable();
+                                    query = query.Where(w => w.CityName.Trim().ToLower() == suppliercityname).Select(s => s).AsQueryable();
+                                    if (!string.IsNullOrWhiteSpace(supplierCountryCode))
+                                    {
+                                        query = query.Where(w => w.CountryCode.Trim().ToLower() == supplierCountryCode).Select(s => s);
+                                    }
+                                    else if (!string.IsNullOrWhiteSpace(supplierCountryname))
+                                    {
+                                        query = query.Where(w => w.CountryName.Trim().ToLower() == supplierCountryname).Select(s => s);
+                                    }
                                 }
 
                             }
@@ -8775,16 +8787,21 @@ namespace DataLayer
                             {
                                 if (!string.IsNullOrWhiteSpace(suppliercitycode))
                                 {
-                                    query = context.Accommodation_ProductMapping.Where(w => w.CityCode.Trim().ToLower() == suppliercitycode && w.Supplier_Id == supplierid).Select(s => s).AsQueryable();
+                                    query = query.Where(w => w.CityCode.Trim().ToLower() == suppliercitycode).Select(s => s).AsQueryable();
+                                    //&& w.Supplier_Id == supplierid
 
                                 }
-
-                                if (query.Count() == 0)
+                                else if (!string.IsNullOrWhiteSpace(suppliercityname))
                                 {
-                                    if (!string.IsNullOrWhiteSpace(suppliercityname))
+                                    query = query.Where(w => w.CityName.Trim().ToLower() == suppliercityname).Select(s => s).AsQueryable();
+                                    //&& w.Supplier_Id == supplierid
+                                    if (!string.IsNullOrWhiteSpace(supplierCountryCode))
                                     {
-                                        query = context.Accommodation_ProductMapping.Where(w => w.CityName.Trim().ToLower() == suppliercityname && w.Supplier_Id == supplierid).Select(s => s).AsQueryable();
-
+                                        query = query.Where(w => w.CountryCode.Trim().ToLower() == supplierCountryCode).Select(s => s);
+                                    }
+                                    else if (!string.IsNullOrWhiteSpace(supplierCountryname))
+                                    {
+                                        query = query.Where(w => w.CountryName.Trim().ToLower() == supplierCountryname).Select(s => s);
                                     }
                                 }
                             }
@@ -8793,7 +8810,7 @@ namespace DataLayer
                             int total = query.Count();
 
                             //Supplier Country Filter check
-                            if (total > 0)
+                            /*if (total > 0)
                             {
                                 if (!string.IsNullOrWhiteSpace(supplierCountryCode))
                                 {
@@ -8836,48 +8853,63 @@ namespace DataLayer
                                     return _lstresult;
                                 }
                             }
+                            
+                            total = query.Count();*/
 
-                            total = query.Count();
                             if (total > 0)
                             {
                                 var skip = param.PageSize * param.PageNo;
 
-                                var res = (from CM in query
-                                           orderby CM.Street.Length descending
-                                           select CM
-                                       ).Skip(skip).Take(param.PageSize).ToList();
+                                _lstresult = (from CM in query
+                                              orderby CM.address_tx.Length descending
+                                              select new DC_HotelListByCityCode
+                                              {
+                                                  HotelName = CM.ProductName,
+                                                  Address = (CM.address ?? string.Empty)
+                                                            + "," + (CM.CityName ?? string.Empty) + "(" + (CM.CityCode ?? string.Empty) + ")"
+                                                            + "," + (CM.StateName ?? string.Empty) + "(" + (CM.StateCode ?? string.Empty) + ")"
+                                                            + "," + (CM.CountryName ?? string.Empty) + "(" + (CM.CountryCode ?? string.Empty) + ")",
+                                                  CityMapping_Id = param.CityMapping_Id,
+                                                  GoFor = strGoFor,
+                                                  TotalRecords = total
+                                              }).Skip(skip).Take(param.PageSize).ToList();
 
-                                foreach (var item in res)
-                                {
-                                    StringBuilder sb = new StringBuilder();
-                                    sb.Append(item.Street);
-                                    sb.Append(", ");
-                                    sb.Append(item.Street2);
-                                    sb.Append(", ");
-                                    sb.Append(item.Street3);
-                                    sb.Append(", ");
-                                    sb.Append(item.CityName);
-                                    sb.Append(", ");
-                                    sb.Append(item.StateName);
-                                    sb.Append(", ");
-                                    sb.Append(item.StateCode);
-                                    sb.Append(", ");
-                                    sb.Append(item.CountryName);
-                                    sb.Append(", ");
-                                    sb.Append(item.CountryCode);
-                                    sb.Append(", ");
-                                    sb.Append(item.PostCode);
-                                    _lstresult.Add(new DC_HotelListByCityCode
-                                    {
-                                        HotelName = item.ProductName,
-                                        Address = Convert.ToString(sb),
-                                        CityMapping_Id = param.CityMapping_Id,
-                                        GoFor = strGoFor,
-                                        TotalRecords = total
-                                    });
-                                    sb.Clear();
+                                //var res = (from CM in query
+                                //           orderby CM.Street.Length descending
+                                //           select CM
+                                //       ).Skip(skip).Take(param.PageSize).ToList();
 
-                                }
+                                //foreach (var item in res)
+                                //{
+                                //    StringBuilder sb = new StringBuilder();
+                                //    sb.Append(item.Street);
+                                //    sb.Append(", ");
+                                //    sb.Append(item.Street2);
+                                //    sb.Append(", ");
+                                //    sb.Append(item.Street3);
+                                //    sb.Append(", ");
+                                //    sb.Append(item.CityName);
+                                //    sb.Append(", ");
+                                //    sb.Append(item.StateName);
+                                //    sb.Append(", ");
+                                //    sb.Append(item.StateCode);
+                                //    sb.Append(", ");
+                                //    sb.Append(item.CountryName);
+                                //    sb.Append(", ");
+                                //    sb.Append(item.CountryCode);
+                                //    sb.Append(", ");
+                                //    sb.Append(item.PostCode);
+                                //    _lstresult.Add(new DC_HotelListByCityCode
+                                //    {
+                                //        HotelName = item.ProductName,
+                                //        Address = Convert.ToString(sb),
+                                //        CityMapping_Id = param.CityMapping_Id,
+                                //        GoFor = strGoFor,
+                                //        TotalRecords = total
+                                //    });
+                                //    sb.Clear();
+
+                                //}
 
                                 return _lstresult;
                             }
