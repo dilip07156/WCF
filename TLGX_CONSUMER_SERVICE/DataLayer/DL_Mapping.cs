@@ -5946,7 +5946,7 @@ namespace DataLayer
 
 
                 //clsMappingCity = clsMappingCity.Where(a => a.oldCityName != a.CityName).ToList();
-                clsMappingCity.RemoveAll(p => p.CityName == p.oldCityName);
+                clsMappingCity.RemoveAll(p => p.CityName == p.oldCityName && p.StateCode == null);
                 PLog.PercentageValue = 53;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
