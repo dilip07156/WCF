@@ -60,6 +60,12 @@ namespace DataContracts.STG
         [DataMember]
         public string Longitude { get; set; }
 
+        [DataMember]
+        public string ContinentCode { get; set; }
+
+        [DataMember]
+        public string ContinentName { get; set; }
+
     }
 
     [DataContract]

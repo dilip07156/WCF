@@ -512,18 +512,19 @@ namespace DataLayer
                     if (obj.AttributeValue.ToLower() == "format")
                     {
                         isDuplicate = (from attr in context.m_SupplierImportAttributeValues
-                                           where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
-                                           (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
-                                           // attr.AttributeName.Trim().TrimStart().ToUpper() == obj.AttributeName.Trim().TrimStart().ToUpper() &&
-                                            attr.AttributeValue_ID.Value == obj.AttributeValue_ID.Value &&
-                                            attr.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
-                                            attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id &&
-                                            attr.Priority == obj.Priority
-                                           )
-                                           select attr).Count() == 0 ? false : true;
+                                       where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
+                                       (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                        // attr.AttributeName.Trim().TrimStart().ToUpper() == obj.AttributeName.Trim().TrimStart().ToUpper() &&
+                                        attr.AttributeValue_ID.Value == obj.AttributeValue_ID.Value &&
+                                        attr.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
+                                        attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id &&
+                                        attr.Priority == obj.Priority
+                                       )
+                                       select attr).Count() == 0 ? false : true;
                     }
-                    else { 
-                    isDuplicate = (from attr in context.m_SupplierImportAttributeValues
+                    else
+                    {
+                        isDuplicate = (from attr in context.m_SupplierImportAttributeValues
                                        where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
                                        (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
                                         attr.AttributeName.Trim().TrimStart().ToUpper() == obj.AttributeName.Trim().TrimStart().ToUpper() &&
@@ -1244,8 +1245,8 @@ namespace DataLayer
 
                                 if ((obj.From ?? "") == "MATCHING")
                                 {
-                                    stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();                                    
-                                    stat.Unmapped = (stat.Unmapped ?? 0) +  getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
+                                    stat.FinalStatus = (from a in context.SupplierImportFileDetails where a.SupplierImportFile_Id == obj.SupplierImportFile_Id select a.STATUS).FirstOrDefault();
+                                    stat.Unmapped = (stat.Unmapped ?? 0) + getcount.Where(g => g.Status.Trim().ToUpper() == "UNMAPPED").Select(a => a.count).FirstOrDefault();
                                     stat.Mapped = (stat.Mapped ?? 0) + getcount.Where(g => g.Status.Trim().ToUpper() == "MAPPED" || g.Status.Trim().ToUpper() == "REVIEW").Select(a => a.count).FirstOrDefault();
                                 }
                                 else
@@ -1539,6 +1540,8 @@ namespace DataLayer
                                 objNew.ActionText = obj.ActionText;
                                 objNew.Latitude = obj.Latitude;
                                 objNew.Longitude = obj.Longitude;
+                                objNew.ContinentCode = obj.ContinentCode;
+                                objNew.ContinentName = obj.ContinentName;
                                 context.stg_SupplierCountryMapping.Add(objNew);
                                 context.SaveChanges();
                             }
@@ -1864,37 +1867,44 @@ namespace DataLayer
 
             try
             {
-                using (ConsumerEntities context = new ConsumerEntities())
-                {
-                    string mySupplier = lstobj[0].SupplierName;
-                    Guid? mySupplier_Id = lstobj[0].Supplier_Id;
 
-                    if (!string.IsNullOrWhiteSpace(mySupplier))
+                string mySupplier = lstobj[0].SupplierName;
+                Guid? mySupplier_Id = lstobj[0].Supplier_Id;
+
+                if (!string.IsNullOrWhiteSpace(mySupplier))
+                {
+                    using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        var oldRecords = (from y in context.stg_SupplierProductMapping
-                                          where y.SupplierName.Trim().ToUpper() == mySupplier.Trim().ToUpper()
-                                          select y).ToList();
+                        var oldRecords = (from y in context.stg_SupplierProductMapping.AsNoTracking()
+                                          where y.Supplier_Id == mySupplier_Id 
+                                          select y);
                         context.stg_SupplierProductMapping.RemoveRange(oldRecords);
                         context.SaveChanges();
-                        List<DataContracts.STG.DC_stg_SupplierProductMapping> dstobj = new List<DC_stg_SupplierProductMapping>();
-                        dstobj = lstobj.GroupBy(a => new { a.CityCode, a.CityName, a.CountryCode, a.CountryName, a.StateCode, a.StateName, a.ProductId, a.ProductName, a.PostalCode }).Select(grp => grp.First()).ToList();
+                    }
+                    List<DataContracts.STG.DC_stg_SupplierProductMapping> dstobj = new List<DC_stg_SupplierProductMapping>();
+                    dstobj = lstobj.GroupBy(a => new { a.CityCode, a.CityName, a.CountryCode, a.CountryName, a.StateCode, a.StateName, a.ProductId, a.ProductName, a.PostalCode }).Select(grp => grp.First()).ToList();
 
-                        var geo = (from g in context.m_CityMapping
-                                   join c in context.m_CountryMapping on new { g.Supplier_Id, g.Country_Id } equals new { c.Supplier_Id, c.Country_Id }
-                                   //join d in dstobj on new { g.Supplier_Id, g.CityName } equals new { d.Supplier_Id, d.CityName }
-                                   where g.Supplier_Id == mySupplier_Id
-                                   select new
-                                   {
-                                       g.City_Id,//City_Id = Guid.Parse(g.City_Id.ToString()),
-                                       g.CityName, //Name = g.CityName,
-                                       g.CityCode,
-                                       c.Country_Id,//Country_Id = Guid.Parse(g.Country_Id.ToString()),
-                                       c.CountryName,//CountryName = g.CountryName
-                                       c.CountryCode
-                                   }
-                                  ).Distinct().ToList();
-
-                        foreach (DataContracts.STG.DC_stg_SupplierProductMapping obj in dstobj)
+                    List<DataContracts.STG.DC_Geo> geo = new List<DC_Geo>();
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        geo = (from g in context.m_CityMapping.AsNoTracking()
+                               join c in context.m_CountryMapping.AsNoTracking() on new { g.Supplier_Id, g.Country_Id } equals new { c.Supplier_Id, c.Country_Id }
+                               //join d in dstobj on new { g.Supplier_Id, g.CityName } equals new { d.Supplier_Id, d.CityName }
+                               where g.Supplier_Id == mySupplier_Id
+                               select new DataContracts.STG.DC_Geo
+                               {
+                                   City_Id = g.City_Id,//City_Id = Guid.Parse(g.City_Id.ToString()),
+                                   CityName = g.CityName, //Name = g.CityName,
+                                   CityCode = g.CityCode,
+                                   Country_Id = c.Country_Id,//Country_Id = Guid.Parse(g.Country_Id.ToString()),
+                                   CountryName = c.CountryName,//CountryName = g.CountryName
+                                   CountryCode = c.CountryCode
+                               }).ToList();
+                    }
+                    List<DataLayer.stg_SupplierProductMapping> lstobjNew = new List<DataLayer.stg_SupplierProductMapping>();
+                    foreach (DataContracts.STG.DC_stg_SupplierProductMapping obj in dstobj)
+                    {
+                        using (ConsumerEntities context = new ConsumerEntities())
                         {
                             DataLayer.stg_SupplierProductMapping objNew = new DataLayer.stg_SupplierProductMapping();
                             objNew.stg_AccoMapping_Id = obj.stg_AccoMapping_Id;
@@ -1931,8 +1941,8 @@ namespace DataLayer
                             objNew.Action = obj.Action;
                             objNew.UpdateType = obj.UpdateType;
                             objNew.ActionText = obj.ActionText;
-                            objNew.StarRating = obj.StarRating;                            
-                            objNew.City_Id =                                 
+                            objNew.StarRating = obj.StarRating;
+                            objNew.City_Id =
                                 (geo.Where(s => s.CityCode == obj.CityCode).Select(s1 => s1.City_Id).FirstOrDefault())
                                 ??
                                 ((geo.Where(s => s.CityName == obj.CityName).Select(s1 => s1.City_Id).FirstOrDefault()));
@@ -1951,39 +1961,45 @@ namespace DataLayer
 
                             if (objNew.CountryName == null)
                             {
-                                objNew.CountryName = 
+                                objNew.CountryName =
                                 (geo.Where(s => s.CityCode == objNew.CityCode).Select(s1 => s1.CountryName).FirstOrDefault())
                                 ?? ((geo.Where(s => s.CityName == objNew.CityName).Select(s1 => s1.CountryName).FirstOrDefault()));
                             }
                             if (objNew.CountryCode == null)
                             {
-                                objNew.CountryCode = 
-                                (geo.Where(s => s.CityCode == objNew.CityCode).Select(s1 => s1.CountryCode).FirstOrDefault()) 
+                                objNew.CountryCode =
+                                (geo.Where(s => s.CityCode == objNew.CityCode).Select(s1 => s1.CountryCode).FirstOrDefault())
                                 ?? ((geo.Where(s => s.CityName == objNew.CityName).Select(s1 => s1.CountryCode).FirstOrDefault()));
                             }
                             if (objNew.City_Id != null)
                             {
-                                objNew.Country_Id = (context.m_CityMaster.Where(g => g.City_Id == objNew.City_Id).Select(a => a.Country_Id).FirstOrDefault());
+                                objNew.Country_Id = (geo.Where(s => s.City_Id == objNew.City_Id).Select(a => a.Country_Id).FirstOrDefault());
+                                //objNew.Country_Id = (context.m_CityMaster.Where(g => g.City_Id == objNew.City_Id).Select(a => a.Country_Id).FirstOrDefault());
                             }
                             else
                             {
                                 objNew.Country_Id =
                                     (geo.Where(s => s.CountryCode == objNew.CountryCode).Select(s1 => s1.Country_Id).FirstOrDefault()) ??
-                                ((geo.Where(s => s.CountryName == objNew.CountryName).Select(s1 => s1.Country_Id).FirstOrDefault())) 
+                                ((geo.Where(s => s.CountryName == objNew.CountryName).Select(s1 => s1.Country_Id).FirstOrDefault()))
                                 ;
                             }
-                            context.stg_SupplierProductMapping.Add(objNew);
+                            lstobjNew.Add(objNew);
                         }
-                        context.SaveChanges();
-                        dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
-                        dc.StatusMessage = "Product Static Data " + ReadOnlyMessage.strAddedSuccessfully;
                     }
-                    else
+                    using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
-                        dc.StatusMessage = "Supplier Not Found";
+                        context.stg_SupplierProductMapping.AddRange(lstobjNew);
+                        context.SaveChanges();
                     }
+                    dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                    dc.StatusMessage = "Product Static Data " + ReadOnlyMessage.strAddedSuccessfully;
                 }
+                else
+                {
+                    dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                    dc.StatusMessage = "Supplier Not Found";
+                }
+
                 return dc;
             }
             catch (Exception e)
@@ -2084,7 +2100,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var stgSearch = from a in context.stg_SupplierProductMapping select a;
+                    var stgSearch = from a in context.stg_SupplierProductMapping.AsNoTracking() select a;
 
                     if (RQ.stg_AccoMapping_Id.HasValue)
                     {
@@ -2096,15 +2112,14 @@ namespace DataLayer
                     if (!(RQ.Supplier_Id == Guid.Empty))
                     {
                         stgSearch = from a in stgSearch
-                                    join s in context.Supplier on a.SupplierName.Trim().TrimStart().ToUpper() equals s.Name.Trim().TrimStart().ToUpper()
-                                    where s.Supplier_Id == RQ.Supplier_Id
+                                    where a.Supplier_Id == RQ.Supplier_Id
                                     select a;
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.SupplierName))
                     {
                         stgSearch = from a in stgSearch
-                                    where a.SupplierName.Trim().TrimStart().ToUpper() == RQ.SupplierName.Trim().TrimStart().ToUpper()
+                                    where a.SupplierName.Trim().ToUpper() == RQ.SupplierName.Trim().ToUpper()
                                     select a;
                     }
 
@@ -2112,86 +2127,81 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(RQ.CountryCode))
                     {
                         stgSearch = from a in stgSearch
-                                    where a.CountryCode.Trim().TrimStart().ToUpper() == RQ.CountryCode.Trim().TrimStart().ToUpper()
+                                    where a.CountryCode.Trim().ToUpper() == RQ.CountryCode.Trim().ToUpper()
                                     select a;
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.CountryName))
                     {
                         stgSearch = from a in stgSearch
-                                    where a.CountryName.Trim().TrimStart().ToUpper() == RQ.CountryName.Trim().TrimStart().ToUpper()
+                                    where a.CountryName.Trim().ToUpper() == RQ.CountryName.Trim().ToUpper()
                                     select a;
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.StateCode))
                     {
                         stgSearch = from a in stgSearch
-                                    where a.StateCode.Trim().TrimStart().ToUpper() == RQ.StateCode.Trim().TrimStart().ToUpper()
+                                    where a.StateCode.Trim().ToUpper() == RQ.StateCode.Trim().ToUpper()
                                     select a;
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.StateName))
                     {
                         stgSearch = from a in stgSearch
-                                    where a.StateName.Trim().TrimStart().ToUpper() == RQ.StateName.Trim().TrimStart().ToUpper()
+                                    where a.StateName.Trim().ToUpper() == RQ.StateName.Trim().ToUpper()
                                     select a;
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.CityCode))
                     {
                         stgSearch = from a in stgSearch
-                                    where a.CityCode.Trim().TrimStart().ToUpper() == RQ.CityCode.Trim().TrimStart().ToUpper()
+                                    where a.CityCode.Trim().ToUpper() == RQ.CityCode.Trim().ToUpper()
                                     select a;
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.CityName))
                     {
                         stgSearch = from a in stgSearch
-                                    where a.CityName.Trim().TrimStart().ToUpper() == RQ.CityName.Trim().TrimStart().ToUpper()
+                                    where a.CityName.Trim().ToUpper() == RQ.CityName.Trim().ToUpper()
                                     select a;
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.ProductId))
                     {
                         stgSearch = from a in stgSearch
-                                    where a.ProductId.Trim().TrimStart().ToUpper() == RQ.ProductId.Trim().TrimStart().ToUpper()
+                                    where a.ProductId.Trim().ToUpper() == RQ.ProductId.Trim().ToUpper()
                                     select a;
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.ProductName))
                     {
                         stgSearch = from a in stgSearch
-                                    where a.ProductName.Trim().TrimStart().ToUpper() == RQ.ProductName.Trim().TrimStart().ToUpper()
+                                    where a.ProductName.Trim().ToUpper() == RQ.ProductName.Trim().ToUpper()
                                     select a;
                     }
                     if (!string.IsNullOrWhiteSpace(RQ.Latitude))
                     {
                         stgSearch = from a in stgSearch
-                                    where a.Latitude.Trim().TrimStart().ToUpper() == RQ.Latitude.Trim().TrimStart().ToUpper()
+                                    where a.Latitude.Trim().ToUpper() == RQ.Latitude.Trim().ToUpper()
                                     select a;
                     }
                     if (!string.IsNullOrWhiteSpace(RQ.Longitude))
                     {
                         stgSearch = from a in stgSearch
-                                    where a.Longitude.Trim().TrimStart().ToUpper() == RQ.Longitude.Trim().TrimStart().ToUpper()
+                                    where a.Longitude.Trim().ToUpper() == RQ.Longitude.Trim().ToUpper()
                                     select a;
                     }
                     if (!string.IsNullOrWhiteSpace(RQ.StarRating))
                     {
                         stgSearch = from a in stgSearch
-                                    where a.StarRating.Trim().TrimStart().ToUpper() == RQ.StarRating.Trim().TrimStart().ToUpper()
+                                    where a.StarRating.Trim().ToUpper() == RQ.StarRating.Trim().ToUpper()
                                     select a;
                     }
-
-
-                    int total;
-
-                    total = stgSearch.Count();
-
-                    var skip = RQ.PageSize * RQ.PageNo;
+                    
+                    //var skip = RQ.PageSize * RQ.PageNo;
 
                     var stgResult = (from a in stgSearch
-                                     orderby a.SupplierName, a.CountryName
+                                     //orderby a.SupplierName, a.CountryName
                                      select new DataContracts.STG.DC_stg_SupplierProductMapping
                                      {
                                          stg_AccoMapping_Id = a.stg_AccoMapping_Id,
@@ -2205,7 +2215,7 @@ namespace DataLayer
                                          CountryName = a.CountryName,
                                          SupplierId = a.SupplierId,
                                          SupplierName = a.SupplierName,
-                                         TotalRecords = total,
+                                         //TotalRecords = total,
                                          Latitude = a.Latitude,
                                          Longitude = a.Longitude,
                                          Address = a.Address,
@@ -2234,7 +2244,8 @@ namespace DataLayer
                                          Google_Place_Id = a.Google_Place_Id,
                                          Supplier_Id = a.Supplier_Id
                                      }
-                                        ).Skip(skip).Take(RQ.PageSize).ToList();
+                                        ).ToList();
+                                        //.Skip(skip).Take(RQ.PageSize).ToList();
 
                     return stgResult;
 
