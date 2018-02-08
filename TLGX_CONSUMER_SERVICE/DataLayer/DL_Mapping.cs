@@ -5876,6 +5876,16 @@ namespace DataLayer
                     .Select(s1 => s1.stg_City_Id)
                     .FirstOrDefault()
                     );
+                    c.StateCode = (clsSTGCity
+                   .Where(s => s.CityCode == c.CityCode)
+                   .Select(s1 => s1.StateCode)
+                   .FirstOrDefault()
+                   ) ?? c.StateCode;
+                    c.StateName = (clsSTGCity
+                    .Where(s => s.CityCode == c.CityCode)
+                    .Select(s1 => s1.StateName)
+                    .FirstOrDefault()
+                    ) ?? c.StateName;
                     return c;
                 }).ToList();
 
