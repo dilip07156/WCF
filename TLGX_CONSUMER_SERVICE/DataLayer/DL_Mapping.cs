@@ -5115,28 +5115,28 @@ namespace DataLayer
                 clsMappingCountry = clsMappingCountry.Select(c =>
                 {
                     c.CountryCode = (clsSTGCountry
-                    .Where(s => (s.CountryName.Trim() ?? s.CountryCode.Trim()) == (c.CountryName.Trim() ?? c.CountryCode.Trim()))
+                    .Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode))
                     .Select(s1 => s1.CountryCode)
                     .FirstOrDefault()
-                    );
+                    ) ?? c.CountryCode;
                     c.Edit_Date = DateTime.Now;
                     c.Edit_User = "TLGX";
                     c.ActionType = "UPDATE";
                     c.stg_Country_Id = (clsSTGCountry
-                    .Where(s => (s.CountryName.Trim() ?? s.CountryCode.Trim()) == (c.CountryName.Trim() ?? c.CountryCode.Trim()))
+                    .Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode))
                     .Select(s1 => s1.stg_Country_Id)
                     .FirstOrDefault()
                     );
                     c.ContinentCode = (clsSTGCountry
-                    .Where(s => (s.CountryName.Trim() ?? s.CountryCode.Trim()) == (c.CountryName.Trim() ?? c.CountryCode.Trim()))
+                    .Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode))
                     .Select(s1 => s1.ContinentCode)
                     .FirstOrDefault()
-                    );
+                    ) ?? c.ContinentCode;
                     c.ContinentName = (clsSTGCountry
-                    .Where(s => (s.CountryName.Trim() ?? s.CountryCode.Trim()) == (c.CountryName.Trim() ?? c.CountryCode.Trim()))
+                    .Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode))
                     .Select(s1 => s1.ContinentName)
                     .FirstOrDefault()
-                    );
+                    ) ?? c.ContinentName;
                     return c;
                 }).ToList();
 
