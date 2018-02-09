@@ -5155,7 +5155,7 @@ namespace DataLayer
                 CallLogVerbose(File_Id, "MAP", "Checking for New Countries in File.");
                 clsSTGCountryInsert = clsSTGCountry.Where(p => !clsMappingCountry.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                 && (
-                    (p.CountryCode != null && p2.CountryCode.Trim() == p.CountryCode.Trim())
+                    (p.CountryCode != null && p2.CountryCode == p.CountryCode)
                     || (p.CountryCode == null && p2.CountryName.ToString().Trim().ToUpper() == p.CountryName.ToString().Trim().ToUpper())
                 ))).ToList();
 
@@ -5164,7 +5164,7 @@ namespace DataLayer
 
                 CallLogVerbose(File_Id, "MAP", "Removing UnEdited Data.");
                 clsSTGCountry.RemoveAll(p => clsSTGCountryInsert.Any(p2 => (p2.stg_Country_Id == p.stg_Country_Id)));
-                clsMappingCountry.RemoveAll(p => p.CountryCode.Trim() == p.OldCountryCode.Trim());
+                clsMappingCountry.RemoveAll(p => p.CountryCode == p.OldCountryCode);
 
                 PLog.PercentageValue = 53;
                 USD.AddStaticDataUploadProcessLog(PLog);
