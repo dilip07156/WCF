@@ -5115,7 +5115,7 @@ namespace DataLayer
                 clsMappingCountry = clsMappingCountry.Select(c =>
                 {
                     c.CountryCode = (clsSTGCountry
-                    .Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode))
+                    .Where(s => (s.CountryName.Trim() ?? s.CountryCode.Trim()) == (c.CountryName.Trim() ?? c.CountryCode.Trim()))
                     .Select(s1 => s1.CountryCode)
                     .FirstOrDefault()
                     );
@@ -5123,17 +5123,17 @@ namespace DataLayer
                     c.Edit_User = "TLGX";
                     c.ActionType = "UPDATE";
                     c.stg_Country_Id = (clsSTGCountry
-                    .Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode))
+                    .Where(s => (s.CountryName.Trim() ?? s.CountryCode.Trim()) == (c.CountryName.Trim() ?? c.CountryCode.Trim()))
                     .Select(s1 => s1.stg_Country_Id)
                     .FirstOrDefault()
                     );
                     c.ContinentCode = (clsSTGCountry
-                    .Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode))
+                    .Where(s => (s.CountryName.Trim() ?? s.CountryCode.Trim()) == (c.CountryName.Trim() ?? c.CountryCode.Trim()))
                     .Select(s1 => s1.ContinentCode)
                     .FirstOrDefault()
                     );
                     c.ContinentName = (clsSTGCountry
-                    .Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode))
+                    .Where(s => (s.CountryName.Trim() ?? s.CountryCode.Trim()) == (c.CountryName.Trim() ?? c.CountryCode.Trim()))
                     .Select(s1 => s1.ContinentName)
                     .FirstOrDefault()
                     );
@@ -5155,7 +5155,7 @@ namespace DataLayer
                 CallLogVerbose(File_Id, "MAP", "Checking for New Countries in File.");
                 clsSTGCountryInsert = clsSTGCountry.Where(p => !clsMappingCountry.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
                 && (
-                    (p.CountryCode != null && p2.CountryCode == p.CountryCode)
+                    (p.CountryCode != null && p2.CountryCode.Trim() == p.CountryCode.Trim())
                     || (p.CountryCode == null && p2.CountryName.ToString().Trim().ToUpper() == p.CountryName.ToString().Trim().ToUpper())
                 ))).ToList();
 
@@ -5164,7 +5164,7 @@ namespace DataLayer
 
                 CallLogVerbose(File_Id, "MAP", "Removing UnEdited Data.");
                 clsSTGCountry.RemoveAll(p => clsSTGCountryInsert.Any(p2 => (p2.stg_Country_Id == p.stg_Country_Id)));
-                clsMappingCountry.RemoveAll(p => p.CountryCode == p.OldCountryCode);
+                clsMappingCountry.RemoveAll(p => p.CountryCode.Trim() == p.OldCountryCode.Trim());
 
                 PLog.PercentageValue = 53;
                 USD.AddStaticDataUploadProcessLog(PLog);
