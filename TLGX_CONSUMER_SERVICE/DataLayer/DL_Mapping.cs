@@ -3963,7 +3963,7 @@ namespace DataLayer
                             {
                                 if (!string.IsNullOrWhiteSpace(item.Tx_StrippedName))
                                 {
-                                    var resultRoomCategory = Accommodation_RoomInfo.Where(w => w.Accommodation_Id == item.Accommodation_Id && w.RoomCategory.ToLower().Replace("room", "").Trim() == item.Tx_StrippedName.ToLower().Replace("room", "").Trim()).Select(s => s).FirstOrDefault();
+                                    var resultRoomCategory = Accommodation_RoomInfo.Where(w => w.Accommodation_Id == item.Accommodation_Id && w.RoomCategory.ToLower().Replace("room", string.Empty).Replace("rooms", string.Empty).Trim() == item.Tx_StrippedName.ToLower().Replace("room", string.Empty).Replace("rooms", string.Empty).Trim()).Select(s => s).FirstOrDefault();
                                     if (resultRoomCategory != null)
                                     {
                                         item.Accommodation_RoomInfo_Id = resultRoomCategory.Accommodation_RoomInfo_Id;
@@ -4416,19 +4416,24 @@ namespace DataLayer
                     //Split words and replace keywords
                     string[] roomWords = BaseRoomName.Split(' ');
 
+                    BaseRoomName = " " + BaseRoomName + " ";
+
                     foreach (string word in roomWords)
                     {
                         DataContracts.Masters.DC_Keyword keywordSearch = Keywords.Where(k => k.Alias.Any(a => a.Value.ToUpper() == word.ToUpper()) && k.Attribute == false && !k.Keyword.StartsWith("##")).FirstOrDefault();
 
                         if (keywordSearch != null)
                         {
-                            BaseRoomName = BaseRoomName.Replace(word, keywordSearch.Keyword);
+                            BaseRoomName = BaseRoomName.Replace(" " + word + " ", " " + keywordSearch.Keyword + " ");
                             var foundAlias = keywordSearch.Alias.Where(w => w.Value.ToUpper() == word.ToUpper()).FirstOrDefault();
                             foundAlias.NoOfHits += 1;
                         }
 
                         keywordSearch = null;
                     }
+
+                    BaseRoomName = BaseRoomName.Trim();
+
                     #endregion
 
                     //Transformed Supplier RoomName
@@ -4440,16 +4445,21 @@ namespace DataLayer
                     string sAttributeAlias = string.Empty;
                     foreach (var Attribute in Attributes.OrderBy(o => o.Sequence))
                     {
-                        if (Attribute.Keyword == "NON-SMOKING-ROOM")
-                        {
-                            int ifdfs = 1;
-                        }
+                        //if (Attribute.Keyword == "NON-SMOKING-ROOM")
+                        //{
+                        //    int ifdfs = 1;
+                        //}
 
                         isRoomHaveAttribute = false;
 
                         var aliases = Attribute.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
                         foreach (var alias in aliases)
                         {
+
+                            //if(alias.Value.ToUpper() == "RO")
+                            //{
+                            //    int iStop = 1;
+                            //}
 
                             isRoomHaveAttribute = false;
                             sAttributeAlias = alias.Value.Replace(",", " ").Trim().ToUpper();
