@@ -3589,7 +3589,7 @@ namespace DataLayer
 
                             var state = (from st in context.m_States
                                          where st.StateName.ToLower() == _obj.Name.ToLower() && st.Country_Id == Country_id
-                                         select new { st.State_Id }).First();
+                                         select new { st.State_Id }).FirstOrDefault();
                             if (state != null)
                                 _result.ID = state.State_Id;
                         }
