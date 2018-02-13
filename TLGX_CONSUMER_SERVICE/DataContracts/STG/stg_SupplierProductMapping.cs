@@ -193,4 +193,23 @@ namespace DataContracts.STG
         [DataMember]
         public string StarRating { get; set; }
     }
+
+    [DataContract]
+    public class DC_Geo
+    {
+        [DataMember]
+        public Nullable<System.Guid> City_Id { get; set; }
+        [DataMember]
+        public string CityName { get; set; }
+        [DataMember]
+        public string CityCode { get; set; }
+        [DataMember]
+        public Nullable<System.Guid> Country_Id { get; set; }
+        [DataMember]
+        public string CountryName { get; set; }
+        [DataMember]
+        public string CountryCode { get; set; }
+
+
+    }
 }
