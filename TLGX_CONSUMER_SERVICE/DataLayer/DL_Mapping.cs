@@ -1143,6 +1143,7 @@ namespace DataLayer
                     }
                     if (Match_Direct_Master)
                     {
+                        resmaster.RemoveAll(p => res.Where(w => w.Accommodation_Id != null && w.Accommodation_Id != Guid.Empty).Any(a => a.Accommodation_ProductMapping_Id == p.Accommodation_ProductMapping_Id));
                         resmaster.RemoveAll(p => p.Accommodation_Id != null && p.Accommodation_Id != Guid.Empty); //Guid.Empty
                         foreach (DC_Accomodation_ProductMapping curRes in resmaster)
                         {
