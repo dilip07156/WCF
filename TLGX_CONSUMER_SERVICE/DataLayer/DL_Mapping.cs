@@ -5888,7 +5888,8 @@ namespace DataLayer
                         //(((p2.StateName ?? string.Empty).ToString().Trim().ToUpper() == (p.StateName ?? string.Empty).ToString().Trim().ToUpper()))
 
                         //&& (p2.Country_Id == p.Country_Id)
-                        p2.CityCode == p.CityCode
+                        (p2.CityCode ?? p2.CityName) == (p.CityCode ?? p.CityName) 
+                        && p2.Country_Id == p.Country_Id
                     //&& (((p2.CityName ?? string.Empty).ToString().Trim().ToUpper() == (p.CityName ?? string.Empty).ToString().Trim().ToUpper()))
                     ))).ToList();
                 PLog.PercentageValue = 48;
