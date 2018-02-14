@@ -5839,8 +5839,8 @@ namespace DataLayer
                 clsMappingCity = clsMappingCity.Select(c =>
                 {
                     c.CityName = (clsSTGCity
-                    //.Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
-                    .Where(s => s.CityCode == c.CityCode)
+                    .Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
+                    //.Where(s => s.CityCode == c.CityCode)
                     .Select(s1 => s1.CityName)
                     .FirstOrDefault()
                     ) ?? c.CityName;
@@ -5848,21 +5848,21 @@ namespace DataLayer
                     c.Edit_User = "TLGX_DataHandler";
                     c.ActionType = "UPDATE";
                     c.stg_City_Id = (clsSTGCity
-                    //.Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
-                    .Where(s => s.CityCode == c.CityCode)
+                    .Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
+                    //.Where(s => s.CityCode == c.CityCode)
                     .Select(s1 => s1.stg_City_Id)
                     .FirstOrDefault()
                     );
                     c.StateCode = (clsSTGCity
-                    //.Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
-                    .Where(s => s.CityCode == c.CityCode)
-                    .Select(s1 => s1.CityName)
+                    .Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
+                    //.Where(s => s.CityCode == c.CityCode)
+                    .Select(s1 => s1.StateCode)
                     .FirstOrDefault()
                     ) ?? c.StateCode;
                     c.StateName = (clsSTGCity
-                    //.Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
-                    .Where(s => s.CityCode == c.CityCode)
-                    .Select(s1 => s1.CityName)
+                    .Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
+                    //.Where(s => s.CityCode == c.CityCode)
+                    .Select(s1 => s1.StateName)
                     .FirstOrDefault()
                     ) ?? c.StateName;
                     return c;
