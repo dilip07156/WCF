@@ -428,7 +428,9 @@ namespace DataLayer
                                     //Country_Id = a.Country_Id,
                                     //City_Id = a.City_Id,
                                     ActionType = (a.ProductName != s.ProductName) ? "UPDATE" : "",
-                                    stg_AccoMapping_Id = (a.ProductName != s.ProductName) ? s.stg_AccoMapping_Id : Guid.Empty
+                                    stg_AccoMapping_Id = (a.ProductName != s.ProductName) ? s.stg_AccoMapping_Id : Guid.Empty,
+                                    Latitude_Tx = a.Latitude_Tx,
+                                    Longitude_Tx = a.Longitude_Tx
                                 }).ToList();
 
 
@@ -680,6 +682,8 @@ namespace DataLayer
                                        + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")) : g.Address
                                        + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")
                         ,
+                        Latitude_Tx = CommonFunctions.LatLongTX(g.Latitude),
+                        Longitude_Tx = CommonFunctions.LatLongTX(g.Longitude),
                         Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
                     }));
 
@@ -886,6 +890,8 @@ namespace DataLayer
             int curPriority = obj.CurrentPriority;
             int totConfigs = 0;
             int curConfig = 0;
+            bool DontAppend = false;
+            int curConfigCount = 0;
             if (totPriorities <= 0)
                 totPriorities = 1;
             int PerForEachPriority = 60 / totPriorities;
@@ -985,7 +991,9 @@ namespace DataLayer
                                Country_Id = (act.Country_Id == Guid.Empty) ? a.Country_Id : act.Country_Id,
                                City_Id = (act.City_Id == Guid.Empty) ? a.City_Id : act.City_Id,
                                SystemCityName = jdact.Name,
-                               SystemCountryName = jdact.CountryName
+                               SystemCountryName = jdact.CountryName,
+                               Latitude_Tx = a.Latitude_Tx ?? "",
+                               Longitude_Tx = a.Longitude_Tx ?? ""
                            }).ToList();
                     if (Match_Direct_Master)
                     {
@@ -1035,7 +1043,9 @@ namespace DataLayer
                                          Country_Id = (jdact.Country_Id == Guid.Empty) ? a.Country_Id : jdact.Country_Id,
                                          City_Id = (jdact.City_Id == Guid.Empty) ? a.City_Id : jdact.City_Id,
                                          SystemCityName = jdact.Name,
-                                         SystemCountryName = jdact.CountryName
+                                         SystemCountryName = jdact.CountryName,
+                                         Latitude_Tx = a.Latitude_Tx ?? "",
+                                         Longitude_Tx = a.Longitude_Tx ?? ""
                                      }).ToList();
                     }
                     #endregion
@@ -1049,7 +1059,7 @@ namespace DataLayer
                 foreach (int priority in obj.Priorities)
                 {
                     var curAttributeVals = obj.lstConfigs.Where(a => a.Priority == priority).ToList();
-
+                    curConfigCount = curAttributeVals.Count();
                         List<DC_SupplierImportAttributeValues> configs = curAttributeVals;
 
                     PLog.CurrentBatch = curPriority;
@@ -1088,23 +1098,27 @@ namespace DataLayer
                                     CurrConfig = config.AttributeName.Replace("Accommodation_ProductMapping.", "").Trim().ToUpper();
 
                                 if (CurrConfig == "COUNTRY")
-                                    acco = acco.Where(c => c.country.ToUpper().Trim() == curRes.SystemCountryName.ToUpper().Trim());//.Select(a => a);
+                                    acco = acco.Where(c => (c.country ?? "") != "" && (curRes.SystemCountryName ?? "") != "" && c.country.ToUpper().Trim() == curRes.SystemCountryName.ToUpper().Trim());//.Select(a => a);
                                 else if (CurrConfig == "CITY")
-                                    acco = acco.Where(c => c.city.ToUpper().Trim() == curRes.SystemCityName.ToUpper().Trim());//.Select(a => a);
+                                    acco = acco.Where(c => (c.city ?? "") != "" && (curRes.SystemCityName ?? "") != "" && c.city.ToUpper().Trim() == curRes.SystemCityName.ToUpper().Trim());//.Select(a => a);
                                 else if (CurrConfig == "PostalCode".ToUpper())
-                                    acco = acco.Where(c => c.PostalCode.ToUpper().Trim() == curRes.PostCode.ToUpper().Trim());//.Select(a => a);
+                                    acco = acco.Where(c => (c.PostalCode ?? "") != "" && (curRes.PostCode ?? "") != "" && c.PostalCode.ToUpper().Trim() == curRes.PostCode.ToUpper().Trim());//.Select(a => a);
                                 else if (CurrConfig == "HotelName".ToUpper())
-                                    acco = acco.Where(c => c.HotelName.ToUpper().Trim().Replace("HOTEL", "").Replace(c.country ?? "", "").Replace(c.city ?? "", "").Replace("  ", " ") == curRes.ProductName.ToUpper().Trim().Replace("HOTEL", "").Replace(curRes.CountryName ?? "", "").Replace(curRes.CityName ?? "", "").Replace("  ", " "));//.Select(a => a);
+                                    acco = acco.Where(c => (c.HotelName ?? "") != "" && (curRes.ProductName ?? "") != "" && c.HotelName.ToUpper().Trim().Replace("HOTEL", "").Replace(c.country ?? "", "").Replace(c.city ?? "", "").Replace("  ", " ") == curRes.ProductName.ToUpper().Trim().Replace("HOTEL", "").Replace(curRes.CountryName ?? "", "").Replace(curRes.CityName ?? "", "").Replace("  ", " "));//.Select(a => a);
                                 else if (CurrConfig == "LATITUDE")
-                                    acco = acco.Where(c => c.Latitude.ToString().Trim() == curRes.Latitude.ToString().Trim() && c.Longitude.ToString().Trim() == curRes.Longitude.ToString().Trim()).Select(a => a);
+                                    acco = acco.Where(c => (c.Latitude_Tx ?? "") != "" && (curRes.Latitude_Tx ?? "") != "" 
+                                    && (c.Latitude_Tx).ToString().Trim() == (curRes.Latitude_Tx).ToString().Trim()
+                                    && (c.Longitude_Tx).ToString().Trim() == (curRes.Longitude_Tx).ToString().Trim()).Select(a => a);
                                 else if (CurrConfig == "GOOGLE_PLACE_ID")
-                                    acco = acco.Where(c => c.PostalCode.ToUpper().Trim() == curRes.PostCode.ToUpper().Trim());//.Select(a => a);
+                                    acco = acco.Where(c => (c.Google_Place_Id ?? "") != "" && (curRes.Google_Place_Id ?? "") != "" && c.Google_Place_Id.ToUpper().Trim() == curRes.Google_Place_Id.ToUpper().Trim());//.Select(a => a);
                                 else if (CurrConfig == "Address_Tx".ToUpper())
-                                    acco = acco.Where(c => c.Address_Tx.ToUpper().Trim() == curRes.Address_tx.ToUpper().Trim());//.Select(a => a);
+                                    acco = acco.Where(c => (c.Address_Tx ?? "") != "" && (curRes.Address_tx ?? "") != "" && c.Address_Tx.ToUpper().Trim() == curRes.Address_tx.ToUpper().Trim());//.Select(a => a);
                                 else if (CurrConfig == "TelephoneNumber_tx".ToUpper() || CurrConfig == "Telephone_tx".ToUpper())
-                                    acco = acco.Where(c => c.Telephone_Tx.ToUpper().Trim() == curRes.TelephoneNumber_tx.ToUpper().Trim());//.Select(a => a);
+                                    acco = acco.Where(c => (c.Telephone_Tx ?? "") != "" && (curRes.TelephoneNumber_tx ?? "") != "" && c.Telephone_Tx.ToUpper().Trim() == curRes.TelephoneNumber_tx.ToUpper().Trim());//.Select(a => a);
                                 else if (CurrConfig == "CompanyHotelID".ToUpper())
-                                    acco = acco.Where(c => c.CompanyHotelID.ToString().ToUpper().Trim() == curRes.SupplierProductReference.ToUpper().Trim());
+                                    acco = acco.Where(c => (c.CompanyHotelID ?? 0) != 0 && (curRes.SupplierProductReference ?? "") != "" && c.CompanyHotelID.ToString().ToUpper().Trim() == curRes.SupplierProductReference.ToUpper().Trim());
+
+                                
                             }
                             curRes.Accommodation_Id = acco.Select(a => a.Accommodation_Id).FirstOrDefault();
                             if (curRes.Accommodation_Id != null && curRes.Accommodation_Id != Guid.Empty)
@@ -1133,11 +1147,14 @@ namespace DataLayer
                         foreach (DC_Accomodation_ProductMapping curRes in resmaster)
                         {
                             curConfig = 0;
+                            
                             using (ConsumerEntities context = new ConsumerEntities())
                             {
                                 var acco = context.Accommodations.AsQueryable();//.Select(a => a);
+                                //string sql = "select top 1 Accommodation_ID from Accommodation WHERE ";
                                 foreach (DC_SupplierImportAttributeValues config in curAttributeVals)
                                 {
+                                    DontAppend = false;
                                     curConfig = curConfig + 1;
                                     string CurrConfig = "";
                                     if (config.AttributeValue.Replace("Accommodation.", "").Trim() != "---ALL---")
@@ -1146,24 +1163,69 @@ namespace DataLayer
                                         CurrConfig = config.AttributeName.Replace("Accommodation_ProductMapping.", "").Trim().ToUpper();
 
                                     if (CurrConfig == "COUNTRY")
-                                        acco = acco.Where(c => c.country.ToUpper().Trim() == curRes.SystemCountryName.ToUpper().Trim());//.Select(a => a);
+                                    {
+                                        //sql = sql + "(ISNULL(country, '') != '' and ltrim(rtrim(upper(country))) = '" + (curRes.SystemCountryName ?? "").ToUpper().Trim() + "')";
+                                        acco = acco.Where(c => (c.country ?? "") != "" && (curRes.SystemCountryName ?? "") != "" && c.country.ToUpper().Trim() == curRes.SystemCountryName.ToUpper().Trim());//.Select(a => a);
+                                    }
                                     else if (CurrConfig == "CITY")
-                                        acco = acco.Where(c => c.city.ToUpper().Trim() == curRes.SystemCityName.ToUpper().Trim());//.Select(a => a);
+                                    {
+                                        //sql = sql + "(ISNULL(city, '') != '' and ltrim(rtrim(upper(city))) = '" + (curRes.SystemCityName ?? "").ToUpper().Trim() + "')";
+                                        acco = acco.Where(c => (c.city ?? "") != "" && (curRes.SystemCityName ?? "") != "" && c.city.ToUpper().Trim() == curRes.SystemCityName.ToUpper().Trim());//.Select(a => a);
+                                    }
                                     else if (CurrConfig == "PostalCode".ToUpper())
-                                        acco = acco.Where(c => c.PostalCode.ToUpper().Trim() == curRes.PostCode.ToUpper().Trim());//.Select(a => a);
+                                    {
+                                        //sql = sql + "(ISNULL(PostalCode, '') != '' and ltrim(rtrim(upper(PostalCode))) = '" + (curRes.PostCode ?? "").ToUpper().Trim() + "')";
+                                        acco = acco.Where(c => (c.PostalCode ?? "") != "" && (curRes.PostCode ?? "") != "" && c.PostalCode.ToUpper().Trim() == curRes.PostCode.ToUpper().Trim());//.Select(a => a);
+                                    }
                                     else if (CurrConfig == "HotelName".ToUpper())
-                                        acco = acco.Where(c => c.HotelName.ToUpper().Trim().Replace("HOTEL", "").Replace(c.country ?? "", "").Replace(c.city ?? "", "").Replace("  ", " ") == curRes.ProductName.ToUpper().Trim().Replace("HOTEL", "").Replace(curRes.CountryName ?? "", "").Replace(curRes.CityName ?? "", "").Replace("  ", " "));//.Select(a => a);
+                                    {
+                                        //sql = sql + "(ISNULL(HotelName, '') != '' and replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(hotelname))), ' ',''), 'HOTEL',''), 'APARTMENT',''), ltrim(rtrim(upper(city))),''), ltrim(rtrim(upper(country))),''), '&',''), 'AND',''), 'THE',''), '-',''), '_','') = '"
+                                        //    + (curRes.ProductName ?? "").ToUpper().Trim().Replace("HOTEL", "").Replace(curRes.CountryName ?? "", "").Replace(curRes.CityName ?? "", "").Replace("  ", " ").Replace("APARTMENT", " ").Replace("&", " ").Replace("AND", " ").Replace("THE", " ").Replace("-", " ").Replace("_", " ").Replace("'", "''") + "')";
+                                        acco = acco.Where(c => (c.HotelName ?? "") != "" && (curRes.ProductName ?? "") != "" && c.HotelName.ToUpper().Trim().Replace("HOTEL", "").Replace(c.country ?? "", "").Replace(c.city ?? "", "").Replace("  ", " ") == curRes.ProductName.ToUpper().Trim().Replace("HOTEL", "").Replace(curRes.CountryName ?? "", "").Replace(curRes.CityName ?? "", "").Replace("  ", " "));//.Select(a => a);
+                                    }
+                                    else if (CurrConfig == "LONGITUDE")
+                                    {
+                                        DontAppend = true;
+                                    }
                                     else if (CurrConfig == "LATITUDE")
-                                        acco = acco.Where(c => c.Latitude.ToString().Trim() == curRes.Latitude.ToString().Trim() && c.Longitude.ToString().Trim() == curRes.Longitude.ToString().Trim()).Select(a => a);
+                                    {
+                                        //sql = sql + "(ISNULL(Latitude_Tx, '') != '' and ISNULL(Longitude_Tx, '') != '' and ltrim(rtrim(upper(Latitude_Tx))) = '" + (curRes.Latitude_Tx ?? "").ToUpper().Trim()
+                                        //    + "' and ltrim(rtrim(upper(Longitude_Tx))) = '" + (curRes.Longitude_Tx ?? "").ToUpper().Trim() + "')";
+                                        acco = acco.Where(c => (c.Latitude_Tx ?? "") != "" && (curRes.Latitude_Tx ?? "") != ""
+                                        && (c.Latitude_Tx).ToString().Trim() == (curRes.Latitude_Tx).ToString().Trim()
+                                        && (c.Longitude_Tx).ToString().Trim() == (curRes.Longitude_Tx).ToString().Trim()).Select(a => a);
+                                    }
                                     else if (CurrConfig == "GOOGLE_PLACE_ID")
-                                        acco = acco.Where(c => c.PostalCode.ToUpper().Trim() == curRes.PostCode.ToUpper().Trim());//.Select(a => a);
+                                    {
+                                        //sql = sql + "(ISNULL(Google_Place_Id, '') != '' and ltrim(rtrim(upper(Google_Place_Id))) = '" + (curRes.Google_Place_Id ?? "").ToUpper().Trim() + "')";
+                                        acco = acco.Where(c => (c.Google_Place_Id ?? "") != "" && (curRes.Google_Place_Id ?? "") != "" && c.Google_Place_Id.ToUpper().Trim() == curRes.Google_Place_Id.ToUpper().Trim());//.Select(a => a);
+                                    }
                                     else if (CurrConfig == "Address_Tx".ToUpper())
-                                        acco = acco.Where(c => c.Address_Tx.ToUpper().Trim() == curRes.Address_tx.ToUpper().Trim());//.Select(a => a);
+                                    {
+                                       // sql = sql + "(ISNULL(Address_Tx, '') != '' and ltrim(rtrim(upper(Address_Tx))) = '" + (curRes.Address_tx ?? "").ToUpper().Trim() + "')";
+                                        acco = acco.Where(c => (c.Address_Tx ?? "") != "" && (curRes.Address_tx ?? "") != "" && c.Address_Tx.ToUpper().Trim() == curRes.Address_tx.ToUpper().Trim());//.Select(a => a);
+                                    }
                                     else if (CurrConfig == "TelephoneNumber_tx".ToUpper() || CurrConfig == "Telephone_tx".ToUpper())
-                                        acco = acco.Where(c => c.Telephone_Tx.ToUpper().Trim() == curRes.TelephoneNumber_tx.ToUpper().Trim());//.Select(a => a);
+                                    {
+                                        //sql = sql + "(ISNULL(Telephone_Tx, '') != '' and ltrim(rtrim(upper(Telephone_Tx))) = '" + (curRes.TelephoneNumber_tx ?? "").ToUpper().Trim() + "')";
+                                        acco = acco.Where(c => (c.Telephone_Tx ?? "") != "" && (curRes.TelephoneNumber_tx ?? "") != "" && c.Telephone_Tx.ToUpper().Trim() == curRes.TelephoneNumber_tx.ToUpper().Trim());//.Select(a => a);
+                                    }
                                     else if (CurrConfig == "CompanyHotelID".ToUpper())
-                                        acco = acco.Where(c => c.CompanyHotelID.ToString().ToUpper().Trim() == curRes.SupplierProductReference.ToUpper().Trim());
+                                    {
+                                        //sql = sql + "(ISNULL(CompanyHotelID, '') != '' and ltrim(rtrim(upper(CompanyHotelID))) = '" + (curRes.SupplierProductReference ?? "").ToUpper().Trim() + "')";
+                                        acco = acco.Where(c => (c.CompanyHotelID ?? 0) != 0 && (curRes.SupplierProductReference ?? "") != "" && c.CompanyHotelID.ToString().ToUpper().Trim() == curRes.SupplierProductReference.ToUpper().Trim());
+                                    }
+                                    //if (curConfig != curConfigCount && (!DontAppend))
+                                    //{
+                                    //    sql = sql + " AND ";
+                                    //}
                                 }
+                                //var sqlAcco = context.Database.SqlQuery<string>(sql).ToList();
+                                //Guid SQLAcco = Guid.Empty;
+                                //if(sqlAcco.Count > 0)
+                                //{
+                                //    SQLAcco = new Guid(sqlAcco[0]);
+                                //}
                                 curRes.Accommodation_Id = acco.Select(a => a.Accommodation_Id).FirstOrDefault();
                                 if (curRes.Accommodation_Id != null && curRes.Accommodation_Id != Guid.Empty)
                                 {
@@ -3149,6 +3211,8 @@ namespace DataLayer
                             objNew.City_Id = PM.City_Id;
                             objNew.Website = PM.Website;
                             objNew.address = PM.FullAddress;
+                            objNew.Latitude_Tx = PM.Latitude_Tx;
+                            objNew.Longitude_Tx = PM.Longitude_Tx;
                             lstobjNew.Add(objNew);
                         }
                     }

@@ -60,6 +60,12 @@ namespace DataContracts.Mapping
         string _Google_Place_Id;
         string _Location;
 
+        [DataMember]
+        public string Latitude_Tx { get; set; }
+
+
+        [DataMember]
+        public string Longitude_Tx { get; set; }
 
         [DataMember]
         public Int32? MatchedBy { get; set; }

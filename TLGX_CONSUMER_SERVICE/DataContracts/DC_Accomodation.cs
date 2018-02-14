@@ -100,6 +100,15 @@ namespace DataContracts
         int? _TotalRecords_Accomodation_ClassificationAttributes;
         string _Room_Amenities;
         string _Null_Columns;
+
+
+        [DataMember]
+        public string Latitude_Tx { get; set; }
+
+
+        [DataMember]
+        public string Longitude_Tx { get; set; }
+
         [DataMember]
         public Nullable<bool> InsertFrom { get; set; }
 
