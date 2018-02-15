@@ -663,6 +663,13 @@ namespace ConsumerSvc
                 return obj.GetActivityByCountryCity(CountryName,CityName);
             }
         }
+        public List<DC_Supplier_DDL> GetSuppliersByProductCategory(string ProductCategory)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetSuppliersByProductCategory(ProductCategory);
+            }
+        }
         #endregion
 
         #region City Area and Location

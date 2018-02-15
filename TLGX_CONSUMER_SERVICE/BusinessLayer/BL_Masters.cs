@@ -593,6 +593,13 @@ namespace BusinessLayer
                 return obj.GetActivityByCountryCity(CountryName, CityName);
             }
         }
+        public List<DC_Supplier_DDL> GetSuppliersByProductCategory(string ProductCategory)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetSuppliersByProductCategory(ProductCategory);
+            }
+        }
         #endregion
 
         #region City Area and Location
