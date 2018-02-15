@@ -43,6 +43,22 @@ namespace DataLayer
                 return str;
         }
 
+        public static string LatLongTX(string param)
+        {
+            string ret = "";
+            string[] brkparam = param.Split('.');
+            if(!string.IsNullOrEmpty(brkparam[1]))
+            {
+                ret = brkparam[0] + ".";
+                if (brkparam[1].Length > 4)
+                    return ret + brkparam[1].Substring(0, 4);
+                else
+                    return ret + brkparam[1];
+            }
+            else
+                return param;
+        }
+
         public static string RemoveSpecialChars(string str)
         {
             return str.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "").Replace("'", "").Replace("!", "").Replace("#", "").Replace("\"", "");

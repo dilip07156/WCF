@@ -73,6 +73,9 @@
           <Property Name="InsertFrom" Type="bit" />
           <Property Name="Address_Tx" Type="nvarchar" MaxLength="510" />
           <Property Name="Telephone_Tx" Type="nvarchar" MaxLength="50" />
+          <Property Name="HotelName_Tx" Type="nvarchar" MaxLength="510" />
+          <Property Name="Latitude_Tx" Type="nvarchar" MaxLength="510" />
+          <Property Name="Longitude_Tx" Type="nvarchar" MaxLength="510" />
         </EntityType>
         <EntityType Name="Accommodation_ClassificationAttributes">
           <Key>
@@ -304,6 +307,9 @@
           <Property Name="TLGXProductCode" Type="nvarchar" MaxLength="255" />
           <Property Name="IsPentaho" Type="bit" />
           <Property Name="MatchedBy" Type="int" />
+          <Property Name="HotelName_Tx" Type="nvarchar" MaxLength="510" />
+          <Property Name="Latitude_Tx" Type="nvarchar" MaxLength="510" />
+          <Property Name="Longitude_Tx" Type="nvarchar" MaxLength="510" />
         </EntityType>
         <EntityType Name="Accommodation_RoomFacility">
           <Key>
@@ -2576,6 +2582,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="UDF_LatLongTX" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="nvarchar">
+          <Parameter Name="LatLong" Type="nvarchar" Mode="In" />
+        </Function>
         <Function Name="USP_UpdateMapID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="UpdateIn" Type="varchar" Mode="In" />
         </Function>
@@ -3590,6 +3599,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="InsertFrom" Type="Boolean" />
           <Property Name="Address_Tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
           <Property Name="Telephone_Tx" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HotelName_Tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude_Tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude_Tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="GoogleGeoCode">
           <Key>
@@ -5366,6 +5378,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="TLGXProductCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="IsPentaho" Type="Boolean" />
           <Property Name="MatchedBy" Type="Int32" />
+          <Property Name="HotelName_Tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude_Tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude_Tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_CityMapping">
           <Key>
@@ -6074,6 +6089,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodations">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation">
               <MappingFragment StoreEntitySet="Accommodation">
+                <ScalarProperty Name="Longitude_Tx" ColumnName="Longitude_Tx" />
+                <ScalarProperty Name="Latitude_Tx" ColumnName="Latitude_Tx" />
+                <ScalarProperty Name="HotelName_Tx" ColumnName="HotelName_Tx" />
                 <ScalarProperty Name="Telephone_Tx" ColumnName="Telephone_Tx" />
                 <ScalarProperty Name="Address_Tx" ColumnName="Address_Tx" />
                 <ScalarProperty Name="InsertFrom" ColumnName="InsertFrom" />
@@ -7954,6 +7972,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodation_ProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_ProductMapping">
               <MappingFragment StoreEntitySet="Accommodation_ProductMapping">
+                <ScalarProperty Name="Longitude_Tx" ColumnName="Longitude_Tx" />
+                <ScalarProperty Name="Latitude_Tx" ColumnName="Latitude_Tx" />
+                <ScalarProperty Name="HotelName_Tx" ColumnName="HotelName_Tx" />
                 <ScalarProperty Name="MatchedBy" ColumnName="MatchedBy" />
                 <ScalarProperty Name="IsPentaho" ColumnName="IsPentaho" />
                 <ScalarProperty Name="TLGXProductCode" ColumnName="TLGXProductCode" />

@@ -1877,11 +1877,14 @@ namespace DataLayer
                 {
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        var oldRecords = (from y in context.stg_SupplierProductMapping.AsNoTracking()
+                        var oldRecords = (from y in context.stg_SupplierProductMapping //.AsNoTracking()
                                           where y.Supplier_Id == mySupplier_Id 
                                           select y);
-                        context.stg_SupplierProductMapping.RemoveRange(oldRecords);
-                        context.SaveChanges();
+                        if (oldRecords.Count() > 0)
+                        {
+                            context.stg_SupplierProductMapping.RemoveRange(oldRecords);
+                            context.SaveChanges();
+                        }
                     }
                     List<DataContracts.STG.DC_stg_SupplierProductMapping> dstobj = new List<DC_stg_SupplierProductMapping>();
                     dstobj = lstobj.GroupBy(a => new { a.CityCode, a.CityName, a.CountryCode, a.CountryName, a.StateCode, a.StateName, a.ProductId, a.ProductName, a.PostalCode }).Select(grp => grp.First()).ToList();

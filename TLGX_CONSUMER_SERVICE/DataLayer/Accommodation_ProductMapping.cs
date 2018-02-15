@@ -58,5 +58,8 @@ namespace DataLayer
         public string TLGXProductCode { get; set; }
         public Nullable<bool> IsPentaho { get; set; }
         public Nullable<int> MatchedBy { get; set; }
+        public string HotelName_Tx { get; set; }
+        public string Latitude_Tx { get; set; }
+        public string Longitude_Tx { get; set; }
     }
 }

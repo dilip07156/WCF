@@ -428,7 +428,9 @@ namespace DataLayer
                                     //Country_Id = a.Country_Id,
                                     //City_Id = a.City_Id,
                                     ActionType = (a.ProductName != s.ProductName) ? "UPDATE" : "",
-                                    stg_AccoMapping_Id = (a.ProductName != s.ProductName) ? s.stg_AccoMapping_Id : Guid.Empty
+                                    stg_AccoMapping_Id = (a.ProductName != s.ProductName) ? s.stg_AccoMapping_Id : Guid.Empty,
+                                    Latitude_Tx = a.Latitude_Tx,
+                                    Longitude_Tx = a.Longitude_Tx
                                 }).ToList();
 
 
@@ -680,6 +682,8 @@ namespace DataLayer
                                        + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")) : g.Address
                                        + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")
                         ,
+                        Latitude_Tx = CommonFunctions.LatLongTX(g.Latitude),
+                        Longitude_Tx = CommonFunctions.LatLongTX(g.Longitude),
                         Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
                     }));
 
@@ -886,12 +890,15 @@ namespace DataLayer
             int curPriority = obj.CurrentPriority;
             int totConfigs = 0;
             int curConfig = 0;
+            bool DontAppend = false;
+            int curConfigCount = 0;
             if (totPriorities <= 0)
                 totPriorities = 1;
             int PerForEachPriority = 60 / totPriorities;
             bool Match_Direct_Master = obj.Match_Direct_Master;
 
             List<DC_Accomodation_ProductMapping> res = new List<DC_Accomodation_ProductMapping>();
+            List<DC_Accomodation_ProductMapping> resmaster = new List<DC_Accomodation_ProductMapping>();
             IQueryable<Accommodation_ProductMapping> prodMapSearch;
             if (supdata != null)
             {
@@ -984,44 +991,85 @@ namespace DataLayer
                                Country_Id = (act.Country_Id == Guid.Empty) ? a.Country_Id : act.Country_Id,
                                City_Id = (act.City_Id == Guid.Empty) ? a.City_Id : act.City_Id,
                                SystemCityName = jdact.Name,
-                               SystemCountryName = jdact.CountryName
+                               SystemCountryName = jdact.CountryName,
+                               Latitude_Tx = a.Latitude_Tx ?? "",
+                               Longitude_Tx = a.Longitude_Tx ?? ""
                            }).ToList();
+                    if (Match_Direct_Master)
+                    {
+                        resmaster = (from a in prodMapSearch
+                                     join mact in context.m_CityMaster.AsNoTracking() on new { country = (a.Country_Id ?? Guid.Empty) }
+                                     equals new { country = mact.Country_Id } into jact
+                                     from jdact in jact.DefaultIfEmpty()
+                                     where ((a.City_Id != null && (a.City_Id == jdact.City_Id)) || (a.City_Id == null && (a.CityName.ToUpper().Trim() == jdact.Name.ToUpper().Trim())))
+                                     select new DataContracts.Mapping.DC_Accomodation_ProductMapping
+                                     {
+                                         Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
+                                         Accommodation_Id = a.Accommodation_Id,
+                                         Address_tx = a.address_tx,
+                                         CityCode = a.CityCode,
+                                         CityName = a.CityName,
+                                         CountryCode = a.CountryCode,
+                                         CountryName = a.CountryName,
+                                         Create_Date = a.Create_Date,
+                                         Create_User = a.Create_User,
+                                         Edit_Date = a.Edit_Date,
+                                         Edit_User = a.Edit_User,
+                                         Email = a.Email,
+                                         Fax = a.Fax,
+                                         Latitude = a.Latitude,
+                                         Longitude = a.Longitude,
+                                         IsActive = (a.IsActive ?? true),
+                                         MapId = a.MapId,
+                                         PostCode = a.PostCode,
+                                         ProductName = a.ProductName,
+                                         Remarks = a.Remarks,
+                                         StarRating = a.StarRating,
+                                         StateCode = a.StateCode,
+                                         StateName = a.StateName,
+                                         Status = a.Status,
+                                         Street = a.Street,
+                                         Street2 = a.Street2,
+                                         Street3 = a.Street3,
+                                         Street4 = a.Street4,
+                                         SupplierId = a.SupplierId,
+                                         SupplierName = a.SupplierName,
+                                         SupplierProductReference = a.SupplierProductReference,
+                                         TelephoneNumber = a.TelephoneNumber,
+                                         TelephoneNumber_tx = a.TelephoneNumber_tx,
+                                         Website = a.Website,
+                                         //Country_Id = (jdact.Country_Id == Guid.Empty) ? ((act.Country_Id == Guid.Empty) ? a.Country_Id : act.Country_Id) : jdact.Country_Id,
+                                         //City_Id = (jdact.City_Id == Guid.Empty) ? ((act.City_Id == Guid.Empty) ? a.City_Id : act.City_Id) : jdact.City_Id,
+                                         Country_Id = (jdact.Country_Id == Guid.Empty) ? a.Country_Id : jdact.Country_Id,
+                                         City_Id = (jdact.City_Id == Guid.Empty) ? a.City_Id : jdact.City_Id,
+                                         SystemCityName = jdact.Name,
+                                         SystemCountryName = jdact.CountryName,
+                                         Latitude_Tx = a.Latitude_Tx ?? "",
+                                         Longitude_Tx = a.Longitude_Tx ?? ""
+                                     }).ToList();
+                    }
                     #endregion
-
                 }
+                PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
+                PLog.SupplierImportFile_Id = obj.File_Id;
+                PLog.Step = "MATCH";
+                PLog.Status = "MATCHING";
+                PLog.TotalBatch = totPriorities;
+
                     foreach (int priority in obj.Priorities)
                     {
-                        //if (res.Count == 0)
-                        //{
-                        //    retrn = true;
-                        //    break;
-                        //}
                         var curAttributeVals = obj.lstConfigs.Where(a => a.Priority == priority).ToList();
-
+                    curConfigCount = curAttributeVals.Count();
                         List<DC_SupplierImportAttributeValues> configs = curAttributeVals;
 
+                    PLog.CurrentBatch = curPriority;
                         //obj.CurrentPriority = curPriority;
-                        bool isCountryCodeCheck = false;
-                        bool isCountryNameCheck = false;
-                        bool isCityCodeCheck = false;
-                        bool isCityNameCheck = false;
-                        bool isLatLongCheck = false;
-                        bool isCodeCheck = false;
-                        bool isNameCheck = false;
-                        bool isPlaceIdCheck = false;
-                        bool isAddressCheck = false;
-                        bool isTelephoneCheck = false;
-                        bool isPostCodeCheck = false;
                         totConfigs = configs.Count;
+                    //CallLogVerbose(File_Id, "MATCH", "Applying Matching Combination " + curPriority.ToString() + " out of Total " + totPriorities + " Combinations.");
+                    
                         curConfig = 0;
-                        PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
-                        PLog.SupplierImportFile_Id = obj.File_Id;
-                        PLog.Step = "MATCH";
-                        PLog.Status = "MATCHING";
-                        PLog.CurrentBatch = curPriority;
-                        PLog.TotalBatch = totPriorities;
-                        CallLogVerbose(File_Id, "MATCH", "Applying Matching Combination " + curPriority.ToString() + " out of Total " + totPriorities + " Combinations.");
                         configWhere = "";
+
                         foreach (DC_SupplierImportAttributeValues config in curAttributeVals)
                         {
                             if (config.AttributeValue.Replace("Accommodation.", "").Trim() != "---ALL---")
@@ -1032,250 +1080,177 @@ namespace DataLayer
                         configWhere = configWhere.Remove(configWhere.Length - 1);
                         CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);
 
+                    res.RemoveAll(p => p.Accommodation_Id != null && p.Accommodation_Id != Guid.Empty); //Guid.Empty
+
+                    foreach (DC_Accomodation_ProductMapping curRes in res)
+                    {
+                        curConfig = 0;
+                        using (ConsumerEntities context = new ConsumerEntities())
+                        {
+                            var acco = context.Accommodations.AsNoTracking().AsQueryable();//.Select(a => a);
                         foreach (DC_SupplierImportAttributeValues config in curAttributeVals)
                         {
                             curConfig = curConfig + 1;
-
                             string CurrConfig = "";
                             if (config.AttributeValue.Replace("Accommodation.", "").Trim() != "---ALL---")
                                 CurrConfig = config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper();
                             else
                                 CurrConfig = config.AttributeName.Replace("Accommodation_ProductMapping.", "").Trim().ToUpper();
-                            //CallLogVerbose(File_Id, "MATCH", "Applying Check for " + CurrConfig);
 
                             if (CurrConfig == "COUNTRY")
-                                isCountryNameCheck = true;
+                                    acco = acco.Where(c => (c.country ?? "") != "" && (curRes.SystemCountryName ?? "") != "" && c.country.ToUpper().Trim() == curRes.SystemCountryName.ToUpper().Trim());//.Select(a => a);
                             else if (CurrConfig == "CITY")
-                                isCityNameCheck = true;
-                            else if (CurrConfig == "CompanyHotelID".ToUpper())
-                                isCodeCheck = true;
+                                    acco = acco.Where(c => (c.city ?? "") != "" && (curRes.SystemCityName ?? "") != "" && c.city.ToUpper().Trim() == curRes.SystemCityName.ToUpper().Trim());//.Select(a => a);
                             else if (CurrConfig == "PostalCode".ToUpper())
-                                isPostCodeCheck = true;
+                                    acco = acco.Where(c => (c.PostalCode ?? "") != "" && (curRes.PostCode ?? "") != "" && c.PostalCode.ToUpper().Trim() == curRes.PostCode.ToUpper().Trim());//.Select(a => a);
                             else if (CurrConfig == "HotelName".ToUpper())
-                                isNameCheck = true;
+                                    acco = acco.Where(c => (c.HotelName ?? "") != "" && (curRes.ProductName ?? "") != "" && c.HotelName.ToUpper().Trim().Replace("HOTEL", "").Replace(c.country ?? "", "").Replace(c.city ?? "", "").Replace("  ", " ") == curRes.ProductName.ToUpper().Trim().Replace("HOTEL", "").Replace(curRes.CountryName ?? "", "").Replace(curRes.CityName ?? "", "").Replace("  ", " "));//.Select(a => a);
                             else if (CurrConfig == "LATITUDE")
-                                isLatLongCheck = true;
+                                    acco = acco.Where(c => (c.Latitude_Tx ?? "") != "" && (curRes.Latitude_Tx ?? "") != "" 
+                                    && (c.Latitude_Tx).ToString().Trim() == (curRes.Latitude_Tx).ToString().Trim()
+                                    && (c.Longitude_Tx).ToString().Trim() == (curRes.Longitude_Tx).ToString().Trim()).Select(a => a);
                             else if (CurrConfig == "GOOGLE_PLACE_ID")
-                                isPlaceIdCheck = true;
+                                    acco = acco.Where(c => (c.Google_Place_Id ?? "") != "" && (curRes.Google_Place_Id ?? "") != "" && c.Google_Place_Id.ToUpper().Trim() == curRes.Google_Place_Id.ToUpper().Trim());//.Select(a => a);
                             else if (CurrConfig == "Address_Tx".ToUpper())
-                                isAddressCheck = true;
+                                    acco = acco.Where(c => (c.Address_Tx ?? "") != "" && (curRes.Address_tx ?? "") != "" && c.Address_Tx.ToUpper().Trim() == curRes.Address_tx.ToUpper().Trim());//.Select(a => a);
                             else if (CurrConfig == "TelephoneNumber_tx".ToUpper() || CurrConfig == "Telephone_tx".ToUpper())
-                                isTelephoneCheck = true;
+                                    acco = acco.Where(c => (c.Telephone_Tx ?? "") != "" && (curRes.TelephoneNumber_tx ?? "") != "" && c.Telephone_Tx.ToUpper().Trim() == curRes.TelephoneNumber_tx.ToUpper().Trim());//.Select(a => a);
+                                else if (CurrConfig == "CompanyHotelID".ToUpper())
+                                    acco = acco.Where(c => (c.CompanyHotelID ?? 0) != 0 && (curRes.SupplierProductReference ?? "") != "" && c.CompanyHotelID.ToString().ToUpper().Trim() == curRes.SupplierProductReference.ToUpper().Trim());
 
-                            PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + ((PerForEachPriority / totConfigs) * curConfig);
-                            USD.AddStaticDataUploadProcessLog(PLog);
 
                         }
-
-                        if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isPlaceIdCheck || isAddressCheck || isTelephoneCheck || isPostCodeCheck)
+                            curRes.Accommodation_Id = acco.Select(a => a.Accommodation_Id).FirstOrDefault();
+                            if (curRes.Accommodation_Id != null && curRes.Accommodation_Id != Guid.Empty)
                         {
-                            if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isPlaceIdCheck || isPostCodeCheck)
+                                context.Accommodation_ProductMapping.AsNoTracking().Where(x => x.Accommodation_ProductMapping_Id == curRes.Accommodation_ProductMapping_Id)
+                                           .Update(t => new Accommodation_ProductMapping()
                             {
+                                               MatchedBy = curPriority - 1,
+                                               Status = "REVIEW",
+                                               Accommodation_Id = curRes.Accommodation_Id
+                                           });
+                            }
+
+                        }
+                    }
+                    int toupdate = 0;
+                    toupdate = res.Where(p => p.Accommodation_Id != Guid.Empty).Count();
                                 if (totPriorities == curPriority)
                                 {
-                                    PLog.PercentageValue = 65;
+                        PLog.PercentageValue = 70;
                                     USD.AddStaticDataUploadProcessLog(PLog);
                                 }
+                    if (Match_Direct_Master)
+                    {
+                        resmaster.RemoveAll(p => res.Where(w => w.Accommodation_Id != null && w.Accommodation_Id != Guid.Empty).Any(a => a.Accommodation_ProductMapping_Id == p.Accommodation_ProductMapping_Id));
+                        resmaster.RemoveAll(p => p.Accommodation_Id != null && p.Accommodation_Id != Guid.Empty); //Guid.Empty
+                        foreach (DC_Accomodation_ProductMapping curRes in resmaster)
+                        {
+                            curConfig = 0;
 
-                               // CallLogVerbose(File_Id, "MATCH", "Looking for Match in Master Data for Matching Combination " + curPriority.ToString() + ".");
-
-                                res.RemoveAll(p => p.Accommodation_Id != null && p.Accommodation_Id != Guid.Empty); //Guid.Empty
                             using (ConsumerEntities context = new ConsumerEntities())
                             {
-                                res = res.Select(c =>
+                                //var acco = context.Accommodations.AsQueryable();//.Select(a => a);
+                                string sql = "select top 1 Accommodation_ID from Accommodation WHERE ";
+                                foreach (DC_SupplierImportAttributeValues config in curAttributeVals)
                                     {
-                                        c.Accommodation_Id = (context.Accommodations.AsNoTracking()
-                                                        .Where(s => (
-                                                                        //((isCountryNameCheck && s.country.ToUpper().Trim() == c.SystemCountryName.ToUpper().Trim()) || (!isCountryNameCheck)) &&
-                                                                        //((isCityNameCheck && s.city.ToUpper().Trim() == c.SystemCityName.ToUpper().Trim()) || (!isCityNameCheck)) &&
-                                                                        //((isCountryNameCheck && s.Country_Id == c.Country_Id) || (!isCountryNameCheck)) &&
-                                                                        //((isCityNameCheck && s.City_Id == c.City_Id) || (!isCityNameCheck)) &&
-                                                                        ((isCountryNameCheck && s.country.ToUpper().Trim() == c.SystemCountryName.ToUpper().Trim()) || (!isCountryNameCheck)) &&
-                                                                        ((isCityNameCheck && s.city.ToUpper().Trim() == c.SystemCityName.ToUpper().Trim()) || (!isCityNameCheck)) &&
-                                                                        ((isCodeCheck && s.CompanyHotelID.ToString() == c.SupplierProductReference) || (!isCodeCheck)) &&
-                                                                        ((isPostCodeCheck && s.PostalCode.ToString() == c.PostCode) || (!isPostCodeCheck)) &&
-                                                                        ((isNameCheck && s.HotelName.ToUpper().Replace("HOTEL", "").Replace(s.country ?? "", "").Replace(s.city ?? "", "").Replace("  ", " ").Trim() == c.ProductName.ToUpper().Replace("HOTEL", "").Replace(c.CountryName ?? "", "").Replace(c.CityName ?? "", "").Replace("  ", " ").Trim()) || (!isNameCheck)) &&
-                                                                        ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck)) &&
-                                                                        ((isPlaceIdCheck && s.Google_Place_Id == c.Google_Place_Id) || (!isPlaceIdCheck)) &&
-                                                                        ((isAddressCheck && s.Address_Tx != null && c.Address_tx != null && s.Address_Tx == c.Address_tx) || (!isAddressCheck)) &&
-                                                                        ((isTelephoneCheck && s.Telephone_Tx != null && c.TelephoneNumber_tx != null && s.Telephone_Tx == c.TelephoneNumber_tx) || (!isTelephoneCheck))
-                                                                    )
-                                                               )
-                                                        .Select(s1 => s1.Accommodation_Id)
-                                                        .FirstOrDefault()
-                                                        );
-                                        return c;
-                                    }).ToList();
-                            }
-                        }
-                            #region "Address Check and Telephone Check"
-                            else if (isAddressCheck)
-                            {
-                            using (ConsumerEntities context = new ConsumerEntities())
-                            {
+                                    DontAppend = false;
+                                    curConfig = curConfig + 1;
+                                    string CurrConfig = "";
+                                    if (config.AttributeValue.Replace("Accommodation.", "").Trim() != "---ALL---")
+                                        CurrConfig = config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper();
+                                    else
+                                        CurrConfig = config.AttributeName.Replace("Accommodation_ProductMapping.", "").Trim().ToUpper();
 
-                                prodMapSearch = (from a in context.Accommodation_ProductMapping.AsNoTracking()
-                                                 join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
-                                                 where s.File_Id == supdata.File_Id && a.Accommodation_Id == null && a.Supplier_Id == curSupplier_Id && s.Batch == obj.CurrentBatch
-                                                 && a.Status.Trim().ToUpper() == "UNMAPPED"
-                                                 select a);
-                                res = (from a in prodMapSearch
-                                       join ac in context.Accommodations.AsNoTracking() on a.address_tx equals ac.Address_Tx
-                                       where ac.Address_Tx != null && ac.Address_Tx != ""
-                                       select new DataContracts.Mapping.DC_Accomodation_ProductMapping
+                                    if (CurrConfig == "COUNTRY")
+                                    {
+                                        sql = sql + "(ISNULL(country, '') != '' and ltrim(rtrim(upper(country))) = '" + (curRes.SystemCountryName ?? "").ToUpper().Trim() + "')";
+                                        //acco = acco.Where(c => (c.country ?? "") != "" && (curRes.SystemCountryName ?? "") != "" && c.country.ToUpper().Trim() == curRes.SystemCountryName.ToUpper().Trim());//.Select(a => a);
+                            }
+                                    else if (CurrConfig == "CITY")
+                                    {
+                                        sql = sql + "(ISNULL(city, '') != '' and ltrim(rtrim(upper(city))) = '" + (curRes.SystemCityName ?? "").ToUpper().Trim() + "')";
+                                        //acco = acco.Where(c => (c.city ?? "") != "" && (curRes.SystemCityName ?? "") != "" && c.city.ToUpper().Trim() == curRes.SystemCityName.ToUpper().Trim());//.Select(a => a);
+                        }
+                                    else if (CurrConfig == "PostalCode".ToUpper())
+                            {
+                                        sql = sql + "(ISNULL(PostalCode, '') != '' and ltrim(rtrim(upper(PostalCode))) = '" + (curRes.PostCode ?? "").ToUpper().Trim() + "')";
+                                        //acco = acco.Where(c => (c.PostalCode ?? "") != "" && (curRes.PostCode ?? "") != "" && c.PostalCode.ToUpper().Trim() == curRes.PostCode.ToUpper().Trim());//.Select(a => a);
+                                    }
+                                    else if (CurrConfig == "HotelName".ToUpper())
+                            {
+                                        sql = sql + "(ISNULL(HotelName, '') != '' and replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(hotelname))), ' ',''), 'HOTEL',''), 'APARTMENT',''), replace(ltrim(rtrim(upper(city))), '''','') ,''),  replace(ltrim(rtrim(upper(country))), '''',''),''), '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','')  = '"
+                                        + (curRes.ProductName ?? "").ToUpper().Trim().Replace("HOTEL", "").Replace((curRes.CountryName ?? "").Trim().ToUpper().Replace("'", "") ?? "", "").Replace((curRes.CityName ?? "").Trim().ToUpper().Replace("'", "") ?? "", "").Replace("APARTMENT", "").Replace("&", "").Replace("AND", "").Replace("THE", "").Replace("-", "").Replace("_", "").Replace("'", "").Replace(" ", "") + "')";
+                                        //acco = acco.Where(c => (c.HotelName ?? "") != "" && (curRes.ProductName ?? "") != "" && c.HotelName.ToUpper().Trim().Replace("HOTEL", "").Replace(c.country ?? "", "").Replace(c.city ?? "", "").Replace("  ", " ") 
+                                        //== curRes.ProductName.ToUpper().Trim().Replace("HOTEL", "").Replace(curRes.CountryName ?? "", "").Replace(curRes.CityName ?? "", "").Replace("  ", " "));//.Select(a => a);
+                                    }
+                                    else if (CurrConfig == "LONGITUDE")
                                        {
-                                           Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
-                                           Accommodation_Id = ac.Accommodation_Id,
-                                           Address_tx = a.address_tx,
-                                           CityCode = a.CityCode,
-                                           CityName = a.CityName,
-                                           CountryCode = a.CountryCode,
-                                           CountryName = a.CountryName,
-                                           Create_Date = a.Create_Date,
-                                           Create_User = a.Create_User,
-                                           Edit_Date = a.Edit_Date,
-                                           Edit_User = a.Edit_User,
-                                           Email = a.Email,
-                                           Fax = a.Fax,
-                                           Latitude = a.Latitude,
-                                           Longitude = a.Longitude,
-                                           IsActive = (a.IsActive ?? true),
-                                           MapId = a.MapId,
-                                           PostCode = a.PostCode,
-                                           ProductName = a.ProductName,
-                                           Remarks = a.Remarks,
-                                           StarRating = a.StarRating,
-                                           StateCode = a.StateCode,
-                                           StateName = a.StateName,
-                                           Status = "REVIEW",
-                                           Street = a.Street,
-                                           Street2 = a.Street2,
-                                           Street3 = a.Street3,
-                                           Street4 = a.Street4,
-                                           SupplierId = a.SupplierId,
-                                           SupplierName = a.SupplierName,
-                                           SupplierProductReference = a.SupplierProductReference,
-                                           TelephoneNumber = a.TelephoneNumber,
-                                           TelephoneNumber_tx = a.TelephoneNumber_tx,
-                                           Website = a.Website
-                                       }).ToList();
+                                        DontAppend = true;
                             }
+                                    else if (CurrConfig == "LATITUDE")
+                                    {
+                                        sql = sql + "(ISNULL(Latitude_Tx, '') != '' and ISNULL(Longitude_Tx, '') != '' and ltrim(rtrim(upper(Latitude_Tx))) = '" + (curRes.Latitude_Tx ?? "").ToUpper().Trim()
+                                            + "' and ltrim(rtrim(upper(Longitude_Tx))) = '" + (curRes.Longitude_Tx ?? "").ToUpper().Trim() + "')";
+                                        //acco = acco.Where(c => (c.Latitude_Tx ?? "") != "" && (curRes.Latitude_Tx ?? "") != ""
+                                       // && (c.Latitude_Tx).ToString().Trim() == (curRes.Latitude_Tx).ToString().Trim()
+                                        //&& (c.Longitude_Tx).ToString().Trim() == (curRes.Longitude_Tx).ToString().Trim()).Select(a => a);
                         }
-                            else if (isTelephoneCheck)
+                                    else if (CurrConfig == "GOOGLE_PLACE_ID")
                             {
-                            using (ConsumerEntities context = new ConsumerEntities())
+                                        sql = sql + "(ISNULL(Google_Place_Id, '') != '' and ltrim(rtrim(upper(Google_Place_Id))) = '" + (curRes.Google_Place_Id ?? "").ToUpper().Trim() + "')";
+                                        //acco = acco.Where(c => (c.Google_Place_Id ?? "") != "" && (curRes.Google_Place_Id ?? "") != "" && c.Google_Place_Id.ToUpper().Trim() == curRes.Google_Place_Id.ToUpper().Trim());//.Select(a => a);
+                                    }
+                                    else if (CurrConfig == "Address_Tx".ToUpper())
                             {
-
-                                prodMapSearch = (from a in context.Accommodation_ProductMapping.AsNoTracking()
-                                                 join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
-                                                 where s.File_Id == supdata.File_Id && a.Accommodation_Id == null && a.Supplier_Id == curSupplier_Id && s.Batch == obj.CurrentBatch
-                                                 && a.Status.Trim().ToUpper() == "UNMAPPED"
-                                                 select a);
-                                res = (from a in prodMapSearch
-                                       join ac in context.Accommodations.AsNoTracking() on a.TelephoneNumber_tx equals ac.Telephone_Tx
-                                       where ac.Telephone_Tx != null && ac.Telephone_Tx != ""
-                                       select new DataContracts.Mapping.DC_Accomodation_ProductMapping
+                                        sql = sql + "(ISNULL(Address_Tx, '') != '' and replace(ltrim(rtrim(upper(Address_Tx))), '''','') = '" + (curRes.Address_tx ?? "").ToUpper().Trim().Replace("'","") + "')";
+                                        //acco = acco.Where(c => (c.Address_Tx ?? "") != "" && (curRes.Address_tx ?? "") != "" && c.Address_Tx.ToUpper().Trim() == curRes.Address_tx.ToUpper().Trim());//.Select(a => a);
+                                    }
+                                    else if (CurrConfig == "TelephoneNumber_tx".ToUpper() || CurrConfig == "Telephone_tx".ToUpper())
                                        {
-                                           Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
-                                           Accommodation_Id = ac.Accommodation_Id,
-                                           Address_tx = a.address_tx,
-                                           CityCode = a.CityCode,
-                                           CityName = a.CityName,
-                                           CountryCode = a.CountryCode,
-                                           CountryName = a.CountryName,
-                                           Create_Date = a.Create_Date,
-                                           Create_User = a.Create_User,
-                                           Edit_Date = a.Edit_Date,
-                                           Edit_User = a.Edit_User,
-                                           Email = a.Email,
-                                           Fax = a.Fax,
-                                           Latitude = a.Latitude,
-                                           Longitude = a.Longitude,
-                                           IsActive = (a.IsActive ?? true),
-                                           MapId = a.MapId,
-                                           PostCode = a.PostCode,
-                                           ProductName = a.ProductName,
-                                           Remarks = a.Remarks,
-                                           StarRating = a.StarRating,
-                                           StateCode = a.StateCode,
-                                           StateName = a.StateName,
-                                           Status = "REVIEW",
-                                           Street = a.Street,
-                                           Street2 = a.Street2,
-                                           Street3 = a.Street3,
-                                           Street4 = a.Street4,
-                                           SupplierId = a.SupplierId,
-                                           SupplierName = a.SupplierName,
-                                           SupplierProductReference = a.SupplierProductReference,
-                                           TelephoneNumber = a.TelephoneNumber,
-                                           TelephoneNumber_tx = a.TelephoneNumber_tx,
-                                           Website = a.Website
-                                       }).ToList();
+                                        sql = sql + "(ISNULL(Telephone_Tx, '') != '' and ltrim(rtrim(upper(Telephone_Tx))) = '" + (curRes.TelephoneNumber_tx ?? "").ToUpper().Trim() + "')";
+                                        //acco = acco.Where(c => (c.Telephone_Tx ?? "") != "" && (curRes.TelephoneNumber_tx ?? "") != "" && c.Telephone_Tx.ToUpper().Trim() == curRes.TelephoneNumber_tx.ToUpper().Trim());//.Select(a => a);
                             }
+                                    else if (CurrConfig == "CompanyHotelID".ToUpper())
+                                    {
+                                        sql = sql + "(ISNULL(CompanyHotelID, '') != '' and ltrim(rtrim(upper(CompanyHotelID))) = '" + (curRes.SupplierProductReference ?? "").ToUpper().Trim() + "')";
+                                        //acco = acco.Where(c => (c.CompanyHotelID ?? 0) != 0 && (curRes.SupplierProductReference ?? "") != "" && c.CompanyHotelID.ToString().ToUpper().Trim() == curRes.SupplierProductReference.ToUpper().Trim());
                         }
-                            #endregion
-
-                            if (totPriorities == curPriority)
+                                    if (curConfig != curConfigCount && (!DontAppend))
                             {
-                                PLog.PercentageValue = 70;
-                                USD.AddStaticDataUploadProcessLog(PLog);
+                                        sql = sql + " AND ";
                             }
-                           // CallLogVerbose(File_Id, "MATCH", "Setting Appropriate Status.");
-
-                            var toupdate = res.Where(p => p.Accommodation_Id != Guid.Empty).Select(c =>
+                                }
+                                //curRes.Accommodation_Id = acco.Select(a => a.Accommodation_Id).FirstOrDefault();
+                                try
                             {
-                                c.MatchedBy = curPriority - 1;
-                                c.Status = ("REVIEW"); return c;
-                            }).ToList();
-
-                            if (totPriorities == curPriority)
+                                    var sqlAcco = context.Database.SqlQuery<System.Guid>(sql).ToList();
+                                    if (sqlAcco.Count > 0)
                             {
-                                PLog.PercentageValue = 75;
-                                USD.AddStaticDataUploadProcessLog(PLog);
+                                        curRes.Accommodation_Id = sqlAcco[0];
                             }
-                            CallLogVerbose(File_Id, "MATCH", toupdate.Count.ToString() + " Matches Found for Combination " + curPriority.ToString() + ".");
-                            //CallLogVerbose(File_Id, "MATCH", "Updating into Database.");
-
-                            foreach (DC_Accomodation_ProductMapping a in toupdate)
+                                }
+                                catch
                             {
-                                Guid curAccommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id;
-                                Guid curAccommodation_Id = a.Accommodation_Id ?? Guid.Empty;
 
-                                if (curAccommodation_Id != Guid.Empty)
+                                }
+                                if (curRes.Accommodation_Id != null && curRes.Accommodation_Id != Guid.Empty)
                                 {
-                                using (ConsumerEntities context = new ConsumerEntities())
-                                {
-                                    context.Accommodation_ProductMapping.Where(x => x.Accommodation_ProductMapping_Id == curAccommodation_ProductMapping_Id)
+                                    context.Accommodation_ProductMapping.AsNoTracking().Where(x => x.Accommodation_ProductMapping_Id == curRes.Accommodation_ProductMapping_Id)
                                        .Update(t => new Accommodation_ProductMapping()
                                        {
                                            MatchedBy = curPriority - 1,
                                            Status = "REVIEW",
-                                           Accommodation_Id = curAccommodation_Id
+                                                   Accommodation_Id = curRes.Accommodation_Id
                                        });
                                 }
+
                             }
                         }
-
-                        //var list = new List<System.Guid>();
-                        //list = toupdate.Select(s =>  s.Accommodation_ProductMapping_Id).ToList();
-                        //var newlist = toupdate.Select(s => new { Accommodation_ProductMapping_Id = s.Accommodation_ProductMapping_Id
-                        //                                            , Accommodation_Id = s.Accommodation_Id });
-                            //if (toupdate.Count > 0)
-                            //{
-                            //    context.Accommodation_ProductMapping
-                            //         .Join(newlist, u => u.Accommodation_ProductMapping_Id, uir => uir.Accommodation_ProductMapping_Id,
-                            //         (u, uir) => new { u, uir })
-                            //         .Update(t => t.u);
-                            //        //.Where(x => list.Contains(x.Accommodation_ProductMapping_Id))
-                            //        //.Update(t => new Accommodation_ProductMapping() { MatchedBy = curPriority - 1, Status = "REVIEW"});
-
-                                
-                            //    //.Any(a => a.Accommodation_ProductMapping_Id == x.Accommodation_ProductMapping_Id))
-                            //}
-
-                            //if (UpdateAccomodationProductMapping(toupdate))
-                            //{
-
+                        toupdate = toupdate + resmaster.Where(p => p.Accommodation_Id != Guid.Empty && p.Accommodation_Id != null).Count();
+                    }
+                    CallLogVerbose(File_Id, "MATCH", toupdate.ToString() + " Matches Found for Combination " + curPriority.ToString() + ".");
                                 if ((obj.FileMode ?? "ALL") == "ALL" && totPriorities == curPriority)
                                 {
                                     DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
@@ -1292,48 +1267,30 @@ namespace DataLayer
                                         context1.SaveChanges();
                                     }
                                 }
-                                //bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
-
                                 retrn = true;
-                            //}
                             if (totPriorities == curPriority)
                             {
                                 PLog.PercentageValue = 100;
                                 USD.AddStaticDataUploadProcessLog(PLog);
                             }
-                        }
-                        else
-                        {
-                            retrn = false;
-                        }
-
                         curPriority = curPriority + 1;
                     }
-                if (Match_Direct_Master)
-                {
-                    bool ismatchmasterdone = UpdateHotelMappingStatusDirectMaster(obj);
-                }
-                // }
-
+                //if (Match_Direct_Master)
+                //{
+                //    bool ismatchmasterdone = UpdateHotelMappingStatusDirectMaster(obj);
                 //}
-                CallLogVerbose(File_Id, "MATCH", "Update Done.");
                 return retrn;
             }
             catch (Exception e)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating hotel mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
-
-            return retrn;
         }
-        public bool UpdateHotelMappingStatus_old(DC_MappingMatch obj)
+        public bool UpdateHotelMappingStatus_older(DC_MappingMatch obj)
         {
             bool retrn = false;
-            //List<DC_Accomodation_ProductMapping> CMS = obj.lstHotelMapping;
             DataContracts.Masters.DC_Supplier supdata = new DataContracts.Masters.DC_Supplier();
             supdata = obj.SupplierDetail;
-
-            List<DC_SupplierImportAttributeValues> configs = obj.lstConfigs;
             string configWhere = "";
             string curSupplier = "";
             Guid? curSupplier_Id = Guid.Empty;
@@ -1349,12 +1306,13 @@ namespace DataLayer
             int PerForEachPriority = 60 / totPriorities;
             bool Match_Direct_Master = obj.Match_Direct_Master;
 
+            List<DC_Accomodation_ProductMapping> res = new List<DC_Accomodation_ProductMapping>();
+            IQueryable<Accommodation_ProductMapping> prodMapSearch;
             if (supdata != null)
             {
                 curSupplier = supdata.Name;
                 curSupplier_Id = supdata.Supplier_Id;
             }
-            List<DC_Accomodation_ProductMapping> ret = new List<DC_Accomodation_ProductMapping>();
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
@@ -1365,7 +1323,7 @@ namespace DataLayer
                         List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
                         DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
 
-                        lstSMT = (from a in context.Accommodation_ProductMapping
+                        lstSMT = (from a in context.Accommodation_ProductMapping.AsNoTracking()
                                   join j in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals j.Mapping_Id into jact
                                   from jdact in jact.DefaultIfEmpty()
                                   where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
@@ -1380,34 +1338,85 @@ namespace DataLayer
                                   }).Take(250).ToList();
                         if (lstSMT.Count > 0)
                         {
-                            //idinsert = DeleteSTGMappingTableIDs(File_Id);
                             bool idinsert = AddSTGMappingTableIDs(lstSMT);
                         }
                     }
-                    var prodMap = (from a in context.Accommodation_ProductMapping.AsNoTracking()
+                }
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    #region "Acco mapping query"
+                    prodMapSearch = (from a in context.Accommodation_ProductMapping.AsNoTracking()
                                    join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
                                    where s.File_Id == supdata.File_Id && a.Accommodation_Id == null && a.Supplier_Id == curSupplier_Id && s.Batch == obj.CurrentBatch
                                    && a.Status.Trim().ToUpper() == "UNMAPPED"
                                    select a);
 
-                    //var ct = prodMap.Count();
+                    res = (from a in prodMapSearch
+                           join act in context.m_CityMapping.AsNoTracking() on new { a.Supplier_Id, country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim(), city = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim() }
+                           equals new { act.Supplier_Id, country = ((act.CountryName == null) ? act.CountryCode : act.CountryName).ToUpper().Trim(), city = ((act.CityName == null) ? act.CityCode : act.CityName).ToUpper().Trim() }
+                           join mact in context.m_CityMaster.AsNoTracking() on new { country = (act.Country_Id ?? Guid.Empty) }
+                           equals new { country = mact.Country_Id } into jact
+                           from jdact in jact.DefaultIfEmpty()
+                           where ((act.City_Id != null && (act.City_Id == jdact.City_Id)) || (act.City_Id == null && (act.CityName.ToUpper().Trim() == jdact.Name.ToUpper().Trim())))
+                           select new DataContracts.Mapping.DC_Accomodation_ProductMapping
+                           {
+                               Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
+                               Accommodation_Id = a.Accommodation_Id,
+                               Address_tx = a.address_tx,
+                               CityCode = a.CityCode,
+                               CityName = a.CityName,
+                               CountryCode = a.CountryCode,
+                               CountryName = a.CountryName,
+                               Create_Date = a.Create_Date,
+                               Create_User = a.Create_User,
+                               Edit_Date = a.Edit_Date,
+                               Edit_User = a.Edit_User,
+                               Email = a.Email,
+                               Fax = a.Fax,
+                               Latitude = a.Latitude,
+                               Longitude = a.Longitude,
+                               IsActive = (a.IsActive ?? true),
+                               MapId = a.MapId,
+                               PostCode = a.PostCode,
+                               ProductName = a.ProductName,
+                               Remarks = a.Remarks,
+                               StarRating = a.StarRating,
+                               StateCode = a.StateCode,
+                               StateName = a.StateName,
+                               Status = a.Status,
+                               Street = a.Street,
+                               Street2 = a.Street2,
+                               Street3 = a.Street3,
+                               Street4 = a.Street4,
+                               SupplierId = a.SupplierId,
+                               SupplierName = a.SupplierName,
+                               SupplierProductReference = a.SupplierProductReference,
+                               TelephoneNumber = a.TelephoneNumber,
+                               TelephoneNumber_tx = a.TelephoneNumber_tx,
+                               Website = a.Website,
+                               //Country_Id = (jdact.Country_Id == Guid.Empty) ? ((act.Country_Id == Guid.Empty) ? a.Country_Id : act.Country_Id) : jdact.Country_Id,
+                               //City_Id = (jdact.City_Id == Guid.Empty) ? ((act.City_Id == Guid.Empty) ? a.City_Id : act.City_Id) : jdact.City_Id,
+                               Country_Id = (act.Country_Id == Guid.Empty) ? a.Country_Id : act.Country_Id,
+                               City_Id = (act.City_Id == Guid.Empty) ? a.City_Id : act.City_Id,
+                               SystemCityName = jdact.Name,
+                               SystemCountryName = jdact.CountryName
+                           }).ToList();
+                    #endregion
 
+                }
 
-                    var cities = (from cm in context.m_CityMapping.AsNoTracking()
-                                  where cm.Supplier_Id == curSupplier_Id
-                                  select cm);
-
-                    /*if (obj.IsBatched)
+                foreach (int priority in obj.Priorities)
                     {
-                        prodMap = (from a in prodMap
-                                   join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
-                                   //join s in context.stg_SupplierProductMapping.AsNoTracking() on a.stg_AccoMapping_Id equals s.stg_AccoMapping_Id
-                                   where s.Batch == obj.CurrentBatch
-                                   select a);
-                    }*/
-                    var prodMapSearch = prodMap; //.ToList();
-                    //var ct1 = prodMap.Count();
+                    //if (res.Count == 0)
+                    //{
+                    //    retrn = true;
+                    //    break;
+                    //}
+                    var curAttributeVals = obj.lstConfigs.Where(a => a.Priority == priority).ToList();
 
+                    List<DC_SupplierImportAttributeValues> configs = curAttributeVals;
+
+                    //obj.CurrentPriority = curPriority;
                     bool isCountryCodeCheck = false;
                     bool isCountryNameCheck = false;
                     bool isCityCodeCheck = false;
@@ -1421,7 +1430,6 @@ namespace DataLayer
                     bool isPostCodeCheck = false;
                     totConfigs = configs.Count;
                     curConfig = 0;
-
                     PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
                     PLog.SupplierImportFile_Id = obj.File_Id;
                     PLog.Step = "MATCH";
@@ -1429,8 +1437,8 @@ namespace DataLayer
                     PLog.CurrentBatch = curPriority;
                     PLog.TotalBatch = totPriorities;
                     CallLogVerbose(File_Id, "MATCH", "Applying Matching Combination " + curPriority.ToString() + " out of Total " + totPriorities + " Combinations.");
-
-                    foreach (DC_SupplierImportAttributeValues config in configs)
+                    configWhere = "";
+                    foreach (DC_SupplierImportAttributeValues config in curAttributeVals)
                     {
                         if (config.AttributeValue.Replace("Accommodation.", "").Trim() != "---ALL---")
                             configWhere = configWhere + " " + config.AttributeValue.Replace("Accommodation.", "").Trim() + ",";
@@ -1439,264 +1447,59 @@ namespace DataLayer
                     }
                     configWhere = configWhere.Remove(configWhere.Length - 1);
                     CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);
-
-
-                    foreach (DC_SupplierImportAttributeValues config in configs)
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        foreach (DC_SupplierImportAttributeValues config in curAttributeVals)
                     {
                         curConfig = curConfig + 1;
+
                         string CurrConfig = "";
                         if (config.AttributeValue.Replace("Accommodation.", "").Trim() != "---ALL---")
                             CurrConfig = config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper();
                         else
                             CurrConfig = config.AttributeName.Replace("Accommodation_ProductMapping.", "").Trim().ToUpper();
-                        CallLogVerbose(File_Id, "MATCH", "Applying Check for " + CurrConfig);
-                        //configWhere = " " + configWhere + config.AttributeName + " == " + config.AttributeValue + " AND";
-                        //if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "COUNTRYCODE")
-                        //{
-                        //    isCountryCodeCheck = true;
-                        //    prodMapSearch = (from a in prodMapSearch
-                        //                     join cm in context.m_CountryMapping on new { a.Supplier_Id, a.CountryCode } equals new { cm.Supplier_Id, cm.CountryCode }
-                        //                     join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
-                        //                     join ac in context.Accommodations on m.Code equals ac.cou
-                        //                     where a.CountryCode == m.Code
-                        //                     select a);
-                        //}
+                            //CallLogVerbose(File_Id, "MATCH", "Applying Check for " + CurrConfig);
+
+
                         if (CurrConfig == "COUNTRY")
-                        {
                             isCountryNameCheck = true;
-
-                            /*prodMapSearch = (from a in prodMapSearch
-                                             join cm in context.m_CountryMapping.AsNoTracking() on new { a.Supplier_Id, country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim()  } equals new { cm.Supplier_Id, country = ((cm.CountryName == null) ? cm.CountryCode : cm.CountryName).ToUpper().Trim() }
-                                             join m in context.m_CountryMaster.AsNoTracking() on cm.Country_Id equals m.Country_Id
-                                             //where ((a.CountryName == null) ? (a.CountryCode == cm.CountryCode) : (a.CountryName == cm.CountryName))
-                                             //join ac in context.Accommodations.AsNoTracking() on m.Name equals ac.country
-                                             select a).Distinct();//.ToList();
-                            */
-                            //ct = prodMapSearch.Count();
-                        }
-                        //if (config.AttributeValue.Replace("Accommodation.", "").Trim().ToUpper() == "CITYCODE")
-                        //{
-                        //    isCityCodeCheck = true;
-                        //    prodMapSearch = (from a in prodMapSearch
-                        //                     join ctm in context.m_CityMapping on new { a.Supplier_Id, a.CityCode } equals new { ctm.Supplier_Id, ctm.CityCode }
-                        //                     join c in context.m_CityMaster on ctm.City_Id equals c.City_Id
-                        //                     join cm in context.m_CountryMapping on nelw { a.Supplier_Id, a.CountryCode } equals new { cm.Supplier_Id, cm.CountryCode }
-                        //                     join m in context.m_CountryMaster on cm.Country_Id equals m.Country_Id
-                        //                     select a);
-                        //}
-                        if (CurrConfig == "CITY")
-                        {
+                            else if (CurrConfig == "CITY")
                             isCityNameCheck = true;
-
-                            /*if (cities.Count() > 0)
-                            {
-                            prodMapSearch = (from a in prodMapSearch
-                                             join ctm in cities on new { a.Country_Id, city = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim() } 
-                                             equals new { ctm.Country_Id, city = ((ctm.CityName == null) ? ctm.CityCode : ctm.CityName).ToUpper().Trim() }
-                                             //join m in context.m_CityMaster on new { Country_Id = (ctm.Country_Id ?? Guid.Empty), city = ctm.CityName.ToUpper().Trim() } 
-                                             //equals new { Country_Id = m.Country_Id, city = m.Name.ToUpper().Trim() } //ctm.City_Id equals m.City_Id // a.CityName equals m.Name
-                                             //where ((a.CityName == null) ? (a.CityCode == ctm.CityCode) : (a.CityName == ctm.CityName))
-
-                                             //where a.CityName.Trim().ToUpper() == m.Name
-                                             select a).Distinct();//.ToList();
-                                                                  //var newprodMapSearch = (from a in prodMapSearch
-                                                                  //                        join ctm in cities on new { a.CountryName, a.CityName } equals new { ctm.CountryName, ctm.CityName }
-                                                                  //                        join c in context.m_CityMaster.AsNoTracking() on ctm.City_Id equals c.City_Id
-                                                                  //                        join ac in context.Accommodations.AsNoTracking() on c.Name equals ac.city
-                                                                  //                        select a).Distinct().ToList();  
-                                                                  //prodMapSearch = newprodMapSearch.ToList();
-                            }
-                            else
-                            {
-                                prodMapSearch = (from a in prodMapSearch
-                                                 join ctm in context.m_CityMaster.AsNoTracking() on new { Country_Id =  (a.Country_Id ?? Guid.Empty), city = a.CityName.ToUpper().Trim() }
-                                                 equals new { Country_Id = ctm.Country_Id, city = ctm.Name.ToUpper().Trim() }
-                                                 select a).Distinct();
-
-                            }
-                            */
-                            //ct = prodMapSearch.Count();
-
-                        }
-                        if (CurrConfig == "CompanyHotelID".ToUpper())
-                        {
+                            else if (CurrConfig == "CompanyHotelID".ToUpper())
                             isCodeCheck = true;
-                            /*prodMapSearch = (from a in prodMapSearch
-                                             join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
-                                             where a.SupplierProductReference.Trim().ToUpper() == ac.CompanyHotelID.ToString()
-                                             select a).Distinct();//.ToList();*/
-                        }
-                        if (CurrConfig == "PostalCode".ToUpper())
-                        {
+                            else if (CurrConfig == "PostalCode".ToUpper())
                             isPostCodeCheck = true;
-                        }
-                        if (CurrConfig == "HotelName".ToUpper())
-                        {
+                            else if (CurrConfig == "HotelName".ToUpper())
                             isNameCheck = true;
-                            //var cities = (from cm in context.m_CityMapping.AsNoTracking()
-                            //              where cm.Supplier_Id == curSupplier_Id
-                            //              select cm); 
-                            //prodMapSearch = (from a in prodMapSearch
-                            //                     //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
-                            //                 /*join ctm in context.m_CityMapping on new
-                            //                 {
-                            //                     SupplierId = a.Supplier_Id,
-                            //                     //Country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper(),
-                            //                     City = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim()
-                            //                 }
-                            //                equals new
-                            //                 {
-                            //                     SupplierId = ctm.Supplier_Id,
-                            //                     //Country = ((ctm.CountryName == null) ? ctm.CountryCode : ctm.CountryName).ToUpper().Trim(),
-                            //                     City = ((ctm.CityName == null) ? ctm.CityCode : ctm.CityName).ToUpper().Trim()
-                            //                 } //a.Supplier_Id equals ctm.Supplier_Id
-                            //                 */
-                            //                 join ac in context.Accommodations.AsNoTracking() on new
-                            //                        { 
-                            //                        //city = a.CityName.ToUpper().Trim(),
-                            //                        Country = a.Country_Id,
-                            //                        city = a.City_Id,
-                            //                        hotel = (a.ProductName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(a.CityName ?? "", "").Replace(a.CountryName ?? "", "").Replace("  ", " ").Trim() } 
-                            //                    equals new
-                            //                        { 
-                            //                        //city = ac.city.ToUpper().Trim(),
-                            //                        Country = ac.Country_Id,
-                            //                        city = ac.City_Id,
-                            //                        hotel = (ac.HotelName ?? string.Empty).ToString().ToUpper().Replace("HOTEL", "").Replace(ac.city ?? "", "").Replace(ac.country ?? "", "").Replace("  ", " ").Trim() }
-                            //                 select a).Distinct();//.ToList();
-
-                            //tempres = prodMapSearch.ToList();
-                        }
-                        if (CurrConfig == "LATITUDE")
-                        {
+                            else if (CurrConfig == "LATITUDE")
                             isLatLongCheck = true;
-                            /* prodMapSearch = (from a in prodMapSearch
-                                             where a.Latitude != null && a.Longitude != null
-                                             select a).Distinct();//.ToList();
-
-                            if (prodMapSearch.Count() > 0)
-                            {
-                                prodMapSearch = (from a in prodMapSearch
-                                                     //join m in context.Accommodations.AsNoTracking() on new { a.Latitude, a.Longitude } equals new { m.Latitude, m.Longitude }
-                                                 join m in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { m.Country_Id, m.City_Id }
-                                                 where m.Latitude != null && a.Latitude != null && m.Longitude != null && a.Longitude != null
-                                                 && a.Latitude == m.Latitude && a.Longitude == m.Longitude
-                                                 select a);//.Distinct().ToList();
-                             }*/
-                        }
-                        if (CurrConfig == "GOOGLE_PLACE_ID")
-                        {
+                            else if (CurrConfig == "GOOGLE_PLACE_ID")
                             isPlaceIdCheck = true;
-
-                            /*prodMapSearch = (from a in prodMapSearch
-                                             where a.Google_Place_Id != null
-                                             select a);//.Distinct().ToList();
-
-                            if (prodMapSearch.Count() > 0)
-                            {
-                                prodMapSearch = (from a in prodMapSearch
-                                                 join m in context.Accommodations.AsNoTracking() on a.Google_Place_Id equals m.Google_Place_Id
-                                                 where m.Google_Place_Id != null && a.Google_Place_Id != null
-                                                 select a);//.Distinct().ToList();
-                            }*/
-                        }
-                        if (CurrConfig == "Address_Tx".ToUpper())
-                        {
+                            else if (CurrConfig == "Address_Tx".ToUpper())
                             isAddressCheck = true;
-                            //prodMapSearch = (from a in prodMapSearch
-                            //                     //join ctm in cities on new { a.Country_Id, a.City_Id } equals new { ctm.Country_Id, ctm.City_Id }
-                            //                 join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
-                            //                 where a.address_tx != null && ac.Address_Tx != null
-                            //                 //&& a.address_tx.ToString().Trim().ToUpper().Replace("HOTEL", "") == ac.Address_Tx.ToString().Trim().ToUpper().Replace("HOTEL", "")
-                            //                 select a).Distinct().ToList();
-
-                            /*prodMapSearch = (from a in prodMapSearch
-                                             join ac in context.Accommodations.AsNoTracking() on a.address_tx equals ac.Address_Tx
-                                             select a);//.Distinct().ToList();
-                                             */
-                        }
-                        if (CurrConfig == "TelephoneNumber_tx".ToUpper() || CurrConfig == "Telephone_tx".ToUpper()) //|| CurrConfig == "---ALL---".ToUpper()
-                        {
+                            else if (CurrConfig == "TelephoneNumber_tx".ToUpper() || CurrConfig == "Telephone_tx".ToUpper())
                             isTelephoneCheck = true;
-                            /*prodMapSearch = (from a in prodMapSearch
-                                             join ac in context.Accommodations.AsNoTracking() on new { a.Country_Id, a.City_Id } equals new { ac.Country_Id, ac.City_Id }
-                                             where a.TelephoneNumber_tx != null && ac.Telephone_Tx != null && a.TelephoneNumber_tx == ac.Telephone_Tx
-                                             select a);//.Distinct().ToList();*/
-                        }
 
-                        //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
                         PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + ((PerForEachPriority / totConfigs) * curConfig);
                         USD.AddStaticDataUploadProcessLog(PLog);
-                    }
-                    List<DC_Accomodation_ProductMapping> res = new List<DC_Accomodation_ProductMapping>();
 
+                        }
+                    }
                     if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isPlaceIdCheck || isAddressCheck || isTelephoneCheck || isPostCodeCheck)
                     {
                         if (isCountryNameCheck || isCityNameCheck || isCodeCheck || isNameCheck || isLatLongCheck || isPlaceIdCheck || isPostCodeCheck)
                         {
-                        res = (from a in prodMapSearch
-                               join act in context.m_CityMapping.AsNoTracking() on new { a.Supplier_Id, country = ((a.CountryName == null) ? a.CountryCode : a.CountryName).ToUpper().Trim(), city = ((a.CityName == null) ? a.CityCode : a.CityName).ToUpper().Trim() }
-                               equals new { act.Supplier_Id, country = ((act.CountryName == null) ? act.CountryCode : act.CountryName).ToUpper().Trim(), city = ((act.CityName == null) ? act.CityCode : act.CityName).ToUpper().Trim() }
-                                   join mact in context.m_CityMaster.AsNoTracking() on new { country = (act.Country_Id ?? Guid.Empty) }
-                                   equals new { country = mact.Country_Id } into jact
-                               from jdact in jact.DefaultIfEmpty()
-                                   where ((act.City_Id != null && (act.City_Id == jdact.City_Id)) || (act.City_Id == null && (act.CityName.ToUpper().Trim() == jdact.Name.ToUpper().Trim())))
-                                   //join mac in context.m_CountryMaster.AsNoTracking() on jdact.Country_Id equals mac.Country_Id into jac
-                                   //from jdac in jac.DefaultIfEmpty()
-                                   //where ((a.CityName == null) ? (a.CityCode == act.CityCode) : (a.CityName == act.CityName))
-                                   //&& ((a.CountryName == null) ? (a.CountryCode == act.CountryCode) : (a.CountryName == act.CountryName))
-                               select new DataContracts.Mapping.DC_Accomodation_ProductMapping
-                               {
-                                   Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
-                                   Accommodation_Id = a.Accommodation_Id,
-                                   Address_tx = a.address_tx,
-                                   CityCode = a.CityCode,
-                                   CityName = a.CityName,
-                                   CountryCode = a.CountryCode,
-                                   CountryName = a.CountryName,
-                                   Create_Date = a.Create_Date,
-                                   Create_User = a.Create_User,
-                                   Edit_Date = a.Edit_Date,
-                                   Edit_User = a.Edit_User,
-                                   Email = a.Email,
-                                   Fax = a.Fax,
-                                   Latitude = a.Latitude,
-                                   Longitude = a.Longitude,
-                                   IsActive = (a.IsActive ?? true),
-                                   MapId = a.MapId,
-                                   PostCode = a.PostCode,
-                                   ProductName = a.ProductName,
-                                   Remarks = a.Remarks,
-                                   StarRating = a.StarRating,
-                                   StateCode = a.StateCode,
-                                   StateName = a.StateName,
-                                   Status = a.Status,
-                                   Street = a.Street,
-                                   Street2 = a.Street2,
-                                   Street3 = a.Street3,
-                                   Street4 = a.Street4,
-                                   SupplierId = a.SupplierId,
-                                   SupplierName = a.SupplierName,
-                                   SupplierProductReference = a.SupplierProductReference,
-                                   TelephoneNumber = a.TelephoneNumber,
-                                   TelephoneNumber_tx = a.TelephoneNumber_tx,
-                                   Website = a.Website,
-                                   //Country_Id = (jdact.Country_Id == Guid.Empty) ? ((act.Country_Id == Guid.Empty) ? a.Country_Id : act.Country_Id) : jdact.Country_Id,
-                                   //City_Id = (jdact.City_Id == Guid.Empty) ? ((act.City_Id == Guid.Empty) ? a.City_Id : act.City_Id) : jdact.City_Id,
-                                   Country_Id = (act.Country_Id == Guid.Empty) ? a.Country_Id : act.Country_Id,
-                                   City_Id = (act.City_Id == Guid.Empty) ? a.City_Id : act.City_Id,
-                                   SystemCityName = jdact.Name,
-                                   SystemCountryName = jdact.CountryName
-                                   }).ToList();
-
                         if (totPriorities == curPriority)
                         {
                             PLog.PercentageValue = 65;
                             USD.AddStaticDataUploadProcessLog(PLog);
                         }
 
-                        CallLogVerbose(File_Id, "MATCH", "Looking for Match in Master Data for Matching Combination " + curPriority.ToString() + ".");
+                            // CallLogVerbose(File_Id, "MATCH", "Looking for Match in Master Data for Matching Combination " + curPriority.ToString() + ".");
 
+                            res.RemoveAll(p => p.Accommodation_Id != null && p.Accommodation_Id != Guid.Empty); //Guid.Empty
+                            using (ConsumerEntities context = new ConsumerEntities())
+                            {
                         res = res.Select(c =>
                         {
                             c.Accommodation_Id = (context.Accommodations.AsNoTracking()
@@ -1722,8 +1525,18 @@ namespace DataLayer
                             return c;
                         }).ToList();
                         }
+                        }
+                        #region "Address Check and Telephone Check"
                         else if (isAddressCheck)
                         {
+                            using (ConsumerEntities context = new ConsumerEntities())
+                            {
+
+                                prodMapSearch = (from a in context.Accommodation_ProductMapping.AsNoTracking()
+                                                 join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
+                                                 where s.File_Id == supdata.File_Id && a.Accommodation_Id == null && a.Supplier_Id == curSupplier_Id && s.Batch == obj.CurrentBatch
+                                                 && a.Status.Trim().ToUpper() == "UNMAPPED"
+                                                 select a);
                             res = (from a in prodMapSearch
                                    join ac in context.Accommodations.AsNoTracking() on a.address_tx equals ac.Address_Tx
                                    where ac.Address_Tx != null && ac.Address_Tx != ""
@@ -1765,8 +1578,17 @@ namespace DataLayer
                                        Website = a.Website
                                    }).ToList();
                         }
+                        }
                         else if (isTelephoneCheck)
                         {
+                            using (ConsumerEntities context = new ConsumerEntities())
+                            {
+
+                                prodMapSearch = (from a in context.Accommodation_ProductMapping.AsNoTracking()
+                                                 join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals s.Mapping_Id
+                                                 where s.File_Id == supdata.File_Id && a.Accommodation_Id == null && a.Supplier_Id == curSupplier_Id && s.Batch == obj.CurrentBatch
+                                                 && a.Status.Trim().ToUpper() == "UNMAPPED"
+                                                 select a);
                             res = (from a in prodMapSearch
                                    join ac in context.Accommodations.AsNoTracking() on a.TelephoneNumber_tx equals ac.Telephone_Tx
                                    where ac.Telephone_Tx != null && ac.Telephone_Tx != ""
@@ -1808,16 +1630,17 @@ namespace DataLayer
                                        Website = a.Website
                                    }).ToList();
                         }
-
+                        }
+                        #endregion
 
                         if (totPriorities == curPriority)
                         {
                             PLog.PercentageValue = 70;
                             USD.AddStaticDataUploadProcessLog(PLog);
                         }
-                        CallLogVerbose(File_Id, "MATCH", "Setting Appropriate Status.");
-                        res.RemoveAll(p => p.Accommodation_Id == Guid.Empty);
-                        res = res.Select(c =>
+                        // CallLogVerbose(File_Id, "MATCH", "Setting Appropriate Status.");
+
+                        var toupdate = res.Where(p => p.Accommodation_Id != Guid.Empty).Select(c =>
                         {
                             c.MatchedBy = curPriority - 1;
                             c.Status = ("REVIEW"); return c;
@@ -1828,14 +1651,49 @@ namespace DataLayer
                             PLog.PercentageValue = 75;
                             USD.AddStaticDataUploadProcessLog(PLog);
                         }
-                        CallLogVerbose(File_Id, "MATCH", res.Count.ToString() + " Matches Found for Combination " + curPriority.ToString() + ".");
-                        CallLogVerbose(File_Id, "MATCH", "Updating into Database.");
-                        if (UpdateAccomodationProductMapping(res))
+                        CallLogVerbose(File_Id, "MATCH", toupdate.Count.ToString() + " Matches Found for Combination " + curPriority.ToString() + ".");
+                        //CallLogVerbose(File_Id, "MATCH", "Updating into Database.");
+
+                        foreach (DC_Accomodation_ProductMapping a in toupdate)
                         {
-                            if (Match_Direct_Master)
+                            Guid curAccommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id;
+                            Guid curAccommodation_Id = a.Accommodation_Id ?? Guid.Empty;
+
+                            if (curAccommodation_Id != Guid.Empty)
                             {
-                                bool ismatchmasterdone = UpdateHotelMappingStatusDirectMaster(obj);
+                                using (ConsumerEntities context = new ConsumerEntities())
+                        {
+                                    context.Accommodation_ProductMapping.Where(x => x.Accommodation_ProductMapping_Id == curAccommodation_ProductMapping_Id)
+                                       .Update(t => new Accommodation_ProductMapping()
+                            {
+                                           MatchedBy = curPriority - 1,
+                                           Status = "REVIEW",
+                                           Accommodation_Id = curAccommodation_Id
+                                       });
+                                }
                             }
+                            }
+
+                        //var list = new List<System.Guid>();
+                        //list = toupdate.Select(s =>  s.Accommodation_ProductMapping_Id).ToList();
+                        //var newlist = toupdate.Select(s => new { Accommodation_ProductMapping_Id = s.Accommodation_ProductMapping_Id
+                        //                                            , Accommodation_Id = s.Accommodation_Id });
+                        //if (toupdate.Count > 0)
+                        //{
+                        //    context.Accommodation_ProductMapping
+                        //         .Join(newlist, u => u.Accommodation_ProductMapping_Id, uir => uir.Accommodation_ProductMapping_Id,
+                        //         (u, uir) => new { u, uir })
+                        //         .Update(t => t.u);
+                        //        //.Where(x => list.Contains(x.Accommodation_ProductMapping_Id))
+                        //        //.Update(t => new Accommodation_ProductMapping() { MatchedBy = curPriority - 1, Status = "REVIEW"});
+
+
+                        //    //.Any(a => a.Accommodation_ProductMapping_Id == x.Accommodation_ProductMapping_Id))
+                        //}
+
+                        //if (UpdateAccomodationProductMapping(toupdate))
+                        //{
+
                             if ((obj.FileMode ?? "ALL") == "ALL" && totPriorities == curPriority)
                             {
                                 DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
@@ -1855,7 +1713,7 @@ namespace DataLayer
                             //bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
 
                             retrn = true;
-                        }
+                        //}
                         if (totPriorities == curPriority)
                         {
                             PLog.PercentageValue = 100;
@@ -1866,7 +1724,16 @@ namespace DataLayer
                     {
                         retrn = false;
                     }
+
+                    curPriority = curPriority + 1;
                 }
+                if (Match_Direct_Master)
+                {
+                    bool ismatchmasterdone = UpdateHotelMappingStatusDirectMaster(obj);
+                }
+                // }
+
+                //}
                 CallLogVerbose(File_Id, "MATCH", "Update Done.");
                 return retrn;
             }
@@ -1874,6 +1741,8 @@ namespace DataLayer
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating hotel mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
+
+            return retrn;
         }
 
 
@@ -3350,6 +3219,8 @@ namespace DataLayer
                             objNew.City_Id = PM.City_Id;
                             objNew.Website = PM.Website;
                             objNew.address = PM.FullAddress;
+                            objNew.Latitude_Tx = PM.Latitude_Tx;
+                            objNew.Longitude_Tx = PM.Longitude_Tx;
                             lstobjNew.Add(objNew);
                         }
                     }
@@ -3363,7 +3234,7 @@ namespace DataLayer
 
                     context.Accommodation_ProductMapping.AddRange(lstobjNew);
                 context.SaveChanges();
-                context.USP_UpdateMapID("product");
+                    //context.USP_UpdateMapID("product");
             }
             }
             //}
@@ -5968,8 +5839,8 @@ namespace DataLayer
                 clsMappingCity = clsMappingCity.Select(c =>
                 {
                     c.CityName = (clsSTGCity
-                    //.Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
-                    .Where(s => s.CityCode == c.CityCode)
+                    .Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
+                    //.Where(s => s.CityCode == c.CityCode)
                     .Select(s1 => s1.CityName)
                     .FirstOrDefault()
                     ) ?? c.CityName;
@@ -5977,21 +5848,21 @@ namespace DataLayer
                     c.Edit_User = "TLGX_DataHandler";
                     c.ActionType = "UPDATE";
                     c.stg_City_Id = (clsSTGCity
-                    //.Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
-                    .Where(s => s.CityCode == c.CityCode)
+                    .Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
+                    //.Where(s => s.CityCode == c.CityCode)
                     .Select(s1 => s1.stg_City_Id)
                     .FirstOrDefault()
                     );
                     c.StateCode = (clsSTGCity
-                    //.Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
-                    .Where(s => s.CityCode == c.CityCode)
-                    .Select(s1 => s1.CityName)
+                    .Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
+                    //.Where(s => s.CityCode == c.CityCode)
+                    .Select(s1 => s1.StateCode)
                     .FirstOrDefault()
                     ) ?? c.StateCode;
                     c.StateName = (clsSTGCity
-                    //.Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
-                    .Where(s => s.CityCode == c.CityCode)
-                    .Select(s1 => s1.CityName)
+                    .Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
+                    //.Where(s => s.CityCode == c.CityCode)
+                    .Select(s1 => s1.StateName)
                     .FirstOrDefault()
                     ) ?? c.StateName;
                     return c;
@@ -6017,7 +5888,8 @@ namespace DataLayer
                         //(((p2.StateName ?? string.Empty).ToString().Trim().ToUpper() == (p.StateName ?? string.Empty).ToString().Trim().ToUpper()))
 
                         //&& (p2.Country_Id == p.Country_Id)
-                        p2.CityCode == p.CityCode
+                        (p2.CityCode ?? p2.CityName) == (p.CityCode ?? p.CityName) 
+                        && p2.Country_Id == p.Country_Id
                     //&& (((p2.CityName ?? string.Empty).ToString().Trim().ToUpper() == (p.CityName ?? string.Empty).ToString().Trim().ToUpper()))
                     ))).ToList();
                 PLog.PercentageValue = 48;
@@ -6054,7 +5926,7 @@ namespace DataLayer
 
 
                 //clsMappingCity = clsMappingCity.Where(a => a.oldCityName != a.CityName).ToList();
-                clsMappingCity.RemoveAll(p => (p.CityName == p.oldCityName && p.StateCode == null ));
+                clsMappingCity.RemoveAll(p => (p.CityName == p.oldCityName));
                 PLog.PercentageValue = 53;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
@@ -6750,7 +6622,7 @@ namespace DataLayer
                     List<DataContracts.Mapping.DC_MappingStats> returnObj = new List<DataContracts.Mapping.DC_MappingStats>();
                     List<DataContracts.Mapping.DC_MappingStatsFor> newmapstatsforList = new List<DataContracts.Mapping.DC_MappingStatsFor>();
                     DataContracts.Mapping.DC_MappingStats newmapstats = new DataContracts.Mapping.DC_MappingStats();
-                   
+
                     //var supplierMaster = context.Supplier.AsQueryable();
 
                     int CitySupplierCount = 0;
@@ -6783,7 +6655,7 @@ namespace DataLayer
                     else if (SupplierID == Guid.Empty)
                     {
                         newmapstats.NextRun = "Not Scheduled";
-                       
+
                         if (ProductCategory != "0" )
                         {
                             var supplierMaster = (  from m in context.Supplier
@@ -6801,7 +6673,7 @@ namespace DataLayer
                             RoomSupplierCount = supplierMaster.Where(w => search.Where(sw => sw.MappingFor == "HotelRoom").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
 
                             ActivitySupplierCount = supplierMaster.Where(w => search.Where(sw => sw.MappingFor == "Activity").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
-                            
+
 
                             searchResult.AddRange((from t1 in search.ToList()
                                                    join t2 in supplierMaster on t1.supplier_id equals t2.Supplier_Id
@@ -6926,9 +6798,9 @@ namespace DataLayer
                     }
 
                     newmapstats.MappingStatsFor = newmapstatsforList;
-                 
 
-                   returnObj.Add(newmapstats);
+
+                    returnObj.Add(newmapstats);
                     //}
 
                     return returnObj;
@@ -6964,7 +6836,7 @@ namespace DataLayer
                                      where (PriorityId > 0 ? t2.Priority == PriorityId : t2.Priority == t2.Priority)
                                      select t1
                                      );
-                                     
+
                     }
                     if (PriorityId != 0 && ProductCategory =="0")
                     {
@@ -6973,7 +6845,7 @@ namespace DataLayer
                                      where t2.Priority == PriorityId
                                      select t1);
                     }
-                    
+
                     objLst = dashBoard.GroupBy(cat => new { cat.SupplierName, cat.supplier_id, cat.MappingFor })
                                 .Select(group => new DC_MappingStatsForSuppliers
                                 {

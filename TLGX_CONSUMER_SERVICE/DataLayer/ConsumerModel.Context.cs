@@ -20,7 +20,6 @@ namespace DataLayer
         public ConsumerEntities()
             : base("name=ConsumerEntities")
         {
-            Database.CommandTimeout = 180;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
