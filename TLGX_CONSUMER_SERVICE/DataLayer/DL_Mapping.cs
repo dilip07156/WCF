@@ -6738,7 +6738,7 @@ namespace DataLayer
         #endregion
 
         #region Mapping Stats
-        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(Guid SupplierID, int Priority)
+        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(Guid SupplierID, int Priority,string ProductCategory)
         {
             try
             {
@@ -6750,6 +6750,8 @@ namespace DataLayer
                     List<DataContracts.Mapping.DC_MappingStats> returnObj = new List<DataContracts.Mapping.DC_MappingStats>();
                     List<DataContracts.Mapping.DC_MappingStatsFor> newmapstatsforList = new List<DataContracts.Mapping.DC_MappingStatsFor>();
                     DataContracts.Mapping.DC_MappingStats newmapstats = new DataContracts.Mapping.DC_MappingStats();
+                   
+                    //var supplierMaster = context.Supplier.AsQueryable();
 
                     int CitySupplierCount = 0;
                     int CountrySupplierCount = 0;
@@ -6777,18 +6779,58 @@ namespace DataLayer
                         }
                         //newmapstats.NextRun = (from s in context.Schedule_NextOccurance where s.Schedule_ID == SupplierID select s.Execution_StartDate).FirstOrDefault().ToString();
                     }
+
                     else if (SupplierID == Guid.Empty)
                     {
                         newmapstats.NextRun = "Not Scheduled";
-
-                        if (Priority > 0)
+                       
+                        if (ProductCategory != "0" )
                         {
-                             CitySupplierCount = context.Supplier.Where(w => w.Priority == Priority && search.Where(sw => sw.MappingFor == "City").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
+                            var supplierMaster = (  from m in context.Supplier
+                                                    join sp in context.Supplier_ProductCategory on m.Supplier_Id equals sp.Supplier_Id
+                                                    where (Priority>0 ? m.Priority == Priority : m.Priority == m.Priority) 
+                                                            && sp.ProductCategory== ProductCategory && m.StatusCode.ToUpper().Trim() == "ACTIVE"
+                                                    select m
+                                                 ).Distinct().ToList();
+                            newmapstats.SupplierNames = (from m in supplierMaster select m.Name).ToList();
+                            CitySupplierCount = supplierMaster.Where(w => search.Where(sw => sw.MappingFor == "City").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
+                            CountrySupplierCount = supplierMaster.Where(w => search.Where(sw => sw.MappingFor == "Country").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
 
-                            //int CitySupplierCountt = (from t1 in search
-                            //                     join t2 in context.Supplier on t1.supplier_id equals t2.Supplier_Id
-                            //                     where t2.Priority == Priority && t1.MappingFor == "City"
-                            //                     select t2.Supplier_Id).Distinct().Count();
+                            HotelSupplierCount = supplierMaster.Where(w => search.Where(sw => sw.MappingFor == "Product").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
+
+                            RoomSupplierCount = supplierMaster.Where(w => search.Where(sw => sw.MappingFor == "HotelRoom").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
+
+                            ActivitySupplierCount = supplierMaster.Where(w => search.Where(sw => sw.MappingFor == "Activity").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
+                            
+
+                            searchResult.AddRange((from t1 in search.ToList()
+                                                   join t2 in supplierMaster on t1.supplier_id equals t2.Supplier_Id
+                                                   group t1 by new { MapFor = t1.MappingFor, Stat = t1.Status } into sg
+                                                   select new Dashboard_MappingStat
+                                                   {
+                                                       supplier_id = Guid.Empty,
+                                                       SupplierName = "ALL",
+                                                       totalcount = sg.Sum(x => x.totalcount) ?? 0,
+                                                       Status = sg.Key.Stat,
+                                                       MappingFor = sg.Key.MapFor,
+                                                   }).ToList());
+
+                        }
+
+                        else if(Priority==0 && ProductCategory == "0")
+                        {
+                            searchResult.AddRange(search.Where(w => w.SupplierName == "ALL").ToList());
+                            CitySupplierCount = (from s in searchResult where s.MappingFor == "City" && s.Status == "ALL" select s.SuppliersCount).FirstOrDefault() ?? 0;
+                            CountrySupplierCount = (from s in searchResult where s.MappingFor == "Country" && s.Status == "ALL" select s.SuppliersCount).FirstOrDefault() ?? 0;
+                            HotelSupplierCount = (from s in searchResult where s.MappingFor == "Product" && s.Status == "ALL" select s.SuppliersCount).FirstOrDefault() ?? 0;
+                            RoomSupplierCount = (from s in searchResult where s.MappingFor == "HotelRoom" && s.Status == "ALL" select s.SuppliersCount).FirstOrDefault() ?? 0;
+                            ActivitySupplierCount = (from s in searchResult where s.MappingFor == "Activity" && s.Status == "ALL" select s.SuppliersCount).FirstOrDefault() ?? 0;
+                            newmapstats.SupplierNames = (from m in searchResult select m.SupplierName).Distinct().ToList();
+                        }
+
+                        else if(ProductCategory == "0" && Priority > 0)
+                        {
+                            CitySupplierCount = context.Supplier.Where(w => w.Priority == Priority && search.Where(sw => sw.MappingFor == "City").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
 
                             CountrySupplierCount = context.Supplier.Where(w => w.Priority == Priority && search.Where(sw => sw.MappingFor == "Country").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
 
@@ -6798,6 +6840,7 @@ namespace DataLayer
 
                             ActivitySupplierCount = context.Supplier.Where(w => w.Priority == Priority && search.Where(sw => sw.MappingFor == "Activity").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
 
+                            newmapstats.SupplierNames = (context.Supplier.Where(w => w.Priority == Priority && w.StatusCode.ToUpper().Trim() == "ACTIVE").Select(s=>s.Name)).ToList();
 
                             searchResult.AddRange((from t1 in search.ToList()
                                                    join t2 in context.Supplier on t1.supplier_id equals t2.Supplier_Id
@@ -6811,17 +6854,8 @@ namespace DataLayer
                                                        Status = sg.Key.Stat,
                                                        MappingFor = sg.Key.MapFor,
                                                    }).ToList());
+                            
                         }
-                        else if (Priority == 0)
-                        {
-                            searchResult.AddRange(search.Where(w => w.SupplierName == "ALL").ToList());
-                            CitySupplierCount = (from s in searchResult where s.MappingFor == "City" && s.Status == "ALL" select s.SuppliersCount).FirstOrDefault() ?? 0;
-                            CountrySupplierCount = (from s in searchResult where s.MappingFor == "Country" && s.Status == "ALL" select s.SuppliersCount).FirstOrDefault() ?? 0;
-                            HotelSupplierCount = (from s in searchResult where s.MappingFor == "Product" && s.Status == "ALL" select s.SuppliersCount).FirstOrDefault() ?? 0;
-                            RoomSupplierCount = (from s in searchResult where s.MappingFor == "HotelRoom" && s.Status == "ALL" select s.SuppliersCount).FirstOrDefault() ?? 0;
-                            ActivitySupplierCount = (from s in searchResult where s.MappingFor == "Activity" && s.Status == "ALL" select s.SuppliersCount).FirstOrDefault() ?? 0;
-                        }
-
 
                     }
 
@@ -6892,8 +6926,9 @@ namespace DataLayer
                     }
 
                     newmapstats.MappingStatsFor = newmapstatsforList;
+                 
 
-                    returnObj.Add(newmapstats);
+                   returnObj.Add(newmapstats);
                     //}
 
                     return returnObj;
@@ -6906,7 +6941,7 @@ namespace DataLayer
         }
 
 
-        public List<DataContracts.Mapping.DC_MappingStatsForSuppliers> GetMappingStatisticsForSuppliers(int PriorityId)
+        public List<DataContracts.Mapping.DC_MappingStatsForSuppliers> GetMappingStatisticsForSuppliers(int PriorityId,string ProductCategory)
         {
             List<DataContracts.Mapping.DC_MappingStatsForSuppliers> objLst = new List<DataContracts.Mapping.DC_MappingStatsForSuppliers>();
             try
@@ -6918,15 +6953,27 @@ namespace DataLayer
                     var dashBoard = context.Dashboard_MappingStat.Where(w => w.Status == "UNMAPPED" || w.Status == "REVIEW").AsQueryable();
                     dashBoard = dashBoard.Where(w => w.supplier_id != Guid.Empty);
                     dashBoard = dashBoard.Where(w => w.Batch == 1);
-
-                    if (PriorityId != 0)
+                    if (ProductCategory!="0")
+                    {
+                        var productCategory = (from s in context.Supplier
+                                               join p in context.Supplier_ProductCategory on s.Supplier_Id equals p.Supplier_Id
+                                               where(p.ProductCategory == ProductCategory)
+                                               select s).Distinct().AsQueryable();
+                        dashBoard = (from t1 in dashBoard
+                                     join t2 in productCategory on t1.supplier_id equals t2.Supplier_Id
+                                     where (PriorityId > 0 ? t2.Priority == PriorityId : t2.Priority == t2.Priority)
+                                     select t1
+                                     );
+                                     
+                    }
+                    if (PriorityId != 0 && ProductCategory =="0")
                     {
                         dashBoard = (from t1 in dashBoard
                                      join t2 in context.Supplier on t1.supplier_id equals t2.Supplier_Id
                                      where t2.Priority == PriorityId
                                      select t1);
                     }
-
+                    
                     objLst = dashBoard.GroupBy(cat => new { cat.SupplierName, cat.supplier_id, cat.MappingFor })
                                 .Select(group => new DC_MappingStatsForSuppliers
                                 {

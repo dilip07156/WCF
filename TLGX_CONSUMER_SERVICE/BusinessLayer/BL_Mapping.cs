@@ -310,7 +310,7 @@ namespace BusinessLayer
         #endregion
 
         #region Mapping Stats
-        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(string SupplierID, string PriorityId)
+        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(string SupplierID, string PriorityId,string ProductCategory)
         {
             Guid gSupplier_Id;
             int iPriorityId;
@@ -326,7 +326,7 @@ namespace BusinessLayer
             
                 using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
                 {
-                    return objBL.GetMappingStatistics(gSupplier_Id, iPriorityId);
+                    return objBL.GetMappingStatistics(gSupplier_Id, iPriorityId, ProductCategory);
                 }
             
         }
@@ -346,17 +346,17 @@ namespace BusinessLayer
                 return false;
         }
 
-        public List<DataContracts.Mapping.DC_MappingStatsForSuppliers> GetMappingStatisticsForSuppliers(string PriorityId)
+        public List<DataContracts.Mapping.DC_MappingStatsForSuppliers> GetMappingStatisticsForSuppliers(string PriorityId,string ProductCategory)
         {
             int iPriorityId;
+           
             if (!int.TryParse(PriorityId, out iPriorityId))
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
             }
-
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
-                return objBL.GetMappingStatisticsForSuppliers(iPriorityId);
+                return objBL.GetMappingStatisticsForSuppliers(iPriorityId, ProductCategory);
             }
         }
         #endregion

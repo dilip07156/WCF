@@ -3968,6 +3968,49 @@ namespace DataLayer
             }
             return _obj;
         }
+
+        public List<DC_Supplier_DDL> GetSuppliersByProductCategory(string ProductCategory)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var suppliers = (from sm in context.Supplier
+                                     where sm.StatusCode.ToUpper().Trim() == "ACTIVE"
+                                     orderby sm.Name ascending
+                                     select new DC_Supplier_DDL
+                                     {
+                                         Supplier_Id = sm.Supplier_Id,
+                                         Name = sm.Name,
+                                         Code = sm.Code,
+                                         Priority = sm.Priority ?? 0
+                                     }
+                                    ).ToList();
+                    if (ProductCategory != "0")
+                    {
+                         suppliers = (from sm in context.Supplier
+                                         join pm in context.Supplier_ProductCategory on sm.Supplier_Id equals pm.Supplier_Id
+                                         where sm.StatusCode.ToUpper().Trim() == "ACTIVE" &&
+                                                pm.ProductCategory == ProductCategory
+                                         orderby sm.Name ascending
+                                         select new DC_Supplier_DDL
+                                         {
+                                             Supplier_Id = sm.Supplier_Id,
+                                             Name = sm.Name,
+                                             Code = sm.Code,
+                                             Priority = sm.Priority ?? 0
+                                         }
+                                    ).Distinct().ToList();
+                    }
+                    
+                    return suppliers;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         #endregion
 
         #region City Area and Location

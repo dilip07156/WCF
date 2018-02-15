@@ -402,5 +402,7 @@ namespace DataContracts.Masters
         public string Name { get; set; }
         [DataMember]
         public string Code { get; set; }
+        [DataMember]
+        public int Priority { get; set; }
     }
 }

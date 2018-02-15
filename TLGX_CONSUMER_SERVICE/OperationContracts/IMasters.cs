@@ -423,7 +423,10 @@ namespace OperationContracts
         [WebInvoke(Method = "GET", UriTemplate = "Master/GetActivityForDDL/{CountryName}/{CityName}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         List<DC_Activity_DDL> GetActivityByCountryCity(string CountryName, string CityName);
 
-
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Master/ForDropDown/GetSuppliersByProductCategory/{ProductCategory}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DC_Supplier_DDL> GetSuppliersByProductCategory(string ProductCategory);
 
         #endregion
 

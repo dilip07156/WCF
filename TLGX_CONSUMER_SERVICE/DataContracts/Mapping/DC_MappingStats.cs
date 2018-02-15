@@ -18,6 +18,8 @@ namespace DataContracts.Mapping
         List<DC_MappingStatsFor> _MappingStatsFor;
 
         [DataMember]
+        public List<string> SupplierNames{ get; set; }
+        [DataMember]
         public Guid SupplierId
         {
             get
@@ -44,8 +46,7 @@ namespace DataContracts.Mapping
                 _SupplierName = value;
             }
         }
-
-
+        
         [DataMember]
         public List<DC_MappingStatsFor> MappingStatsFor
         {
@@ -74,6 +75,7 @@ namespace DataContracts.Mapping
         }
     }
 
+   
     [DataContract]
     public class DC_MappingStatsFor
     {
