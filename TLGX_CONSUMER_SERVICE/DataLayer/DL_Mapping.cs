@@ -6664,7 +6664,7 @@ namespace DataLayer
                                                             && sp.ProductCategory== ProductCategory && m.StatusCode.ToUpper().Trim() == "ACTIVE"
                                                     select m
                                                  ).Distinct().ToList();
-                            newmapstats.SupplierNames = (from m in supplierMaster select m.Name).ToList();
+                            newmapstats.SupplierNames = (from m in supplierMaster  orderby m.Name select m.Name).ToList();
                             CitySupplierCount = supplierMaster.Where(w => search.Where(sw => sw.MappingFor == "City").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
                             CountrySupplierCount = supplierMaster.Where(w => search.Where(sw => sw.MappingFor == "Country").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
 
@@ -6697,7 +6697,7 @@ namespace DataLayer
                             HotelSupplierCount = (from s in searchResult where s.MappingFor == "Product" && s.Status == "ALL" select s.SuppliersCount).FirstOrDefault() ?? 0;
                             RoomSupplierCount = (from s in searchResult where s.MappingFor == "HotelRoom" && s.Status == "ALL" select s.SuppliersCount).FirstOrDefault() ?? 0;
                             ActivitySupplierCount = (from s in searchResult where s.MappingFor == "Activity" && s.Status == "ALL" select s.SuppliersCount).FirstOrDefault() ?? 0;
-                            newmapstats.SupplierNames = (from m in searchResult select m.SupplierName).Distinct().ToList();
+                            newmapstats.SupplierNames = (from m in searchResult  orderby m.SupplierName select m.SupplierName).Distinct().ToList();
                         }
 
                         else if(ProductCategory == "0" && Priority > 0)
@@ -6712,7 +6712,7 @@ namespace DataLayer
 
                             ActivitySupplierCount = context.Supplier.Where(w => w.Priority == Priority && search.Where(sw => sw.MappingFor == "Activity").Any(a => a.supplier_id == w.Supplier_Id)).Select(sel => sel.Supplier_Id).Count();
 
-                            newmapstats.SupplierNames = (context.Supplier.Where(w => w.Priority == Priority && w.StatusCode.ToUpper().Trim() == "ACTIVE").Select(s=>s.Name)).ToList();
+                            newmapstats.SupplierNames = (context.Supplier.Where(w => w.Priority == Priority && w.StatusCode.ToUpper().Trim() == "ACTIVE") .OrderBy(p=>p.Name).Select(s=>s.Name)).ToList();
 
                             searchResult.AddRange((from t1 in search.ToList()
                                                    join t2 in context.Supplier on t1.supplier_id equals t2.Supplier_Id
