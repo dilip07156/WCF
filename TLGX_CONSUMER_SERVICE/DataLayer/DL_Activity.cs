@@ -2048,7 +2048,7 @@ namespace DataLayer
                     {
                         if (RQ.NoPhysicalIntensity)
                         {
-                            aCA = aCA.Where(w => w.AttributeType == "Product" && w.AttributeSubType == "Physicalntensity");
+                            aCA = aCA.Where(w => w.AttributeType == "Product" && w.AttributeSubType == "PhysicalIntensity");
                             isCAFilter = true;
                         }
 
