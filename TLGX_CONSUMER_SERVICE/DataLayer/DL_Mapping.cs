@@ -4397,7 +4397,11 @@ namespace DataLayer
 
                     AttributeList = new List<DC_SupplierRoomName_AttributeList>();
 
-                    string BaseRoomName = srn.SupplierRoomName;
+                    string BaseRoomName = "";
+                    if (string.IsNullOrWhiteSpace(srn.SupplierRoomName))
+                        continue;
+                    else
+                        BaseRoomName = srn.SupplierRoomName;
 
                     #region PRE TTFU
 
