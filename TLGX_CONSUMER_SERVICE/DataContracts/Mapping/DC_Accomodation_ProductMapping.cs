@@ -68,6 +68,9 @@ namespace DataContracts.Mapping
         public string Longitude_Tx { get; set; }
 
         [DataMember]
+        public string HotelName_Tx { get; set; }
+
+        [DataMember]
         public Int32? MatchedBy { get; set; }
 
         [DataMember]

@@ -72,6 +72,17 @@ namespace DataLayer
             return str.Replace("0", "").Replace("1", "").Replace("2", "").Replace("3", "").Replace("4", "").Replace("5", "").Replace("6", "").Replace("7", "").Replace("8", "").Replace("9", "");
         }
 
+        public static string HotelNameTX(string HotelName, string cityname, string countryname)
+        {
+            //replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(A.hotelname))), ' ',''), 'HOTEL','')
+            //, 'APARTMENT',''), replace(ltrim(rtrim(upper(A.city))), '''','') ,''),  replace(ltrim(rtrim(upper(A.country))), '''',''),'')
+            //, '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','')
+            return (HotelName ?? "").Trim().ToUpper().Replace(" ", "").Replace("HOTEL", "").Replace("APARTMENT", "")
+                .Replace((countryname ?? "").Trim().ToUpper().Replace("'", ""), "").Replace((cityname ?? "").Trim().ToUpper().Replace("'", ""), "")
+                .Replace("'","").Replace("&", "").Replace("AND", "").Replace("THE", "").Replace("-", "").Replace("_", "")
+                .Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace("APARTHOTEL", "");
+        }
+
         public static string ReturnNumbersFromString(string str)
         {
             return Regex.Replace(str, @"[^\d]", "");

@@ -418,8 +418,8 @@ namespace DataLayer
                                     Status = a.Status,
                                     //Create_Date = a.Create_Date,
                                     //Create_User = a.Create_User,
-                                    //Edit_Date = DateTime.Now,
-                                    //Edit_User = a.Edit_User,
+                                    Edit_Date = DateTime.Now,
+                                    Edit_User = "TLGX_DataHandler",
                                     IsActive = (a.IsActive ?? true),
                                     //ProductId = a.SupplierProductReference,
                                     Remarks = a.Remarks,
@@ -430,7 +430,8 @@ namespace DataLayer
                                     ActionType = (a.ProductName != s.ProductName) ? "UPDATE" : "",
                                     stg_AccoMapping_Id = (a.ProductName != s.ProductName) ? s.stg_AccoMapping_Id : Guid.Empty,
                                     Latitude_Tx = a.Latitude_Tx,
-                                    Longitude_Tx = a.Longitude_Tx
+                                    Longitude_Tx = a.Longitude_Tx,
+                                    HotelName_Tx = CommonFunctions.HotelNameTX(s.ProductName, a.CityName, a.CountryName)
                                 }).ToList();
 
 
@@ -684,6 +685,7 @@ namespace DataLayer
                         ,
                         Latitude_Tx = CommonFunctions.LatLongTX(g.Latitude),
                         Longitude_Tx = CommonFunctions.LatLongTX(g.Longitude),
+                        HotelName_Tx = CommonFunctions.HotelNameTX(g.ProductName, g.CityName, g.CountryName),
                         Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
                     }));
 
@@ -1187,6 +1189,7 @@ namespace DataLayer
                         sqlFull = sqlFull + "UPDATE APM ";
                         sqlFull = sqlFull + " SET Accommodation_Id = A.Accommodation_Id, STATUS = 'REVIEW', MatchedBy = " + (curPriority - 1).ToString() + " ";
                         sqlFull = sqlFull + " , Country_Id = ISNULL(A.Country_Id, APM.Country_Id), City_Id = ISNULL(A.City_Id, APM.City_Id) ";
+                        sqlFull = sqlFull + " , Edit_Date = GETDATE(), Edit_User = 'TLGX_DataHandler' ";
                         sqlFull = sqlFull + " FROM Accommodation_ProductMapping APM inner join STG_Mapping_TableIds S ON APM.Accommodation_ProductMapping_Id = S.Mapping_Id AND S.File_Id = '" + obj.File_Id.ToString() + "' ";
                         sqlFull = sqlFull + " inner join m_CityMapping cm on cm.supplier_Id = APM.Supplier_Id AND #PutJoinConditionHere# ";
                         sqlFull = sqlFull + " left outer join m_CityMaster mc on cm.City_Id = mc.City_Id ";
@@ -1322,6 +1325,7 @@ namespace DataLayer
                             sqlFull = sqlFull + "UPDATE APM ";
                             sqlFull = sqlFull + " SET Accommodation_Id = A.Accommodation_Id, STATUS = 'REVIEW', MatchedBy = " + (curPriority - 1).ToString() + " ";
                             sqlFull = sqlFull + " , Country_Id = ISNULL(A.Country_Id, APM.Country_Id), City_Id = ISNULL(A.City_Id, APM.City_Id) ";
+                            sqlFull = sqlFull + " , Edit_Date = GETDATE(), Edit_User = 'TLGX_DataHandler' ";
                             sqlFull = sqlFull + " FROM Accommodation_ProductMapping APM inner join STG_Mapping_TableIds S ON APM.Accommodation_ProductMapping_Id = S.Mapping_Id AND S.File_Id = '" + obj.File_Id.ToString() + "' ";
                             sqlFull = sqlFull + " inner join Accommodation A ON  APM.STATUS = 'UNMAPPED' AND ";
                             sqlFull = sqlFull + PriorityJoinsMaster;
@@ -3367,6 +3371,8 @@ namespace DataLayer
                             search.Edit_Date = PM.Edit_Date;
                             search.Edit_User = PM.Edit_User;
                             search.Remarks = PM.Remarks;
+                            if (PM.HotelName_Tx != null)
+                                search.HotelName_Tx = PM.HotelName_Tx;
                             //}
 
                             context.SaveChanges();
@@ -3411,6 +3417,7 @@ namespace DataLayer
                             objNew.address = PM.FullAddress;
                             objNew.Latitude_Tx = PM.Latitude_Tx;
                             objNew.Longitude_Tx = PM.Longitude_Tx;
+                            objNew.HotelName_Tx = PM.HotelName_Tx;
                             lstobjNew.Add(objNew);
                         }
                     }
