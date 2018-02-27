@@ -209,7 +209,7 @@ namespace DataLayer
                     List<DC_Accomodation_ProductMapping> lstProdMap = new List<DC_Accomodation_ProductMapping>();
                     prodMapList = (from s in context.STG_Mapping_TableIds.AsNoTracking()
                                    join stg in context.stg_SupplierProductMapping.AsNoTracking() on s.STG_Id equals stg.stg_AccoMapping_Id
-                                   where s.File_Id == obj.File_Id
+                                   where s.File_Id == obj.File_Id // && ((s.Batch == obj.CurrentBatch && (obj.CurrentBatch ?? 0) != 0) || ((obj.CurrentBatch ?? 0) == 0))
                                    select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                    {
                                        Accommodation_ProductMapping_Id = s.Mapping_Id ?? Guid.Empty
@@ -1113,13 +1113,20 @@ namespace DataLayer
                         }
                         else if (CurrConfig == "HotelName".ToUpper())
                         {
-                            PriorityJoins = PriorityJoins + " (ISNULL(A.HotelName, '') != '' and ISNULL(APM.ProductName, '') != '' ";
-                            PriorityJoins = PriorityJoins + " and replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(A.hotelname))), ' ',''), 'HOTEL',''), 'APARTMENT',''), replace(ltrim(rtrim(upper(A.city))), '''','') ,''),  replace(ltrim(rtrim(upper(A.country))), '''',''),''), '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','') = ";
-                            PriorityJoins = PriorityJoins + " replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(APM.ProductName))), ' ',''), 'HOTEL',''), 'APARTMENT',''), replace(ltrim(rtrim(upper(ISNULL(mc.Name, cm.CityName)))), '''','') ,''),  replace(ltrim(rtrim(upper(ISNULL(mc.CountryName, cm.CountryName)))), '''',''),''), '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','')  ) ";
+                            /*
+                                PriorityJoins = PriorityJoins + " (ISNULL(A.HotelName, '') != '' and ISNULL(APM.ProductName, '') != '' ";
+                                PriorityJoins = PriorityJoins + " and replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(A.hotelname))), ' ',''), 'HOTEL',''), 'APARTMENT',''), replace(ltrim(rtrim(upper(A.city))), '''','') ,''),  replace(ltrim(rtrim(upper(A.country))), '''',''),''), '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','') = ";
+                                PriorityJoins = PriorityJoins + " replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(APM.ProductName))), ' ',''), 'HOTEL',''), 'APARTMENT',''), replace(ltrim(rtrim(upper(ISNULL(mc.Name, cm.CityName)))), '''','') ,''),  replace(ltrim(rtrim(upper(ISNULL(mc.CountryName, cm.CountryName)))), '''',''),''), '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','')  ) ";
 
-                            PriorityJoinsMaster = PriorityJoinsMaster + " (ISNULL(A.HotelName, '') != '' and ISNULL(APM.ProductName, '') != '' ";
-                            PriorityJoinsMaster = PriorityJoinsMaster + " and replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(A.hotelname))), ' ',''), 'HOTEL',''), 'APARTMENT',''), replace(ltrim(rtrim(upper(A.city))), '''','') ,''),  replace(ltrim(rtrim(upper(A.country))), '''',''),''), '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','') = ";
-                            PriorityJoinsMaster = PriorityJoinsMaster + " replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(APM.ProductName))), ' ',''), 'HOTEL',''), 'APARTMENT',''), replace(ltrim(rtrim(upper(APM.CityName))), '''','') ,''),  replace(ltrim(rtrim(upper(APM.CountryName))), '''',''),''), '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','')  ) ";
+                                PriorityJoinsMaster = PriorityJoinsMaster + " (ISNULL(A.HotelName, '') != '' and ISNULL(APM.ProductName, '') != '' ";
+                                PriorityJoinsMaster = PriorityJoinsMaster + " and replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(A.hotelname))), ' ',''), 'HOTEL',''), 'APARTMENT',''), replace(ltrim(rtrim(upper(A.city))), '''','') ,''),  replace(ltrim(rtrim(upper(A.country))), '''',''),''), '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','') = ";
+                                PriorityJoinsMaster = PriorityJoinsMaster + " replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(APM.ProductName))), ' ',''), 'HOTEL',''), 'APARTMENT',''), replace(ltrim(rtrim(upper(APM.CityName))), '''','') ,''),  replace(ltrim(rtrim(upper(APM.CountryName))), '''',''),''), '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','')  ) ";
+                            */
+                            PriorityJoins = PriorityJoins + " (ISNULL(A.HotelName_Tx, '') != '' and ISNULL(APM.HotelName_Tx, '') != '' ";
+                            PriorityJoins = PriorityJoins + " and A.HotelName_Tx = APM.HotelName_Tx  ) ";
+
+                            PriorityJoinsMaster = PriorityJoinsMaster + " (ISNULL(A.HotelName_Tx, '') != '' and ISNULL(APM.HotelName_Tx, '') != '' ";
+                            PriorityJoinsMaster = PriorityJoinsMaster + " and A.HotelName_Tx = APM.HotelName_Tx  ) ";
                         }
                         else if (CurrConfig == "LONGITUDE")
                             DontAppend = true;
@@ -4296,6 +4303,7 @@ namespace DataLayer
                 var res = (from a in context.Accommodation_SupplierRoomTypeMapping
                            join j in context.STG_Mapping_TableIds on a.Accommodation_SupplierRoomTypeMapping_Id equals j.Mapping_Id
                            join s in context.stg_SupplierHotelRoomMapping on j.STG_Id equals s.stg_SupplierHotelRoomMapping_Id  //a.stg_SupplierHotelRoomMapping_Id equals s.stg_SupplierHotelRoomMapping_Id
+                           //where  ((j.Batch == obj.CurrentBatch && (obj.CurrentBatch ?? 0) != 0) || ((obj.CurrentBatch ?? 0) == 0))
                            select new DC_SupplierRoomType_TTFU_RQ
                            {
                                Acco_RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
