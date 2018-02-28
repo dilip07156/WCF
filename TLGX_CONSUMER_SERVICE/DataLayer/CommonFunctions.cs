@@ -77,10 +77,13 @@ namespace DataLayer
             //replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(A.hotelname))), ' ',''), 'HOTEL','')
             //, 'APARTMENT',''), replace(ltrim(rtrim(upper(A.city))), '''','') ,''),  replace(ltrim(rtrim(upper(A.country))), '''',''),'')
             //, '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','')
-            return (HotelName ?? "").Trim().ToUpper().Replace(" ", "").Replace("HOTEL", "").Replace("APARTMENT", "")
-                .Replace((countryname ?? "").Trim().ToUpper().Replace("'", ""), "").Replace((cityname ?? "").Trim().ToUpper().Replace("'", ""), "")
-                .Replace("'","").Replace("&", "").Replace("AND", "").Replace("THE", "").Replace("-", "").Replace("_", "")
-                .Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace("APARTHOTEL", "");
+            if (!string.IsNullOrWhiteSpace(HotelName))
+                return (HotelName ?? "").Trim().ToUpper().Replace(" ", "").Replace("HOTEL", "").Replace("APARTMENT", "")
+                    .Replace((countryname ?? "~").Trim().ToUpper().Replace("'", ""), "").Replace((cityname ?? "~").Trim().ToUpper().Replace("'", ""), "")
+                    .Replace("'", "").Replace("&", "").Replace("AND", "").Replace("THE", "").Replace("-", "").Replace("_", "")
+                    .Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace("APARTHOTEL", "").Replace("~", "");
+            else
+                return "";
         }
 
         public static string ReturnNumbersFromString(string str)

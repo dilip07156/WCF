@@ -61,6 +61,19 @@ namespace DataContracts.Mapping
         string _Location;
 
         [DataMember]
+        public string SystemTelephone { get; set; }
+
+
+        [DataMember]
+        public string SystemLocation { get; set; }
+
+        [DataMember]
+        public string SystemLatitude { get; set; }
+
+        [DataMember]
+        public string SystemLongitude { get; set; }
+
+        [DataMember]
         public string Latitude_Tx { get; set; }
 
 

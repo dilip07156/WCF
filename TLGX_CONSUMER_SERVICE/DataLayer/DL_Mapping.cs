@@ -289,7 +289,11 @@ namespace DataLayer
                                        (jd.StreetNumber ?? string.Empty) + ", " + (jd.StreetName ?? string.Empty) + ", " + (jd.Street3 ?? string.Empty) + ", " + (jd.Street4 ?? string.Empty) + ", " + (jd.Street5 ?? string.Empty) + ", " + (jd.PostalCode ?? string.Empty) + ", " + (jd.city ?? string.Empty) + ", " + (jd.country ?? string.Empty)
                                        ),
                                        StarRating = a.StarRating,
-                                       HotelName_Tx = a.HotelName_Tx
+                                       HotelName_Tx = a.HotelName_Tx,
+                                       SystemTelephone = jd.Telephone_Tx,
+                                       SystemLocation = jd.Location,
+                                       SystemLatitude = jd.Latitude,
+                                       SystemLongitude = jd.Longitude
                                    });
 
                     var result = prodMapList.ToList();
