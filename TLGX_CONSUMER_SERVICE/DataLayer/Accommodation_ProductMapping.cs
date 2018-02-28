@@ -61,5 +61,6 @@ namespace DataLayer
         public string HotelName_Tx { get; set; }
         public string Latitude_Tx { get; set; }
         public string Longitude_Tx { get; set; }
+        public string MatchedByString { get; set; }
     }
 }
