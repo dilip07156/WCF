@@ -72,6 +72,8 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public Int32? MatchedBy { get; set; }
+        [DataMember]
+        public string MatchedByString { get; set; }
 
         [DataMember]
         public string ActionType { get; set; }
@@ -782,6 +784,8 @@ namespace DataContracts.Mapping
         [DataMember]
         public Nullable<System.Guid> Accommodation_Id { get; set; }
 
+        [DataMember]
+        public int? MatchedBy { get; set; }
 
         [DataMember]
         public string CalledFromTLGX { get; set; }

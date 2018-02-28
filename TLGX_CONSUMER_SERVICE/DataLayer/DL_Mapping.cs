@@ -15,6 +15,7 @@ namespace DataLayer
     {
         public DL_UploadStaticData USD = new DL_UploadStaticData();
         DC_SupplierImportFile_Progress PLog = new DC_SupplierImportFile_Progress();
+        DL_Masters master = new DL_Masters();
         public void Dispose()
         {
         }
@@ -287,7 +288,8 @@ namespace DataLayer
                                        SystemFullAddress = ((jd.FullAddress != string.Empty) ? jd.FullAddress :
                                        (jd.StreetNumber ?? string.Empty) + ", " + (jd.StreetName ?? string.Empty) + ", " + (jd.Street3 ?? string.Empty) + ", " + (jd.Street4 ?? string.Empty) + ", " + (jd.Street5 ?? string.Empty) + ", " + (jd.PostalCode ?? string.Empty) + ", " + (jd.city ?? string.Empty) + ", " + (jd.country ?? string.Empty)
                                        ),
-                                       StarRating = a.StarRating
+                                       StarRating = a.StarRating,
+                                       HotelName_Tx = a.HotelName_Tx
                                    });
 
                     var result = prodMapList.ToList();
@@ -430,10 +432,14 @@ namespace DataLayer
                                     ActionType = (a.ProductName != s.ProductName) ? "UPDATE" : "",
                                     stg_AccoMapping_Id = (a.ProductName != s.ProductName) ? s.stg_AccoMapping_Id : Guid.Empty,
                                     Latitude_Tx = a.Latitude_Tx,
-                                    Longitude_Tx = a.Longitude_Tx,
-                                    HotelName_Tx = CommonFunctions.HotelNameTX(s.ProductName, a.CityName, a.CountryName)
+                                    Longitude_Tx = a.Longitude_Tx
+                                    //,HotelName_Tx = CommonFunctions.HotelNameTX(s.ProductName, a.CityName, a.CountryName)
                                 }).ToList();
 
+                toUpdate = toUpdate.Select(c => {
+                    c.HotelName_Tx = CommonFunctions.HotelNameTX(c.ProductName, c.CityName, c.CountryName);
+                    return c;
+                }).ToList();
 
                 insertSTGList = stg.Where(w => !toUpdate.Any(a => a.SupplierProductReference == w.ProductId)).ToList();
                 updateMappingList = toUpdate.Where(w => w.ProductName != w.oldProductName).ToList();
@@ -2635,6 +2641,12 @@ namespace DataLayer
                                         where (a.Status.Trim().ToUpper() ?? "UNMAPPED") != obj.StatusExcept.Trim().ToUpper()
                                         select a;
                     }
+                    if (obj.MatchedBy != null)
+                    {
+                        prodMapSearch = from a in prodMapSearch
+                                        where (a.MatchedBy ?? 99) == obj.MatchedBy
+                                        select a;
+                    }
 
                     int total;
 
@@ -2643,6 +2655,10 @@ namespace DataLayer
                     var skip = obj.PageSize * obj.PageNo;
 
                     var canPage = skip < total;
+
+                    DataContracts.Masters.DC_M_masterattributelists attr = new DataContracts.Masters.DC_M_masterattributelists();
+                    DataContracts.Masters.DC_MasterAttribute _obj = new DataContracts.Masters.DC_MasterAttribute() { MasterFor = "ProductSupplierMapping", Name = "MatchingPriority" };
+                    attr = master.GetListAttributeAndValuesByFOR(_obj);
 
                     //if (!canPage)
                     //    return null;
@@ -2693,7 +2709,9 @@ namespace DataLayer
                                            SystemProductName = ac.HotelName,
                                            Remarks = a.Remarks,
                                            MapId = a.MapId,
-                                           StarRating = a.StarRating
+                                           StarRating = a.StarRating,
+                                           MatchedBy = a.MatchedBy
+                                           //,MatchedByString = attr.MasterAttributeValues.Where(x => x.AttributeValue == (a.MatchedBy ?? 99).ToString()).Select(x => (x.OTA_CodeTableValue ?? "")).FirstOrDefault()
                                        }).Skip(skip).Take(obj.PageSize);
                     }
                     else
@@ -2737,11 +2755,22 @@ namespace DataLayer
                                            ProductId = a.SupplierProductReference,
                                            MapId = a.MapId,
                                            Remarks = a.Remarks,
-                                           StarRating = a.StarRating
+                                           StarRating = a.StarRating,
+                                           MatchedBy = a.MatchedBy
+                                           //,MatchedByString = attr.MasterAttributeValues.Where(x => x.AttributeValue == (a.MatchedBy ?? 99).ToString()).Select(x => (x.OTA_CodeTableValue ?? "")).FirstOrDefault()
                                        }).Skip(skip).Take(obj.PageSize);
                     }
 
-                    return prodMapList.ToList();
+                    List<DC_Accomodation_ProductMapping> ret = new List<DC_Accomodation_ProductMapping>();
+                    ret = prodMapList.ToList();
+
+                    ret = ret.Select(c => {
+                        c.MatchedByString = attr.MasterAttributeValues.Where(x => x.AttributeValue == (c.MatchedBy ?? 99).ToString()).Select(x => (x.OTA_CodeTableValue ?? "")).FirstOrDefault();
+                        return c;
+                    }).ToList();
+
+
+                    return ret;
                 }
             }
             catch (Exception ex)
@@ -2776,6 +2805,13 @@ namespace DataLayer
                     {
                         prodMapSearch = from a in prodMapSearch
                                         where a.Supplier_Id == obj.Supplier_Id
+                                        select a;
+                    }
+
+                    if (obj.MatchedBy != null)
+                    {
+                        prodMapSearch = from a in prodMapSearch
+                                        where (a.MatchedBy ?? 99) == obj.MatchedBy
                                         select a;
                     }
 
@@ -2970,6 +3006,9 @@ namespace DataLayer
 
                     int total;
 
+                    DataContracts.Masters.DC_M_masterattributelists attr = new DataContracts.Masters.DC_M_masterattributelists();
+                    DataContracts.Masters.DC_MasterAttribute _obj = new DataContracts.Masters.DC_MasterAttribute() { MasterFor = "ProductSupplierMapping", Name = "MatchingPriority" };
+                    attr = master.GetListAttributeAndValuesByFOR(_obj);
                     //total = prodMapSearch.Count();
 
                     //var skip = obj.PageSize * obj.PageNo;
@@ -3015,12 +3054,17 @@ namespace DataLayer
                                            MapId = a.MapId,
                                            StarRating = a.StarRating,
                                            Country_Id = a.Country_Id,
-                                           City_Id = a.City_Id
+                                           City_Id = a.City_Id,
+                                           MatchedBy = a.MatchedBy
+                                           //,MatchedByString = attr.MasterAttributeValues.Where(x => x.AttributeValue == (a.MatchedBy ?? 99).ToString()).Select(x => (x.OTA_CodeTableValue ?? "")).FirstOrDefault()
 
                                        });//.Skip(skip).Take(obj.PageSize);
 
                     var result = prodMapList.ToList();
-
+                    result = result.Select(c => {
+                        c.MatchedByString = attr.MasterAttributeValues.Where(x => x.AttributeValue == (c.MatchedBy ?? 99).ToString()).Select(x => (x.OTA_CodeTableValue ?? "")).FirstOrDefault();
+                        return c;
+                    }).ToList();
                     return result;
                 }
             }
@@ -3049,6 +3093,12 @@ namespace DataLayer
                     {
                         prodMapSearch = from a in prodMapSearch
                                         where a.SupplierName == obj.SupplierName
+                                        select a;
+                    }
+                    if (obj.MatchedBy != null)
+                    {
+                        prodMapSearch = from a in prodMapSearch
+                                        where (a.MatchedBy ?? 99) == obj.MatchedBy
                                         select a;
                     }
 
@@ -3215,6 +3265,10 @@ namespace DataLayer
 
                     var canPage = skip < total;
 
+                    DataContracts.Masters.DC_M_masterattributelists attr = new DataContracts.Masters.DC_M_masterattributelists();
+                    DataContracts.Masters.DC_MasterAttribute _obj = new DataContracts.Masters.DC_MasterAttribute() { MasterFor = "ProductSupplierMapping", Name = "MatchingPriority" };
+                    attr = master.GetListAttributeAndValuesByFOR(_obj);
+
                     //if (!canPage)
                     //    return null;
 
@@ -3273,10 +3327,16 @@ namespace DataLayer
                                            //(a.address ?? string.Empty) + ", " + (a.Street ?? string.Empty) + ", " + (a.Street2 ?? string.Empty) + " " + (a.Street3 ?? string.Empty) + " " + (a.Street4 ?? string.Empty) + " " + (a.PostCode ?? string.Empty) + ", " + (a.CityName ?? string.Empty) + ", " + (a.StateName ?? string.Empty) + ", " + (a.CountryName ?? string.Empty),
                                            SystemFullAddress = (jda.FullAddress ?? string.Empty),
                                            StarRating = a.StarRating,
-                                           Location = jda.Location
+                                           Location = jda.Location,
+                                           MatchedBy = a.MatchedBy
+                                           //,MatchedByString = attr.MasterAttributeValues.Where(x => x.AttributeValue == (a.MatchedBy ?? 99).ToString()).Select(x => (x.OTA_CodeTableValue ?? "")).FirstOrDefault()
                                        }).Skip(skip).Take(obj.PageSize);
 
                     var result = prodMapList.ToList();
+                    result = result.Select(c => {
+                        c.MatchedByString = attr.MasterAttributeValues.Where(x => x.AttributeValue == (c.MatchedBy ?? 99).ToString()).Select(x => (x.OTA_CodeTableValue ?? "")).FirstOrDefault();
+                        return c;
+                    }).ToList();
                     //if (obj.CalledFromTLGX == null || obj.CalledFromTLGX != "TLGX")
                     if (string.IsNullOrWhiteSpace(obj.CalledFromTLGX))
                     {
