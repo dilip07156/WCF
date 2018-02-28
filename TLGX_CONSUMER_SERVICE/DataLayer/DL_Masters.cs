@@ -2245,6 +2245,7 @@ namespace DataLayer
         #endregion
 
         #region Supplier
+
         public IList<DataContracts.Masters.DC_Supplier> GetSupplier(DataContracts.Masters.DC_Supplier_Search_RQ RQ)
         {
             try
@@ -2341,7 +2342,7 @@ namespace DataLayer
                                      SupplierOwner = a.SupplierOwner,
                                      ProductCategory = string.Empty, //sup2.AttributeValue,
                                      CategorySubType = string.Empty, //sup3.AttributeValue,
-                                     Priority=a.Priority,
+                                     Priority = a.Priority,
                                      TotalRecords = total
                                  };
 
@@ -2353,6 +2354,46 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching City Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+        public IList<DataContracts.Masters.DC_Supplier_DDL> GetSupplierByEntity(DataContracts.Masters.DC_Supplier_Search_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from sup in context.Supplier
+                                 select sup;
+
+                    if (!string.IsNullOrEmpty(RQ.EntityType))
+                    {
+                        if (RQ.EntityType.ToUpper() == "ACTIVITY")
+                        {
+                            search = (from sup in search
+                                      join stg in context.stg_ActivitySupplierProductMapping on sup.Name equals stg.SupplierName
+                                      select sup).Distinct();
+                        }
+                    }
+                    int total;
+                    total = search.Count();
+                    var result = from a in search
+                                 orderby a.Name
+                                 select new DataContracts.Masters.DC_Supplier_DDL
+                                 {
+                                     Supplier_Id = a.Supplier_Id,
+                                     Name = a.Name,
+                                     Code = a.Code,
+                                     Priority = a.Priority ?? 0
+                                 };
+
+                    return result.OrderBy(p => p.Name).ToList();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching City Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
         public IList<DataContracts.Masters.DC_SupplierMarket> GetSupplierMarket(DataContracts.Masters.DC_SupplierMarket RQ)
         {
             try
@@ -2550,7 +2591,7 @@ namespace DataLayer
                         SupplierOwner = _objSup.SupplierOwner,
                         SupplierType = _objSup.SupplierType,
                         StatusCode = _objSup.StatusCode,
-                        Priority=_objSup.Priority,
+                        Priority = _objSup.Priority,
                     };
 
                     context.Supplier.Add(_obj);
@@ -3399,9 +3440,9 @@ namespace DataLayer
                 if (objName == "supplier")
                 {
                     ObjCode = context.Supplier.Find(obj_Id).Code;
-                        //(from ct in context.Suppliers.AsNoTracking()
-                        //           where ct.Supplier_Id == obj_Id
-                        //           select new { ct.Code }).FirstOrDefault();
+                    //(from ct in context.Suppliers.AsNoTracking()
+                    //           where ct.Supplier_Id == obj_Id
+                    //           select new { ct.Code }).FirstOrDefault();
                     //if (supcode != null)
                     //    ObjCode = supcode.Code;
                 }
@@ -3988,21 +4029,21 @@ namespace DataLayer
                                     ).ToList();
                     if (ProductCategory != "0")
                     {
-                         suppliers = (from sm in context.Supplier
-                                         join pm in context.Supplier_ProductCategory on sm.Supplier_Id equals pm.Supplier_Id
-                                         where sm.StatusCode.ToUpper().Trim() == "ACTIVE" &&
-                                                pm.ProductCategory == ProductCategory
-                                         orderby sm.Name ascending
-                                         select new DC_Supplier_DDL
-                                         {
-                                             Supplier_Id = sm.Supplier_Id,
-                                             Name = sm.Name,
-                                             Code = sm.Code,
-                                             Priority = sm.Priority ?? 0
-                                         }
-                                    ).Distinct().ToList();
+                        suppliers = (from sm in context.Supplier
+                                     join pm in context.Supplier_ProductCategory on sm.Supplier_Id equals pm.Supplier_Id
+                                     where sm.StatusCode.ToUpper().Trim() == "ACTIVE" &&
+                                            pm.ProductCategory == ProductCategory
+                                     orderby sm.Name ascending
+                                     select new DC_Supplier_DDL
+                                     {
+                                         Supplier_Id = sm.Supplier_Id,
+                                         Name = sm.Name,
+                                         Code = sm.Code,
+                                         Priority = sm.Priority ?? 0
+                                     }
+                                   ).Distinct().ToList();
                     }
-                    
+
                     return suppliers;
                 }
             }

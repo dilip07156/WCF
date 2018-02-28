@@ -363,6 +363,13 @@ namespace BusinessLayer
                 return obj.GetSupplier(_obj);
             }
         }
+        public IList<DataContracts.Masters.DC_Supplier_DDL> GetSupplierByEntity(DataContracts.Masters.DC_Supplier_Search_RQ _obj)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetSupplierByEntity(_obj);
+            }
+        }
         public IList<DataContracts.Masters.DC_SupplierMarket> GetSupplierMarket(DataContracts.Masters.DC_SupplierMarket _obj)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
