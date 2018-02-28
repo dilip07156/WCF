@@ -434,6 +434,13 @@ namespace ConsumerSvc
                 return obj.GetSupplier(_obj);
             }
         }
+        public IList<DataContracts.Masters.DC_Supplier_DDL> GetSupplierByEntity(DataContracts.Masters.DC_Supplier_Search_RQ _obj)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetSupplierByEntity(_obj);
+            }
+        }
         public IList<DataContracts.Masters.DC_SupplierMarket> GetSupplierMarket(DataContracts.Masters.DC_SupplierMarket _obj)
         {
             using (BusinessLayer.BL_Masters obj = new BL_Masters())

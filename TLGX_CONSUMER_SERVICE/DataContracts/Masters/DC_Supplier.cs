@@ -262,10 +262,12 @@ namespace DataContracts.Masters
         Guid? _Supplier_Id;
         string _Name;
         string _Code;
+        string _EntityType;
         string _ProductCategory_ID;
         string _SupplierType;
         string _CategorySubType_ID;
         string _StatusCode;
+       
         int? _PageNo;
         int? _PageSize;
 
@@ -308,6 +310,19 @@ namespace DataContracts.Masters
             set
             {
                 _Code = value;
+            }
+        }
+        [DataMember]
+        public string EntityType
+        {
+            get
+            {
+                return _EntityType;
+            }
+
+            set
+            {
+                _EntityType = value;
             }
         }
         [DataMember]

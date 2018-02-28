@@ -268,6 +268,11 @@ namespace OperationContracts
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Master/SupplierByEntity/Get", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Masters.DC_Supplier_DDL> GetSupplierByEntity(DataContracts.Masters.DC_Supplier_Search_RQ RQ);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "Master/SupplierMarket/Get", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         IList<DataContracts.Masters.DC_SupplierMarket> GetSupplierMarket(DataContracts.Masters.DC_SupplierMarket RQ);
 
