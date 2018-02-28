@@ -689,8 +689,8 @@ namespace DataLayer
                                        + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")) : g.Address
                                        + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")
                         ,
-                        Latitude_Tx = CommonFunctions.LatLongTX(g.Latitude),
-                        Longitude_Tx = CommonFunctions.LatLongTX(g.Longitude),
+                        Latitude_Tx = (g.Latitude == null) ? null : CommonFunctions.LatLongTX(g.Latitude),
+                        Longitude_Tx = (g.Longitude == null) ? null : CommonFunctions.LatLongTX(g.Longitude),
                         HotelName_Tx = CommonFunctions.HotelNameTX(g.ProductName, g.CityName, g.CountryName),
                         Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
                     }));
