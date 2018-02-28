@@ -5145,6 +5145,17 @@ namespace DataContracts
         string _starrating;
 
         [DataMember]
+        public string Telephone_Tx { get; set; }
+
+        
+        [DataMember]
+        public string Latitude { get; set; }
+
+        [DataMember]
+        public string Longitude { get; set; }
+
+
+        [DataMember]
         public Nullable<bool> InsertFrom { get; set; }
 
         [DataMember]
