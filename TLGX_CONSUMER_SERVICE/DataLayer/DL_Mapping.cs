@@ -1149,15 +1149,23 @@ namespace DataLayer
                                 PriorityJoinsMaster = PriorityJoinsMaster + " and replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(A.hotelname))), ' ',''), 'HOTEL',''), 'APARTMENT',''), replace(ltrim(rtrim(upper(A.city))), '''','') ,''),  replace(ltrim(rtrim(upper(A.country))), '''',''),''), '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','') = ";
                                 PriorityJoinsMaster = PriorityJoinsMaster + " replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(APM.ProductName))), ' ',''), 'HOTEL',''), 'APARTMENT',''), replace(ltrim(rtrim(upper(APM.CityName))), '''','') ,''),  replace(ltrim(rtrim(upper(APM.CountryName))), '''',''),''), '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','')  ) ";
                             */
+                            PriorityJoins = PriorityJoins + " (ISNULL(A.HotelName, '') != '' and ISNULL(APM.ProductName, '') != '' ";
+                            PriorityJoins = PriorityJoins + " and A.HotelName = APM.ProductName  ) ";
+
+                            PriorityJoinsMaster = PriorityJoinsMaster + " (ISNULL(A.HotelName, '') != '' and ISNULL(APM.ProductName, '') != '' ";
+                            PriorityJoinsMaster = PriorityJoinsMaster + " and A.HotelName = APM.ProductName  ) ";
+                        }
+                        else if (CurrConfig == "HotelName_Tx".ToUpper())
+                        {
                             PriorityJoins = PriorityJoins + " (ISNULL(A.HotelName_Tx, '') != '' and ISNULL(APM.HotelName_Tx, '') != '' ";
                             PriorityJoins = PriorityJoins + " and A.HotelName_Tx = APM.HotelName_Tx  ) ";
 
                             PriorityJoinsMaster = PriorityJoinsMaster + " (ISNULL(A.HotelName_Tx, '') != '' and ISNULL(APM.HotelName_Tx, '') != '' ";
                             PriorityJoinsMaster = PriorityJoinsMaster + " and A.HotelName_Tx = APM.HotelName_Tx  ) ";
                         }
-                        else if (CurrConfig == "LONGITUDE")
+                        else if (CurrConfig == "LONGITUDE" || CurrConfig == "LONGITUDE_TX")
                             DontAppend = true;
-                        else if (CurrConfig == "LATITUDE")
+                        else if (CurrConfig == "LATITUDE" || CurrConfig == "LATITUDE_TX")
                         {
                             DontAppend = false;
                             PriorityJoins = PriorityJoins + " (ISNULL(A.Latitude_Tx, '') != '' and ISNULL(APM.Latitude_Tx, '') != '' ";
