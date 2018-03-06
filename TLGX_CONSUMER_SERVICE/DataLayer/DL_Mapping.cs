@@ -330,6 +330,7 @@ namespace DataLayer
                                    from jd in j.DefaultIfEmpty()
                                        //join ac in context.Accommodations on a.Accommodation_Id equals ac.Accommodation_Id
                                    where a.Accommodation_ProductMapping_Id == Accommodation_ProductMapping_Id
+                                   
                                    orderby a.SupplierName, a.ProductName, a.SupplierProductReference
                                    select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                    {
@@ -382,7 +383,9 @@ namespace DataLayer
                                        SystemLatitude = jd.Latitude,
                                        SystemLongitude = jd.Longitude,
                                        MatchedBy = a.MatchedBy,
-                                       MatchedByString = a.MatchedByString
+                                       MatchedByString = a.MatchedByString,
+                                       Country_Id = a.Country_Id,
+                                       City_Id = a.City_Id
                                    });
 
                     var result = prodMapList.ToList();
@@ -5253,6 +5256,13 @@ namespace DataLayer
                                         select a;
                     }
 
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierCountryCode))
+                    {
+                        prodMapSearch = from a in prodMapSearch
+                                        where a.CountryCode.Trim() == RQ.SupplierCountryCode.Trim()
+                                        select a;
+                    }
+
                     int total;
 
                     total = prodMapSearch.Count();
@@ -5329,7 +5339,7 @@ namespace DataLayer
                     return result;
                 }
             }
-            catch
+            catch(Exception e)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching country mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -5943,13 +5953,13 @@ namespace DataLayer
                 {
 
 
-                    var prodMapSearch = (from a in context.m_CityMapping select a).AsQueryable();
-                    var countrymaster = context.m_CountryMaster.Select(s => s).AsQueryable();
+                    var prodMapSearch = (from a in context.m_CityMapping.AsNoTracking() select a).AsQueryable();
+                    var countrymaster = context.m_CountryMaster.AsNoTracking().Select(s => s).AsQueryable();
 
-                    var SuppliersMaster = context.Supplier.Select(s => s).AsQueryable();
-                    var CityMaster = context.m_CityMaster.Select(s => s).AsQueryable();
+                    var SuppliersMaster = context.Supplier.AsNoTracking().Select(s => s).AsQueryable();
+                    var CityMaster = context.m_CityMaster.AsNoTracking().Select(s => s).AsQueryable();
 
-                    var EntityMaster = context.m_CityMapping_EntityCount.AsQueryable();
+                    var EntityMaster = context.m_CityMapping_EntityCount.AsNoTracking().AsQueryable();
 
 
                     if (param.Supplier_Id != null)
@@ -6031,6 +6041,18 @@ namespace DataLayer
                                             select a;
                         }
                     }
+                    if (!string.IsNullOrWhiteSpace(param.SupplierCityCode))
+                    {
+                        prodMapSearch = from a in prodMapSearch
+                                        where a.CityCode.Contains(param.SupplierCityCode)
+                                        select a;
+                        if (param.IsExact)
+                        {
+                            prodMapSearch = from a in prodMapSearch
+                                            where a.CityCode == param.SupplierCityCode
+                                            select a;
+                        }
+                    }
 
                     if (!string.IsNullOrWhiteSpace(param.EntityType))
                     {
@@ -6079,10 +6101,10 @@ namespace DataLayer
                     else
                     {
                         var CityMapList = (from a in prodMapSearch
-                                           join s in SuppliersMaster on a.Supplier_Id equals s.Supplier_Id
+                                           //join s in SuppliersMaster on a.Supplier_Id equals s.Supplier_Id
                                            join ct in CityMaster on a.City_Id equals ct.City_Id into ctl
                                            from ctld in ctl.DefaultIfEmpty()
-                                           join m in countrymaster on a.Country_Id equals m.Country_Id into j
+                                           join m in countrymaster on    a.Country_Id equals m.Country_Id into j
                                            from jd in j.DefaultIfEmpty()
                                                //orderby (param.SortBy)
                                            orderby a.CityName
@@ -6102,7 +6124,7 @@ namespace DataLayer
                                                Supplier_Id = a.Supplier_Id,
                                                Status = a.Status,
                                                TotalRecords = total,
-                                               SupplierName = s.Name,
+                                               SupplierName = a.SupplierName,
                                                CountryCode = a.CountryCode,
                                                CountryName = a.CountryName,
                                                MasterCountryCode = jd.Code,
