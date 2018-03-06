@@ -152,6 +152,93 @@ namespace DataLayer
             return ret;
         }
 
+        public bool AddSTGMappingTableIDs(DC_MappingMatch obj)
+        {
+            bool retrn = false;
+            DataContracts.Masters.DC_Supplier supdata = new DataContracts.Masters.DC_Supplier();
+            supdata = obj.SupplierDetail;
+            Guid? curSupplier_Id = Guid.Empty;
+            Guid File_Id = new Guid();
+            File_Id = Guid.Parse(obj.File_Id.ToString());
+            List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
+            DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
+            curSupplier_Id = supdata.Supplier_Id;
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                if (obj.FileEntity.Trim().ToUpper() == "HOTEL")
+                {
+                    lstSMT = (from a in context.Accommodation_ProductMapping.AsNoTracking()
+                              join j in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals j.Mapping_Id into jact
+                              from jdact in jact.DefaultIfEmpty()
+                              where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
+                              && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
+                              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                              {
+                                  STG_Mapping_Table_Id = Guid.NewGuid(),
+                                  File_Id = obj.File_Id,
+                                  Mapping_Id = a.Accommodation_ProductMapping_Id,
+                                  STG_Id = null,
+                                  Batch = obj.CurrentBatch ?? 1
+                              }).Take(250).ToList();
+                }
+                else if (obj.FileEntity.Trim().ToUpper() == "ROOMTYPE")
+                {
+                    lstSMT = (from a in context.Accommodation_SupplierRoomTypeMapping
+                              join j in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_SupplierRoomTypeMapping_Id equals j.Mapping_Id into jact
+                              from jdact in jact.DefaultIfEmpty()
+                              where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
+                              && (a.MappingStatus == "UNMAPPED" || a.Accommodation_RoomInfo_Id == null)
+                              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                              {
+                                  STG_Mapping_Table_Id = Guid.NewGuid(),
+                                  File_Id = obj.File_Id,
+                                  Mapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                                  STG_Id = null,
+                                  Batch = obj.CurrentBatch ?? 1
+                              }).Take(250).ToList();
+                }
+                else if (obj.FileEntity.Trim().ToUpper() == "COUNTRY")
+                {
+                    lstSMT = (from a in context.m_CountryMapping
+                              join j in context.STG_Mapping_TableIds.AsNoTracking() on a.CountryMapping_Id equals j.Mapping_Id into jact
+                              from jdact in jact.DefaultIfEmpty()
+                              where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
+                              && (a.Status == "UNMAPPED" || a.Country_Id == null)
+                              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                              {
+                                  STG_Mapping_Table_Id = Guid.NewGuid(),
+                                  File_Id = obj.File_Id,
+                                  Mapping_Id = a.CountryMapping_Id,
+                                  STG_Id = null,
+                                  Batch = obj.CurrentBatch ?? 1
+                              }).Take(250).ToList();
+                }
+                else if (obj.FileEntity.Trim().ToUpper() == "CITY")
+                {
+                    lstSMT = (from a in context.m_CityMapping
+                              join j in context.STG_Mapping_TableIds.AsNoTracking() on a.CityMapping_Id equals j.Mapping_Id into jact
+                              from jdact in jact.DefaultIfEmpty()
+                              where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
+                              && (a.Status == "UNMAPPED" || a.City_Id == null)
+                              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                              {
+                                  STG_Mapping_Table_Id = Guid.NewGuid(),
+                                  File_Id = obj.File_Id,
+                                  Mapping_Id = a.CityMapping_Id,
+                                  STG_Id = null,
+                                  Batch = obj.CurrentBatch ?? 1
+                              }).Take(250).ToList();
+                }
+
+            }
+            if (lstSMT.Count > 0)
+            {
+                retrn = AddSTGMappingTableIDs(lstSMT);
+            }
+
+            return retrn;
+        }
+
         #region Accomodation Product Mapping
 
         public bool ShiftAccommodationMappings(DataContracts.Mapping.DC_Mapping_ShiftMapping_RQ obj)
@@ -890,6 +977,8 @@ namespace DataLayer
         }
         //public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
 
+        
+
         public bool UpdateHotelMappingStatus(DC_MappingMatch obj)
         {
             bool retrn = false;
@@ -922,33 +1011,33 @@ namespace DataLayer
             }
             try
             {
-                using (ConsumerEntities context = new ConsumerEntities())
-                {
-                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
-                    //if (curPriority == 1)
-                    {
-                        List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
-                        DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
+                //using (ConsumerEntities context = new ConsumerEntities())
+                //{
+                //    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
+                //    //if (curPriority == 1)
+                //    {
+                //        List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
+                //        DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
 
-                        lstSMT = (from a in context.Accommodation_ProductMapping.AsNoTracking()
-                                  join j in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals j.Mapping_Id into jact
-                                  from jdact in jact.DefaultIfEmpty()
-                                  where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
-                                  && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
-                                  select new DataContracts.STG.DC_STG_Mapping_Table_Ids
-                                  {
-                                      STG_Mapping_Table_Id = Guid.NewGuid(),
-                                      File_Id = obj.File_Id,
-                                      Mapping_Id = a.Accommodation_ProductMapping_Id,
-                                      STG_Id = null,
-                                      Batch = obj.CurrentBatch ?? 1
-                                  }).Take(250).ToList();
-                        if (lstSMT.Count > 0)
-                        {
-                            bool idinsert = AddSTGMappingTableIDs(lstSMT);
-                        }
-                    }
-                }
+                //        lstSMT = (from a in context.Accommodation_ProductMapping.AsNoTracking()
+                //                  join j in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals j.Mapping_Id into jact
+                //                  from jdact in jact.DefaultIfEmpty()
+                //                  where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
+                //                  && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
+                //                  select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                //                  {
+                //                      STG_Mapping_Table_Id = Guid.NewGuid(),
+                //                      File_Id = obj.File_Id,
+                //                      Mapping_Id = a.Accommodation_ProductMapping_Id,
+                //                      STG_Id = null,
+                //                      Batch = obj.CurrentBatch ?? 1
+                //                  }).Take(250).ToList();
+                //        if (lstSMT.Count > 0)
+                //        {
+                //            bool idinsert = AddSTGMappingTableIDs(lstSMT);
+                //        }
+                //    }
+                //}
                 #region "Old LINQ Code"
                 /*using (ConsumerEntities context = new ConsumerEntities())
                 {
@@ -1548,33 +1637,33 @@ namespace DataLayer
             }
             try
             {
-                using (ConsumerEntities context = new ConsumerEntities())
-                {
-                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
-                    //if (curPriority == 1)
-                    {
-                        List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
-                        DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
+                //using (ConsumerEntities context = new ConsumerEntities())
+                //{
+                //    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
+                //    //if (curPriority == 1)
+                //    {
+                //        List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
+                //        DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
 
-                        lstSMT = (from a in context.Accommodation_ProductMapping.AsNoTracking()
-                                  join j in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals j.Mapping_Id into jact
-                                  from jdact in jact.DefaultIfEmpty()
-                                  where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
-                                  && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
-                                  select new DataContracts.STG.DC_STG_Mapping_Table_Ids
-                                  {
-                                      STG_Mapping_Table_Id = Guid.NewGuid(),
-                                      File_Id = obj.File_Id,
-                                      Mapping_Id = a.Accommodation_ProductMapping_Id,
-                                      STG_Id = null,
-                                      Batch = obj.CurrentBatch ?? 1
-                                  }).Take(250).ToList();
-                        if (lstSMT.Count > 0)
-                        {
-                            bool idinsert = AddSTGMappingTableIDs(lstSMT);
-                        }
-                    }
-                }
+                //        lstSMT = (from a in context.Accommodation_ProductMapping.AsNoTracking()
+                //                  join j in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals j.Mapping_Id into jact
+                //                  from jdact in jact.DefaultIfEmpty()
+                //                  where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
+                //                  && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
+                //                  select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                //                  {
+                //                      STG_Mapping_Table_Id = Guid.NewGuid(),
+                //                      File_Id = obj.File_Id,
+                //                      Mapping_Id = a.Accommodation_ProductMapping_Id,
+                //                      STG_Id = null,
+                //                      Batch = obj.CurrentBatch ?? 1
+                //                  }).Take(250).ToList();
+                //        if (lstSMT.Count > 0)
+                //        {
+                //            bool idinsert = AddSTGMappingTableIDs(lstSMT);
+                //        }
+                //    }
+                //}
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     #region "Acco mapping query"
@@ -4904,30 +4993,30 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
-                    {
-                        List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
-                        DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
+                    //if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
+                    //{
+                    //    List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
+                    //    DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
 
-                        lstSMT = (from a in context.Accommodation_SupplierRoomTypeMapping
-                                  join j in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_SupplierRoomTypeMapping_Id equals j.Mapping_Id into jact
-                                  from jdact in jact.DefaultIfEmpty()
-                                  where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
-                                  && (a.MappingStatus == "UNMAPPED" || a.Accommodation_RoomInfo_Id == null)
-                                  select new DataContracts.STG.DC_STG_Mapping_Table_Ids
-                                  {
-                                      STG_Mapping_Table_Id = Guid.NewGuid(),
-                                      File_Id = obj.File_Id,
-                                      Mapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
-                                      STG_Id = null,
-                                      Batch = obj.CurrentBatch ?? 1
-                                  }).Take(250).ToList();
-                        if (lstSMT.Count > 0)
-                        {
-                            //idinsert = DeleteSTGMappingTableIDs(File_Id);
-                            bool idinsert = AddSTGMappingTableIDs(lstSMT);
-                        }
-                    }
+                    //    lstSMT = (from a in context.Accommodation_SupplierRoomTypeMapping
+                    //              join j in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_SupplierRoomTypeMapping_Id equals j.Mapping_Id into jact
+                    //              from jdact in jact.DefaultIfEmpty()
+                    //              where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
+                    //              && (a.MappingStatus == "UNMAPPED" || a.Accommodation_RoomInfo_Id == null)
+                    //              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                    //              {
+                    //                  STG_Mapping_Table_Id = Guid.NewGuid(),
+                    //                  File_Id = obj.File_Id,
+                    //                  Mapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                    //                  STG_Id = null,
+                    //                  Batch = obj.CurrentBatch ?? 1
+                    //              }).Take(250).ToList();
+                    //    if (lstSMT.Count > 0)
+                    //    {
+                    //        //idinsert = DeleteSTGMappingTableIDs(File_Id);
+                    //        bool idinsert = AddSTGMappingTableIDs(lstSMT);
+                    //    }
+                    //}
 
                     var prodMap = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
                                    join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_SupplierRoomTypeMapping_Id equals s.Mapping_Id
@@ -5448,30 +5537,30 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
-                    {
-                        List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
-                        DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
+                    //if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
+                    //{
+                    //    List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
+                    //    DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
 
-                        lstSMT = (from a in context.m_CountryMapping
-                                  join j in context.STG_Mapping_TableIds.AsNoTracking() on a.CountryMapping_Id equals j.Mapping_Id into jact
-                                  from jdact in jact.DefaultIfEmpty()
-                                  where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
-                                  && (a.Status == "UNMAPPED" || a.Country_Id == null)
-                                  select new DataContracts.STG.DC_STG_Mapping_Table_Ids
-                                  {
-                                      STG_Mapping_Table_Id = Guid.NewGuid(),
-                                      File_Id = obj.File_Id,
-                                      Mapping_Id = a.CountryMapping_Id,
-                                      STG_Id = null,
-                                      Batch = obj.CurrentBatch ?? 1
-                                  }).Take(250).ToList();
-                        if (lstSMT.Count > 0)
-                        {
-                            //idinsert = DeleteSTGMappingTableIDs(File_Id);
-                            bool idinsert = AddSTGMappingTableIDs(lstSMT);
-                        }
-                    }
+                    //    lstSMT = (from a in context.m_CountryMapping
+                    //              join j in context.STG_Mapping_TableIds.AsNoTracking() on a.CountryMapping_Id equals j.Mapping_Id into jact
+                    //              from jdact in jact.DefaultIfEmpty()
+                    //              where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
+                    //              && (a.Status == "UNMAPPED" || a.Country_Id == null)
+                    //              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                    //              {
+                    //                  STG_Mapping_Table_Id = Guid.NewGuid(),
+                    //                  File_Id = obj.File_Id,
+                    //                  Mapping_Id = a.CountryMapping_Id,
+                    //                  STG_Id = null,
+                    //                  Batch = obj.CurrentBatch ?? 1
+                    //              }).Take(250).ToList();
+                    //    if (lstSMT.Count > 0)
+                    //    {
+                    //        //idinsert = DeleteSTGMappingTableIDs(File_Id);
+                    //        bool idinsert = AddSTGMappingTableIDs(lstSMT);
+                    //    }
+                    //}
 
                     var prodMapSearch = (from a in context.m_CountryMapping
                                          join s in context.STG_Mapping_TableIds.AsNoTracking() on a.CountryMapping_Id equals s.Mapping_Id
@@ -6474,30 +6563,30 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
-                    {
-                        List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
-                        DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
+                    //if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
+                    //{
+                    //    List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
+                    //    DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
 
-                        lstSMT = (from a in context.m_CityMapping
-                                  join j in context.STG_Mapping_TableIds.AsNoTracking() on a.CityMapping_Id equals j.Mapping_Id into jact
-                                  from jdact in jact.DefaultIfEmpty()
-                                  where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
-                                  && (a.Status == "UNMAPPED" || a.City_Id == null)
-                                  select new DataContracts.STG.DC_STG_Mapping_Table_Ids
-                                  {
-                                      STG_Mapping_Table_Id = Guid.NewGuid(),
-                                      File_Id = obj.File_Id,
-                                      Mapping_Id = a.CityMapping_Id,
-                                      STG_Id = null,
-                                      Batch = obj.CurrentBatch ?? 1
-                                  }).Take(250).ToList();
-                        if (lstSMT.Count > 0)
-                        {
-                            //idinsert = DeleteSTGMappingTableIDs(File_Id);
-                            bool idinsert = AddSTGMappingTableIDs(lstSMT);
-                        }
-                    }
+                    //    lstSMT = (from a in context.m_CityMapping
+                    //              join j in context.STG_Mapping_TableIds.AsNoTracking() on a.CityMapping_Id equals j.Mapping_Id into jact
+                    //              from jdact in jact.DefaultIfEmpty()
+                    //              where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
+                    //              && (a.Status == "UNMAPPED" || a.City_Id == null)
+                    //              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                    //              {
+                    //                  STG_Mapping_Table_Id = Guid.NewGuid(),
+                    //                  File_Id = obj.File_Id,
+                    //                  Mapping_Id = a.CityMapping_Id,
+                    //                  STG_Id = null,
+                    //                  Batch = obj.CurrentBatch ?? 1
+                    //              }).Take(250).ToList();
+                    //    if (lstSMT.Count > 0)
+                    //    {
+                    //        //idinsert = DeleteSTGMappingTableIDs(File_Id);
+                    //        bool idinsert = AddSTGMappingTableIDs(lstSMT);
+                    //    }
+                    //}
 
                     var prodMapSearch = (from a in context.m_CityMapping
                                          join s in context.STG_Mapping_TableIds.AsNoTracking() on a.CityMapping_Id equals s.Mapping_Id

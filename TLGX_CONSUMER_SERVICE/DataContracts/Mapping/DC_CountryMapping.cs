@@ -498,5 +498,7 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public List<int> Priorities { get; set; }
+        [DataMember]
+        public string FileEntity { get; set; }
     }
 }

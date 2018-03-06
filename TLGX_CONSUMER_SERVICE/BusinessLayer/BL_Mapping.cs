@@ -104,6 +104,13 @@ namespace BusinessLayer
             }
         }
 
+        public bool AddSTGMappingTableIDs(DC_MappingMatch obj)
+        {
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.AddSTGMappingTableIDs(obj);
+            }
+        }
         public bool HotelMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
