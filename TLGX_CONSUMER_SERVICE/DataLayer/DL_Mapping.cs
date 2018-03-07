@@ -2794,7 +2794,7 @@ namespace DataLayer
                         prodMapList = (from a in prodMapSearch
                                        join ac in context.Accommodations on a.Accommodation_Id equals ac.Accommodation_Id
                                        where ac.Accommodation_Id == obj.Accommodation_Id
-                                       orderby a.SupplierName, a.ProductName, a.SupplierProductReference
+                                       orderby a.ProductName //a.SupplierName, a.ProductName, a.SupplierProductReference
                                        select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                        {
                                            Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
@@ -2844,7 +2844,7 @@ namespace DataLayer
                     {
 
                         prodMapList = (from a in prodMapSearch
-                                       orderby a.SupplierName, a.SupplierProductReference
+                                       orderby a.ProductName//a.SupplierName, a.SupplierProductReference
                                        select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                        {
                                            Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
@@ -3408,7 +3408,7 @@ namespace DataLayer
                                        join mac in context.m_CountryMaster.AsNoTracking() on a.Country_Id equals mac.Country_Id into jac
                                        from jdac in jac.DefaultIfEmpty()
                                            //where jda.Location != null
-                                       orderby a.SupplierName, a.ProductName, a.SupplierProductReference
+                                       orderby a.ProductName //a.SupplierName, a.ProductName, a.SupplierProductReference
                                        select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                        {
                                            Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
