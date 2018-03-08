@@ -204,6 +204,11 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "DataHandler/Mapping/RoomType/UpdateStatus", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool UpdateRoomTypeMappingStatus(DataContracts.Mapping.DC_MappingMatch obj);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "DataHandler/Mapping/AddSTGMappingTable", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        bool AddSTGMappingTableIDs(DataContracts.Mapping.DC_MappingMatch obj);
         #endregion
 
         #region Keyword Replace and Attribute Extraction

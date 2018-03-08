@@ -827,8 +827,10 @@ namespace DataLayer
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude
                                  };
-
-                    return result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                    List<DC_City> ret = new List<DC_City>();
+                    
+                    ret = result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                    return ret;
                 }
             }
             catch

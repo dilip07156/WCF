@@ -47,16 +47,22 @@ namespace DataLayer
         {
             string ret = "";
             string[] brkparam = param.Split('.');
-            if(!string.IsNullOrEmpty(brkparam[1]))
+            if (brkparam.Length > 1)
             {
-                ret = brkparam[0] + ".";
-                if (brkparam[1].Length > 4)
-                    return ret + brkparam[1].Substring(0, 4);
+                if (!string.IsNullOrEmpty(brkparam[1]))
+                {
+                    ret = brkparam[0] + ".";
+                    if (brkparam[1].Length > 4)
+                        return ret + brkparam[1].Substring(0, 4);
+                    else
+                        return ret + brkparam[1];
+                }
                 else
-                    return ret + brkparam[1];
+                    return param;
             }
             else
                 return param;
+
         }
 
         public static string RemoveSpecialChars(string str)
@@ -77,10 +83,13 @@ namespace DataLayer
             //replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(A.hotelname))), ' ',''), 'HOTEL','')
             //, 'APARTMENT',''), replace(ltrim(rtrim(upper(A.city))), '''','') ,''),  replace(ltrim(rtrim(upper(A.country))), '''',''),'')
             //, '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','')
-            return (HotelName ?? "").Trim().ToUpper().Replace(" ", "").Replace("HOTEL", "").Replace("APARTMENT", "")
-                .Replace((countryname ?? "").Trim().ToUpper().Replace("'", ""), "").Replace((cityname ?? "").Trim().ToUpper().Replace("'", ""), "")
-                .Replace("'","").Replace("&", "").Replace("AND", "").Replace("THE", "").Replace("-", "").Replace("_", "")
-                .Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace("APARTHOTEL", "");
+            if (!string.IsNullOrWhiteSpace(HotelName))
+                return (HotelName ?? "").Trim().ToUpper().Replace(" ", "").Replace("HOTEL", "").Replace("APARTMENT", "")
+                    .Replace((countryname ?? "~").Trim().ToUpper().Replace("'", ""), "").Replace((cityname ?? "~").Trim().ToUpper().Replace("'", ""), "")
+                    .Replace("'", "").Replace("&", "").Replace("AND", "").Replace("THE", "").Replace("-", "").Replace("_", "")
+                    .Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace("APARTHOTEL", "").Replace("~", "");
+            else
+                return "";
         }
 
         public static string ReturnNumbersFromString(string str)

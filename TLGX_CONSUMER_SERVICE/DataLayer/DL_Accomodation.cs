@@ -192,7 +192,10 @@ namespace DataLayer
                                         HotelNameWithCode = a.HotelName + " / " + a.CompanyHotelID.ToString(),
                                         Country_Id = a.Country_Id,
                                         City_Id = a.City_Id,
-                                        InsertFrom = a.InsertFrom
+                                        InsertFrom = a.InsertFrom,
+                                        Telephone_Tx = a.Telephone_Tx,
+                                        Latitude = a.Latitude,
+                                        Longitude = a.Longitude
                                     }).Skip(skip).Take(RQ.PageSize).ToList();
 
                     if (!string.IsNullOrWhiteSpace(RQ.Searchfrom) && RQ.Searchfrom.ToLower().Trim() != "hotalsearch")

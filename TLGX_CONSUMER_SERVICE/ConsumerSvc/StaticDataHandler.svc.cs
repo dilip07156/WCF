@@ -188,6 +188,14 @@ namespace ConsumerSvc
             }
         }
 
+        public bool AddSTGMappingTableIDs(DC_MappingMatch obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.AddSTGMappingTableIDs(obj);
+            }
+        }
+
         public bool UpdateRoomTypeMappingStatus(DC_MappingMatch obj)
         {
             using (BL_Mapping objBL = new BL_Mapping())

@@ -61,6 +61,19 @@ namespace DataContracts.Mapping
         string _Location;
 
         [DataMember]
+        public string SystemTelephone { get; set; }
+
+
+        [DataMember]
+        public string SystemLocation { get; set; }
+
+        [DataMember]
+        public string SystemLatitude { get; set; }
+
+        [DataMember]
+        public string SystemLongitude { get; set; }
+
+        [DataMember]
         public string Latitude_Tx { get; set; }
 
 
@@ -780,6 +793,9 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public Nullable<System.Guid> Supplier_Id { get; set; }
+
+        [DataMember]
+        public Nullable<System.Guid> Country_Id { get; set; }
 
         [DataMember]
         public Nullable<System.Guid> Accommodation_Id { get; set; }

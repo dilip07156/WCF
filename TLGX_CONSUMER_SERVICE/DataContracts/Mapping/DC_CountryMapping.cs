@@ -321,6 +321,8 @@ namespace DataContracts.Mapping
 
 
         [DataMember]
+        public string SupplierCountryCode { get; set; }
+        [DataMember]
         public string Latitude { get; set; }
 
         [DataMember]
@@ -498,5 +500,7 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public List<int> Priorities { get; set; }
+        [DataMember]
+        public string FileEntity { get; set; }
     }
 }
