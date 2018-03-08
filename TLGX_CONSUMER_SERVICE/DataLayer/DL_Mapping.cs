@@ -3294,6 +3294,25 @@ namespace DataLayer
                         }
                     }
 
+                    if ((obj.Country_Id != null) && obj.Country_Id != Guid.Empty)
+                    {
+                        //if (!string.IsNullOrWhiteSpace(obj.Source) && obj.Source.ToUpper() == "SYSTEMDATA")
+                        //{
+                        //    var distCountryMapping = (from a in context.m_CountryMapping.AsNoTracking() select new { a.Country_Id, a.CountryCode, a.CountryName, a.Supplier_Id }).Distinct();
+                        //    prodMapSearch = from a in prodMapSearch
+                        //                    join ct in distCountryMapping on new { a.Supplier_Id } equals new { ct.Supplier_Id }
+                        //                    where ((a.CountryName == null) ? (a.CountryCode == ct.CountryCode) : (a.CountryName == ct.CountryName))
+                        //                    && ct.Country_Id == obj.Country_Id                                            
+                        //                    select a;
+                        //}
+                        //else
+                        //{
+                            prodMapSearch = from a in prodMapSearch
+                                            where a.Country_Id == obj.Country_Id
+                                            select a;
+                        //}
+                    }
+
 
                     if (!string.IsNullOrWhiteSpace(obj.CityName))
                     {
@@ -3375,7 +3394,8 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(obj.SupplierProductName))
                     {
                         prodMapSearch = from a in prodMapSearch
-                                        where a.ProductName.Contains(obj.SupplierProductName)
+                                            //where a.ProductName.Contains(obj.SupplierProductName)
+                                        where a.ProductName.Trim().ToUpper() == obj.SupplierProductName.Trim().ToUpper()
                                         select a;
                     }
                     if (!string.IsNullOrWhiteSpace(obj.StarRating))
