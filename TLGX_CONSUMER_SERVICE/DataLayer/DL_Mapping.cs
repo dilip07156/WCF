@@ -3393,10 +3393,28 @@ namespace DataLayer
                     }
                     if (!string.IsNullOrWhiteSpace(obj.SupplierProductName))
                     {
-                        prodMapSearch = from a in prodMapSearch
-                                            //where a.ProductName.Contains(obj.SupplierProductName)
-                                        where a.ProductName.Trim().ToUpper() == obj.SupplierProductName.Trim().ToUpper()
-                                        select a;
+                        bool isname = false;
+                        if (!string.IsNullOrWhiteSpace(obj.Via))
+                        {
+                            if (obj.Via.Trim().ToUpper() == "CROSS")
+                            {
+                                prodMapSearch = from a in prodMapSearch
+                                                    //where a.ProductName.Contains(obj.SupplierProductName)
+                                                where a.HotelName_Tx.Trim().ToUpper() == obj.HotelName_TX.Trim().ToUpper()
+                                                select a;
+                            }
+                            else
+                                isname = true;
+                        }
+                        else
+                            isname = true;
+                        if (isname)
+                        {
+                            prodMapSearch = from a in prodMapSearch
+                                                //where a.ProductName.Contains(obj.SupplierProductName)
+                                            where a.ProductName.Trim().ToUpper() == obj.SupplierProductName.Trim().ToUpper()
+                                            select a;
+                        }
                     }
                     if (!string.IsNullOrWhiteSpace(obj.StarRating))
                     {
