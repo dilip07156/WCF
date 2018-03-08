@@ -435,5 +435,16 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        #region
+        public List<DataContracts.Masters.DC_Activity_CategoryTypes_DDL> GetSupplierProductSubType(DataContracts.Masters.DC_Supplier_DDL _objAct)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetSupplierProductSubType(_objAct);
+            }
+        }
+        
+        #endregion
     }
 }

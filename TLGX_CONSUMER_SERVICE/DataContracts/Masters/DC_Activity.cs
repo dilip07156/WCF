@@ -1512,6 +1512,12 @@ namespace DataContracts.Masters
         public bool NoSpecials { get; set; }
         [DataMember]
         public string Activity_Status { get; set; }
+        [DataMember]
+        public string SupplierProductNameSubType { get; set; }
+        [DataMember]
+        public string SupplierCountryName { get; set; }
+        [DataMember]
+        public string SupplierCityName { get; set; }
     }
 
     [DataContract]
@@ -1561,6 +1567,16 @@ namespace DataContracts.Masters
 
         [DataMember]
         public string User { get; set; }
+
+    }
+
+    [DataContract]
+    public class DC_Activity_CategoryTypes_DDL
+    {
+        [DataMember]
+        public string SupProdSubType { get; set; }
+        [DataMember]
+        public string SupProdSubTypeCode { get; set; }
 
     }
     #endregion
