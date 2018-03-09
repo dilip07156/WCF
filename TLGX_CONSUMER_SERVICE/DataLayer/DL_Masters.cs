@@ -828,7 +828,7 @@ namespace DataLayer
                                      Longitude = a.Longitude
                                  };
                     List<DC_City> ret = new List<DC_City>();
-                    
+
                     ret = result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                     return ret;
                 }
@@ -2367,12 +2367,10 @@ namespace DataLayer
 
                     if (!string.IsNullOrEmpty(RQ.EntityType))
                     {
-                        if (RQ.EntityType.ToUpper() == "ACTIVITY")
-                        {
-                            search = (from sup in search
-                                      join stg in context.stg_ActivitySupplierProductMapping on sup.Name equals stg.SupplierName
-                                      select sup).Distinct();
-                        }
+                        search = (from sup in search
+                                  join supcat in context.Supplier_ProductCategory on sup.Supplier_Id equals supcat.Supplier_Id
+                                  where supcat.ProductCategory.ToLower() == RQ.EntityType.ToLower()
+                                  select sup).Distinct();
                     }
                     int total;
                     total = search.Count();
