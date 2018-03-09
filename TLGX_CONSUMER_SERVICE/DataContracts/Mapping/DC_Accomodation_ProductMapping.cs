@@ -795,6 +795,12 @@ namespace DataContracts.Mapping
         public Nullable<System.Guid> Supplier_Id { get; set; }
 
         [DataMember]
+        public string Via { get; set; }
+        [DataMember]
+        public string HotelName_TX { get; set; }
+
+
+        [DataMember]
         public Nullable<System.Guid> Country_Id { get; set; }
 
         [DataMember]
