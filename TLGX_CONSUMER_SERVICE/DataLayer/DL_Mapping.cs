@@ -862,6 +862,9 @@ namespace DataLayer
             int ret = 0;
             Guid File_Id = file.SupplierImportFile_Id;
             Guid Supplier_Id = file.Supplier_Id;
+            string mode = file.Mode;
+            if (string.IsNullOrWhiteSpace(mode))
+                mode = "ALL";
             using (ConsumerEntities context = new ConsumerEntities())
             {
                 List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
@@ -883,7 +886,7 @@ namespace DataLayer
                     //                }).ToList();
                     lstSMT1 = (from a in context.Accommodation_ProductMapping
                                where a.Supplier_Id == Supplier_Id
-                               && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
+                               && (((a.Status == "UNMAPPED" && mode == "ALL") || (a.Status != "MAPPED" && mode != "ALL")) || a.Accommodation_Id == null)
                                select new DataContracts.STG.DC_STG_Mapping_Table_Ids
                                {
                                    STG_Mapping_Table_Id = Guid.NewGuid(),
@@ -900,7 +903,7 @@ namespace DataLayer
                 {
                     lstSMT1 = (from a in context.m_CountryMapping
                                where a.Supplier_Id == Supplier_Id
-                               && (a.Status == "UNMAPPED" || a.Country_Id == null)
+                               && (((a.Status == "UNMAPPED" && mode == "ALL") || (a.Status != "MAPPED" && mode != "ALL")) || a.Country_Id == null)
                                select new DataContracts.STG.DC_STG_Mapping_Table_Ids
                                {
                                    STG_Mapping_Table_Id = Guid.NewGuid(),
@@ -913,7 +916,7 @@ namespace DataLayer
                 {
                     lstSMT1 = (from a in context.m_CityMapping
                                where a.Supplier_Id == Supplier_Id
-                               && (a.Status == "UNMAPPED" || a.City_Id == null)
+                               && (((a.Status == "UNMAPPED" && mode == "ALL") || (a.Status != "MAPPED" && mode != "ALL")) || a.City_Id == null)
                                select new DataContracts.STG.DC_STG_Mapping_Table_Ids
                                {
                                    STG_Mapping_Table_Id = Guid.NewGuid(),
@@ -926,7 +929,7 @@ namespace DataLayer
                 {
                     lstSMT1 = (from a in context.Accommodation_SupplierRoomTypeMapping
                                where a.Supplier_Id == Supplier_Id
-                               && (a.MappingStatus == "UNMAPPED" || a.Accommodation_RoomInfo_Id == null)
+                               && (((a.MappingStatus == "UNMAPPED" && mode == "ALL") || (a.MappingStatus != "MAPPED" && mode != "ALL")) || a.Accommodation_RoomInfo_Id == null)
                                select new DataContracts.STG.DC_STG_Mapping_Table_Ids
                                {
                                    STG_Mapping_Table_Id = Guid.NewGuid(),
@@ -939,7 +942,7 @@ namespace DataLayer
                 {
                     lstSMT1 = (from a in context.m_CountryMapping
                                where a.Supplier_Id == Supplier_Id
-                               && (a.Status == "UNMAPPED" || a.Country_Id == null)
+                               && (((a.Status == "UNMAPPED" && mode == "ALL") || (a.Status != "MAPPED" && mode != "ALL")) || a.Country_Id == null)
                                select new DataContracts.STG.DC_STG_Mapping_Table_Ids
                                {
                                    STG_Mapping_Table_Id = Guid.NewGuid(),
