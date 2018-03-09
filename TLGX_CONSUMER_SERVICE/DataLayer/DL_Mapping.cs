@@ -163,6 +163,9 @@ namespace DataLayer
             List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
             DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
             curSupplier_Id = supdata.Supplier_Id;
+            string mode = obj.FileMode;
+            if (string.IsNullOrWhiteSpace(mode))
+                mode = "ALL";
             using (ConsumerEntities context = new ConsumerEntities())
             {
                 if (obj.FileEntity.Trim().ToUpper() == "HOTEL")
@@ -171,7 +174,7 @@ namespace DataLayer
                               join j in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_ProductMapping_Id equals j.Mapping_Id into jact
                               from jdact in jact.DefaultIfEmpty()
                               where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
-                              && (a.Status == "UNMAPPED" || a.Accommodation_Id == null)
+                              && (((a.Status == "UNMAPPED" && mode == "ALL") || (a.Status != "MAPPED" && mode != "ALL")) || a.Accommodation_Id == null)
                               select new DataContracts.STG.DC_STG_Mapping_Table_Ids
                               {
                                   STG_Mapping_Table_Id = Guid.NewGuid(),
@@ -187,7 +190,7 @@ namespace DataLayer
                               join j in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_SupplierRoomTypeMapping_Id equals j.Mapping_Id into jact
                               from jdact in jact.DefaultIfEmpty()
                               where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
-                              && (a.MappingStatus == "UNMAPPED" || a.Accommodation_RoomInfo_Id == null)
+                              && (((a.MappingStatus == "UNMAPPED" && mode == "ALL") || (a.MappingStatus != "MAPPED" && mode != "ALL")) || a.Accommodation_RoomInfo_Id == null)
                               select new DataContracts.STG.DC_STG_Mapping_Table_Ids
                               {
                                   STG_Mapping_Table_Id = Guid.NewGuid(),
@@ -203,7 +206,7 @@ namespace DataLayer
                               join j in context.STG_Mapping_TableIds.AsNoTracking() on a.CountryMapping_Id equals j.Mapping_Id into jact
                               from jdact in jact.DefaultIfEmpty()
                               where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
-                              && (a.Status == "UNMAPPED" || a.Country_Id == null)
+                              && (((a.Status == "UNMAPPED" && mode == "ALL") || (a.Status != "MAPPED" && mode != "ALL")) || a.Country_Id == null)
                               select new DataContracts.STG.DC_STG_Mapping_Table_Ids
                               {
                                   STG_Mapping_Table_Id = Guid.NewGuid(),
@@ -219,7 +222,7 @@ namespace DataLayer
                               join j in context.STG_Mapping_TableIds.AsNoTracking() on a.CityMapping_Id equals j.Mapping_Id into jact
                               from jdact in jact.DefaultIfEmpty()
                               where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
-                              && (a.Status == "UNMAPPED" || a.City_Id == null)
+                              && (((a.Status == "UNMAPPED" && mode == "ALL") || (a.Status != "MAPPED" && mode != "ALL")) || a.City_Id == null)
                               select new DataContracts.STG.DC_STG_Mapping_Table_Ids
                               {
                                   STG_Mapping_Table_Id = Guid.NewGuid(),
