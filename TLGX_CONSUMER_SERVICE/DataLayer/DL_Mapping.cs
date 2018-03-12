@@ -780,13 +780,13 @@ namespace DataLayer
                         Website = g.Website,
                         ActionType = "INSERT",
                         stg_AccoMapping_Id = g.stg_AccoMapping_Id,
-                        FullAddress = g.Address == null ? ((g.StreetNo ?? "") + (((g.StreetNo ?? "") != "") ? ", " : "")
+                        FullAddress = g.Address == null ? ((g.StreetNo.Replace((g.PostalCode ?? ""), "") ?? "") + (((g.StreetNo ?? "") != "") ? ", " : "")
                                        + (g.StreetName ?? "") + (((g.StreetName ?? "") != "") ? ", " : "")
                                        + (g.Street2 ?? "") + (((g.Street2 ?? "") != "") ? ", " : "")
                                        + (g.Street3 ?? "") + (((g.Street3 ?? "") != "") ? ", " : "")
                                        + (g.Street4 ?? "") + (((g.Street4 ?? "") != "") ? ", " : "")
                                        + (g.Street5 ?? "") + (((g.Street5 ?? "") != "") ? ", " : "")
-                                       + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")) : g.Address
+                                       + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")) : (g.Address.Replace((g.PostalCode ?? ""), "") + (((g.Address ?? "") != "") ? ", " : ""))
                                        + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")
                         ,
                         Latitude_Tx = (g.Latitude == null) ? null : CommonFunctions.LatLongTX(g.Latitude),
