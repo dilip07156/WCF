@@ -1320,6 +1320,16 @@ namespace DataLayer
                     int toupdate = 0;
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
+                        string setUNMAPPED = "UPDATE APM ";
+                        setUNMAPPED = setUNMAPPED + " Accommodation_Id = null, Status = 'UNMAPPED', MatchedBy = null, MatchedByString = null";
+                        setUNMAPPED = setUNMAPPED + " , Edit_Date = GETDATE(), Edit_User = 'TLGX_DataHandler' ";
+                        setUNMAPPED = setUNMAPPED + " FROM Accommodation_ProductMapping APM inner join STG_Mapping_TableIds S ON APM.Accommodation_ProductMapping_Id = S.Mapping_Id AND S.File_Id = '" + obj.File_Id.ToString() + "' ";
+                        setUNMAPPED = setUNMAPPED + " WHERE ISNULL(Status, '') = 'REVIEW' and S.Batch = " + (obj.CurrentBatch).ToString();
+                        try { toupdate = context.Database.ExecuteSqlCommand(setUNMAPPED); } catch (Exception ex) { }
+
+                    }
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
                         sqlFull = sqlFull + "UPDATE APM ";
                         sqlFull = sqlFull + " SET Accommodation_Id = A.Accommodation_Id, STATUS = 'REVIEW', MatchedBy = " + (curPriority - 1).ToString() + " ";
                         sqlFull = sqlFull + " , MatchedByString = '" + MatchByString.ToString() + "' ";
