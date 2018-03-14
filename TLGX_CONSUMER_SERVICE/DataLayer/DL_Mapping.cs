@@ -3365,9 +3365,9 @@ namespace DataLayer
                     bool isname = false;
                     if (!string.IsNullOrWhiteSpace(obj.Via))
                     {
-                        if (obj.Via.Trim().ToUpper() == "CROSS" && string.IsNullOrWhiteSpace(obj.HotelName_TX))
+                        if (obj.Via.Trim().ToUpper() == "CROSS" && !string.IsNullOrWhiteSpace(obj.HotelName_TX))
                         {
-                            sqlwhere = sqlwhere + " and apm.HotelName_Tx != '" + obj.HotelName_TX.ToString().Trim() + "' ";
+                            sqlwhere = sqlwhere + " and apm.HotelName_Tx = '" + obj.HotelName_TX.ToString().Trim() + "' ";
                         }
                         else
                             isname = true;
