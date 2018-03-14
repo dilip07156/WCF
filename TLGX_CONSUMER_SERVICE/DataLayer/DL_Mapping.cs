@@ -3389,7 +3389,7 @@ namespace DataLayer
                 sqlfrom = sqlfrom + " " + sqlctmjoin + " ";
                 sqlfrom = sqlfrom + " " + sqlcmjoin + " ";
 
-                sqlselectcount = "select count(apm.Accommodation_ProductMapping_Id) ";
+                sqlselectcount = "select count(distinct apm.Accommodation_ProductMapping_Id) ";
                 sqlselectcount = sqlselectcount + " " + sqlfrom + " " + sqlwhere + " ";
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
