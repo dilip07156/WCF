@@ -3397,7 +3397,7 @@ namespace DataLayer
 
                 }
 
-                sqlselect = "select apm.Accommodation_ProductMapping_Id, apm.Accommodation_Id, apm.Supplier_Id, apm.SupplierId, apm.SupplierName, ";
+                sqlselect = "select distinct apm.Accommodation_ProductMapping_Id, apm.Accommodation_Id, apm.Supplier_Id, apm.SupplierId, apm.SupplierName, ";
                 sqlselect = sqlselect + " apm.SupplierProductReference, apm.ProductName, apm.ProductName as oldProductName,  ";
                 sqlselect = sqlselect + " apm.Street, apm.Street2, apm.Street3, apm.Street4, apm.PostCode, ";
                 sqlselect = sqlselect + " apm.CountryCode, apm.CountryName, apm.CityCode, apm.CityName, ";
