@@ -299,8 +299,8 @@ namespace DataLayer
                     System.Linq.IQueryable<DataContracts.Mapping.DC_Accomodation_ProductMapping> prodMapList;
                     List<DC_Accomodation_ProductMapping> lstProdMap = new List<DC_Accomodation_ProductMapping>();
                     prodMapList = (from s in context.STG_Mapping_TableIds.AsNoTracking()
-                                   //join stg in context.stg_SupplierProductMapping.AsNoTracking() on s.STG_Id equals stg.stg_AccoMapping_Id
-                                   where s.File_Id == obj.File_Id  && ((s.Batch == obj.CurrentBatch && (obj.CurrentBatch ?? 0) != 0) || ((obj.CurrentBatch ?? 0) == 0))
+                                       //join stg in context.stg_SupplierProductMapping.AsNoTracking() on s.STG_Id equals stg.stg_AccoMapping_Id
+                                   where s.File_Id == obj.File_Id && ((s.Batch == obj.CurrentBatch && (obj.CurrentBatch ?? 0) != 0) || ((obj.CurrentBatch ?? 0) == 0))
                                    select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                    {
                                        Accommodation_ProductMapping_Id = s.Mapping_Id ?? Guid.Empty
@@ -333,7 +333,7 @@ namespace DataLayer
                                    from jd in j.DefaultIfEmpty()
                                        //join ac in context.Accommodations on a.Accommodation_Id equals ac.Accommodation_Id
                                    where a.Accommodation_ProductMapping_Id == Accommodation_ProductMapping_Id
-                                   
+
                                    orderby a.SupplierName, a.ProductName, a.SupplierProductReference
                                    select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                    {
@@ -986,7 +986,7 @@ namespace DataLayer
         }
         //public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
 
-        
+
 
         public bool UpdateHotelMappingStatus(DC_MappingMatch obj)
         {
@@ -1329,7 +1329,7 @@ namespace DataLayer
                         MatchByString = "";
                     string sqlFull = "";
                     int toupdate = 0;
-                    
+
                     toupdate = 0;
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
@@ -3225,6 +3225,241 @@ namespace DataLayer
         {
             try
             {
+                string sql = "";
+                string sqlselectcount = "";
+                string sqlselect = "";
+                string sqlfrom = "";
+                string sqlcmjoin = "";
+                string sqlctmjoin = "";
+                string sqlwhere = " where 1=1 ";
+                string sqlorderby = "";
+
+                int skip = 0;
+                int total = 0;
+                skip = obj.PageSize * obj.PageNo;
+
+                //sqlctmjoin = " left outer join m_CityMapping ctm on apm.Supplier_Id = ctm.Supplier_Id and apm.Country_Id = ctm.Country_Id ";
+                //sqlctmjoin = sqlctmjoin + " and ((apm.CityCode is not null and apm.CityCode = ctm.CityCode) OR (apm.CityCode is null and apm.CityName = ctm.CityName)) ";
+                //sqlctmjoin = sqlctmjoin + " left outer join m_CityMaster mct on ctm.City_Id = mct.City_Id ";
+
+                if (!string.IsNullOrWhiteSpace(obj.SupplierId))
+                {
+                    sqlwhere = sqlwhere + " and apm.SupplierId = '" + obj.SupplierId.ToString() + "' ";
+                }
+                if (obj.Supplier_Id.HasValue)
+                {
+                    sqlwhere = sqlwhere + " and apm.Supplier_Id = '" + obj.Supplier_Id.ToString() + "' ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.SupplierName))
+                {
+                    sqlwhere = sqlwhere + " and apm.SupplierName = '" + obj.SupplierName.ToString() + "' ";
+                }
+                if (obj.MatchedBy != null)
+                {
+                    sqlwhere = sqlwhere + " and ISNULL(apm.MatchedBy, 99) = " + obj.MatchedBy.ToString() + " ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.Street))
+                {
+                    string address_tx = CommonFunctions.RemoveSpecialCharacters(obj.Street);
+                    sqlwhere = sqlwhere + " and apm.address_tx = '" + address_tx.ToString() + "' ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.Street2))
+                {
+                    sqlwhere = sqlwhere + " and apm.Street2 like '%" + obj.Street2.ToString() + "%' ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.Street3))
+                {
+                    sqlwhere = sqlwhere + " and apm.Street3 like '%" + obj.Street3.ToString() + "%' ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.ProductName))
+                {
+                    sqlwhere = sqlwhere + " and replace(ltrim(rtrim(lower(apm.ProductName))), 'hotel','') like '%" + obj.ProductName.ToLower().Replace("hotel", "").Trim() + "%' ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.PostCode))
+                {
+                    sqlwhere = sqlwhere + " and apm.PostCode like '%" + obj.PostCode.ToString() + "%' ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.TelephoneNumber))
+                {
+                    string telephoneNumber_tx = CommonFunctions.GetCharacter(obj.TelephoneNumber, 8);
+                    sqlwhere = sqlwhere + " and apm.TelephoneNumber_tx = '" + telephoneNumber_tx.ToString() + "' ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.CountryName))
+                {
+                    if (!string.IsNullOrWhiteSpace(obj.Source) && obj.Source.ToUpper() == "SYSTEMDATA")
+                    {
+                        sqlcmjoin = " left outer join m_CountryMaster mc on apm.Country_Id = mc.Country_Id ";
+                        sqlwhere = sqlwhere + " and ltrim(rtrim(upper(mc.Name))) = '" + obj.CountryName.ToString().Trim().ToUpper() + "' ";
+                    }
+                    else
+                    {
+                        sqlcmjoin = " left outer join m_CountryMapping cm on apm.Supplier_Id = cm.Supplier_Id ";
+                        sqlcmjoin = sqlcmjoin + " and ((apm.CountryCode is not null and apm.CountryCode = cm.CountryCode) OR (apm.CountryCode is null and apm.CountryName = cm.CountryName)) ";
+
+                        sqlwhere = sqlwhere + " and ltrim(rtrim(upper(cm.CountryName))) = '" + obj.CountryName.ToString().Trim().ToUpper() + "' ";
+                    }
+                }
+                if ((obj.Country_Id != null) && obj.Country_Id != Guid.Empty)
+                {
+                    sqlwhere = sqlwhere + " and apm.Country_Id = '" + obj.Country_Id.ToString() + "' ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.CityName))
+                {
+                    if (!string.IsNullOrWhiteSpace(obj.Source) && obj.Source.ToUpper() == "SYSTEMDATA")
+                    {
+                        sqlctmjoin = " left outer join m_CityMapping ctm on apm.Supplier_Id = ctm.Supplier_Id and apm.Country_Id = ctm.Country_Id ";
+                        sqlctmjoin = sqlctmjoin + " and ((apm.CityCode is not null and apm.CityCode = ctm.CityCode) OR (apm.CityCode is null and apm.CityName = ctm.CityName)) ";
+                        sqlctmjoin = sqlctmjoin + " left outer join m_CityMaster mct on ctm.City_Id = mct.City_Id ";
+                        sqlwhere = sqlwhere + " and ltrim(rtrim(upper(mct.Name))) = '" + obj.CityName.ToString().Trim().ToUpper() + "' ";
+                    }
+                    else
+                    {
+                        sqlctmjoin = " left outer join m_CityMapping ctm on apm.Supplier_Id = ctm.Supplier_Id and apm.Country_Id = ctm.Country_Id ";
+                        sqlctmjoin = sqlctmjoin + " and ((apm.CityCode is not null and apm.CityCode = ctm.CityCode) OR (apm.CityCode is null and apm.CityName = ctm.CityName)) ";
+
+                        sqlwhere = sqlwhere + " and ltrim(rtrim(upper(ctm.CityName))) = '" + obj.CityName.ToString().Trim().ToUpper() + "' ";
+                    }
+                }
+                if (!string.IsNullOrWhiteSpace(obj.CityCode))
+                {
+                    sqlwhere = sqlwhere + " and ltrim(rtrim(upper(apm.CityCode))) = '" + obj.CityCode.ToString().Trim().ToUpper() + "' ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.CountryCode))
+                {
+                    sqlwhere = sqlwhere + " and ltrim(rtrim(upper(apm.CountryCode))) = '" + obj.CountryCode.ToString().Trim().ToUpper() + "' ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.Status))
+                {
+                    sqlwhere = sqlwhere + " and apm.Status = '" + obj.Status.ToString().Trim() + "' ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.Chain))
+                {
+                    sqlwhere = sqlwhere + " and apm.Accommodation_Id in ";
+                    sqlwhere = sqlwhere + " (select Accommodation_Id from Accommodations where Chain = '" + obj.Chain.ToString() + "') ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.Brand))
+                {
+                    sqlwhere = sqlwhere + " and apm.Accommodation_Id in ";
+                    sqlwhere = sqlwhere + " (select Accommodation_Id from Accommodations where Brand = '" + obj.Brand.ToString() + "') ";
+                }
+                if (obj.StatusExcept != null)
+                {
+                    sqlwhere = sqlwhere + " and apm.Status != '" + obj.StatusExcept.ToString().Trim() + "' ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.SupplierCountryName))
+                {
+                    sqlcmjoin = " left outer join m_CountryMapping cm on apm.Supplier_Id = cm.Supplier_Id ";
+                    sqlcmjoin = sqlcmjoin + " and ((apm.CountryCode is not null and apm.CountryCode = cm.CountryCode) OR (apm.CountryCode is null and apm.CountryName = cm.CountryName)) ";
+
+                    sqlwhere = sqlwhere + " and ltrim(rtrim(upper(cm.CountryName))) = '" + obj.SupplierCountryName.ToString().Trim().ToUpper() + "' ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.SupplierCityName))
+                {
+                    sqlctmjoin = " left outer join m_CityMapping ctm on apm.Supplier_Id = ctm.Supplier_Id and apm.Country_Id = ctm.Country_Id ";
+                    sqlctmjoin = sqlctmjoin + " and ((apm.CityCode is not null and apm.CityCode = ctm.CityCode) OR (apm.CityCode is null and apm.CityName = ctm.CityName)) ";
+
+                    sqlwhere = sqlwhere + " and ltrim(rtrim(upper(ctm.CityName))) = '" + obj.SupplierCityName.ToString().Trim().ToUpper() + "' ";
+                }
+                if (!string.IsNullOrWhiteSpace(obj.SupplierProductName))
+                {
+                    bool isname = false;
+                    if (!string.IsNullOrWhiteSpace(obj.Via))
+                    {
+                        if (obj.Via.Trim().ToUpper() == "CROSS" && string.IsNullOrWhiteSpace(obj.HotelName_TX))
+                        {
+                            sqlwhere = sqlwhere + " and apm.HotelName_Tx != '" + obj.HotelName_TX.ToString().Trim() + "' ";
+                        }
+                        else
+                            isname = true;
+                    }
+                    else
+                        isname = true;
+                    if (isname)
+                    {
+                        sqlwhere = sqlwhere + " and ltrim(rtrim(upper(apm.ProductName))) like '%" + obj.SupplierProductName.ToString().Trim().ToUpper() + "%' ";
+                    }
+                }
+                if (!string.IsNullOrWhiteSpace(obj.StarRating))
+                {
+                    sqlwhere = sqlwhere + " and apm.StarRating like '%" + obj.StarRating.ToString().Trim() + "%' ";
+                }
+
+                sqlfrom = " from Accommodation_ProductMapping apm ";
+                sqlfrom = sqlfrom + " left outer join Accommodation a on apm.Accommodation_Id = a.Accommodation_Id ";
+                sqlfrom = sqlfrom + " " + sqlctmjoin + " ";
+                sqlfrom = sqlfrom + " " + sqlcmjoin + " ";
+
+                sqlselectcount = "select count(apm.Accommodation_ProductMapping_Id) ";
+                sqlselectcount = sqlselectcount + " " + sqlfrom + " " + sqlwhere + " ";
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    try { total = context.Database.SqlQuery<int>(sqlselectcount).FirstOrDefault(); } catch (Exception ex) { }
+
+                }
+
+                sqlselect = "select apm.Accommodation_ProductMapping_Id, apm.Accommodation_Id, apm.Supplier_Id, apm.SupplierId, apm.SupplierName, ";
+                sqlselect = sqlselect + " apm.SupplierProductReference, apm.ProductName, apm.ProductName as oldProductName,  ";
+                sqlselect = sqlselect + " apm.Street, apm.Street2, apm.Street3, apm.Street4, apm.PostCode, ";
+                sqlselect = sqlselect + " apm.CountryCode, apm.CountryName, apm.CityCode, apm.CityName, ";
+                sqlselect = sqlselect + " apm.StateCode, apm.StateName, apm.TelephoneNumber, apm.Fax, apm.Email, apm.Website, apm.Latitude, apm.Longitude, ";
+                sqlselect = sqlselect + " apm.Status, apm.Create_Date, apm.Create_User, apm.Edit_Date, apm.Edit_User, apm.IsActive, apm.SupplierProductReference as ProductId, apm.Remarks, ";
+                sqlselect = sqlselect + " apm.MapId, apm.address as FullAddress, apm.StarRating, apm.MatchedBy, apm.MatchedByString, ";
+                sqlselect = sqlselect + " a.HotelName as SystemProductName, a.city as SystemCityName, a.country as SystemCountryName, a.FullAddress as SystemFullAddress, a.Location, ";
+                sqlselect = sqlselect + " " + total.ToString() + " as TotalRecords ";
+
+                sqlorderby = " ORDER BY apm.ProductName OFFSET " + (skip).ToString() + " ROWS FETCH NEXT " + obj.PageSize.ToString() + " ROWS ONLY ";
+
+                sqlselect = sqlselect + " " + sqlfrom + " " + sqlwhere + " " + sqlorderby;
+
+                List<DataContracts.Mapping.DC_Accomodation_ProductMapping> result = new List<DC_Accomodation_ProductMapping>();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    try { result = context.Database.SqlQuery<DataContracts.Mapping.DC_Accomodation_ProductMapping>(sqlselect).ToList(); } catch (Exception ex) { }
+
+                    if (string.IsNullOrWhiteSpace(obj.CalledFromTLGX))
+                    {
+                        if (!string.IsNullOrWhiteSpace(obj.Status) && !string.IsNullOrWhiteSpace(obj.CityName) && obj.Status.ToLower().Trim() == "unmapped")
+                        {
+                            foreach (var item in result)
+                            {
+                                if (!string.IsNullOrWhiteSpace(item.ProductName))
+                                {
+                                    var prodname = item.ProductName.ToLower().Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").Replace(item.CityName.ToLower(), "").Replace(item.CountryName.ToLower(), "").ToUpper();
+                                    var prodcode = item.ProductId;
+                                    if (!string.IsNullOrWhiteSpace(prodname) && prodname.ToUpper() != "&NBSP;")
+                                    {
+                                        var searchprod = context.Accommodations.Where(a => (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper().Equals(prodname)).FirstOrDefault();
+                                        if (searchprod == null)
+                                            searchprod = context.Accommodations.Where(a => (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper().Contains(prodname)).FirstOrDefault();
+                                        //if (!string.IsNullOrWhiteSpace(prodcode) && prodname.ToUpper() != "&NBSP;")
+                                        //{
+                                        //    if (searchprod == null)
+                                        //        searchprod = context.Accommodations.Where(a => (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).ToUpper().Equals(prodcode)).FirstOrDefault();
+                                        //}
+                                        if (searchprod != null)
+                                        {
+                                            item.mstAcco_Id = Convert.ToString(searchprod.Accommodation_Id);
+                                            item.mstHotelName = searchprod.HotelName;
+                                            item.FullAddress = searchprod.FullAddress;
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+                return result;
+            }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation product mapping by supplier search", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public List<DataContracts.Mapping.DC_Accomodation_ProductMapping> GetProductSupplierMappingSearch_Old(DataContracts.Mapping.DC_Mapping_ProductSupplier_Search_RQ obj)
+        {
+            try
+            {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var prodMapSearch = from a in context.Accommodation_ProductMapping.AsNoTracking() select a; //where a.Accommodation_Id == null 
@@ -3326,9 +3561,9 @@ namespace DataLayer
                         //}
                         //else
                         //{
-                            prodMapSearch = from a in prodMapSearch
-                                            where a.Country_Id == obj.Country_Id
-                                            select a;
+                        prodMapSearch = from a in prodMapSearch
+                                        where a.Country_Id == obj.Country_Id
+                                        select a;
                         //}
                     }
 
@@ -4558,7 +4793,7 @@ namespace DataLayer
                 var res = (from a in context.Accommodation_SupplierRoomTypeMapping
                            join j in context.STG_Mapping_TableIds on a.Accommodation_SupplierRoomTypeMapping_Id equals j.Mapping_Id
                            //join s in context.stg_SupplierHotelRoomMapping on j.STG_Id equals s.stg_SupplierHotelRoomMapping_Id  //a.stg_SupplierHotelRoomMapping_Id equals s.stg_SupplierHotelRoomMapping_Id
-                           where  ((j.Batch == obj.CurrentBatch && (obj.CurrentBatch ?? 0) != 0) || ((obj.CurrentBatch ?? 0) == 0))
+                           where ((j.Batch == obj.CurrentBatch && (obj.CurrentBatch ?? 0) != 0) || ((obj.CurrentBatch ?? 0) == 0))
                            select new DC_SupplierRoomType_TTFU_RQ
                            {
                                Acco_RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
@@ -5396,7 +5631,7 @@ namespace DataLayer
                     return result;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching country mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -6158,10 +6393,10 @@ namespace DataLayer
                     else
                     {
                         var CityMapList = (from a in prodMapSearch
-                                           //join s in SuppliersMaster on a.Supplier_Id equals s.Supplier_Id
+                                               //join s in SuppliersMaster on a.Supplier_Id equals s.Supplier_Id
                                            join ct in CityMaster on a.City_Id equals ct.City_Id into ctl
                                            from ctld in ctl.DefaultIfEmpty()
-                                           join m in countrymaster on    a.Country_Id equals m.Country_Id into j
+                                           join m in countrymaster on a.Country_Id equals m.Country_Id into j
                                            from jd in j.DefaultIfEmpty()
                                                //orderby (param.SortBy)
                                            orderby a.CityName
