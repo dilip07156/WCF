@@ -768,7 +768,7 @@ namespace DataLayer
                         Fax = g.Fax,
                         Google_Place_Id = g.Google_Place_Id,
                         PostCode = g.PostalCode,
-                        Street = (g.Address == null ? (g.StreetNo + " " + g.StreetName) : ""),
+                        Street = (g.Address == null ? (g.StreetNo + " " + g.StreetName) : g.Address),
                         //Street2 = (g.Address == null ? g.Street2 : (g.StreetNo + " " + g.StreetName + " " + g.Street2)),
                         Street2 = (g.Address == null ? g.Street2 : ""),
                         Street3 = (g.Address == null ? g.Street3 : ""),
@@ -780,14 +780,13 @@ namespace DataLayer
                         Website = g.Website,
                         ActionType = "INSERT",
                         stg_AccoMapping_Id = g.stg_AccoMapping_Id,
-                        FullAddress = g.Address == null ? ((g.StreetNo ?? "") + (((g.StreetNo ?? "") != "") ? ", " : "")
+                        FullAddress = (g.Address == null ? ((g.StreetNo ?? "") + (((g.StreetNo ?? "") != "") ? ", " : "")
                                        + (g.StreetName ?? "") + (((g.StreetName ?? "") != "") ? ", " : "")
                                        + (g.Street2 ?? "") + (((g.Street2 ?? "") != "") ? ", " : "")
                                        + (g.Street3 ?? "") + (((g.Street3 ?? "") != "") ? ", " : "")
                                        + (g.Street4 ?? "") + (((g.Street4 ?? "") != "") ? ", " : "")
-                                       + (g.Street5 ?? "") + (((g.Street5 ?? "") != "") ? ", " : "")
-                                       + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")) : ((g.Address ?? "") + (((g.Address ?? "") != "") ? ", " : ""))
-                                       + (g.PostalCode ?? "") + (((g.PostalCode ?? "") != "") ? ", " : "")
+                                       + (g.Street5 ?? "") + (((g.Street5 ?? "") != "") ? ", " : "") + (g.PostalCode ?? "")) 
+                                       : ((g.Address ?? "") + (((g.Address ?? "") != "") ? ", " : "") + (g.PostalCode ?? ""))).Trim().TrimEnd(',')
                         ,
                         Latitude_Tx = (g.Latitude == null) ? null : CommonFunctions.LatLongTX(g.Latitude),
                         Longitude_Tx = (g.Longitude == null) ? null : CommonFunctions.LatLongTX(g.Longitude),
