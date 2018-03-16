@@ -1302,7 +1302,22 @@ namespace DataLayer
                                        + (AccomodationDetails.Street3 ?? "") + (((AccomodationDetails.Street3 ?? "") != "") ? ", " : "")
                                        + (AccomodationDetails.Street4 ?? "") + (((AccomodationDetails.Street4 ?? "") != "") ? ", " : "")
                                        + (AccomodationDetails.Street5 ?? "") + (((AccomodationDetails.Street5 ?? "") != "") ? ", " : "")
-                                       + (AccomodationDetails.PostalCode ?? "") + (((AccomodationDetails.PostalCode ?? "") != "") ? ", " : "");
+                                       + (AccomodationDetails.PostalCode ?? "");
+                        search.HotelName_Tx = CommonFunctions.HotelNameTX(AccomodationDetails.HotelName, AccomodationDetails.City, AccomodationDetails.Country);
+                        search.Latitude_Tx = (AccomodationDetails.Latitude == null) ? null : CommonFunctions.LatLongTX(AccomodationDetails.Latitude);
+                        search.Longitude_Tx = (AccomodationDetails.Longitude == null) ? null : CommonFunctions.LatLongTX(AccomodationDetails.Longitude);
+
+                        //DataContracts.Masters.DC_keywordApply_RQ RQ = new DataContracts.Masters.DC_keywordApply_RQ();
+                        //RQ.File_Id = supplierdata.File_Id;
+                        //RQ.CurrentBatch = CurrentBatch;
+                        //RQ.TotalBatch = TotalBatch;
+                        //supplierdata.CurrentBatch = CurrentBatch;
+                        //supplierdata.TotalBatch = TotalBatch;
+                        //RQ.KeywordEntity = CurEntity;
+                        //RQ.SearchTable = keyPrefix;
+                        //RQ.TakeColumn = Address_Column;
+                        //RQ.UpdateColumn = AddressTx_Column;
+                        //RQ.TablePrimaryKeys = staticdata.TTFUGetMappingHotelIds(supplierdata);
                         context.SaveChanges();
 
                     }
@@ -1391,6 +1406,7 @@ namespace DataLayer
                     newAcco.Country_Id = AccomodationDetails.Country_Id;
                     newAcco.City_Id = AccomodationDetails.City_Id;
                     newAcco.InsertFrom = AccomodationDetails.InsertFrom;
+                    newAcco.HotelName_Tx = CommonFunctions.HotelNameTX(AccomodationDetails.HotelName, AccomodationDetails.City, AccomodationDetails.Country);
                     context.Accommodations.Add(newAcco);
 
                     context.SaveChanges();
