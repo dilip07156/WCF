@@ -441,6 +441,10 @@ namespace DataContracts.Mapping
         string _ResultSet;
         bool _IsExact;
         string _StateNameWithCode;
+
+        [DataMember]
+        public string SupplierCityCode { get; set; }
+
         [DataMember]
         public string EntityType { get; set; }
         [DataMember]

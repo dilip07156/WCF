@@ -2093,7 +2093,15 @@ namespace DataLayer
                         {
                             spmQ = spmQ.Where(w => w.Supplier_ID == RQ.Supplier_Id);
                         }
-
+                        //For Supplier value Country and city
+                        if (!string.IsNullOrWhiteSpace(RQ.SupplierCountryName))
+                        {
+                            spmQ = spmQ.Where(w => w.SupplierCountryName == RQ.SupplierCountryName);
+                        }
+                        if (!string.IsNullOrWhiteSpace(RQ.SupplierCityName))
+                        {
+                            spmQ = spmQ.Where(w => w.SupplierCityName == RQ.SupplierCityName);
+                        }
                         if (!string.IsNullOrWhiteSpace(RQ.ProductName))
                         {
                             search = from a in search
@@ -2204,6 +2212,7 @@ namespace DataLayer
                             }
                         }
 
+
                         if (!string.IsNullOrWhiteSpace(RQ.ProductNameSubType))
                         {
                             if (RQ.ProductNameSubType.Contains("UNMAPPED"))
@@ -2238,6 +2247,13 @@ namespace DataLayer
 
 
                         }
+
+                        if (!string.IsNullOrWhiteSpace(RQ.SupplierProductNameSubType) && RQ.SupplierProductNameSubType != "-ALL-")
+                        {
+                            isTypeMap = true;
+                            ActTypes = ActTypes.Where(w => w.SupplierProductNameSubType == RQ.SupplierProductNameSubType);
+                        }
+
 
 
                         if (isTypeUnMap)
@@ -2339,7 +2355,7 @@ namespace DataLayer
                                      Activity_Status_Edit_User = a.Activity_Status_Edit_User,
                                      Activity_StatusNotes = a.Activity_StatusNotes,
                                      Categories = (from ct in context.Activity_CategoriesType
-                                                   where ct.Activity_Flavour_Id == a.Activity_Flavour_Id && ct.Activity_FlavourOptions_Id == null
+                                                   where ct.Activity_Flavour_Id == a.Activity_Flavour_Id && ct.Activity_FlavourOptions_Id == null && ct.IsActive == true
                                                    select new DC_Activity_CategoryTypes
                                                    {
                                                        Activity_CategoriesType_ID = ct.Activity_CategoriesType_ID,
@@ -2367,13 +2383,13 @@ namespace DataLayer
                     {
                         var CatType = context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s);
 
-                        item.ProductCategorySubType = string.Join(",", CatType.Select(s => s.SystemProductCategorySubType).Distinct().ToArray());
-                        item.ProductNameSubType = string.Join(",", CatType.Select(s => s.SystemProductNameSubType).Distinct().ToArray());
-                        item.ProductType = string.Join(",", CatType.Select(s => s.SystemProductType).Distinct().ToArray());
+                        item.ProductCategorySubType = string.Join(",", CatType.Select(s => s.SystemProductCategorySubType).Distinct().ToArray()).TrimEnd(',').TrimStart(',');
+                        item.ProductNameSubType = string.Join(",", CatType.Select(s => s.SystemProductNameSubType).Distinct().ToArray()).TrimEnd(',').TrimStart(',');
+                        item.ProductType = string.Join(",", CatType.Select(s => s.SystemProductType).Distinct().ToArray()).TrimEnd(',').TrimStart(',');
 
-                        item.SupplierProductType = string.Join(",", CatType.Select(s => s.SupplierProductType).Distinct().ToArray());
-                        item.SupplierProductCategorySubType = string.Join(",", CatType.Select(s => s.SupplierProductCategorySubType).Distinct().ToArray());
-                        item.SupplierProductNameSubType = string.Join(",", CatType.Select(s => s.SupplierProductNameSubType).Distinct().ToArray());
+                        item.SupplierProductType = string.Join(",", CatType.Select(s => s.SupplierProductType).Distinct().ToArray()).TrimEnd(',').TrimStart(',');
+                        item.SupplierProductCategorySubType = string.Join(",", CatType.Select(s => s.SupplierProductCategorySubType).Distinct().ToArray()).TrimEnd(',').TrimStart(',');
+                        item.SupplierProductNameSubType = string.Join(",", CatType.Select(s => s.SupplierProductNameSubType).Distinct().ToArray()).TrimEnd(',').TrimStart(',');
 
                         //item.Categories = (from ct in context.Activity_CategoriesType
                         //                   where ct.Activity_Flavour_Id == item.Activity_Flavour_Id && ct.Activity_FlavourOptions_Id == null
@@ -2509,7 +2525,16 @@ namespace DataLayer
                                 res.CityCode = null;
                             }
 
-                            context.Activity_CategoriesType.RemoveRange(context.Activity_CategoriesType.Where(w => w.Activity_Flavour_Id == RQ.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null));
+                            //context.Activity_CategoriesType.RemoveRange(context.Activity_CategoriesType.Where(w => w.Activity_Flavour_Id == RQ.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null));
+
+                            //Set IsActive false 
+                            var lstCT = context.Activity_CategoriesType.Where(w => w.Activity_Flavour_Id == RQ.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null && w.IsActive == true).ToList();
+                            if (lstCT != null && lstCT.Count() > 0)
+                            {
+                                foreach (var item in lstCT)
+                                    item.IsActive = false;
+                            }
+
 
                             foreach (var type in RQ.Categories)
                             {
@@ -2522,21 +2547,35 @@ namespace DataLayer
                                         var subcat = context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == prodtype.ParentAttributeValue_Id).Select(s => s).FirstOrDefault();
                                         if (subcat != null)
                                         {
-                                            context.Activity_CategoriesType.Add(new Activity_CategoriesType
+                                            var Cat_item = context.Activity_CategoriesType.Where(w => w.Activity_Flavour_Id == RQ.Activity_Flavour_Id && w.SystemProductNameSubType_ID == subtype.MasterAttributeValue_Id && w.SystemProductCategorySubType_ID == subcat.MasterAttributeValue_Id && w.SystemProductType_ID == prodtype.MasterAttributeValue_Id).FirstOrDefault();
+                                            if (Cat_item != null)
                                             {
-                                                Activity_CategoriesType_ID = Guid.NewGuid(),
-                                                Activity_FlavourOptions_Id = null,
-                                                Activity_Flavour_Id = type.Activity_Flavour_Id ?? RQ.Activity_Flavour_Id ?? Guid.Empty,
-                                                SystemProductNameSubType_ID = subtype.MasterAttributeValue_Id,
-                                                SystemProductNameSubType = subtype.AttributeValue,
-                                                SystemProductType_ID = prodtype.MasterAttributeValue_Id,
-                                                SystemProductType = prodtype.AttributeValue,
-                                                SystemProductCategorySubType_ID = subcat.MasterAttributeValue_Id,
-                                                SystemProductCategorySubType = subcat.AttributeValue,
-                                                SystemProductCategory = "ACTIVITIES",
-                                                Create_Date = DateTime.Now,
-                                                Create_User = type.User
-                                            });
+                                                //Update
+                                                Cat_item.IsActive = true;
+                                                Cat_item.Edit_Date = RQ.Create_Date;
+                                                Cat_item.Edit_User = RQ.Edit_User;
+
+                                            }
+                                            else
+                                            {
+                                                //Insert
+                                                context.Activity_CategoriesType.Add(new Activity_CategoriesType
+                                                {
+                                                    Activity_CategoriesType_ID = Guid.NewGuid(),
+                                                    Activity_FlavourOptions_Id = null,
+                                                    Activity_Flavour_Id = type.Activity_Flavour_Id ?? RQ.Activity_Flavour_Id ?? Guid.Empty,
+                                                    SystemProductNameSubType_ID = subtype.MasterAttributeValue_Id,
+                                                    SystemProductNameSubType = subtype.AttributeValue,
+                                                    SystemProductType_ID = prodtype.MasterAttributeValue_Id,
+                                                    SystemProductType = prodtype.AttributeValue,
+                                                    SystemProductCategorySubType_ID = subcat.MasterAttributeValue_Id,
+                                                    SystemProductCategorySubType = subcat.AttributeValue,
+                                                    SystemProductCategory = "ACTIVITIES",
+                                                    Create_Date = DateTime.Now,
+                                                    Create_User = type.User,
+                                                    IsActive = true
+                                                });
+                                            }
                                         }
                                     }
                                 }
@@ -2566,7 +2605,7 @@ namespace DataLayer
                             //res.Street4 = RQ.Street4;
                             //res.Street5 = RQ.Street5;
                             //res.USP = RQ.USP;
-                           
+
                             if (context.SaveChanges() == 1)
                             {
                                 _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
@@ -2635,7 +2674,7 @@ namespace DataLayer
                             _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                         }
                     }
-                    
+
                     return _msg;
                 }
             }
@@ -2650,7 +2689,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    
+
 
                     if (RQ != null)
                     {
@@ -2688,13 +2727,13 @@ namespace DataLayer
                                 });
                             }
 
-                            
+
                         }
                     }
 
                     if (context.SaveChanges() == 1)
                     {
-                        
+
                         return new DC_Message
                         {
                             StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully,
@@ -4408,6 +4447,36 @@ namespace DataLayer
                 }
             }
             return _msg;
+        }
+        #endregion
+
+        #region
+        public List<DataContracts.Masters.DC_Activity_CategoryTypes_DDL> GetSupplierProductSubType(DataContracts.Masters.DC_Supplier_DDL _objAct)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var categorizedProducts = context.m_masterattribute
+                         .Join(context.m_MasterAttributeMapping, ma => ma.MasterAttribute_Id, mam => mam.SystemMasterAttribute_Id, (ma, mam) => new { ma, mam })
+                         .Join(context.Supplier, mamS => mamS.mam.Supplier_Id, s => s.Supplier_Id, (mamS, s) => new { mamS, s })
+                         .Join(context.m_MasterAttributeValueMapping, mamST => mamST.mamS.mam.MasterAttributeMapping_Id, mamv => mamv.MasterAttributeMapping_Id, (mamST, mamv) => new { mamST, mamv })
+                         .Where(w => w.mamST.mamS.ma.MasterFor == "Activity" && w.mamST.mamS.ma.Name == "ActivityProductSubType" && w.mamST.s.Supplier_Id == _objAct.Supplier_Id)
+                         .Select(m => new DC_Activity_CategoryTypes_DDL
+                         {
+                             SupProdSubType = m.mamv.SupplierMasterAttributeValue,
+                             SupProdSubTypeCode = (m.mamv.SupplierMasterAttributeCode == string.Empty ? m.mamv.SupplierMasterAttributeValue : m.mamv.SupplierMasterAttributeCode)
+                         }).OrderBy(x => x.SupProdSubType).ToList();
+
+                    return categorizedProducts;
+
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
         #endregion
 

@@ -495,5 +495,19 @@ namespace ConsumerSvc
         }
         #endregion
 
+        #region
+        public IList<DataContracts.Masters.DC_Activity_CategoryTypes_DDL> GetSupplierProductSubType(DataContracts.Masters.DC_Supplier_DDL _objAct)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                List<DC_Activity_CategoryTypes_DDL> searchResults = new List<DC_Activity_CategoryTypes_DDL>();
+                searchResults = objBL.GetSupplierProductSubType(_objAct);
+                if (searchResults == null)
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                return searchResults;
+            }
+        }
+        #endregion
+
     }
 }

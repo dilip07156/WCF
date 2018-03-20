@@ -47,16 +47,22 @@ namespace DataLayer
         {
             string ret = "";
             string[] brkparam = param.Split('.');
-            if(!string.IsNullOrEmpty(brkparam[1]))
+            if (brkparam.Length > 1)
             {
-                ret = brkparam[0] + ".";
-                if (brkparam[1].Length > 4)
-                    return ret + brkparam[1].Substring(0, 4);
+                if (!string.IsNullOrEmpty(brkparam[1]))
+                {
+                    ret = brkparam[0] + ".";
+                    if (brkparam[1].Length > 4)
+                        return ret + brkparam[1].Substring(0, 4);
+                    else
+                        return ret + brkparam[1];
+                }
                 else
-                    return ret + brkparam[1];
+                    return param;
             }
             else
                 return param;
+
         }
 
         public static string RemoveSpecialChars(string str)
@@ -78,10 +84,12 @@ namespace DataLayer
             //, 'APARTMENT',''), replace(ltrim(rtrim(upper(A.city))), '''','') ,''),  replace(ltrim(rtrim(upper(A.country))), '''',''),'')
             //, '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','')
             if (!string.IsNullOrWhiteSpace(HotelName))
-                return (HotelName ?? "").Trim().ToUpper().Replace(" ", "").Replace("HOTEL", "").Replace("APARTMENT", "")
+                return (HotelName ?? "").Trim().ToUpper().Replace(" ", "").Replace("HOTELS", "").Replace("APARTMENTS", "").Replace("MOTELS", "").Replace("APARTHOTELS", "").Replace("INNS", "").Replace("RESORTS", "")
+                    .Replace("HOTEL", "").Replace("APARTMENT", "").Replace("MOTEL", "").Replace("APARTHOTEL", "").Replace("INN", "").Replace("RESORT", "")
                     .Replace((countryname ?? "~").Trim().ToUpper().Replace("'", ""), "").Replace((cityname ?? "~").Trim().ToUpper().Replace("'", ""), "")
                     .Replace("'", "").Replace("&", "").Replace("AND", "").Replace("THE", "").Replace("-", "").Replace("_", "")
-                    .Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace("APARTHOTEL", "").Replace("~", "");
+                    .Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace("~", "").Replace(",", "").Replace(".", "").Replace("%", "").Replace("+", "")
+                    .Replace("#", "").Replace("/", "").Replace("*", "");
             else
                 return "";
         }

@@ -827,8 +827,10 @@ namespace DataLayer
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude
                                  };
+                    List<DC_City> ret = new List<DC_City>();
 
-                    return result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                    ret = result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                    return ret;
                 }
             }
             catch
@@ -2365,13 +2367,66 @@ namespace DataLayer
 
                     if (!string.IsNullOrEmpty(RQ.EntityType))
                     {
-                        if (RQ.EntityType.ToUpper() == "ACTIVITY")
+                        search = (from sup in search
+                                  join supcat in context.Supplier_ProductCategory on sup.Supplier_Id equals supcat.Supplier_Id
+                                  where supcat.ProductCategory.ToLower() == RQ.EntityType.ToLower()
+                                  select sup).Distinct();
+                    }
+
+                    if (RQ.Supplier_Id.HasValue)
+                    {
+                        if (RQ.Supplier_Id.Value != Guid.Empty)
                         {
-                            search = (from sup in search
-                                      join stg in context.stg_ActivitySupplierProductMapping on sup.Name equals stg.SupplierName
-                                      select sup).Distinct();
+                            search = from sup in search
+                                     where sup.Supplier_Id == RQ.Supplier_Id
+                                     select sup;
                         }
                     }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.Name))
+                    {
+                        search = from sup in search
+                                 where sup.Name.StartsWith(RQ.Name)
+                                 select sup;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.Code))
+                    {
+                        search = from sup in search
+                                 where sup.Code.StartsWith(RQ.Code)
+                                 select sup;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.ProductCategory_ID))
+                    {
+                        search = from sup in search
+                                 join pro in context.Supplier_ProductCategory on sup.Supplier_Id equals pro.Supplier_Id
+                                 where pro.ProductCategory == RQ.ProductCategory_ID
+                                 select sup;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.CategorySubType_ID))
+                    {
+                        search = from sup in search
+                                 join pro in context.Supplier_ProductCategory on sup.Supplier_Id equals pro.Supplier_Id
+                                 where pro.ProductCategorySubType == RQ.CategorySubType_ID
+                                 select sup;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.SupplierType))
+                    {
+                        search = from sup in search
+                                 where sup.SupplierType == RQ.SupplierType
+                                 select sup;
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.StatusCode))
+                    {
+                        search = from sup in search
+                                 where sup.StatusCode.Trim().Substring(0, 3).ToUpper() == RQ.StatusCode.Trim().Substring(0, 3).ToUpper()
+                                 select sup;
+                    }
+
+
                     int total;
                     total = search.Count();
                     var result = from a in search

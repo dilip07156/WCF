@@ -321,6 +321,8 @@ namespace DataContracts.Mapping
 
 
         [DataMember]
+        public string SupplierCountryCode { get; set; }
+        [DataMember]
         public string Latitude { get; set; }
 
         [DataMember]
