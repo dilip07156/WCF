@@ -4969,5 +4969,296 @@ namespace DataLayer
             }
             return _lstColumnName;
         }
+
+        #region Zone Master
+        //Add
+        public DataContracts.DC_Message AddzoneMaster(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            DC_Message _msg = new DC_Message();
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                try
+                {
+                    if (param.Action == "ADD")
+                    {
+                        if (param.Zone_id == Guid.Empty)
+                        {
+                            param.Zone_id = Guid.NewGuid();
+                        }
+                        m_ZoneMaster obj = new m_ZoneMaster()
+                        {
+                            Zone_id = param.Zone_id,
+                            Zone_Name = param.Zone_Name,
+                            Zone_Type = param.Zone_Type,
+                            Latitude = param.Latitude,
+                            Longitude = param.Longitude,
+                            Status = true,//param.Status
+                            Create_Date = DateTime.Now,
+                            Create_User = System.Web.HttpContext.Current.User.Identity.Name
+                        };
+                        ZoneCity_Mapping zcm = new ZoneCity_Mapping()
+                        {
+                            ZoneCityMapping_Id = Guid.NewGuid(),
+                            City_Id = param.City_id,
+                            Zone_Id = param.Zone_id,
+                            Status=true,//param.Status
+                            Create_Date = DateTime.Now,
+                            Create_User = System.Web.HttpContext.Current.User.Identity.Name
+                        };
+                        context.m_ZoneMaster.Add(obj);
+                        context.ZoneCity_Mapping.Add(zcm);
+                    }
+                    else if(param.Action == "UPDATE")
+                    {
+                        var search = context.m_ZoneMaster.Find(param.Zone_id);
+                        if (search != null)
+                        {
+                            search.Zone_Name = param.Zone_Name;
+                            search.Zone_Type = param.Zone_Type;
+                            search.Latitude = param.Latitude;
+                            search.Longitude = param.Longitude;
+                            search.Edit_Date = DateTime.Now;
+                            search.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;   
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                    if (context.SaveChanges() >= 0)
+                    {
+                        _msg.StatusMessage = param.Action == "UPDATE" ? ReadOnlyMessage.strUpdatedSuccessfully : ReadOnlyMessage.strAddedSuccessfully;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                    }
+                    else
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                    }
+                }
+            catch (Exception e)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding zone master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+            return _msg;
+        }
+        public DataContracts.DC_Message AddZoneCityMapping(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            DC_Message _msg = new DC_Message();
+            if (param.Zone_id==Guid.Empty)
+            {
+                _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning;
+                _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
+                return _msg;
+            }
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                try
+                {
+                    int dupsearch = (from a in context.ZoneCity_Mapping
+                                     where a.Zone_Id == param.Zone_id && a.City_Id == param.City_id
+                                     select a).Count();
+                    if (dupsearch > 0)
+                    {
+                        _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Duplicate;
+                        _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
+                        return _msg;
+                    }
+                    else
+                    {
+                        if (param.ZoneCityMapping_Id == null || param.ZoneCityMapping_Id == Guid.Empty)
+                        {
+                            param.ZoneCityMapping_Id = Guid.NewGuid();
+                        }
+                        ZoneCity_Mapping zcm = new ZoneCity_Mapping()
+                        {
+                            ZoneCityMapping_Id = param.ZoneCityMapping_Id,
+                            City_Id = param.City_id,
+                            Zone_Id = param.Zone_id,
+                            Create_Date = DateTime.Now,
+                            Create_User = System.Web.HttpContext.Current.User.Identity.Name
+                        };
+                        context.ZoneCity_Mapping.Add(zcm);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                   
+                }
+                catch (Exception e)
+                {
+                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding city master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                }
+            }
+            return _msg;
+
+
+        }
+        //search
+        public List<DataContracts.Masters.DC_ZoneSearch>SearchZone(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var CityMasterIQ = context.m_CityMaster.AsQueryable();
+                    var ZonemasterIQ = context.m_ZoneMaster.AsQueryable();
+                    if(param.Zone_id != Guid.Empty)
+                    {
+                        ZonemasterIQ= ZonemasterIQ.Where(x => x.Zone_id == param.Zone_id);
+                    }
+                    if(param.City_id != Guid.Empty)
+                    {
+                        CityMasterIQ = CityMasterIQ.Where(x => x.City_Id == param.City_id);
+                    }
+                    if(param.Country_id != Guid.Empty)
+                    {
+                        CityMasterIQ = CityMasterIQ.Where(x => x.Country_Id == param.Country_id);
+                    }
+                    if (!string.IsNullOrWhiteSpace(param.Zone_Type))
+                    {
+                        ZonemasterIQ = ZonemasterIQ.Where(x => x.Zone_Type == param.Zone_Type);
+                    }
+                    if (!string.IsNullOrWhiteSpace(param.Zone_Name))
+                    {
+                        ZonemasterIQ = ZonemasterIQ.Where(x => x.Zone_Name.Contains(param.Zone_Name));
+                    }
+                    if (param.Status != null)
+                    {
+                        ZonemasterIQ= ZonemasterIQ.Where(x => x.Status == param.Status);
+                    }
+                    var search = context.ZoneCity_Mapping
+                        .Join(CityMasterIQ, zcm => zcm.City_Id, cm => cm.City_Id, (zcm, cm) => new { zcm, cm })
+                        .Join(ZonemasterIQ, zcmZ => zcmZ.zcm.Zone_Id, zm => zm.Zone_id, (zcmZ, zm) => new { zcmZ, zm })
+                        .Select(m => new DC_ZoneSearch
+                        {
+                            CountryName = m.zcmZ.cm.CountryName,
+                            CityName = m.zcmZ.cm.Name,
+                            Zone_Name = m.zm.Zone_Name,
+                            Zone_Type = m.zm.Zone_Type,
+                            Zone_id = m.zm.Zone_id,
+                            City_id = m.zcmZ.cm.City_Id,
+                            Country_id = m.zcmZ.cm.Country_Id,
+                            Status = m.zm.Status,
+                            Latitude=m.zm.Latitude,
+                            Longitude = m.zm.Longitude
+                        }).OrderBy(x => x.Zone_Name).ToList();
+                    
+                    int total = search.Count();
+                    int skip = (param.PageNo ?? 0) * (param.PageSize ?? 0);
+
+                    var result = from a in search
+                                 select new DC_ZoneSearch
+                                 {
+                                     CountryName = a.CountryName,
+                                     CityName = a.CityName,
+                                     Zone_Name = a.Zone_Name,
+                                     Zone_Type = a.Zone_Type,
+                                     Zone_id = a.Zone_id,
+                                     City_id = a.City_id,
+                                     Country_id = a.Country_id,
+                                     Status = a.Status,
+                                     Latitude = a.Latitude,
+                                     Longitude = a.Longitude,
+                                     TotalRecords = total
+                                 };
+
+                    return result.OrderBy(p => p.Zone_Name).Skip(skip).Take((param.PageSize ?? total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Zone Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public List<DC_ZoneCitiesSearch>SearchZoneCities(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = context.ZoneCity_Mapping
+                        .Join(context.m_CityMaster, zcm => zcm.City_Id, cm => cm.City_Id, (zcm, cm) => new { zcm, cm })
+                        //.Join(context.m_ZoneMaster, zcmZ => zcmZ.zcm.Zone_Id, zm => zm.Zone_id, (zcmZ, zm) => new { zcmZ, zm })
+                       .Where(p=>p.zcm.Zone_Id== param.Zone_id)
+                        .Select(m => new DC_ZoneCitiesSearch
+                        {
+                            CityName = m.cm.Name,
+                            Zone_id = m.zcm.Zone_Id,
+                            City_id = m.zcm.City_Id,
+                            Status=m.zcm.Status
+                        }).OrderBy(x => x.CityName).ToList();
+
+                    int total = search.Count();
+                    param.PageNo = 0;
+                    param.PageSize = total;
+                    int skip = (param.PageNo ?? 0) * (param.PageSize ?? 0);
+
+                    var result = from a in search
+                                 select new DC_ZoneCitiesSearch
+                                 {
+                                     CityName = a.CityName,
+                                     Zone_id = a.Zone_id,
+                                     City_id = a.City_id,
+                                     Status=a.Status,
+                                     TotalRecords = total
+                                 };
+
+                    return result.OrderBy(p => p.CityName).Skip(skip).Take((param.PageSize ?? total)).ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Zone Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public DataContracts.DC_Message DeleteZoneCities(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            DC_Message _msg = new DC_Message();
+            if (param.Zone_id == Guid.Empty)
+            {
+                _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning;
+                _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
+                return _msg;
+            }
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                try
+                {
+                    var search = (from a in context.ZoneCity_Mapping where a.Zone_Id == param.Zone_id select a).ToList();
+                    if (search != null)
+                    {
+                        context.ZoneCity_Mapping.RemoveRange(search);
+                    }
+                    if (context.SaveChanges() > 0)
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                    }
+                    else
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding zone master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                }
+            }
+            return _msg;
+        }
+        
+        #endregion
     }
 }

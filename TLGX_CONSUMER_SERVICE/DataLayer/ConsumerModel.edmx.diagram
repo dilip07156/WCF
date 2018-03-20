@@ -163,6 +163,11 @@
         <EntityTypeShape EntityType="ConsumerModel.Activity_DaysOfWeek" Width="1.5" PointX="6.875" PointY="16" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_CategoriesType" Width="1.5" PointX="17.375" PointY="13.75" />
       </Diagram>
+      <Diagram DiagramId="28746cebad1b4c418813bb18d8ac1b56" Name="ZoneManager" >
+        <EntityTypeShape EntityType="ConsumerModel.m_ZoneMaster" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.ZoneProduct_Mapping" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.ZoneCity_Mapping" Width="1.5" PointX="2.75" PointY="1" />
+      </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

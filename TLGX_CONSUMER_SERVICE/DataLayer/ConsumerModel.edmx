@@ -311,6 +311,8 @@
           <Property Name="Latitude_Tx" Type="nvarchar" MaxLength="510" />
           <Property Name="Longitude_Tx" Type="nvarchar" MaxLength="510" />
           <Property Name="MatchedByString" Type="nvarchar" MaxLength="510" />
+          <Property Name="SupplierImportFile_Id" Type="uniqueidentifier" />
+          <Property Name="Batch" Type="int" />
         </EntityType>
         <EntityType Name="Accommodation_RoomFacility">
           <Key>
@@ -1962,6 +1964,23 @@
           <Property Name="Order_Of_Execution" Type="int" />
           <Property Name="m_WorkFlowMessage_Id" Type="uniqueidentifier" />
         </EntityType>
+        <EntityType Name="m_ZoneMaster">
+          <Key>
+            <PropertyRef Name="Zone_id" />
+          </Key>
+          <Property Name="Zone_id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Zone_Type" Type="varchar" MaxLength="100" />
+          <Property Name="Zone_Name" Type="varchar" MaxLength="500" />
+          <Property Name="Latitude" Type="varchar" MaxLength="50" />
+          <Property Name="Longitude" Type="varchar" MaxLength="50" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Geography" Type="geography" />
+          <Property Name="GooglePlace_Id" Type="varchar" MaxLength="100" />
+          <Property Name="Create_User" Type="varchar" MaxLength="100" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_User" Type="varchar" MaxLength="100" />
+          <Property Name="Edit_Date" Type="datetime" />
+        </EntityType>
         <EntityType Name="Media_Attributes">
           <Key>
             <PropertyRef Name="Media_Attributes_Id" />
@@ -2495,6 +2514,36 @@
           <Property Name="EntityID" Type="uniqueidentifier" />
           <Property Name="EntityTypeID" Type="int" />
         </EntityType>
+        <EntityType Name="ZoneCity_Mapping">
+          <Key>
+            <PropertyRef Name="ZoneCityMapping_Id" />
+          </Key>
+          <Property Name="ZoneCityMapping_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Zone_Id" Type="uniqueidentifier" />
+          <Property Name="City_Id" Type="uniqueidentifier" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Create_User" Type="varchar" MaxLength="100" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_User" Type="varchar" MaxLength="100" />
+          <Property Name="Edit_Date" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ZoneProduct_Mapping">
+          <Key>
+            <PropertyRef Name="ZoneProductMapping_Id" />
+          </Key>
+          <Property Name="ZoneProductMapping_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Zone_Id" Type="uniqueidentifier" />
+          <Property Name="Product_Id" Type="uniqueidentifier" />
+          <Property Name="ProductType" Type="varchar" MaxLength="100" />
+          <Property Name="Unit" Type="varchar" MaxLength="50" />
+          <Property Name="Distance" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Status" Type="bit" />
+          <Property Name="Included" Type="bit" />
+          <Property Name="Create_User" Type="varchar" MaxLength="100" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Edit_User" Type="varchar" MaxLength="100" />
+          <Property Name="Edit_Date" Type="datetime" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwMappingStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwMappingStats">
@@ -2685,6 +2734,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="m_WorkflowMaster" EntityType="Self.m_WorkflowMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_WorkFlowMessage" EntityType="Self.m_WorkFlowMessage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_WorkflowSteps" EntityType="Self.m_WorkflowSteps" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="m_ZoneMaster" EntityType="Self.m_ZoneMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Media_Attributes" EntityType="Self.Media_Attributes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Organisation_Company" EntityType="Self.Organisation_Company" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Places" EntityType="Self.Places" Schema="dbo" store:Type="Tables" />
@@ -2713,6 +2763,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="SupplierImportFile_VerboseLog" EntityType="Self.SupplierImportFile_VerboseLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFileDetails" EntityType="Self.SupplierImportFileDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserEntity" EntityType="Self.UserEntity" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ZoneCity_Mapping" EntityType="Self.ZoneCity_Mapping" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ZoneProduct_Mapping" EntityType="Self.ZoneProduct_Mapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="vwMappingStats" EntityType="Self.vwMappingStats" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [vwMappingStats].[supplier_id] AS [supplier_id], 
@@ -2897,6 +2949,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="m_CountryMapping" EntityType="ConsumerModel.m_CountryMapping" />
           <EntitySet Name="m_CityMapping_EntityCount" EntityType="ConsumerModel.m_CityMapping_EntityCount" />
           <EntitySet Name="Accommodation_ProductMapping" EntityType="ConsumerModel.Accommodation_ProductMapping" />
+          <EntitySet Name="m_ZoneMaster" EntityType="ConsumerModel.m_ZoneMaster" />
+          <EntitySet Name="ZoneProduct_Mapping" EntityType="ConsumerModel.ZoneProduct_Mapping" />
+          <EntitySet Name="ZoneCity_Mapping" EntityType="ConsumerModel.ZoneCity_Mapping" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -5448,6 +5503,55 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Latitude_Tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
           <Property Name="Longitude_Tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
           <Property Name="MatchedByString" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierImportFile_Id" Type="Guid" />
+          <Property Name="Batch" Type="Int32" />
+        </EntityType>
+        <EntityType Name="m_ZoneMaster">
+          <Key>
+            <PropertyRef Name="Zone_id" />
+          </Key>
+          <Property Name="Zone_id" Type="Guid" Nullable="false" />
+          <Property Name="Zone_Type" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Zone_Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Latitude" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Longitude" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Geography" Type="Geography" />
+          <Property Name="GooglePlace_Id" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Create_User" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="ZoneProduct_Mapping">
+          <Key>
+            <PropertyRef Name="ZoneProductMapping_Id" />
+          </Key>
+          <Property Name="ZoneProductMapping_Id" Type="Guid" Nullable="false" />
+          <Property Name="Zone_Id" Type="Guid" />
+          <Property Name="Product_Id" Type="Guid" />
+          <Property Name="ProductType" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Unit" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Distance" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Included" Type="Boolean" />
+          <Property Name="Create_User" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="ZoneCity_Mapping">
+          <Key>
+            <PropertyRef Name="ZoneCityMapping_Id" />
+          </Key>
+          <Property Name="ZoneCityMapping_Id" Type="Guid" Nullable="false" />
+          <Property Name="Zone_Id" Type="Guid" />
+          <Property Name="City_Id" Type="Guid" />
+          <Property Name="Status" Type="Boolean" />
+          <Property Name="Create_User" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -8042,6 +8146,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodation_ProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_ProductMapping">
               <MappingFragment StoreEntitySet="Accommodation_ProductMapping">
+                <ScalarProperty Name="Batch" ColumnName="Batch" />
+                <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
                 <ScalarProperty Name="MatchedByString" ColumnName="MatchedByString" />
                 <ScalarProperty Name="Longitude_Tx" ColumnName="Longitude_Tx" />
                 <ScalarProperty Name="Latitude_Tx" ColumnName="Latitude_Tx" />
@@ -8090,6 +8196,56 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
                 <ScalarProperty Name="Accommodation_Id" ColumnName="Accommodation_Id" />
                 <ScalarProperty Name="Accommodation_ProductMapping_Id" ColumnName="Accommodation_ProductMapping_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="m_ZoneMaster">
+            <EntityTypeMapping TypeName="ConsumerModel.m_ZoneMaster">
+              <MappingFragment StoreEntitySet="m_ZoneMaster">
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="GooglePlace_Id" ColumnName="GooglePlace_Id" />
+                <ScalarProperty Name="Geography" ColumnName="Geography" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="Zone_Name" ColumnName="Zone_Name" />
+                <ScalarProperty Name="Zone_Type" ColumnName="Zone_Type" />
+                <ScalarProperty Name="Zone_id" ColumnName="Zone_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZoneProduct_Mapping">
+            <EntityTypeMapping TypeName="ConsumerModel.ZoneProduct_Mapping">
+              <MappingFragment StoreEntitySet="ZoneProduct_Mapping">
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Included" ColumnName="Included" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Distance" ColumnName="Distance" />
+                <ScalarProperty Name="Unit" ColumnName="Unit" />
+                <ScalarProperty Name="ProductType" ColumnName="ProductType" />
+                <ScalarProperty Name="Product_Id" ColumnName="Product_Id" />
+                <ScalarProperty Name="Zone_Id" ColumnName="Zone_Id" />
+                <ScalarProperty Name="ZoneProductMapping_Id" ColumnName="ZoneProductMapping_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZoneCity_Mapping">
+            <EntityTypeMapping TypeName="ConsumerModel.ZoneCity_Mapping">
+              <MappingFragment StoreEntitySet="ZoneCity_Mapping">
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="City_Id" ColumnName="City_Id" />
+                <ScalarProperty Name="Zone_Id" ColumnName="Zone_Id" />
+                <ScalarProperty Name="ZoneCityMapping_Id" ColumnName="ZoneCityMapping_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

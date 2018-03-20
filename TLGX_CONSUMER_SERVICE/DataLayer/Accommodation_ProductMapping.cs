@@ -62,5 +62,7 @@ namespace DataLayer
         public string Latitude_Tx { get; set; }
         public string Longitude_Tx { get; set; }
         public string MatchedByString { get; set; }
+        public Nullable<System.Guid> SupplierImportFile_Id { get; set; }
+        public Nullable<int> Batch { get; set; }
     }
 }

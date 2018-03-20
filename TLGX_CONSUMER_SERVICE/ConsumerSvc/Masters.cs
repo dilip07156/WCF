@@ -762,5 +762,44 @@ namespace ConsumerSvc
                 return obj.GetListOfColumnNamesByTable(TableName);
             }
         }
+
+        #region Zone Master
+        //Add
+        public DataContracts.DC_Message AddzoneMaster(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.AddzoneMaster(param);
+            }
+        }
+        public DataContracts.DC_Message AddZoneCityMapping(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.AddZoneCityMapping(param);
+            }
+        }
+        public IList<DataContracts.Masters.DC_ZoneSearch>SearchZone(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.SearchZone(param);
+            }
+        }
+        public IList<DC_ZoneCitiesSearch>SearchZoneCities(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.SearchZoneCities(param);
+            }
+        }
+        public DataContracts.DC_Message DeleteZoneCities(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.DeleteZoneCities(param);
+            }
+        }
+        #endregion
     }
 }
