@@ -9,7 +9,7 @@ using Microsoft.SqlServer;
 
 namespace DataContracts.Masters
 {
-   
+
     [DataContract]
     public class DC_ZoneRQ
     {
@@ -37,6 +37,21 @@ namespace DataContracts.Masters
         public int? PageSize { get; set; }
         [DataMember]
         public string Action { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string CountryName { get; set; }
+        [DataMember]
+        public int DistanceRange { get; set; }
+        [DataMember]
+        public string GooglePlaceId { get; set; }
+
     }
     [DataContract]
     public class DC_ZoneSearch
@@ -85,5 +100,27 @@ namespace DataContracts.Masters
         [DataMember]
         public int? TotalRecords { get; set; }
 
+    }
+
+    [DataContract]
+    public class DC_ZoneHotelList
+    {
+        [DataMember]
+        public double? Distance { get; set; }
+        [DataMember]
+        public Guid Accommodation_Id { get; set; }        
+        [DataMember]
+        public string HotelName { get; set; }
+        [DataMember]
+        public string Latitude { get; set; }
+        [DataMember]
+        public string Longitude { get; set; }
+        [DataMember]
+        public string City { get; set; }
+        [DataMember]
+        public string Country { get; set; }
+        [DataMember]
+        public string FullAddress { get; set; }
+        
     }
 }

@@ -735,6 +735,20 @@ namespace BusinessLayer
                 return obj.DeleteZoneCities(param);
             }
         }
+        public DataContracts.DC_Message DeactivateOrActivateZones(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.DeactivateOrActivateZones(param);
+            }
+        }
+        public List<DC_ZoneHotelList> SearchZoneHotels(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.SearchZoneHotels(param);
+            }
+        }
         #endregion
     }
 }

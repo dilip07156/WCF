@@ -800,6 +800,20 @@ namespace ConsumerSvc
                 return obj.DeleteZoneCities(param);
             }
         }
+        public DataContracts.DC_Message DeactivateOrActivateZones(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.DeactivateOrActivateZones(param);
+            }
+        }
+        public IList<DC_ZoneHotelList> SearchZoneHotels(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.SearchZoneHotels(param);
+            }
+        }
         #endregion
     }
 }
