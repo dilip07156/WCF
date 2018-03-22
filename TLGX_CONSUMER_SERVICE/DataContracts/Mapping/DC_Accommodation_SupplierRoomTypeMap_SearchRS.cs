@@ -87,6 +87,8 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public string ActionType { get; set; }
+        [DataMember]
+        public string RoomSize { get; set; }
     }
 
     [DataContract]

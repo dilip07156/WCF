@@ -4192,7 +4192,8 @@ namespace DataLayer
                                     RoomDescription = a.RoomDescription,
                                     stg_SupplierHotelRoomMapping_Id = s.stg_SupplierHotelRoomMapping_Id,
                                     Oldstg_SupplierHotelRoomMapping_Id = a.stg_SupplierHotelRoomMapping_Id,
-                                    ActionType = (a.SupplierRoomName != s.RoomName) ? "UPDATE" : ""
+                                    ActionType = (a.SupplierRoomName != s.RoomName) ? "UPDATE" : "",
+                                    RoomSize = a.RoomSize
                                     //stg_AccoMapping_Id = (a.ProductName != s.ProductName) ? s.stg_AccoMapping_Id : Guid.Empty
                                 }).ToList();
 
@@ -4454,7 +4455,8 @@ namespace DataLayer
                                              Tx_StrippedName = a.Tx_StrippedName,
                                              RoomDescription = a.RoomDescription,
                                              stg_SupplierHotelRoomMapping_Id = a.stg_SupplierHotelRoomMapping_Id,
-                                             Oldstg_SupplierHotelRoomMapping_Id = a.stg_SupplierHotelRoomMapping_Id
+                                             Oldstg_SupplierHotelRoomMapping_Id = a.stg_SupplierHotelRoomMapping_Id,
+                                             RoomSize = a.RoomSize
                                          };
                     var result = roomTypeSearch.ToList();
 
@@ -4564,7 +4566,8 @@ namespace DataLayer
                                               Tx_ReorderedName = asrtm.Tx_ReorderedName,
                                               TX_RoomName = asrtm.TX_RoomName,
                                               Tx_StrippedName = asrtm.Tx_StrippedName,
-                                              RoomDescription = asrtm.RoomDescription
+                                              RoomDescription = asrtm.RoomDescription,
+                                              RoomSize = asrtm.RoomSize
                                           }).AsQueryable();
 
                     int total = roomTypeSearch.Count();
@@ -4858,7 +4861,8 @@ namespace DataLayer
                                 Supplier_Id = obj.Supplier_Id,
                                 Tx_ReorderedName = null,
                                 TX_RoomName = null,
-                                Tx_StrippedName = null
+                                Tx_StrippedName = null,
+                                RoomSize = obj.RoomSize
                             };
                             context.Accommodation_SupplierRoomTypeMapping.Add(objNew);
                         }
