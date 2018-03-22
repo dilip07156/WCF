@@ -949,7 +949,7 @@ namespace DataLayer
             string sql = "";
             string updatesql = "";
             string sqlwhere = "";
-            updatesql = "UPDATE #tablename SET ReRun_SupplierImportFile_Id = '" + File_Id.ToString() + "' and ReRun_Batch = null ";
+            updatesql = "UPDATE #tablename SET ReRun_SupplierImportFile_Id = '" + File_Id.ToString() + "' , ReRun_Batch = null ";
             sql = "select count(*) as ct from #tablename ";
             sqlwhere = " where supplier_id =  '" + Supplier_Id.ToString() + "' ";
 
