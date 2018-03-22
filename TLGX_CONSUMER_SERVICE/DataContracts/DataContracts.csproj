@@ -103,6 +103,7 @@
     <Compile Include="Masters\DC_City.cs" />
     <Compile Include="Masters\DC_Country.cs" />
     <Compile Include="Masters\DC_DynamicAttributes.cs" />
+    <Compile Include="Masters\DC_ZoneMaster.cs" />
     <Compile Include="Masters\DC_PortMaster.cs" />
     <Compile Include="Masters\DC_Statuses.cs" />
     <Compile Include="Masters\DC_Supplier.cs" />

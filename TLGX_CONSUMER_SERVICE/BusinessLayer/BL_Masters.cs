@@ -698,5 +698,57 @@ namespace BusinessLayer
                 return objDL.GetListOfColumnNamesByTable(TableName);
             }
         }
+
+        #region Zone Master
+        public DataContracts.DC_Message AddzoneMaster(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.AddzoneMaster(param);
+            }
+        }
+        public DataContracts.DC_Message AddZoneCityMapping(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.AddZoneCityMapping(param);
+            }
+        }
+        public List<DataContracts.Masters.DC_ZoneSearch>SearchZone(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.SearchZone(param);
+            }
+        }
+        public List<DC_ZoneCitiesSearch>SearchZoneCities(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.SearchZoneCities(param);
+            }
+        }
+        public DataContracts.DC_Message DeleteZoneCities(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.DeleteZoneCities(param);
+            }
+        }
+        public DataContracts.DC_Message DeactivateOrActivateZones(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.DeactivateOrActivateZones(param);
+            }
+        }
+        public List<DC_ZoneHotelList> SearchZoneHotels(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.SearchZoneHotels(param);
+            }
+        }
+        #endregion
     }
 }

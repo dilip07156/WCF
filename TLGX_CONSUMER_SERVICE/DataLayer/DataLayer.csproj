@@ -434,6 +434,9 @@
     <Compile Include="m_WorkflowSteps.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="m_ZoneMaster.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Organisation_Company.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
@@ -526,6 +529,12 @@
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="vwUserwisemappedStat.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ZoneCity_Mapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ZoneProduct_Mapping.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
   </ItemGroup>
