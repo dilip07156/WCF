@@ -39,17 +39,17 @@
         <EntityTypeShape EntityType="ConsumerModel.DynamicAttribute" Width="1.625" PointX="0.75" PointY="0.75" />
       </Diagram>
       <Diagram DiagramId="68f2bdb02b35425b9cc8f92095493a63" Name="Mapping" ZoomLevel="89" >
-        <EntityTypeShape EntityType="ConsumerModel.m_MasterAttributeMapping" Width="1.5" PointX="0.875" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.m_MasterAttributeValueMapping" Width="2.75" PointX="13.5" PointY="4.25" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierProductMapping" PointX="8.375" PointY="8.75" Width="2.875" />
-        <EntityTypeShape EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" Width="2.625" PointX="0.75" PointY="6.75" />
-        <EntityTypeShape EntityType="ConsumerModel.stg_SupplierActivityMapping" Width="1.5" PointX="0.75" PointY="6.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Supplier_APILocation" Width="1.5" PointX="2.75" PointY="10.75" />
-        <EntityTypeShape EntityType="ConsumerModel.m_CityMapping" Width="1.5" PointX="12.75" PointY="8.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" Width="1.5" PointX="15.375" PointY="8.75" />
-        <EntityTypeShape EntityType="ConsumerModel.m_CountryMapping" Width="1.5" PointX="3" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.m_CityMapping_EntityCount" Width="1.5" PointX="5.375" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Accommodation_ProductMapping" Width="1.5" PointX="5.375" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.m_MasterAttributeMapping" Width="1.5" PointX="0.75" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.m_MasterAttributeValueMapping" Width="2.75" PointX="10" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierProductMapping" PointX="12.75" PointY="3.125" Width="2.875" />
+        <EntityTypeShape EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" Width="2" PointX="12.875" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.stg_SupplierActivityMapping" Width="1.5" PointX="15.75" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ConsumerModel.Supplier_APILocation" Width="1.5" PointX="0.875" PointY="3.75" />
+        <EntityTypeShape EntityType="ConsumerModel.m_CityMapping" Width="1.5" PointX="10.125" PointY="3.625" />
+        <EntityTypeShape EntityType="ConsumerModel.m_CountryMapping" Width="1.5" PointX="2.75" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.m_CityMapping_EntityCount" Width="1.5" PointX="4.625" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Accommodation_ProductMapping" Width="1.875" PointX="6.25" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" Width="1.5" PointX="8.375" PointY="0.5" />
       </Diagram>
       <Diagram DiagramId="9053f2c6e79c4c20b47e93053c1904d5" Name="Projects" />
       <Diagram DiagramId="c43918edb11c45ab899ecee9d6c63952" Name="Admin" >
@@ -110,7 +110,7 @@
         <EntityTypeShape EntityType="ConsumerModel.STG_Mapping_TableIds" Width="1.5" PointX="7.375" PointY="4.75" />
         <EntityTypeShape EntityType="ConsumerModel.SupplierImportFileDetail" Width="1.5" PointX="0.75" PointY="5.75" />
       </Diagram>
-      <Diagram DiagramId="0c8559498a504c079ba03bcadf58c262" Name="STG" ZoomLevel="53" >
+      <Diagram DiagramId="0c8559498a504c079ba03bcadf58c262" Name="STG" ZoomLevel="117" >
         <EntityTypeShape EntityType="ConsumerModel.stg_SupplierCityMapping" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.stg_SupplierCountryMapping" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.stg_SupplierHotelRoomMapping" Width="1.5" PointX="4.75" PointY="0.75" />
