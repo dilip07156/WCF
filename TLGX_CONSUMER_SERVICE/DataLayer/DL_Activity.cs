@@ -2078,7 +2078,7 @@ namespace DataLayer
 
                         if (RQ.NoSession)
                         {
-                            aDOW = aDOW.Where(w => w.Session != null);
+                            aDOW = aDOW.Where(w => w.Duration != null && w.Duration != "00.00:00");
                             isDurationFilter = true;
                         }
 
