@@ -472,6 +472,7 @@
           <Property Name="Batch" Type="int" />
           <Property Name="ReRun_SupplierImportFile_Id" Type="uniqueidentifier" />
           <Property Name="ReRun_Batch" Type="int" />
+          <Property Name="RoomSize" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Activity">
           <Key>
@@ -2963,9 +2964,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="m_ZoneMaster" EntityType="ConsumerModel.m_ZoneMaster" />
           <EntitySet Name="ZoneCity_Mapping" EntityType="ConsumerModel.ZoneCity_Mapping" />
           <EntitySet Name="ZoneProduct_Mapping" EntityType="ConsumerModel.ZoneProduct_Mapping" />
-          <EntitySet Name="Accommodation_SupplierRoomTypeMapping" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" />
           <EntitySet Name="m_CountryMapping" EntityType="ConsumerModel.m_CountryMapping" />
           <EntitySet Name="m_CityMapping_EntityCount" EntityType="ConsumerModel.m_CityMapping_EntityCount" />
+          <EntitySet Name="Accommodation_SupplierRoomTypeMapping" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -5502,45 +5503,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Edit_User" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="Accommodation_SupplierRoomTypeMapping">
-          <Key>
-            <PropertyRef Name="Accommodation_SupplierRoomTypeMapping_Id" />
-          </Key>
-          <Property Name="Accommodation_SupplierRoomTypeMapping_Id" Type="Guid" Nullable="false" />
-          <Property Name="Accommodation_Id" Type="Guid" />
-          <Property Name="Supplier_Id" Type="Guid" />
-          <Property Name="SupplierName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierRoomId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierRoomTypeCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierRoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="TX_RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierRoomCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierRoomCategoryId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="0" />
-          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="0" />
-          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="MaxAdults" Type="Int32" />
-          <Property Name="MaxChild" Type="Int32" />
-          <Property Name="MaxInfants" Type="Int32" />
-          <Property Name="MaxGuestOccupancy" Type="Int32" />
-          <Property Name="Quantity" Type="Int32" />
-          <Property Name="RatePlan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="RatePlanCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierProductName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierProductId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Tx_StrippedName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Tx_ReorderedName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="MappingStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="MapId" Type="Int32" />
-          <Property Name="Accommodation_RoomInfo_Id" Type="Guid" />
-          <Property Name="stg_SupplierHotelRoomMapping_Id" Type="Guid" />
-          <Property Name="RoomDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierImportFile_Id" Type="Guid" />
-          <Property Name="Batch" Type="Int32" />
-          <Property Name="ReRun_SupplierImportFile_Id" Type="Guid" />
-          <Property Name="ReRun_Batch" Type="Int32" />
-        </EntityType>
         <EntityType Name="m_CountryMapping">
           <Key>
             <PropertyRef Name="CountryMapping_Id" />
@@ -5580,6 +5542,46 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Count" Type="Int32" />
           <Property Name="Create_Date" Type="DateTime" Precision="3" />
           <Property Name="Create_User" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Accommodation_SupplierRoomTypeMapping">
+          <Key>
+            <PropertyRef Name="Accommodation_SupplierRoomTypeMapping_Id" />
+          </Key>
+          <Property Name="Accommodation_SupplierRoomTypeMapping_Id" Type="Guid" Nullable="false" />
+          <Property Name="Accommodation_Id" Type="Guid" />
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="SupplierName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierRoomId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierRoomTypeCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierRoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TX_RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierRoomCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierRoomCategoryId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="0" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="0" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="MaxAdults" Type="Int32" />
+          <Property Name="MaxChild" Type="Int32" />
+          <Property Name="MaxInfants" Type="Int32" />
+          <Property Name="MaxGuestOccupancy" Type="Int32" />
+          <Property Name="Quantity" Type="Int32" />
+          <Property Name="RatePlan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RatePlanCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierProductName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierProductId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Tx_StrippedName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Tx_ReorderedName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="MappingStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MapId" Type="Int32" />
+          <Property Name="Accommodation_RoomInfo_Id" Type="Guid" />
+          <Property Name="stg_SupplierHotelRoomMapping_Id" Type="Guid" />
+          <Property Name="RoomDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierImportFile_Id" Type="Guid" />
+          <Property Name="Batch" Type="Int32" />
+          <Property Name="ReRun_SupplierImportFile_Id" Type="Guid" />
+          <Property Name="ReRun_Batch" Type="Int32" />
+          <Property Name="RoomSize" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
 
       </Schema>
@@ -8210,46 +8212,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Accommodation_SupplierRoomTypeMapping">
-            <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeMapping">
-              <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeMapping">
-                <ScalarProperty Name="ReRun_Batch" ColumnName="ReRun_Batch" />
-                <ScalarProperty Name="ReRun_SupplierImportFile_Id" ColumnName="ReRun_SupplierImportFile_Id" />
-                <ScalarProperty Name="Batch" ColumnName="Batch" />
-                <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
-                <ScalarProperty Name="RoomDescription" ColumnName="RoomDescription" />
-                <ScalarProperty Name="stg_SupplierHotelRoomMapping_Id" ColumnName="stg_SupplierHotelRoomMapping_Id" />
-                <ScalarProperty Name="Accommodation_RoomInfo_Id" ColumnName="Accommodation_RoomInfo_Id" />
-                <ScalarProperty Name="MapId" ColumnName="MapId" />
-                <ScalarProperty Name="MappingStatus" ColumnName="MappingStatus" />
-                <ScalarProperty Name="Tx_ReorderedName" ColumnName="Tx_ReorderedName" />
-                <ScalarProperty Name="Tx_StrippedName" ColumnName="Tx_StrippedName" />
-                <ScalarProperty Name="SupplierProductId" ColumnName="SupplierProductId" />
-                <ScalarProperty Name="SupplierProductName" ColumnName="SupplierProductName" />
-                <ScalarProperty Name="RatePlanCode" ColumnName="RatePlanCode" />
-                <ScalarProperty Name="RatePlan" ColumnName="RatePlan" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="MaxGuestOccupancy" ColumnName="MaxGuestOccupancy" />
-                <ScalarProperty Name="MaxInfants" ColumnName="MaxInfants" />
-                <ScalarProperty Name="MaxChild" ColumnName="MaxChild" />
-                <ScalarProperty Name="MaxAdults" ColumnName="MaxAdults" />
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="SupplierRoomCategoryId" ColumnName="SupplierRoomCategoryId" />
-                <ScalarProperty Name="SupplierRoomCategory" ColumnName="SupplierRoomCategory" />
-                <ScalarProperty Name="TX_RoomName" ColumnName="TX_RoomName" />
-                <ScalarProperty Name="SupplierRoomName" ColumnName="SupplierRoomName" />
-                <ScalarProperty Name="SupplierRoomTypeCode" ColumnName="SupplierRoomTypeCode" />
-                <ScalarProperty Name="SupplierRoomId" ColumnName="SupplierRoomId" />
-                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
-                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
-                <ScalarProperty Name="Accommodation_Id" ColumnName="Accommodation_Id" />
-                <ScalarProperty Name="Accommodation_SupplierRoomTypeMapping_Id" ColumnName="Accommodation_SupplierRoomTypeMapping_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="m_CountryMapping">
             <EntityTypeMapping TypeName="ConsumerModel.m_CountryMapping">
               <MappingFragment StoreEntitySet="m_CountryMapping">
@@ -8289,6 +8251,47 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="EntityType" ColumnName="EntityType" />
                 <ScalarProperty Name="CityMapping_Id" ColumnName="CityMapping_Id" />
                 <ScalarProperty Name="EntityCityMapping_Id" ColumnName="EntityCityMapping_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Accommodation_SupplierRoomTypeMapping">
+            <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeMapping">
+              <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeMapping">
+                <ScalarProperty Name="RoomSize" ColumnName="RoomSize" />
+                <ScalarProperty Name="ReRun_Batch" ColumnName="ReRun_Batch" />
+                <ScalarProperty Name="ReRun_SupplierImportFile_Id" ColumnName="ReRun_SupplierImportFile_Id" />
+                <ScalarProperty Name="Batch" ColumnName="Batch" />
+                <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
+                <ScalarProperty Name="RoomDescription" ColumnName="RoomDescription" />
+                <ScalarProperty Name="stg_SupplierHotelRoomMapping_Id" ColumnName="stg_SupplierHotelRoomMapping_Id" />
+                <ScalarProperty Name="Accommodation_RoomInfo_Id" ColumnName="Accommodation_RoomInfo_Id" />
+                <ScalarProperty Name="MapId" ColumnName="MapId" />
+                <ScalarProperty Name="MappingStatus" ColumnName="MappingStatus" />
+                <ScalarProperty Name="Tx_ReorderedName" ColumnName="Tx_ReorderedName" />
+                <ScalarProperty Name="Tx_StrippedName" ColumnName="Tx_StrippedName" />
+                <ScalarProperty Name="SupplierProductId" ColumnName="SupplierProductId" />
+                <ScalarProperty Name="SupplierProductName" ColumnName="SupplierProductName" />
+                <ScalarProperty Name="RatePlanCode" ColumnName="RatePlanCode" />
+                <ScalarProperty Name="RatePlan" ColumnName="RatePlan" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="MaxGuestOccupancy" ColumnName="MaxGuestOccupancy" />
+                <ScalarProperty Name="MaxInfants" ColumnName="MaxInfants" />
+                <ScalarProperty Name="MaxChild" ColumnName="MaxChild" />
+                <ScalarProperty Name="MaxAdults" ColumnName="MaxAdults" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="SupplierRoomCategoryId" ColumnName="SupplierRoomCategoryId" />
+                <ScalarProperty Name="SupplierRoomCategory" ColumnName="SupplierRoomCategory" />
+                <ScalarProperty Name="TX_RoomName" ColumnName="TX_RoomName" />
+                <ScalarProperty Name="SupplierRoomName" ColumnName="SupplierRoomName" />
+                <ScalarProperty Name="SupplierRoomTypeCode" ColumnName="SupplierRoomTypeCode" />
+                <ScalarProperty Name="SupplierRoomId" ColumnName="SupplierRoomId" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="Accommodation_Id" ColumnName="Accommodation_Id" />
+                <ScalarProperty Name="Accommodation_SupplierRoomTypeMapping_Id" ColumnName="Accommodation_SupplierRoomTypeMapping_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
