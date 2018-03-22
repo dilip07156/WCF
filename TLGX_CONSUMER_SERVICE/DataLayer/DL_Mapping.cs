@@ -4342,7 +4342,8 @@ namespace DataLayer
                         SupplierRoomTypeCode = g.SupplierRoomTypeCode,
                         Supplier_Id = g.Supplier_Id,
                         stg_SupplierHotelRoomMapping_Id = g.stg_SupplierHotelRoomMapping_Id,
-                        ActionType = "INSERT"
+                        ActionType = "INSERT",
+                        RoomSize = g.RoomSize
                     }));
 
                 lstobj.InsertRange(lstobj.Count, clsMappingHotel.Where(a => a.stg_SupplierHotelRoomMapping_Id != null && a.ActionType == "INSERT"
