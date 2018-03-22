@@ -44,5 +44,9 @@ namespace DataLayer
         public Nullable<System.Guid> Accommodation_RoomInfo_Id { get; set; }
         public Nullable<System.Guid> stg_SupplierHotelRoomMapping_Id { get; set; }
         public string RoomDescription { get; set; }
+        public Nullable<System.Guid> SupplierImportFile_Id { get; set; }
+        public Nullable<int> Batch { get; set; }
+        public Nullable<System.Guid> ReRun_SupplierImportFile_Id { get; set; }
+        public Nullable<int> ReRun_Batch { get; set; }
     }
 }

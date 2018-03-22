@@ -442,6 +442,9 @@ namespace DataContracts.Mapping
         bool _IsExact;
         string _StateNameWithCode;
 
+
+        [DataMember]
+        public Nullable<System.Guid> CityMapping_Id { get; set; }
         [DataMember]
         public string SupplierCityCode { get; set; }
 

@@ -91,7 +91,6 @@ namespace DataLayer
         public virtual DbSet<m_keyword> m_keyword { get; set; }
         public virtual DbSet<m_keyword_alias> m_keyword_alias { get; set; }
         public virtual DbSet<Place> Places { get; set; }
-        public virtual DbSet<Accommodation_SupplierRoomTypeMapping> Accommodation_SupplierRoomTypeMapping { get; set; }
         public virtual DbSet<SupplierImportFile_Progress> SupplierImportFile_Progress { get; set; }
         public virtual DbSet<SupplierImportFile_VerboseLog> SupplierImportFile_VerboseLog { get; set; }
         public virtual DbSet<vwUserwisemappedStat> vwUserwisemappedStats { get; set; }
@@ -148,9 +147,10 @@ namespace DataLayer
         public virtual DbSet<Dashboard_MappingStat> Dashboard_MappingStat { get; set; }
         public virtual DbSet<Dashboard_UserwiseMappedStat> Dashboard_UserwiseMappedStat { get; set; }
         public virtual DbSet<m_CityMapping> m_CityMapping { get; set; }
+        public virtual DbSet<Accommodation_ProductMapping> Accommodation_ProductMapping { get; set; }
+        public virtual DbSet<Accommodation_SupplierRoomTypeMapping> Accommodation_SupplierRoomTypeMapping { get; set; }
         public virtual DbSet<m_CountryMapping> m_CountryMapping { get; set; }
         public virtual DbSet<m_CityMapping_EntityCount> m_CityMapping_EntityCount { get; set; }
-        public virtual DbSet<Accommodation_ProductMapping> Accommodation_ProductMapping { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

@@ -803,7 +803,7 @@ namespace DataLayer
                                  select a;
                     }
 
-                    int total = search.Count();
+                    int total = search.Count(); 
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
                     var result = from a in search

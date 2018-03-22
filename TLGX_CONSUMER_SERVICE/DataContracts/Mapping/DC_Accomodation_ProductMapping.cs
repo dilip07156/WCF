@@ -60,6 +60,19 @@ namespace DataContracts.Mapping
         string _Google_Place_Id;
         string _Location;
 
+
+        [DataMember]
+        public Guid ReRunSupplierImporrtFile_Id { get; set; }
+
+        [DataMember]
+        public int ReRunBatch { get; set; }
+
+        [DataMember]
+        public Guid SupplierImporrtFile_Id { get; set; }
+
+        [DataMember]
+        public int Batch { get; set; }
+
         [DataMember]
         public string SystemTelephone { get; set; }
 
