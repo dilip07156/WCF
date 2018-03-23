@@ -11,6 +11,17 @@ namespace DataContracts.Mapping
     public class DC_Accommodation_SupplierRoomTypeMap_SearchRS
     {
         [DataMember]
+        public Guid ReRunSupplierImporrtFile_Id { get; set; }
+
+        [DataMember]
+        public int ReRunBatch { get; set; }
+
+        [DataMember]
+        public Guid SupplierImporrtFile_Id { get; set; }
+
+        [DataMember]
+        public int Batch { get; set; }
+        [DataMember]
         public System.Guid Accommodation_SupplierRoomTypeMapping_Id { get; set; }
         [DataMember]
         public Nullable<System.Guid> Accommodation_Id { get; set; }
