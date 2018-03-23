@@ -1278,25 +1278,38 @@ namespace DataLayer
 
                 }
 
-                //Check for Lat Long Look up before any priority check
-                string LookUpToDistanceInMeters = System.Configuration.ConfigurationManager.AppSettings["HotelLookUpToDistanceInMeters"].ToString();
-                string HotelLookUpSQL = "DECLARE @TABLE TABLE (APM_ID UNIQUEIDENTIFIER, A_ID UNIQUEIDENTIFIER) ";
-                HotelLookUpSQL = HotelLookUpSQL + ";WITH APM_CTE (Accommodation_Product_Mapping_Id, GeoLocation, Country_Id, HotelName_Tx)  AS ";
-                HotelLookUpSQL = HotelLookUpSQL + "(Select Accommodation_ProductMapping_Id, GeoLocation, Country_Id,HotelName_Tx from Accommodation_ProductMapping WHERE GeoLocation IS NOT NULL ";
-                HotelLookUpSQL = HotelLookUpSQL + "and ReRun_SupplierImportFile_Id = '" + obj.File_Id.ToString() + "' ";
-                HotelLookUpSQL = HotelLookUpSQL + "and ReRun_Batch = " + (obj.CurrentBatch).ToString();
-                HotelLookUpSQL = HotelLookUpSQL + ") ";
-                HotelLookUpSQL = HotelLookUpSQL + "INSERT INTO @TABLE SELECT APM_CTE.Accommodation_Product_Mapping_Id, ";
-                HotelLookUpSQL = HotelLookUpSQL + "(SELECT TOP 1 Accommodation_Id from Accommodation ";
-                HotelLookUpSQL = HotelLookUpSQL + "where Country_Id = APM_CTE.Country_Id AND HotelName_Tx = APM_CTE.HotelName_Tx ";
-                HotelLookUpSQL = HotelLookUpSQL + "AND APM_CTE.GeoLocation.STDistance(GeoLocation) <= " + LookUpToDistanceInMeters + " ";
-                HotelLookUpSQL = HotelLookUpSQL + "ORDER BY APM_CTE.GeoLocation.STDistance(GeoLocation)) AS ACCOPRODNAME FROM APM_CTE; ";
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    //Check for Lat Long Look up before any priority check
+                    string LookUpToDistanceInMeters = System.Configuration.ConfigurationManager.AppSettings["HotelLookUpToDistanceInMeters"].ToString();
+                    int AffectedRows = 0;
+                    string HotelLookUpSQL = "DECLARE @TABLE TABLE (APM_ID UNIQUEIDENTIFIER, A_ID UNIQUEIDENTIFIER) ";
+                    HotelLookUpSQL = HotelLookUpSQL + ";WITH APM_CTE (Accommodation_Product_Mapping_Id, GeoLocation, Country_Id, HotelName_Tx)  AS ";
+                    HotelLookUpSQL = HotelLookUpSQL + "(Select Accommodation_ProductMapping_Id, GeoLocation, Country_Id,HotelName_Tx from Accommodation_ProductMapping WHERE GeoLocation IS NOT NULL ";
+                    HotelLookUpSQL = HotelLookUpSQL + "and ReRun_SupplierImportFile_Id = '" + obj.File_Id.ToString() + "' ";
+                    HotelLookUpSQL = HotelLookUpSQL + "and ReRun_Batch = " + (obj.CurrentBatch).ToString();
+                    HotelLookUpSQL = HotelLookUpSQL + ") ";
+                    HotelLookUpSQL = HotelLookUpSQL + "INSERT INTO @TABLE SELECT APM_CTE.Accommodation_Product_Mapping_Id, ";
+                    HotelLookUpSQL = HotelLookUpSQL + "(SELECT TOP 1 Accommodation_Id from Accommodation ";
+                    HotelLookUpSQL = HotelLookUpSQL + "where Country_Id = APM_CTE.Country_Id AND HotelName_Tx = APM_CTE.HotelName_Tx ";
+                    HotelLookUpSQL = HotelLookUpSQL + "AND APM_CTE.GeoLocation.STDistance(GeoLocation) <= " + LookUpToDistanceInMeters + " ";
+                    HotelLookUpSQL = HotelLookUpSQL + "ORDER BY APM_CTE.GeoLocation.STDistance(GeoLocation)) AS ACCOPRODNAME FROM APM_CTE; ";
 
-                HotelLookUpSQL = HotelLookUpSQL + "UPDATE APM SET APM.Accommodation_Id = TBL.A_ID, APM.MatchedBy = -1, APM.MatchedByString = 'HotelName_TX + LatLong Lookup', APM.Status = 'REVIEW', ";
-                HotelLookUpSQL = HotelLookUpSQL + "Edit_Date = GETDATE(), Edit_User = 'TLGX_DataHandler', APM.Country_Id = A.Country_Id, APM.City_Id = A.City_Id, APM.Legacy_Htl_ID = A.CompanyHotelID ";
-                HotelLookUpSQL = HotelLookUpSQL + "FROM @TABLE TBL ";
-                HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation_ProductMapping APM ON TBL.APM_ID = APM.Accommodation_ProductMapping_Id ";
-                HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation A ON TBL.A_ID = A.Accommodation_Id;";
+                    HotelLookUpSQL = HotelLookUpSQL + "UPDATE APM SET APM.Accommodation_Id = TBL.A_ID, APM.MatchedBy = -1, APM.MatchedByString = 'HotelName_TX + LatLong Lookup', APM.Status = 'REVIEW', ";
+                    HotelLookUpSQL = HotelLookUpSQL + "Edit_Date = GETDATE(), Edit_User = 'TLGX_DataHandler', APM.Country_Id = A.Country_Id, APM.City_Id = A.City_Id, APM.Legacy_Htl_ID = A.CompanyHotelID ";
+                    HotelLookUpSQL = HotelLookUpSQL + "FROM @TABLE TBL ";
+                    HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation_ProductMapping APM ON TBL.APM_ID = APM.Accommodation_ProductMapping_Id ";
+                    HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation A ON TBL.A_ID = A.Accommodation_Id;";
+                    try
+                    {
+                        AffectedRows = context.Database.ExecuteSqlCommand(HotelLookUpSQL);
+                        CallLogVerbose(File_Id, "MATCH", AffectedRows.ToString() + " Matches Found for Combination Panda Geo Lookup");
+                    }
+                    catch (Exception ex)
+                    {
+                        CallLogVerbose(File_Id, "MATCH", "Error Panda Geo Lookup " + Environment.NewLine + ex.Message);
+                    }
+                }
 
                 foreach (int priority in obj.Priorities)
                 {
