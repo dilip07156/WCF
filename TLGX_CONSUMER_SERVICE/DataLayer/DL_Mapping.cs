@@ -4629,6 +4629,7 @@ namespace DataLayer
                                                   TX_RoomName = a.TX_RoomName,
                                                   Tx_StrippedName = a.Tx_StrippedName,
                                                   RoomDescription = a.RoomDescription,
+                                                  RoomSize = a.RoomSize,
                                                   SupplierImporrtFile_Id = a.SupplierImporrtFile_Id,
                                                   Batch = a.Batch,
                                                   ReRunSupplierImporrtFile_Id = a.ReRunSupplierImporrtFile_Id,
