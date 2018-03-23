@@ -13,8 +13,7 @@ namespace ConsumerSvc
 
         protected void Application_Start(object sender, EventArgs e)
         {
-            //SqlServerTypes.Utilities.LoadNativeAssemblies(Server.MapPath("~/bin"));
-           // SqlProviderServices.SqlServerTypesAssemblyName = "Microsoft.SqlServer.Types, Version=14.0.314.76, Culture=neutral, PublicKeyToken=89845dcd8080cc91";
+            SqlServerTypes.Utilities.LoadNativeAssemblies(Server.MapPath("~/bin"));
         }
 
         protected void Session_Start(object sender, EventArgs e)
