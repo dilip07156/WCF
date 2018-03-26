@@ -2362,14 +2362,14 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = from sup in context.Supplier
+                    var search = from sup in context.Supplier where sup.StatusCode.ToLower() == "active"
                                  select sup;
 
                     if (!string.IsNullOrEmpty(RQ.EntityType))
                     {
                         search = (from sup in search
                                   join supcat in context.Supplier_ProductCategory on sup.Supplier_Id equals supcat.Supplier_Id
-                                  where supcat.ProductCategory.ToLower() == RQ.EntityType.ToLower()
+                                  where supcat.ProductCategory.ToLower() == RQ.EntityType.ToLower() 
                                   select sup).Distinct();
                     }
 
