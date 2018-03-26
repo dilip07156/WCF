@@ -19,7 +19,8 @@ namespace DataLayer
         public string Zone_Name { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
-        public Nullable<bool> Status { get; set; }
+        public string Status { get; set; }
+        public bool IsActive { get; set; }
         public System.Data.Entity.Spatial.DbGeography Geography { get; set; }
         public string GooglePlace_Id { get; set; }
         public string Create_User { get; set; }
