@@ -949,7 +949,7 @@ namespace DataLayer
             string sql = "";
             string updatesql = "";
             string sqlwhere = "";
-            updatesql = "UPDATE #tablename SET ReRun_SupplierImportFile_Id = '" + File_Id.ToString() + "' , ReRun_Batch = null ";
+            //updatesql = "UPDATE #tablename SET ReRun_SupplierImportFile_Id = '" + File_Id.ToString() + "' , ReRun_Batch = null ";
             sql = "select count(*) as ct from #tablename ";
             sqlwhere = " where supplier_id =  '" + Supplier_Id.ToString() + "' ";
 
@@ -959,8 +959,8 @@ namespace DataLayer
                 sqlwhere = sqlwhere + " and status IN ('UNMAPPED', 'REVIEW')  ";
 
             sql = sql + sqlwhere;
-            updatesql = updatesql + sqlwhere;
-
+            //updatesql = updatesql + sqlwhere;
+            
             if (file.Entity.ToUpper().Trim() == "HOTEL")
             {
                 sql = sql.Replace("#tablename", "Accommodation_ProductMapping");
@@ -983,7 +983,6 @@ namespace DataLayer
             }
             using (ConsumerEntities context = new ConsumerEntities())
             {
-                try { upd = context.Database.ExecuteSqlCommand(updatesql); } catch (Exception ex) { }
                 try { ret = context.Database.SqlQuery<int>(sql).FirstOrDefault(); } catch (Exception ex) { }
 
                 #region "Old Code"
@@ -1074,6 +1073,49 @@ namespace DataLayer
                 //ret = lstSMT1.Count();
                 #endregion
             }
+
+            int BatchOf = 10000;
+            int NoOfBatch = ret / BatchOf;
+            int mod = ret % BatchOf;
+            if (mod > 0)
+                NoOfBatch = NoOfBatch + 1;
+
+            for (int i = 0; i < NoOfBatch; i++)
+            {
+                updatesql = "UPDATE #tablename SET ReRun_SupplierImportFile_Id = '" + File_Id.ToString() + "' , ReRun_Batch = null ";
+                updatesql = updatesql + " WHERE #columnname in (select  #columnname from #tablename WHERE supplier_id =  '" + Supplier_Id.ToString() + "' ";
+
+                if (mode == "ALL")
+                    updatesql = updatesql + " and status = 'UNMAPPED' ";
+                else if (mode != "ALL")
+                    updatesql = updatesql + " and status IN ('UNMAPPED', 'REVIEW')  ";
+                //updatesql = updatesql + " ReRun_SupplierImportFile_Id <> '" + File_Id.ToString() + "'  ";
+                updatesql = updatesql + " ORDER BY #orderbycolumn OFFSET " + (i * BatchOf).ToString() + " ROWS FETCH NEXT " + BatchOf.ToString() + " ROWS ONLY ";
+                updatesql = updatesql + " ) ";
+
+                if (file.Entity.ToUpper().Trim() == "HOTEL")
+                {
+                    updatesql = updatesql.Replace("#tablename", "Accommodation_ProductMapping").Replace("#columnname", "Accommodation_ProductMapping_Id").Replace("#orderbycolumn", "ProductName");
+                }
+                if (file.Entity.ToUpper().Trim() == "COUNTRY")
+                {
+                    updatesql = updatesql.Replace("#tablename", "m_CountryMapping").Replace("#columnname", "CountryMapping_Id").Replace("#orderbycolumn", "CountryName");
+                }
+                if (file.Entity.ToUpper().Trim() == "CITY")
+                {
+                    updatesql = updatesql.Replace("#tablename", "m_CityMapping").Replace("#columnname", "CityMapping_Id").Replace("#orderbycolumn", "CityName");
+                }
+                if (file.Entity.ToUpper().Trim() == "ROOMTYPE")
+                {
+                    updatesql = updatesql.Replace("#tablename", "Accommodation_SupplierRoomTypeMapping").Replace("#columnname", "Accommodation_SupplierRoomTypeMapping_Id").Replace("#orderbycolumn", "SupplierRoomName");
+                }
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    try { upd = context.Database.ExecuteSqlCommand(updatesql); } catch (Exception ex) { }
+                }
+            }
+            
+            
 
             return ret;
         }
@@ -1276,6 +1318,39 @@ namespace DataLayer
                     setUNMAPPED = setUNMAPPED + " and APM.ReRun_Batch = " + (obj.CurrentBatch).ToString();
                     try { setunmap = context.Database.ExecuteSqlCommand(setUNMAPPED); } catch (Exception ex) { }
 
+                }
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    //Check for Lat Long Look up before any priority check
+                    string LookUpToDistanceInMeters = System.Configuration.ConfigurationManager.AppSettings["HotelLookUpToDistanceInMeters"].ToString();
+                    int AffectedRows = 0;
+                    string HotelLookUpSQL = "DECLARE @TABLE TABLE (APM_ID UNIQUEIDENTIFIER, A_ID UNIQUEIDENTIFIER) ";
+                    HotelLookUpSQL = HotelLookUpSQL + ";WITH APM_CTE (Accommodation_Product_Mapping_Id, GeoLocation, Country_Id, HotelName_Tx)  AS ";
+                    HotelLookUpSQL = HotelLookUpSQL + "(Select Accommodation_ProductMapping_Id, GeoLocation, Country_Id,HotelName_Tx from Accommodation_ProductMapping WHERE GeoLocation IS NOT NULL ";
+                    HotelLookUpSQL = HotelLookUpSQL + "and ReRun_SupplierImportFile_Id = '" + obj.File_Id.ToString() + "' ";
+                    HotelLookUpSQL = HotelLookUpSQL + "and ReRun_Batch = " + (obj.CurrentBatch).ToString();
+                    HotelLookUpSQL = HotelLookUpSQL + ") ";
+                    HotelLookUpSQL = HotelLookUpSQL + "INSERT INTO @TABLE SELECT APM_CTE.Accommodation_Product_Mapping_Id, ";
+                    HotelLookUpSQL = HotelLookUpSQL + "(SELECT TOP 1 Accommodation_Id from Accommodation ";
+                    HotelLookUpSQL = HotelLookUpSQL + "where Country_Id = APM_CTE.Country_Id AND HotelName_Tx = APM_CTE.HotelName_Tx ";
+                    HotelLookUpSQL = HotelLookUpSQL + "AND APM_CTE.GeoLocation.STDistance(GeoLocation) <= " + LookUpToDistanceInMeters + " ";
+                    HotelLookUpSQL = HotelLookUpSQL + "ORDER BY APM_CTE.GeoLocation.STDistance(GeoLocation)) AS ACCOPRODNAME FROM APM_CTE; ";
+
+                    HotelLookUpSQL = HotelLookUpSQL + "UPDATE APM SET APM.Accommodation_Id = TBL.A_ID, APM.MatchedBy = -1, APM.MatchedByString = 'HotelName_TX + LatLong Lookup', APM.Status = 'REVIEW', ";
+                    HotelLookUpSQL = HotelLookUpSQL + "Edit_Date = GETDATE(), Edit_User = 'TLGX_DataHandler', APM.Country_Id = A.Country_Id, APM.City_Id = A.City_Id, APM.Legacy_Htl_ID = A.CompanyHotelID ";
+                    HotelLookUpSQL = HotelLookUpSQL + "FROM @TABLE TBL ";
+                    HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation_ProductMapping APM ON TBL.APM_ID = APM.Accommodation_ProductMapping_Id ";
+                    HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation A ON TBL.A_ID = A.Accommodation_Id;";
+                    try
+                    {
+                        AffectedRows = context.Database.ExecuteSqlCommand(HotelLookUpSQL);
+                        CallLogVerbose(File_Id, "MATCH", AffectedRows.ToString() + " Matches Found for Combination Panda Geo Lookup");
+                    }
+                    catch (Exception ex)
+                    {
+                        CallLogVerbose(File_Id, "MATCH", "Error Panda Geo Lookup " + Environment.NewLine + ex.Message);
+                    }
                 }
 
                 foreach (int priority in obj.Priorities)
