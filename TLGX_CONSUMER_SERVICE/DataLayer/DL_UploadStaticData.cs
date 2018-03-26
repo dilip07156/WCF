@@ -1238,8 +1238,8 @@ namespace DataLayer
                             if (resstat[0].Entity.Trim().ToUpper() == "COUNTRY")
                             {
                                 var getcount = from m in context.m_CountryMapping
-                                               join j in context.STG_Mapping_TableIds on m.CountryMapping_Id equals j.Mapping_Id
-                                               where j.File_Id == obj.SupplierImportFile_Id
+                                               //join j in context.STG_Mapping_TableIds on m.CountryMapping_Id equals j.Mapping_Id
+                                               where m.ReRun_SupplierImportFile_Id == obj.SupplierImportFile_Id
                                                group m by new { m.Status } into g
                                                select new { g.Key.Status, count = g.Count() };
 
@@ -1257,8 +1257,8 @@ namespace DataLayer
                             else if (resstat[0].Entity.Trim().ToUpper() == "CITY")
                             {
                                 var getcount = from m in context.m_CityMapping
-                                               join j in context.STG_Mapping_TableIds on m.CityMapping_Id equals j.Mapping_Id
-                                               where j.File_Id == obj.SupplierImportFile_Id
+                                               //join j in context.STG_Mapping_TableIds on m.CityMapping_Id equals j.Mapping_Id
+                                               where m.ReRun_SupplierImportFile_Id == obj.SupplierImportFile_Id
                                                group m by new { m.Status } into g
                                                select new { g.Key.Status, count = g.Count() };
                                 if ((obj.From ?? "") == "MATCHING")
@@ -1275,8 +1275,8 @@ namespace DataLayer
                             else if (resstat[0].Entity.Trim().ToUpper() == "HOTEL")
                             {
                                 var getcount = from m in context.Accommodation_ProductMapping
-                                               join j in context.STG_Mapping_TableIds on m.Accommodation_ProductMapping_Id equals j.Mapping_Id
-                                               where j.File_Id == obj.SupplierImportFile_Id
+                                               //join j in context.STG_Mapping_TableIds on m.Accommodation_ProductMapping_Id equals j.Mapping_Id
+                                               where m.ReRun_SupplierImportFile_Id == obj.SupplierImportFile_Id
                                                group m by new { m.Status } into g
                                                select new { g.Key.Status, count = g.Count() };
 
@@ -1294,8 +1294,8 @@ namespace DataLayer
                             else if (resstat[0].Entity.Trim().ToUpper() == "ROOMTYPE")
                             {
                                 var getcount = from m in context.Accommodation_SupplierRoomTypeMapping
-                                               join j in context.STG_Mapping_TableIds on m.Accommodation_SupplierRoomTypeMapping_Id equals j.Mapping_Id
-                                               where j.File_Id == obj.SupplierImportFile_Id
+                                               //join j in context.STG_Mapping_TableIds on m.Accommodation_SupplierRoomTypeMapping_Id equals j.Mapping_Id
+                                               where m.ReRun_SupplierImportFile_Id == obj.SupplierImportFile_Id
                                                group m by new { m.MappingStatus } into g
                                                select new { g.Key.MappingStatus, count = g.Count() };
 

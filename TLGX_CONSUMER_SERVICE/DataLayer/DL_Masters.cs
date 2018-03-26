@@ -5047,7 +5047,8 @@ namespace DataLayer
                             Zone_Type = param.Zone_Type,
                             Latitude = param.Latitude,
                             Longitude = param.Longitude,
-                            Status = true,//param.Status
+                            IsActive = true,//param.Status
+                            Status="Active",
                             Create_Date = param.Create_Date,
                             Create_User = param.Create_User
                         };
@@ -5056,7 +5057,8 @@ namespace DataLayer
                             ZoneCityMapping_Id = Guid.NewGuid(),
                             City_Id = param.City_id,
                             Zone_Id = param.Zone_id,
-                            Status=true,//param.Status
+                            IsActive=true,//param.Status
+                            Status="Active",
                             Create_Date = param.Create_Date,
                             Create_User = param.Create_User
                         };
@@ -5130,6 +5132,8 @@ namespace DataLayer
                         ZoneCity_Mapping zcm = new ZoneCity_Mapping()
                         {
                             ZoneCityMapping_Id = param.ZoneCityMapping_Id,
+                            IsActive = true,
+                            Status="Active",
                             City_Id = param.City_id,
                             Zone_Id = param.Zone_id,
                             Create_Date = param.Create_Date,
@@ -5203,6 +5207,7 @@ namespace DataLayer
                             Zone_id = m.zm.Zone_id,
                             City_id = m.zcmZ.cm.City_Id,
                             Country_id = m.zcmZ.cm.Country_Id,
+                            IsActive=m.zm.IsActive,
                             Status = m.zm.Status,
                             Latitude=m.zm.Latitude,
                             Longitude = m.zm.Longitude
@@ -5221,6 +5226,7 @@ namespace DataLayer
                                      Zone_id = a.Zone_id,
                                      City_id = a.City_id,
                                      Country_id = a.Country_id,
+                                     IsActive=a.IsActive,
                                      Status = a.Status,
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude,
@@ -5250,6 +5256,7 @@ namespace DataLayer
                             CityName = m.cm.Name,
                             Zone_id = m.zcm.Zone_Id,
                             City_id = m.zcm.City_Id,
+                            IsActive=m.zcm.IsActive,
                             Status=m.zcm.Status
                         }).OrderBy(x => x.CityName).ToList();
 
@@ -5264,6 +5271,7 @@ namespace DataLayer
                                      CityName = a.CityName,
                                      Zone_id = a.Zone_id,
                                      City_id = a.City_id,
+                                     IsActive=a.IsActive,
                                      Status=a.Status,
                                      TotalRecords = total
                                  };
@@ -5328,14 +5336,14 @@ namespace DataLayer
                 try
                 {
                     var search = (from a in context.m_ZoneMaster where a.Zone_id == param.Zone_id select a).SingleOrDefault();
-                    var boolstatus= (param.Status == true)? 1 : 0;
+                    var boolIsActive= (param.IsActive == true)? 1 : 0;
                     if (search != null)
                     {
                         if (param.Action == "ZoneMaster")
                         {
-                            if (search.Status != param.Status)
+                            if (search.IsActive != param.IsActive)
                             {
-                                search.Status = param.Status;
+                                search.IsActive = param.IsActive;
                                 search.Edit_Date = param.Edit_Date;
                                 search.Edit_User = param.Edit_User;
                             }
@@ -5345,7 +5353,7 @@ namespace DataLayer
                         if (searchcities > 0){
                             int setstatus = 0;
                             string setNewStatus = "UPDATE ZoneCity_Mapping ";
-                            setNewStatus= setNewStatus+ " SET Edit_Date = GETDATE(),  Status = " + boolstatus;
+                            setNewStatus= setNewStatus+ " SET Edit_Date = GETDATE(),  IsActive = " + boolIsActive;
                             setNewStatus = setNewStatus + " ,  Edit_User = " +"'"+ param.Edit_User + "'";
                             setNewStatus = setNewStatus + " WHERE  Zone_Id = " + "'" + param.Zone_id + "'";
                             try { setstatus = context.Database.ExecuteSqlCommand(setNewStatus); } catch (Exception ex) { }

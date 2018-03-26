@@ -37,6 +37,20 @@ namespace DataContracts.Mapping
         string _StateCode;
         string _StateName;
         string _StateNameWithCode;
+
+
+        [DataMember]
+        public Guid ReRunSupplierImporrtFile_Id { get; set; }
+
+        [DataMember]
+        public int ReRunBatch { get; set; }
+
+        [DataMember]
+        public Guid SupplierImporrtFile_Id { get; set; }
+
+        [DataMember]
+        public int Batch { get; set; }
+
         [DataMember]
         public List<DC_CityMapping_EntityCount> EntityTypeFlag { get; set; }
 

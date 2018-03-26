@@ -17,7 +17,8 @@ namespace DataLayer
         public System.Guid ZoneCityMapping_Id { get; set; }
         public Nullable<System.Guid> Zone_Id { get; set; }
         public Nullable<System.Guid> City_Id { get; set; }
-        public Nullable<bool> Status { get; set; }
+        public string Status { get; set; }
+        public bool IsActive { get; set; }
         public string Create_User { get; set; }
         public Nullable<System.DateTime> Create_Date { get; set; }
         public string Edit_User { get; set; }

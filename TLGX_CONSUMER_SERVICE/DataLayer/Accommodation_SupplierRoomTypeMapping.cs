@@ -48,5 +48,6 @@ namespace DataLayer
         public Nullable<int> Batch { get; set; }
         public Nullable<System.Guid> ReRun_SupplierImportFile_Id { get; set; }
         public Nullable<int> ReRun_Batch { get; set; }
+        public string RoomSize { get; set; }
     }
 }

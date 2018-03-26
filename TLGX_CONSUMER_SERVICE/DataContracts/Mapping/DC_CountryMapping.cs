@@ -29,7 +29,17 @@ namespace DataContracts.Mapping
         string _Remarks;
         string _MasterCountry_Id;
         string _MasterNameWithCode;
+        [DataMember]
+        public Guid ReRunSupplierImporrtFile_Id { get; set; }
 
+        [DataMember]
+        public int ReRunBatch { get; set; }
+
+        [DataMember]
+        public Guid SupplierImporrtFile_Id { get; set; }
+
+        [DataMember]
+        public int Batch { get; set; }
         [DataMember]
         public string OldCountryCode { get; set; }
 
