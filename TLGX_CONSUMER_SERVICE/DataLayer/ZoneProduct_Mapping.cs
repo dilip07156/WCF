@@ -20,7 +20,8 @@ namespace DataLayer
         public string ProductType { get; set; }
         public string Unit { get; set; }
         public Nullable<decimal> Distance { get; set; }
-        public Nullable<bool> Status { get; set; }
+        public string Status { get; set; }
+        public bool IsActive { get; set; }
         public Nullable<bool> Included { get; set; }
         public string Create_User { get; set; }
         public Nullable<System.DateTime> Create_Date { get; set; }

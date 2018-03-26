@@ -30,7 +30,9 @@ namespace DataContracts.Masters
         [DataMember]
         public string Longitude { get; set; }
         [DataMember]
-        public bool? Status { get; set; }
+        public bool IsActive { get; set; }
+        [DataMember]
+        public string Status { get; set; }
         [DataMember]
         public int? PageNo { get; set; }
         [DataMember]
@@ -75,7 +77,9 @@ namespace DataContracts.Masters
         [DataMember]
         public string Longitude { get; set; }
         [DataMember]
-        public bool? Status { get; set; }
+        public string Status { get; set; }
+        [DataMember]
+        public bool IsActive { get; set; }
         [DataMember]
         public int? NoOfHotels { get; set; }
         [DataMember]
@@ -96,7 +100,9 @@ namespace DataContracts.Masters
         [DataMember]
         public string Zone_Name { get; set; }
         [DataMember]
-        public bool? Status { get; set; }
+        public bool IsActive { get; set; }
+        [DataMember]
+        public string Status { get; set; }
         [DataMember]
         public int? TotalRecords { get; set; }
 

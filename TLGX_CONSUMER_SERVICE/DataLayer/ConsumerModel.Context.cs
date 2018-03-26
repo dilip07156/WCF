@@ -87,7 +87,6 @@ namespace DataLayer
         public virtual DbSet<stg_SupplierCityMapping> stg_SupplierCityMapping { get; set; }
         public virtual DbSet<stg_SupplierCountryMapping> stg_SupplierCountryMapping { get; set; }
         public virtual DbSet<stg_SupplierHotelRoomMapping> stg_SupplierHotelRoomMapping { get; set; }
-        public virtual DbSet<stg_SupplierProductMapping> stg_SupplierProductMapping { get; set; }
         public virtual DbSet<m_keyword> m_keyword { get; set; }
         public virtual DbSet<m_keyword_alias> m_keyword_alias { get; set; }
         public virtual DbSet<Place> Places { get; set; }
@@ -147,13 +146,14 @@ namespace DataLayer
         public virtual DbSet<Dashboard_MappingStat> Dashboard_MappingStat { get; set; }
         public virtual DbSet<Dashboard_UserwiseMappedStat> Dashboard_UserwiseMappedStat { get; set; }
         public virtual DbSet<m_CityMapping> m_CityMapping { get; set; }
-        public virtual DbSet<Accommodation_ProductMapping> Accommodation_ProductMapping { get; set; }
-        public virtual DbSet<m_ZoneMaster> m_ZoneMaster { get; set; }
-        public virtual DbSet<ZoneCity_Mapping> ZoneCity_Mapping { get; set; }
-        public virtual DbSet<ZoneProduct_Mapping> ZoneProduct_Mapping { get; set; }
         public virtual DbSet<m_CountryMapping> m_CountryMapping { get; set; }
         public virtual DbSet<m_CityMapping_EntityCount> m_CityMapping_EntityCount { get; set; }
         public virtual DbSet<Accommodation_SupplierRoomTypeMapping> Accommodation_SupplierRoomTypeMapping { get; set; }
+        public virtual DbSet<m_ZoneMaster> m_ZoneMaster { get; set; }
+        public virtual DbSet<ZoneCity_Mapping> ZoneCity_Mapping { get; set; }
+        public virtual DbSet<ZoneProduct_Mapping> ZoneProduct_Mapping { get; set; }
+        public virtual DbSet<Accommodation_ProductMapping> Accommodation_ProductMapping { get; set; }
+        public virtual DbSet<stg_SupplierProductMapping> stg_SupplierProductMapping { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

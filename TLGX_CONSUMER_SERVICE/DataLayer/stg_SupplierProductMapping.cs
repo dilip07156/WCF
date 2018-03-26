@@ -53,5 +53,6 @@ namespace DataLayer
         public Nullable<System.Guid> City_Id { get; set; }
         public Nullable<System.Guid> Supplier_Id { get; set; }
         public string TLGXProductCode { get; set; }
+        public string ProductType { get; set; }
     }
 }
