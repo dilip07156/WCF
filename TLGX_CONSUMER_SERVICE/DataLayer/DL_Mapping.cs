@@ -1363,7 +1363,7 @@ namespace DataLayer
                     try
                     {
                         AffectedRows = context.Database.ExecuteSqlCommand(HotelLookUpSQL);
-                        CallLogVerbose(File_Id, "MATCH", AffectedRows.ToString() + " Matches Found for Combination Panda Geo Lookup");
+                        CallLogVerbose(File_Id, "MATCH", (AffectedRows - 250).ToString() + " Matches Found for Combination Panda Geo Lookup");
                     }
                     catch (Exception ex)
                     {
