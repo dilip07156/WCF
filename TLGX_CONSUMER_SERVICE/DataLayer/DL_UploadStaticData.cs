@@ -2028,6 +2028,7 @@ namespace DataLayer
 
                             objNew.stg_AccoMapping_Id = obj.stg_AccoMapping_Id;
                             objNew.SupplierId = obj.SupplierId;
+                            objNew.Supplier_Id = obj.Supplier_Id;
                             objNew.SupplierName = obj.SupplierName;
                             objNew.ProductId = obj.ProductId;
                             objNew.ProductName = obj.ProductName;
