@@ -833,24 +833,54 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    DataLayer.SupplierImportFileDetail objNew = new DataLayer.SupplierImportFileDetail();
+                    //Search if record is already scheduled
+                    int count = 0;
 
-                    objNew.SupplierImportFile_Id = obj.SupplierImportFile_Id;
-                    objNew.Supplier_Id = obj.Supplier_Id;
-                    objNew.Entity = obj.Entity;
-                    objNew.STATUS = obj.STATUS;
-                    objNew.ArchiveFilePath = obj.ArchiveFilePath;
-                    objNew.OriginalFilePath = obj.OriginalFilePath;
-                    objNew.SavedFilePath = obj.SavedFilePath;
-                    objNew.CREATE_DATE = obj.CREATE_DATE;
-                    objNew.CREATE_USER = obj.CREATE_USER;
-                    objNew.Mode = obj.Mode;
-                    context.SupplierImportFileDetails.Add(objNew);
-                    context.SaveChanges();
-                    dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
-                    dc.StatusMessage = "Supplier File " + ReadOnlyMessage.strAddedSuccessfully;
+                    if (obj != null)
+                    {
+                        if (obj.STATUS == "SCHEDULED")
+                        {
+                            count = (from a in context.SupplierImportFileDetails
+                                     where a.Supplier_Id == obj.Supplier_Id
+                                     && a.Entity == obj.Entity
+                                     && a.STATUS == "SCHEDULED"
+                                     select a).Count();
+                            if (count > 0)
+                            {
+                                dc.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
+                                dc.StatusMessage = "Supplier File has already been scheduled for Re-Run.";
+                            }
+                        }
+
+
+                        if (count == 0)
+                        {
+                            DataLayer.SupplierImportFileDetail objNew = new DataLayer.SupplierImportFileDetail();
+
+                            objNew.SupplierImportFile_Id = obj.SupplierImportFile_Id;
+                            objNew.Supplier_Id = obj.Supplier_Id;
+                            objNew.Entity = obj.Entity;
+                            objNew.STATUS = obj.STATUS;
+                            objNew.ArchiveFilePath = obj.ArchiveFilePath;
+                            objNew.OriginalFilePath = obj.OriginalFilePath;
+                            objNew.SavedFilePath = obj.SavedFilePath;
+                            objNew.CREATE_DATE = obj.CREATE_DATE;
+                            objNew.CREATE_USER = obj.CREATE_USER;
+                            objNew.Mode = obj.Mode;
+                            objNew.IsActive = true;
+
+                            context.SupplierImportFileDetails.Add(objNew);
+                            context.SaveChanges();
+
+                            dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            dc.StatusMessage = "Supplier File " + ReadOnlyMessage.strAddedSuccessfully;
+
+                        }
+                    }
+                    return dc;
                 }
-                return dc;
+
+
             }
             catch (Exception)
             {
@@ -1970,7 +2000,7 @@ namespace DataLayer
 
                                 }
 
-                                if(bCityFound)
+                                if (bCityFound)
                                 {
                                     objNew.City_Id = CityLookup.First().City_Id;
                                     objNew.CityCode = obj.CityCode ?? CityLookup.First().CityCode;
@@ -2054,14 +2084,14 @@ namespace DataLayer
 
                             objNew.Location = obj.Location;
                             objNew.InsertDate = obj.InsertDate;
-                           
+
                             objNew.TX_COUNTRYNAME = obj.TX_COUNTRYNAME;
                             objNew.ActiveFrom = obj.ActiveFrom;
                             objNew.ActiveTo = obj.ActiveTo;
                             objNew.Action = obj.Action;
                             objNew.UpdateType = obj.UpdateType;
                             objNew.ActionText = obj.ActionText;
-                            
+
                             lstobjNew.Add(objNew);
                         }
                         context.stg_SupplierProductMapping.AddRange(lstobjNew);
