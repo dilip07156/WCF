@@ -33,6 +33,7 @@ namespace DataContracts.Mapping
         string _MasterCountryName;
         string _MasterCityCode;
         string _Master_CityName;
+        Nullable<Guid> _Master_CityId;
         string _Remarks;
         string _StateCode;
         string _StateName;
@@ -351,6 +352,19 @@ namespace DataContracts.Mapping
             set
             {
                 _Master_CityName = value;
+            }
+        }
+        [DataMember]
+        public Guid? Master_City_id    
+        {
+            get
+            {
+                return _Master_CityId;
+            }
+
+            set
+            {
+                _Master_CityId = value;
             }
         }
         [DataMember]
