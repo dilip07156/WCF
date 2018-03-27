@@ -171,42 +171,60 @@ namespace DataLayer
             int batch = 250;
 
             int skip = (batchno - 1) * batch;
-            
+
+            /*updatesql = "UPDATE #tablename SET ReRun_SupplierImportFile_Id = '" + File_Id.ToString() + "' , ReRun_Batch = null ";
+            updatesql = updatesql + " WHERE #columnname in (select  #columnname from #tablename WHERE supplier_id =  '" + Supplier_Id.ToString() + "' ";
+
+            if (mode == "ALL")
+                updatesql = updatesql + " and status = 'UNMAPPED' ";
+            else if (mode != "ALL")
+                updatesql = updatesql + " and status IN ('UNMAPPED', 'REVIEW')  ";
+            //updatesql = updatesql + " ReRun_SupplierImportFile_Id <> '" + File_Id.ToString() + "'  ";
+            updatesql = updatesql + " ORDER BY #orderbycolumn OFFSET " + (i * BatchOf).ToString() + " ROWS FETCH NEXT " + BatchOf.ToString() + " ROWS ONLY ";
+            updatesql = updatesql + " ) ";
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                try { upd = context.Database.ExecuteSqlCommand(updatesql); } catch (Exception ex) { }
+            }*/
+
             string sql = "";
 
-            sql = sql + " UPDATE #tablename set ReRun_Batch = " + (obj.CurrentBatch ?? 1).ToString() + " ";
-            sql = sql + " WHERE #columnname in (select top " + batch.ToString() + " #columnname from  #tablename ";
-            sql = sql + " WHERE ReRun_SupplierImportFile_Id = '" + obj.File_Id.ToString() + "' and ReRun_Batch is null ";
+           // sql = sql + " UPDATE #tablename set ReRun_SupplierImportFile_Id = '" + File_Id.ToString() + "' , ReRun_Batch = " + (obj.CurrentBatch ?? 1).ToString() + " ";
+           // sql = sql + " WHERE #columnname in (select top " + batch.ToString() + " #columnname from #tablename WHERE supplier_id =  '" + curSupplier_Id.ToString() + "' ";
+
+           // if (mode == "ALL")
+           //     sql = sql + " and status = 'UNMAPPED' ";
+           // else if (mode != "ALL")
+           //     sql = sql + " and status IN ('UNMAPPED', 'REVIEW') and ISNULL(ReRun_SupplierImportFile_Id,'" + Guid.Empty.ToString() + "') <> '" + File_Id.ToString() + "'  ";
+           //// sql = sql + " ORDER BY #orderbycolumn OFFSET " + skip.ToString() + " ROWS FETCH NEXT " + batch.ToString() + " ROWS ONLY ";
+           // sql = sql + " ) ";
+
+            sql = sql + " UPDATE TOP (" + batch.ToString() + ") #tablename SET ReRun_SupplierImportFile_Id = '" + File_Id.ToString() + "' , ReRun_Batch = " + (obj.CurrentBatch ?? 1).ToString() + " ";
+            sql = sql + " WHERE supplier_id = '" + curSupplier_Id.ToString() + "' ";
+
             if (mode == "ALL")
-                sql = sql + " and status = 'UNMAPPED' ";
+                sql = sql + " and #statuscolumn = 'UNMAPPED' ";
             else if (mode != "ALL")
-                sql = sql + " and status IN ('UNMAPPED', 'REVIEW')  ";
-            sql = sql + " ) ";
-            /* sql = sql + " INSERT INTO STG_Mapping_TableIds (STG_Mapping_Table_Id, File_Id,Mapping_Id, STG_Id,Batch )   ";
-             sql = sql + " select NEWID(), '" + obj.File_Id.ToString() + "', #columnname, null, " + (obj.CurrentBatch ?? 1).ToString() + " ";
-             sql = sql + " from #tablename ";
-             sql = sql + " where supplier_id =  '" + curSupplier_Id.ToString() + "' ";
-             if (mode == "ALL")
-                 sql = sql + " and status = 'UNMAPPED' ";
-             else if (mode != "ALL")
-                 sql = sql + " and status IN ('UNMAPPED', 'REVIEW')  ";
-             sql = sql + " ORDER BY #orderbycolumn OFFSET " + (skip).ToString() + " ROWS FETCH NEXT " + batch.ToString() + " ROWS ONLY ";*/
+                sql = sql + "and (#statuscolumn = 'UNMAPPED' OR #statuscolumn = 'REVIEW') ";
+
+            sql = sql + " and (ReRun_SupplierImportFile_Id <> '" + File_Id.ToString() + "' OR ReRun_SupplierImportFile_Id IS NULL) ";
+
 
             if (obj.FileEntity.ToUpper().Trim() == "HOTEL")
             {
-                sql = sql.Replace("#tablename", "Accommodation_ProductMapping").Replace("#columnname", "Accommodation_ProductMapping_Id").Replace("#orderbycolumn", "ProductName");
+                sql = sql.Replace("#tablename", "Accommodation_ProductMapping").Replace("#statuscolumn", "Status");
             }
             if (obj.FileEntity.ToUpper().Trim() == "COUNTRY")
             {
-                sql = sql.Replace("#tablename", "m_CountryMapping").Replace("#columnname", "CountryMapping_Id").Replace("#orderbycolumn", "CountryName");
+                sql = sql.Replace("#tablename", "m_CountryMapping").Replace("#statuscolumn", "Status");
             }
             if (obj.FileEntity.ToUpper().Trim() == "CITY")
             {
-                sql = sql.Replace("#tablename", "m_CityMapping").Replace("#columnname", "CityMapping_Id").Replace("#orderbycolumn", "CityName");
+                sql = sql.Replace("#tablename", "m_CityMapping").Replace("#statuscolumn", "Status");
             }
             if (obj.FileEntity.ToUpper().Trim() == "ROOMTYPE")
             {
-                sql = sql.Replace("#tablename", "Accommodation_SupplierRoomTypeMapping").Replace("#columnname", "Accommodation_SupplierRoomTypeMapping_Id").Replace("#orderbycolumn", "SupplierRoomName");
+                sql = sql.Replace("#tablename", "Accommodation_SupplierRoomTypeMapping").Replace("#statuscolumn", "MappingStatus");
             }
 
             int isadded = 0;
@@ -1074,7 +1092,7 @@ namespace DataLayer
                 #endregion
             }
 
-            int BatchOf = 10000;
+            /*int BatchOf = 10000;
             int NoOfBatch = ret / BatchOf;
             int mod = ret % BatchOf;
             if (mod > 0)
@@ -1113,7 +1131,7 @@ namespace DataLayer
                 {
                     try { upd = context.Database.ExecuteSqlCommand(updatesql); } catch (Exception ex) { }
                 }
-            }
+            }*/
             
             
 
@@ -1345,7 +1363,7 @@ namespace DataLayer
                     try
                     {
                         AffectedRows = context.Database.ExecuteSqlCommand(HotelLookUpSQL);
-                        CallLogVerbose(File_Id, "MATCH", AffectedRows.ToString() + " Matches Found for Combination Panda Geo Lookup");
+                        CallLogVerbose(File_Id, "MATCH", (AffectedRows - 250).ToString() + " Matches Found for Combination Panda Geo Lookup");
                     }
                     catch (Exception ex)
                     {
