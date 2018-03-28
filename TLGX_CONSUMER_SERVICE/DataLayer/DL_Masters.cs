@@ -803,7 +803,7 @@ namespace DataLayer
                                  select a;
                     }
 
-                    int total = search.Count(); 
+                    int total = search.Count();
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
                     var result = from a in search
@@ -2362,14 +2362,15 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = from sup in context.Supplier where sup.StatusCode.ToLower() == "active"
+                    var search = from sup in context.Supplier
+                                 where sup.StatusCode.ToLower() == "active"
                                  select sup;
 
                     if (!string.IsNullOrEmpty(RQ.EntityType))
                     {
                         search = (from sup in search
                                   join supcat in context.Supplier_ProductCategory on sup.Supplier_Id equals supcat.Supplier_Id
-                                  where supcat.ProductCategory.ToLower() == RQ.EntityType.ToLower() 
+                                  where supcat.ProductCategory.ToLower() == RQ.EntityType.ToLower()
                                   select sup).Distinct();
                     }
 
@@ -5048,7 +5049,7 @@ namespace DataLayer
                             Latitude = param.Latitude,
                             Longitude = param.Longitude,
                             IsActive = true,//param.Status
-                            Status="Active",
+                            Status = "Active",
                             Create_Date = param.Create_Date,
                             Create_User = param.Create_User
                         };
@@ -5057,15 +5058,15 @@ namespace DataLayer
                             ZoneCityMapping_Id = Guid.NewGuid(),
                             City_Id = param.City_id,
                             Zone_Id = param.Zone_id,
-                            IsActive=true,//param.Status
-                            Status="Active",
+                            IsActive = true,//param.Status
+                            Status = "Active",
                             Create_Date = param.Create_Date,
                             Create_User = param.Create_User
                         };
                         context.m_ZoneMaster.Add(obj);
                         context.ZoneCity_Mapping.Add(zcm);
                     }
-                    else if(param.Action == "UPDATE")
+                    else if (param.Action == "UPDATE")
                     {
                         var search = context.m_ZoneMaster.Find(param.Zone_id);
                         if (search != null)
@@ -5075,7 +5076,7 @@ namespace DataLayer
                             search.Latitude = param.Latitude;
                             search.Longitude = param.Longitude;
                             search.Edit_Date = param.Edit_Date;
-                            search.Edit_User = param.Edit_User;   
+                            search.Edit_User = param.Edit_User;
                         }
                         else
                         {
@@ -5094,17 +5095,17 @@ namespace DataLayer
                         _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                     }
                 }
-            catch (Exception e)
-            {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding zone master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                catch (Exception e)
+                {
+                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding zone master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                }
             }
-        }
             return _msg;
         }
         public DataContracts.DC_Message AddZoneCityMapping(DataContracts.Masters.DC_ZoneRQ param)
         {
             DC_Message _msg = new DC_Message();
-            if (param.Zone_id==Guid.Empty)
+            if (param.Zone_id == Guid.Empty)
             {
                 _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning;
                 _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
@@ -5133,7 +5134,7 @@ namespace DataLayer
                         {
                             ZoneCityMapping_Id = param.ZoneCityMapping_Id,
                             IsActive = true,
-                            Status="Active",
+                            Status = "Active",
                             City_Id = param.City_id,
                             Zone_Id = param.Zone_id,
                             Create_Date = param.Create_Date,
@@ -5151,7 +5152,7 @@ namespace DataLayer
                             _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                         }
                     }
-                   
+
                 }
                 catch (Exception e)
                 {
@@ -5163,7 +5164,7 @@ namespace DataLayer
 
         }
         //search
-        public List<DataContracts.Masters.DC_ZoneSearch>SearchZone(DataContracts.Masters.DC_ZoneRQ param)
+        public List<DataContracts.Masters.DC_ZoneSearch> SearchZone(DataContracts.Masters.DC_ZoneRQ param)
         {
             try
             {
@@ -5171,15 +5172,15 @@ namespace DataLayer
                 {
                     var CityMasterIQ = context.m_CityMaster.AsQueryable();
                     var ZonemasterIQ = context.m_ZoneMaster.AsQueryable();
-                    if(param.Zone_id != Guid.Empty)
+                    if (param.Zone_id != Guid.Empty)
                     {
-                        ZonemasterIQ= ZonemasterIQ.Where(x => x.Zone_id == param.Zone_id);
+                        ZonemasterIQ = ZonemasterIQ.Where(x => x.Zone_id == param.Zone_id);
                     }
-                    if(param.City_id != Guid.Empty)
+                    if (param.City_id != Guid.Empty)
                     {
                         CityMasterIQ = CityMasterIQ.Where(x => x.City_Id == param.City_id);
                     }
-                    if(param.Country_id != Guid.Empty)
+                    if (param.Country_id != Guid.Empty)
                     {
                         CityMasterIQ = CityMasterIQ.Where(x => x.Country_Id == param.Country_id);
                     }
@@ -5193,7 +5194,7 @@ namespace DataLayer
                     }
                     if (param.Status != null)
                     {
-                        ZonemasterIQ= ZonemasterIQ.Where(x => x.Status == param.Status);
+                        ZonemasterIQ = ZonemasterIQ.Where(x => x.Status == param.Status);
                     }
                     var search = context.ZoneCity_Mapping
                         .Join(CityMasterIQ, zcm => zcm.City_Id, cm => cm.City_Id, (zcm, cm) => new { zcm, cm })
@@ -5207,12 +5208,19 @@ namespace DataLayer
                             Zone_id = m.zm.Zone_id,
                             City_id = m.zcmZ.cm.City_Id,
                             Country_id = m.zcmZ.cm.Country_Id,
-                            IsActive=m.zm.IsActive,
+                            IsActive = m.zm.IsActive,
                             Status = m.zm.Status,
-                            Latitude=m.zm.Latitude,
+                            Latitude = m.zm.Latitude,
                             Longitude = m.zm.Longitude
+                            //NoOfHotels= (select)
                         }).OrderBy(x => x.Zone_Name).ToList();
-                    
+
+                    search = search.Select(c =>
+                               {
+                                   c.NoOfHotels = (context.ZoneProduct_Mapping.Where(x => x.Zone_Id == c.Zone_id && (x.Included ?? false) == true).Count());
+                                   return c;
+                               } ).ToList();
+
                     int total = search.Count();
                     int skip = (param.PageNo ?? 0) * (param.PageSize ?? 0);
 
@@ -5226,10 +5234,11 @@ namespace DataLayer
                                      Zone_id = a.Zone_id,
                                      City_id = a.City_id,
                                      Country_id = a.Country_id,
-                                     IsActive=a.IsActive,
+                                     IsActive = a.IsActive,
                                      Status = a.Status,
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude,
+                                     NoOfHotels=a.NoOfHotels,
                                      TotalRecords = total
                                  };
 
@@ -5241,7 +5250,7 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Zone Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-        public List<DC_ZoneCitiesSearch>SearchZoneCities(DataContracts.Masters.DC_ZoneRQ param)
+        public List<DC_ZoneCitiesSearch> SearchZoneCities(DataContracts.Masters.DC_ZoneRQ param)
         {
             try
             {
@@ -5249,15 +5258,15 @@ namespace DataLayer
                 {
                     var search = context.ZoneCity_Mapping
                         .Join(context.m_CityMaster, zcm => zcm.City_Id, cm => cm.City_Id, (zcm, cm) => new { zcm, cm })
-                        //.Join(context.m_ZoneMaster, zcmZ => zcmZ.zcm.Zone_Id, zm => zm.Zone_id, (zcmZ, zm) => new { zcmZ, zm })
-                       .Where(p=>p.zcm.Zone_Id== param.Zone_id)
+                       //.Join(context.m_ZoneMaster, zcmZ => zcmZ.zcm.Zone_Id, zm => zm.Zone_id, (zcmZ, zm) => new { zcmZ, zm })
+                       .Where(p => p.zcm.Zone_Id == param.Zone_id)
                         .Select(m => new DC_ZoneCitiesSearch
                         {
                             CityName = m.cm.Name,
                             Zone_id = m.zcm.Zone_Id,
                             City_id = m.zcm.City_Id,
-                            IsActive=m.zcm.IsActive,
-                            Status=m.zcm.Status
+                            IsActive = m.zcm.IsActive,
+                            Status = m.zcm.Status
                         }).OrderBy(x => x.CityName).ToList();
 
                     int total = search.Count();
@@ -5271,8 +5280,8 @@ namespace DataLayer
                                      CityName = a.CityName,
                                      Zone_id = a.Zone_id,
                                      City_id = a.City_id,
-                                     IsActive=a.IsActive,
-                                     Status=a.Status,
+                                     IsActive = a.IsActive,
+                                     Status = a.Status,
                                      TotalRecords = total
                                  };
 
@@ -5298,8 +5307,8 @@ namespace DataLayer
             {
                 try
                 {
-                    var search = (from a in context.ZoneCity_Mapping where a.Zone_Id == param.Zone_id select a).ToList();
-                    if (search != null)
+                    var search = (from a in context.ZoneCity_Mapping where a.Zone_Id == param.Zone_id select a);
+                    if (search != null && search.Count() > 0)
                     {
                         context.ZoneCity_Mapping.RemoveRange(search);
                     }
@@ -5336,7 +5345,7 @@ namespace DataLayer
                 try
                 {
                     var search = (from a in context.m_ZoneMaster where a.Zone_id == param.Zone_id select a).SingleOrDefault();
-                    var boolIsActive= (param.IsActive == true)? 1 : 0;
+                    var boolIsActive = (param.IsActive == true) ? 1 : 0;
                     if (search != null)
                     {
                         if (param.Action == "ZoneMaster")
@@ -5348,13 +5357,14 @@ namespace DataLayer
                                 search.Edit_User = param.Edit_User;
                             }
                         }
-                       
+
                         var searchcities = (from b in context.ZoneCity_Mapping where b.Zone_Id == param.Zone_id select b).Count();
-                        if (searchcities > 0){
+                        if (searchcities > 0)
+                        {
                             int setstatus = 0;
                             string setNewStatus = "UPDATE ZoneCity_Mapping ";
-                            setNewStatus= setNewStatus+ " SET Edit_Date = GETDATE(),  IsActive = " + boolIsActive;
-                            setNewStatus = setNewStatus + " ,  Edit_User = " +"'"+ param.Edit_User + "'";
+                            setNewStatus = setNewStatus + " SET Edit_Date = GETDATE(),  IsActive = " + boolIsActive;
+                            setNewStatus = setNewStatus + " ,  Edit_User = " + "'" + param.Edit_User + "'";
                             setNewStatus = setNewStatus + " WHERE  Zone_Id = " + "'" + param.Zone_id + "'";
                             try { setstatus = context.Database.ExecuteSqlCommand(setNewStatus); } catch (Exception ex) { }
                         }
@@ -5377,37 +5387,60 @@ namespace DataLayer
             }
             return _msg;
         }
+
         //HotelList
-        public List<DC_ZoneHotelList>SearchZoneHotels(DataContracts.Masters.DC_ZoneRQ param)
+        //public List<DC_ZoneHotelList> SearchZoneHotels(DataContracts.Masters.DC_ZoneRQ param)
+        //{
+        //    try
+        //    {
+        //        using (ConsumerEntities context = new ConsumerEntities())
+        //        {
+        //            context.Database.CommandTimeout = 0;
+        //            int srid = 4326; //spatial reference ID
+        //            StringBuilder SearchZoneHotelQuery = new StringBuilder();
+        //            SearchZoneHotelQuery.Append(" DECLARE @FromPoint geography ");
+        //            SearchZoneHotelQuery.AppendLine(" SELECT @FromPoint = geography::Point('" + param.Latitude + "'" + ",'" + param.Longitude + "'," + srid + ") ");
+        //            SearchZoneHotelQuery.AppendLine(" Select   (@FromPoint.STDistance(geography::Point(Latitude, Longitude, " + srid + "))/1000) as Distance, Accommodation_Id, HotelName, Latitude, Longitude, city, CompanyRating ");
+        //            SearchZoneHotelQuery.AppendLine(" from Accommodation where country = " + "'" + param.CountryName + "'");
+        //            // SearchZoneHotelQuery.AppendLine(" and Latitude IS NOT NULL and Longitude IS NOT NULL ");
+        //            SearchZoneHotelQuery.AppendLine(" and @FromPoint.STDistance(geography::Point(Latitude, Longitude, " + srid + ")) <= " + param.DistanceRange);
+        //            SearchZoneHotelQuery.AppendLine("  AND TRY_CONVERT(float, Latitude) IS NOT NULL AND TRY_CONVERT(float, Longitude) IS NOT NULL ");
+        //            SearchZoneHotelQuery.AppendLine(" and (TRY_CONVERT(float, Latitude) >= -90 AND TRY_CONVERT(float, Latitude) <= 90) ");
+        //            SearchZoneHotelQuery.AppendLine(" and (TRY_CONVERT(float, Longitude) >= -15069 AND TRY_CONVERT(float, Longitude) <= 15069) ");
+
+        //            var res = context.Database.SqlQuery<DC_ZoneHotelList>(SearchZoneHotelQuery.ToString()).ToList();
+        //            return res.OrderBy(p => p.HotelName).ToList();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Hotels within Zone", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+        //    }
+        //}
+
+        public List<DC_ZoneHotelList> SearchZoneHotels(DataContracts.Masters.DC_ZoneRQ param)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    int srid = 4326; //spatial reference ID
-                    StringBuilder SearchZoneHotelQuery = new StringBuilder();
-                    SearchZoneHotelQuery.Append(" DECLARE @FromPoint geography ");
-                    SearchZoneHotelQuery.AppendLine(" SELECT @FromPoint = geography::Point('"+ param.Latitude + "'" + ",'" + param.Longitude + "'," + srid + ") ");
-                    SearchZoneHotelQuery.AppendLine(" Select   (@FromPoint.STDistance(geography::Point(Latitude, Longitude, " + srid + "))/1000) as Distance, Accommodation_Id, HotelName, Latitude, Longitude, city, country, FullAddress ");
-                    SearchZoneHotelQuery.AppendLine(" from Accommodation where country = " + "'" + param.CountryName + "'" );
-                   // SearchZoneHotelQuery.AppendLine(" and Latitude IS NOT NULL and Longitude IS NOT NULL ");
-                    SearchZoneHotelQuery.AppendLine(" and @FromPoint.STDistance(geography::Point(Latitude, Longitude, " + srid + ")) <= " + param.DistanceRange);
-                    SearchZoneHotelQuery.AppendLine("  AND TRY_CONVERT(float, Latitude) IS NOT NULL AND TRY_CONVERT(float, Longitude) IS NOT NULL ");
-                    SearchZoneHotelQuery.AppendLine(" and (TRY_CONVERT(float, Latitude) >= -90 AND TRY_CONVERT(float, Latitude) <= 90) ");
-                    SearchZoneHotelQuery.AppendLine(" and (TRY_CONVERT(float, Longitude) >= -15069 AND TRY_CONVERT(float, Longitude) <= 15069) ");
-                  
-                   var res = context.Database.SqlQuery<DC_ZoneHotelList>(SearchZoneHotelQuery.ToString()).ToList();
-                   //insert data in table
-                        //foreach (var item in res)
-                        //{
-                        //    ZoneProduct_Mapping zpm = new ZoneProduct_Mapping();
-                        //    zpm.Product_Id = item.Accommodation_Id;
-                        //    zpm.ZoneProductMapping_Id = Guid.NewGuid();
-                        //    zpm.Distance = Convert.ToDecimal(item.Distance);
-                        //    context.ZoneProduct_Mapping.Add(zpm);
-                        //}
-                        //context.SaveChanges();
-                    return res.OrderBy(p => p.HotelName).ToList();
+                    context.Database.CommandTimeout = 0;
+
+                    var Search = (from s in context.ZoneProduct_Mapping
+                                  join a in context.Accommodations on s.Product_Id equals a.Accommodation_Id
+                                  where s.Zone_Id == param.Zone_id
+                                  select new DC_ZoneHotelList
+                                  {
+                                      Accommodation_Id = s.Product_Id ?? Guid.Empty,
+                                      HotelName = a.HotelName,
+                                      City = a.city,
+                                      Distance = (double)(s.Distance) / 1000,
+                                      StarRating = a.CompanyRating,
+                                      Latitude = a.Latitude,
+                                      Longitude = a.Longitude,
+                                      Included = s.Included
+                                  });
+                    return Search.OrderBy(p => p.Distance).ToList();
                 }
             }
             catch (Exception ex)
@@ -5415,6 +5448,126 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Hotels within Zone", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        public DC_Message InsertZoneHotelsInTable(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            DC_Message _msg = new DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Database.CommandTimeout = 0;
+                    var search = (from s in context.ZoneProduct_Mapping where s.Zone_Id == param.Zone_id select s).FirstOrDefault();
+                    if (search != null)
+                    {
+                        if (param.includeUptoRange == 2000)
+                        {
+                            string Updatequery;
+                            Updatequery = " Update ZoneProduct_Mapping set Included= 0 where Zone_Id = '" + param.Zone_id + "' and Distance>2000";
+                            try
+                            {
+                                context.Database.ExecuteSqlCommand(Updatequery);
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            catch (Exception ex) { }
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAlreadyExist;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
+                        }
+                    }
+                    else
+                    {
+                        int srid = 4326; //spatial reference ID
+                        int DistanceUpto = 10000;//param.DistanceRange
+                        StringBuilder SearchZoneHotelQuery = new StringBuilder();
+                        SearchZoneHotelQuery.Append(" DECLARE @FromPoint geography ");
+                        SearchZoneHotelQuery.AppendLine(" SELECT @FromPoint = geography::Point('" + param.Latitude + "'" + ",'" + param.Longitude + "'," + srid + ") ");
+                        SearchZoneHotelQuery.AppendLine(" Select   (@FromPoint.STDistance(geography::Point(Latitude, Longitude, " + srid + "))) as Distance, Accommodation_Id,ProductCategorySubType");
+                        SearchZoneHotelQuery.AppendLine(" from Accommodation where country = " + "'" + param.CountryName + "'");
+                        // SearchZoneHotelQuery.AppendLine(" and Latitude IS NOT NULL and Longitude IS NOT NULL ");
+                        SearchZoneHotelQuery.AppendLine(" and @FromPoint.STDistance(geography::Point(Latitude, Longitude, " + srid + ")) <= " + DistanceUpto);
+                        SearchZoneHotelQuery.AppendLine("  AND TRY_CONVERT(float, Latitude) IS NOT NULL AND TRY_CONVERT(float, Longitude) IS NOT NULL ");
+                        SearchZoneHotelQuery.AppendLine(" and (TRY_CONVERT(float, Latitude) >= -90 AND TRY_CONVERT(float, Latitude) <= 90) ");
+                        SearchZoneHotelQuery.AppendLine(" and (TRY_CONVERT(float, Longitude) >= -15069 AND TRY_CONVERT(float, Longitude) <= 15069) ");
+
+
+
+                        var res = context.Database.SqlQuery<DC_ZoneHotelList>(SearchZoneHotelQuery.ToString()).ToList();
+                        //insert data in table
+                        foreach (var item in res)
+                        {
+                            ZoneProduct_Mapping zpm = new ZoneProduct_Mapping();
+                            zpm.Zone_Id = param.Zone_id;
+                            zpm.Product_Id = item.Accommodation_Id;
+                            zpm.ZoneProductMapping_Id = Guid.NewGuid();
+                            zpm.ProductType = item.ProductCategorySubType;
+                            zpm.Distance = Convert.ToDecimal(item.Distance);
+                            zpm.IsActive = true;
+                            zpm.Included = (item.Distance <= 4000) ? true : false;
+                            zpm.Create_Date = DateTime.Now;
+                            zpm.Create_User = param.Create_User;
+                            context.ZoneProduct_Mapping.Add(zpm);
+                        }
+                        if (context.SaveChanges() > 0)
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Hotels within Zone", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+            return _msg;
+        }
+
+        public DC_Message DeleteZoneHotelsInTable(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            DC_Message _msg = new DC_Message();
+            if (param.Zone_id == Guid.Empty)
+            {
+                _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning;
+                _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
+                return _msg;
+            }
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                try
+                {
+                    var search = (from a in context.ZoneProduct_Mapping where a.Zone_Id == param.Zone_id select a);
+                    if (search != null && search.Count() > 0)
+                    {
+                        context.ZoneProduct_Mapping.RemoveRange(search);
+                    }
+                    if (context.SaveChanges() > 0)
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                    }
+                    else
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding zone master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                }
+            }
+            return _msg;
+        }
+
         #endregion
     }
 }
