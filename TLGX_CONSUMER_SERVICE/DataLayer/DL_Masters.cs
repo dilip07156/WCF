@@ -5472,6 +5472,18 @@ namespace DataLayer
                             }
                             catch (Exception ex) { }
                         }
+                        else if (param.includeUptoRange == 4000)
+                        {
+                            string Updatequery;
+                            Updatequery = " Update ZoneProduct_Mapping set Included= 1 where Zone_Id = '" + param.Zone_id + "' and Distance<= 4000";
+                            try
+                            {
+                                context.Database.ExecuteSqlCommand(Updatequery);
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            catch (Exception ex) { }
+                        }
                         else
                         {
                             _msg.StatusMessage = ReadOnlyMessage.strAlreadyExist;
