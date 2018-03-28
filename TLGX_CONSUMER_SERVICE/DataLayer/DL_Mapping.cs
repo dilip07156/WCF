@@ -6677,6 +6677,7 @@ namespace DataLayer
                                                MasterCountryName = jd.Name,
                                                MasterCityCode = ctld.Code,
                                                Master_CityName = ctld.Name,
+                                               Master_City_id = ctld.City_Id,
                                                MasterStateName = ctld.StateName,
                                                MasterStateCode = ctld.StateCode,
                                                StateCode = a.StateCode,
