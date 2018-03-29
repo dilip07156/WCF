@@ -814,6 +814,20 @@ namespace ConsumerSvc
                 return obj.SearchZoneHotels(param);
             }
         }
+        public DataContracts.DC_Message InsertZoneHotelsInTable(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.InsertZoneHotelsInTable(param);
+            }
+        }
+        public DataContracts.DC_Message DeleteZoneHotelsInTable(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.DeleteZoneHotelsInTable(param);
+            }
+        }
         #endregion
     }
 }

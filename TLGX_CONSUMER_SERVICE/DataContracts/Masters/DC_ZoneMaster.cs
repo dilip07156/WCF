@@ -53,6 +53,8 @@ namespace DataContracts.Masters
         public int DistanceRange { get; set; }
         [DataMember]
         public string GooglePlaceId { get; set; }
+        [DataMember]
+        public int includeUptoRange { get; set; }
 
     }
     [DataContract]
@@ -127,6 +129,11 @@ namespace DataContracts.Masters
         public string Country { get; set; }
         [DataMember]
         public string FullAddress { get; set; }
-        
+        [DataMember]
+        public string StarRating { get; set; }
+        [DataMember]
+        public string ProductCategorySubType { get; set; }
+        [DataMember]
+        public bool? Included { get; set; }
     }
 }
