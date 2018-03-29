@@ -5509,9 +5509,17 @@ namespace DataLayer
                     if (search != null)
                     {
                             string UpdateIsIncluded = " UPDATE ZoneProduct_Mapping SET Included = ( case when Distance <=  " + param.Zone_Radius + "  then '1' else '0' end ) WHERE zone_id ='" + param.Zone_id + "'";
+                           int count= context.Database.ExecuteSqlCommand(UpdateIsIncluded);
+                        if (count > 0)
+                        {
                             _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
                             _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
-                       
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
                     }
                     else
                     {
