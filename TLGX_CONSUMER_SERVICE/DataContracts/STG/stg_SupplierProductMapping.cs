@@ -141,6 +141,8 @@ namespace DataContracts.STG
         public string TLGXProductCode { get; set; }
         [DataMember]
         public Guid? SupplierImportFile_Id { get; set; }
+        [DataMember]
+        public string ProductType { get; set; }
 
 
     }
@@ -148,6 +150,9 @@ namespace DataContracts.STG
     [DataContract]
     public class DC_stg_SupplierProductMapping_RQ
     {
+
+        [DataMember]
+        public Guid? SupplierImportFile_Id { get; set; }
         [DataMember]
         public Nullable<System.Guid> stg_AccoMapping_Id { get; set; }
 
