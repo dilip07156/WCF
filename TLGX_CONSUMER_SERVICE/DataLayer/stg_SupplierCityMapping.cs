@@ -33,5 +33,6 @@ namespace DataLayer
         public string Longitude { get; set; }
         public Nullable<System.Guid> Country_Id { get; set; }
         public Nullable<System.Guid> Supplier_Id { get; set; }
+        public Nullable<System.Guid> SupplierImportFile_Id { get; set; }
     }
 }

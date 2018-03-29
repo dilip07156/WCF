@@ -512,10 +512,6 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "Master/Zone/SearchZoneCities", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         IList<DC_ZoneCitiesSearch>SearchZoneCities(DataContracts.Masters.DC_ZoneRQ RQ);
 
-        [OperationContract]
-        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "POST", UriTemplate = "Master/Zone/DeleteZoneCities", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DataContracts.DC_Message DeleteZoneCities(DataContracts.Masters.DC_ZoneRQ RQ);
 
 
         [OperationContract]
@@ -535,8 +531,13 @@ namespace OperationContracts
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "POST", UriTemplate = "Master/Zone/DeleteFromZoneProductTable", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        [WebInvoke(Method = "POST", UriTemplate = "Master/Zone/DeleteZoneHotelsInTable", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataContracts.DC_Message DeleteZoneHotelsInTable(DataContracts.Masters.DC_ZoneRQ param);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Master/Zone/UpdateZoneHotelsInTable", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message UpdateZoneHotelsInTable(DataContracts.Masters.DC_ZoneRQ param);
         #endregion
     }
 }

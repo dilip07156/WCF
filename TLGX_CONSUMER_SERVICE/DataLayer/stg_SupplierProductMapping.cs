@@ -54,5 +54,6 @@ namespace DataLayer
         public Nullable<System.Guid> Supplier_Id { get; set; }
         public string TLGXProductCode { get; set; }
         public string ProductType { get; set; }
+        public Nullable<System.Guid> SupplierImportFile_Id { get; set; }
     }
 }

@@ -50,11 +50,9 @@ namespace DataContracts.Masters
         [DataMember]
         public string CountryName { get; set; }
         [DataMember]
-        public int DistanceRange { get; set; }
-        [DataMember]
         public string GooglePlaceId { get; set; }
         [DataMember]
-        public int includeUptoRange { get; set; }
+        public double? Zone_Radius { get; set; }
 
     }
     [DataContract]
@@ -84,6 +82,8 @@ namespace DataContracts.Masters
         public bool IsActive { get; set; }
         [DataMember]
         public int? NoOfHotels { get; set; }
+        [DataMember]
+        public double? Zone_Radius { get; set; }
         [DataMember]
         public int? TotalRecords { get; set; }
         

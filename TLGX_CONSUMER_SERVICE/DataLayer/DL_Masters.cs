@@ -5050,6 +5050,7 @@ namespace DataLayer
                             Longitude = param.Longitude,
                             IsActive = true,//param.Status
                             Status = "Active",
+                            Zone_Radius=(decimal)param.Zone_Radius,
                             Create_Date = param.Create_Date,
                             Create_User = param.Create_User
                         };
@@ -5077,6 +5078,7 @@ namespace DataLayer
                             search.Longitude = param.Longitude;
                             search.Edit_Date = param.Edit_Date;
                             search.Edit_User = param.Edit_User;
+                            search.Zone_Radius = (decimal)param.Zone_Radius;
                         }
                         else
                         {
@@ -5211,7 +5213,8 @@ namespace DataLayer
                             IsActive = m.zm.IsActive,
                             Status = m.zm.Status,
                             Latitude = m.zm.Latitude,
-                            Longitude = m.zm.Longitude
+                            Longitude = m.zm.Longitude,
+                           Zone_Radius=(double)m.zm.Zone_Radius,
                             //NoOfHotels= (select)
                         }).OrderBy(x => x.Zone_Name).ToList();
 
@@ -5239,6 +5242,7 @@ namespace DataLayer
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude,
                                      NoOfHotels=a.NoOfHotels,
+                                     Zone_Radius=a.Zone_Radius,
                                      TotalRecords = total
                                  };
 
@@ -5290,45 +5294,8 @@ namespace DataLayer
             }
             catch
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Zone Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Zone cities", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
-        }
-        //delete
-        public DataContracts.DC_Message DeleteZoneCities(DataContracts.Masters.DC_ZoneRQ param)
-        {
-            DC_Message _msg = new DC_Message();
-            if (param.Zone_id == Guid.Empty)
-            {
-                _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning;
-                _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
-                return _msg;
-            }
-            using (ConsumerEntities context = new ConsumerEntities())
-            {
-                try
-                {
-                    var search = (from a in context.ZoneCity_Mapping where a.Zone_Id == param.Zone_id select a);
-                    if (search != null && search.Count() > 0)
-                    {
-                        context.ZoneCity_Mapping.RemoveRange(search);
-                    }
-                    if (context.SaveChanges() > 0)
-                    {
-                        _msg.StatusMessage = ReadOnlyMessage.strDeleted;
-                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
-                    }
-                    else
-                    {
-                        _msg.StatusMessage = ReadOnlyMessage.strFailed;
-                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
-                    }
-                }
-                catch (Exception e)
-                {
-                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding zone master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
-                }
-            }
-            return _msg;
         }
 
         public DataContracts.DC_Message DeactivateOrActivateZones(DataContracts.Masters.DC_ZoneRQ param)
@@ -5382,42 +5349,13 @@ namespace DataLayer
                 }
                 catch (Exception e)
                 {
-                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding zone master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while deactivating zone master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
                 }
             }
             return _msg;
         }
 
-        //HotelList
-        //public List<DC_ZoneHotelList> SearchZoneHotels(DataContracts.Masters.DC_ZoneRQ param)
-        //{
-        //    try
-        //    {
-        //        using (ConsumerEntities context = new ConsumerEntities())
-        //        {
-        //            context.Database.CommandTimeout = 0;
-        //            int srid = 4326; //spatial reference ID
-        //            StringBuilder SearchZoneHotelQuery = new StringBuilder();
-        //            SearchZoneHotelQuery.Append(" DECLARE @FromPoint geography ");
-        //            SearchZoneHotelQuery.AppendLine(" SELECT @FromPoint = geography::Point('" + param.Latitude + "'" + ",'" + param.Longitude + "'," + srid + ") ");
-        //            SearchZoneHotelQuery.AppendLine(" Select   (@FromPoint.STDistance(geography::Point(Latitude, Longitude, " + srid + "))/1000) as Distance, Accommodation_Id, HotelName, Latitude, Longitude, city, CompanyRating ");
-        //            SearchZoneHotelQuery.AppendLine(" from Accommodation where country = " + "'" + param.CountryName + "'");
-        //            // SearchZoneHotelQuery.AppendLine(" and Latitude IS NOT NULL and Longitude IS NOT NULL ");
-        //            SearchZoneHotelQuery.AppendLine(" and @FromPoint.STDistance(geography::Point(Latitude, Longitude, " + srid + ")) <= " + param.DistanceRange);
-        //            SearchZoneHotelQuery.AppendLine("  AND TRY_CONVERT(float, Latitude) IS NOT NULL AND TRY_CONVERT(float, Longitude) IS NOT NULL ");
-        //            SearchZoneHotelQuery.AppendLine(" and (TRY_CONVERT(float, Latitude) >= -90 AND TRY_CONVERT(float, Latitude) <= 90) ");
-        //            SearchZoneHotelQuery.AppendLine(" and (TRY_CONVERT(float, Longitude) >= -15069 AND TRY_CONVERT(float, Longitude) <= 15069) ");
-
-        //            var res = context.Database.SqlQuery<DC_ZoneHotelList>(SearchZoneHotelQuery.ToString()).ToList();
-        //            return res.OrderBy(p => p.HotelName).ToList();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Hotels within Zone", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
-        //    }
-        //}
-
+      
         public List<DC_ZoneHotelList> SearchZoneHotels(DataContracts.Masters.DC_ZoneRQ param)
         {
             try
@@ -5434,7 +5372,7 @@ namespace DataLayer
                                       Accommodation_Id = s.Product_Id ?? Guid.Empty,
                                       HotelName = a.HotelName,
                                       City = a.city,
-                                      Distance = (double)(s.Distance) / 1000,
+                                      Distance = (double)(s.Distance),
                                       StarRating = a.CompanyRating,
                                       Latitude = a.Latitude,
                                       Longitude = a.Longitude,
@@ -5460,44 +5398,18 @@ namespace DataLayer
                     var search = (from s in context.ZoneProduct_Mapping where s.Zone_Id == param.Zone_id select s).FirstOrDefault();
                     if (search != null)
                     {
-                        if (param.includeUptoRange == 2000)
-                        {
-                            string Updatequery;
-                            Updatequery = " Update ZoneProduct_Mapping set Included= 0 where Zone_Id = '" + param.Zone_id + "' and Distance>2000";
-                            try
-                            {
-                                context.Database.ExecuteSqlCommand(Updatequery);
-                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
-                            }
-                            catch (Exception ex) { }
-                        }
-                        else if (param.includeUptoRange == 4000)
-                        {
-                            string Updatequery;
-                            Updatequery = " Update ZoneProduct_Mapping set Included= 1 where Zone_Id = '" + param.Zone_id + "' and Distance<= 4000";
-                            try
-                            {
-                                context.Database.ExecuteSqlCommand(Updatequery);
-                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
-                            }
-                            catch (Exception ex) { }
-                        }
-                        else
-                        {
                             _msg.StatusMessage = ReadOnlyMessage.strAlreadyExist;
                             _msg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
-                        }
+                       
                     }
                     else
                     {
                         int srid = 4326; //spatial reference ID
-                        int DistanceUpto = 10000;//param.DistanceRange
+                        int DistanceUpto = 10000;
                         StringBuilder SearchZoneHotelQuery = new StringBuilder();
                         SearchZoneHotelQuery.Append(" DECLARE @FromPoint geography ");
                         SearchZoneHotelQuery.AppendLine(" SELECT @FromPoint = geography::Point('" + param.Latitude + "'" + ",'" + param.Longitude + "'," + srid + ") ");
-                        SearchZoneHotelQuery.AppendLine(" Select   (@FromPoint.STDistance(geography::Point(Latitude, Longitude, " + srid + "))) as Distance, Accommodation_Id,ProductCategorySubType");
+                        SearchZoneHotelQuery.AppendLine(" Select   (@FromPoint.STDistance(geography::Point(Latitude, Longitude, " + srid + "))/1000) as Distance, Accommodation_Id,ProductCategorySubType");
                         SearchZoneHotelQuery.AppendLine(" from Accommodation where country = " + "'" + param.CountryName + "'");
                         // SearchZoneHotelQuery.AppendLine(" and Latitude IS NOT NULL and Longitude IS NOT NULL ");
                         SearchZoneHotelQuery.AppendLine(" and @FromPoint.STDistance(geography::Point(Latitude, Longitude, " + srid + ")) <= " + DistanceUpto);
@@ -5518,7 +5430,7 @@ namespace DataLayer
                             zpm.ProductType = item.ProductCategorySubType;
                             zpm.Distance = Convert.ToDecimal(item.Distance);
                             zpm.IsActive = true;
-                            zpm.Included = (item.Distance <= 4000) ? true : false;
+                            zpm.Included = (item.Distance <= 4.0) ? true : false;
                             zpm.Create_Date = DateTime.Now;
                             zpm.Create_User = param.Create_User;
                             context.ZoneProduct_Mapping.Add(zpm);
@@ -5538,7 +5450,7 @@ namespace DataLayer
             }
             catch (Exception ex)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Hotels within Zone", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while inserting Hotels within Zone", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
             return _msg;
         }
@@ -5574,12 +5486,46 @@ namespace DataLayer
                 }
                 catch (Exception e)
                 {
-                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding zone master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while deleting zone master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
                 }
             }
             return _msg;
         }
 
+        public DC_Message UpdateZoneHotelsInTable(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            DC_Message _msg = new DC_Message();
+            if (param.Zone_id == Guid.Empty)
+            {
+                _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning;
+                _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
+                return _msg;
+            }
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                try
+                {
+                    var search = (from s in context.ZoneProduct_Mapping where s.Zone_Id == param.Zone_id select s).FirstOrDefault();
+                    if (search != null)
+                    {
+                            string UpdateIsIncluded = " UPDATE ZoneProduct_Mapping SET Included = ( case when Distance <=  " + param.Zone_Radius + "  then '1' else '0' end ) WHERE zone_id ='" + param.Zone_id + "'";
+                            _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                       
+                    }
+                    else
+                    {
+                        _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Failed;
+                        _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while Updating zone master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                }
+            }
+            return _msg;
+        }
         #endregion
     }
 }
