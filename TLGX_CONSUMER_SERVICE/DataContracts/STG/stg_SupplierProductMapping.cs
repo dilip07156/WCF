@@ -139,6 +139,8 @@ namespace DataContracts.STG
 
         [DataMember]
         public string TLGXProductCode { get; set; }
+        [DataMember]
+        public Guid? SupplierImportFile_Id { get; set; }
 
 
     }
