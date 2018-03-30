@@ -61,8 +61,14 @@ namespace DataContracts.Mapping
         string _Location;
 
 
+
         [DataMember]
         public Guid ReRunSupplierImporrtFile_Id { get; set; }
+
+        [DataMember]
+        public string ProductType { get; set; }
+        [DataMember]
+        public string OldProductType { get; set; }
 
         [DataMember]
         public int ReRunBatch { get; set; }
@@ -85,6 +91,13 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public string SystemLongitude { get; set; }
+
+        [DataMember]
+        public string OldLatitude { get; set; }
+
+
+        [DataMember]
+        public string OldLongitude { get; set; }
 
         [DataMember]
         public string Latitude_Tx { get; set; }

@@ -1542,8 +1542,11 @@ namespace DataLayer
 
                     if (!string.IsNullOrWhiteSpace(mySupplier))
                     {
+                        Guid File_Id = Guid.Empty;
+                        File_Id = lstobj[0].SupplierImportFile_Id ?? Guid.Empty;
                         var oldRecords = (from y in context.stg_SupplierCountryMapping
                                           where y.SupplierName.Trim().ToUpper() == mySupplier.Trim().ToUpper()
+                                          && y.SupplierImportFile_Id == File_Id
                                           select y).ToList();
                         context.stg_SupplierCountryMapping.RemoveRange(oldRecords);
                         context.SaveChanges();
@@ -1572,6 +1575,7 @@ namespace DataLayer
                                 objNew.Longitude = obj.Longitude;
                                 objNew.ContinentCode = obj.ContinentCode;
                                 objNew.ContinentName = obj.ContinentName;
+                                objNew.SupplierImportFile_Id = File_Id;
                                 context.stg_SupplierCountryMapping.Add(objNew);
                                 context.SaveChanges();
                             }
@@ -1608,6 +1612,13 @@ namespace DataLayer
                     {
                         stgSearch = from a in stgSearch
                                     where a.stg_Country_Id == RQ.stg_Country_Id
+                                    select a;
+                    }
+
+                    if (RQ.SupplierImportFile_Id.HasValue)
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierImportFile_Id == RQ.SupplierImportFile_Id
                                     select a;
                     }
 
@@ -1662,7 +1673,8 @@ namespace DataLayer
                                          Latitude = a.Latitude,
                                          Longitude = a.Longitude,
                                          ContinentCode = a.ContinentCode,
-                                         ContinentName = a.ContinentName
+                                         ContinentName = a.ContinentName,
+                                         SupplierImportFile_Id = a.SupplierImportFile_Id
                                      }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 
@@ -1692,6 +1704,13 @@ namespace DataLayer
                     {
                         stgSearch = from a in stgSearch
                                     where a.stg_City_Id == RQ.stg_City_Id
+                                    select a;
+                    }
+
+                    if (RQ.SupplierImportFile_Id.HasValue)
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierImportFile_Id == RQ.SupplierImportFile_Id
                                     select a;
                     }
 
@@ -1778,7 +1797,8 @@ namespace DataLayer
                                          Latitude = a.Latitude,
                                          Longitude = a.Longitude,
                                          Country_Id = a.Country_Id,
-                                         Supplier_Id = a.Supplier_Id
+                                         Supplier_Id = a.Supplier_Id,
+                                         SupplierImportFile_Id = a.SupplierImportFile_Id
                                      }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 
@@ -1806,10 +1826,13 @@ namespace DataLayer
                 {
                     string mySupplier = lstobj[0].SupplierName;
                     Guid? mySupplier_Id = lstobj[0].Supplier_Id;
+                    Guid File_Id = Guid.Empty;
+                    File_Id = lstobj[0].SupplierImportFile_Id ?? Guid.Empty;
                     if (!string.IsNullOrWhiteSpace(mySupplier))
                     {
                         var oldRecords = (from y in context.stg_SupplierCityMapping
                                           where y.SupplierName.Trim().ToUpper() == mySupplier.Trim().ToUpper()
+                                          && y.SupplierImportFile_Id == File_Id
                                           select y).ToList();
                         context.stg_SupplierCityMapping.RemoveRange(oldRecords);
                         context.SaveChanges();
@@ -1868,6 +1891,7 @@ namespace DataLayer
                                 objNew.CountryName = geo.Where(s => s.Country_Id == objNew.Country_Id).Select(s1 => s1.CountryName).FirstOrDefault();
                             }
                             objNew.Supplier_Id = mySupplier_Id;
+                            objNew.SupplierImportFile_Id = File_Id;
                             context.stg_SupplierCityMapping.Add(objNew);
 
                             //}
@@ -1902,13 +1926,15 @@ namespace DataLayer
 
                 string mySupplier = lstobj[0].SupplierName;
                 Guid? mySupplier_Id = lstobj[0].Supplier_Id;
-
+                Guid File_Id = Guid.Empty;
+                File_Id = lstobj[0].SupplierImportFile_Id ?? Guid.Empty;
                 if (!string.IsNullOrWhiteSpace(mySupplier))
                 {
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
                         var oldRecords = (from y in context.stg_SupplierProductMapping //.AsNoTracking()
                                           where y.Supplier_Id == mySupplier_Id
+                                          && y.SupplierImportFile_Id == File_Id
                                           select y);
                         if (oldRecords.Count() > 0)
                         {
@@ -2091,7 +2117,8 @@ namespace DataLayer
                             objNew.Action = obj.Action;
                             objNew.UpdateType = obj.UpdateType;
                             objNew.ActionText = obj.ActionText;
-
+                            objNew.ProductType = obj.ProductType;
+                            objNew.SupplierImportFile_Id = obj.SupplierImportFile_Id;
                             lstobjNew.Add(objNew);
                         }
                         context.stg_SupplierProductMapping.AddRange(lstobjNew);
@@ -2127,11 +2154,13 @@ namespace DataLayer
                 {
                     string mySupplier = lstobj[0].SupplierName;
                     Guid? mySupplier_Id = lstobj[0].Supplier_Id;
-
+                    Guid File_Id = Guid.Empty;
+                    File_Id = lstobj[0].SupplierImportFile_Id ?? Guid.Empty;
                     if (!string.IsNullOrWhiteSpace(mySupplier))
                     {
                         var oldRecords = (from y in context.stg_SupplierHotelRoomMapping
                                           where y.SupplierName.Trim().ToUpper() == mySupplier.Trim().ToUpper()
+                                          && y.SupplierImportFile_Id == File_Id
                                           select y).ToList();
                         context.stg_SupplierHotelRoomMapping.RemoveRange(oldRecords);
                         context.SaveChanges();
@@ -2176,7 +2205,8 @@ namespace DataLayer
                                 SupplierRoomCategoryId = obj.SupplierRoomCategoryId,
                                 SupplierRoomId = obj.SupplierRoomId,
                                 Supplier_Id = obj.Supplier_Id,
-                                TX_RoomName = obj.TX_RoomName
+                                TX_RoomName = obj.TX_RoomName,
+                                SupplierImportFile_Id = obj.SupplierImportFile_Id
                             };
                             context.stg_SupplierHotelRoomMapping.Add(objNew);
                         }
@@ -2215,6 +2245,13 @@ namespace DataLayer
                                     select a;
                     }
 
+
+                    if (RQ.SupplierImportFile_Id.HasValue)
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierImportFile_Id == RQ.SupplierImportFile_Id
+                                    select a;
+                    }
                     if (!(RQ.Supplier_Id == Guid.Empty))
                     {
                         stgSearch = from a in stgSearch
@@ -2348,7 +2385,9 @@ namespace DataLayer
                                          Country_Id = a.Country_Id,
                                          City_Id = a.City_Id,
                                          Google_Place_Id = a.Google_Place_Id,
-                                         Supplier_Id = a.Supplier_Id
+                                         Supplier_Id = a.Supplier_Id,
+                                         ProductType = a.ProductType,
+                                         SupplierImportFile_Id = a.SupplierImportFile_Id
                                      }
                                         ).ToList();
                     //.Skip(skip).Take(RQ.PageSize).ToList();
@@ -2379,6 +2418,15 @@ namespace DataLayer
                     {
                         stgSearch = from a in stgSearch
                                     where a.stg_SupplierHotelRoomMapping_Id == RQ.stg_SupplierHotelRoomMapping_Id
+                                    select a;
+                    }
+
+
+
+                    if (RQ.SupplierImportFile_Id.HasValue)
+                    {
+                        stgSearch = from a in stgSearch
+                                    where a.SupplierImportFile_Id == RQ.SupplierImportFile_Id
                                     select a;
                     }
 
@@ -2489,7 +2537,8 @@ namespace DataLayer
                                          SupplierRoomId = a.SupplierRoomId,
                                          SupplierRoomTypeCode = a.SupplierRoomTypeCode,
                                          Supplier_Id = a.Supplier_Id,
-                                         TX_RoomName = a.TX_RoomName
+                                         TX_RoomName = a.TX_RoomName,
+                                         SupplierImportFile_Id = a.SupplierImportFile_Id
                                      }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 
