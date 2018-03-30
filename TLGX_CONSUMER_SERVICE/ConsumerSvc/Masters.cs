@@ -831,6 +831,13 @@ namespace ConsumerSvc
                 return obj.UpdateZoneHotelsInTable(param);
             }
         }
+        public DC_Message IncludeExcludeHotels(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.IncludeExcludeHotels(param);
+            }
+        }
         #endregion
     }
 }

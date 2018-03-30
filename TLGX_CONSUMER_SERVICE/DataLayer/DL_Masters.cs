@@ -5174,6 +5174,7 @@ namespace DataLayer
                 {
                     var CityMasterIQ = context.m_CityMaster.AsQueryable();
                     var ZonemasterIQ = context.m_ZoneMaster.AsQueryable();
+                    var ZoneCityMasterIQ = context.ZoneCity_Mapping.AsQueryable().Where(s => s.IsActive == true);
                     if (param.Zone_id != Guid.Empty)
                     {
                         ZonemasterIQ = ZonemasterIQ.Where(x => x.Zone_id == param.Zone_id);
@@ -5198,7 +5199,7 @@ namespace DataLayer
                     {
                         ZonemasterIQ = ZonemasterIQ.Where(x => x.Status == param.Status);
                     }
-                    var search = context.ZoneCity_Mapping
+                    var search = ZoneCityMasterIQ
                         .Join(CityMasterIQ, zcm => zcm.City_Id, cm => cm.City_Id, (zcm, cm) => new { zcm, cm })
                         .Join(ZonemasterIQ, zcmZ => zcmZ.zcm.Zone_Id, zm => zm.Zone_id, (zcmZ, zm) => new { zcmZ, zm })
                         .Select(m => new DC_ZoneSearch
@@ -5270,7 +5271,8 @@ namespace DataLayer
                             Zone_id = m.zcm.Zone_Id,
                             City_id = m.zcm.City_Id,
                             IsActive = m.zcm.IsActive,
-                            Status = m.zcm.Status
+                            Status = m.zcm.Status,
+                            ZoneCityMapping_Id=m.zcm.ZoneCityMapping_Id
                         }).OrderBy(x => x.CityName).ToList();
 
                     int total = search.Count();
@@ -5286,6 +5288,7 @@ namespace DataLayer
                                      City_id = a.City_id,
                                      IsActive = a.IsActive,
                                      Status = a.Status,
+                                     ZoneCityMapping_Id=a.ZoneCityMapping_Id,
                                      TotalRecords = total
                                  };
 
@@ -5313,6 +5316,7 @@ namespace DataLayer
                 {
                     var search = (from a in context.m_ZoneMaster where a.Zone_id == param.Zone_id select a).SingleOrDefault();
                     var boolIsActive = (param.IsActive == true) ? 1 : 0;
+                    var Newstatus =( boolIsActive==1) ? "Active":"Inactive";
                     if (search != null)
                     {
                         if (param.Action == "ZoneMaster")
@@ -5323,24 +5327,58 @@ namespace DataLayer
                                 search.Edit_Date = param.Edit_Date;
                                 search.Edit_User = param.Edit_User;
                             }
-                        }
+                            var searchcities = (from b in context.ZoneCity_Mapping where b.Zone_Id == param.Zone_id select b).Count();
+                            if (searchcities > 0)
+                            {
+                                int setstatus = 0;
+                                string setNewStatus = "UPDATE ZoneCity_Mapping ";
+                                setNewStatus = setNewStatus + " SET Edit_Date = GETDATE(),  IsActive = " + boolIsActive;
+                                setNewStatus = setNewStatus + " ,  Edit_User = " + "'" + param.Edit_User + "'";
+                                setNewStatus = setNewStatus + " WHERE  Zone_Id = " + "'" + param.Zone_id + "'";
+                                try { setstatus = context.Database.ExecuteSqlCommand(setNewStatus); } catch (Exception ex) { }
+                            }
+                            if (context.SaveChanges() > 0)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
 
-                        var searchcities = (from b in context.ZoneCity_Mapping where b.Zone_Id == param.Zone_id select b).Count();
-                        if (searchcities > 0)
+                        }
+                        else
                         {
-                            int setstatus = 0;
-                            string setNewStatus = "UPDATE ZoneCity_Mapping ";
-                            setNewStatus = setNewStatus + " SET Edit_Date = GETDATE(),  IsActive = " + boolIsActive;
-                            setNewStatus = setNewStatus + " ,  Edit_User = " + "'" + param.Edit_User + "'";
-                            setNewStatus = setNewStatus + " WHERE  Zone_Id = " + "'" + param.Zone_id + "'";
-                            try { setstatus = context.Database.ExecuteSqlCommand(setNewStatus); } catch (Exception ex) { }
+                            if (param.ZoneCityMapping_Id != Guid.Empty)
+                            {
+                                int setCount = 0;
+                                string setupdateCity = "UPDATE ZoneCity_Mapping ";
+                                setupdateCity = setupdateCity + " SET Edit_Date = GETDATE(),  IsActive = " + boolIsActive;
+                                setupdateCity = setupdateCity + " ,  Edit_User = " + "'" + param.Edit_User + "'";
+                                setupdateCity = setupdateCity + " ,  Status = " + "'" + Newstatus + "'";
+                                setupdateCity = setupdateCity + " WHERE  ZoneCityMapping_Id = " + "'" + param.ZoneCityMapping_Id + "'";
+                                try { setCount = context.Database.ExecuteSqlCommand(setupdateCity); } catch (Exception ex) { }
+                                if (setCount > 0)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
+                            }
+                            else
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                            }
                         }
                     }
-                    if (context.SaveChanges() > 0)
-                    {
-                        _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
-                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
-                    }
+                   
                     else
                     {
                         _msg.StatusMessage = ReadOnlyMessage.strFailed;
@@ -5370,6 +5408,7 @@ namespace DataLayer
                                   select new DC_ZoneHotelList
                                   {
                                       Accommodation_Id = s.Product_Id ?? Guid.Empty,
+                                      ZoneProductMapping_Id= s.ZoneProductMapping_Id,
                                       HotelName = a.HotelName,
                                       City = a.city,
                                       Distance = (double)(s.Distance),
@@ -5533,6 +5572,42 @@ namespace DataLayer
                 }
             }
             return _msg;
+        }
+        public DC_Message IncludeExcludeHotels(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            DC_Message _msg = new DC_Message();
+            if(param.ZoneProductMapping_Id==null || param.ZoneProductMapping_Id == Guid.Empty)
+            {
+                _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning;
+                _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
+                return _msg;
+            }
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                try
+                {
+                    var search = (from a in context.ZoneProduct_Mapping where param.ZoneProductMapping_Id == a.ZoneProductMapping_Id select a).First();
+                    if (search!=null)
+                    {
+                        search.Included = param.Included;
+                        search.Edit_Date = DateTime.Now;
+                        search.Edit_User = param.Edit_User;
+                        context.SaveChanges();
+                        _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success;
+                        _msg.StatusMessage = DataContracts.ReadOnlyMessage.strUpdatedSuccessfully;
+                    }
+                    else
+                    {
+                        _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Failed;
+                        _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while includeing/ExcludingZone", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                }
+            }
+                    return _msg;
         }
         #endregion
     }

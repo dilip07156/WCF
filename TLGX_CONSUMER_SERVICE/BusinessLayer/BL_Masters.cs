@@ -764,6 +764,13 @@ namespace BusinessLayer
                 return obj.UpdateZoneHotelsInTable(param);
             }
         }
+        public DC_Message IncludeExcludeHotels(DataContracts.Masters.DC_ZoneRQ param)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.IncludeExcludeHotels(param);
+            }
+        }
         #endregion
     }
 }
