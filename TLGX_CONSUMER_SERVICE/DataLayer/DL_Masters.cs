@@ -5469,7 +5469,7 @@ namespace DataLayer
                             zpm.ProductType = item.ProductCategorySubType;
                             zpm.Distance = Convert.ToDecimal(item.Distance);
                             zpm.IsActive = true;
-                            zpm.Included = (item.Distance <= 4.0) ? true : false;
+                            zpm.Included = (item.Distance <= param.Zone_Radius) ? true : false;
                             zpm.Create_Date = DateTime.Now;
                             zpm.Create_User = param.Create_User;
                             context.ZoneProduct_Mapping.Add(zpm);
