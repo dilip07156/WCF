@@ -29,5 +29,6 @@ namespace DataLayer
         public string Longitude { get; set; }
         public string ContinentCode { get; set; }
         public string ContinentName { get; set; }
+        public Nullable<System.Guid> SupplierImportFile_Id { get; set; }
     }
 }

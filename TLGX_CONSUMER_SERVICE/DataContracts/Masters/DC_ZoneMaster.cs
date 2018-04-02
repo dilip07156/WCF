@@ -17,6 +17,9 @@ namespace DataContracts.Masters
         public Guid Country_id { get; set; }
         [DataMember]
         public Guid ZoneCityMapping_Id { get; set; }
+
+        [DataMember]
+        public Guid ZoneProductMapping_Id { get; set; }
         [DataMember]
         public Guid City_id { get; set; }
         [DataMember]
@@ -50,11 +53,11 @@ namespace DataContracts.Masters
         [DataMember]
         public string CountryName { get; set; }
         [DataMember]
-        public int DistanceRange { get; set; }
-        [DataMember]
         public string GooglePlaceId { get; set; }
         [DataMember]
-        public int includeUptoRange { get; set; }
+        public double? Zone_Radius { get; set; }
+        [DataMember]
+        public bool? Included { get; set; }
 
     }
     [DataContract]
@@ -84,6 +87,8 @@ namespace DataContracts.Masters
         public bool IsActive { get; set; }
         [DataMember]
         public int? NoOfHotels { get; set; }
+        [DataMember]
+        public double? Zone_Radius { get; set; }
         [DataMember]
         public int? TotalRecords { get; set; }
         
@@ -116,7 +121,9 @@ namespace DataContracts.Masters
         [DataMember]
         public double? Distance { get; set; }
         [DataMember]
-        public Guid Accommodation_Id { get; set; }        
+        public Guid Accommodation_Id { get; set; }
+        [DataMember]
+        public Guid ZoneProductMapping_Id { get; set; }        
         [DataMember]
         public string HotelName { get; set; }
         [DataMember]

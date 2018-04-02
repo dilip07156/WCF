@@ -76,11 +76,16 @@ namespace DataContracts.STG
 
         [DataMember]
         public Nullable<System.Guid> Supplier_Id { get; set; }
+        [DataMember]
+        public Guid? SupplierImportFile_Id { get; set; }
     }
 
     [DataContract]
     public class DC_stg_SupplierCityMapping_RQ
     {
+
+        [DataMember]
+        public Guid? SupplierImportFile_Id { get; set; }
         [DataMember]
         public Nullable<System.Guid> stg_City_Id { get; set; }
 

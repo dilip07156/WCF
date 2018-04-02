@@ -50,5 +50,6 @@ namespace DataLayer
         public string TX_RoomName { get; set; }
         public Nullable<System.Guid> Supplier_Id { get; set; }
         public Nullable<int> MinGuestOccupancy { get; set; }
+        public Nullable<System.Guid> SupplierImportFile_Id { get; set; }
     }
 }

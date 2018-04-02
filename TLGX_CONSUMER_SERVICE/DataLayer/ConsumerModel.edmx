@@ -76,6 +76,7 @@
           <Property Name="HotelName_Tx" Type="nvarchar" MaxLength="510" />
           <Property Name="Latitude_Tx" Type="nvarchar" MaxLength="510" />
           <Property Name="Longitude_Tx" Type="nvarchar" MaxLength="510" />
+          <Property Name="GeoLocation" Type="geography" />
         </EntityType>
         <EntityType Name="Accommodation_ClassificationAttributes">
           <Key>
@@ -316,6 +317,7 @@
           <Property Name="ReRun_SupplierImportFile_Id" Type="uniqueidentifier" />
           <Property Name="ReRun_Batch" Type="int" />
           <Property Name="ProductType" Type="nvarchar" MaxLength="500" />
+          <Property Name="GeoLocation" Type="geography" />
         </EntityType>
         <EntityType Name="Accommodation_RoomFacility">
           <Key>
@@ -1997,6 +1999,7 @@
           <Property Name="Create_Date" Type="datetime" />
           <Property Name="Edit_User" Type="varchar" MaxLength="500" />
           <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Zone_Radius" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="Media_Attributes">
           <Key>
@@ -2252,6 +2255,7 @@
           <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
           <Property Name="Country_Id" Type="uniqueidentifier" />
           <Property Name="Supplier_Id" Type="uniqueidentifier" />
+          <Property Name="SupplierImportFile_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="stg_SupplierCountryMapping">
           <Key>
@@ -2272,6 +2276,7 @@
           <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
           <Property Name="ContinentCode" Type="nvarchar" MaxLength="255" />
           <Property Name="ContinentName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierImportFile_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="stg_SupplierHotelRoomMapping">
           <Key>
@@ -2313,6 +2318,7 @@
           <Property Name="TX_RoomName" Type="nvarchar" MaxLength="255" />
           <Property Name="Supplier_Id" Type="uniqueidentifier" />
           <Property Name="MinGuestOccupancy" Type="int" />
+          <Property Name="SupplierImportFile_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="stg_SupplierProductMapping">
           <Key>
@@ -2358,6 +2364,7 @@
           <Property Name="Supplier_Id" Type="uniqueidentifier" />
           <Property Name="TLGXProductCode" Type="nvarchar" MaxLength="255" />
           <Property Name="ProductType" Type="nvarchar" MaxLength="500" />
+          <Property Name="SupplierImportFile_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Supplier">
           <Key>
@@ -2902,9 +2909,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="m_SupplierImportAttributeValues" EntityType="ConsumerModel.m_SupplierImportAttributeValues" />
           <EntitySet Name="SupplierImportFile_ErrorLog" EntityType="ConsumerModel.SupplierImportFile_ErrorLog" />
           <EntitySet Name="Activity_SupplierProductMapping" EntityType="ConsumerModel.Activity_SupplierProductMapping" />
-          <EntitySet Name="stg_SupplierCityMapping" EntityType="ConsumerModel.stg_SupplierCityMapping" />
-          <EntitySet Name="stg_SupplierCountryMapping" EntityType="ConsumerModel.stg_SupplierCountryMapping" />
-          <EntitySet Name="stg_SupplierHotelRoomMapping" EntityType="ConsumerModel.stg_SupplierHotelRoomMapping" />
           <EntitySet Name="m_keyword" EntityType="ConsumerModel.m_keyword" />
           <EntitySet Name="m_keyword_alias" EntityType="ConsumerModel.m_keyword_alias" />
           <EntitySet Name="Places" EntityType="ConsumerModel.Place" />
@@ -2967,10 +2971,13 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="m_CountryMapping" EntityType="ConsumerModel.m_CountryMapping" />
           <EntitySet Name="m_CityMapping_EntityCount" EntityType="ConsumerModel.m_CityMapping_EntityCount" />
           <EntitySet Name="Accommodation_SupplierRoomTypeMapping" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" />
-          <EntitySet Name="m_ZoneMaster" EntityType="ConsumerModel.m_ZoneMaster" />
           <EntitySet Name="ZoneCity_Mapping" EntityType="ConsumerModel.ZoneCity_Mapping" />
           <EntitySet Name="ZoneProduct_Mapping" EntityType="ConsumerModel.ZoneProduct_Mapping" />
           <EntitySet Name="Accommodation_ProductMapping" EntityType="ConsumerModel.Accommodation_ProductMapping" />
+          <EntitySet Name="m_ZoneMaster" EntityType="ConsumerModel.m_ZoneMaster" />
+          <EntitySet Name="stg_SupplierCityMapping" EntityType="ConsumerModel.stg_SupplierCityMapping" />
+          <EntitySet Name="stg_SupplierCountryMapping" EntityType="ConsumerModel.stg_SupplierCountryMapping" />
+          <EntitySet Name="stg_SupplierHotelRoomMapping" EntityType="ConsumerModel.stg_SupplierHotelRoomMapping" />
           <EntitySet Name="stg_SupplierProductMapping" EntityType="ConsumerModel.stg_SupplierProductMapping" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
@@ -3678,6 +3685,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="HotelName_Tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
           <Property Name="Latitude_Tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
           <Property Name="Longitude_Tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
+          <Property Name="GeoLocation" Type="Geography" />
         </EntityType>
         <EntityType Name="GoogleGeoCode">
           <Key>
@@ -4057,91 +4065,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="SupplierProductID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SupplierProductUniqueID" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
-        </EntityType>
-        <EntityType Name="stg_SupplierCityMapping">
-          <Key>
-            <PropertyRef Name="stg_City_Id" />
-          </Key>
-          <Property Name="stg_City_Id" Type="Guid" Nullable="false" />
-          <Property Name="SupplierId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CountryCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CountryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="StateCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="StateName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CityCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CityName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ActiveFrom" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ActiveTo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Insert_Date" Type="DateTime" Precision="3" />
-          <Property Name="Action" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ActionText" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Country_Id" Type="Guid" />
-          <Property Name="Supplier_Id" Type="Guid" />
-        </EntityType>
-        <EntityType Name="stg_SupplierCountryMapping">
-          <Key>
-            <PropertyRef Name="stg_Country_Id" />
-          </Key>
-          <Property Name="stg_Country_Id" Type="Guid" Nullable="false" />
-          <Property Name="SupplierId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CountryCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CountryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ActiveFrom" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ActiveTo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Action" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="UpdateType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="InsertDate" Type="DateTime" Precision="3" />
-          <Property Name="ActionText" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ContinentCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ContinentName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="stg_SupplierHotelRoomMapping">
-          <Key>
-            <PropertyRef Name="stg_SupplierHotelRoomMapping_Id" />
-          </Key>
-          <Property Name="stg_SupplierHotelRoomMapping_Id" Type="Guid" Nullable="false" />
-          <Property Name="SupplierID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierProductId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierProductName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="BathRoomType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="RoomDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="MaxAdults" Type="Int32" />
-          <Property Name="MaxChild" Type="Int32" />
-          <Property Name="MaxInfant" Type="Int32" />
-          <Property Name="MaxGuestOccupancy" Type="Int32" />
-          <Property Name="SupplierRoomId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="RoomViewCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierRoomTypeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="RoomSize" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="FloorName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="FloorNumber" Type="Int32" />
-          <Property Name="SupplierProvider" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Amenities" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Quantity" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="RoomLocationCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ChildAge" Type="Int32" />
-          <Property Name="ExtraBed" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Bedrooms" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Smoking" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PromotionalVendorCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierRoomCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierRoomCategoryId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="BeddingConfig" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="BedTypeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="RatePlan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="RatePlanCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TX_RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Supplier_Id" Type="Guid" />
-          <Property Name="MinGuestOccupancy" Type="Int32" />
         </EntityType>
         <EntityType Name="m_keyword">
           <Key>
@@ -5440,24 +5363,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="ReRun_Batch" Type="Int32" />
           <Property Name="RoomSize" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="m_ZoneMaster">
-          <Key>
-            <PropertyRef Name="Zone_id" />
-          </Key>
-          <Property Name="Zone_id" Type="Guid" Nullable="false" />
-          <Property Name="Zone_Type" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Zone_Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="Latitude" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Longitude" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="Geography" Type="Geography" />
-          <Property Name="GooglePlace_Id" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Create_User" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_User" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="ZoneCity_Mapping">
           <Key>
             <PropertyRef Name="ZoneCityMapping_Id" />
@@ -5547,6 +5452,114 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="ReRun_SupplierImportFile_Id" Type="Guid" />
           <Property Name="ReRun_Batch" Type="Int32" />
           <Property Name="ProductType" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="GeoLocation" Type="Geography" />
+        </EntityType>
+        <EntityType Name="m_ZoneMaster">
+          <Key>
+            <PropertyRef Name="Zone_id" />
+          </Key>
+          <Property Name="Zone_id" Type="Guid" Nullable="false" />
+          <Property Name="Zone_Type" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Zone_Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Latitude" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Longitude" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="Geography" Type="Geography" />
+          <Property Name="GooglePlace_Id" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Create_User" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Zone_Radius" Type="Decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="stg_SupplierCityMapping">
+          <Key>
+            <PropertyRef Name="stg_City_Id" />
+          </Key>
+          <Property Name="stg_City_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CountryCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CountryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="StateCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="StateName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CityCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CityName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ActiveFrom" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ActiveTo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Insert_Date" Type="DateTime" Precision="3" />
+          <Property Name="Action" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ActionText" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Country_Id" Type="Guid" />
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="SupplierImportFile_Id" Type="Guid" />
+        </EntityType>
+        <EntityType Name="stg_SupplierCountryMapping">
+          <Key>
+            <PropertyRef Name="stg_Country_Id" />
+          </Key>
+          <Property Name="stg_Country_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CountryCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CountryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ActiveFrom" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ActiveTo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Action" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InsertDate" Type="DateTime" Precision="3" />
+          <Property Name="ActionText" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ContinentCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ContinentName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierImportFile_Id" Type="Guid" />
+        </EntityType>
+        <EntityType Name="stg_SupplierHotelRoomMapping">
+          <Key>
+            <PropertyRef Name="stg_SupplierHotelRoomMapping_Id" />
+          </Key>
+          <Property Name="stg_SupplierHotelRoomMapping_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierProductId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierProductName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="BathRoomType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RoomDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MaxAdults" Type="Int32" />
+          <Property Name="MaxChild" Type="Int32" />
+          <Property Name="MaxInfant" Type="Int32" />
+          <Property Name="MaxGuestOccupancy" Type="Int32" />
+          <Property Name="SupplierRoomId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="RoomViewCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierRoomTypeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RoomSize" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FloorName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FloorNumber" Type="Int32" />
+          <Property Name="SupplierProvider" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Amenities" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RoomLocationCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ChildAge" Type="Int32" />
+          <Property Name="ExtraBed" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Bedrooms" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Smoking" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PromotionalVendorCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierRoomCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierRoomCategoryId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="BeddingConfig" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="BedTypeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RatePlan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RatePlanCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TX_RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="MinGuestOccupancy" Type="Int32" />
+          <Property Name="SupplierImportFile_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="stg_SupplierProductMapping">
           <Key>
@@ -5592,6 +5605,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Supplier_Id" Type="Guid" />
           <Property Name="TLGXProductCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ProductType" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierImportFile_Id" Type="Guid" />
         </EntityType>
 
       </Schema>
@@ -6236,6 +6250,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodations">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation">
               <MappingFragment StoreEntitySet="Accommodation">
+                <ScalarProperty Name="GeoLocation" ColumnName="GeoLocation" />
                 <ScalarProperty Name="Longitude_Tx" ColumnName="Longitude_Tx" />
                 <ScalarProperty Name="Latitude_Tx" ColumnName="Latitude_Tx" />
                 <ScalarProperty Name="HotelName_Tx" ColumnName="HotelName_Tx" />
@@ -6705,94 +6720,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Supplier_ID" ColumnName="Supplier_ID" />
                 <ScalarProperty Name="Activity_ID" ColumnName="Activity_ID" />
                 <ScalarProperty Name="ActivitySupplierProductMapping_Id" ColumnName="ActivitySupplierProductMapping_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="stg_SupplierCityMapping">
-            <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierCityMapping">
-              <MappingFragment StoreEntitySet="stg_SupplierCityMapping">
-                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
-                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
-                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
-                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
-                <ScalarProperty Name="ActionText" ColumnName="ActionText" />
-                <ScalarProperty Name="Action" ColumnName="Action" />
-                <ScalarProperty Name="Insert_Date" ColumnName="Insert_Date" />
-                <ScalarProperty Name="UpdateType" ColumnName="UpdateType" />
-                <ScalarProperty Name="ActiveTo" ColumnName="ActiveTo" />
-                <ScalarProperty Name="ActiveFrom" ColumnName="ActiveFrom" />
-                <ScalarProperty Name="CityName" ColumnName="CityName" />
-                <ScalarProperty Name="CityCode" ColumnName="CityCode" />
-                <ScalarProperty Name="StateName" ColumnName="StateName" />
-                <ScalarProperty Name="StateCode" ColumnName="StateCode" />
-                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
-                <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
-                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
-                <ScalarProperty Name="SupplierId" ColumnName="SupplierId" />
-                <ScalarProperty Name="stg_City_Id" ColumnName="stg_City_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="stg_SupplierCountryMapping">
-            <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierCountryMapping">
-              <MappingFragment StoreEntitySet="stg_SupplierCountryMapping">
-                <ScalarProperty Name="ContinentName" ColumnName="ContinentName" />
-                <ScalarProperty Name="ContinentCode" ColumnName="ContinentCode" />
-                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
-                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
-                <ScalarProperty Name="ActionText" ColumnName="ActionText" />
-                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
-                <ScalarProperty Name="UpdateType" ColumnName="UpdateType" />
-                <ScalarProperty Name="Action" ColumnName="Action" />
-                <ScalarProperty Name="ActiveTo" ColumnName="ActiveTo" />
-                <ScalarProperty Name="ActiveFrom" ColumnName="ActiveFrom" />
-                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
-                <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
-                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
-                <ScalarProperty Name="SupplierId" ColumnName="SupplierId" />
-                <ScalarProperty Name="stg_Country_Id" ColumnName="stg_Country_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="stg_SupplierHotelRoomMapping">
-            <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierHotelRoomMapping">
-              <MappingFragment StoreEntitySet="stg_SupplierHotelRoomMapping">
-                <ScalarProperty Name="MinGuestOccupancy" ColumnName="MinGuestOccupancy" />
-                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
-                <ScalarProperty Name="TX_RoomName" ColumnName="TX_RoomName" />
-                <ScalarProperty Name="RatePlanCode" ColumnName="RatePlanCode" />
-                <ScalarProperty Name="RatePlan" ColumnName="RatePlan" />
-                <ScalarProperty Name="BedTypeCode" ColumnName="BedTypeCode" />
-                <ScalarProperty Name="BeddingConfig" ColumnName="BeddingConfig" />
-                <ScalarProperty Name="SupplierRoomCategoryId" ColumnName="SupplierRoomCategoryId" />
-                <ScalarProperty Name="SupplierRoomCategory" ColumnName="SupplierRoomCategory" />
-                <ScalarProperty Name="RoomName" ColumnName="RoomName" />
-                <ScalarProperty Name="PromotionalVendorCode" ColumnName="PromotionalVendorCode" />
-                <ScalarProperty Name="Smoking" ColumnName="Smoking" />
-                <ScalarProperty Name="Bedrooms" ColumnName="Bedrooms" />
-                <ScalarProperty Name="ExtraBed" ColumnName="ExtraBed" />
-                <ScalarProperty Name="ChildAge" ColumnName="ChildAge" />
-                <ScalarProperty Name="RoomLocationCode" ColumnName="RoomLocationCode" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="Amenities" ColumnName="Amenities" />
-                <ScalarProperty Name="SupplierProvider" ColumnName="SupplierProvider" />
-                <ScalarProperty Name="FloorNumber" ColumnName="FloorNumber" />
-                <ScalarProperty Name="FloorName" ColumnName="FloorName" />
-                <ScalarProperty Name="RoomSize" ColumnName="RoomSize" />
-                <ScalarProperty Name="SupplierRoomTypeCode" ColumnName="SupplierRoomTypeCode" />
-                <ScalarProperty Name="RoomViewCode" ColumnName="RoomViewCode" />
-                <ScalarProperty Name="SupplierRoomId" ColumnName="SupplierRoomId" />
-                <ScalarProperty Name="MaxGuestOccupancy" ColumnName="MaxGuestOccupancy" />
-                <ScalarProperty Name="MaxInfant" ColumnName="MaxInfant" />
-                <ScalarProperty Name="MaxChild" ColumnName="MaxChild" />
-                <ScalarProperty Name="MaxAdults" ColumnName="MaxAdults" />
-                <ScalarProperty Name="RoomDescription" ColumnName="RoomDescription" />
-                <ScalarProperty Name="BathRoomType" ColumnName="BathRoomType" />
-                <ScalarProperty Name="SupplierProductName" ColumnName="SupplierProductName" />
-                <ScalarProperty Name="SupplierProductId" ColumnName="SupplierProductId" />
-                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
-                <ScalarProperty Name="SupplierID" ColumnName="SupplierID" />
-                <ScalarProperty Name="stg_SupplierHotelRoomMapping_Id" ColumnName="stg_SupplierHotelRoomMapping_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8152,25 +8079,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="m_ZoneMaster">
-            <EntityTypeMapping TypeName="ConsumerModel.m_ZoneMaster">
-              <MappingFragment StoreEntitySet="m_ZoneMaster">
-                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="GooglePlace_Id" ColumnName="GooglePlace_Id" />
-                <ScalarProperty Name="Geography" ColumnName="Geography" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
-                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
-                <ScalarProperty Name="Zone_Name" ColumnName="Zone_Name" />
-                <ScalarProperty Name="Zone_Type" ColumnName="Zone_Type" />
-                <ScalarProperty Name="Zone_id" ColumnName="Zone_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ZoneCity_Mapping">
             <EntityTypeMapping TypeName="ConsumerModel.ZoneCity_Mapping">
               <MappingFragment StoreEntitySet="ZoneCity_Mapping">
@@ -8208,6 +8116,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodation_ProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_ProductMapping">
               <MappingFragment StoreEntitySet="Accommodation_ProductMapping">
+                <ScalarProperty Name="GeoLocation" ColumnName="GeoLocation" />
                 <ScalarProperty Name="ProductType" ColumnName="ProductType" />
                 <ScalarProperty Name="ReRun_Batch" ColumnName="ReRun_Batch" />
                 <ScalarProperty Name="ReRun_SupplierImportFile_Id" ColumnName="ReRun_SupplierImportFile_Id" />
@@ -8264,9 +8173,121 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="m_ZoneMaster">
+            <EntityTypeMapping TypeName="ConsumerModel.m_ZoneMaster">
+              <MappingFragment StoreEntitySet="m_ZoneMaster">
+                <ScalarProperty Name="Zone_Radius" ColumnName="Zone_Radius" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="GooglePlace_Id" ColumnName="GooglePlace_Id" />
+                <ScalarProperty Name="Geography" ColumnName="Geography" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="Zone_Name" ColumnName="Zone_Name" />
+                <ScalarProperty Name="Zone_Type" ColumnName="Zone_Type" />
+                <ScalarProperty Name="Zone_id" ColumnName="Zone_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="stg_SupplierCityMapping">
+            <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierCityMapping">
+              <MappingFragment StoreEntitySet="stg_SupplierCityMapping">
+                <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="ActionText" ColumnName="ActionText" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="Insert_Date" ColumnName="Insert_Date" />
+                <ScalarProperty Name="UpdateType" ColumnName="UpdateType" />
+                <ScalarProperty Name="ActiveTo" ColumnName="ActiveTo" />
+                <ScalarProperty Name="ActiveFrom" ColumnName="ActiveFrom" />
+                <ScalarProperty Name="CityName" ColumnName="CityName" />
+                <ScalarProperty Name="CityCode" ColumnName="CityCode" />
+                <ScalarProperty Name="StateName" ColumnName="StateName" />
+                <ScalarProperty Name="StateCode" ColumnName="StateCode" />
+                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
+                <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="SupplierId" ColumnName="SupplierId" />
+                <ScalarProperty Name="stg_City_Id" ColumnName="stg_City_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="stg_SupplierCountryMapping">
+            <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierCountryMapping">
+              <MappingFragment StoreEntitySet="stg_SupplierCountryMapping">
+                <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
+                <ScalarProperty Name="ContinentName" ColumnName="ContinentName" />
+                <ScalarProperty Name="ContinentCode" ColumnName="ContinentCode" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="ActionText" ColumnName="ActionText" />
+                <ScalarProperty Name="InsertDate" ColumnName="InsertDate" />
+                <ScalarProperty Name="UpdateType" ColumnName="UpdateType" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="ActiveTo" ColumnName="ActiveTo" />
+                <ScalarProperty Name="ActiveFrom" ColumnName="ActiveFrom" />
+                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
+                <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="SupplierId" ColumnName="SupplierId" />
+                <ScalarProperty Name="stg_Country_Id" ColumnName="stg_Country_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="stg_SupplierHotelRoomMapping">
+            <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierHotelRoomMapping">
+              <MappingFragment StoreEntitySet="stg_SupplierHotelRoomMapping">
+                <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
+                <ScalarProperty Name="MinGuestOccupancy" ColumnName="MinGuestOccupancy" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="TX_RoomName" ColumnName="TX_RoomName" />
+                <ScalarProperty Name="RatePlanCode" ColumnName="RatePlanCode" />
+                <ScalarProperty Name="RatePlan" ColumnName="RatePlan" />
+                <ScalarProperty Name="BedTypeCode" ColumnName="BedTypeCode" />
+                <ScalarProperty Name="BeddingConfig" ColumnName="BeddingConfig" />
+                <ScalarProperty Name="SupplierRoomCategoryId" ColumnName="SupplierRoomCategoryId" />
+                <ScalarProperty Name="SupplierRoomCategory" ColumnName="SupplierRoomCategory" />
+                <ScalarProperty Name="RoomName" ColumnName="RoomName" />
+                <ScalarProperty Name="PromotionalVendorCode" ColumnName="PromotionalVendorCode" />
+                <ScalarProperty Name="Smoking" ColumnName="Smoking" />
+                <ScalarProperty Name="Bedrooms" ColumnName="Bedrooms" />
+                <ScalarProperty Name="ExtraBed" ColumnName="ExtraBed" />
+                <ScalarProperty Name="ChildAge" ColumnName="ChildAge" />
+                <ScalarProperty Name="RoomLocationCode" ColumnName="RoomLocationCode" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Amenities" ColumnName="Amenities" />
+                <ScalarProperty Name="SupplierProvider" ColumnName="SupplierProvider" />
+                <ScalarProperty Name="FloorNumber" ColumnName="FloorNumber" />
+                <ScalarProperty Name="FloorName" ColumnName="FloorName" />
+                <ScalarProperty Name="RoomSize" ColumnName="RoomSize" />
+                <ScalarProperty Name="SupplierRoomTypeCode" ColumnName="SupplierRoomTypeCode" />
+                <ScalarProperty Name="RoomViewCode" ColumnName="RoomViewCode" />
+                <ScalarProperty Name="SupplierRoomId" ColumnName="SupplierRoomId" />
+                <ScalarProperty Name="MaxGuestOccupancy" ColumnName="MaxGuestOccupancy" />
+                <ScalarProperty Name="MaxInfant" ColumnName="MaxInfant" />
+                <ScalarProperty Name="MaxChild" ColumnName="MaxChild" />
+                <ScalarProperty Name="MaxAdults" ColumnName="MaxAdults" />
+                <ScalarProperty Name="RoomDescription" ColumnName="RoomDescription" />
+                <ScalarProperty Name="BathRoomType" ColumnName="BathRoomType" />
+                <ScalarProperty Name="SupplierProductName" ColumnName="SupplierProductName" />
+                <ScalarProperty Name="SupplierProductId" ColumnName="SupplierProductId" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="SupplierID" ColumnName="SupplierID" />
+                <ScalarProperty Name="stg_SupplierHotelRoomMapping_Id" ColumnName="stg_SupplierHotelRoomMapping_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="stg_SupplierProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierProductMapping">
               <MappingFragment StoreEntitySet="stg_SupplierProductMapping">
+                <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
                 <ScalarProperty Name="ProductType" ColumnName="ProductType" />
                 <ScalarProperty Name="TLGXProductCode" ColumnName="TLGXProductCode" />
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />

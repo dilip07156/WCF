@@ -67,5 +67,6 @@ namespace DataLayer
         public Nullable<System.Guid> ReRun_SupplierImportFile_Id { get; set; }
         public Nullable<int> ReRun_Batch { get; set; }
         public string ProductType { get; set; }
+        public System.Data.Entity.Spatial.DbGeography GeoLocation { get; set; }
     }
 }

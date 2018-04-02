@@ -65,6 +65,8 @@ namespace DataContracts.STG
 
         [DataMember]
         public string ContinentName { get; set; }
+        [DataMember]
+        public Guid? SupplierImportFile_Id { get; set; }
 
     }
 
@@ -97,5 +99,8 @@ namespace DataContracts.STG
 
         [DataMember]
         public string Longitude { get; set; }
+
+        [DataMember]
+        public Guid? SupplierImportFile_Id { get; set; }
     }
 }
