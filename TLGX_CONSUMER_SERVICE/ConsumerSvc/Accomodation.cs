@@ -105,6 +105,21 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
+        public IList<DC_Accomodation_AutoComplete_RS> AccomodationSearchAutoComplete(DC_Accomodation_AutoComplete_RQ Accomodation_Request)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                List<DC_Accomodation_AutoComplete_RS> searchResults = new List<DC_Accomodation_AutoComplete_RS>();
+                searchResults = objBL.AccomodationSearchAutoComplete(Accomodation_Request);
+
+                if (searchResults == null)
+                {
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                }
+                return searchResults;
+            }
+        }
+        
         #endregion
 
         #region Accomodation Info
@@ -114,6 +129,21 @@ namespace ConsumerSvc
             {
                 List<DC_Accomodation> searchResults = new List<DC_Accomodation>();
                 searchResults = objBL.GetAccomodationInfo(Guid.Parse(Accomodation_Id));
+
+                if (searchResults == null)
+                {
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                }
+                return searchResults;
+            }
+        }
+        
+        public List<DC_AccomodationBasic> GetAccomodationBasicInfo(string Accomodation_Id)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                List<DC_AccomodationBasic> searchResults = new List<DC_AccomodationBasic>();
+                searchResults = objBL.GetAccomodationBasicInfo(Guid.Parse(Accomodation_Id));
 
                 if (searchResults == null)
                 {
