@@ -7833,7 +7833,7 @@ namespace DataLayer
 
                         var AllCount = (from s in searchResult where s.MappingFor == mapfor && s.Status == "ALL" select s.totalcount).FirstOrDefault();
 
-                        var MappedCount = (from s in searchResult where s.MappingFor == mapfor && s.Status == "MAPPED" select s.totalcount).FirstOrDefault();
+                        var MappedCount = (from s in searchResult where s.MappingFor == mapfor && (s.Status == "MAPPED"|| s.Status =="AUTOMAPPED") select s.totalcount).FirstOrDefault();
 
                         if (MappedCount == null)
                             MappedCount = 0;
