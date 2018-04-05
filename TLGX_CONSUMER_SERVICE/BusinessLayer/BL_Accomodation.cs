@@ -59,6 +59,14 @@ namespace BusinessLayer
                 return obj.AccomodationSearch(RQ);
             }
         }
+        public List<DataContracts.DC_Accomodation_AutoComplete_RS> AccomodationSearchAutoComplete(DataContracts.DC_Accomodation_AutoComplete_RQ RQ)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.AccomodationSearchAutoComplete(RQ);
+            }
+        }
+        
 
         #endregion
 
@@ -70,6 +78,14 @@ namespace BusinessLayer
                 return obj.GetAccomodationInfo(Accomodation_Id);
             }
         }
+        public List<DataContracts.DC_AccomodationBasic> GetAccomodationBasicInfo(Guid Accomodation_Id)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.GetAccomodationBasicInfo(Accomodation_Id);
+            }
+        }
+        
         public List<DataContracts.DC_Accommodation_RoomInfo> GetRoomDetailsByWithPagging(DC_Accommodation_RoomInfo_RQ RQ)
         {
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())

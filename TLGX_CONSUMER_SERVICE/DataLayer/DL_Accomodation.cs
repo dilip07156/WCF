@@ -1093,6 +1093,10 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation details", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        
+
+
         #endregion
 
         #region AccomodationInfo
@@ -1193,6 +1197,78 @@ namespace DataLayer
             catch
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public List<DataContracts.DC_AccomodationBasic> GetAccomodationBasicInfo(Guid Accomodation_Id)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var acco = from a in context.Accommodations
+                               where a.Accommodation_Id == Accomodation_Id
+                               select new DataContracts.DC_AccomodationBasic
+                               {
+                                   Accommodation_Id = a.Accommodation_Id,
+                                   City = a.city,
+                                   CompanyHotelID = a.CompanyHotelID,
+                                   country = a.country,
+                                   Country_Id = a.Country_Id,
+                                   City_id = a.City_Id ?? Guid.Empty,
+                                   DisplayName = a.DisplayName,
+                                   HotelName = a.HotelName,
+                                   IsActive = a.IsActive,
+                                   Latitude = a.Latitude,
+                                   Location = a.Location,
+                                   Longitude = a.Longitude,
+                                   PostalCode = a.PostalCode,
+                                   State_Name = a.State_Name,
+                                   Street3 = a.Street3,
+                                   Street4 = a.Street4,
+                                   Street5 = a.Street5,
+                                   StreetName = a.StreetName,
+                                   StreetNumber = a.StreetNumber,
+                                   SuburbDowntown = a.SuburbDowntown,
+                                   Town = a.Town,
+                                   FullAddress = a.FullAddress,
+                                   Telephone_Tx = a.Telephone_Tx,
+                                   Area = a.Area
+                               };
+
+                    return acco.ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public List<DataContracts.DC_Accomodation_AutoComplete_RS> AccomodationSearchAutoComplete(DataContracts.DC_Accomodation_AutoComplete_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    List<DataContracts.DC_Accomodation_AutoComplete_RS> lstAcco = new List<DC_Accomodation_AutoComplete_RS>();
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("select top 500 AC.Accommodation_Id,AC.HotelName,AC.city,AC.State_Name  As State,St.StateCode,AC.country from Accommodation AC left outer join m_States St on AC.Country_Id = St.Country_Id and ac.State_Name = st.StateName ");
+                    sb.Append("where AC.IsActive = 1 and AC.HotelName Like '%" + RQ.HotelName + "%'");
+                    if (!string.IsNullOrWhiteSpace(RQ.Country))
+                    {
+                        sb.Append("and AC.country = '"); sb.Append(RQ.Country); sb.Append("'");
+                    }
+                    if (!string.IsNullOrWhiteSpace(RQ.State))
+                    {
+                        sb.Append("and AC.State_Name = '"); sb.Append(RQ.State); sb.Append("'");
+                    }
+                    sb.Append(" order by AC.HotelName");
+                    try { lstAcco = context.Database.SqlQuery<DataContracts.DC_Accomodation_AutoComplete_RS>(sb.ToString()).ToList(); } catch (Exception ex) { }
+                    return lstAcco;
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation for autocomplete", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
 
@@ -1397,6 +1473,12 @@ namespace DataLayer
                     newAcco.Street5 = AccomodationDetails.Street5;
                     newAcco.StreetName = AccomodationDetails.StreetName;
                     newAcco.StreetNumber = AccomodationDetails.StreetNumber;
+                    newAcco.FullAddress = (AccomodationDetails.StreetNumber != string.Empty ? AccomodationDetails.StreetNumber + "," : string.Empty) +
+                                          (AccomodationDetails.StreetName != string.Empty ? AccomodationDetails.StreetName + "," : string.Empty) +
+                                          (AccomodationDetails.Street3 != string.Empty ? AccomodationDetails.Street3 + "," : string.Empty) +
+                                          (AccomodationDetails.Street4 != string.Empty ? AccomodationDetails.Street4 + "," : string.Empty) +
+                                          (AccomodationDetails.Street5 != string.Empty ? AccomodationDetails.Street5 + "," : string.Empty) +
+                                          (AccomodationDetails.PostalCode != string.Empty ? AccomodationDetails.PostalCode : string.Empty);
                     newAcco.SuburbDowntown = AccomodationDetails.SuburbDowntown;
                     newAcco.TotalFloors = AccomodationDetails.TotalFloors;
                     newAcco.TotalRooms = AccomodationDetails.TotalRooms;

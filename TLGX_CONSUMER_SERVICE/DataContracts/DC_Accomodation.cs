@@ -70,6 +70,7 @@ namespace DataContracts
         int? _Legacy_HTL_ID;
         string _Google_Place_Id;
         string _fullAddress;
+        string _Telephone_Tx;
         int _TotalRecords;
         List<DC_Accommodation_Contact> _Accomodation_Contact;
         List<DC_Accommodation_Descriptions> _Accommodation_Descriptions;
@@ -1346,6 +1347,60 @@ namespace DataContracts
                 _Null_Columns = value;
             }
         }
+    }
+
+    [DataContract]
+    public class DC_AccomodationBasic
+    {
+        [DataMember]
+        public System.Guid Accommodation_Id { get; set; }
+        [DataMember]
+        public string HotelName { get; set; }
+        [DataMember]
+        public string DisplayName { get; set; }
+        [DataMember]
+        public string StreetName { get; set; }
+        [DataMember]
+        public string StreetNumber { get; set; }
+        [DataMember]
+        public string Street3 { get; set; }
+        [DataMember]
+        public string Street4 { get; set; }
+        [DataMember]
+        public string Street5 { get; set; }
+        [DataMember]
+        public string PostalCode { get; set; }
+        [DataMember]
+        public string Town { get; set; }
+        [DataMember]
+        public string Location { get; set; }
+        [DataMember]
+        public string Area { get; set; }
+        [DataMember]
+        public string City { get; set; }
+        [DataMember]
+        public Guid? City_id { get; set; }
+        [DataMember]
+        public string country { get; set; }
+        [DataMember]
+        public Guid? Country_Id { get; set; }
+        [DataMember]
+        public string SuburbDowntown { get; set; }
+        [DataMember]
+        public string Latitude { get; set; }
+        [DataMember]
+        public string Longitude { get; set; }
+        [DataMember]
+        public string State_Name { get; set; }
+        [DataMember]
+        public string FullAddress { get; set; }
+        [DataMember]
+        public string Telephone_Tx { get; set; }
+        [DataMember]
+        public bool? IsActive { get; set; }
+        [DataMember]
+        public int? CompanyHotelID { get; set; }
+
     }
 
     [DataContract]
@@ -5147,7 +5202,7 @@ namespace DataContracts
         [DataMember]
         public string Telephone_Tx { get; set; }
 
-        
+
         [DataMember]
         public string Latitude { get; set; }
 
@@ -5636,7 +5691,7 @@ namespace DataContracts
             }
         }
     }
-    
+
     [DataContract]
     public class DC_Accomodation_DDL
     {
@@ -5702,4 +5757,36 @@ namespace DataContracts
         [DataMember]
         public string Google_FullObjext { get; set; }
     }
+    [DataContract]
+    public class DC_Accomodation_AutoComplete_RQ
+    {
+        [DataMember]
+        public string HotelName { get; set; }
+        [DataMember]
+        public string Country { get; set; }
+        [DataMember]
+        public string State { get; set; }
+        [DataMember]
+        public int? PageNo { get; set; }
+        [DataMember]
+        public int? PageSize { get; set; }
+    }
+    public class DC_Accomodation_AutoComplete_RS
+    {
+        [DataMember]
+        public Guid Accommodation_Id { get; set; }
+        [DataMember]
+        public string HotelName { get; set; }
+        [DataMember]
+        public string City { get; set; }
+        [DataMember]
+        public string State { get; set; }
+        [DataMember]
+        public string StateCode { get; set; }
+        [DataMember]
+        public string Country { get; set; }
+        [DataMember]
+        public int? TotalRecords { get; set; }
+    }
+
 }
