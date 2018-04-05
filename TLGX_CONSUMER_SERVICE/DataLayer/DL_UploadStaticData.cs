@@ -1975,7 +1975,7 @@ namespace DataLayer
                                            Country_Id = g.Country_Id,
                                            StateCode = g.StateCode,
                                            StateName = g.StateName
-                                       }).ToList();
+                                       }).ToList().Distinct();
 
                         var geoCountry = (from g in context.m_CountryMapping.AsNoTracking()
                                           where g.Supplier_Id == mySupplier_Id
@@ -1984,16 +1984,32 @@ namespace DataLayer
                                               Country_Id = g.Country_Id,//Country_Id = Guid.Parse(g.Country_Id.ToString()),
                                               CountryName = g.CountryName,//CountryName = g.CountryName
                                               CountryCode = g.CountryCode
-                                          }).ToList();
+                                          }).ToList().Distinct();
 
                         List<DataLayer.stg_SupplierProductMapping> lstobjNew = new List<DataLayer.stg_SupplierProductMapping>();
                         foreach (DataContracts.STG.DC_stg_SupplierProductMapping obj in dstobj)
                         {
                             DataLayer.stg_SupplierProductMapping objNew = new DataLayer.stg_SupplierProductMapping();
 
+                            objNew.CountryCode = obj.CountryCode;
+                            objNew.CountryName = obj.CountryName;
+                            objNew.CityCode = obj.CityCode;
+                            objNew.CityName = obj.CityName;
+                            objNew.StateCode = obj.StateCode;
+                            objNew.StateName = obj.StateName;
+
                             var CountryLookup = (from c in geoCountry
-                                                 where c.CountryCode == obj.CountryCode || c.CountryName == obj.CountryName
+                                                 where c.CountryCode == obj.CountryCode
+                                                 && obj.CountryCode != null
                                                  select c).ToList();
+
+                            if (CountryLookup.Count() != 1 && obj.CountryName != null)
+                            {
+                                //check with country name
+                                CountryLookup = (from c in geoCountry
+                                                 where c.CountryName == obj.CountryName
+                                                 select c).ToList();
+                            }
 
                             //If Country Code or Country Name is given and in lookup one country found proceed else skip country City lookup
                             if (CountryLookup.Count() == 1)
@@ -2023,7 +2039,23 @@ namespace DataLayer
                                     {
                                         bCityFound = true;
                                     }
+                                    else
+                                    {
+                                        CityLookup = (from ct in geoCity
+                                                      where ct.Country_Id == objNew.Country_Id && ct.CityName == obj.CityName && ct.StateName == obj.StateName
+                                                      select ct).ToList();
 
+                                        if (CityLookup.Count() == 1)
+                                        {
+                                            bCityFound = true;
+                                        }
+                                        else
+                                        {
+                                            CityLookup = (from ct in geoCity
+                                                          where ct.Country_Id == objNew.Country_Id && ct.CityName == obj.CityName && ct.StateCode == obj.StateCode
+                                                          select ct).ToList();
+                                        }
+                                    }
                                 }
 
                                 if (bCityFound)
@@ -2034,9 +2066,7 @@ namespace DataLayer
                                     objNew.StateCode = obj.StateCode ?? CityLookup.First().StateCode;
                                     objNew.StateName = obj.StateName ?? CityLookup.First().StateName;
                                 }
-
                             }
-
 
                             //CityLookup without country (if country lookup failed)
                             if (CountryLookup.Count() == 0)
@@ -2060,6 +2090,23 @@ namespace DataLayer
                                     if (CityLookup.Count() == 1)
                                     {
                                         bCityFound = true;
+                                    }
+                                    else
+                                    {
+                                        CityLookup = (from ct in geoCity
+                                                      where ct.CityName == obj.CityName && ct.StateName == obj.StateName
+                                                      select ct).ToList();
+
+                                        if (CityLookup.Count() == 1)
+                                        {
+                                            bCityFound = true;
+                                        }
+                                        else
+                                        {
+                                            CityLookup = (from ct in geoCity
+                                                          where ct.CityName == obj.CityName && ct.StateCode == obj.StateCode
+                                                          select ct).ToList();
+                                        }
                                     }
                                 }
 
