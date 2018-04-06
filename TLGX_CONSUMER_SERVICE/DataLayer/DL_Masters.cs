@@ -5172,9 +5172,11 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var CityMasterIQ = context.m_CityMaster.AsQueryable();
-                    var ZonemasterIQ = context.m_ZoneMaster.AsQueryable();
-                    var ZoneCityMasterIQ = context.ZoneCity_Mapping.AsQueryable().Where(s => s.IsActive == true);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+
+                    var CityMasterIQ = context.m_CityMaster.AsNoTracking().AsQueryable();
+                    var ZonemasterIQ = context.m_ZoneMaster.AsNoTracking().AsQueryable();
+                    var ZoneCityMasterIQ = context.ZoneCity_Mapping.AsNoTracking().AsQueryable().Where(s => s.IsActive == true);
                     if (param.Zone_id != Guid.Empty)
                     {
                         ZonemasterIQ = ZonemasterIQ.Where(x => x.Zone_id == param.Zone_id);
