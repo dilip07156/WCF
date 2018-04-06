@@ -1840,8 +1840,8 @@
           <Property Name="oag_state" Type="nvarchar" MaxLength="10" />
           <Property Name="oag_substate" Type="nvarchar" MaxLength="50" />
           <Property Name="oag_timediv" Type="nvarchar" MaxLength="50" />
-          <Property Name="oag_lat" Type="nvarchar" MaxLength="10" />
-          <Property Name="oag_lon" Type="nvarchar" MaxLength="10" />
+          <Property Name="oag_lat" Type="nvarchar" MaxLength="500" />
+          <Property Name="oag_lon" Type="nvarchar" MaxLength="500" />
           <Property Name="oag_inactive" Type="nvarchar" MaxLength="10" />
           <Property Name="Country_Id" Type="uniqueidentifier" />
           <Property Name="State_Id" Type="uniqueidentifier" />
@@ -2894,7 +2894,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Parameter Name="UpdateIn" Mode="In" Type="String" />
           </FunctionImport>
           <EntitySet Name="SiteMaps" EntityType="ConsumerModel.SiteMap" />
-          <EntitySet Name="m_PortMaster" EntityType="ConsumerModel.m_PortMaster" />
           <EntitySet Name="m_masterattribute" EntityType="ConsumerModel.m_masterattribute" />
           <EntitySet Name="m_masterattributevalue" EntityType="ConsumerModel.m_masterattributevalue" />
           <EntitySet Name="m_Statuses" EntityType="ConsumerModel.m_Statuses" />
@@ -2979,6 +2978,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="stg_SupplierCountryMapping" EntityType="ConsumerModel.stg_SupplierCountryMapping" />
           <EntitySet Name="stg_SupplierHotelRoomMapping" EntityType="ConsumerModel.stg_SupplierHotelRoomMapping" />
           <EntitySet Name="stg_SupplierProductMapping" EntityType="ConsumerModel.stg_SupplierProductMapping" />
+          <EntitySet Name="m_PortMaster" EntityType="ConsumerModel.m_PortMaster" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -3780,32 +3780,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="IsSiteMapNode" Type="Boolean" />
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="applicationId" Type="Guid" Nullable="false" />
-        </EntityType>
-        <EntityType Name="m_PortMaster">
-          <Key>
-            <PropertyRef Name="m_Port_Id" />
-          </Key>
-          <Property Name="m_Port_Id" Type="Guid" Nullable="false" />
-          <Property Name="OAG_loc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="OAG_multicity" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="OAG_type" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
-          <Property Name="OAG_subtype" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
-          <Property Name="oag_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="oag_portname" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="oag_ctry" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="oag_subctry" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="oag_ctryname" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="oag_state" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="oag_substate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="oag_timediv" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="oag_lat" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="oag_lon" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="oag_inactive" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="Country_Id" Type="Guid" />
-          <Property Name="State_Id" Type="Guid" />
-          <Property Name="City_Id" Type="Guid" />
-          <Property Name="MappingStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="MultiCity_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="m_masterattribute">
           <Key>
@@ -5607,6 +5581,32 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="ProductType" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="SupplierImportFile_Id" Type="Guid" />
         </EntityType>
+        <EntityType Name="m_PortMaster">
+          <Key>
+            <PropertyRef Name="m_Port_Id" />
+          </Key>
+          <Property Name="m_Port_Id" Type="Guid" Nullable="false" />
+          <Property Name="OAG_loc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OAG_multicity" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OAG_type" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="OAG_subtype" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="oag_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="oag_portname" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="oag_ctry" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="oag_subctry" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="oag_ctryname" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="oag_state" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="oag_substate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="oag_timediv" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="oag_lat" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="oag_lon" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="oag_inactive" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Country_Id" Type="Guid" />
+          <Property Name="State_Id" Type="Guid" />
+          <Property Name="City_Id" Type="Guid" />
+          <Property Name="MappingStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MultiCity_Id" Type="Guid" />
+        </EntityType>
 
       </Schema>
     </edmx:ConceptualModels>
@@ -6420,33 +6420,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="SiteMap_ID" ColumnName="SiteMap_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="m_PortMaster">
-            <EntityTypeMapping TypeName="ConsumerModel.m_PortMaster">
-              <MappingFragment StoreEntitySet="m_PortMaster">
-                <ScalarProperty Name="MultiCity_Id" ColumnName="MultiCity_Id" />
-                <ScalarProperty Name="MappingStatus" ColumnName="MappingStatus" />
-                <ScalarProperty Name="City_Id" ColumnName="City_Id" />
-                <ScalarProperty Name="State_Id" ColumnName="State_Id" />
-                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
-                <ScalarProperty Name="oag_inactive" ColumnName="oag_inactive" />
-                <ScalarProperty Name="oag_lon" ColumnName="oag_lon" />
-                <ScalarProperty Name="oag_lat" ColumnName="oag_lat" />
-                <ScalarProperty Name="oag_timediv" ColumnName="oag_timediv" />
-                <ScalarProperty Name="oag_substate" ColumnName="oag_substate" />
-                <ScalarProperty Name="oag_state" ColumnName="oag_state" />
-                <ScalarProperty Name="oag_ctryname" ColumnName="oag_ctryname" />
-                <ScalarProperty Name="oag_subctry" ColumnName="oag_subctry" />
-                <ScalarProperty Name="oag_ctry" ColumnName="oag_ctry" />
-                <ScalarProperty Name="oag_portname" ColumnName="oag_portname" />
-                <ScalarProperty Name="oag_name" ColumnName="oag_name" />
-                <ScalarProperty Name="OAG_subtype" ColumnName="OAG_subtype" />
-                <ScalarProperty Name="OAG_type" ColumnName="OAG_type" />
-                <ScalarProperty Name="OAG_multicity" ColumnName="OAG_multicity" />
-                <ScalarProperty Name="OAG_loc" ColumnName="OAG_loc" />
-                <ScalarProperty Name="m_Port_Id" ColumnName="m_Port_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8328,6 +8301,33 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
                 <ScalarProperty Name="SupplierId" ColumnName="SupplierId" />
                 <ScalarProperty Name="stg_AccoMapping_Id" ColumnName="stg_AccoMapping_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="m_PortMaster">
+            <EntityTypeMapping TypeName="ConsumerModel.m_PortMaster">
+              <MappingFragment StoreEntitySet="m_PortMaster">
+                <ScalarProperty Name="MultiCity_Id" ColumnName="MultiCity_Id" />
+                <ScalarProperty Name="MappingStatus" ColumnName="MappingStatus" />
+                <ScalarProperty Name="City_Id" ColumnName="City_Id" />
+                <ScalarProperty Name="State_Id" ColumnName="State_Id" />
+                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
+                <ScalarProperty Name="oag_inactive" ColumnName="oag_inactive" />
+                <ScalarProperty Name="oag_lon" ColumnName="oag_lon" />
+                <ScalarProperty Name="oag_lat" ColumnName="oag_lat" />
+                <ScalarProperty Name="oag_timediv" ColumnName="oag_timediv" />
+                <ScalarProperty Name="oag_substate" ColumnName="oag_substate" />
+                <ScalarProperty Name="oag_state" ColumnName="oag_state" />
+                <ScalarProperty Name="oag_ctryname" ColumnName="oag_ctryname" />
+                <ScalarProperty Name="oag_subctry" ColumnName="oag_subctry" />
+                <ScalarProperty Name="oag_ctry" ColumnName="oag_ctry" />
+                <ScalarProperty Name="oag_portname" ColumnName="oag_portname" />
+                <ScalarProperty Name="oag_name" ColumnName="oag_name" />
+                <ScalarProperty Name="OAG_subtype" ColumnName="OAG_subtype" />
+                <ScalarProperty Name="OAG_type" ColumnName="OAG_type" />
+                <ScalarProperty Name="OAG_multicity" ColumnName="OAG_multicity" />
+                <ScalarProperty Name="OAG_loc" ColumnName="OAG_loc" />
+                <ScalarProperty Name="m_Port_Id" ColumnName="m_Port_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
