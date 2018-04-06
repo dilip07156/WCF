@@ -8279,7 +8279,9 @@ namespace DataLayer
 
                         var AllCount = (from s in searchResult where s.MappingFor == mapfor && s.Status == "ALL" select s.totalcount).FirstOrDefault();
 
-                        var MappedCount = (from s in searchResult where s.MappingFor == mapfor && s.Status == "MAPPED" select s.totalcount).FirstOrDefault();
+                        var MCount = (from s in searchResult where s.MappingFor == mapfor && (s.Status == "MAPPED") select s.totalcount).FirstOrDefault();
+                        var ACount = (from s in searchResult where s.MappingFor == mapfor && (s.Status == "AUTOMAPPED") select s.totalcount).FirstOrDefault() ?? 0;
+                        var MappedCount = MCount + ACount;
 
                         if (MappedCount == null)
                             MappedCount = 0;

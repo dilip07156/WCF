@@ -69,7 +69,6 @@ namespace DataLayer
         public virtual DbSet<UserEntity> UserEntities { get; set; }
         public virtual DbSet<Counter> Counters { get; set; }
         public virtual DbSet<SiteMap> SiteMaps { get; set; }
-        public virtual DbSet<m_PortMaster> m_PortMaster { get; set; }
         public virtual DbSet<m_masterattribute> m_masterattribute { get; set; }
         public virtual DbSet<m_masterattributevalue> m_masterattributevalue { get; set; }
         public virtual DbSet<m_Statuses> m_Statuses { get; set; }
@@ -154,6 +153,7 @@ namespace DataLayer
         public virtual DbSet<stg_SupplierCountryMapping> stg_SupplierCountryMapping { get; set; }
         public virtual DbSet<stg_SupplierHotelRoomMapping> stg_SupplierHotelRoomMapping { get; set; }
         public virtual DbSet<stg_SupplierProductMapping> stg_SupplierProductMapping { get; set; }
+        public virtual DbSet<m_PortMaster> m_PortMaster { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {
