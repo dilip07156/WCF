@@ -5172,9 +5172,11 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var CityMasterIQ = context.m_CityMaster.AsQueryable();
-                    var ZonemasterIQ = context.m_ZoneMaster.AsQueryable();
-                    var ZoneCityMasterIQ = context.ZoneCity_Mapping.AsQueryable().Where(s => s.IsActive == true);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+
+                    var CityMasterIQ = context.m_CityMaster.AsNoTracking().AsQueryable();
+                    var ZonemasterIQ = context.m_ZoneMaster.AsNoTracking().AsQueryable();
+                    var ZoneCityMasterIQ = context.ZoneCity_Mapping.AsNoTracking().AsQueryable().Where(s => s.IsActive == true);
                     if (param.Zone_id != Guid.Empty)
                     {
                         ZonemasterIQ = ZonemasterIQ.Where(x => x.Zone_id == param.Zone_id);
@@ -5215,15 +5217,17 @@ namespace DataLayer
                             Status = m.zm.Status,
                             Latitude = m.zm.Latitude,
                             Longitude = m.zm.Longitude,
-                           Zone_Radius=(double)m.zm.Zone_Radius,
-                            //NoOfHotels= (select)
+                            Zone_Radius = (double)m.zm.Zone_Radius,
+                            NoOfHotels = (context.ZoneProduct_Mapping.Where(x => x.Zone_Id == m.zm.Zone_id && (x.Included ?? false) == true).Count())
                         }).OrderBy(x => x.Zone_Name).ToList();
 
-                    search = search.Select(c =>
-                               {
-                                   c.NoOfHotels = (context.ZoneProduct_Mapping.Where(x => x.Zone_Id == c.Zone_id && (x.Included ?? false) == true).Count());
-                                   return c;
-                               } ).ToList();
+                    //search = search.Select(c =>
+                    //           {
+                    //               string st = "select count(*) from ZoneProduct_Mapping with(nolock) where Zone_Id= '"+c.Zone_id+"' and ISNULL(Included,0)=1 ";
+                    //               c.NoOfHotels = context.Database.SqlQuery<int>(st).First();
+                    //               //c.NoOfHotels = (context.ZoneProduct_Mapping.Where(x => x.Zone_Id == c.Zone_id && (x.Included ?? false) == true).Count());
+                    //               return c;
+                    //           } ).ToList();
 
                     int total = search.Count();
                     int skip = (param.PageNo ?? 0) * (param.PageSize ?? 0);
