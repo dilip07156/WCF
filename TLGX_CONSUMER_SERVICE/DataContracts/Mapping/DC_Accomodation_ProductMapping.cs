@@ -42,6 +42,8 @@ namespace DataContracts.Mapping
         string _Fax;
         string _Website;
         int _TotalRecords;
+        [DataMember]
+        public int PageIndex { get; set; }
         string _ProductId;
         string _SystemCountryName;
         string _SystemStateName;

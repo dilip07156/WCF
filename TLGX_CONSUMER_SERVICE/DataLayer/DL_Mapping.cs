@@ -594,7 +594,7 @@ namespace DataLayer
                     try { lstAcco = context.Database.SqlQuery<DataContracts.Mapping.DC_Accomodation_ProductMapping>(sbQuery.ToString()).ToList(); } catch (Exception ex) { }
 
 
- 
+
 
                     foreach (var item in lstAcco)
                     {
@@ -649,7 +649,7 @@ namespace DataLayer
                                 item.SystemFullAddress = systemproduct.FullAddress;
                             }
                         }
-                      
+
 
                     }
                     return lstAcco;
@@ -3749,6 +3749,10 @@ namespace DataLayer
                 {
                     sbsqlwhere.Append(" and apm.Status = '" + obj.Status.ToString().Trim() + "' ");
                 }
+                else
+                {
+                    sbsqlwhere.Append(" and apm.Status != 'DELETE' ");
+                }
                 if (!string.IsNullOrWhiteSpace(obj.Chain))
                 {
                     sbsqlwhere.Append(" and apm.Accommodation_Id in ");
@@ -3765,6 +3769,11 @@ namespace DataLayer
                 {
                     sbsqlwhere.Append(" and apm.Status != '" + obj.StatusExcept.ToString().Trim() + "' ");
                 }
+                if(!string.IsNullOrWhiteSpace(obj.Via) && Convert.ToString(obj.Via) == "CROSS")
+                {
+                    sbsqlwhere.Append(" and apm.Status NOT IN ('AUTOMAPPED','DELETE')  ");
+                }
+                
                 if (!string.IsNullOrWhiteSpace(obj.SupplierCountryName))
                 {
                     sbsqlcmjoin.Append(" left outer join m_CountryMapping cm on apm.Supplier_Id = cm.Supplier_Id ");
@@ -3832,11 +3841,30 @@ namespace DataLayer
 	                                apm.StarRating, apm.MatchedBy, apm.MatchedByString,  a.HotelName as SystemProductName, 
 	                                a.city as SystemCityName, a.country as SystemCountryName, a.FullAddress as SystemFullAddress, 
 	                                a.Location, apm.ProductType, ");
-                sbsqlselect.Append(total.ToString() + " as TotalRecords ");
+                sbsqlselect.Append(total.ToString() + " as TotalRecords, ");
 
                 sbsqlorderby.Append(" ORDER BY apm.ProductName OFFSET ");
                 if (total <= skip)
-                    skip = (skip - obj.PageSize);
+                {
+                    int PageIndex = 0;
+                    int intReminder = total % obj.PageSize;
+                    int intQuotient = total / obj.PageSize;
+                    if (intReminder > 0)
+                    {
+                        PageIndex = intQuotient + 1;
+                    }
+                    else
+                    {
+                        PageIndex = intQuotient;
+                    }
+
+                    skip = obj.PageSize * (PageIndex - 1);
+                    sbsqlselect.Append(Convert.ToString(PageIndex - 1) + " As PageIndex ");
+
+                }
+                else
+                    sbsqlselect.Append(Convert.ToString(obj.PageNo) + " As PageIndex ");
+
                 sbsqlorderby.Append((skip).ToString());
                 sbsqlorderby.Append(" ROWS FETCH NEXT ");
                 sbsqlorderby.Append(obj.PageSize.ToString());
@@ -5230,7 +5258,7 @@ namespace DataLayer
                             DataLayer.Accommodation_SupplierRoomTypeMapping objNew = new DataLayer.Accommodation_SupplierRoomTypeMapping()
                             {
                                 Accommodation_SupplierRoomTypeMapping_Id = obj.Accommodation_SupplierRoomTypeMapping_Id,
-                                Accommodation_Id = (context.Accommodation_ProductMapping.Where(w => w.SupplierProductReference == obj.SupplierProductId).Select(a => a.Accommodation_Id).FirstOrDefault()),
+                                Accommodation_Id = (context.Accommodation_ProductMapping.Where(w => w.SupplierProductReference == obj.SupplierProductId && w.Supplier_Id == obj.Supplier_Id).Select(a => a.Accommodation_Id).FirstOrDefault()),
                                 Accommodation_RoomInfo_Id = null,
                                 SupplierProductId = obj.SupplierProductId,
                                 Create_Date = DateTime.Now,
@@ -6182,7 +6210,7 @@ namespace DataLayer
                     //    USD.AddStaticDataUploadProcessLog(PLog);
                     //}
 
-                    
+
                     //sbprodMapWhere.Append(" AND ASRTM.Accommodation_RoomInfo_Id IS NOT NULL ");
 
 
@@ -6210,7 +6238,7 @@ namespace DataLayer
 
 
                     //CallLogVerbose(File_Id, "MATCH", "Looking for Match in Master Data for Matching Combination " + curPriority.ToString() + ".");
-                   // res = res.Select(c =>
+                    // res = res.Select(c =>
                     //{
                     //    c.Accommodation_RoomInfo_Id = (context.Accommodation_RoomInfo.AsNoTracking()
                     //                    .Where(s => (
