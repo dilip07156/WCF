@@ -547,30 +547,27 @@ namespace DataLayer
                                         APM.ProductName AS ProductName, APM.Street AS Street, APM.Street2 AS Street2,APM.Street3 AS Street3,
                                         APM.Street4 AS Street4,APM.CountryCode AS CountryCode,APM.CountryName AS CountryName,APM.CityCode AS CityCode,
                                         APM.CityName AS CityName,APM.StateCode AS StateCode,APM.StateName AS StateName,APM.PostCode AS PostCode,
-                                        APM.TelephoneNumber AS TelephoneNumber,APM.Fax AS Fax,APM.Email AS Email,APM.Website AS Website,APM.Latitude AS Latitude,
-                                        APM.Longitude AS Longitude,APM.Status AS Status,APM.Create_Date AS Create_Date,APM.Create_User AS Create_User,
+                                        APM.TelephoneNumber AS TelephoneNumber,APM.Fax AS Fax,APM.Email AS Email,APM.Website AS Website
+                                       ,ISNULL(APM.Latitude,APM.GeoLocation.Lat) AS Latitude
+                                       ,ISNULL(APM.Longitude,APM.GeoLocation.Long) AS Longitude,
+                                        APM.Status AS Status,APM.Create_Date AS Create_Date,APM.Create_User AS Create_User,
                                         APM.Edit_Date AS Edit_Date,APM.Edit_User AS Edit_User,APM.IsActive AS IsActive,APM.SupplierProductReference AS ProductId,
                                         CM.Name AS SystemCountryName,C.Name AS SystemCityName,AC.HotelName AS SystemProductName,S.StateName AS SystemStateName,
                                         APM.Remarks AS Remarks,APM.MapId AS MapId,
-                                        (CASE WHEN APM.ADDRESS IS NULL THEN APM.ADDRESS
+                                        (CASE WHEN APM.ADDRESS IS NOT NULL THEN APM.ADDRESS
                                               ELSE ISNULL(APM.Street + ',  ', '') + ISNULL(APM.Street2 + ' ', '')
                                                 + ISNULL(APM.Street3 + ' ', '')
                                                 + ISNULL(APM.Street4 + ' ', '')
-                                                + ISNULL(APM.PostCode + ',  ', '')
-                                                + ISNULL(APM.CityName + ',  ', '')
-                                                + ISNULL(APM.StateName + ',  ', '')
-                                                + ISNULL(APM.CountryName, '') END
+                                                + ISNULL(APM.PostCode,'') END
                                               ) AS FullAddress,
-                                              (CASE WHEN AC.FullAddress IS NULL THEN AC.FullAddress
+                                              (CASE WHEN AC.FullAddress IS NOT NULL THEN AC.FullAddress
                                               ELSE
                                                   ISNULL(AC.StreetNumber + ',  ', '')
                                                 + ISNULL(AC.StreetName + ', ', '')
                                                 + ISNULL(AC.Street3 + ', ', '')
                                                 + ISNULL(AC.Street4 + ', ', '')
                                                 + ISNULL(AC.Street5 + ',  ', '')
-                                                + ISNULL(AC.PostalCode + ',  ', '')
-                                                + ISNULL(AC.city + ',  ', '')
-                                                + ISNULL(AC.country, '') END
+                                                + ISNULL(AC.PostalCode, '') END
 	                                          ) AS SystemFullAddress,
                                         APM.StarRating AS StarRating,
                                         APM.HotelName_Tx AS HotelName_Tx,
@@ -3834,10 +3831,18 @@ namespace DataLayer
 	                                apm.SupplierId, apm.SupplierName,  apm.SupplierProductReference, apm.ProductName, 
 	                                apm.ProductName as oldProductName,apm.Street, apm.Street2, apm.Street3, apm.Street4, 
 	                                apm.PostCode,  apm.CountryCode, apm.CountryName, apm.CityCode, apm.CityName,  apm.StateCode, 
-	                                apm.StateName, apm.TelephoneNumber, apm.Fax, apm.Email, apm.Website, apm.Latitude, 
-	                                apm.Longitude,  apm.Status, apm.Create_Date, apm.Create_User, apm.Edit_Date, apm.Edit_User, 
+	                                apm.StateName, apm.TelephoneNumber, apm.Fax, apm.Email, apm.Website
+                                       ,ISNULL(APM.Latitude,APM.GeoLocation.Lat) AS Latitude
+                                       ,ISNULL(APM.Longitude,APM.GeoLocation.Long) AS Longitude
+                                       ,apm.Status, apm.Create_Date, apm.Create_User, apm.Edit_Date, apm.Edit_User, 
 	                                ISNULL(apm.IsActive,1) AS IsActive, apm.SupplierProductReference as ProductId, 
-	                                apm.Remarks,  apm.MapId, apm.address as FullAddress, 
+	                                apm.Remarks,  apm.MapId,
+                                    (CASE WHEN APM.ADDRESS IS NOT NULL THEN APM.ADDRESS ELSE ISNULL(APM.Street + ',  ', '') + ISNULL(APM.Street2 + ' ', '')
+                                        + ISNULL(APM.Street3 + ' ', '')
+                                        + ISNULL(APM.Street4 + ' ', '')
+                                        + ISNULL(APM.PostCode , '')
+                                        END
+                                    ) AS FullAddress,
 	                                apm.StarRating, apm.MatchedBy, apm.MatchedByString,  a.HotelName as SystemProductName, 
 	                                a.city as SystemCityName, a.country as SystemCountryName, a.FullAddress as SystemFullAddress, 
 	                                a.Location, apm.ProductType, ");
