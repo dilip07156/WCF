@@ -1944,7 +1944,7 @@ namespace DataLayer
                     }
                     List<DataContracts.STG.DC_stg_SupplierProductMapping> dstobj = new List<DC_stg_SupplierProductMapping>();
                     //dstobj = lstobj.GroupBy(a => new { a.CityCode, a.CityName, a.CountryCode, a.CountryName, a.StateCode, a.StateName, a.ProductId, a.ProductName, a.PostalCode }).Select(grp => grp.First()).ToList();
-                    dstobj = lstobj.GroupBy(a => new { a.ProductId }).Select(grp => grp.First()).ToList();
+                    dstobj = lstobj.GroupBy(a => new { a.ProductId, a.CityCode, a.CityName }).Select(grp => grp.First()).ToList();
 
                     /*List<DataContracts.STG.DC_Geo> geo = new List<DC_Geo>();
                     using (ConsumerEntities context = new ConsumerEntities())
