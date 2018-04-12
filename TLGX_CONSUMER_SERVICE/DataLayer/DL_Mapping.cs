@@ -542,7 +542,8 @@ namespace DataLayer
                     List<DataContracts.Mapping.DC_Accomodation_ProductMapping> lstAcco = new List<DataContracts.Mapping.DC_Accomodation_ProductMapping>();
 
                     StringBuilder sbQuery = new StringBuilder();
-                    sbQuery.Append(@"SELECT APM.Accommodation_ProductMapping_Id AS Accommodation_ProductMapping_Id,APM.Accommodation_Id AS Accommodation_Id,APM.Supplier_Id AS Supplier_Id,
+                    sbQuery.Append(@"SELECT APM.Accommodation_ProductMapping_Id AS Accommodation_ProductMapping_Id,APM.Accommodation_Id AS Accommodation_Id,
+                                        APM.Supplier_Id AS Supplier_Id,
                                         APM.SupplierId AS SupplierId, APM.SupplierName AS SupplierName,APM.SupplierProductReference AS SupplierProductReference,
                                         APM.ProductName AS ProductName, APM.Street AS Street, APM.Street2 AS Street2,APM.Street3 AS Street3,
                                         APM.Street4 AS Street4,APM.CountryCode AS CountryCode,APM.CountryName AS CountryName,APM.CityCode AS CityCode,
@@ -578,9 +579,11 @@ namespace DataLayer
                                         APM.MatchedBy AS MatchedBy,
                                         APM.MatchedByString AS MatchedByString,
                                         APM.Country_Id AS Country_Id,
-                                        APM.City_Id AS City_Id
+                                        APM.City_Id AS City_Id,
+                                        APM.ProductType,
+                                        AC.ProductCategorySubType AS SystemProductType
                                         FROM Accommodation_ProductMapping APM
-                                        LEFT OUTER JOIN Accommodation AC ON APM.Accommodation_Id = AC.Accommodation_Id
+                                        LEFT OUTER JOIN Accommodation AC ON APM.Accommodation_Id = AC.Accommodation_Id AND ISNULL(AC.ISACTIVE,0) = 1 
                                         LEFT OUTER JOIN m_CountryMaster CM ON LTRIM(RTRIM(APM.CountryName)) = LTRIM(RTRIM(CM.Name))
                                         LEFT OUTER JOIN m_CityMaster C ON (LTRIM(RTRIM(APM.CityName)) = LTRIM(RTRIM(C.Name)) AND LTRIM(RTRIM(APM.CountryName)) = LTRIM(RTRIM(C.CountryName)))
                                         LEFT OUTER JOIN m_States S ON LTRIM(RTRIM(APM.StateName)) = LTRIM(RTRIM(S.StateName))
@@ -717,8 +720,8 @@ namespace DataLayer
                 var toUpdate = (from a in accomap
                                     //join s in stg on a.SupplierProductReference equals s.ProductId
                                 join s in context.stg_SupplierProductMapping.AsNoTracking() on
-                                new { Supplier_Id = a.Supplier_Id, SupplierProductReference = a.SupplierProductReference }
-                                equals new { Supplier_Id = s.Supplier_Id, SupplierProductReference = s.ProductId }
+                                new { Supplier_Id = a.Supplier_Id, SupplierProductReference = a.SupplierProductReference, CityCode = (a.CityCode ?? a.CityName) }
+                                equals new { Supplier_Id = s.Supplier_Id, SupplierProductReference = s.ProductId, CityCode = (s.CityCode ?? s.CityName) }
                                 where s.SupplierImportFile_Id == File_Id
                                 select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                 {
@@ -780,7 +783,7 @@ namespace DataLayer
                     return c;
                 }).ToList();
 
-                insertSTGList = stg.Where(w => !toUpdate.Any(a => a.SupplierProductReference == w.ProductId)).ToList();
+                insertSTGList = stg.Where(w => !toUpdate.Any(a => a.SupplierProductReference == w.ProductId && (a.CityCode ?? a.CityName) == (w.CityCode ?? w.CityName) )).ToList();
                 updateMappingList = toUpdate.Where(w => w.ProductName != w.oldProductName || w.ProductType != w.OldProductType || w.Latitude != w.OldLatitude || w.Longitude != w.OldLongitude).ToList();
 
                 context.Dispose();
@@ -1704,7 +1707,7 @@ namespace DataLayer
                             HotelLookUpSQL = HotelLookUpSQL + "Edit_Date = GETDATE(), Edit_User = 'TLGX_DataHandler', APM.Country_Id = A.Country_Id, APM.City_Id = A.City_Id, APM.Legacy_Htl_ID = A.CompanyHotelID ";
                             HotelLookUpSQL = HotelLookUpSQL + "FROM @TABLE TBL ";
                             HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation_ProductMapping APM ON TBL.APM_ID = APM.Accommodation_ProductMapping_Id ";
-                            HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation A ON TBL.A_ID = A.Accommodation_Id;";
+                            HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation A ON TBL.A_ID = A.Accommodation_Id AND ISNULL(A.IsActive, 0) = 1 ; ";
                             try
                             {
                                 toupdate = context.Database.ExecuteSqlCommand(HotelLookUpSQL);
@@ -1726,7 +1729,7 @@ namespace DataLayer
                             //sqlFull = sqlFull + " inner join STG_Mapping_TableIds S ON APM.Accommodation_ProductMapping_Id = S.Mapping_Id AND S.File_Id = '" + obj.File_Id.ToString() + "' ";
                             sqlFull = sqlFull + " inner join m_CityMapping cm on cm.supplier_Id = APM.Supplier_Id AND #PutJoinConditionHere# ";
                             sqlFull = sqlFull + " left outer join m_CityMaster mc on cm.City_Id = mc.City_Id ";
-                            sqlFull = sqlFull + " inner join Accommodation A ON APM.STATUS = 'UNMAPPED' AND ";
+                            sqlFull = sqlFull + " inner join Accommodation A ON APM.STATUS = 'UNMAPPED' AND ISNULL(A.IsActive, 0) = 1 AND ";
                             sqlFull = sqlFull + PriorityJoins;
                             sqlFull = sqlFull + " WHERE APM.ReRun_Batch = " + (obj.CurrentBatch).ToString();
                             sqlFull = sqlFull + " AND APM.ReRun_SupplierImportFile_Id =  '" + obj.File_Id.ToString() + "' ";
@@ -1865,7 +1868,7 @@ namespace DataLayer
                             sqlFull = sqlFull + " , Edit_Date = GETDATE(), Edit_User = 'TLGX_DataHandler' ";
                             sqlFull = sqlFull + " FROM Accommodation_ProductMapping APM ";
                             // sqlFull = sqlFull + " inner join STG_Mapping_TableIds S ON APM.Accommodation_ProductMapping_Id = S.Mapping_Id AND S.File_Id = '" + obj.File_Id.ToString() + "' ";
-                            sqlFull = sqlFull + " inner join Accommodation A ON  APM.STATUS = 'UNMAPPED' AND ";
+                            sqlFull = sqlFull + " inner join Accommodation A ON  APM.STATUS = 'UNMAPPED' AND ISNULL(A.IsActive, 0) = 1 AND  ";
                             sqlFull = sqlFull + PriorityJoinsMaster;
                             // sqlFull = sqlFull + " WHERE S.Batch = " + (obj.CurrentBatch).ToString();
                             sqlFull = sqlFull + " WHERE APM.ReRun_Batch = " + (obj.CurrentBatch).ToString();
@@ -3812,7 +3815,14 @@ namespace DataLayer
                     sbsqlwhere.Append(" and apm.StarRating like '%" + obj.StarRating.ToString().Trim() + "%' ");
                 }
 
-                sbsqlfrom.Append(" from Accommodation_ProductMapping apm left join Accommodation a on apm.Accommodation_Id = a.Accommodation_Id");
+                if (!string.IsNullOrWhiteSpace(obj.ProductType))
+                {
+                    sbsqlctmjoin.Append(" left outer join m_MasterAttributeValueMapping mavmp on mavmp.SupplierMasterAttributeValue = apm.ProductType ");
+                    sbsqlctmjoin.Append(" left outer join m_masterattributevalue mav on mav.MasterAttributeValue_Id = mavmp.SystemMasterAttributeValue_Id ");
+                    sbsqlwhere.Append(" and mav.MasterAttributeValue_Id = '" + obj.ProductType + "'  ");
+                }
+
+                sbsqlfrom.Append(" from Accommodation_ProductMapping apm left join Accommodation a on apm.Accommodation_Id = a.Accommodation_Id AND ISNULL(A.ISACTIVE,0) = 1 ");
                 sbsqlfrom.Append(" " + sbsqlctmjoin);
                 sbsqlfrom.Append(" " + sbsqlcmjoin);
 
@@ -3847,6 +3857,7 @@ namespace DataLayer
 	                                a.city as SystemCityName, a.country as SystemCountryName, a.FullAddress as SystemFullAddress, 
 	                                a.Location, apm.ProductType, ");
                 sbsqlselect.Append(total.ToString() + " as TotalRecords, ");
+                sbsqlselect.Append(" a.ProductCategorySubType as SystemProductType, ");
 
                 sbsqlorderby.Append(" ORDER BY apm.ProductName OFFSET ");
                 if (total <= skip)

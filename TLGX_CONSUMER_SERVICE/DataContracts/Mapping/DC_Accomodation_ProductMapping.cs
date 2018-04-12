@@ -11,64 +11,17 @@ namespace DataContracts.Mapping
     [DataContract]
     public class DC_Accomodation_ProductMapping
     {
-        System.Guid _Accommodation_ProductMapping_Id;
-        Nullable<System.Guid> _Accommodation_Id;
-        Nullable<System.Guid> _Supplier_Id;
-        string _SupplierId;
-        string _SupplierName;
-        string _SupplierProductReference;
-        string _ProductName;
-        string _Street;
-        string _Street2;
-        string _Street3;
-        string _CountryName;
-        string _CountryCode;
-        string _CityName;
-        string _CityCode;
-        string _PostCode;
-        string _TelephoneNumber;
-        string _Status;
-        Nullable<System.DateTime> _Create_Date;
-        string _Create_User;
-        Nullable<System.DateTime> _Edit_Date;
-        string _Edit_User;
-        bool _IsActive;
-        string _Street4;
-        string _StateName;
-        string _StateCode;
-        string _Latitude;
-        string _Longitude;
-        string _Email;
-        string _Fax;
-        string _Website;
-        int _TotalRecords;
         [DataMember]
         public int PageIndex { get; set; }
-        string _ProductId;
-        string _SystemCountryName;
-        string _SystemStateName;
-        string _SystemCityName;
-        string _SystemFullAddress;
-        string _SystemProductName;
-        string _SystemProductCode;
-
-        string _Remarks;
-        string _FullAddress;
-        string _address_tx;
-        string _TelephoneNumber_tx;
-        int? _MapId;
-        string _mstAcco_Id;
-        string _mstHotelName;
-        string _Google_Place_Id;
-        string _Location;
-
-
 
         [DataMember]
         public Guid ReRunSupplierImporrtFile_Id { get; set; }
 
         [DataMember]
         public string ProductType { get; set; }
+
+        [DataMember]
+        public string SystemProductType { get; set; }
         [DataMember]
         public string OldProductType { get; set; }
 
@@ -136,655 +89,126 @@ namespace DataContracts.Mapping
         public Nullable<System.Guid> stg_AccoMapping_Id { get; set; }
 
         [DataMember]
-        public Guid Accommodation_ProductMapping_Id
-        {
-            get
-            {
-                return _Accommodation_ProductMapping_Id;
-            }
-
-            set
-            {
-                _Accommodation_ProductMapping_Id = value;
-            }
-        }
+        public Guid Accommodation_ProductMapping_Id { get; set; }
 
         [DataMember]
-        public Guid? Accommodation_Id
-        {
-            get
-            {
-                return _Accommodation_Id;
-            }
+        public Guid? Accommodation_Id { get; set; }
 
-            set
-            {
-                _Accommodation_Id = value;
-            }
-        }
 
         [DataMember]
-        public Guid? Supplier_Id
-        {
-            get
-            {
-                return _Supplier_Id;
-            }
+        public Guid? Supplier_Id { get; set; }
 
-            set
-            {
-                _Supplier_Id = value;
-            }
-        }
 
         [DataMember]
-        public string SupplierId
-        {
-            get
-            {
-                return _SupplierId;
-            }
-
-            set
-            {
-                _SupplierId = value;
-            }
-        }
+        public string SupplierId { get; set; }
 
         [DataMember]
-        public string SupplierName
-        {
-            get
-            {
-                return _SupplierName;
-            }
-
-            set
-            {
-                _SupplierName = value;
-            }
-        }
+        public string SupplierName { get; set; }
 
         [DataMember]
-        public string SupplierProductReference
-        {
-            get
-            {
-                return _SupplierProductReference;
-            }
-
-            set
-            {
-                _SupplierProductReference = value;
-            }
-        }
+        public string SupplierProductReference { get; set; }
 
         [DataMember]
-        public string ProductName
-        {
-            get
-            {
-                return _ProductName;
-            }
-
-            set
-            {
-                _ProductName = value;
-            }
-        }
+        public string ProductName { get; set; }
 
         [DataMember]
-        public string Street
-        {
-            get
-            {
-                return _Street;
-            }
-
-            set
-            {
-                _Street = value;
-            }
-        }
+        public string Street { get; set; }
 
         [DataMember]
-        public string Street2
-        {
-            get
-            {
-                return _Street2;
-            }
-
-            set
-            {
-                _Street2 = value;
-            }
-        }
+        public string Street2 { get; set; }
+        [DataMember]
+        public string Street3 { get; set; }
+        [DataMember]
+        public string CountryName { get; set; }
+        [DataMember]
+        public string CountryCode { get; set; }
+        [DataMember]
+        public string CityName { get; set; }
+        [DataMember]
+        public string CityCode { get; set; }
+        [DataMember]
+        public string PostCode { get; set; }
+        [DataMember]
+        public string TelephoneNumber { get; set; }
+        [DataMember]
+        public string Status { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public bool IsActive { get; set; }
+        [DataMember]
+        public string Street4 { get; set; }
+        [DataMember]
+        public string StateName { get; set; }
+        [DataMember]
+        public string StateCode { get; set; }
+        [DataMember]
+        public string Latitude { get; set; }
+        [DataMember]
+        public string Longitude { get; set; }
+        [DataMember]
+        public string Email { get; set; }
+        [DataMember]
+        public string Fax { get; set; }
 
         [DataMember]
-        public string Street3
-        {
-            get
-            {
-                return _Street3;
-            }
-
-            set
-            {
-                _Street3 = value;
-            }
-        }
+        public string Website { get; set; }
 
         [DataMember]
-        public string CountryName
-        {
-            get
-            {
-                return _CountryName;
-            }
-
-            set
-            {
-                _CountryName = value;
-            }
-        }
+        public int TotalRecords { get; set; }
 
         [DataMember]
-        public string CountryCode
-        {
-            get
-            {
-                return _CountryCode;
-            }
-
-            set
-            {
-                _CountryCode = value;
-            }
-        }
+        public string ProductId { get; set; }
 
         [DataMember]
-        public string CityName
-        {
-            get
-            {
-                return _CityName;
-            }
-
-            set
-            {
-                _CityName = value;
-            }
-        }
+        public string SystemCountryName { get; set; }
 
         [DataMember]
-        public string CityCode
-        {
-            get
-            {
-                return _CityCode;
-            }
-
-            set
-            {
-                _CityCode = value;
-            }
-        }
+        public string SystemStateName { get; set; }
 
         [DataMember]
-        public string PostCode
-        {
-            get
-            {
-                return _PostCode;
-            }
-
-            set
-            {
-                _PostCode = value;
-            }
-        }
+        public string SystemCityName { get; set; }
 
         [DataMember]
-        public string TelephoneNumber
-        {
-            get
-            {
-                return _TelephoneNumber;
-            }
-
-            set
-            {
-                _TelephoneNumber = value;
-            }
-        }
+        public string SystemProductName { get; set; }
 
         [DataMember]
-        public string Status
-        {
-            get
-            {
-                return _Status;
-            }
+        public string SystemProductCode { get; set; }
 
-            set
-            {
-                _Status = value;
-            }
-        }
 
         [DataMember]
-        public DateTime? Create_Date
-        {
-            get
-            {
-                return _Create_Date;
-            }
-
-            set
-            {
-                _Create_Date = value;
-            }
-        }
+        public string Remarks { get; set; }
 
         [DataMember]
-        public string Create_User
-        {
-            get
-            {
-                return _Create_User;
-            }
-
-            set
-            {
-                _Create_User = value;
-            }
-        }
+        public string FullAddress { get; set; }
 
         [DataMember]
-        public DateTime? Edit_Date
-        {
-            get
-            {
-                return _Edit_Date;
-            }
-
-            set
-            {
-                _Edit_Date = value;
-            }
-        }
+        public string Address_tx { get; set; }
 
         [DataMember]
-        public string Edit_User
-        {
-            get
-            {
-                return _Edit_User;
-            }
-
-            set
-            {
-                _Edit_User = value;
-            }
-        }
+        public string TelephoneNumber_tx { get; set; }
 
         [DataMember]
-        public bool IsActive
-        {
-            get
-            {
-                return _IsActive;
-            }
-
-            set
-            {
-                _IsActive = value;
-            }
-        }
+        public int? MapId { get; set; }
+        [DataMember]
+        public string mstAcco_Id { get; set; }
 
         [DataMember]
-        public string Street4
-        {
-            get
-            {
-                return _Street4;
-            }
-
-            set
-            {
-                _Street4 = value;
-            }
-        }
+        public string mstHotelName { get; set; }
 
         [DataMember]
-        public string StateName
-        {
-            get
-            {
-                return _StateName;
-            }
-
-            set
-            {
-                _StateName = value;
-            }
-        }
+        public string SystemFullAddress { get; set; }
 
         [DataMember]
-        public string StateCode
-        {
-            get
-            {
-                return _StateCode;
-            }
-
-            set
-            {
-                _StateCode = value;
-            }
-        }
-
+        public string Google_Place_Id { get; set; }
         [DataMember]
-        public string Latitude
-        {
-            get
-            {
-                return _Latitude;
-            }
-
-            set
-            {
-                _Latitude = value;
-            }
-        }
-
-        [DataMember]
-        public string Longitude
-        {
-            get
-            {
-                return _Longitude;
-            }
-
-            set
-            {
-                _Longitude = value;
-            }
-        }
-
-        [DataMember]
-        public string Email
-        {
-            get
-            {
-                return _Email;
-            }
-
-            set
-            {
-                _Email = value;
-            }
-        }
-
-        [DataMember]
-        public string Fax
-        {
-            get
-            {
-                return _Fax;
-            }
-
-            set
-            {
-                _Fax = value;
-            }
-        }
-
-        [DataMember]
-        public string Website
-        {
-            get
-            {
-                return _Website;
-            }
-
-            set
-            {
-                _Website = value;
-            }
-        }
-
-        [DataMember]
-        public int TotalRecords
-        {
-            get
-            {
-                return _TotalRecords;
-            }
-
-            set
-            {
-                _TotalRecords = value;
-            }
-        }
-
-        [DataMember]
-        public string ProductId
-        {
-            get
-            {
-                return _ProductId;
-            }
-
-            set
-            {
-                _ProductId = value;
-            }
-        }
-
-        [DataMember]
-        public string SystemCountryName
-        {
-            get
-            {
-                return _SystemCountryName;
-            }
-
-            set
-            {
-                _SystemCountryName = value;
-            }
-        }
-        [DataMember]
-        public string SystemStateName
-        {
-            get
-            {
-                return _SystemStateName;
-            }
-
-            set
-            {
-                _SystemStateName = value;
-            }
-        }
-
-        [DataMember]
-        public string SystemCityName
-        {
-            get
-            {
-                return _SystemCityName;
-            }
-
-            set
-            {
-                _SystemCityName = value;
-            }
-        }
-
-        [DataMember]
-        public string SystemProductName
-        {
-            get
-            {
-                return _SystemProductName;
-            }
-
-            set
-            {
-                _SystemProductName = value;
-            }
-        }
-
-        [DataMember]
-        public string SystemProductCode
-        {
-            get
-            {
-                return _SystemProductCode;
-            }
-
-            set
-            {
-                _SystemProductCode = value;
-            }
-        }
-
-        [DataMember]
-        public string Remarks
-        {
-            get
-            {
-                return _Remarks;
-            }
-
-            set
-            {
-                _Remarks = value;
-            }
-        }
-
-        [DataMember]
-        public string FullAddress
-        {
-            get
-            {
-                return _FullAddress;
-            }
-
-            set
-            {
-                _FullAddress = value;
-            }
-        }
-        [DataMember]
-        public string Address_tx
-        {
-            get
-            {
-                return _address_tx;
-            }
-
-            set
-            {
-                _address_tx = value;
-            }
-        }
-        [DataMember]
-        public string TelephoneNumber_tx
-        {
-            get
-            {
-                return _TelephoneNumber_tx;
-            }
-
-            set
-            {
-                _TelephoneNumber_tx = value;
-            }
-        }
-        [DataMember]
-        public int? MapId
-        {
-            get
-            {
-                return _MapId;
-            }
-
-            set
-            {
-                _MapId = value;
-            }
-        }
-        [DataMember]
-        public string mstAcco_Id
-        {
-            get
-            {
-                return _mstAcco_Id;
-            }
-
-            set
-            {
-                _mstAcco_Id = value;
-            }
-        }
-        [DataMember]
-        public string mstHotelName
-        {
-            get
-            {
-                return _mstHotelName;
-            }
-
-            set
-            {
-                _mstHotelName = value;
-            }
-        }
-        [DataMember]
-        public string SystemFullAddress
-        {
-            get
-            {
-                return _SystemFullAddress;
-            }
-
-            set
-            {
-                _SystemFullAddress = value;
-            }
-        }
-        [DataMember]
-        public string Google_Place_Id
-        {
-            get
-            {
-                return _Google_Place_Id;
-            }
-
-            set
-            {
-                _Google_Place_Id = value;
-            }
-        }
-        [DataMember]
-        public string Location
-        {
-            get
-            {
-                return _Location;
-            }
-
-            set
-            {
-                _Location = value;
-            }
-        }
-
-
+        public string Location { get; set; }
         [DataMember]
         public string TLGXProductCode { get; set; }
     }
@@ -1177,6 +601,8 @@ namespace DataContracts.Mapping
                 _TelephoneNumber_tx = value;
             }
         }
+        [DataMember]
+        public string ProductType { get; set; }
     }
 
     [DataContract]

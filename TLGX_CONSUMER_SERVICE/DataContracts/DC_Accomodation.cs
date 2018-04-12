@@ -1397,6 +1397,8 @@ namespace DataContracts
         [DataMember]
         public string Telephone_Tx { get; set; }
         [DataMember]
+        public string SystemProductType { get; set; }
+        [DataMember]
         public bool? IsActive { get; set; }
         [DataMember]
         public int? CompanyHotelID { get; set; }

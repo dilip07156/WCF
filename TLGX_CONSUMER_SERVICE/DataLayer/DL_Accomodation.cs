@@ -1232,6 +1232,7 @@ namespace DataLayer
                                    Town = a.Town,
                                    FullAddress = a.FullAddress,
                                    Telephone_Tx = a.Telephone_Tx,
+                                   SystemProductType = a.ProductCategorySubType,
                                    Area = a.Area
                                };
 
