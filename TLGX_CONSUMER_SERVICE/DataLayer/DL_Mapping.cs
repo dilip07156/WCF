@@ -1862,7 +1862,7 @@ namespace DataLayer
                         using (ConsumerEntities context = new ConsumerEntities())
                         {
                             sqlFull = sqlFull + "UPDATE APM ";
-                            sqlFull = sqlFull + " SET Accommodation_Id = A.Accommodation_Id, STATUS = 'REVIEW', MatchedBy = " + (curPriority - 1).ToString() + " ";
+                            sqlFull = sqlFull + " SET Accommodation_Id = A.Accommodation_Id, STATUS = '" + MatchingStatus + "', MatchedBy = " + (curPriority - 1).ToString() + " ";
                             sqlFull = sqlFull + " , MatchedByString = '" + MatchByString.ToString() + "' ";
                             sqlFull = sqlFull + " , Country_Id = ISNULL(A.Country_Id, APM.Country_Id), City_Id = ISNULL(A.City_Id, APM.City_Id) ";
                             sqlFull = sqlFull + " , Edit_Date = GETDATE(), Edit_User = 'TLGX_DataHandler' ";

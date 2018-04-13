@@ -778,5 +778,15 @@ namespace ConsumerSvc
         }
         #endregion
 
+        #region UpdateAccoTxInfo
+        public void UpdateAccomodationTxInfo()
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                objBL.UpdateAccomodationTxInfo();
+            }
+        }
+
+        #endregion
     }
 }

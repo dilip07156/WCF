@@ -390,5 +390,12 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "AddAccomodation/ClassificationAttributes", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool AddAccomodationClassificationAttributes(DataContracts.DC_Accomodation_ClassificationAttributes CA);
         #endregion
+
+        #region UpdateAccoTxInfo
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "UpdateAccomodation/TxInfo", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        void UpdateAccomodationTxInfo();
+        #endregion
     }
 }

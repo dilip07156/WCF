@@ -581,5 +581,16 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        #region UpdateAccoTxInfo
+        public void UpdateAccomodationTxInfo()
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                obj.UpdateAccomodationTxInfo();
+            }
+        }
+
+        #endregion
     }
 }
