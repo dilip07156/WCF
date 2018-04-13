@@ -3024,6 +3024,25 @@ namespace DataLayer
                 return search;
             }
         }
+        public List<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails> GetAccomodationRoomInfo_RoomCategoryWithDetails(Guid Accomodation_Id)
+        {
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                var search = (from ar in context.Accommodation_RoomInfo.AsNoTracking()
+                              where ar.Accommodation_Id == Accomodation_Id
+                              orderby ar.RoomCategory
+                              select new DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails
+                              {
+                                  Accommodation_RoomInfo_Id = ar.Accommodation_RoomInfo_Id,
+                                  RoomCategory = ar.RoomCategory,
+                                  RoomName = ar.RoomName,
+                                  BedType = ar.BedType,
+                                  IsSomking = ar.Smoking == null ? "No" : ar.Smoking == true ? "Yes" : "No",
+                              }).ToList();
+                return search;
+            }
+        }
+        
         public List<string> GetRoomCategoryMaster(DataContracts.DC_RoomCategoryMaster_RQ RC)
         {
             try
