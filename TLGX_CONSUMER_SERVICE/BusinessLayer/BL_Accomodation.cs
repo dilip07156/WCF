@@ -421,6 +421,14 @@ namespace BusinessLayer
             }
 
         }
+        public List<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails> GetAccomodationRoomInfo_RoomCategoryWithDetails(Guid Accomodation_Id)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.GetAccomodationRoomInfo_RoomCategoryWithDetails(Accomodation_Id);
+            }
+
+        }
         public List<string> GetRoomCategoryMaster(DataContracts.DC_RoomCategoryMaster_RQ RC)
         {
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())

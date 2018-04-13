@@ -549,6 +549,20 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
+        public IList<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails> GetAccomodationRoomInfo_RoomCategoryWithDetails(string Accomodation_Id)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                List<DC_Accomodation_Category_DDL_WithExtraDetails> searchResults = new List<DC_Accomodation_Category_DDL_WithExtraDetails>();
+                searchResults = objBL.GetAccomodationRoomInfo_RoomCategoryWithDetails(Guid.Parse(Accomodation_Id));
+
+                if (searchResults == null)
+                {
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                }
+                return searchResults;
+            }
+        }
         public IList<string> GetRoomCategoryMaster(DataContracts.DC_RoomCategoryMaster_RQ RC)
         {
             using (BL_Accomodation objBL = new BL_Accomodation())

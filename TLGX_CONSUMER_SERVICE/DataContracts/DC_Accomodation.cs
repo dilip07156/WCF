@@ -5719,6 +5719,21 @@ namespace DataContracts
     }
 
     [DataContract]
+    public class DC_Accomodation_Category_DDL_WithExtraDetails
+    {
+        [DataMember]
+        public Guid Accommodation_RoomInfo_Id { get; set; }
+        [DataMember]
+        public string RoomName { get; set; }
+        [DataMember]
+        public string RoomCategory { get; set; }
+        [DataMember]
+        public string BedType { get; set; }
+        [DataMember]
+        public string IsSomking { get; set; }
+    }
+
+    [DataContract]
     public class DC_Accomodation_CopyRoomDef
     {
         [DataMember]
