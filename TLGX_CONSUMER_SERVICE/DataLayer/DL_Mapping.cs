@@ -3905,7 +3905,8 @@ namespace DataLayer
                         {
                             if (!string.IsNullOrWhiteSpace(item.ProductName))
                             {
-                                var prodname = item.ProductName.ToLower().Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").Replace(item.CityName.ToLower(), "").Replace(item.CountryName.ToLower(), "").ToUpper();
+
+                                var prodname = item.ProductName.ToLower().Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").Replace(item.CityName != null ? item.CityName.ToLower(): " ", "").Replace(item.CountryName != null ? item.CountryName.ToLower(): " ", "").ToUpper();
                                 var prodcode = item.ProductId;
                                 if (!string.IsNullOrWhiteSpace(prodname) && prodname.ToUpper() != "&NBSP;")
                                 {
