@@ -468,7 +468,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var acco = (from a in context.Accommodations
-                                where (a.Edit_Date ?? a.Create_Date) >= RQ.FromDate && (a.Edit_Date ?? a.Create_Date) <= RQ.ToDate 
+                                where (a.Edit_Date ?? a.Create_Date) >= RQ.FromDate && (a.Edit_Date ?? a.Create_Date) <= RQ.ToDate
                                 select new
                                 {
                                     Accommodation_Id = a.Accommodation_Id
@@ -1094,7 +1094,7 @@ namespace DataLayer
             }
         }
 
-        
+
 
 
         #endregion
@@ -3904,6 +3904,222 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding accomodation classification attributes", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+        #endregion
+
+        #region UpdateAccoTxInfo
+        public void UpdateAccomodationTxInfo()
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = (from a in context.Accommodations
+                                  where a.HotelName_Tx == null && a.IsActive == true
+                                  select new
+                                  {
+                                      a.Accommodation_Id,
+                                      a.HotelName,
+                                      a.Latitude,
+                                      a.Longitude,
+                                      a.FullAddress,
+                                      a.country,
+                                      a.city
+                                  }).ToList();
+
+
+                    #region Get all entity related Keywords 
+
+                    List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
+                    using (DL_Masters objDL = new DL_Masters())
+                    {
+                        Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "Hotel", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
+                    }
+
+                    List<DataContracts.Masters.DC_Keyword> Attributes = Keywords.Where(w => w.Attribute == true).ToList();
+
+                    #endregion
+
+                    StringBuilder sql = new StringBuilder();
+
+                    string HotelName_Tx;
+                    string Latitude_Tx;
+                    string Longitude_Tx;
+                    string Telephone_Tx;
+                    string Address_Tx;
+
+                    int Counter = 0;
+
+                    foreach (var hotel in search)
+                    {
+                        HotelName_Tx = null;
+                        Latitude_Tx = null;
+                        Longitude_Tx = null;
+                        Telephone_Tx = null;
+                        Address_Tx = null;
+
+                        HotelName_Tx = CommonFunctions.HotelNameTX(hotel.HotelName, hotel.city, hotel.country);
+                        Latitude_Tx = CommonFunctions.LatLongTX(hotel.Latitude);
+                        Longitude_Tx = CommonFunctions.LatLongTX(hotel.Latitude);
+
+                        #region TTFUAddress
+                        List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList> AttributeList = new List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList>();
+
+                        string BaseValue = hotel.FullAddress;
+
+                        #region PRE TTFU
+
+                        //HTML Decode
+                        BaseValue = System.Web.HttpUtility.HtmlDecode(BaseValue);
+
+                        //To Upper
+                        BaseValue = BaseValue.ToUpper();
+
+                        //Replace the braces
+                        BaseValue = BaseValue.Replace('{', '(');
+                        BaseValue = BaseValue.Replace('}', ')');
+                        BaseValue = BaseValue.Replace('[', '(');
+                        BaseValue = BaseValue.Replace(']', ')');
+
+                        BaseValue = BaseValue.Replace("( ", "(");
+                        BaseValue = BaseValue.Replace(" )", ")");
+
+                        //Replace UnNecessary chars to space
+                        BaseValue = BaseValue.Replace('<', ' ');
+                        BaseValue = BaseValue.Replace('>', ' ');
+                        BaseValue = BaseValue.Replace('?', ' ');
+                        BaseValue = BaseValue.Replace('#', ' ');
+                        BaseValue = BaseValue.Replace('!', ' ');
+                        BaseValue = BaseValue.Replace('@', ' ');
+                        BaseValue = BaseValue.Replace("&", " AND ");
+                        BaseValue = BaseValue.Replace('(', ' ');
+                        BaseValue = BaseValue.Replace(')', ' ');
+                        BaseValue = BaseValue.Replace('-', ' ');
+                        BaseValue = BaseValue.Replace(',', ' ');
+                        BaseValue = BaseValue.Replace('.', ' ');
+                        BaseValue = BaseValue.Replace('"', ' ');
+
+                        //Necessary Replace
+                        //BaseValue = BaseValue.Replace("/", " OR ");
+                        //BaseValue = BaseValue.Replace("+", " INCLUDING ");
+
+                        //Replace Multiple whitespaces into One Whitespace
+                        BaseValue = System.Text.RegularExpressions.Regex.Replace(BaseValue, @"\s{2,}", " ");
+
+                        //trim both end
+                        BaseValue = BaseValue.Trim();
+
+                        //Take only valid characters
+                        string BaseValue_ValidChars = string.Empty;
+                        foreach (char c in BaseValue)
+                        {
+                            if ((Convert.ToInt32(c) >= 32 && Convert.ToInt32(c) <= 196))// || (Convert.ToInt16(c) >= 97 && Convert.ToInt16(c) <= 122) || Convert.ToInt16(c) == 32)
+                            {
+                                BaseValue_ValidChars = BaseValue_ValidChars + c;
+                            }
+                        }
+
+                        BaseValue = BaseValue_ValidChars;
+
+                        //Check for Spaced Keyword and Replace
+                        List<DataContracts.Masters.DC_Keyword> SpacedKeywords = Keywords.Where(w => w.Attribute == false && w.Alias.Any(a => a.Value.Contains(' '))).ToList();
+                        foreach (DataContracts.Masters.DC_Keyword spacedkey in SpacedKeywords.OrderBy(o => o.Sequence))
+                        {
+                            var spacedAliases = spacedkey.Alias.Where(w => w.Value.Contains(' ')).OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
+                            foreach (var alias in spacedAliases)
+                            {
+                                if (BaseValue.Contains(alias.Value.ToUpper()))
+                                {
+                                    BaseValue = BaseValue.Replace(alias.Value.ToUpper(), spacedkey.Keyword);
+                                    BaseValue = BaseValue.Replace("()", string.Empty);
+                                    BaseValue = BaseValue.Trim();
+
+                                    alias.NewHits += 1;
+
+                                    break;
+                                }
+                            }
+                        }
+
+                        //Split words and replace keywords
+                        string[] BaseValueWords = BaseValue.Split(' ');
+
+                        foreach (string word in BaseValueWords)
+                        {
+                            DataContracts.Masters.DC_Keyword keywordSearch = Keywords.Where(k => k.Alias.Any(a => a.Value.ToUpper() == word.ToUpper()) && k.Attribute == false).FirstOrDefault();
+
+                            if (keywordSearch != null)
+                            {
+                                BaseValue = BaseValue.Replace(word, keywordSearch.Keyword);
+                                var foundAlias = keywordSearch.Alias.Where(w => w.Value.ToUpper() == word.ToUpper()).FirstOrDefault();
+                                foundAlias.NoOfHits += 1;
+                            }
+
+                            keywordSearch = null;
+                        }
+
+                        #endregion
+
+                        #region POST TTFU
+                        //Replace UnNecessary chars to space
+                        BaseValue = BaseValue.Replace('<', ' ');
+                        BaseValue = BaseValue.Replace('>', ' ');
+                        BaseValue = BaseValue.Replace('?', ' ');
+                        BaseValue = BaseValue.Replace('#', ' ');
+                        BaseValue = BaseValue.Replace('!', ' ');
+                        BaseValue = BaseValue.Replace('@', ' ');
+                        BaseValue = BaseValue.Replace("&", " AND ");
+                        //BaseRoomName = BaseRoomName.Replace("+", " INCLUDING ");
+                        BaseValue = BaseValue.Replace('(', ' ');
+                        BaseValue = BaseValue.Replace(')', ' ');
+                        BaseValue = BaseValue.Replace('-', ' ');
+                        BaseValue = BaseValue.Replace(',', ' ');
+                        BaseValue = BaseValue.Replace('.', ' ');
+                        BaseValue = BaseValue.Replace('"', ' ');
+
+                        //Replace Multiple whitespaces into One Whitespace
+                        BaseValue = System.Text.RegularExpressions.Regex.Replace(BaseValue, @"\s{2,}", " ");
+
+                        //trim both end
+                        BaseValue = BaseValue.Trim();
+                        #endregion
+
+                        #endregion
+
+                        sql.Append("Update Accommodation set HotelName_Tx = '" + HotelName_Tx + "' ");
+                        sql.Append(",Latitude_Tx = '" + Latitude_Tx + "' ");
+                        sql.Append(",Longitude_Tx = '" + Longitude_Tx + "' ");
+                        sql.Append(",Address_Tx = '" + BaseValue.Replace("'", "''") + "' ");
+                        sql.Append("where Accommodation_Id = '" + hotel.Accommodation_Id + "'; ");
+
+                        Counter++;
+
+                        if (Counter % 100 == 0)
+                        {
+                            try
+                            {
+                                context.Database.ExecuteSqlCommand(sql.ToString());
+                                Counter = 0;
+                                sql.Clear();
+                            }
+                            catch (Exception ex) { }
+                        }
+                    }
+
+                    if (sql.Length > 0)
+                    {
+                        context.Database.ExecuteSqlCommand(sql.ToString());
+                        Counter = 0;
+                        sql.Clear();
+                    }
+
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation classification attributes", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
         #endregion
 
     }
