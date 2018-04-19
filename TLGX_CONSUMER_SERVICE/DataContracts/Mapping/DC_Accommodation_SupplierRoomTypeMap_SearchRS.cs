@@ -100,6 +100,51 @@ namespace DataContracts.Mapping
         public string ActionType { get; set; }
         [DataMember]
         public string RoomSize { get; set; }
+        [DataMember]
+        public string BathRoomType { get; set; }
+
+        [DataMember]
+        public string RoomViewCode { get; set; }
+
+        [DataMember]
+        public string FloorName { get; set; }
+
+        [DataMember]
+        public int? FloorNumber { get; set; }
+
+        [DataMember]
+        public string SupplierProvider { get; set; }
+        [DataMember]
+        public string Amenities { get; set; }
+
+        [DataMember]
+        public string RoomLocationCode { get; set; }
+
+        [DataMember]
+        public int? ChildAge { get; set; }
+
+        [DataMember]
+        public string ExtraBed { get; set; }
+
+        [DataMember]
+        public string Bedrooms { get; set; }
+        [DataMember]
+        public string Smoking { get; set; }
+
+        [DataMember]
+        public string BedTypeCode { get; set; }
+
+        [DataMember]
+        public int? MinGuestOccupancy { get; set; }
+
+        [DataMember]
+        public string PromotionalVendorCode { get; set; }
+
+        [DataMember]
+        public string BeddingConfig { get; set; }
+
+
+
     }
 
     [DataContract]
@@ -118,6 +163,6 @@ namespace DataContracts.Mapping
         [DataMember]
         public string IconClass { get; set; }
     }
-    
+
 
 }

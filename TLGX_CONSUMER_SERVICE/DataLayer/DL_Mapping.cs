@@ -4778,7 +4778,24 @@ namespace DataLayer
                         Batch = obj.CurrentBatch ?? 0,
                         ReRunSupplierImporrtFile_Id = obj.File_Id ?? Guid.Empty,
                         ReRunBatch = obj.CurrentBatch ?? 0,
-                        RoomDescription = g.RoomDescription //Newly added 
+                        RoomDescription = g.RoomDescription,
+                        BathRoomType = g.BathRoomType,
+                        RoomViewCode = g.RoomViewCode,
+                        FloorName = g.FloorName,
+                        FloorNumber = g.FloorNumber,
+                        SupplierProvider = g.SupplierProvider,
+                        Amenities = g.Amenities,
+                        RoomLocationCode = g.RoomLocationCode,
+                        ChildAge = g.ChildAge,
+                        ExtraBed = g.ExtraBed,
+                        Bedrooms = g.Bedrooms,
+                        Smoking = g.Smoking,
+                        BedTypeCode = g.BedTypeCode,
+                        PromotionalVendorCode = g.PromotionalVendorCode,
+                        BeddingConfig = g.BeddingConfig,
+                        MinGuestOccupancy = g.MinGuestOccupancy
+
+                        //Newly added 
                     }));
 
                 //lstobj.InsertRange(lstobj.Count, clsMappingHotel.Where(a => a.stg_SupplierHotelRoomMapping_Id != null && a.ActionType == "INSERT"
@@ -5317,7 +5334,22 @@ namespace DataLayer
                                 Batch = obj.Batch,
                                 ReRun_SupplierImportFile_Id = obj.ReRunSupplierImporrtFile_Id,
                                 ReRun_Batch = obj.ReRunBatch,
-                                RoomDescription = obj.RoomDescription
+                                RoomDescription = obj.RoomDescription,
+                                BathRoomType = obj.BathRoomType,
+                                RoomViewCode = obj.RoomViewCode,
+                                FloorName = obj.FloorName,
+                                FloorNumber = obj.FloorNumber,
+                                SupplierProvider = obj.SupplierProvider,
+                                Amenities = obj.Amenities,
+                                RoomLocationCode = obj.RoomLocationCode,
+                                ChildAge = obj.ChildAge,
+                                ExtraBed = obj.ExtraBed,
+                                Bedrooms = obj.Bedrooms,
+                                Smoking = obj.Smoking,
+                                BedTypeCode = obj.BedTypeCode,
+                                PromotionalVendorCode = obj.PromotionalVendorCode,
+                                BeddingConfig = obj.BeddingConfig,
+                                MinGuestOccupancy = obj.MinGuestOccupancy
                             };
                             context.Accommodation_SupplierRoomTypeMapping.Add(objNew);
                         }

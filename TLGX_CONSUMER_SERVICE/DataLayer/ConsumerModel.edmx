@@ -476,6 +476,21 @@
           <Property Name="ReRun_SupplierImportFile_Id" Type="uniqueidentifier" />
           <Property Name="ReRun_Batch" Type="int" />
           <Property Name="RoomSize" Type="nvarchar" MaxLength="50" />
+          <Property Name="BathRoomType" Type="nvarchar" MaxLength="100" />
+          <Property Name="RoomViewCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="FloorName" Type="nvarchar" MaxLength="100" />
+          <Property Name="FloorNumber" Type="int" />
+          <Property Name="SupplierProvider" Type="nvarchar" MaxLength="510" />
+          <Property Name="Amenities" Type="nvarchar" MaxLength="100" />
+          <Property Name="RoomLocationCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="ChildAge" Type="int" />
+          <Property Name="ExtraBed" Type="nvarchar" MaxLength="100" />
+          <Property Name="Bedrooms" Type="nvarchar" MaxLength="100" />
+          <Property Name="Smoking" Type="nvarchar" MaxLength="100" />
+          <Property Name="BedTypeCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="MinGuestOccupancy" Type="int" />
+          <Property Name="PromotionalVendorCode" Type="nvarchar" MaxLength="510" />
+          <Property Name="BeddingConfig" Type="nvarchar" MaxLength="510" />
         </EntityType>
         <EntityType Name="Activity">
           <Key>
@@ -5336,6 +5351,21 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="ReRun_SupplierImportFile_Id" Type="Guid" />
           <Property Name="ReRun_Batch" Type="Int32" />
           <Property Name="RoomSize" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BathRoomType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="RoomViewCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FloorName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FloorNumber" Type="Int32" />
+          <Property Name="SupplierProvider" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
+          <Property Name="Amenities" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="RoomLocationCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ChildAge" Type="Int32" />
+          <Property Name="ExtraBed" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Bedrooms" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Smoking" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BedTypeCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MinGuestOccupancy" Type="Int32" />
+          <Property Name="PromotionalVendorCode" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
+          <Property Name="BeddingConfig" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ZoneCity_Mapping">
           <Key>
@@ -8014,6 +8044,21 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodation_SupplierRoomTypeMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeMapping">
               <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeMapping">
+                <ScalarProperty Name="BeddingConfig" ColumnName="BeddingConfig" />
+                <ScalarProperty Name="PromotionalVendorCode" ColumnName="PromotionalVendorCode" />
+                <ScalarProperty Name="MinGuestOccupancy" ColumnName="MinGuestOccupancy" />
+                <ScalarProperty Name="BedTypeCode" ColumnName="BedTypeCode" />
+                <ScalarProperty Name="Smoking" ColumnName="Smoking" />
+                <ScalarProperty Name="Bedrooms" ColumnName="Bedrooms" />
+                <ScalarProperty Name="ExtraBed" ColumnName="ExtraBed" />
+                <ScalarProperty Name="ChildAge" ColumnName="ChildAge" />
+                <ScalarProperty Name="RoomLocationCode" ColumnName="RoomLocationCode" />
+                <ScalarProperty Name="Amenities" ColumnName="Amenities" />
+                <ScalarProperty Name="SupplierProvider" ColumnName="SupplierProvider" />
+                <ScalarProperty Name="FloorNumber" ColumnName="FloorNumber" />
+                <ScalarProperty Name="FloorName" ColumnName="FloorName" />
+                <ScalarProperty Name="RoomViewCode" ColumnName="RoomViewCode" />
+                <ScalarProperty Name="BathRoomType" ColumnName="BathRoomType" />
                 <ScalarProperty Name="RoomSize" ColumnName="RoomSize" />
                 <ScalarProperty Name="ReRun_Batch" ColumnName="ReRun_Batch" />
                 <ScalarProperty Name="ReRun_SupplierImportFile_Id" ColumnName="ReRun_SupplierImportFile_Id" />

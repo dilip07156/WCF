@@ -91,6 +91,8 @@ namespace DataContracts.STG
         public Nullable<System.Guid> Supplier_Id { get; set; }
         [DataMember]
         public Guid? SupplierImportFile_Id { get; set; }
+        [DataMember]
+        public int? MinGuestOccupancy { get; set; }
 
     }
 
