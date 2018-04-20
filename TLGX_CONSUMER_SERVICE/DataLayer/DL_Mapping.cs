@@ -5282,6 +5282,7 @@ namespace DataLayer
 
         public bool SupplierRoomTypeMapping_InsertUpdate(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS> lstobj)
         {
+            bool blnInserted = false;
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
@@ -5352,6 +5353,7 @@ namespace DataLayer
                                 MinGuestOccupancy = obj.MinGuestOccupancy
                             };
                             context.Accommodation_SupplierRoomTypeMapping.Add(objNew);
+                            blnInserted = true;
                         }
                         else
                         {
@@ -5364,6 +5366,10 @@ namespace DataLayer
                         }
                     }
                     context.SaveChanges();
+                    if (blnInserted)
+                    {
+                        context.USP_UpdateMapID("roomtype");
+                    }
                     //context.USP_UpdateMapID("roomtype");
                 }
                 return true;
