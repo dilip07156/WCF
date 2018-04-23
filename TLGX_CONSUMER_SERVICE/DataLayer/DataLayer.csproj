@@ -331,11 +331,15 @@
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="DHSVCProxy.cs" />
+    <Compile Include="DistributionLayerRefresh_Log.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="DL_Accomodation.cs" />
     <Compile Include="DL_Activity.cs" />
     <Compile Include="DL_Admin.cs" />
     <Compile Include="DL_FileTransfer.cs" />
     <Compile Include="DL_GeoLocation.cs" />
+    <Compile Include="DL_GetRefreshDistributionLog.cs" />
     <Compile Include="DL_Mapping.cs" />
     <Compile Include="DL_Masters.cs" />
     <Compile Include="DL_Master_Country.cs" />

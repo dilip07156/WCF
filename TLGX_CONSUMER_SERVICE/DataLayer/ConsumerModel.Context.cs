@@ -154,6 +154,7 @@ namespace DataLayer
         public virtual DbSet<stg_SupplierHotelRoomMapping> stg_SupplierHotelRoomMapping { get; set; }
         public virtual DbSet<stg_SupplierProductMapping> stg_SupplierProductMapping { get; set; }
         public virtual DbSet<m_PortMaster> m_PortMaster { get; set; }
+        public virtual DbSet<DistributionLayerRefresh_Log> DistributionLayerRefresh_Log { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {
