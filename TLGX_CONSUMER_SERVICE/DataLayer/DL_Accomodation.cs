@@ -1245,7 +1245,7 @@ namespace DataLayer
             }
         }
         public List<DataContracts.DC_Accomodation_AutoComplete_RS> AccomodationSearchAutoComplete(DataContracts.DC_Accomodation_AutoComplete_RQ RQ)
-        {
+       {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
@@ -1256,11 +1256,12 @@ namespace DataLayer
                     sb.Append("where AC.IsActive = 1 and AC.HotelName Like '%" + RQ.HotelName + "%'");
                     if (!string.IsNullOrWhiteSpace(RQ.Country))
                     {
-                        sb.Append("and AC.country = '"); sb.Append(RQ.Country); sb.Append("'");
+                        sb.Append(" and ( AC.country = '"); sb.Append(RQ.Country); sb.Append("' ");
+                        sb.Append(" OR AC.Country_Id = '"); sb.Append(RQ.Country_Id); sb.Append("') ");
                     }
                     if (!string.IsNullOrWhiteSpace(RQ.State))
                     {
-                        sb.Append("and AC.State_Name = '"); sb.Append(RQ.State); sb.Append("'");
+                        sb.Append(" and AC.State_Name = '"); sb.Append(RQ.State); sb.Append("' ");
                     }
                     sb.Append(" order by AC.HotelName");
                     try { lstAcco = context.Database.SqlQuery<DataContracts.DC_Accomodation_AutoComplete_RS>(sb.ToString()).ToList(); } catch (Exception ex) { }

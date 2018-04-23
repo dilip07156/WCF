@@ -2233,6 +2233,7 @@ namespace DataLayer
                                 MaxAdults = obj.MaxAdults,
                                 MaxChild = obj.MaxChild,
                                 MaxGuestOccupancy = obj.MaxGuestOccupancy,
+                                MinGuestOccupancy = obj.MinGuestOccupancy,
                                 MaxInfant = obj.MaxInfant,
                                 PromotionalVendorCode = obj.PromotionalVendorCode,
                                 Quantity = obj.Quantity,
@@ -2585,7 +2586,8 @@ namespace DataLayer
                                          SupplierRoomTypeCode = a.SupplierRoomTypeCode,
                                          Supplier_Id = a.Supplier_Id,
                                          TX_RoomName = a.TX_RoomName,
-                                         SupplierImportFile_Id = a.SupplierImportFile_Id
+                                         SupplierImportFile_Id = a.SupplierImportFile_Id,
+                                         MinGuestOccupancy = a.MinGuestOccupancy
                                      }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 

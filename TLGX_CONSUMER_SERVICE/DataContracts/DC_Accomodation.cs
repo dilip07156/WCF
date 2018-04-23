@@ -5782,6 +5782,8 @@ namespace DataContracts
         [DataMember]
         public string Country { get; set; }
         [DataMember]
+        public Guid Country_Id { get; set; }
+        [DataMember]
         public string State { get; set; }
         [DataMember]
         public int? PageNo { get; set; }
