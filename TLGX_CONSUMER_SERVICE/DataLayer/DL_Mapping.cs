@@ -4940,12 +4940,12 @@ namespace DataLayer
                     context.Database.CommandTimeout = 0;
 
                     var Accommodation_SupplierRoomTypeMapping = (from a in context.Accommodation_SupplierRoomTypeMapping select a).AsQueryable();
-                    var Accommodation = (from a in context.Accommodations select a).AsQueryable();
+                    var Accommodation = (from a in context.Accommodations where a.IsActive ?? false == true select a).AsQueryable();
                     var Country = (from a in context.m_CountryMaster select a).AsQueryable();
                     var City = (from a in context.m_CityMaster select a).AsQueryable();
-                    var Accommodation_RoomInfo = (from a in context.Accommodation_RoomInfo select a).AsQueryable();
+                    var Accommodation_RoomInfo = (from a in context.Accommodation_RoomInfo where a.IsActive ?? false == true select a).AsQueryable();
                     var Accommodation_SupplierRoomTypeAttributes = (from a in context.Accommodation_SupplierRoomTypeAttributes select a).AsQueryable();
-                    var Keyword = (from a in context.m_keyword select a).AsQueryable();
+                    var Keyword = (from a in context.m_keyword where a.Status == "ACTIVE" select a).AsQueryable();
 
                     if (obj.Supplier_Id != null)
                     {
