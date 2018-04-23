@@ -82,6 +82,7 @@
       </Diagram>
       <Diagram DiagramId="863bf8af439c4e9c9eddc1d7026c2f57" Name="GeoCode" >
         <EntityTypeShape EntityType="ConsumerModel.GoogleGeoCode" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.DistributionLayerRefresh_Log" Width="1.5" PointX="3.375" PointY="0.75" />
       </Diagram>
       <Diagram DiagramId="dd7305d7f2f340ddb587fd72c40ae548" Name="Mapping Static Data" >
         <EntityTypeShape EntityType="ConsumerModel.vwUserwisemappedStat" Width="1.5" PointX="3.375" PointY="0.75" />

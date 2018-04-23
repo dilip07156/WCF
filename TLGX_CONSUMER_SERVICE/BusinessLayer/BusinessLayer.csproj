@@ -106,6 +106,7 @@
     <Compile Include="BL_GeoLocation.cs" />
     <Compile Include="BL_Mapping.cs" />
     <Compile Include="BL_Pentaho.cs" />
+    <Compile Include="BL_RefreshDistributionData.cs" />
     <Compile Include="BL_Schedule.cs" />
     <Compile Include="BL_Masters.cs" />
     <Compile Include="BL_Master_City.cs" />
