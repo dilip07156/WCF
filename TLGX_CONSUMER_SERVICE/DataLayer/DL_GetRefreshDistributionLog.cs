@@ -21,14 +21,14 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var UpdatedDate = (from dlr in context.DistributionLayerRefresh_Log
+                     var UpdatedDate = (from dlr in context.DistributionLayerRefresh_Log
                                            //where dlr.Status == "Completed"
-                                       group dlr by new { dlr.Element, dlr.Type, dlr.Status } into d
+                                       group dlr by new { dlr.Element, dlr.Type } into d
                                        select new DC_RefreshDistributionDataLog
                                        {
                                            Create_User = string.Empty,
                                            Element = d.Key.Element,
-                                           Status = d.Key.Status,
+                                           Status = string.Empty,
                                            Type = d.Key.Type,
                                            Create_Date = d.Max(t => t.Create_Date)
                                        }).ToList();
