@@ -4581,8 +4581,8 @@ namespace DataLayer
                                select a);
                 var toUpdate = (from a in accomap
                                     //join s in stg on a.SupplierProductReference equals s.ProductId
-                                join s in context.stg_SupplierHotelRoomMapping on new { Supplier_Id = a.Supplier_Id, SupplierProductReference = a.SupplierRoomTypeCode, ProductId = a.SupplierProductId, CityCode = (a.CityCode ?? a.CityName) }
-                                equals new { Supplier_Id = s.Supplier_Id, SupplierProductReference = s.SupplierRoomTypeCode, ProductId = s.SupplierProductId, CityCode = (s.CityCode ?? s.CityName) }
+                                join s in context.stg_SupplierHotelRoomMapping on new { Supplier_Id = a.Supplier_Id, SupplierProductReference = a.SupplierRoomTypeCode, ProductId = a.SupplierProductId, CityCode = (a.CityCode ?? a.CityName), CountryCode = (a.CountryCode ?? a.CountryName) }
+                                equals new { Supplier_Id = s.Supplier_Id, SupplierProductReference = s.SupplierRoomTypeCode, ProductId = s.SupplierProductId, CityCode = (s.CityCode ?? s.CityName), CountryCode = (s.CountryCode ?? s.CountryName) }
                                 where s.SupplierImportFile_Id == File_Id
                                 select new DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS
                                 {
@@ -5035,7 +5035,28 @@ namespace DataLayer
                                               SupplierImporrtFile_Id = asrtm.SupplierImportFile_Id ?? Guid.Empty,
                                               Batch = asrtm.Batch ?? 0,
                                               ReRunSupplierImporrtFile_Id = asrtm.ReRun_SupplierImportFile_Id ?? Guid.Empty,
-                                              ReRunBatch = asrtm.ReRun_Batch ?? 0
+                                              BeddingConfig = asrtm.BeddingConfig,
+                                              PromotionalVendorCode = asrtm.PromotionalVendorCode,
+                                              MinGuestOccupancy = asrtm.MinGuestOccupancy,
+                                              BedTypeCode = asrtm.BedTypeCode,
+                                              Smoking = asrtm.Smoking,
+                                              Bedrooms = asrtm.Bedrooms,
+                                              ExtraBed = asrtm.ExtraBed,
+                                              ChildAge = asrtm.ChildAge,
+                                              RoomLocationCode = asrtm.RoomLocationCode,
+                                              Amenities = asrtm.Amenities,
+                                              SupplierProvider = asrtm.SupplierProvider,
+                                              FloorName = asrtm.FloorName,
+                                              FloorNumber = asrtm.FloorNumber,
+                                              RoomViewCode = asrtm.RoomViewCode,
+                                              BathRoomType = asrtm.BathRoomType,
+                                              ReRunBatch = asrtm.ReRun_Batch ?? 0,
+                                              CityName = asrtm.CityName,
+                                              CityCode = asrtm.CityCode,
+                                              CountryName = asrtm.CountryName,
+                                              CountryCode = asrtm.CountryCode,
+                                              StateCode = asrtm.StateCode,
+                                              StateName = asrtm.StateName
                                           }).AsQueryable();
 
                     int total = roomTypeSearch.Count();
@@ -5082,7 +5103,28 @@ namespace DataLayer
                                                   SupplierImporrtFile_Id = a.SupplierImporrtFile_Id,
                                                   Batch = a.Batch,
                                                   ReRunSupplierImporrtFile_Id = a.ReRunSupplierImporrtFile_Id,
-                                                  ReRunBatch = a.ReRunBatch
+                                                  ReRunBatch = a.ReRunBatch,
+                                                  BeddingConfig = a.BeddingConfig,
+                                                  PromotionalVendorCode = a.PromotionalVendorCode,
+                                                  MinGuestOccupancy = a.MinGuestOccupancy,
+                                                  BedTypeCode = a.BedTypeCode,
+                                                  Smoking = a.Smoking,
+                                                  Bedrooms = a.Bedrooms,
+                                                  ExtraBed = a.ExtraBed,
+                                                  ChildAge = a.ChildAge,
+                                                  RoomLocationCode = a.RoomLocationCode,
+                                                  Amenities = a.Amenities,
+                                                  SupplierProvider = a.SupplierProvider,
+                                                  FloorName = a.FloorName,
+                                                  FloorNumber = a.FloorNumber,
+                                                  RoomViewCode = a.RoomViewCode,
+                                                  BathRoomType = a.BathRoomType,
+                                                  CityName = a.CityName,
+                                                  CityCode = a.CityCode,
+                                                  CountryName = a.CountryName,
+                                                  CountryCode = a.CountryCode,
+                                                  StateCode = a.StateCode,
+                                                  StateName = a.StateName
                                               }).Skip(skip).Take(obj.PageSize);
 
                     var result = roomTypeSearchList.ToList();
