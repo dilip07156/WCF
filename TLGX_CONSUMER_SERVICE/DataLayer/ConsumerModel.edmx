@@ -451,9 +451,9 @@
           <Property Name="TX_RoomName" Type="nvarchar" MaxLength="255" />
           <Property Name="SupplierRoomCategory" Type="nvarchar" MaxLength="255" />
           <Property Name="SupplierRoomCategoryId" Type="nvarchar" MaxLength="255" />
-          <Property Name="Create_Date" Type="date" />
+          <Property Name="Create_Date" Type="datetime" />
           <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
-          <Property Name="Edit_Date" Type="date" />
+          <Property Name="Edit_Date" Type="datetime" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
           <Property Name="MaxAdults" Type="int" />
           <Property Name="MaxChild" Type="int" />
@@ -491,6 +491,12 @@
           <Property Name="MinGuestOccupancy" Type="int" />
           <Property Name="PromotionalVendorCode" Type="nvarchar" MaxLength="510" />
           <Property Name="BeddingConfig" Type="nvarchar" MaxLength="510" />
+          <Property Name="CityName" Type="nvarchar" MaxLength="100" />
+          <Property Name="CityCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="StateName" Type="nvarchar" MaxLength="100" />
+          <Property Name="StateCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CountryName" Type="nvarchar" MaxLength="100" />
+          <Property Name="CountryCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Activity">
           <Key>
@@ -2345,6 +2351,12 @@
           <Property Name="Supplier_Id" Type="uniqueidentifier" />
           <Property Name="MinGuestOccupancy" Type="int" />
           <Property Name="SupplierImportFile_Id" Type="uniqueidentifier" />
+          <Property Name="CityName" Type="nvarchar" MaxLength="100" />
+          <Property Name="CityCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="StateName" Type="nvarchar" MaxLength="100" />
+          <Property Name="StateCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CountryName" Type="nvarchar" MaxLength="100" />
+          <Property Name="CountryCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="stg_SupplierProductMapping">
           <Key>
@@ -5339,9 +5351,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="TX_RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="SupplierRoomCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="SupplierRoomCategoryId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="0" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
           <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="0" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="MaxAdults" Type="Int32" />
           <Property Name="MaxChild" Type="Int32" />
@@ -5379,6 +5391,12 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="MinGuestOccupancy" Type="Int32" />
           <Property Name="PromotionalVendorCode" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
           <Property Name="BeddingConfig" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
+          <Property Name="CityName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CityCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StateName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="StateCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CountryName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CountryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ZoneCity_Mapping">
           <Key>
@@ -5577,6 +5595,12 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Supplier_Id" Type="Guid" />
           <Property Name="MinGuestOccupancy" Type="Int32" />
           <Property Name="SupplierImportFile_Id" Type="Guid" />
+          <Property Name="CityName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CityCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StateName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="StateCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CountryName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CountryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="stg_SupplierProductMapping">
           <Key>
@@ -8068,6 +8092,12 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodation_SupplierRoomTypeMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeMapping">
               <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeMapping">
+                <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
+                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
+                <ScalarProperty Name="StateCode" ColumnName="StateCode" />
+                <ScalarProperty Name="StateName" ColumnName="StateName" />
+                <ScalarProperty Name="CityCode" ColumnName="CityCode" />
+                <ScalarProperty Name="CityName" ColumnName="CityName" />
                 <ScalarProperty Name="BeddingConfig" ColumnName="BeddingConfig" />
                 <ScalarProperty Name="PromotionalVendorCode" ColumnName="PromotionalVendorCode" />
                 <ScalarProperty Name="MinGuestOccupancy" ColumnName="MinGuestOccupancy" />
@@ -8286,6 +8316,12 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="stg_SupplierHotelRoomMapping">
             <EntityTypeMapping TypeName="ConsumerModel.stg_SupplierHotelRoomMapping">
               <MappingFragment StoreEntitySet="stg_SupplierHotelRoomMapping">
+                <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
+                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
+                <ScalarProperty Name="StateCode" ColumnName="StateCode" />
+                <ScalarProperty Name="StateName" ColumnName="StateName" />
+                <ScalarProperty Name="CityCode" ColumnName="CityCode" />
+                <ScalarProperty Name="CityName" ColumnName="CityName" />
                 <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
                 <ScalarProperty Name="MinGuestOccupancy" ColumnName="MinGuestOccupancy" />
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
