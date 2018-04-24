@@ -2254,7 +2254,13 @@ namespace DataLayer
                                 SupplierRoomId = obj.SupplierRoomId,
                                 Supplier_Id = obj.Supplier_Id,
                                 TX_RoomName = obj.TX_RoomName,
-                                SupplierImportFile_Id = obj.SupplierImportFile_Id
+                                SupplierImportFile_Id = obj.SupplierImportFile_Id,
+                                CityName = obj.CityName,
+                                CityCode = obj.CityCode,
+                                StateCode = obj.StateCode,
+                                StateName = obj.StateName,
+                                CountryCode = obj.CountryCode,
+                                CountryName = obj.CountryName
                             };
                             context.stg_SupplierHotelRoomMapping.Add(objNew);
                         }
@@ -2587,7 +2593,13 @@ namespace DataLayer
                                          Supplier_Id = a.Supplier_Id,
                                          TX_RoomName = a.TX_RoomName,
                                          SupplierImportFile_Id = a.SupplierImportFile_Id,
-                                         MinGuestOccupancy = a.MinGuestOccupancy
+                                         MinGuestOccupancy = a.MinGuestOccupancy,
+                                         CityName = a.CityName,
+                                         CityCode = a.CityCode,
+                                         CountryName = a.CountryName,
+                                         CountryCode = a.CountryCode,
+                                         StateName = a.StateName,
+                                         StateCode = a.StateCode
                                      }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 

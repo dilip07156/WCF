@@ -3039,6 +3039,7 @@ namespace DataLayer
                                   RoomName = ar.RoomName ?? "",
                                   BedType = ar.BedType ?? "",
                                   RoomSize = ar.RoomSize ?? "" ,
+                                  RoomView = ar.RoomView ?? "",
                                   IsSomking = ar.Smoking == null ? "No" : ar.Smoking == true ? "Yes" : "No",
                               }).ToList();
                 return search;
