@@ -5728,6 +5728,8 @@ namespace DataContracts
         [DataMember]
         public string RoomCategory { get; set; }
         [DataMember]
+        public string RoomSize { get; set; }
+        [DataMember]
         public string BedType { get; set; }
         [DataMember]
         public string IsSomking { get; set; }
