@@ -116,6 +116,8 @@
     <Compile Include="DC_Master_City.cs" />
     <Compile Include="DC_Master_Country.cs" />
     <Compile Include="DC_GooglePlaceNearBy.cs" />
+    <Compile Include="DC_SRT_ML_Request.cs" />
+    <Compile Include="DC_SRT_ML_Response.cs" />
     <Compile Include="DC_RefreshDistributionDataLog.cs" />
     <Compile Include="FileTransfer\DC_FileData.cs" />
     <Compile Include="FileTransfer\DC_FileDownloadRequest.cs" />
