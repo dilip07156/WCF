@@ -5039,6 +5039,7 @@ namespace DataLayer
                                               SupplierImporrtFile_Id = asrtm.SupplierImportFile_Id ?? Guid.Empty,
                                               Batch = asrtm.Batch ?? 0,
                                               ReRunSupplierImporrtFile_Id = asrtm.ReRun_SupplierImportFile_Id ?? Guid.Empty,
+                                              ReRunBatch = asrtm.ReRun_Batch ?? 0,
                                               BeddingConfig = asrtm.BeddingConfig,
                                               PromotionalVendorCode = asrtm.PromotionalVendorCode,
                                               MinGuestOccupancy = asrtm.MinGuestOccupancy,
@@ -5054,7 +5055,6 @@ namespace DataLayer
                                               FloorNumber = asrtm.FloorNumber,
                                               RoomViewCode = asrtm.RoomViewCode,
                                               BathRoomType = asrtm.BathRoomType,
-                                              ReRunBatch = asrtm.ReRun_Batch ?? 0,
                                               CityName = asrtm.CityName,
                                               CityCode = asrtm.CityCode,
                                               CountryName = asrtm.CountryName,
@@ -5932,22 +5932,22 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     RQ.supplier_data = (from srt in context.Accommodation_SupplierRoomTypeMapping
-                                             where srt.Accommodation_SupplierRoomTypeMapping_Id == Accomodation_SupplierRoomTypeMapping_Id
-                                             select new DataContracts.DC_SRT_ML_supplier_data
-                                             {
-                                                 matching_string = srt.SupplierRoomName,
-                                                 product_id = srt.SupplierRoomTypeCode,
-                                                 supplier_id = srt.SupplierName
-                                             }).ToList();
+                                        where srt.Accommodation_SupplierRoomTypeMapping_Id == Accomodation_SupplierRoomTypeMapping_Id
+                                        select new DataContracts.DC_SRT_ML_supplier_data
+                                        {
+                                            matching_string = srt.SupplierRoomName,
+                                            product_id = srt.SupplierRoomTypeCode,
+                                            supplier_id = srt.SupplierName
+                                        }).ToList();
                     RQ.skip_words = new List<string>();
                     RQ.system_room_categories = (from srt in context.Accommodation_SupplierRoomTypeMapping
-                                                      join ari in context.Accommodation_RoomInfo on srt.Accommodation_Id equals ari.Accommodation_Id
-                                                      where srt.Accommodation_SupplierRoomTypeMapping_Id == Accomodation_SupplierRoomTypeMapping_Id
-                                                      select new DataContracts.DC_SRT_ML_system_room_categories
-                                                      {
-                                                          system_room_name = ari.RoomName,
-                                                          system_room_id = ari.RoomId
-                                                      }).ToList();
+                                                 join ari in context.Accommodation_RoomInfo on srt.Accommodation_Id equals ari.Accommodation_Id
+                                                 where srt.Accommodation_SupplierRoomTypeMapping_Id == Accomodation_SupplierRoomTypeMapping_Id
+                                                 select new DataContracts.DC_SRT_ML_system_room_categories
+                                                 {
+                                                     system_room_name = ari.RoomName,
+                                                     system_room_id = ari.RoomId
+                                                 }).ToList();
 
 
                     var request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationManager.AppSettings["MLSVCURL"]);
@@ -6017,7 +6017,7 @@ namespace DataLayer
                 }
                 return RS;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation product supplier mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
