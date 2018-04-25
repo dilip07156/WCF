@@ -203,6 +203,13 @@ namespace BusinessLayer
                 return objDL.AccomodationSupplierRoomTypeMapping_TTFUALL(Acco_RoomTypeMap_Ids);
             }
         }
+        public IList<DataContracts.DC_SRT_ML_Response> GetRTM_ML_Suggestions(string Accomodation_SupplierRoomTypeMapping_Id)
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                return objDL.GetRTM_ML_Suggestions(Guid.Parse(Accomodation_SupplierRoomTypeMapping_Id));
+            }
+        }
 
         public bool RoomTypeMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {

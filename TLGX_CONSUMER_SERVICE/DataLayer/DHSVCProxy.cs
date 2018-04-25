@@ -16,7 +16,8 @@ namespace DataLayer
     {
         DataHandler,
         SqlToMongo,
-        Pentaho
+        Pentaho,
+        MachineLearning
     }
     public static class DHSVCProxy
     {
@@ -44,6 +45,14 @@ namespace DataLayer
             }
         }
 
+        public static string MLSVCURL
+        {
+            get
+            {
+                return System.Configuration.ConfigurationManager.AppSettings["MLSVCURL"];
+            }
+        }
+
         public static bool GetData(ProxyFor For, string uri, Type ResponseType, out object ReturnValue)
         {
             try
@@ -60,6 +69,10 @@ namespace DataLayer
                 else if (For == ProxyFor.Pentaho)
                 {
                     AbsPath = PENTAHOSVCURL;
+                }
+                else if (For == ProxyFor.MachineLearning)
+                {
+                    AbsPath = MLSVCURL;
                 }
 
                 HttpWebRequest request;

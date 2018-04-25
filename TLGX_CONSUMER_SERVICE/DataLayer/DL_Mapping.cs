@@ -8,6 +8,10 @@ using System.ServiceModel.Web;
 using DataContracts.Mapping;
 using DataContracts.UploadStaticData;
 using EntityFramework.Extensions;
+using System.Net;
+using System.IO;
+using System.Runtime.Serialization.Json;
+using Newtonsoft.Json;
 
 namespace DataLayer
 {
@@ -5856,6 +5860,107 @@ namespace DataLayer
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while TTFU", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
+        }
+
+        public IList<DataContracts.DC_SRT_ML_Response> GetRTM_ML_Suggestions(Guid Accomodation_SupplierRoomTypeMapping_Id)
+        {
+            try
+            {
+                DataContracts.DC_SRT_ML_Request RQ = new DataContracts.DC_SRT_ML_Request();
+                List<DataContracts.DC_SRT_ML_Response> RS = new List<DataContracts.DC_SRT_ML_Response>();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    RQ.supplier_data = (from srt in context.Accommodation_SupplierRoomTypeMapping
+                                             where srt.Accommodation_SupplierRoomTypeMapping_Id == Accomodation_SupplierRoomTypeMapping_Id
+                                             select new DataContracts.DC_SRT_ML_supplier_data
+                                             {
+                                                 matching_string = srt.SupplierRoomName,
+                                                 product_id = srt.SupplierRoomTypeCode,
+                                                 supplier_id = srt.SupplierName
+                                             }).ToList();
+                    RQ.skip_words = new List<string>();
+                    RQ.system_room_categories = (from srt in context.Accommodation_SupplierRoomTypeMapping
+                                                      join ari in context.Accommodation_RoomInfo on srt.Accommodation_Id equals ari.Accommodation_Id
+                                                      where srt.Accommodation_SupplierRoomTypeMapping_Id == Accomodation_SupplierRoomTypeMapping_Id
+                                                      select new DataContracts.DC_SRT_ML_system_room_categories
+                                                      {
+                                                          system_room_name = ari.RoomName,
+                                                          system_room_id = ari.RoomId
+                                                      }).ToList();
+
+
+                    var request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationManager.AppSettings["MLSVCURL"]);
+                    var proxyAddress = System.Configuration.ConfigurationManager.AppSettings["ProxyUri"];
+
+                    if (proxyAddress != null)
+                    {
+                        WebProxy myProxy = new WebProxy();
+                        Uri newUri = new Uri(proxyAddress);
+                        // Associate the newUri object to 'myProxy' object so that new myProxy settings can be set.
+                        myProxy.Address = newUri;
+                        // Create a NetworkCredential object and associate it with the 
+                        // Proxy property of request object.
+                        //myProxy.Credentials = new NetworkCredential(username, password);
+                        request.Proxy = myProxy;
+                    }
+
+                    request.Method = "POST";
+                    request.ContentType = "application/json";
+                    request.KeepAlive = false;
+                    //request.Credentials = CredentialCache.DefaultCredentials;
+
+                    DataContractJsonSerializer serializerToUpload = new DataContractJsonSerializer(typeof(DataContracts.DC_SRT_ML_Request));
+
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        using (var reader = new StreamReader(memoryStream))
+                        {
+                            serializerToUpload.WriteObject(memoryStream, RQ);
+                            memoryStream.Position = 0;
+                            string body = reader.ReadToEnd();
+
+                            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                            {
+                                streamWriter.Write(body);
+                            }
+                        }
+                    }
+
+                    var response = request.GetResponse();
+
+                    if (((System.Net.HttpWebResponse)response).StatusCode != HttpStatusCode.OK)
+                    {
+                        RS = null;
+                    }
+                    else
+                    {
+                        var stream = response.GetResponseStream();
+                        var encoding = ASCIIEncoding.UTF8;
+                        using (var reader = new System.IO.StreamReader(response.GetResponseStream(), encoding))
+                        {
+                            string responseText = reader.ReadToEnd();
+                            var root = JsonConvert.DeserializeObject<DataContracts.DC_SRT_ML_Response>(responseText);
+                        }
+                        //deserialize here
+
+
+                        stream = null;
+                    }
+
+                    serializerToUpload = null;
+
+                    response.Dispose();
+                    response = null;
+                    request = null;
+
+                }
+                return RS;
+            }
+            catch(Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation product supplier mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+
         }
 
 
