@@ -4585,8 +4585,8 @@ namespace DataLayer
                                select a);
                 var toUpdate = (from a in accomap
                                     //join s in stg on a.SupplierProductReference equals s.ProductId
-                                join s in context.stg_SupplierHotelRoomMapping on new { Supplier_Id = a.Supplier_Id, SupplierProductReference = a.SupplierRoomTypeCode, ProductId = a.SupplierProductId }
-                                equals new { Supplier_Id = s.Supplier_Id, SupplierProductReference = s.SupplierRoomTypeCode, ProductId = s.SupplierProductId }
+                                join s in context.stg_SupplierHotelRoomMapping on new { Supplier_Id = a.Supplier_Id, SupplierProductReference = a.SupplierRoomTypeCode, ProductId = a.SupplierProductId, CityCode = (a.CityCode ?? a.CityName) }
+                                equals new { Supplier_Id = s.Supplier_Id, SupplierProductReference = s.SupplierRoomTypeCode, ProductId = s.SupplierProductId, CityCode = (s.CityCode ?? s.CityName) }
                                 where s.SupplierImportFile_Id == File_Id
                                 select new DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS
                                 {
@@ -4797,7 +4797,13 @@ namespace DataLayer
                         BedTypeCode = g.BedTypeCode,
                         PromotionalVendorCode = g.PromotionalVendorCode,
                         BeddingConfig = g.BeddingConfig,
-                        MinGuestOccupancy = g.MinGuestOccupancy
+                        MinGuestOccupancy = g.MinGuestOccupancy,
+                        CityCode = g.CityCode,
+                        CityName = g.CityName,
+                        StateCode = g.StateCode,
+                        StateName = g.StateName,
+                        CountryCode = g.CountryCode,
+                        CountryName = g.CountryName
 
                         //Newly added 
                     }));
@@ -4944,12 +4950,12 @@ namespace DataLayer
                     context.Database.CommandTimeout = 0;
 
                     var Accommodation_SupplierRoomTypeMapping = (from a in context.Accommodation_SupplierRoomTypeMapping select a).AsQueryable();
-                    var Accommodation = (from a in context.Accommodations select a).AsQueryable();
+                    var Accommodation = (from a in context.Accommodations where a.IsActive ?? false == true select a).AsQueryable();
                     var Country = (from a in context.m_CountryMaster select a).AsQueryable();
                     var City = (from a in context.m_CityMaster select a).AsQueryable();
-                    var Accommodation_RoomInfo = (from a in context.Accommodation_RoomInfo select a).AsQueryable();
+                    var Accommodation_RoomInfo = (from a in context.Accommodation_RoomInfo where a.IsActive ?? false == true select a).AsQueryable();
                     var Accommodation_SupplierRoomTypeAttributes = (from a in context.Accommodation_SupplierRoomTypeAttributes select a).AsQueryable();
-                    var Keyword = (from a in context.m_keyword select a).AsQueryable();
+                    var Keyword = (from a in context.m_keyword where a.Status == "ACTIVE" select a).AsQueryable();
 
                     if (obj.Supplier_Id != null)
                     {
@@ -5286,6 +5292,7 @@ namespace DataLayer
 
         public bool SupplierRoomTypeMapping_InsertUpdate(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS> lstobj)
         {
+            bool blnInserted = false;
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
@@ -5353,9 +5360,17 @@ namespace DataLayer
                                 BedTypeCode = obj.BedTypeCode,
                                 PromotionalVendorCode = obj.PromotionalVendorCode,
                                 BeddingConfig = obj.BeddingConfig,
-                                MinGuestOccupancy = obj.MinGuestOccupancy
+                                MinGuestOccupancy = obj.MinGuestOccupancy,
+                                CityName = obj.CityName,
+                                CityCode = obj.CityCode,
+                                StateName = obj.StateName,
+                                StateCode = obj.StateCode,
+                                CountryName = obj.CountryName,
+                                CountryCode = obj.CountryCode
+
                             };
                             context.Accommodation_SupplierRoomTypeMapping.Add(objNew);
+                            blnInserted = true;
                         }
                         else
                         {
@@ -5368,6 +5383,10 @@ namespace DataLayer
                         }
                     }
                     context.SaveChanges();
+                    if (blnInserted)
+                    {
+                        context.USP_UpdateMapID("roomtype");
+                    }
                     //context.USP_UpdateMapID("roomtype");
                 }
                 return true;

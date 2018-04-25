@@ -213,7 +213,7 @@ namespace DataLayer
         }
     }
 
-    public class DHSVCProxyAsync
+    public class DHSVCProxyAsync : IDisposable
     {
         public void PostAsync(ProxyFor For, string URI, object Param, Type RequestType)
         {
@@ -263,6 +263,11 @@ namespace DataLayer
 
             HttpClient hc = new HttpClient();
             hc.GetAsync(requestUri);
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }

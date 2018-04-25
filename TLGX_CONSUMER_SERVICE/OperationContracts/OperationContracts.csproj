@@ -108,6 +108,7 @@
     <Compile Include="IMapping.cs" />
     <Compile Include="IMasters.cs" />
     <Compile Include="IPentaho.cs" />
+    <Compile Include="IRefreshDistributionData.cs" />
     <Compile Include="ISchedule.cs" />
     <Compile Include="IStaticData.cs" />
     <Compile Include="IStaticDataHandler.cs" />

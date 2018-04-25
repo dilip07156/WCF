@@ -3035,9 +3035,11 @@ namespace DataLayer
                               select new DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails
                               {
                                   Accommodation_RoomInfo_Id = ar.Accommodation_RoomInfo_Id,
-                                  RoomCategory = ar.RoomCategory,
-                                  RoomName = ar.RoomName,
-                                  BedType = ar.BedType,
+                                  RoomCategory = ar.RoomCategory ?? "",
+                                  RoomName = ar.RoomName ?? "",
+                                  BedType = ar.BedType ?? "",
+                                  RoomSize = ar.RoomSize ?? "" ,
+                                  RoomView = ar.RoomView ?? "",
                                   IsSomking = ar.Smoking == null ? "No" : ar.Smoking == true ? "Yes" : "No",
                               }).ToList();
                 return search;

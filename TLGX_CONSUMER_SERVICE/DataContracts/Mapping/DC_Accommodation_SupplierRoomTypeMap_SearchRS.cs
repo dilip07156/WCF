@@ -142,6 +142,18 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public string BeddingConfig { get; set; }
+        [DataMember]
+        public string CityName { get; set; }
+        [DataMember]
+        public string CityCode { get; set; }
+        [DataMember]
+        public string StateName { get; set; }
+        [DataMember]
+        public string StateCode { get; set; }
+        [DataMember]
+        public string CountryName { get; set; }
+        [DataMember]
+        public string CountryCode { get; set; }
 
 
 
