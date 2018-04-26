@@ -6022,7 +6022,7 @@ namespace DataLayer
                                                  where srt.Accommodation_SupplierRoomTypeMapping_Id == Accomodation_SupplierRoomTypeMapping_Id
                                                  select new DataContracts.DC_SRT_ML_system_room_categories
                                                  {
-                                                     system_room_name = ari.RoomName,
+                                                     system_room_name = ari.RoomName ?? "",
                                                      AccommodationRoomInfo_Id = ari.Accommodation_RoomInfo_Id
                                                  }).ToList();
 
