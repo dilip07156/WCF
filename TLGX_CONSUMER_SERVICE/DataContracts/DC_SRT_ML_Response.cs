@@ -11,14 +11,32 @@ namespace DataContracts
     public class DC_SRT_ML_Response
     {
         [DataMember]
-        public string supplier_id { get; set; }
+        public string Supplier_Id { get; set; }
         [DataMember]
-        public string product_id { get; set; }
+        public string Accommodation_Id { get; set; }
         [DataMember]
         public string matching_string { get; set; }
         [DataMember]
-        public Dictionary<string, string> matches { get; set; }
-        //[DataMember]
-        //public List<Dictionary<string, string>> system_room_ids { get; set; }
+        public List<DC_SRT_ML_Match> matches { get; set; }
+        [DataMember]
+        public List<DC_SRT_ML_AccommodationRoomInfo> AccommodationRoomInfo_Id { get; set; }
     }
+
+    [DataContract]
+    public class DC_SRT_ML_Match
+    {
+        [DataMember]
+        public string matched_string { get; set; }
+        [DataMember]
+        public int score { get; set; }
+    }
+    [DataContract]
+    public class DC_SRT_ML_AccommodationRoomInfo
+    {
+        [DataMember]
+        public string AccommodationRoomInfo_Id { get; set; }
+        [DataMember]
+        public string system_room_name { get; set; }
+    }
+
 }

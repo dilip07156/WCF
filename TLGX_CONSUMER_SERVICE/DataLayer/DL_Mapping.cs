@@ -6013,8 +6013,8 @@ namespace DataLayer
                                         select new DataContracts.DC_SRT_ML_supplier_data
                                         {
                                             matching_string = srt.SupplierRoomName,
-                                            product_id = srt.SupplierRoomTypeCode,
-                                            supplier_id = srt.SupplierName
+                                            Accommodation_Id = srt.Accommodation_Id ?? Guid.Empty,
+                                            Supplier_Id = srt.SupplierName
                                         }).ToList();
                     RQ.skip_words = new List<string>();
                     RQ.system_room_categories = (from srt in context.Accommodation_SupplierRoomTypeMapping
@@ -6023,7 +6023,7 @@ namespace DataLayer
                                                  select new DataContracts.DC_SRT_ML_system_room_categories
                                                  {
                                                      system_room_name = ari.RoomName,
-                                                     system_room_id = ari.RoomId
+                                                     AccommodationRoomInfo_Id = ari.Accommodation_RoomInfo_Id
                                                  }).ToList();
 
 
@@ -6077,7 +6077,7 @@ namespace DataLayer
                         using (var reader = new System.IO.StreamReader(response.GetResponseStream(), encoding))
                         {
                             string responseText = reader.ReadToEnd();
-                            var root = JsonConvert.DeserializeObject<DataContracts.DC_SRT_ML_Response>(responseText);
+                            RS = JsonConvert.DeserializeObject<List<DataContracts.DC_SRT_ML_Response>>(responseText);
                         }
                         //deserialize here
 

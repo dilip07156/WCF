@@ -25,9 +25,9 @@ namespace DataContracts
         [DataMember]
         public string matching_string { get; set; }
         [DataMember]
-        public string supplier_id { get; set; }
+        public string Supplier_Id { get; set; }
         [DataMember]
-        public string product_id { get; set; }
+        public Guid Accommodation_Id { get; set; }
     }
     [DataContract]
     public class DC_SRT_ML_system_room_categories
@@ -35,6 +35,6 @@ namespace DataContracts
         [DataMember]
         public string system_room_name { get; set; }
         [DataMember]
-        public string system_room_id { get; set; }
+        public Guid AccommodationRoomInfo_Id { get; set; }
     }
 }
