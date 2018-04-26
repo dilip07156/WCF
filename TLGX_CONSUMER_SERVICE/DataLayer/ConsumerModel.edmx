@@ -490,12 +490,12 @@
           <Property Name="BedTypeCode" Type="nvarchar" MaxLength="100" />
           <Property Name="MinGuestOccupancy" Type="int" />
           <Property Name="PromotionalVendorCode" Type="nvarchar" MaxLength="510" />
-          <Property Name="BeddingConfig" Type="nvarchar" MaxLength="510" />
-          <Property Name="CityName" Type="nvarchar" MaxLength="100" />
+          <Property Name="BeddingConfig" Type="nvarchar(max)" />
+          <Property Name="CityName" Type="nvarchar" MaxLength="255" />
           <Property Name="CityCode" Type="nvarchar" MaxLength="50" />
-          <Property Name="StateName" Type="nvarchar" MaxLength="100" />
+          <Property Name="StateName" Type="nvarchar" MaxLength="255" />
           <Property Name="StateCode" Type="nvarchar" MaxLength="50" />
-          <Property Name="CountryName" Type="nvarchar" MaxLength="100" />
+          <Property Name="CountryName" Type="nvarchar" MaxLength="255" />
           <Property Name="CountryCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Activity">
@@ -2326,8 +2326,8 @@
           <Property Name="MaxInfant" Type="int" />
           <Property Name="MaxGuestOccupancy" Type="int" />
           <Property Name="SupplierRoomId" Type="nvarchar" MaxLength="255" />
-          <Property Name="RoomViewCode" Type="nvarchar" MaxLength="50" />
-          <Property Name="SupplierRoomTypeCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="RoomViewCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="SupplierRoomTypeCode" Type="nvarchar" MaxLength="255" />
           <Property Name="RoomSize" Type="nvarchar" MaxLength="50" />
           <Property Name="FloorName" Type="nvarchar" MaxLength="50" />
           <Property Name="FloorNumber" Type="int" />
@@ -2343,19 +2343,19 @@
           <Property Name="RoomName" Type="nvarchar" MaxLength="255" />
           <Property Name="SupplierRoomCategory" Type="nvarchar" MaxLength="255" />
           <Property Name="SupplierRoomCategoryId" Type="nvarchar" MaxLength="255" />
-          <Property Name="BeddingConfig" Type="nvarchar" MaxLength="255" />
-          <Property Name="BedTypeCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="BeddingConfig" Type="nvarchar(max)" />
+          <Property Name="BedTypeCode" Type="nvarchar" MaxLength="255" />
           <Property Name="RatePlan" Type="nvarchar" MaxLength="50" />
           <Property Name="RatePlanCode" Type="nvarchar" MaxLength="50" />
           <Property Name="TX_RoomName" Type="nvarchar" MaxLength="255" />
           <Property Name="Supplier_Id" Type="uniqueidentifier" />
           <Property Name="MinGuestOccupancy" Type="int" />
           <Property Name="SupplierImportFile_Id" Type="uniqueidentifier" />
-          <Property Name="CityName" Type="nvarchar" MaxLength="100" />
+          <Property Name="CityName" Type="nvarchar" MaxLength="255" />
           <Property Name="CityCode" Type="nvarchar" MaxLength="50" />
-          <Property Name="StateName" Type="nvarchar" MaxLength="100" />
+          <Property Name="StateName" Type="nvarchar" MaxLength="255" />
           <Property Name="StateCode" Type="nvarchar" MaxLength="50" />
-          <Property Name="CountryName" Type="nvarchar" MaxLength="100" />
+          <Property Name="CountryName" Type="nvarchar" MaxLength="255" />
           <Property Name="CountryCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="stg_SupplierProductMapping">
@@ -5390,12 +5390,12 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="BedTypeCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="MinGuestOccupancy" Type="Int32" />
           <Property Name="PromotionalVendorCode" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
-          <Property Name="BeddingConfig" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
-          <Property Name="CityName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BeddingConfig" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CityName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="CityCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="StateName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="StateName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="StateCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CountryName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CountryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="CountryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ZoneCity_Mapping">
@@ -5570,8 +5570,8 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="MaxInfant" Type="Int32" />
           <Property Name="MaxGuestOccupancy" Type="Int32" />
           <Property Name="SupplierRoomId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="RoomViewCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="SupplierRoomTypeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RoomViewCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierRoomTypeCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="RoomSize" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FloorName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FloorNumber" Type="Int32" />
@@ -5587,19 +5587,19 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="SupplierRoomCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="SupplierRoomCategoryId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="BeddingConfig" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="BedTypeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BeddingConfig" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BedTypeCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="RatePlan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="RatePlanCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TX_RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Supplier_Id" Type="Guid" />
           <Property Name="MinGuestOccupancy" Type="Int32" />
           <Property Name="SupplierImportFile_Id" Type="Guid" />
-          <Property Name="CityName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CityName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="CityCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="StateName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="StateName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="StateCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CountryName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CountryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="CountryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="stg_SupplierProductMapping">

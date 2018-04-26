@@ -4575,6 +4575,83 @@ namespace DataLayer
 
         public void CheckRoomTypeAlreadyExist(Guid File_Id, Guid CurSupplier_Id, List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> stg, out List<DC_Accommodation_SupplierRoomTypeMap_SearchRS> updateMappingList, out List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> insertSTGList)
         {
+            #region Dynamic Query
+            StringBuilder sbSelect = new StringBuilder();
+            StringBuilder sbFrom = new StringBuilder();
+            StringBuilder sbJoin = new StringBuilder();
+
+            StringBuilder sbWhere = new StringBuilder();
+            try
+            {
+                string strSuppliercode = string.Empty;
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    strSuppliercode = Convert.ToString((from x in context.Supplier where x.Supplier_Id == CurSupplier_Id select x.Code).FirstOrDefault());
+                }
+                #region Select
+                sbSelect.Append(@"SELECT 
+	                                ASTM.SupplierProductName As ProductName,	ASTM.Accommodation_Id As Accommodation_Id,
+	                                ASTM.SupplierName AS SupplierName,	ASTM.Accommodation_RoomInfo_Id AS Accommodation_RoomInfo_Id,
+	                                ASTM.SupplierRoomName AS Accommodation_RoomInfo_Name,	SHRM.RoomName AS SupplierRoomName,
+	                                ASTM.SupplierRoomName AS OldSupplierRoomName,	ASTM.Accommodation_SupplierRoomTypeMapping_Id AS Accommodation_SupplierRoomTypeMapping_Id,
+	                                ASTM.SupplierProductId AS SupplierProductId,	ASTM.MaxAdults AS MaxAdults,
+	                                ASTM.MaxChild AS MaxChild,	ASTM.MapId AS MaxChild,
+	                                ASTM.MappingStatus AS MappingStatus,	ASTM.MaxGuestOccupancy AS MaxGuestOccupancy,
+	                                ASTM.MaxInfants AS MaxInfants,	ASTM.Quantity AS Quantity,
+	                                ASTM.SupplierRoomCategory AS SupplierRoomCategory,	ASTM.RatePlan AS RatePlan,
+	                                ASTM.RatePlanCode AS RatePlanCode,	ASTM.SupplierProductName AS SupplierProductName,
+	                                ASTM.SupplierRoomCategoryId AS SupplierRoomCategoryId,	ASTM.SupplierRoomId AS SupplierRoomId,
+	                                ASTM.SupplierRoomTypeCode AS SupplierRoomTypeCode,	ASTM.Supplier_Id AS Supplier_Id,
+	                                ASTM.Tx_ReorderedName AS Tx_ReorderedName,	ASTM.TX_RoomName AS TX_RoomName,
+	                                ASTM.Tx_StrippedName AS Tx_StrippedName, ASTM.RoomDescription AS RoomDescription,
+	                                SHRM.stg_SupplierHotelRoomMapping_Id AS stg_SupplierHotelRoomMapping_Id,
+	                                ASTM.stg_SupplierHotelRoomMapping_Id AS Oldstg_SupplierHotelRoomMapping_Id,
+	                                ASTM.RoomSize AS RoomSize,	ISNULL(ASTM.SupplierImportFile_Id , CAST(0x0 AS UNIQUEIDENTIFIER)) AS SupplierImporrtFile_Id,
+	                                ISNULL(ASTM.Batch ,'0') AS Batch,
+	                                ISNULL(ASTM.ReRun_SupplierImportFile_Id, CAST(0x0 AS UNIQUEIDENTIFIER)) AS ReRunSupplierImporrtFile_Id,
+	                                ISNULL(ASTM.ReRun_Batch,'0') AS ReRunBatch,
+	                                CASE WHEN ASTM.SupplierRoomName != SHRM.RoomName THEN 'UPDATE' ELSE '' END AS ActionType");
+                #endregion
+                sbFrom.Append(" FROM Accommodation_SupplierRoomTypeMapping ASTM ");
+                sbJoin.Append(" Join stg_SupplierHotelRoomMapping SHRM  ON ");
+                sbJoin.Append(@"    ASTM.Supplier_Id = SHRM.Supplier_Id 
+	                            AND ASTM.SupplierRoomTypeCode = SHRM.SupplierRoomTypeCode 
+	                            AND ASTM.SupplierProductId = SHRM.SupplierProductId ");
+
+                if (strSuppliercode != string.Empty && strSuppliercode.ToLower() == "gta")
+                {
+                    sbJoin.Append(" AND ISNULL(ASTM.CityCode,ASTM.CityName) = ISNULL(SHRM.CityCode ,SHRM.CityName) ");
+                    sbJoin.Append(" AND ISNULL(ASTM.CountryCode ,ASTM.CountryName) = ISNULL(SHRM.CountryCode,SHRM.CountryName) ");
+                }
+                sbWhere.Append(" WHERE ASTM.Supplier_Id = '" + CurSupplier_Id + "' ");
+                sbWhere.Append("AND SHRM.SupplierImportFile_Id = '" + File_Id + "' ");
+
+                StringBuilder sbfinalquery = new StringBuilder();
+                sbfinalquery.Append(sbSelect); sbfinalquery.Append(" ");
+                sbfinalquery.Append(sbFrom); sbfinalquery.Append(" ");
+                sbfinalquery.Append(sbJoin); sbfinalquery.Append(" ");
+                sbfinalquery.Append(sbWhere);
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    var toUpdate = context.Database.SqlQuery<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS>(sbfinalquery.ToString()).ToList();
+                    insertSTGList = stg.Where(w => !toUpdate.Any(a => a.SupplierProductId == w.SupplierProductId && a.SupplierRoomTypeCode == w.SupplierRoomTypeCode)).ToList();
+                    updateMappingList = toUpdate.Where(w => w.SupplierRoomName != w.OldSupplierRoomName).ToList();
+
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            #endregion
+        }
+        public void CheckRoomTypeAlreadyExist_Old(Guid File_Id, Guid CurSupplier_Id, List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> stg, out List<DC_Accommodation_SupplierRoomTypeMap_SearchRS> updateMappingList, out List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> insertSTGList)
+        {
             bool ret = false;
 
             using (ConsumerEntities context = new ConsumerEntities())
