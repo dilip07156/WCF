@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 namespace DataContracts
 {
     [DataContract]
-    public class DC_SRT_ML_Request
+    public class DC_SRT_ML_Request_Syntactic
     {
         [DataMember]
-        public List<DC_SRT_ML_supplier_data> supplier_data { get; set; }
+        public List<DC_SRT_ML_supplier_data_Syntactic> supplier_data { get; set; }
         [DataMember]
-        public List<DC_SRT_ML_system_room_categories> system_room_categories { get; set; }
+        public List<DC_SRT_ML_system_room_categories_Syntactic> system_room_categories { get; set; }
         [DataMember]
         public List<string> skip_words { get; set; }
         [DataMember]
         public string semantic_mode { get; set; } = "disabled";
     }
     [DataContract]
-    public class DC_SRT_ML_supplier_data
+    public class DC_SRT_ML_supplier_data_Syntactic
     {
         [DataMember]
         public string matching_string { get; set; }
@@ -30,7 +30,7 @@ namespace DataContracts
         public Guid Accommodation_Id { get; set; }
     }
     [DataContract]
-    public class DC_SRT_ML_system_room_categories
+    public class DC_SRT_ML_system_room_categories_Syntactic
     {
         [DataMember]
         public string system_room_name { get; set; }
