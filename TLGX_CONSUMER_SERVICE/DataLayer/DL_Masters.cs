@@ -745,11 +745,33 @@ namespace DataLayer
                     var search = from c in context.m_CityMaster
                                  select c;
 
+                    var searchHotel = from h in context.Accommodations
+                                      select h;
+
+                    var searchActivity = from ac in context.Activity_Flavour
+                                         select ac;
+
+                    var searchSupplierCity = from ct in context.m_CityMapping
+                                             select ct;
+
                     if (RQ.Country_Id != null)
                     {
                         search = from a in search
                                  where a.Country_Id == RQ.Country_Id
                                  select a;
+                        searchHotel = from a in searchHotel
+                                      where a.Country_Id == RQ.Country_Id
+                                      select a;
+
+
+                        searchActivity = from ac in context.Activity_Flavour
+                                         where ac.Country_Id == RQ.Country_Id
+                                         select ac;
+
+                        searchSupplierCity = from ct in context.m_CityMapping
+                                             where ct.Country_Id == RQ.Country_Id
+                                             select ct;
+
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.Country_Name))
@@ -806,6 +828,35 @@ namespace DataLayer
                     int total = search.Count();
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
+                    var lstCityHotelCount = (from h in searchHotel
+                                             where h.City_Id != null
+                                             group h by h.City_Id into grp
+                                             select new
+                                             {
+                                                 City_Id = grp.Key ?? Guid.Empty,
+                                                 Count = grp.Count(x => x.City_Id != null)
+                                             }).ToList();
+
+                    var lstCityActivityCount = (from h in searchActivity
+                                                where h.City_Id != null
+                                                group h by h.City_Id into grp
+                                                select new
+                                                {
+                                                    City_Id = grp.Key ?? Guid.Empty,
+                                                    ACTCount = grp.Count(x => x.City_Id != null)
+                                                }).ToList();
+
+                    var lstSupplierCityCount = (from h in searchSupplierCity
+                                                where h.City_Id != null
+                                                group h by h.City_Id into grp
+                                                select new
+                                                {
+                                                    City_Id = grp.Key ?? Guid.Empty,
+                                                    SCTCount = grp.Count(x => x.City_Id != null)
+                                                }).ToList();
+
+
+
                     var result = from a in search
                                  select new DataContracts.Masters.DC_City
                                  {
@@ -826,14 +877,49 @@ namespace DataLayer
                                      TotalRecords = total,
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude
+
                                  };
+
                     List<DC_City> ret = new List<DC_City>();
 
                     ret = result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
-                    return ret;
+
+                    var returnList = (from a in ret
+                                      join lst in lstCityHotelCount on a.City_Id equals lst.City_Id into data
+                                      from dlst0 in data.DefaultIfEmpty()
+                                      join lstAct in lstCityActivityCount on a.City_Id equals lstAct.City_Id into dAct
+                                      from dlstAct in dAct.DefaultIfEmpty()
+                                      join lstSupplierCity in lstSupplierCityCount on a.City_Id equals lstSupplierCity.City_Id into dSct
+                                      from dlst in dSct.DefaultIfEmpty()
+                                      //from dAct in 
+                                      select new DataContracts.Masters.DC_City
+                                      {
+                                          City_Id = a.City_Id,
+                                          CountryName = a.CountryName,
+                                          Create_User = a.Create_User,
+                                          Code = a.Code,
+                                          Country_Id = a.Country_Id,
+                                          Create_Date = a.Create_Date,
+                                          Edit_Date = a.Edit_Date,
+                                          Edit_User = a.Edit_User,
+                                          Google_PlaceId = a.Google_PlaceId,
+                                          Name = a.Name,
+                                          StateCode = a.StateCode,
+                                          StateName = a.StateName,
+                                          State_Id = a.State_Id,
+                                          Status = a.Status,
+                                          TotalRecords = total,
+                                          Latitude = a.Latitude,
+                                          Longitude = a.Longitude,
+                                          TotalHotelRecords = (dlst0 == null ? 0 : dlst0.Count),
+                                          TotalAttractionsRecords = (dlstAct == null ? 0 : dlstAct.ACTCount),
+                                          TotalSupplierCityRecords = (dlst == null ? 0 : dlst.SCTCount)
+                                      }).ToList();
+
+                    return returnList;
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching City Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -5050,7 +5136,7 @@ namespace DataLayer
                             Longitude = param.Longitude,
                             IsActive = true,//param.Status
                             Status = "Active",
-                            Zone_Radius=(decimal)param.Zone_Radius,
+                            Zone_Radius = (decimal)param.Zone_Radius,
                             Create_Date = param.Create_Date,
                             Create_User = param.Create_User
                         };
@@ -5246,8 +5332,8 @@ namespace DataLayer
                                      Status = a.Status,
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude,
-                                     NoOfHotels=a.NoOfHotels,
-                                     Zone_Radius=a.Zone_Radius,
+                                     NoOfHotels = a.NoOfHotels,
+                                     Zone_Radius = a.Zone_Radius,
                                      TotalRecords = total
                                  };
 
@@ -5276,7 +5362,7 @@ namespace DataLayer
                             City_id = m.zcm.City_Id,
                             IsActive = m.zcm.IsActive,
                             Status = m.zcm.Status,
-                            ZoneCityMapping_Id=m.zcm.ZoneCityMapping_Id
+                            ZoneCityMapping_Id = m.zcm.ZoneCityMapping_Id
                         }).OrderBy(x => x.CityName).ToList();
 
                     int total = search.Count();
@@ -5292,7 +5378,7 @@ namespace DataLayer
                                      City_id = a.City_id,
                                      IsActive = a.IsActive,
                                      Status = a.Status,
-                                     ZoneCityMapping_Id=a.ZoneCityMapping_Id,
+                                     ZoneCityMapping_Id = a.ZoneCityMapping_Id,
                                      TotalRecords = total
                                  };
 
@@ -5320,7 +5406,7 @@ namespace DataLayer
                 {
                     var search = (from a in context.m_ZoneMaster where a.Zone_id == param.Zone_id select a).SingleOrDefault();
                     var boolIsActive = (param.IsActive == true) ? 1 : 0;
-                    var Newstatus =( boolIsActive==1) ? "Active":"Inactive";
+                    var Newstatus = (boolIsActive == 1) ? "Active" : "Inactive";
                     if (search != null)
                     {
                         if (param.Action == "ZoneMaster")
@@ -5382,7 +5468,7 @@ namespace DataLayer
                             }
                         }
                     }
-                   
+
                     else
                     {
                         _msg.StatusMessage = ReadOnlyMessage.strFailed;
@@ -5397,7 +5483,7 @@ namespace DataLayer
             return _msg;
         }
 
-      
+
         public List<DC_ZoneHotelList> SearchZoneHotels(DataContracts.Masters.DC_ZoneRQ param)
         {
             try
@@ -5412,7 +5498,7 @@ namespace DataLayer
                                   select new DC_ZoneHotelList
                                   {
                                       Accommodation_Id = s.Product_Id ?? Guid.Empty,
-                                      ZoneProductMapping_Id= s.ZoneProductMapping_Id,
+                                      ZoneProductMapping_Id = s.ZoneProductMapping_Id,
                                       HotelName = a.HotelName,
                                       City = a.city,
                                       Distance = (double)(s.Distance),
@@ -5441,9 +5527,9 @@ namespace DataLayer
                     var search = (from s in context.ZoneProduct_Mapping where s.Zone_Id == param.Zone_id select s).FirstOrDefault();
                     if (search != null)
                     {
-                            _msg.StatusMessage = ReadOnlyMessage.strAlreadyExist;
-                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
-                       
+                        _msg.StatusMessage = ReadOnlyMessage.strAlreadyExist;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
+
                     }
                     else
                     {
@@ -5551,8 +5637,8 @@ namespace DataLayer
                     var search = (from s in context.ZoneProduct_Mapping where s.Zone_Id == param.Zone_id select s).FirstOrDefault();
                     if (search != null)
                     {
-                            string UpdateIsIncluded = " UPDATE ZoneProduct_Mapping SET Included = ( case when Distance <=  " + param.Zone_Radius + "  then '1' else '0' end ) WHERE zone_id ='" + param.Zone_id + "'";
-                           int count= context.Database.ExecuteSqlCommand(UpdateIsIncluded);
+                        string UpdateIsIncluded = " UPDATE ZoneProduct_Mapping SET Included = ( case when Distance <=  " + param.Zone_Radius + "  then '1' else '0' end ) WHERE zone_id ='" + param.Zone_id + "'";
+                        int count = context.Database.ExecuteSqlCommand(UpdateIsIncluded);
                         if (count > 0)
                         {
                             _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
@@ -5580,7 +5666,7 @@ namespace DataLayer
         public DC_Message IncludeExcludeHotels(DataContracts.Masters.DC_ZoneRQ param)
         {
             DC_Message _msg = new DC_Message();
-            if(param.ZoneProductMapping_Id==null || param.ZoneProductMapping_Id == Guid.Empty)
+            if (param.ZoneProductMapping_Id == null || param.ZoneProductMapping_Id == Guid.Empty)
             {
                 _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning;
                 _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
@@ -5591,7 +5677,7 @@ namespace DataLayer
                 try
                 {
                     var search = (from a in context.ZoneProduct_Mapping where param.ZoneProductMapping_Id == a.ZoneProductMapping_Id select a).First();
-                    if (search!=null)
+                    if (search != null)
                     {
                         search.Included = param.Included;
                         search.Edit_Date = DateTime.Now;
@@ -5611,7 +5697,7 @@ namespace DataLayer
                     throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while includeing/ExcludingZone", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
                 }
             }
-                    return _msg;
+            return _msg;
         }
         #endregion
     }

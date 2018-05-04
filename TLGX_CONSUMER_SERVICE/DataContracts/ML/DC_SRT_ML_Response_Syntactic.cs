@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DataContracts
 {
     [DataContract]
-    public class DC_SRT_ML_Response
+    public class DC_SRT_ML_Response_Syntactic
     {
         [DataMember]
         public string Supplier_Id { get; set; }
@@ -17,21 +17,21 @@ namespace DataContracts
         [DataMember]
         public string matching_string { get; set; }
         [DataMember]
-        public List<DC_SRT_ML_Match> matches { get; set; }
+        public List<DC_SRT_ML_Match_Syntactic> matches { get; set; }
         [DataMember]
-        public List<DC_SRT_ML_AccommodationRoomInfo> AccommodationRoomInfo_Id { get; set; }
+        public List<DC_SRT_ML_AccommodationRoomInfo_Syntactic> AccommodationRoomInfo_Id { get; set; }
     }
 
     [DataContract]
-    public class DC_SRT_ML_Match
+    public class DC_SRT_ML_Match_Syntactic
     {
         [DataMember]
         public string matched_string { get; set; }
         [DataMember]
-        public int score { get; set; }
+        public float score { get; set; }
     }
     [DataContract]
-    public class DC_SRT_ML_AccommodationRoomInfo
+    public class DC_SRT_ML_AccommodationRoomInfo_Syntactic
     {
         [DataMember]
         public string AccommodationRoomInfo_Id { get; set; }
