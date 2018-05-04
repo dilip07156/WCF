@@ -4334,7 +4334,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
 
-                    var searchKeywordDuplicate = context.m_keyword.Where(a => a.Keyword == item.Keyword && a.EntityFor == item.EntityFor).FirstOrDefault();
+                    var searchKeywordDuplicate = context.m_keyword.Where(a => a.Keyword == item.Keyword && a.EntityFor == item.EntityFor && a.Keyword_Id != item.Keyword_Id).FirstOrDefault();
                     if (searchKeywordDuplicate != null)
                     {
                         ret.StatusMessage = "Keyword: " + item.Keyword + " already exists.";
