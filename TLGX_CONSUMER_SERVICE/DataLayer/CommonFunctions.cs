@@ -238,10 +238,14 @@ namespace DataLayer
         {
             #region PRE TTFU
 
+            #region To Upper
+            text = text.ToUpper();
+            #endregion
+
             #region ExtraToBeRemoved
-            foreach(var extra in HardRemove)
+            foreach (var extra in HardRemove)
             {
-                text = text.Replace(extra, " ");
+                text = text.Replace(extra.ToUpper(), " ");
             }
             #endregion
 
@@ -251,10 +255,6 @@ namespace DataLayer
 
             #region Remove DiaCritics
             text = CommonFunctions.RemoveDiacritics(text);
-            #endregion
-
-            #region To Upper
-            text = text.ToUpper();
             #endregion
 
             #region Replace the braces
