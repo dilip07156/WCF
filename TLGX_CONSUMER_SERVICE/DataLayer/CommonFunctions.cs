@@ -301,7 +301,7 @@ namespace DataLayer
                         var specialAlias = keyword.Alias.FirstOrDefault();
                         if (specialAlias != null)
                         {
-                            if (specialAlias.Value.Trim().ToUpper() == "Y")
+                            if (specialAlias.Value.Trim().ToUpper() == "YES")
                             {
                                 int fromIndex = text.IndexOf("(");
                                 int toIndex = text.LastIndexOf(")");
@@ -470,7 +470,7 @@ namespace DataLayer
 
             foreach (string word in roomWords)
             {
-                DataContracts.Masters.DC_Keyword keywordSearch = Keywords.Where(k => k.Alias.Any(a => a.Value.ToUpper() == word.ToUpper()) && k.Attribute == false && !k.Keyword.StartsWith("##")).FirstOrDefault();
+                DataContracts.Masters.DC_Keyword keywordSearch = Keywords.Where(k => k.Alias.Any(a => a.Value.ToUpper() == word.ToUpper()) && k.Attribute == false && !k.Keyword.StartsWith("##")).OrderBy(o => o.Sequence).FirstOrDefault();
 
                 if (keywordSearch != null)
                 {
