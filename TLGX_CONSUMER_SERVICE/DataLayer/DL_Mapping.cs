@@ -718,6 +718,13 @@ namespace DataLayer
 
             using (ConsumerEntities context = new ConsumerEntities())
             {
+
+                List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
+                using (DL_Masters objDL = new DL_Masters())
+                {
+                    Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
+                }
+
                 //var prodMapList = context.Accommodation_ProductMapping.AsNoTracking().Where(w => stg.Any(a => a.ProductId == w.SupplierProductReference)).Select(s => s.SupplierProductReference ).ToList();
                 var accomap = (from a in context.Accommodation_ProductMapping.AsNoTracking()
                                where a.Supplier_Id == CurSupplier_Id
@@ -784,12 +791,27 @@ namespace DataLayer
 
                 toUpdate = toUpdate.Select(c =>
                 {
-                    c.HotelName_Tx = CommonFunctions.HotelNameTX(c.ProductName, c.CityName, c.CountryName);
+                    c.HotelName_Tx = CommonFunctions.HotelNameTX(c.ProductName, c.CityName, c.CountryName, ref Keywords);
                     return c;
                 }).ToList();
 
                 insertSTGList = stg.Where(w => !toUpdate.Any(a => a.SupplierProductReference == w.ProductId && (a.CityCode ?? a.CityName) == (w.CityCode ?? w.CityName))).ToList();
                 updateMappingList = toUpdate.Where(w => w.ProductName != w.oldProductName || w.ProductType != w.OldProductType || w.Latitude != w.OldLatitude || w.Longitude != w.OldLongitude).ToList();
+
+                #region Update No Of Hits
+                var updatableAliases = (from k in Keywords
+                                        from ka in k.Alias
+                                        where ka.NewHits != 0
+                                        select ka).ToList();
+                if (updatableAliases.Count > 0)
+                {
+                    using (DL_Masters objDL = new DL_Masters())
+                    {
+                        objDL.DataHandler_Keyword_Update_NoOfHits(updatableAliases);
+                    }
+                }
+
+                #endregion
 
                 context.Dispose();
                 #region "Commented Code"
@@ -985,6 +1007,14 @@ namespace DataLayer
                 USD.AddStaticDataUploadProcessLog(PLog);
 
                 //CallLogVerbose(File_Id, "MAP", "Inserting New Hotels.");
+
+                //Get All Related Keywords
+                List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
+                using (DL_Masters objDL = new DL_Masters())
+                {
+                    Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
+                }
+
                 clsMappingHotel.InsertRange(clsMappingHotel.Count, clsSTGHotelInsert.Select
                     (g => new DC_Accomodation_ProductMapping
                     {
@@ -1039,7 +1069,7 @@ namespace DataLayer
                         ,
                         Latitude_Tx = (g.Latitude == null) ? null : CommonFunctions.LatLongTX(g.Latitude),
                         Longitude_Tx = (g.Longitude == null) ? null : CommonFunctions.LatLongTX(g.Longitude),
-                        HotelName_Tx = CommonFunctions.HotelNameTX(g.ProductName, g.CityName, g.CountryName),
+                        HotelName_Tx = CommonFunctions.HotelNameTX(g.ProductName, g.CityName, g.CountryName, ref Keywords),
                         SupplierImporrtFile_Id = obj.File_Id ?? Guid.Empty,
                         Batch = obj.CurrentBatch ?? 0,
                         ReRunSupplierImporrtFile_Id = obj.File_Id ?? Guid.Empty,
@@ -5651,7 +5681,7 @@ namespace DataLayer
                     else
                         BaseRoomName = srn.SupplierRoomName;
 
-                    BaseRoomName = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_SupplierRoomName, ref TX_SupplierRoomName_Stripped, BaseRoomName);
+                    BaseRoomName = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_SupplierRoomName, ref TX_SupplierRoomName_Stripped, BaseRoomName, new string[] { });
 
                     #region UpdateToDB
                     //Value assignment

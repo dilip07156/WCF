@@ -745,6 +745,15 @@ namespace ConsumerSvc
                 return obj.ApplyKeyword(RQ);
             }
         }
+
+        public DC_Message ReRunKeyword(string Entity)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.ReRunKeyword(Entity);
+            }
+        }
+        
         #endregion
 
         //public string[] GetColumnNames(string TableName)

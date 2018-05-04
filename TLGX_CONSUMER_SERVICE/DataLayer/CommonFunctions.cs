@@ -1,4 +1,5 @@
 ﻿
+using DataContracts.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -84,20 +85,34 @@ namespace DataLayer
             return str.Replace("0", "").Replace("1", "").Replace("2", "").Replace("3", "").Replace("4", "").Replace("5", "").Replace("6", "").Replace("7", "").Replace("8", "").Replace("9", "");
         }
 
-        public static string HotelNameTX(string HotelName, string cityname, string countryname)
+        public static string HotelNameTX(string HotelName, string cityname, string countryname, ref List<DataContracts.Masters.DC_Keyword> Keywords)
         {
+
+            string returnString = string.Empty;
+            List<DC_SupplierRoomName_AttributeList>  AttributeList = new List<DC_SupplierRoomName_AttributeList>();
+            string TX_Value = string.Empty;
+            string SX_Value = string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(HotelName))
+            {
+                returnString = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, returnString, new string[] { cityname, countryname });
+                return returnString;
+            }
+            else
+                return "";
+
             //replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(A.hotelname))), ' ',''), 'HOTEL','')
             //, 'APARTMENT',''), replace(ltrim(rtrim(upper(A.city))), '''','') ,''),  replace(ltrim(rtrim(upper(A.country))), '''',''),'')
             //, '&',''), 'AND',''), 'THE',''), '-',''), '_',''), '''','')
-            if (!string.IsNullOrWhiteSpace(HotelName))
-                return (HotelName ?? "").Trim().ToUpper().Replace(" ", "").Replace("HOTELS", "").Replace("APARTMENTS", "").Replace("MOTELS", "").Replace("APARTHOTELS", "").Replace("INNS", "").Replace("RESORTS", "")
-                    .Replace("HOTEL", "").Replace("APARTMENT", "").Replace("MOTEL", "").Replace("APARTHOTEL", "").Replace("INN", "").Replace("RESORT", "")
-                    .Replace((countryname ?? "~").Trim().ToUpper().Replace(" ", "").Replace("'", ""), "").Replace((cityname ?? "~").Trim().ToUpper().Replace(" ", "").Replace("'", ""), "")
-                    .Replace("'", "").Replace("&", "").Replace("AND", "").Replace("THE", "").Replace("-", "").Replace("_", "")
-                    .Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace("~", "").Replace(",", "").Replace(".", "").Replace("%", "").Replace("+", "")
-                    .Replace("#", "").Replace("/", "").Replace("*", "");
-            else
-                return "";
+            //if (!string.IsNullOrWhiteSpace(HotelName))
+            //    return (HotelName ?? "").Trim().ToUpper().Replace(" ", "").Replace("HOTELS", "").Replace("APARTMENTS", "").Replace("MOTELS", "").Replace("APARTHOTELS", "").Replace("INNS", "").Replace("RESORTS", "")
+            //        .Replace("HOTEL", "").Replace("APARTMENT", "").Replace("MOTEL", "").Replace("APARTHOTEL", "").Replace("INN", "").Replace("RESORT", "")
+            //        .Replace((countryname ?? "~").Trim().ToUpper().Replace(" ", "").Replace("'", ""), "").Replace((cityname ?? "~").Trim().ToUpper().Replace(" ", "").Replace("'", ""), "")
+            //        .Replace("'", "").Replace("&", "").Replace("AND", "").Replace("THE", "").Replace("-", "").Replace("_", "")
+            //        .Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace("~", "").Replace(",", "").Replace(".", "").Replace("%", "").Replace("+", "")
+            //        .Replace("#", "").Replace("/", "").Replace("*", "");
+            //else
+            //    return "";
         }
 
         public static string ReturnNumbersFromString(string str)
@@ -219,9 +234,16 @@ namespace DataLayer
                                 ref List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList> AttributeList,
                                 ref string TX_text,
                                 ref string SX_text,
-                                string text)
+                                string text, string[] HardRemove)
         {
             #region PRE TTFU
+
+            #region ExtraToBeRemoved
+            foreach(var extra in HardRemove)
+            {
+                text = text.Replace(extra, " ");
+            }
+            #endregion
 
             #region HTML Decode
             text = System.Web.HttpUtility.HtmlDecode(text);
@@ -236,13 +258,13 @@ namespace DataLayer
             #endregion
 
             #region Replace the braces
-            text = text.Replace('{', '(');
-            text = text.Replace('}', ')');
-            text = text.Replace('[', '(');
-            text = text.Replace(']', ')');
+            text = text.Replace("{", "( ");
+            text = text.Replace("}", " )");
+            text = text.Replace("[", "( ");
+            text = text.Replace("]", " )");
 
-            text = text.Replace("( ", "(");
-            text = text.Replace(" )", ")");
+            text = text.Replace("(", "( ");
+            text = text.Replace(")", " )");
 
 
             text = text.Replace(",", " ");
@@ -263,17 +285,133 @@ namespace DataLayer
 
             #endregion
 
-            #region Take only valid characters (This is commented to take all the chars)
-            //string ValidChars = string.Empty;
-            //foreach (char c in text)
-            //{
-            //    if ((Convert.ToInt16(c) >= 32 && Convert.ToInt16(c) <= 196))// || (Convert.ToInt16(c) >= 97 && Convert.ToInt16(c) <= 122) || Convert.ToInt16(c) == 32)
-            //    {
-            //        ValidChars = ValidChars + c;
-            //    }
-            //}
+            #region Perform Wildcard Special Operations
+            List<DataContracts.Masters.DC_Keyword> SpecialKeywords = Keywords.Where(w => w.Keyword.StartsWith("##") && w.Attribute == false).ToList();
+            bool bGeneralisedNumbers = false;
 
-            //text = ValidChars;
+            foreach (var keyword in SpecialKeywords)
+            {
+                if (keyword.Keyword.ToUpper() == "##_REMOVE_CONTENTS_IN_BRACKETS")
+                {
+                    try
+                    {
+                        text = text.Replace("((", "(");
+                        text = text.Replace("))", ")");
+
+                        var specialAlias = keyword.Alias.FirstOrDefault();
+                        if (specialAlias != null)
+                        {
+                            if (specialAlias.Value.Trim().ToUpper() == "Y")
+                            {
+                                int fromIndex = text.IndexOf("(");
+                                int toIndex = text.LastIndexOf(")");
+
+                                if (fromIndex != -1 && toIndex != -1 && toIndex > fromIndex)
+                                {
+                                    if (text.Remove(fromIndex, toIndex - fromIndex + 1).Trim().Length != 0)
+                                    {
+                                        text = text.Remove(fromIndex, toIndex - fromIndex + 1).Trim();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+
+                if (keyword.Keyword.ToUpper() == "##_REMOVE_WORD_FROM_START")
+                {
+                    try
+                    {
+                        var specialAliases = keyword.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
+                        foreach (var alias in keyword.Alias)
+                        {
+                            if (text.IndexOf(alias.Value.ToUpper().Trim() + " ") != -1)
+                            {
+                                text = text.Remove(text.IndexOf(alias.Value.ToUpper().Trim() + " "), alias.Value.ToUpper().Trim().Length + 1).Trim();
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+
+                if (keyword.Keyword.ToUpper() == "##_REMOVE_WORD_FROM_END")
+                {
+                    try
+                    {
+                        var specialAliases = keyword.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
+                        foreach (var alias in keyword.Alias)
+                        {
+                            if (text.LastIndexOf(" " + alias.Value.ToUpper().Trim()) != -1)
+                            {
+                                text = text.Remove(text.LastIndexOf(" " + alias.Value.ToUpper().Trim()), alias.Value.ToUpper().Trim().Length + 1).Trim();
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+
+                if (keyword.Keyword.ToUpper() == "##_REMOVE_WORD_FROM_STRING")
+                {
+                    try
+                    {
+                        var specialAliases = keyword.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
+                        foreach (var alias in keyword.Alias)
+                        {
+                            text = text.Replace(alias.Value.ToUpper().Trim() + " ", string.Empty).Trim();
+                            text = text.Replace(" " + alias.Value.ToUpper().Trim() + " ", string.Empty).Trim();
+                            text = text.Replace(" " + alias.Value.ToUpper().Trim(), string.Empty).Trim();
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+
+                if (keyword.Keyword.ToUpper() == "##_REMOVE_ANYWHERE_IN_STRING")
+                {
+                    try
+                    {
+                        foreach (var alias in keyword.Alias)
+                        {
+                            text = text.Replace(alias.Value.ToUpper().Trim(), string.Empty).Trim();
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+
+                if (keyword.Keyword.ToUpper() == "##_REPLACE_NUMBERS_WITH_WORDS")
+                {
+                    try
+                    {
+                        var specialAlias = keyword.Alias.FirstOrDefault();
+                        if (specialAlias != null)
+                        {
+                            if (specialAlias.Value.Trim().ToUpper() == "YES")
+                            {
+                                bGeneralisedNumbers = true;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+            }
             #endregion
 
             #region Single Char replace
@@ -292,8 +430,21 @@ namespace DataLayer
             }
             #endregion
 
+            #region Take only valid characters (This is commented to take all the chars)
+            //string ValidChars = string.Empty;
+            //foreach (char c in text)
+            //{
+            //    if ((Convert.ToInt16(c) >= 32 && Convert.ToInt16(c) <= 196))// || (Convert.ToInt16(c) >= 97 && Convert.ToInt16(c) <= 122) || Convert.ToInt16(c) == 32)
+            //    {
+            //        ValidChars = ValidChars + c;
+            //    }
+            //}
+
+            //text = ValidChars;
+            #endregion
+
             #region Check for Spaced Keyword and Replace
-            List<DataContracts.Masters.DC_Keyword> SpacedKeywords = Keywords.Where(w => !w.Keyword.StartsWith("##") && w.Attribute == false && w.Alias.Any(a => a.Value.Contains(' '))).ToList();
+            List<DataContracts.Masters.DC_Keyword> SpacedKeywords = Keywords.Where(w => w.Keyword.Length > 1 && !w.Keyword.StartsWith("##") && w.Attribute == false && w.Alias.Any(a => a.Value.Contains(' '))).ToList();
             foreach (DataContracts.Masters.DC_Keyword spacedkey in SpacedKeywords.OrderBy(o => o.Sequence))
             {
                 var spacedAliases = spacedkey.Alias.Where(w => w.Value.Contains(' ')).OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
@@ -335,135 +486,6 @@ namespace DataLayer
 
             #endregion
 
-            #region Perform Wildcard Special Operations
-            List<DataContracts.Masters.DC_Keyword> SpecialKeywords = Keywords.Where(w => w.Keyword.StartsWith("##") && w.Attribute == false).ToList();
-            bool bGeneralisedNumbers = false;
-
-            foreach (var keyword in SpecialKeywords)
-            {
-                if (keyword.Keyword.ToUpper() == "##_REMOVE_CONTENTS_IN_BRACKETS")
-                {
-                    try
-                    {
-                        text = text.Replace("((", "(");
-                        text = text.Replace("))", ")");
-
-                        var specialAlias = keyword.Alias.FirstOrDefault();
-                        if (specialAlias != null)
-                        {
-                            if (specialAlias.Value.Trim().ToUpper() == "YES")
-                            {
-                                int fromIndex = text.IndexOf("(");
-                                int toIndex = text.LastIndexOf(")");
-
-                                if (fromIndex != -1 && toIndex != -1 && toIndex > fromIndex)
-                                {
-                                    if (text.Remove(fromIndex, toIndex - fromIndex + 1).Trim().Length != 0)
-                                    {
-                                        text = text.Remove(fromIndex, toIndex - fromIndex + 1).Trim();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                }
-
-                if (keyword.Keyword.ToUpper() == "##_REMOVE_WORD_FROM_START")
-                {
-                    try
-                    {
-                        var specialAliases = keyword.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
-                        foreach (var alias in keyword.Alias)
-                        {
-                            if (text.IndexOf(alias.Value.Trim() + " ") != -1)
-                            {
-                                text = text.Remove(text.IndexOf(alias.Value.Trim() + " "), alias.Value.Trim().Length + 1).Trim();
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                }
-
-                if (keyword.Keyword.ToUpper() == "##_REMOVE_WORD_FROM_END")
-                {
-                    try
-                    {
-                        var specialAliases = keyword.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
-                        foreach (var alias in keyword.Alias)
-                        {
-                            if (text.LastIndexOf(" " + alias.Value.Trim()) != -1)
-                            {
-                                text = text.Remove(text.LastIndexOf(" " + alias.Value.Trim()), alias.Value.Trim().Length + 1).Trim();
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                }
-
-                if (keyword.Keyword.ToUpper() == "##_REMOVE_WORD_FROM_STRING")
-                {
-                    try
-                    {
-                        var specialAliases = keyword.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
-                        foreach (var alias in keyword.Alias)
-                        {
-                            text = text.Replace(alias.Value.Trim() + " ", string.Empty).Trim();
-                            text = text.Replace(" " + alias.Value.Trim() + " ", string.Empty).Trim();
-                            text = text.Replace(" " + alias.Value.Trim(), string.Empty).Trim();
-                        }
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                }
-
-                if (keyword.Keyword.ToUpper() == "##_REMOVE_ANYWHERE_IN_STRING")
-                {
-                    try
-                    {
-                        foreach (var alias in keyword.Alias)
-                        {
-                            text = text.Replace(alias.Value.Trim(), string.Empty).Trim();
-                        }
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                }
-
-                if (keyword.Keyword.ToUpper() == "##_REPLACE_NUMBERS_WITH_WORDS")
-                {
-                    try
-                    {
-                        var specialAlias = keyword.Alias.FirstOrDefault();
-                        if (specialAlias != null)
-                        {
-                            if (specialAlias.Value.Trim().ToUpper() == "YES")
-                            {
-                                bGeneralisedNumbers = true;
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                }
-            }
-            #endregion
-
             TX_text = text;
 
             #region Attribute Extraction
@@ -476,9 +498,10 @@ namespace DataLayer
                 var aliases = Attribute.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
                 foreach (var alias in aliases)
                 {
-
                     isRoomHaveAttribute = false;
                     sAttributeAlias = alias.Value.Replace(",", " ").Trim().ToUpper();
+                    sAttributeAlias = sAttributeAlias.Replace("(", "( ");
+                    sAttributeAlias = sAttributeAlias.Replace(")", " )");
                     sAttributeAlias = System.Text.RegularExpressions.Regex.Replace(sAttributeAlias, @"\s{2,}", " ");
 
                     if (sAttributeAlias.StartsWith("(") || sAttributeAlias.EndsWith(")"))
@@ -559,6 +582,13 @@ namespace DataLayer
             #endregion
 
             #region POST TTFU CLEANUP
+
+            #region HardRemoveAgain
+            foreach (var extra in HardRemove)
+            {
+                text = text.Replace(extra, " ");
+            }
+            #endregion
 
             #region Replace UnNecessary chars
             text = text.Replace('<', ' ');
