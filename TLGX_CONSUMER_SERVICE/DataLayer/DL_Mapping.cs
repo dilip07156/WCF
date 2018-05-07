@@ -5778,10 +5778,11 @@ namespace DataLayer
 
         public IList<DataContracts.DC_SRT_ML_Response_Syntactic> GetRTM_ML_Suggestions_Syntactic(Guid Accomodation_SupplierRoomTypeMapping_Id)
         {
+            DataContracts.DC_SRT_ML_Request_Syntactic RQ = new DataContracts.DC_SRT_ML_Request_Syntactic();
+            List<DataContracts.DC_SRT_ML_Response_Syntactic> RS = new List<DataContracts.DC_SRT_ML_Response_Syntactic>();
             try
             {
-                DataContracts.DC_SRT_ML_Request_Syntactic RQ = new DataContracts.DC_SRT_ML_Request_Syntactic();
-                List<DataContracts.DC_SRT_ML_Response_Syntactic> RS = new List<DataContracts.DC_SRT_ML_Response_Syntactic>();
+
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     RQ.supplier_data = (from srt in context.Accommodation_SupplierRoomTypeMapping
@@ -5872,7 +5873,8 @@ namespace DataLayer
             }
             catch (Exception ex)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation product supplier mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                return RS;
+                // throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation product supplier mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
 
         }
@@ -5880,10 +5882,10 @@ namespace DataLayer
 
         public IList<DataContracts.DC_SRT_ML_Response_Semantic> GetRTM_ML_Suggestions_Semantic(Guid Accomodation_SupplierRoomTypeMapping_Id)
         {
+            DataContracts.DC_SRT_ML_Request_Semantic RQ = new DataContracts.DC_SRT_ML_Request_Semantic();
+            List<DataContracts.DC_SRT_ML_Response_Semantic> RS = new List<DataContracts.DC_SRT_ML_Response_Semantic>();
             try
             {
-                DataContracts.DC_SRT_ML_Request_Semantic RQ = new DataContracts.DC_SRT_ML_Request_Semantic();
-                List<DataContracts.DC_SRT_ML_Response_Semantic> RS = new List<DataContracts.DC_SRT_ML_Response_Semantic>();
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     RQ.supplier_data = (from srt in context.Accommodation_SupplierRoomTypeMapping
@@ -5974,7 +5976,8 @@ namespace DataLayer
             }
             catch (Exception ex)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation product supplier mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                return RS;
+                //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation product supplier mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
 
         }
