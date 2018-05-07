@@ -21,5 +21,7 @@ namespace DataContracts
         public string Create_User { get; set; }
         [DataMember]
         public string Status { get; set; }
+        [DataMember]
+        public string SupplierId { get; set; }
     }
 }

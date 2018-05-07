@@ -119,6 +119,7 @@
     <Compile Include="DC_SRT_ML_Request.cs" />
     <Compile Include="DC_SRT_ML_Response.cs" />
     <Compile Include="DC_RefreshDistributionDataLog.cs" />
+    <Compile Include="DC_SupplierEntity.cs" />
     <Compile Include="FileTransfer\DC_FileData.cs" />
     <Compile Include="FileTransfer\DC_FileDownloadRequest.cs" />
     <Compile Include="FileTransfer\DC_FileUploadResponse.cs" />

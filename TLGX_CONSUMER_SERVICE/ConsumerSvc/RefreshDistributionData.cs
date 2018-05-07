@@ -115,6 +115,37 @@ namespace ConsumerSvc
         }
         #endregion
 
-       
+        #region GetRefreshStaticHotelLog
+        public List<DC_RefreshDistributionDataLog> GetRefreshStaticHotelLog()
+        {
+            using (BusinessLayer.BL_RefreshDistributionData obj = new BL_RefreshDistributionData())
+            {
+                return obj.GetRefreshStaticHotelLog();
+            }
+        }
+        #endregion
+
+        #region 
+        public List<DC_SupplierEntity> LoadSupplierData()
+        {
+            using (BusinessLayer.BL_RefreshDistributionData obj = new BL_RefreshDistributionData())
+            {
+                return obj.LoadSupplierData();
+            }
+        }
+        #endregion
+
+        #region Supplier Entity hotel
+
+        public DC_Message SyncSupplierStaticHotel(string log_id,string supplier_id, string CreatedBy)
+        {
+            using (BusinessLayer.BL_RefreshDistributionData obj = new BL_RefreshDistributionData())
+            {
+                return obj.SyncSupplierStaticHotel(log_id ,supplier_id, CreatedBy);
+            }
+        }
+        #endregion
+
+
     }
 }
