@@ -815,8 +815,10 @@ namespace DataLayer
                     return FileSearchResult;
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                DL_Mapping _obj = new DL_Mapping();
+                _obj.LogErrorMessage(RQ.SupplierImportFile_Id ?? Guid.Empty, ex, "GetStaticDataFileDetail", "DL_UploadStaticData", "GetStaticDataFileDetail", (int)Error_Enums_DataHandler.ErrorCodes.RoomTypeConfig_Generic, "", "GetStaticDataFileDetail failed");
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
                 {
                     ErrorMessage = "Error while searching Upload File",
@@ -2608,6 +2610,8 @@ namespace DataLayer
             }
             catch (Exception e)
             {
+                DL_Mapping _obj = new DL_Mapping();
+                _obj.LogErrorMessage(RQ.SupplierImportFile_Id ?? Guid.Empty, e, "GetSTGRoomTypeData", "DL_UploadStaticData", "GetSTGRoomTypeData", (int)Error_Enums_DataHandler.ErrorCodes.RoomTypeConfig_Generic, "", "GetSTGRoomTypeData failed");
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
                 {
                     ErrorMessage = "Error while searching Supplier Data",
