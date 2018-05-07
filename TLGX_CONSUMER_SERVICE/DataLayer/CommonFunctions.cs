@@ -234,8 +234,10 @@ namespace DataLayer
                                 ref List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList> AttributeList,
                                 ref string TX_text,
                                 ref string SX_text,
-                                string text, string[] HardRemove)
+                                string OriginalValue, string[] HardRemove)
         {
+            string text = OriginalValue;
+
             #region PRE TTFU
 
             #region To Upper
@@ -245,7 +247,10 @@ namespace DataLayer
             #region ExtraToBeRemoved
             foreach (var extra in HardRemove)
             {
-                text = text.Replace(extra.ToUpper(), " ");
+                if(extra.Trim().Length > 0)
+                {
+                    text = text.Replace(extra.ToUpper(), " ");
+                }
             }
             #endregion
 
@@ -367,9 +372,8 @@ namespace DataLayer
                         var specialAliases = keyword.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
                         foreach (var alias in keyword.Alias)
                         {
-                            text = text.Replace(alias.Value.ToUpper().Trim() + " ", string.Empty).Trim();
-                            text = text.Replace(" " + alias.Value.ToUpper().Trim() + " ", string.Empty).Trim();
-                            text = text.Replace(" " + alias.Value.ToUpper().Trim(), string.Empty).Trim();
+                            text = (" " + text + " ").Replace(" " + alias.Value.ToUpper().Trim() + " ", string.Empty).Trim();
+
                         }
                     }
                     catch
@@ -586,7 +590,10 @@ namespace DataLayer
             #region HardRemoveAgain
             foreach (var extra in HardRemove)
             {
-                text = text.Replace(extra, " ");
+                if (extra.Trim().Length > 0)
+                {
+                    text = text.Replace(extra.ToUpper(), " ");
+                }
             }
             #endregion
 
@@ -629,6 +636,12 @@ namespace DataLayer
             #endregion
 
             SX_text = text;
+
+            //Retain original value if the post CleanUp data is blank / insufficient.
+            if(text.Length <= 1)
+            {
+                text = OriginalValue.ToUpper();
+            }
 
             return text;
         }
