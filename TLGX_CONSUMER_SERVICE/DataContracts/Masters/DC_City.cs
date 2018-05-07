@@ -27,7 +27,10 @@ namespace DataContracts.Masters
         string _StateCode;
         string _Google_PlaceId;
         int _TotalRecords;
-
+        int? _TotalHotelRecords;
+        int? _TotalAttractionsRecords;
+        int? _TotalHolidaysRecords;
+        int? _TotalSupplierCityRecords;
 
 
         [DataMember]
@@ -256,6 +259,62 @@ namespace DataContracts.Masters
             set
             {
                 _CountryCode = value;
+            }
+        }
+
+        [DataMember]
+        public int? TotalHotelRecords
+        {
+            get
+            {
+                return _TotalHotelRecords;
+            }
+
+            set
+            {
+                _TotalHotelRecords = value;
+            }
+        }
+
+        [DataMember]
+        public int? TotalAttractionsRecords
+        {
+            get
+            {
+                return _TotalAttractionsRecords;
+            }
+
+            set
+            {
+                _TotalAttractionsRecords = value;
+            }
+        }
+
+        [DataMember]
+        public int? TotalHolidaysRecords
+        {
+            get
+            {
+                return _TotalHolidaysRecords;
+            }
+
+            set
+            {
+                _TotalHolidaysRecords = value;
+            }
+        }
+
+        [DataMember]
+        public int? TotalSupplierCityRecords
+        {
+            get
+            {
+                return _TotalSupplierCityRecords;
+            }
+
+            set
+            {
+                _TotalSupplierCityRecords = value;
             }
         }
     }

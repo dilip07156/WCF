@@ -1245,7 +1245,7 @@ namespace DataLayer
             }
         }
         public List<DataContracts.DC_Accomodation_AutoComplete_RS> AccomodationSearchAutoComplete(DataContracts.DC_Accomodation_AutoComplete_RQ RQ)
-       {
+        {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
@@ -1314,6 +1314,13 @@ namespace DataLayer
 
                     if (search != null)
                     {
+
+                        List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
+                        using (DL_Masters objDL = new DL_Masters())
+                        {
+                            Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
+                        }
+
                         search.Affiliation = AccomodationDetails.Affiliation;
                         search.Area = AccomodationDetails.Area;
                         search.AwardsReceived = AccomodationDetails.AwardsReceived;
@@ -1381,7 +1388,7 @@ namespace DataLayer
                                        + (AccomodationDetails.Street4 ?? "") + (((AccomodationDetails.Street4 ?? "") != "") ? ", " : "")
                                        + (AccomodationDetails.Street5 ?? "") + (((AccomodationDetails.Street5 ?? "") != "") ? ", " : "")
                                        + (AccomodationDetails.PostalCode ?? "");
-                        search.HotelName_Tx = CommonFunctions.HotelNameTX(AccomodationDetails.HotelName, AccomodationDetails.City, AccomodationDetails.Country);
+                        search.HotelName_Tx = CommonFunctions.HotelNameTX(AccomodationDetails.HotelName, AccomodationDetails.City, AccomodationDetails.Country, ref Keywords);
                         search.Latitude_Tx = (AccomodationDetails.Latitude == null) ? null : CommonFunctions.LatLongTX(AccomodationDetails.Latitude);
                         search.Longitude_Tx = (AccomodationDetails.Longitude == null) ? null : CommonFunctions.LatLongTX(AccomodationDetails.Longitude);
 
@@ -1397,6 +1404,21 @@ namespace DataLayer
                         //RQ.UpdateColumn = AddressTx_Column;
                         //RQ.TablePrimaryKeys = staticdata.TTFUGetMappingHotelIds(supplierdata);
                         context.SaveChanges();
+
+                        #region Update No Of Hits
+                        var updatableAliases = (from k in Keywords
+                                                from ka in k.Alias
+                                                where ka.NewHits != 0
+                                                select ka).ToList();
+                        if (updatableAliases.Count > 0)
+                        {
+                            using (DL_Masters objDL = new DL_Masters())
+                            {
+                                objDL.DataHandler_Keyword_Update_NoOfHits(updatableAliases);
+                            }
+                        }
+
+                        #endregion
 
                     }
                     return true;
@@ -1414,6 +1436,11 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
+                    using (DL_Masters objDL = new DL_Masters())
+                    {
+                        Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
+                    }
 
                     Accommodation newAcco = new Accommodation();
 
@@ -1490,7 +1517,7 @@ namespace DataLayer
                     newAcco.Country_Id = AccomodationDetails.Country_Id;
                     newAcco.City_Id = AccomodationDetails.City_Id;
                     newAcco.InsertFrom = AccomodationDetails.InsertFrom;
-                    newAcco.HotelName_Tx = CommonFunctions.HotelNameTX(AccomodationDetails.HotelName, AccomodationDetails.City, AccomodationDetails.Country);
+                    newAcco.HotelName_Tx = CommonFunctions.HotelNameTX(AccomodationDetails.HotelName, AccomodationDetails.City, AccomodationDetails.Country, ref Keywords);
                     context.Accommodations.Add(newAcco);
 
                     context.SaveChanges();
@@ -1498,6 +1525,21 @@ namespace DataLayer
                     context.USP_UpdateMapID("accommodation");
 
                     newAcco = null;
+
+                    #region Update No Of Hits
+                    var updatableAliases = (from k in Keywords
+                                            from ka in k.Alias
+                                            where ka.NewHits != 0
+                                            select ka).ToList();
+                    if (updatableAliases.Count > 0)
+                    {
+                        using (DL_Masters objDL = new DL_Masters())
+                        {
+                            objDL.DataHandler_Keyword_Update_NoOfHits(updatableAliases);
+                        }
+                    }
+
+                    #endregion
 
                     return true;
                 }
@@ -3038,14 +3080,14 @@ namespace DataLayer
                                   RoomCategory = ar.RoomCategory ?? "",
                                   RoomName = ar.RoomName ?? "",
                                   BedType = ar.BedType ?? "",
-                                  RoomSize = ar.RoomSize ?? "" ,
+                                  RoomSize = ar.RoomSize ?? "",
                                   RoomView = ar.RoomView ?? "",
                                   IsSomking = ar.Smoking == null ? "No" : ar.Smoking == true ? "Yes" : "No",
                               }).ToList();
                 return search;
             }
         }
-        
+
         public List<string> GetRoomCategoryMaster(DataContracts.DC_RoomCategoryMaster_RQ RC)
         {
             try
@@ -3916,6 +3958,13 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+
+                    List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
+                    using (DL_Masters objDL = new DL_Masters())
+                    {
+                        Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
+                    }
+
                     var search = (from a in context.Accommodations
                                   where a.HotelName_Tx == null && a.IsActive == true
                                   select new
@@ -3928,19 +3977,6 @@ namespace DataLayer
                                       a.country,
                                       a.city
                                   }).ToList();
-
-
-                    #region Get all entity related Keywords 
-
-                    List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
-                    using (DL_Masters objDL = new DL_Masters())
-                    {
-                        Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "Hotel", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
-                    }
-
-                    List<DataContracts.Masters.DC_Keyword> Attributes = Keywords.Where(w => w.Attribute == true).ToList();
-
-                    #endregion
 
                     StringBuilder sql = new StringBuilder();
 
@@ -3960,7 +3996,7 @@ namespace DataLayer
                         Telephone_Tx = null;
                         Address_Tx = null;
 
-                        HotelName_Tx = CommonFunctions.HotelNameTX(hotel.HotelName, hotel.city, hotel.country);
+                        HotelName_Tx = CommonFunctions.HotelNameTX(hotel.HotelName, hotel.city, hotel.country, ref Keywords);
                         Latitude_Tx = CommonFunctions.LatLongTX(hotel.Latitude);
                         Longitude_Tx = CommonFunctions.LatLongTX(hotel.Latitude);
 
@@ -4114,6 +4150,21 @@ namespace DataLayer
                         Counter = 0;
                         sql.Clear();
                     }
+
+                    #region Update No Of Hits
+                    var updatableAliases = (from k in Keywords
+                                            from ka in k.Alias
+                                            where ka.NewHits != 0
+                                            select ka).ToList();
+                    if (updatableAliases.Count > 0)
+                    {
+                        using (DL_Masters objDL = new DL_Masters())
+                        {
+                            objDL.DataHandler_Keyword_Update_NoOfHits(updatableAliases);
+                        }
+                    }
+
+                    #endregion
 
                 }
             }

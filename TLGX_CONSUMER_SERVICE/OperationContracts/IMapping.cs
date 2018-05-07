@@ -72,8 +72,18 @@ namespace OperationContracts
         #region ML_Service
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Mapping/AccoSupplierRoomType/GetRTM_ML_Suggestions_Syntactic/{Accomodation_SupplierRoomTypeMapping_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.DC_SRT_ML_Response_Syntactic> GetRTM_ML_Suggestions_Syntactic(string Accomodation_SupplierRoomTypeMapping_Id);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "GET", UriTemplate = "Mapping/AccoSupplierRoomType/GetRTM_ML_Suggestions/{Accomodation_SupplierRoomTypeMapping_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        IList<DataContracts.DC_SRT_ML_Response> GetRTM_ML_Suggestions(string Accomodation_SupplierRoomTypeMapping_Id);
+        DataContracts.DC_SRT_ML_Response GetRTM_ML_Suggestions(string Accomodation_SupplierRoomTypeMapping_Id);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Mapping/AccoSupplierRoomType/GetRTM_ML_Suggestions_Semantic/{Accomodation_SupplierRoomTypeMapping_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.DC_SRT_ML_Response_Semantic> GetRTM_ML_Suggestions_Semantic(string Accomodation_SupplierRoomTypeMapping_Id);
         #endregion
 
 

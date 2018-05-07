@@ -8,6 +8,7 @@ using DataContracts.Masters;
 using DataContracts;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using DataContracts.Mapping;
 
 namespace DataLayer
 {
@@ -745,11 +746,33 @@ namespace DataLayer
                     var search = from c in context.m_CityMaster
                                  select c;
 
+                    var searchHotel = from h in context.Accommodations
+                                      select h;
+
+                    var searchActivity = from ac in context.Activity_Flavour
+                                         select ac;
+
+                    var searchSupplierCity = from ct in context.m_CityMapping
+                                             select ct;
+
                     if (RQ.Country_Id != null)
                     {
                         search = from a in search
                                  where a.Country_Id == RQ.Country_Id
                                  select a;
+                        searchHotel = from a in searchHotel
+                                      where a.Country_Id == RQ.Country_Id
+                                      select a;
+
+
+                        searchActivity = from ac in context.Activity_Flavour
+                                         where ac.Country_Id == RQ.Country_Id
+                                         select ac;
+
+                        searchSupplierCity = from ct in context.m_CityMapping
+                                             where ct.Country_Id == RQ.Country_Id
+                                             select ct;
+
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.Country_Name))
@@ -806,6 +829,35 @@ namespace DataLayer
                     int total = search.Count();
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
+                    var lstCityHotelCount = (from h in searchHotel
+                                             where h.City_Id != null
+                                             group h by h.City_Id into grp
+                                             select new
+                                             {
+                                                 City_Id = grp.Key ?? Guid.Empty,
+                                                 Count = grp.Count(x => x.City_Id != null)
+                                             }).ToList();
+
+                    var lstCityActivityCount = (from h in searchActivity
+                                                where h.City_Id != null
+                                                group h by h.City_Id into grp
+                                                select new
+                                                {
+                                                    City_Id = grp.Key ?? Guid.Empty,
+                                                    ACTCount = grp.Count(x => x.City_Id != null)
+                                                }).ToList();
+
+                    var lstSupplierCityCount = (from h in searchSupplierCity
+                                                where h.City_Id != null
+                                                group h by h.City_Id into grp
+                                                select new
+                                                {
+                                                    City_Id = grp.Key ?? Guid.Empty,
+                                                    SCTCount = grp.Count(x => x.City_Id != null)
+                                                }).ToList();
+
+
+
                     var result = from a in search
                                  select new DataContracts.Masters.DC_City
                                  {
@@ -826,14 +878,49 @@ namespace DataLayer
                                      TotalRecords = total,
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude
+
                                  };
+
                     List<DC_City> ret = new List<DC_City>();
 
                     ret = result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
-                    return ret;
+
+                    var returnList = (from a in ret
+                                      join lst in lstCityHotelCount on a.City_Id equals lst.City_Id into data
+                                      from dlst0 in data.DefaultIfEmpty()
+                                      join lstAct in lstCityActivityCount on a.City_Id equals lstAct.City_Id into dAct
+                                      from dlstAct in dAct.DefaultIfEmpty()
+                                      join lstSupplierCity in lstSupplierCityCount on a.City_Id equals lstSupplierCity.City_Id into dSct
+                                      from dlst in dSct.DefaultIfEmpty()
+                                          //from dAct in 
+                                      select new DataContracts.Masters.DC_City
+                                      {
+                                          City_Id = a.City_Id,
+                                          CountryName = a.CountryName,
+                                          Create_User = a.Create_User,
+                                          Code = a.Code,
+                                          Country_Id = a.Country_Id,
+                                          Create_Date = a.Create_Date,
+                                          Edit_Date = a.Edit_Date,
+                                          Edit_User = a.Edit_User,
+                                          Google_PlaceId = a.Google_PlaceId,
+                                          Name = a.Name,
+                                          StateCode = a.StateCode,
+                                          StateName = a.StateName,
+                                          State_Id = a.State_Id,
+                                          Status = a.Status,
+                                          TotalRecords = total,
+                                          Latitude = a.Latitude,
+                                          Longitude = a.Longitude,
+                                          TotalHotelRecords = (dlst0 == null ? 0 : dlst0.Count),
+                                          TotalAttractionsRecords = (dlstAct == null ? 0 : dlstAct.ACTCount),
+                                          TotalSupplierCityRecords = (dlst == null ? 0 : dlst.SCTCount)
+                                      }).ToList();
+
+                    return returnList;
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching City Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -4238,6 +4325,7 @@ namespace DataLayer
         #endregion
 
         #region Keyword
+
         public DC_Message AddUpdateKeyword(DC_Keyword item)
         {
             DataContracts.DC_Message ret = new DataContracts.DC_Message();
@@ -4246,7 +4334,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
 
-                    var searchKeywordDuplicate = context.m_keyword.Where(a => a.Keyword == item.Keyword && a.Keyword_Id != item.Keyword_Id).FirstOrDefault();
+                    var searchKeywordDuplicate = context.m_keyword.Where(a => a.Keyword == item.Keyword && a.EntityFor == item.EntityFor && a.Keyword_Id != item.Keyword_Id).FirstOrDefault();
                     if (searchKeywordDuplicate != null)
                     {
                         ret.StatusMessage = "Keyword: " + item.Keyword + " already exists.";
@@ -4318,7 +4406,7 @@ namespace DataLayer
                     {
                         foreach (var alias in item.Alias)
                         {
-                            var searchKeywordAliasDuplicate = context.m_keyword_alias.Where(a => a.Value == alias.Value && a.Keyword_Id != alias.Keyword_Id).FirstOrDefault();
+                            var searchKeywordAliasDuplicate = context.m_keyword_alias.Where(a => a.Value == alias.Value && a.Keyword_Id == alias.Keyword_Id && a.KeywordAlias_Id != alias.KeywordAlias_Id).FirstOrDefault();
                             if (searchKeywordAliasDuplicate != null)
                             {
                                 ret.StatusMessage = "Keyword Alias: " + alias.Value + " already exists.";
@@ -4526,8 +4614,6 @@ namespace DataLayer
             }
         }
 
-
-
         public List<DC_keyword_alias> SearchKeywordAlias(DC_Keyword_RQ obj)
         {
             try
@@ -4656,6 +4742,9 @@ namespace DataLayer
                 List<DC_keywordApplyToTarget> targetStructure = new List<DC_keywordApplyToTarget>();
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    context.Database.CommandTimeout = 0;
+
                     if (RQ.SearchTable.Trim().ToUpper() == "ACCOMMODATION" && RQ.TakeColumn.Trim().ToUpper() == "FULLADDRESS")
                     {
                         var PKIdsFilter = RQ.TablePrimaryKeys.Select(x => Guid.Parse(x)).ToList();
@@ -4708,155 +4797,10 @@ namespace DataLayer
                     List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList> AttributeList = new List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList>();
 
                     string BaseValue = inputData.SourceColumnValue;
+                    string TX_Value = string.Empty;
+                    string SX_Value = string.Empty;
 
-                    #region PRE TTFU
-
-                    //HTML Decode
-                    BaseValue = System.Web.HttpUtility.HtmlDecode(BaseValue);
-
-                    //To Upper
-                    BaseValue = BaseValue.ToUpper();
-
-                    //Replace the braces
-                    BaseValue = BaseValue.Replace('{', '(');
-                    BaseValue = BaseValue.Replace('}', ')');
-                    BaseValue = BaseValue.Replace('[', '(');
-                    BaseValue = BaseValue.Replace(']', ')');
-
-                    BaseValue = BaseValue.Replace("( ", "(");
-                    BaseValue = BaseValue.Replace(" )", ")");
-
-                    //Replace UnNecessary chars to space
-                    BaseValue = BaseValue.Replace('<', ' ');
-                    BaseValue = BaseValue.Replace('>', ' ');
-                    BaseValue = BaseValue.Replace('?', ' ');
-                    BaseValue = BaseValue.Replace('#', ' ');
-                    BaseValue = BaseValue.Replace('!', ' ');
-                    BaseValue = BaseValue.Replace('@', ' ');
-                    BaseValue = BaseValue.Replace("&", " AND ");
-                    BaseValue = BaseValue.Replace('(', ' ');
-                    BaseValue = BaseValue.Replace(')', ' ');
-                    BaseValue = BaseValue.Replace('-', ' ');
-                    BaseValue = BaseValue.Replace(',', ' ');
-                    BaseValue = BaseValue.Replace('.', ' ');
-                    BaseValue = BaseValue.Replace('"', ' ');
-
-                    //Necessary Replace
-                    //BaseValue = BaseValue.Replace("/", " OR ");
-                    //BaseValue = BaseValue.Replace("+", " INCLUDING ");
-
-                    //Replace Multiple whitespaces into One Whitespace
-                    BaseValue = System.Text.RegularExpressions.Regex.Replace(BaseValue, @"\s{2,}", " ");
-
-                    //trim both end
-                    BaseValue = BaseValue.Trim();
-
-                    //Take only valid characters
-                    string BaseValue_ValidChars = string.Empty;
-                    foreach (char c in BaseValue)
-                    {
-                        if ((Convert.ToInt32(c) >= 32 && Convert.ToInt32(c) <= 196))// || (Convert.ToInt16(c) >= 97 && Convert.ToInt16(c) <= 122) || Convert.ToInt16(c) == 32)
-                        {
-                            BaseValue_ValidChars = BaseValue_ValidChars + c;
-                        }
-                    }
-
-                    BaseValue = BaseValue_ValidChars;
-
-                    //Check for Spaced Keyword and Replace
-                    List<DataContracts.Masters.DC_Keyword> SpacedKeywords = Keywords.Where(w => w.Attribute == false && w.Alias.Any(a => a.Value.Contains(' '))).ToList();
-                    foreach (DataContracts.Masters.DC_Keyword spacedkey in SpacedKeywords.OrderBy(o => o.Sequence))
-                    {
-                        var spacedAliases = spacedkey.Alias.Where(w => w.Value.Contains(' ')).OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
-                        foreach (var alias in spacedAliases)
-                        {
-                            if (BaseValue.Contains(alias.Value.ToUpper()))
-                            {
-                                BaseValue = BaseValue.Replace(alias.Value.ToUpper(), spacedkey.Keyword);
-                                BaseValue = BaseValue.Replace("()", string.Empty);
-                                BaseValue = BaseValue.Trim();
-
-                                alias.NewHits += 1;
-
-                                break;
-                            }
-                        }
-                    }
-
-                    //Split words and replace keywords
-                    string[] BaseValueWords = BaseValue.Split(' ');
-
-                    foreach (string word in BaseValueWords)
-                    {
-                        DataContracts.Masters.DC_Keyword keywordSearch = Keywords.Where(k => k.Alias.Any(a => a.Value.ToUpper() == word.ToUpper()) && k.Attribute == false).FirstOrDefault();
-
-                        if (keywordSearch != null)
-                        {
-                            BaseValue = BaseValue.Replace(word, keywordSearch.Keyword);
-                            var foundAlias = keywordSearch.Alias.Where(w => w.Value.ToUpper() == word.ToUpper()).FirstOrDefault();
-                            foundAlias.NoOfHits += 1;
-                        }
-
-                        keywordSearch = null;
-                    }
-
-                    //Attribute Extraction
-                    if (bRunAttributeExtraction)
-                    {
-                        foreach (var Attribute in Attributes.OrderBy(o => o.Sequence))
-                        {
-                            var aliases = Attribute.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
-                            foreach (var alias in aliases)
-                            {
-                                if (BaseValue.Contains(alias.Value.ToUpper()))
-                                {
-                                    AttributeList.Add(new DataContracts.Mapping.DC_SupplierRoomName_AttributeList
-                                    {
-                                        SystemAttributeKeywordID = Attribute.Keyword_Id,
-                                        SupplierRoomTypeAttribute = alias.Value,
-                                        SystemAttributeKeyword = Attribute.Keyword
-                                    });
-
-                                    if ((Attribute.AttributeType ?? string.Empty).ToUpper().Contains("STRIP"))
-                                    {
-                                        BaseValue = BaseValue.Replace(alias.Value.ToUpper(), string.Empty);
-                                    }
-
-                                    BaseValue = BaseValue.Replace("()", string.Empty);
-                                    BaseValue = BaseValue.Trim();
-
-                                    alias.NewHits += 1;
-
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    #endregion
-
-                    #region POST TTFU
-                    //Replace UnNecessary chars to space
-                    BaseValue = BaseValue.Replace('<', ' ');
-                    BaseValue = BaseValue.Replace('>', ' ');
-                    BaseValue = BaseValue.Replace('?', ' ');
-                    BaseValue = BaseValue.Replace('#', ' ');
-                    BaseValue = BaseValue.Replace('!', ' ');
-                    BaseValue = BaseValue.Replace('@', ' ');
-                    BaseValue = BaseValue.Replace("&", " AND ");
-                    //BaseRoomName = BaseRoomName.Replace("+", " INCLUDING ");
-                    BaseValue = BaseValue.Replace('(', ' ');
-                    BaseValue = BaseValue.Replace(')', ' ');
-                    BaseValue = BaseValue.Replace('-', ' ');
-                    BaseValue = BaseValue.Replace(',', ' ');
-                    BaseValue = BaseValue.Replace('.', ' ');
-                    BaseValue = BaseValue.Replace('"', ' ');
-
-                    //Replace Multiple whitespaces into One Whitespace
-                    BaseValue = System.Text.RegularExpressions.Regex.Replace(BaseValue, @"\s{2,}", " ");
-
-                    //trim both end
-                    BaseValue = BaseValue.Trim();
-                    #endregion
+                    BaseValue = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, BaseValue, new string[] { });
 
                     //Value assignment
                     inputData.TargetColumnValue = BaseValue;
@@ -4890,6 +4834,7 @@ namespace DataLayer
                                 search.Address_Tx = inputData.TargetColumnValue;
                             }
                         }
+
                         else if (inputData.TableName.Trim().ToUpper() == "ACCOMMODATION_PRODUCTMAPPING" && inputData.TargetColumnName.Trim().ToUpper() == "ADDRESS_TX")
                         {
                             var search = context.Accommodation_ProductMapping.Find(Guid.Parse(inputData.PrimaryKey));
@@ -4945,6 +4890,268 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while Keyword Replace", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        public DC_Message ReRunKeyword(string Entity)
+        {
+            try
+            {
+                string TT_Value = string.Empty;
+                string TX_Value = string.Empty;
+                string SX_Value = string.Empty;
+
+                List<DC_SupplierRoomName_AttributeList> AttributeList = new List<DC_SupplierRoomName_AttributeList>();
+                List<DC_KeyWordReRun> keywordReRun = new List<DC_KeyWordReRun>();
+
+                #region Get all entity related Keywords 
+
+                List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
+                using (DL_Masters objDL = new DL_Masters())
+                {
+                    Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = Entity, PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
+                }
+
+                #endregion
+
+                #region Fetch the data which needs to be TTFU and Process
+
+                if (Entity.Trim().ToUpper() == "HOTELNAME")
+                {
+                    #region For Accommodation
+                    keywordReRun = new List<DC_KeyWordReRun>();
+
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        context.Configuration.AutoDetectChangesEnabled = false;
+                        context.Database.CommandTimeout = 0;
+
+                        keywordReRun = context.Accommodations.AsNoTracking()
+                                    .Select(s => new DC_KeyWordReRun
+                                    {
+                                        RowId = s.Accommodation_Id,
+                                        OriginalValue = s.HotelName,
+                                        CityName = s.city ?? string.Empty,
+                                        CountryName = s.country ?? string.Empty
+                                    }).ToList();
+                    }
+
+                    foreach (var data in keywordReRun)
+                    {
+                        TT_Value = string.Empty;
+                        TX_Value = string.Empty;
+                        SX_Value = string.Empty;
+
+                        TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { data.CityName, data.CountryName });
+
+                        using (ConsumerEntities context = new ConsumerEntities())
+                        {
+                            var entity = context.Accommodations.Find(data.RowId);
+                            if (entity != null)
+                            {
+                                entity.HotelName_Tx = TT_Value;
+                                context.SaveChanges();
+                                entity = null;
+                            }
+                        }
+                    }
+                    #endregion
+
+                    #region For Accommodation Product Mapping
+                    keywordReRun = new List<DC_KeyWordReRun>();
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        context.Configuration.AutoDetectChangesEnabled = false;
+                        context.Database.CommandTimeout = 0;
+
+                        keywordReRun = context.Accommodation_ProductMapping.AsNoTracking()
+                                    .Select(s => new DC_KeyWordReRun
+                                    {
+                                        RowId = s.Accommodation_ProductMapping_Id,
+                                        OriginalValue = s.ProductName,
+                                        CityName = s.CityName ?? string.Empty,
+                                        CountryName = s.CountryName ?? string.Empty
+                                    }).ToList();
+                    }
+
+                    foreach (var data in keywordReRun)
+                    {
+                        TT_Value = string.Empty;
+                        TX_Value = string.Empty;
+                        SX_Value = string.Empty;
+
+                        TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { data.CityName, data.CountryName });
+
+                        using (ConsumerEntities context = new ConsumerEntities())
+                        {
+                            var entity = context.Accommodation_ProductMapping.Find(data.RowId);
+                            if (entity != null)
+                            {
+                                entity.HotelName_Tx = TT_Value;
+                                context.SaveChanges();
+                                entity = null;
+                            }
+                        }
+                    }
+                    #endregion
+                }
+
+                if (Entity.Trim().ToUpper() == "HOTELADDRESS")
+                {
+                    #region For Accommodation
+                    keywordReRun = new List<DC_KeyWordReRun>();
+
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        context.Configuration.AutoDetectChangesEnabled = false;
+                        context.Database.CommandTimeout = 0;
+
+                        keywordReRun = context.Accommodations.AsNoTracking()
+                                    .Select(s => new DC_KeyWordReRun
+                                    {
+                                        RowId = s.Accommodation_Id,
+                                        OriginalValue = s.FullAddress
+                                    }).ToList();
+                    }
+
+                    foreach (var data in keywordReRun)
+                    {
+                        TT_Value = string.Empty;
+                        TX_Value = string.Empty;
+                        SX_Value = string.Empty;
+
+                        TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { });
+
+                        using (ConsumerEntities context = new ConsumerEntities())
+                        {
+                            var entity = context.Accommodations.Find(data.RowId);
+                            if (entity != null)
+                            {
+                                entity.Address_Tx = TT_Value;
+                                context.SaveChanges();
+                                entity = null;
+                            }
+                        }
+                    }
+                    #endregion
+
+                    #region For Accommodation Product Mapping
+                    keywordReRun = new List<DC_KeyWordReRun>();
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        context.Configuration.AutoDetectChangesEnabled = false;
+                        context.Database.CommandTimeout = 0;
+
+                        keywordReRun = context.Accommodation_ProductMapping.AsNoTracking()
+                                    .Select(s => new DC_KeyWordReRun
+                                    {
+                                        RowId = s.Accommodation_ProductMapping_Id,
+                                        OriginalValue = s.address
+                                    }).ToList();
+                    }
+
+                    foreach (var data in keywordReRun)
+                    {
+                        TT_Value = string.Empty;
+                        TX_Value = string.Empty;
+                        SX_Value = string.Empty;
+
+                        TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { });
+
+                        using (ConsumerEntities context = new ConsumerEntities())
+                        {
+                            var entity = context.Accommodation_ProductMapping.Find(data.RowId);
+                            if (entity != null)
+                            {
+                                entity.address_tx = TT_Value;
+                                context.SaveChanges();
+                                entity = null;
+                            }
+                        }
+                    }
+                    #endregion
+                }
+
+                if (Entity.Trim().ToUpper() == "ROOMTYPE")
+                {
+                    #region For Supplier Room Mapping
+                    keywordReRun = new List<DC_KeyWordReRun>();
+                    
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        context.Configuration.AutoDetectChangesEnabled = false;
+                        context.Database.CommandTimeout = 0;
+
+                        keywordReRun = context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
+                                    .Select(s => new DC_KeyWordReRun
+                                    {
+                                        RowId = s.Accommodation_SupplierRoomTypeMapping_Id,
+                                        OriginalValue = s.SupplierRoomName
+                                    }).ToList();
+                    }
+
+                    foreach (var data in keywordReRun)
+                    {
+                        TT_Value = string.Empty;
+                        TX_Value = string.Empty;
+                        SX_Value = string.Empty;
+                        AttributeList = new List<DC_SupplierRoomName_AttributeList>();
+
+                        TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { });
+
+                        //Update Room Name Stripped and Attributes
+                        using (ConsumerEntities context = new ConsumerEntities())
+                        {
+                            //Remove Existing Attribute List Records
+                            context.Accommodation_SupplierRoomTypeAttributes.RemoveRange(context.Accommodation_SupplierRoomTypeAttributes.Where(w => w.RoomTypeMap_Id == data.RowId));
+
+                            context.Accommodation_SupplierRoomTypeAttributes.AddRange((from a in AttributeList
+                                                                                       select new Accommodation_SupplierRoomTypeAttributes
+                                                                                       {
+                                                                                           RoomTypeMapAttribute_Id = Guid.NewGuid(),
+                                                                                           RoomTypeMap_Id = data.RowId,
+                                                                                           SupplierRoomTypeAttribute = a.SupplierRoomTypeAttribute,
+                                                                                           SystemAttributeKeyword = a.SystemAttributeKeyword,
+                                                                                           SystemAttributeKeyword_Id = a.SystemAttributeKeywordID
+                                                                                       }).ToList());
+
+                            var srnm = context.Accommodation_SupplierRoomTypeMapping.Find(data.RowId);
+                            if (srnm != null)
+                            {
+                                srnm.TX_RoomName = TT_Value;
+                                srnm.Tx_StrippedName = SX_Value;
+                                srnm.Tx_ReorderedName = SX_Value;
+                            }
+
+                            context.SaveChanges();
+                        }
+                    }
+                    #endregion
+                }
+
+                #endregion
+
+                #region Update No Of Hits
+                var updatableAliases = (from k in Keywords
+                                        from ka in k.Alias
+                                        where ka.NewHits != 0
+                                        select ka).ToList();
+                if (updatableAliases.Count > 0)
+                {
+                    using (DL_Masters objDL = new DL_Masters())
+                    {
+                        objDL.DataHandler_Keyword_Update_NoOfHits(updatableAliases);
+                    }
+                }
+
+                #endregion
+
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword ReRun has been done." };
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while Keyword ReRun", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
         #endregion
 
         public string[] GetColumnNames(string TableName)
@@ -5050,7 +5257,7 @@ namespace DataLayer
                             Longitude = param.Longitude,
                             IsActive = true,//param.Status
                             Status = "Active",
-                            Zone_Radius=(decimal)param.Zone_Radius,
+                            Zone_Radius = (decimal)param.Zone_Radius,
                             Create_Date = param.Create_Date,
                             Create_User = param.Create_User
                         };
@@ -5246,8 +5453,8 @@ namespace DataLayer
                                      Status = a.Status,
                                      Latitude = a.Latitude,
                                      Longitude = a.Longitude,
-                                     NoOfHotels=a.NoOfHotels,
-                                     Zone_Radius=a.Zone_Radius,
+                                     NoOfHotels = a.NoOfHotels,
+                                     Zone_Radius = a.Zone_Radius,
                                      TotalRecords = total
                                  };
 
@@ -5276,7 +5483,7 @@ namespace DataLayer
                             City_id = m.zcm.City_Id,
                             IsActive = m.zcm.IsActive,
                             Status = m.zcm.Status,
-                            ZoneCityMapping_Id=m.zcm.ZoneCityMapping_Id
+                            ZoneCityMapping_Id = m.zcm.ZoneCityMapping_Id
                         }).OrderBy(x => x.CityName).ToList();
 
                     int total = search.Count();
@@ -5292,7 +5499,7 @@ namespace DataLayer
                                      City_id = a.City_id,
                                      IsActive = a.IsActive,
                                      Status = a.Status,
-                                     ZoneCityMapping_Id=a.ZoneCityMapping_Id,
+                                     ZoneCityMapping_Id = a.ZoneCityMapping_Id,
                                      TotalRecords = total
                                  };
 
@@ -5320,7 +5527,7 @@ namespace DataLayer
                 {
                     var search = (from a in context.m_ZoneMaster where a.Zone_id == param.Zone_id select a).SingleOrDefault();
                     var boolIsActive = (param.IsActive == true) ? 1 : 0;
-                    var Newstatus =( boolIsActive==1) ? "Active":"Inactive";
+                    var Newstatus = (boolIsActive == 1) ? "Active" : "Inactive";
                     if (search != null)
                     {
                         if (param.Action == "ZoneMaster")
@@ -5382,7 +5589,7 @@ namespace DataLayer
                             }
                         }
                     }
-                   
+
                     else
                     {
                         _msg.StatusMessage = ReadOnlyMessage.strFailed;
@@ -5397,7 +5604,7 @@ namespace DataLayer
             return _msg;
         }
 
-      
+
         public List<DC_ZoneHotelList> SearchZoneHotels(DataContracts.Masters.DC_ZoneRQ param)
         {
             try
@@ -5412,7 +5619,7 @@ namespace DataLayer
                                   select new DC_ZoneHotelList
                                   {
                                       Accommodation_Id = s.Product_Id ?? Guid.Empty,
-                                      ZoneProductMapping_Id= s.ZoneProductMapping_Id,
+                                      ZoneProductMapping_Id = s.ZoneProductMapping_Id,
                                       HotelName = a.HotelName,
                                       City = a.city,
                                       Distance = (double)(s.Distance),
@@ -5441,9 +5648,9 @@ namespace DataLayer
                     var search = (from s in context.ZoneProduct_Mapping where s.Zone_Id == param.Zone_id select s).FirstOrDefault();
                     if (search != null)
                     {
-                            _msg.StatusMessage = ReadOnlyMessage.strAlreadyExist;
-                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
-                       
+                        _msg.StatusMessage = ReadOnlyMessage.strAlreadyExist;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
+
                     }
                     else
                     {
@@ -5551,8 +5758,8 @@ namespace DataLayer
                     var search = (from s in context.ZoneProduct_Mapping where s.Zone_Id == param.Zone_id select s).FirstOrDefault();
                     if (search != null)
                     {
-                            string UpdateIsIncluded = " UPDATE ZoneProduct_Mapping SET Included = ( case when Distance <=  " + param.Zone_Radius + "  then '1' else '0' end ) WHERE zone_id ='" + param.Zone_id + "'";
-                           int count= context.Database.ExecuteSqlCommand(UpdateIsIncluded);
+                        string UpdateIsIncluded = " UPDATE ZoneProduct_Mapping SET Included = ( case when Distance <=  " + param.Zone_Radius + "  then '1' else '0' end ) WHERE zone_id ='" + param.Zone_id + "'";
+                        int count = context.Database.ExecuteSqlCommand(UpdateIsIncluded);
                         if (count > 0)
                         {
                             _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
@@ -5580,7 +5787,7 @@ namespace DataLayer
         public DC_Message IncludeExcludeHotels(DataContracts.Masters.DC_ZoneRQ param)
         {
             DC_Message _msg = new DC_Message();
-            if(param.ZoneProductMapping_Id==null || param.ZoneProductMapping_Id == Guid.Empty)
+            if (param.ZoneProductMapping_Id == null || param.ZoneProductMapping_Id == Guid.Empty)
             {
                 _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning;
                 _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
@@ -5591,7 +5798,7 @@ namespace DataLayer
                 try
                 {
                     var search = (from a in context.ZoneProduct_Mapping where param.ZoneProductMapping_Id == a.ZoneProductMapping_Id select a).First();
-                    if (search!=null)
+                    if (search != null)
                     {
                         search.Included = param.Included;
                         search.Edit_Date = DateTime.Now;
@@ -5611,7 +5818,7 @@ namespace DataLayer
                     throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while includeing/ExcludingZone", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
                 }
             }
-                    return _msg;
+            return _msg;
         }
         #endregion
     }

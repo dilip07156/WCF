@@ -98,11 +98,26 @@ namespace ConsumerSvc
             }
         }
 
-        public IList<DataContracts.DC_SRT_ML_Response> GetRTM_ML_Suggestions(string Accomodation_SupplierRoomTypeMapping_Id)
+       
+        public IList<DataContracts.DC_SRT_ML_Response_Syntactic> GetRTM_ML_Suggestions_Syntactic(string Accomodation_SupplierRoomTypeMapping_Id)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetRTM_ML_Suggestions_Syntactic(Accomodation_SupplierRoomTypeMapping_Id);
+            }
+        }
+        public DataContracts.DC_SRT_ML_Response GetRTM_ML_Suggestions(string Accomodation_SupplierRoomTypeMapping_Id)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
                 return objBL.GetRTM_ML_Suggestions(Accomodation_SupplierRoomTypeMapping_Id);
+            }
+        }
+        public IList<DataContracts.DC_SRT_ML_Response_Semantic> GetRTM_ML_Suggestions_Semantic(string Accomodation_SupplierRoomTypeMapping_Id)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetRTM_ML_Suggestions_Semantic(Accomodation_SupplierRoomTypeMapping_Id);
             }
         }
 
