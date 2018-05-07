@@ -4406,7 +4406,7 @@ namespace DataLayer
                     {
                         foreach (var alias in item.Alias)
                         {
-                            var searchKeywordAliasDuplicate = context.m_keyword_alias.Where(a => a.Value == alias.Value && a.Keyword_Id == alias.Keyword_Id).FirstOrDefault();
+                            var searchKeywordAliasDuplicate = context.m_keyword_alias.Where(a => a.Value == alias.Value && a.Keyword_Id == alias.Keyword_Id && a.KeywordAlias_Id != alias.KeywordAlias_Id).FirstOrDefault();
                             if (searchKeywordAliasDuplicate != null)
                             {
                                 ret.StatusMessage = "Keyword Alias: " + alias.Value + " already exists.";
