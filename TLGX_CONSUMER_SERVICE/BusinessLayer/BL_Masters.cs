@@ -681,6 +681,13 @@ namespace BusinessLayer
             }
         }
 
+        public DC_Message ReRunKeyword(string Entity)
+        {
+            using (DataLayer.DL_Masters objDL = new DataLayer.DL_Masters())
+            {
+                return objDL.ReRunKeyword(Entity);
+            }
+        }
         #endregion
 
         public string[] GetColumnNames(string TableName)

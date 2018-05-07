@@ -12,18 +12,15 @@ namespace DataLayer
     using System;
     using System.Collections.Generic;
     
-    public partial class DistributionLayerRefresh_Log
+    public partial class SupplierEntity
     {
-        public System.Guid Id { get; set; }
-        public string Element { get; set; }
-        public string Type { get; set; }
+        public System.Guid SupplierEntity_Id { get; set; }
+        public Nullable<System.Guid> Parent_Id { get; set; }
+        public Nullable<System.Guid> Supplier_Id { get; set; }
+        public string SupplierName { get; set; }
+        public string SupplierProductCode { get; set; }
+        public string Entity { get; set; }
         public Nullable<System.DateTime> Create_Date { get; set; }
         public string Create_User { get; set; }
-        public string Status { get; set; }
-        public Nullable<System.Guid> Supplier_Id { get; set; }
-        public Nullable<System.DateTime> Edit_date { get; set; }
-        public string Edit_User { get; set; }
-        public Nullable<int> TotalCount { get; set; }
-        public Nullable<int> MongoPushCount { get; set; }
     }
 }

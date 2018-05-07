@@ -209,6 +209,9 @@
     <Compile Include="Activity_Deals.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Activity_DeparturePoints.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Activity_Descriptions.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
@@ -264,6 +267,9 @@
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Activity_SupplierActivityTypeMapping.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Activity_SupplierCityDepartureCode.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Activity_SupplierProductMapping.cs">
@@ -504,6 +510,9 @@
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Supplier.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SupplierEntity.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="SupplierImportFileDetail.cs">

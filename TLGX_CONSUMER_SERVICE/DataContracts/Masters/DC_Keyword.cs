@@ -181,4 +181,26 @@ namespace DataContracts.Masters
         [DataMember]
         public string EditUser { get; set; }
     }
+
+    [DataContract]
+    public class DC_KeyWordReRun
+    {
+        [DataMember]
+        public Guid RowId { get; set; }
+
+        [DataMember]
+        public string OriginalValue { get; set; }
+
+        [DataMember]
+        public string CountryName { get; set; }
+
+        [DataMember]
+        public string CityName { get; set; }
+
+        [DataMember]
+        public string TxValue { get; set; }
+
+        [DataMember]
+        public string SxValue { get; set; }
+    }
 }

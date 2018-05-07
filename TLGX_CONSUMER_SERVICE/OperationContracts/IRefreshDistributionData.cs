@@ -73,6 +73,13 @@ namespace OperationContracts
         List<DC_RefreshDistributionDataLog> GetRefreshDistributionLog();
         #endregion
 
+        #region RefreshDistributionLog
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Get/RefreshDistributionHotelLog", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DC_RefreshDistributionDataLog> GetRefreshStaticHotelLog();
+        #endregion
+
         #region port
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
@@ -86,6 +93,21 @@ namespace OperationContracts
         [WebInvoke(Method = "GET", UriTemplate = "Load/StateMaster/{State_Id}/{CreatedBy}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DC_Message SyncStateMaster(string state_id, string CreatedBy);
         #endregion
+
+        #region Supplier Data
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Load/SupplierStaticDetails", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DC_SupplierEntity> LoadSupplierData();
+        #endregion
+
+        #region Supplier static entity
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Load/SupplierMaster/{log_id}/{supplier_id}/{CreatedBy}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_Message SyncSupplierStaticHotel(string log_id ,string supplier_id, string CreatedBy);
+        #endregion
+
 
     }
 

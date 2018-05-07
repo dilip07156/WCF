@@ -192,5 +192,45 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        #region GetRefresh StaticHotelLog
+        public List<DC_RefreshDistributionDataLog> GetRefreshStaticHotelLog()
+        {
+            using (DataLayer.DL_GetRefreshDistributionLog obj = new DataLayer.DL_GetRefreshDistributionLog())
+            {
+                return obj.GetRefreshStaticHotelLog();
+            }
+        }
+        #endregion
+
+        #region LoadSupplierData
+        public List<DC_SupplierEntity> LoadSupplierData()
+        {
+            using (DataLayer.DL_GetRefreshDistributionLog obj = new DataLayer.DL_GetRefreshDistributionLog())
+            {
+                return obj.LoadSupplierData();
+            }
+        }
+        #endregion
+
+        #region state
+
+        public DC_Message SyncSupplierStaticHotel(string log_id, string supplier_id, string CreatedBy)
+        {
+            Guid logid = new Guid();
+            Guid gSupplier_Id;
+            if (Guid.TryParse(log_id, out logid) && Guid.TryParse(supplier_id, out gSupplier_Id))
+            {
+                using (DataLayer.DL_MongoPush obj = new DataLayer.DL_MongoPush())
+                {
+                    return obj.SyncSupplierStaticHotel(logid, gSupplier_Id, CreatedBy);
+                }
+            }
+            else
+            {
+                return new DC_Message { StatusMessage = "Invalid Supplier_id", StatusCode = ReadOnlyMessage.StatusCode.Danger };
+            }
+        }
+        #endregion
     }
 }

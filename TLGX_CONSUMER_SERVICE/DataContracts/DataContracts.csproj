@@ -122,6 +122,7 @@
     <Compile Include="ML\DC_SRT_ML_Response_Semantic.cs" />
     <Compile Include="ML\DC_SRT_ML_Response_Syntactic.cs" />
     <Compile Include="DC_RefreshDistributionDataLog.cs" />
+    <Compile Include="DC_SupplierEntity.cs" />
     <Compile Include="FileTransfer\DC_FileData.cs" />
     <Compile Include="FileTransfer\DC_FileDownloadRequest.cs" />
     <Compile Include="FileTransfer\DC_FileUploadResponse.cs" />

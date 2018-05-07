@@ -77,6 +77,10 @@
           <Property Name="Latitude_Tx" Type="nvarchar" MaxLength="510" />
           <Property Name="Longitude_Tx" Type="nvarchar" MaxLength="510" />
           <Property Name="GeoLocation" Type="geography" />
+          <Property Name="gArea" Type="nvarchar" MaxLength="255" />
+          <Property Name="gLocation" Type="nvarchar" MaxLength="255" />
+          <Property Name="Area_Id" Type="uniqueidentifier" />
+          <Property Name="Location_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Accommodation_ClassificationAttributes">
           <Key>
@@ -692,6 +696,24 @@
           <Property Name="Create_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="Activity_DeparturePoints">
+          <Key>
+            <PropertyRef Name="Activity_DeparturePoints_ID" />
+          </Key>
+          <Property Name="Activity_DeparturePoints_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Activity_Flavor_ID" Type="uniqueidentifier" />
+          <Property Name="Activity_DaysOfOperation_Id" Type="uniqueidentifier" />
+          <Property Name="Activity_DaysOfWeek_ID" Type="uniqueidentifier" />
+          <Property Name="DepartureCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="DeparturePoint" Type="nvarchar(max)" />
+          <Property Name="Address" Type="nvarchar(max)" />
+          <Property Name="Telephone" Type="nvarchar(max)" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreateUser" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="CreateDate" Type="datetime" Nullable="false" />
+          <Property Name="EditUser" Type="nvarchar" MaxLength="150" />
+          <Property Name="EditDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="Activity_Descriptions">
           <Key>
             <PropertyRef Name="Activity_Description_Id" />
@@ -1148,6 +1170,18 @@
           <Property Name="MapID" Type="int" />
           <Property Name="Activity_Type_Id" Type="uniqueidentifier" />
         </EntityType>
+        <EntityType Name="Activity_SupplierCityDepartureCode">
+          <Key>
+            <PropertyRef Name="DepartureID" />
+          </Key>
+          <Property Name="DepartureID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="City" Type="nvarchar(max)" />
+          <Property Name="CityCode" Type="nvarchar" MaxLength="150" />
+          <Property Name="Hotel" Type="nvarchar(max)" />
+          <Property Name="HotelCode" Type="nvarchar" MaxLength="150" />
+          <Property Name="DepartureCode" Type="nvarchar" MaxLength="150" />
+          <Property Name="DepartureName" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="Activity_SupplierProductMapping">
           <Key>
             <PropertyRef Name="ActivitySupplierProductMapping_Id" />
@@ -1491,6 +1525,11 @@
           <Property Name="Create_Date" Type="datetime" />
           <Property Name="Create_User" Type="nvarchar" MaxLength="50" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="Supplier_Id" Type="uniqueidentifier" />
+          <Property Name="Edit_date" Type="datetime" />
+          <Property Name="Edit_User" Type="nvarchar" MaxLength="50" />
+          <Property Name="TotalCount" Type="int" />
+          <Property Name="MongoPushCount" Type="int" />
         </EntityType>
         <EntityType Name="DynamicAttribute">
           <Key>
@@ -2025,13 +2064,13 @@
           <Property Name="Longitude" Type="varchar" MaxLength="50" />
           <Property Name="Status" Type="varchar" MaxLength="50" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="Zone_Radius" Type="decimal" Precision="18" Scale="2" />
           <Property Name="Geography" Type="geography" />
           <Property Name="GooglePlace_Id" Type="varchar" MaxLength="100" />
           <Property Name="Create_User" Type="varchar" MaxLength="500" />
           <Property Name="Create_Date" Type="datetime" />
           <Property Name="Edit_User" Type="varchar" MaxLength="500" />
           <Property Name="Edit_Date" Type="datetime" />
-          <Property Name="Zone_Radius" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="Media_Attributes">
           <Key>
@@ -2419,6 +2458,7 @@
           <Property Name="SupplierOwner" Type="nvarchar" MaxLength="255" />
           <Property Name="StatusCode" Type="nvarchar" MaxLength="20" />
           <Property Name="Priority" Type="int" />
+          <Property Name="EZ1_SupplierName" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Supplier_ApiCallLog">
           <Key>
@@ -2500,6 +2540,19 @@
           <Property Name="Create_User" Type="nvarchar" MaxLength="150" />
           <Property Name="Edit_Date" Type="datetime" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="150" />
+        </EntityType>
+        <EntityType Name="SupplierEntity">
+          <Key>
+            <PropertyRef Name="SupplierEntity_Id" />
+          </Key>
+          <Property Name="SupplierEntity_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Parent_Id" Type="uniqueidentifier" />
+          <Property Name="Supplier_Id" Type="uniqueidentifier" />
+          <Property Name="SupplierName" Type="varchar" MaxLength="100" />
+          <Property Name="SupplierProductCode" Type="varchar" MaxLength="100" />
+          <Property Name="Entity" Type="varchar" MaxLength="50" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Create_User" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="SupplierImportFile_ErrorLog">
           <Key>
@@ -2731,6 +2784,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Activity_DaysOfOperation" EntityType="Self.Activity_DaysOfOperation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_DaysOfWeek" EntityType="Self.Activity_DaysOfWeek" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_Deals" EntityType="Self.Activity_Deals" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_DeparturePoints" EntityType="Self.Activity_DeparturePoints" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_Descriptions" EntityType="Self.Activity_Descriptions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_Facility" EntityType="Self.Activity_Facility" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_Flavour" EntityType="Self.Activity_Flavour" Schema="dbo" store:Type="Tables" />
@@ -2750,6 +2804,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Activity_SupplierActivityMetaDataMapping" EntityType="Self.Activity_SupplierActivityMetaDataMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_SupplierActivityReviews" EntityType="Self.Activity_SupplierActivityReviews" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_SupplierActivityTypeMapping" EntityType="Self.Activity_SupplierActivityTypeMapping" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity_SupplierCityDepartureCode" EntityType="Self.Activity_SupplierCityDepartureCode" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_SupplierProductMapping" EntityType="Self.Activity_SupplierProductMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_SupplierProductMapping_CA" EntityType="Self.Activity_SupplierProductMapping_CA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity_SupplierProductMapping_Deals" EntityType="Self.Activity_SupplierProductMapping_Deals" Schema="dbo" store:Type="Tables" />
@@ -2823,6 +2878,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Supplier_Market" EntityType="Self.Supplier_Market" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier_ProductCategory" EntityType="Self.Supplier_ProductCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier_Schedule" EntityType="Self.Supplier_Schedule" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierEntity" EntityType="Self.SupplierEntity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFile_ErrorLog" EntityType="Self.SupplierImportFile_ErrorLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFile_Progress" EntityType="Self.SupplierImportFile_Progress" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFile_Statistics" EntityType="Self.SupplierImportFile_Statistics" Schema="dbo" store:Type="Tables" />
@@ -3018,7 +3074,10 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="stg_SupplierHotelRoomMapping" EntityType="ConsumerModel.stg_SupplierHotelRoomMapping" />
           <EntitySet Name="stg_SupplierProductMapping" EntityType="ConsumerModel.stg_SupplierProductMapping" />
           <EntitySet Name="m_PortMaster" EntityType="ConsumerModel.m_PortMaster" />
+          <EntitySet Name="SupplierEntity" EntityType="ConsumerModel.SupplierEntity" />
           <EntitySet Name="DistributionLayerRefresh_Log" EntityType="ConsumerModel.DistributionLayerRefresh_Log" />
+          <EntitySet Name="Activity_DeparturePoints" EntityType="ConsumerModel.Activity_DeparturePoints" />
+          <EntitySet Name="Activity_SupplierCityDepartureCode" EntityType="ConsumerModel.Activity_SupplierCityDepartureCode" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -3726,6 +3785,10 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Latitude_Tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
           <Property Name="Longitude_Tx" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
           <Property Name="GeoLocation" Type="Geography" />
+          <Property Name="gArea" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="gLocation" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Area_Id" Type="Guid" />
+          <Property Name="Location_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="GoogleGeoCode">
           <Key>
@@ -5210,6 +5273,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="SupplierOwner" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="StatusCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Priority" Type="Int32" />
+          <Property Name="EZ1_SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Activity_CategoriesType">
           <Key>
@@ -5674,6 +5738,19 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="MappingStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="MultiCity_Id" Type="Guid" />
         </EntityType>
+        <EntityType Name="SupplierEntity">
+          <Key>
+            <PropertyRef Name="SupplierEntity_Id" />
+          </Key>
+          <Property Name="SupplierEntity_Id" Type="Guid" Nullable="false" />
+          <Property Name="Parent_Id" Type="Guid" />
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="SupplierName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="SupplierProductCode" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Entity" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
         <EntityType Name="DistributionLayerRefresh_Log">
           <Key>
             <PropertyRef Name="Id" />
@@ -5684,6 +5761,41 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Create_Date" Type="DateTime" Precision="3" />
           <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="Edit_date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalCount" Type="Int32" />
+          <Property Name="MongoPushCount" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Activity_DeparturePoints">
+          <Key>
+            <PropertyRef Name="Activity_DeparturePoints_ID" />
+          </Key>
+          <Property Name="Activity_DeparturePoints_ID" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Flavor_ID" Type="Guid" />
+          <Property Name="Activity_DaysOfOperation_Id" Type="Guid" />
+          <Property Name="Activity_DaysOfWeek_ID" Type="Guid" />
+          <Property Name="DepartureCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DeparturePoint" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Telephone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreateUser" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EditUser" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="EditDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Activity_SupplierCityDepartureCode">
+          <Key>
+            <PropertyRef Name="DepartureID" />
+          </Key>
+          <Property Name="DepartureID" Type="Guid" Nullable="false" />
+          <Property Name="City" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CityCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Hotel" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="HotelCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="DepartureCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="DepartureName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
 
       </Schema>
@@ -6328,6 +6440,10 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodations">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation">
               <MappingFragment StoreEntitySet="Accommodation">
+                <ScalarProperty Name="Location_Id" ColumnName="Location_Id" />
+                <ScalarProperty Name="Area_Id" ColumnName="Area_Id" />
+                <ScalarProperty Name="gLocation" ColumnName="gLocation" />
+                <ScalarProperty Name="gArea" ColumnName="gArea" />
                 <ScalarProperty Name="GeoLocation" ColumnName="GeoLocation" />
                 <ScalarProperty Name="Longitude_Tx" ColumnName="Longitude_Tx" />
                 <ScalarProperty Name="Latitude_Tx" ColumnName="Latitude_Tx" />
@@ -7943,6 +8059,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Supplier">
             <EntityTypeMapping TypeName="ConsumerModel.Supplier">
               <MappingFragment StoreEntitySet="Supplier">
+                <ScalarProperty Name="EZ1_SupplierName" ColumnName="EZ1_SupplierName" />
                 <ScalarProperty Name="Priority" ColumnName="Priority" />
                 <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
                 <ScalarProperty Name="SupplierOwner" ColumnName="SupplierOwner" />
@@ -8436,15 +8553,66 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="SupplierEntity">
+            <EntityTypeMapping TypeName="ConsumerModel.SupplierEntity">
+              <MappingFragment StoreEntitySet="SupplierEntity">
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Entity" ColumnName="Entity" />
+                <ScalarProperty Name="SupplierProductCode" ColumnName="SupplierProductCode" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="Parent_Id" ColumnName="Parent_Id" />
+                <ScalarProperty Name="SupplierEntity_Id" ColumnName="SupplierEntity_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="DistributionLayerRefresh_Log">
             <EntityTypeMapping TypeName="ConsumerModel.DistributionLayerRefresh_Log">
               <MappingFragment StoreEntitySet="DistributionLayerRefresh_Log">
+                <ScalarProperty Name="MongoPushCount" ColumnName="MongoPushCount" />
+                <ScalarProperty Name="TotalCount" ColumnName="TotalCount" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Edit_date" ColumnName="Edit_date" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Create_User" ColumnName="Create_User" />
                 <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="Element" ColumnName="Element" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_DeparturePoints">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_DeparturePoints">
+              <MappingFragment StoreEntitySet="Activity_DeparturePoints">
+                <ScalarProperty Name="EditDate" ColumnName="EditDate" />
+                <ScalarProperty Name="EditUser" ColumnName="EditUser" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Telephone" ColumnName="Telephone" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="DeparturePoint" ColumnName="DeparturePoint" />
+                <ScalarProperty Name="DepartureCode" ColumnName="DepartureCode" />
+                <ScalarProperty Name="Activity_DaysOfWeek_ID" ColumnName="Activity_DaysOfWeek_ID" />
+                <ScalarProperty Name="Activity_DaysOfOperation_Id" ColumnName="Activity_DaysOfOperation_Id" />
+                <ScalarProperty Name="Activity_Flavor_ID" ColumnName="Activity_Flavor_ID" />
+                <ScalarProperty Name="Activity_DeparturePoints_ID" ColumnName="Activity_DeparturePoints_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activity_SupplierCityDepartureCode">
+            <EntityTypeMapping TypeName="ConsumerModel.Activity_SupplierCityDepartureCode">
+              <MappingFragment StoreEntitySet="Activity_SupplierCityDepartureCode">
+                <ScalarProperty Name="DepartureName" ColumnName="DepartureName" />
+                <ScalarProperty Name="DepartureCode" ColumnName="DepartureCode" />
+                <ScalarProperty Name="HotelCode" ColumnName="HotelCode" />
+                <ScalarProperty Name="Hotel" ColumnName="Hotel" />
+                <ScalarProperty Name="CityCode" ColumnName="CityCode" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="DepartureID" ColumnName="DepartureID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
