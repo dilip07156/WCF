@@ -4692,7 +4692,6 @@ namespace DataLayer
             try
             {
                 bool bIsProgressLog = false;
-                bool bRunAttributeExtraction = false;
 
                 if (RQ.File_Id.HasValue)
                     bIsProgressLog = true;
@@ -4924,14 +4923,17 @@ namespace DataLayer
                         context.Configuration.AutoDetectChangesEnabled = false;
                         context.Database.CommandTimeout = 0;
 
-                        keywordReRun = context.Accommodations.AsNoTracking()
-                                    .Select(s => new DC_KeyWordReRun
-                                    {
-                                        RowId = s.Accommodation_Id,
-                                        OriginalValue = s.HotelName,
-                                        CityName = s.city ?? string.Empty,
-                                        CountryName = s.country ?? string.Empty
-                                    }).ToList();
+                        using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                        {
+                            keywordReRun = context.Accommodations.AsNoTracking()
+                                        .Select(s => new DC_KeyWordReRun
+                                        {
+                                            RowId = s.Accommodation_Id,
+                                            OriginalValue = s.HotelName,
+                                            CityName = s.city ?? string.Empty,
+                                            CountryName = s.country ?? string.Empty
+                                        }).ToList();
+                        }
                     }
 
                     foreach (var data in keywordReRun)
@@ -4961,15 +4963,17 @@ namespace DataLayer
                     {
                         context.Configuration.AutoDetectChangesEnabled = false;
                         context.Database.CommandTimeout = 0;
-
-                        keywordReRun = context.Accommodation_ProductMapping.AsNoTracking()
-                                    .Select(s => new DC_KeyWordReRun
-                                    {
-                                        RowId = s.Accommodation_ProductMapping_Id,
-                                        OriginalValue = s.ProductName,
-                                        CityName = s.CityName ?? string.Empty,
-                                        CountryName = s.CountryName ?? string.Empty
-                                    }).ToList();
+                        using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                        {
+                            keywordReRun = context.Accommodation_ProductMapping.AsNoTracking()
+                                        .Select(s => new DC_KeyWordReRun
+                                        {
+                                            RowId = s.Accommodation_ProductMapping_Id,
+                                            OriginalValue = s.ProductName,
+                                            CityName = s.CityName ?? string.Empty,
+                                            CountryName = s.CountryName ?? string.Empty
+                                        }).ToList();
+                        }
                     }
 
                     foreach (var data in keywordReRun)
@@ -5003,13 +5007,15 @@ namespace DataLayer
                     {
                         context.Configuration.AutoDetectChangesEnabled = false;
                         context.Database.CommandTimeout = 0;
-
-                        keywordReRun = context.Accommodations.AsNoTracking()
+                        using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                        {
+                            keywordReRun = context.Accommodations.AsNoTracking()
                                     .Select(s => new DC_KeyWordReRun
                                     {
                                         RowId = s.Accommodation_Id,
                                         OriginalValue = s.FullAddress
                                     }).ToList();
+                        }
                     }
 
                     foreach (var data in keywordReRun)
@@ -5039,13 +5045,15 @@ namespace DataLayer
                     {
                         context.Configuration.AutoDetectChangesEnabled = false;
                         context.Database.CommandTimeout = 0;
-
-                        keywordReRun = context.Accommodation_ProductMapping.AsNoTracking()
+                        using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                        {
+                            keywordReRun = context.Accommodation_ProductMapping.AsNoTracking()
                                     .Select(s => new DC_KeyWordReRun
                                     {
                                         RowId = s.Accommodation_ProductMapping_Id,
                                         OriginalValue = s.address
                                     }).ToList();
+                        }
                     }
 
                     foreach (var data in keywordReRun)
@@ -5074,18 +5082,20 @@ namespace DataLayer
                 {
                     #region For Supplier Room Mapping
                     keywordReRun = new List<DC_KeyWordReRun>();
-                    
+
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
                         context.Configuration.AutoDetectChangesEnabled = false;
                         context.Database.CommandTimeout = 0;
-
-                        keywordReRun = context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
+                        using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                        {
+                            keywordReRun = context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
                                     .Select(s => new DC_KeyWordReRun
                                     {
                                         RowId = s.Accommodation_SupplierRoomTypeMapping_Id,
                                         OriginalValue = s.SupplierRoomName
                                     }).ToList();
+                        }
                     }
 
                     foreach (var data in keywordReRun)
