@@ -112,52 +112,32 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-
+                    context.Database.CommandTimeout = 0;
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    //var SupplierData = (from a in context.SupplierEntity.AsNoTracking() join b in context.DistributionLayerRefresh_Log on 
-                    //                    a.Supplier_Id equals b.Supplier_Id into c
-                    //                    from subpet in c.DefaultIfEmpty()
-                    //                   orderby a.SupplierName ascending
-                    //                    select new DC_SupplierEntity
-                    //                    {
-                    //                        Supplier_Id = a.Supplier_Id,
-                    //                        Supplier_Name = a.SupplierName,
-                    //                        Element = "Hotels",
-                    //                        Type = "Static",
-                    //                        Status = subpet.Status ?? string.Empty,
-                    //                        LastUpdated = "",
-                    //                    } ).Distinct().ToList();
 
+                    using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                    {
+                        var distribution = context.DistributionLayerRefresh_Log.AsNoTracking().Where(x => x.Element == "Hotels" && x.Type == "Static").GroupBy(x => x.Supplier_Id).Select(g => g.OrderByDescending(x => x.Create_Date).FirstOrDefault()).ToList();
+                        var distinctFullPullSuppliers = context.SupplierEntity.AsNoTracking().Where(x => x.Parent_Id == null && x.Entity == "HotelInfo").Select(x => new { x.Supplier_Id, x.SupplierName }).Distinct().ToList();
 
-                    //foreach (var item in SupplierData.AsEnumerable())
-                    //{
-                    //    item.LastUpdated = GetMaxDate(item.Supplier_Id);
+                        var SupplierData = (from a in distinctFullPullSuppliers
+                                            join b in distribution on a.Supplier_Id equals b.Supplier_Id into c
+                                            from subset in c.DefaultIfEmpty()
+                                            orderby a.SupplierName ascending
+                                            select new DC_SupplierEntity
+                                            {
+                                                Supplier_Id = a.Supplier_Id,
+                                                Supplier_Name = a.SupplierName,
+                                                Element = (subset == null) ? "Hotels" : subset.Element,
+                                                Type = (subset == null) ? "Static" : subset.Type,
+                                                Status = (subset == null) ? string.Empty : subset.Status ?? string.Empty,
+                                                LastUpdated = subset == null ? string.Empty : subset.Create_Date.ToString(),
+                                                TotalCount = subset == null ? 0 : subset.TotalCount,
+                                                MongoPushCount = subset == null ? 0 : subset.MongoPushCount,
+                                            }).Distinct().ToList();
 
-
-                    //}
-
-
-                    var distribution = context.DistributionLayerRefresh_Log.AsNoTracking().Where(x => x.Element == "Hotels" && x.Type == "Static").GroupBy(x => x.Supplier_Id).Select(g => g.OrderByDescending(x => x.Create_Date).FirstOrDefault()).ToList();
-                    var distinctFullPullSuppliers = context.SupplierEntity.AsNoTracking().Where(x => x.Parent_Id == null && x.Entity == "HotelInfo").Select(x => new { x.Supplier_Id, x.SupplierName }).Distinct().ToList();
-
-                    var SupplierData = (from a in distinctFullPullSuppliers
-                                        join b in distribution on a.Supplier_Id equals b.Supplier_Id into c
-                                        from subset in c.DefaultIfEmpty()
-                                        orderby a.SupplierName ascending
-                                        select new DC_SupplierEntity
-                                        {
-                                            Supplier_Id = a.Supplier_Id,
-                                            Supplier_Name = a.SupplierName,
-                                            Element = (subset == null) ? "Hotels" : subset.Element,
-                                            Type = (subset == null) ? "Static" : subset.Type,
-                                            Status = (subset == null) ? string.Empty : subset.Status ?? string.Empty,
-                                            LastUpdated = subset == null ? string.Empty : subset.Create_Date.ToString(),
-                                            TotalCount = subset == null ? 0 : subset.TotalCount,
-                                            MongoPushCount = subset == null ? 0 : subset.MongoPushCount,
-                                        }).Distinct().ToList();
-
-                    return SupplierData;
-
+                        return SupplierData;
+                    }
                 }
             }
             catch (Exception ex)
