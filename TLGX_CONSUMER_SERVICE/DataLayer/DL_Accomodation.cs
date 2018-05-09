@@ -189,7 +189,7 @@ namespace DataLayer
         //                                Google_Place_Id = a.Google_Place_Id,
         //                                FullAddress = (a.StreetNumber ?? string.Empty) + ", " + (a.StreetName ?? string.Empty) + ", " + (a.Street3 ?? string.Empty) + ", " + (a.Street4 ?? string.Empty) + ", " + (a.Street5 ?? string.Empty) + ", " + (a.PostalCode ?? string.Empty) + ", " + (a.city ?? string.Empty) + ", " + (a.country ?? string.Empty),
         //                                MapCount = 0,
-        //                                //MapCount = (
+        //                                //MapCount = ( 
         //                                //    from am in context.Accommodation_ProductMapping
         //                                //    where am.Accommodation_Id == a.Accommodation_Id
         //                                //    select new { am.Accommodation_ProductMapping_Id }
@@ -255,8 +255,8 @@ namespace DataLayer
 
                     if (!string.IsNullOrWhiteSpace(RQ.Status))
                     {
-                        bool isActive = (RQ.Status == "ACTIVE") ? true : false;
-                        sbwhere.Append(" AND a.IsActive =" + +(isActive == true ? 1 : 0));
+                        string isActive = (RQ.Status == "ACTIVE") ? "1" : "0";
+                        sbwhere.Append(" AND ISNULL(a.IsActive,0) =" + isActive );
                     }
 
                     if (RQ.CompanyHotelId != null)
@@ -323,19 +323,19 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(RQ.AccomodationId))
                     {
                         Guid _guidAccomodationId = Guid.Parse(RQ.AccomodationId);
-                        sbwhere.Append(" AND a.Accommodation_Id=" + _guidAccomodationId);
+                        sbwhere.Append(" AND a.Accommodation_Id='" + _guidAccomodationId + "'");
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.Starrating))
                     {
-                        sbwhere.Append(" AND a.HotelRating=" + RQ.Starrating);
+                        sbwhere.Append(" AND a.HotelRating='" + RQ.Starrating + "'");
                     }
 
                     if (RQ.InsertFrom != null)
                     {
-                        sbwhere.Append(" AND a.InsertFrom=" + RQ.InsertFrom);
+                        sbwhere.Append(" AND ISNULL(a.InsertFrom,0) =" + (RQ.InsertFrom == true ? "1":"0"));
                     }
-
+                    
                     StringBuilder sbsqlselectcount = new StringBuilder();
                     sbsqlselectcount.Append("select count(*) ");
                     sbsqlselectcount.Append(" " + sbfrom);
@@ -345,9 +345,12 @@ namespace DataLayer
                     context.Configuration.AutoDetectChangesEnabled = false;
                     try { total = context.Database.SqlQuery<int>(sbsqlselectcount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
 
-                    sbSelect.Append(" Select a.Accommodation_Id,a.HotelName,a.CompanyName,str(a.CompanyHotelId) as CompanyHotelId  ,a.Chain as HotelChain,a.Brand as HotelBrand,a.Country,a.City,a.Location, IIF(a.IsActive = 1, 'Active', 'InActive')as Status,a.PostalCode, a.Google_Place_Id,(ISNULL(' ' +(a.StreetNumber+','), '') + ISNULL(' ' + (a.StreetName +','), '') + ISNULL(' ' + (a.Street3 +','), '') + ISNULL(' ' + (a.Street4+','), '') + ISNULL(' ' + (a.Street5 + ','),'')++ISNULL(' ' + (a.PostalCode +','), '') + +ISNULL(' ' + (a.city+','), '') + ISNULL(' ' + (a.country+','), '') )FullAddress ,0 as MapCount ,(a.HotelName + '/' +  str(a.CompanyHotelID)) as HotelNameWithCode ");
-                    sbSelect.Append(" ,a.HotelRating as starrating,a.Country_Id,a.City_Id,a.InsertFrom,a.Telephone_Tx,a.Latitude,a.Longitude,  ");
-                    sbSelect.Append(total.ToString() + " AS  TotalRecords ");                                                    
+                    sbSelect.Append(" Select CONVERT(VARCHAR(36), a.Accommodation_Id) as AccomodationId, a.HotelName, a.CompanyName,str(a.CompanyHotelId) as CompanyHotelId,");
+                    sbSelect.Append(" a.Chain as HotelChain,a.Brand as HotelBrand,a.Country,a.City,a.Location, iif(a.IsActive = 1, 'Active', 'InActive') as Status,");
+                    sbSelect.Append(" a.PostalCode, a.Google_Place_Id ,(a.HotelName + ' / ' +  str(a.CompanyHotelID)) as HotelNameWithCode, 0 as MapCount,");
+                    sbSelect.Append(" LTRIM(RTRIM((ISNULL((' ' + a.StreetNumber+','), '') + ISNULL((' ' + a.StreetName +','), '') + ISNULL((' ' + a.Street3 +','), '') + ISNULL((' ' + a.Street4+','), '') + ISNULL((' ' + a.Street5 + ','),'') + ISNULL((' ' + a.PostalCode +','), '') + ISNULL((' ' + a.city + ','), '') + ISNULL((' ' + a.country + ','), '')))) as FullAddress, ");
+                    sbSelect.Append(" a.HotelRating as Starrating, a.Country_Id, a.City_Id, a.InsertFrom, a.Telephone_Tx, a.Latitude,a.Longitude,  ");
+                    sbSelect.Append(total.ToString() + " AS TotalRecords ");                                                    
                     
                     StringBuilder sbOrderby = new StringBuilder();
                     sbOrderby.Append("order by a.HotelName OFFSET "+(skip).ToString());
@@ -362,17 +365,20 @@ namespace DataLayer
                     sbfinalQuery.Append(" " + sbOrderby);
 
                     var accoList = context.Database.SqlQuery<DataContracts.DC_Accomodation_Search_RS>(sbfinalQuery.ToString()).ToList();
+
                     if (!string.IsNullOrWhiteSpace(RQ.Searchfrom) && RQ.Searchfrom.ToLower().Trim() != "hotalsearch")
                     {
-                        StringBuilder sb = new StringBuilder();
-                        sb.Append(" select count(a.Accommodation_ProductMapping_Id) from Accommodation_ProductMapping a join[Accommodation] b on a.Accommodation_Id = b.Accommodation_Id where a.Accommodation_Id = b.Accommodation_Id " );
-                        accoList = context.Database.SqlQuery<DataContracts.DC_Accomodation_Search_RS>(sb.ToString()).ToList();
+                        accoList = accoList.Select(c =>
+                        {
+                            c.MapCount = (context.Database.SqlQuery<int>("select count(Accommodation_ProductMapping_Id) from Accommodation_ProductMapping with (nolock) where Accommodation_Id = '"+ c.AccomodationId +"';")).First();
+                            return c;
+                        }).ToList();
                     }
 
                     return accoList;
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
