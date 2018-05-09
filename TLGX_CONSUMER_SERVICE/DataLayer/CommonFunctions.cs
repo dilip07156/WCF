@@ -238,6 +238,11 @@ namespace DataLayer
         {
             string text = OriginalValue;
 
+            if(string.IsNullOrWhiteSpace(text))
+            {
+                return text;
+            }
+
             #region PRE TTFU
 
             #region HTML Decode
