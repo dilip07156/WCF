@@ -4938,20 +4938,23 @@ namespace DataLayer
 
                     foreach (var data in keywordReRun)
                     {
-                        TT_Value = string.Empty;
-                        TX_Value = string.Empty;
-                        SX_Value = string.Empty;
-
-                        TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { data.CityName, data.CountryName });
-
-                        using (ConsumerEntities context = new ConsumerEntities())
+                        if (!string.IsNullOrWhiteSpace(data.OriginalValue))
                         {
-                            var entity = context.Accommodations.Find(data.RowId);
-                            if (entity != null)
+                            TT_Value = string.Empty;
+                            TX_Value = string.Empty;
+                            SX_Value = string.Empty;
+
+                            TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { data.CityName, data.CountryName });
+
+                            using (ConsumerEntities context = new ConsumerEntities())
                             {
-                                entity.HotelName_Tx = TT_Value;
-                                context.SaveChanges();
-                                entity = null;
+                                var entity = context.Accommodations.Find(data.RowId);
+                                if (entity != null)
+                                {
+                                    entity.HotelName_Tx = TT_Value;
+                                    context.SaveChanges();
+                                    entity = null;
+                                }
                             }
                         }
                     }
@@ -4978,20 +4981,25 @@ namespace DataLayer
 
                     foreach (var data in keywordReRun)
                     {
-                        TT_Value = string.Empty;
-                        TX_Value = string.Empty;
-                        SX_Value = string.Empty;
-
-                        TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { data.CityName, data.CountryName });
-
-                        using (ConsumerEntities context = new ConsumerEntities())
+                        if (!string.IsNullOrWhiteSpace(data.OriginalValue))
                         {
-                            var entity = context.Accommodation_ProductMapping.Find(data.RowId);
-                            if (entity != null)
+                            TT_Value = string.Empty;
+                            TX_Value = string.Empty;
+                            SX_Value = string.Empty;
+
+
+
+                            TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { data.CityName, data.CountryName });
+
+                            using (ConsumerEntities context = new ConsumerEntities())
                             {
-                                entity.HotelName_Tx = TT_Value;
-                                context.SaveChanges();
-                                entity = null;
+                                var entity = context.Accommodation_ProductMapping.Find(data.RowId);
+                                if (entity != null)
+                                {
+                                    entity.HotelName_Tx = TT_Value;
+                                    context.SaveChanges();
+                                    entity = null;
+                                }
                             }
                         }
                     }
@@ -5020,20 +5028,23 @@ namespace DataLayer
 
                     foreach (var data in keywordReRun)
                     {
-                        TT_Value = string.Empty;
-                        TX_Value = string.Empty;
-                        SX_Value = string.Empty;
-
-                        TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { });
-
-                        using (ConsumerEntities context = new ConsumerEntities())
+                        if (!string.IsNullOrWhiteSpace(data.OriginalValue))
                         {
-                            var entity = context.Accommodations.Find(data.RowId);
-                            if (entity != null)
+                            TT_Value = string.Empty;
+                            TX_Value = string.Empty;
+                            SX_Value = string.Empty;
+
+                            TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { });
+
+                            using (ConsumerEntities context = new ConsumerEntities())
                             {
-                                entity.Address_Tx = TT_Value;
-                                context.SaveChanges();
-                                entity = null;
+                                var entity = context.Accommodations.Find(data.RowId);
+                                if (entity != null)
+                                {
+                                    entity.Address_Tx = TT_Value;
+                                    context.SaveChanges();
+                                    entity = null;
+                                }
                             }
                         }
                     }
@@ -5058,20 +5069,23 @@ namespace DataLayer
 
                     foreach (var data in keywordReRun)
                     {
-                        TT_Value = string.Empty;
-                        TX_Value = string.Empty;
-                        SX_Value = string.Empty;
-
-                        TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { });
-
-                        using (ConsumerEntities context = new ConsumerEntities())
+                        if (!string.IsNullOrWhiteSpace(data.OriginalValue))
                         {
-                            var entity = context.Accommodation_ProductMapping.Find(data.RowId);
-                            if (entity != null)
+                            TT_Value = string.Empty;
+                            TX_Value = string.Empty;
+                            SX_Value = string.Empty;
+
+                            TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { });
+
+                            using (ConsumerEntities context = new ConsumerEntities())
                             {
-                                entity.address_tx = TT_Value;
-                                context.SaveChanges();
-                                entity = null;
+                                var entity = context.Accommodation_ProductMapping.Find(data.RowId);
+                                if (entity != null)
+                                {
+                                    entity.address_tx = TT_Value;
+                                    context.SaveChanges();
+                                    entity = null;
+                                }
                             }
                         }
                     }
@@ -5100,38 +5114,41 @@ namespace DataLayer
 
                     foreach (var data in keywordReRun)
                     {
-                        TT_Value = string.Empty;
-                        TX_Value = string.Empty;
-                        SX_Value = string.Empty;
-                        AttributeList = new List<DC_SupplierRoomName_AttributeList>();
-
-                        TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { });
-
-                        //Update Room Name Stripped and Attributes
-                        using (ConsumerEntities context = new ConsumerEntities())
+                        if (!string.IsNullOrWhiteSpace(data.OriginalValue))
                         {
-                            //Remove Existing Attribute List Records
-                            context.Accommodation_SupplierRoomTypeAttributes.RemoveRange(context.Accommodation_SupplierRoomTypeAttributes.Where(w => w.RoomTypeMap_Id == data.RowId));
+                            TT_Value = string.Empty;
+                            TX_Value = string.Empty;
+                            SX_Value = string.Empty;
+                            AttributeList = new List<DC_SupplierRoomName_AttributeList>();
 
-                            context.Accommodation_SupplierRoomTypeAttributes.AddRange((from a in AttributeList
-                                                                                       select new Accommodation_SupplierRoomTypeAttributes
-                                                                                       {
-                                                                                           RoomTypeMapAttribute_Id = Guid.NewGuid(),
-                                                                                           RoomTypeMap_Id = data.RowId,
-                                                                                           SupplierRoomTypeAttribute = a.SupplierRoomTypeAttribute,
-                                                                                           SystemAttributeKeyword = a.SystemAttributeKeyword,
-                                                                                           SystemAttributeKeyword_Id = a.SystemAttributeKeywordID
-                                                                                       }).ToList());
+                            TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { });
 
-                            var srnm = context.Accommodation_SupplierRoomTypeMapping.Find(data.RowId);
-                            if (srnm != null)
+                            //Update Room Name Stripped and Attributes
+                            using (ConsumerEntities context = new ConsumerEntities())
                             {
-                                srnm.TX_RoomName = TT_Value;
-                                srnm.Tx_StrippedName = SX_Value;
-                                srnm.Tx_ReorderedName = SX_Value;
-                            }
+                                //Remove Existing Attribute List Records
+                                context.Accommodation_SupplierRoomTypeAttributes.RemoveRange(context.Accommodation_SupplierRoomTypeAttributes.Where(w => w.RoomTypeMap_Id == data.RowId));
 
-                            context.SaveChanges();
+                                context.Accommodation_SupplierRoomTypeAttributes.AddRange((from a in AttributeList
+                                                                                           select new Accommodation_SupplierRoomTypeAttributes
+                                                                                           {
+                                                                                               RoomTypeMapAttribute_Id = Guid.NewGuid(),
+                                                                                               RoomTypeMap_Id = data.RowId,
+                                                                                               SupplierRoomTypeAttribute = a.SupplierRoomTypeAttribute,
+                                                                                               SystemAttributeKeyword = a.SystemAttributeKeyword,
+                                                                                               SystemAttributeKeyword_Id = a.SystemAttributeKeywordID
+                                                                                           }).ToList());
+
+                                var srnm = context.Accommodation_SupplierRoomTypeMapping.Find(data.RowId);
+                                if (srnm != null)
+                                {
+                                    srnm.TX_RoomName = TT_Value;
+                                    srnm.Tx_StrippedName = SX_Value;
+                                    srnm.Tx_ReorderedName = SX_Value;
+                                }
+
+                                context.SaveChanges();
+                            }
                         }
                     }
                     #endregion

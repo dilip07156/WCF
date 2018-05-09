@@ -240,8 +240,12 @@ namespace DataLayer
 
             #region PRE TTFU
 
+            #region HTML Decode
+            text = System.Web.HttpUtility.HtmlDecode(text);
+            #endregion
+
             #region To Upper
-            text = text.ToUpper();
+            text = text.ToUpper().Trim();
             #endregion
 
             #region ExtraToBeRemoved
@@ -249,13 +253,9 @@ namespace DataLayer
             {
                 if(extra.Trim().Length > 0)
                 {
-                    text = text.Replace(extra.ToUpper(), " ");
+                    text = (" " + text + " ").Replace(" " + extra.ToUpper() + " ", " ");
                 }
             }
-            #endregion
-
-            #region HTML Decode
-            text = System.Web.HttpUtility.HtmlDecode(text);
             #endregion
 
             #region Remove DiaCritics
@@ -318,6 +318,8 @@ namespace DataLayer
                                         text = text.Remove(fromIndex, toIndex - fromIndex + 1).Trim();
                                     }
                                 }
+
+                                specialAlias.NewHits += 1;
                             }
                         }
                     }
@@ -337,6 +339,7 @@ namespace DataLayer
                             if (text.IndexOf(alias.Value.ToUpper().Trim() + " ") != -1)
                             {
                                 text = text.Remove(text.IndexOf(alias.Value.ToUpper().Trim() + " "), alias.Value.ToUpper().Trim().Length + 1).Trim();
+                                alias.NewHits += 1;
                             }
                         }
                     }
@@ -356,6 +359,7 @@ namespace DataLayer
                             if (text.LastIndexOf(" " + alias.Value.ToUpper().Trim()) != -1)
                             {
                                 text = text.Remove(text.LastIndexOf(" " + alias.Value.ToUpper().Trim()), alias.Value.ToUpper().Trim().Length + 1).Trim();
+                                alias.NewHits += 1;
                             }
                         }
                     }
@@ -372,8 +376,8 @@ namespace DataLayer
                         var specialAliases = keyword.Alias.OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
                         foreach (var alias in keyword.Alias)
                         {
-                            text = (" " + text + " ").Replace(" " + alias.Value.ToUpper().Trim() + " ", string.Empty).Trim();
-
+                            text = (" " + text + " ").Replace(" " + alias.Value.ToUpper().Trim() + " ", " ").Trim();
+                            alias.NewHits += 1;
                         }
                     }
                     catch
@@ -389,6 +393,7 @@ namespace DataLayer
                         foreach (var alias in keyword.Alias)
                         {
                             text = text.Replace(alias.Value.ToUpper().Trim(), string.Empty).Trim();
+                            alias.NewHits += 1;
                         }
                     }
                     catch
@@ -407,6 +412,7 @@ namespace DataLayer
                             if (specialAlias.Value.Trim().ToUpper() == "YES")
                             {
                                 bGeneralisedNumbers = true;
+                                specialAlias.NewHits += 1;
                             }
                         }
                     }
