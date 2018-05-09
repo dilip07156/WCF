@@ -4657,6 +4657,10 @@ namespace DataLayer
                     sbJoin.Append(" AND ISNULL(ASTM.CityCode,ASTM.CityName) = ISNULL(SHRM.CityCode ,SHRM.CityName) ");
                     sbJoin.Append(" AND ISNULL(ASTM.CountryCode ,ASTM.CountryName) = ISNULL(SHRM.CountryCode,SHRM.CountryName) ");
                 }
+                else if(strSuppliercode != string.Empty && strSuppliercode.ToLower() == "mansley")
+                {
+                    sbJoin.Append(" AND ASTM.BedTypeCode = SHRM.BedTypeCode ");
+                }
                 sbWhere.Append(" WHERE ASTM.Supplier_Id = '" + CurSupplier_Id + "' ");
                 sbWhere.Append("AND SHRM.SupplierImportFile_Id = '" + File_Id + "' ");
 
