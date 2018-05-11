@@ -4922,55 +4922,57 @@ namespace DataLayer
                 if (Entity.Trim().ToUpper() == "HOTELNAME")
                 {
                     #region For Accommodation
-                    keywordReRun = new List<DC_KeyWordReRun>();
+                    //keywordReRun = new List<DC_KeyWordReRun>();
 
-                    using (ConsumerEntities context = new ConsumerEntities())
-                    {
-                        context.Configuration.AutoDetectChangesEnabled = false;
-                        context.Database.CommandTimeout = 0;
+                    //using (ConsumerEntities context = new ConsumerEntities())
+                    //{
+                    //    context.Configuration.AutoDetectChangesEnabled = false;
+                    //    context.Database.CommandTimeout = 0;
 
-                        using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
-                        {
-                            keywordReRun = context.Accommodations.AsNoTracking()
-                                        .Select(s => new DC_KeyWordReRun
-                                        {
-                                            RowId = s.Accommodation_Id,
-                                            OriginalValue = s.HotelName,
-                                            CityName = s.city ?? string.Empty,
-                                            CountryName = s.country ?? string.Empty
-                                        }).ToList();
-                        }
-                    }
+                    //    using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                    //    {
+                    //        keywordReRun = context.Accommodations.AsNoTracking()
+                    //                    .Select(s => new DC_KeyWordReRun
+                    //                    {
+                    //                        RowId = s.Accommodation_Id,
+                    //                        OriginalValue = s.HotelName,
+                    //                        CityName = s.city ?? string.Empty,
+                    //                        CountryName = s.country ?? string.Empty
+                    //                    }).ToList();
+                    //    }
+                    //}
 
-                    foreach (var data in keywordReRun)
-                    {
-                        try
-                        {
-                            if (!string.IsNullOrWhiteSpace(data.OriginalValue))
-                            {
-                                TT_Value = string.Empty;
-                                TX_Value = string.Empty;
-                                SX_Value = string.Empty;
+                    //foreach (var data in keywordReRun)
+                    //{
+                    //    try
+                    //    {
+                    //        if (!string.IsNullOrWhiteSpace(data.OriginalValue))
+                    //        {
+                    //            TT_Value = string.Empty;
+                    //            TX_Value = string.Empty;
+                    //            SX_Value = string.Empty;
 
-                                TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { data.CityName, data.CountryName });
+                    //            TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { data.CityName, data.CountryName });
 
-                                using (ConsumerEntities context = new ConsumerEntities())
-                                {
-                                    var entity = context.Accommodations.Find(data.RowId);
-                                    if (entity != null)
-                                    {
-                                        entity.HotelName_Tx = TT_Value;
-                                        context.SaveChanges();
-                                        entity = null;
-                                    }
-                                }
-                            }
-                        }
-                        catch
-                        {
-                            continue;
-                        }
-                    }
+                    //            using (ConsumerEntities context = new ConsumerEntities())
+                    //            {
+                    //                var entity = context.Accommodations.Find(data.RowId);
+                    //                if (entity != null)
+                    //                {
+                    //                    entity.HotelName_Tx = TT_Value;
+                    //                    entity.Edit_Date = DateTime.Now;
+                    //                    entity.Edit_User = "KeywordReRun";
+                    //                    context.SaveChanges();
+                    //                    entity = null;
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+                    //    catch
+                    //    {
+                    //        continue;
+                    //    }
+                    //}
                     #endregion
 
                     #region For Accommodation Product Mapping
@@ -4982,6 +4984,7 @@ namespace DataLayer
                         using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
                         {
                             keywordReRun = context.Accommodation_ProductMapping.AsNoTracking()
+                                .Where(w => (w.Edit_User ?? string.Empty) != "KeywordReRun")
                                         .Select(s => new DC_KeyWordReRun
                                         {
                                             RowId = s.Accommodation_ProductMapping_Id,
@@ -5010,6 +5013,8 @@ namespace DataLayer
                                     if (entity != null)
                                     {
                                         entity.HotelName_Tx = TT_Value;
+                                        entity.Edit_Date = DateTime.Now;
+                                        entity.Edit_User = "KeywordReRun";
                                         context.SaveChanges();
                                         entity = null;
                                     }
@@ -5062,6 +5067,8 @@ namespace DataLayer
                                     if (entity != null)
                                     {
                                         entity.Address_Tx = TT_Value;
+                                        entity.Edit_Date = DateTime.Now;
+                                        entity.Edit_User = "KeywordReRun";
                                         context.SaveChanges();
                                         entity = null;
                                     }
@@ -5110,6 +5117,8 @@ namespace DataLayer
                                     if (entity != null)
                                     {
                                         entity.address_tx = TT_Value;
+                                        entity.Edit_Date = DateTime.Now;
+                                        entity.Edit_User = "KeywordReRun";
                                         context.SaveChanges();
                                         entity = null;
                                     }
@@ -5179,6 +5188,8 @@ namespace DataLayer
                                         srnm.TX_RoomName = TT_Value;
                                         srnm.Tx_StrippedName = SX_Value;
                                         srnm.Tx_ReorderedName = SX_Value;
+                                        srnm.Edit_Date = DateTime.Now;
+                                        srnm.Edit_User = "KeywordReRun";
                                     }
 
                                     context.SaveChanges();
