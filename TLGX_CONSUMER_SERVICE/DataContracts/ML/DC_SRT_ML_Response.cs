@@ -14,6 +14,8 @@ namespace DataContracts
         public DC_SRT_ML_Response_Syntactic _objMLSyn { get; set; }
         [DataMember]
         public DC_SRT_ML_Response_Semantic _objMLSem { get; set; }
+        [DataMember]
+        public DC_SRT_ML_Response_Supervised_Semantic _objMLSupSem { get; set; }
     }
 
 }

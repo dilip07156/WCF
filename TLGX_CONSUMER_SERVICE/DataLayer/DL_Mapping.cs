@@ -4657,7 +4657,7 @@ namespace DataLayer
                     sbJoin.Append(" AND ISNULL(ASTM.CityCode,ASTM.CityName) = ISNULL(SHRM.CityCode ,SHRM.CityName) ");
                     sbJoin.Append(" AND ISNULL(ASTM.CountryCode ,ASTM.CountryName) = ISNULL(SHRM.CountryCode,SHRM.CountryName) ");
                 }
-                else if(strSuppliercode != string.Empty && strSuppliercode.ToLower() == "mansley")
+                else if (strSuppliercode != string.Empty && strSuppliercode.ToLower() == "mansley")
                 {
                     sbJoin.Append(" AND ASTM.BedTypeCode = SHRM.BedTypeCode ");
                 }
@@ -5985,11 +5985,116 @@ namespace DataLayer
             }
 
         }
+        public IList<DataContracts.DC_SRT_ML_Response_Supervised_Semantic> GetRTM_ML_Suggestions_Supervised_Semantic(Guid Accomodation_SupplierRoomTypeMapping_Id)
+        {
+            DataContracts.DC_SRT_ML_Request_Supervised_Semantic RQ = new DataContracts.DC_SRT_ML_Request_Supervised_Semantic();
+            List<DataContracts.DC_SRT_ML_Response_Supervised_Semantic> RS = new List<DataContracts.DC_SRT_ML_Response_Supervised_Semantic>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    RQ.supplier_data = (from srt in context.Accommodation_SupplierRoomTypeMapping
+                                        where srt.Accommodation_SupplierRoomTypeMapping_Id == Accomodation_SupplierRoomTypeMapping_Id
+                                        select new DataContracts.DC_SRT_ML_supplier_data_Supervised_Semantic
+                                        {
+                                            matching_string = srt.SupplierRoomName,
+                                            Accommodation_Id = srt.Accommodation_Id ?? Guid.Empty,
+                                            Supplier_Id = srt.SupplierName
+                                        }).ToList();
+                    RQ.skip_words = new List<string>();
+                    RQ.system_room_categories = (from srt in context.Accommodation_SupplierRoomTypeMapping
+                                                 join ari in context.Accommodation_RoomInfo on srt.Accommodation_Id equals ari.Accommodation_Id
+                                                 where srt.Accommodation_SupplierRoomTypeMapping_Id == Accomodation_SupplierRoomTypeMapping_Id
+                                                 select new DataContracts.DC_SRT_ML_system_room_categories_Supervised_Semantic
+                                                 {
+                                                     system_room_name = ari.RoomName ?? "",
+                                                     AccommodationRoomInfo_Id = ari.Accommodation_RoomInfo_Id
+                                                 }).ToList();
+
+
+                    var request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_Supervised_Semantic"]);
+                    var proxyAddress = System.Configuration.ConfigurationManager.AppSettings["ProxyUri"];
+
+                    if (proxyAddress != null)
+                    {
+                        WebProxy myProxy = new WebProxy();
+                        Uri newUri = new Uri(proxyAddress);
+                        // Associate the newUri object to 'myProxy' object so that new myProxy settings can be set.
+                        myProxy.Address = newUri;
+                        // Create a NetworkCredential object and associate it with the 
+                        // Proxy property of request object.
+                        //myProxy.Credentials = new NetworkCredential(username, password);
+                        request.Proxy = myProxy;
+                    }
+
+                    request.Method = "POST";
+                    request.ContentType = "application/json";
+                    request.KeepAlive = false;
+                    request.Timeout = System.Threading.Timeout.Infinite;
+                    request.ReadWriteTimeout = System.Threading.Timeout.Infinite;
+                    //request.Credentials = CredentialCache.DefaultCredentials;
+
+                    DataContractJsonSerializer serializerToUpload = new DataContractJsonSerializer(typeof(DataContracts.DC_SRT_ML_Request_Supervised_Semantic));
+
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        using (var reader = new StreamReader(memoryStream))
+                        {
+                            serializerToUpload.WriteObject(memoryStream, RQ);
+                            memoryStream.Position = 0;
+                            string body = reader.ReadToEnd();
+
+                            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                            {
+                                streamWriter.Write(body);
+                            }
+                        }
+                    }
+
+                    var response = request.GetResponse();
+
+                    if (((System.Net.HttpWebResponse)response).StatusCode != HttpStatusCode.OK)
+                    {
+                        RS = null;
+                    }
+                    else
+                    {
+                        var stream = response.GetResponseStream();
+                        var encoding = ASCIIEncoding.UTF8;
+                        using (var reader = new System.IO.StreamReader(response.GetResponseStream(), encoding))
+                        {
+                            string responseText = reader.ReadToEnd();
+                            RS = JsonConvert.DeserializeObject<List<DataContracts.DC_SRT_ML_Response_Supervised_Semantic>>(responseText);
+                        }
+                        //deserialize here
+
+
+                        stream = null;
+                    }
+
+                    serializerToUpload = null;
+
+                    response.Dispose();
+                    response = null;
+                    request = null;
+
+                }
+                return RS;
+            }
+            catch (Exception ex)
+            {
+                return RS;
+                //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation product supplier mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+
+        }
 
         public DataContracts.DC_SRT_ML_Response GetRTM_ML_Suggestions(Guid Accomodation_SupplierRoomTypeMapping_Id)
         {
             var resultSem = GetRTM_ML_Suggestions_Semantic(Accomodation_SupplierRoomTypeMapping_Id);
+            var resultSupSem = GetRTM_ML_Suggestions_Supervised_Semantic(Accomodation_SupplierRoomTypeMapping_Id);
             var resultSyn = GetRTM_ML_Suggestions_Syntactic(Accomodation_SupplierRoomTypeMapping_Id);
+
 
             DataContracts.DC_SRT_ML_Response _objresponse = new DataContracts.DC_SRT_ML_Response();
             if (resultSem != null && resultSem.Count > 0)
@@ -6066,6 +6171,44 @@ namespace DataLayer
                         };
                 }
             }
+            if (resultSupSem != null && resultSupSem.Count > 0)
+            {
+                List<DataContracts.DC_SRT_ML_AccommodationRoomInfo_Supervised_Semantic> _lstrmi;
+                List<DataContracts.DC_SRT_ML_Match_Supervised_Semantic> _lstmastch;
+
+                foreach (var item in resultSem)
+                {
+                    _lstrmi = new List<DataContracts.DC_SRT_ML_AccommodationRoomInfo_Supervised_Semantic>();
+                    foreach (var itemlist in item.AccommodationRoomInfo_Id)
+                    {
+                        _lstrmi.Add(new DataContracts.DC_SRT_ML_AccommodationRoomInfo_Supervised_Semantic
+                        {
+                            AccommodationRoomInfo_Id = itemlist.AccommodationRoomInfo_Id,
+                            system_room_name = itemlist.system_room_name
+                        });
+                    }
+                    _lstmastch = new List<DataContracts.DC_SRT_ML_Match_Supervised_Semantic>();
+                    foreach (var itemlist in item.matches)
+                    {
+                        _lstmastch.Add(new DataContracts.DC_SRT_ML_Match_Supervised_Semantic
+                        {
+                            matched_string = itemlist.matched_string,
+                            score = itemlist.score
+                        });
+                    }
+
+                    _objresponse._objMLSupSem =
+                        new DataContracts.DC_SRT_ML_Response_Supervised_Semantic
+                        {
+                            matches = _lstmastch,
+                            AccommodationRoomInfo_Id = _lstrmi,
+                            Accommodation_Id = item.Accommodation_Id,
+                            Supplier_Id = item.Supplier_Id,
+                            matching_string = item.matching_string
+                        };
+                }
+            }
+
             return _objresponse;
         }
 
