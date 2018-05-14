@@ -4747,7 +4747,9 @@ namespace DataLayer
                     if (RQ.SearchTable.Trim().ToUpper() == "ACCOMMODATION" && RQ.TakeColumn.Trim().ToUpper() == "FULLADDRESS")
                     {
                         var PKIdsFilter = RQ.TablePrimaryKeys.Select(x => Guid.Parse(x)).ToList();
-                        targetStructure = context.Accommodations.AsQueryable()
+                        using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                        {
+                            targetStructure = context.Accommodations.AsQueryable()
                                     .Where(w => PKIdsFilter.Contains(w.Accommodation_Id))
                                     .Select(s => new DC_keywordApplyToTarget
                                     {
@@ -4758,12 +4760,14 @@ namespace DataLayer
                                         TableName = RQ.SearchTable,
                                         TargetColumnName = RQ.UpdateColumn
                                     }).ToList();
-
+                        }
                     }
                     else if (RQ.SearchTable.Trim().ToUpper() == "ACCOMMODATION_PRODUCTMAPPING" && RQ.TakeColumn.Trim().ToUpper() == "ADDRESS")
                     {
                         var PKIdsFilter = RQ.TablePrimaryKeys.Select(x => Guid.Parse(x)).ToList();
-                        targetStructure = context.Accommodation_ProductMapping.AsQueryable()
+                        using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                        {
+                            targetStructure = context.Accommodation_ProductMapping.AsQueryable()
                                     .Where(w => PKIdsFilter.Contains(w.Accommodation_ProductMapping_Id))
                                     .Select(s => new DC_keywordApplyToTarget
                                     {
@@ -4774,6 +4778,7 @@ namespace DataLayer
                                         TableName = RQ.SearchTable,
                                         TargetColumnName = RQ.UpdateColumn
                                     }).ToList();
+                        }
                     }
                 }
 
@@ -4917,7 +4922,7 @@ namespace DataLayer
 
                 #endregion
 
-                #region Fetch the data which needs to be TTFU and Process
+                #region Fetch and Process the data which needs to be TTFU
 
                 if (Entity.Trim().ToUpper() == "HOTELNAME")
                 {
@@ -4956,15 +4961,16 @@ namespace DataLayer
 
                     //            using (ConsumerEntities context = new ConsumerEntities())
                     //            {
-                    //                var entity = context.Accommodations.Find(data.RowId);
-                    //                if (entity != null)
-                    //                {
-                    //                    entity.HotelName_Tx = TT_Value;
-                    //                    entity.Edit_Date = DateTime.Now;
-                    //                    entity.Edit_User = "KeywordReRun";
-                    //                    context.SaveChanges();
-                    //                    entity = null;
-                    //                }
+                    //                context.Database.ExecuteSqlCommand("UPDATE Accommodation SET HotelName_Tx = '" + TT_Value + "', Edit_Date = GETDATE(), Edit_User = 'KeywordReRun' WHERE Accommodation_Id = '" + data.RowId.ToString() + "';");
+                    //                //var entity = context.Accommodations.Find(data.RowId);
+                    //                //if (entity != null)
+                    //                //{
+                    //                //    entity.HotelName_Tx = TT_Value;
+                    //                //    entity.Edit_Date = DateTime.Now;
+                    //                //    entity.Edit_User = "KeywordReRun";
+                    //                //    context.SaveChanges();
+                    //                //    entity = null;
+                    //                //}
                     //            }
                     //        }
                     //    }
@@ -4984,7 +4990,7 @@ namespace DataLayer
                         using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
                         {
                             keywordReRun = context.Accommodation_ProductMapping.AsNoTracking()
-                                .Where(w => (w.Edit_User ?? string.Empty) != "KeywordReRun")
+                                .Where(w => (w.HotelName_Tx ?? string.Empty) == string.Empty)
                                         .Select(s => new DC_KeyWordReRun
                                         {
                                             RowId = s.Accommodation_ProductMapping_Id,
@@ -5009,15 +5015,16 @@ namespace DataLayer
 
                                 using (ConsumerEntities context = new ConsumerEntities())
                                 {
-                                    var entity = context.Accommodation_ProductMapping.Find(data.RowId);
-                                    if (entity != null)
-                                    {
-                                        entity.HotelName_Tx = TT_Value;
-                                        entity.Edit_Date = DateTime.Now;
-                                        entity.Edit_User = "KeywordReRun";
-                                        context.SaveChanges();
-                                        entity = null;
-                                    }
+                                    context.Database.ExecuteSqlCommand("UPDATE Accommodation_ProductMapping SET HotelName_Tx = '" + TT_Value + "', Edit_Date = GETDATE(), Edit_User = 'KeywordReRun' WHERE Accommodation_ProductMapping_Id = '" + data.RowId.ToString() + "';");
+                                    //var entity = context.Accommodation_ProductMapping.Find(data.RowId);
+                                    //if (entity != null)
+                                    //{
+                                    //    entity.HotelName_Tx = TT_Value;
+                                    //    entity.Edit_Date = DateTime.Now;
+                                    //    entity.Edit_User = "KeywordReRun";
+                                    //    context.SaveChanges();
+                                    //    entity = null;
+                                    //}
                                 }
                             }
                         }
@@ -5063,15 +5070,16 @@ namespace DataLayer
 
                                 using (ConsumerEntities context = new ConsumerEntities())
                                 {
-                                    var entity = context.Accommodations.Find(data.RowId);
-                                    if (entity != null)
-                                    {
-                                        entity.Address_Tx = TT_Value;
-                                        entity.Edit_Date = DateTime.Now;
-                                        entity.Edit_User = "KeywordReRun";
-                                        context.SaveChanges();
-                                        entity = null;
-                                    }
+                                    context.Database.ExecuteSqlCommand("UPDATE Accommodation SET Address_Tx = '" + TT_Value + "', Edit_Date = GETDATE(), Edit_User = 'KeywordReRun' WHERE Accommodation_Id = '" + data.RowId.ToString() + "';");
+                                    //var entity = context.Accommodations.Find(data.RowId);
+                                    //if (entity != null)
+                                    //{
+                                    //    entity.Address_Tx = TT_Value;
+                                    //    entity.Edit_Date = DateTime.Now;
+                                    //    entity.Edit_User = "KeywordReRun";
+                                    //    context.SaveChanges();
+                                    //    entity = null;
+                                    //}
                                 }
                             }
                         }
@@ -5113,15 +5121,16 @@ namespace DataLayer
 
                                 using (ConsumerEntities context = new ConsumerEntities())
                                 {
-                                    var entity = context.Accommodation_ProductMapping.Find(data.RowId);
-                                    if (entity != null)
-                                    {
-                                        entity.address_tx = TT_Value;
-                                        entity.Edit_Date = DateTime.Now;
-                                        entity.Edit_User = "KeywordReRun";
-                                        context.SaveChanges();
-                                        entity = null;
-                                    }
+                                    context.Database.ExecuteSqlCommand("UPDATE Accommodation_ProductMapping SET address_tx = '" + TT_Value + "', Edit_Date = GETDATE(), Edit_User = 'KeywordReRun' WHERE Accommodation_ProductMapping_Id = '" + data.RowId.ToString() + "';");
+                                    //var entity = context.Accommodation_ProductMapping.Find(data.RowId);
+                                    //if (entity != null)
+                                    //{
+                                    //    entity.address_tx = TT_Value;
+                                    //    entity.Edit_Date = DateTime.Now;
+                                    //    entity.Edit_User = "KeywordReRun";
+                                    //    context.SaveChanges();
+                                    //    entity = null;
+                                    //}
                                 }
                             }
                         }

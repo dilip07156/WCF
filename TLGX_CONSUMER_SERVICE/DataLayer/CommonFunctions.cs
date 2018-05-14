@@ -95,7 +95,7 @@ namespace DataLayer
 
             if (!string.IsNullOrWhiteSpace(HotelName))
             {
-                returnString = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, returnString, new string[] { cityname, countryname });
+                returnString = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, HotelName, new string[] { cityname, countryname });
                 return returnString;
             }
             else
