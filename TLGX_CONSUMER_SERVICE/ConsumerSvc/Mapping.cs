@@ -98,28 +98,8 @@ namespace ConsumerSvc
             }
         }
 
-       
-        public IList<DataContracts.DC_SRT_ML_Response_Syntactic> GetRTM_ML_Suggestions_Syntactic(string Accomodation_SupplierRoomTypeMapping_Id)
-        {
-            using (BL_Mapping objBL = new BL_Mapping())
-            {
-                return objBL.GetRTM_ML_Suggestions_Syntactic(Accomodation_SupplierRoomTypeMapping_Id);
-            }
-        }
-        public DataContracts.DC_SRT_ML_Response GetRTM_ML_Suggestions(string Accomodation_SupplierRoomTypeMapping_Id)
-        {
-            using (BL_Mapping objBL = new BL_Mapping())
-            {
-                return objBL.GetRTM_ML_Suggestions(Accomodation_SupplierRoomTypeMapping_Id);
-            }
-        }
-        public IList<DataContracts.DC_SRT_ML_Response_Semantic> GetRTM_ML_Suggestions_Semantic(string Accomodation_SupplierRoomTypeMapping_Id)
-        {
-            using (BL_Mapping objBL = new BL_Mapping())
-            {
-                return objBL.GetRTM_ML_Suggestions_Semantic(Accomodation_SupplierRoomTypeMapping_Id);
-            }
-        }
+
+
 
         #endregion
 
@@ -161,7 +141,7 @@ namespace ConsumerSvc
         #endregion
 
         #region Mapping Stats
-        public IList<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(string SupplierID,string PriorityId,string ProductCategory)
+        public IList<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(string SupplierID, string PriorityId, string ProductCategory)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
@@ -337,7 +317,7 @@ namespace ConsumerSvc
                 return objBL.IsMappedWithSupplier(masterActivityID, supplierID);
             }
         }
-        
+
 
         public List<DataContracts.Mapping.DC_Acitivity_SupplierProductMappingForDDL> GetActivitySupplierProductMappingSearchForDDL(DataContracts.Mapping.DC_Acitivity_SupplierProductMapping_Search_RQ obj)
         {
@@ -387,7 +367,7 @@ namespace ConsumerSvc
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
-                return objBL.GetVelocityDashboard( parm);
+                return objBL.GetVelocityDashboard(parm);
             }
         }
         #endregion
@@ -401,6 +381,38 @@ namespace ConsumerSvc
                 return objBL.GetHotelListByCityCode(param);
             }
         }
+        #endregion
+
+        #region -ML suggestion
+        public IList<DataContracts.DC_SRT_ML_Response_Syntactic> GetRTM_ML_Suggestions_Syntactic(string Accomodation_SupplierRoomTypeMapping_Id)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetRTM_ML_Suggestions_Syntactic(Accomodation_SupplierRoomTypeMapping_Id);
+            }
+        }
+        public IList<DataContracts.DC_SRT_ML_Response_Supervised_Semantic> GetRTM_ML_Suggestions_Supervised_Semantic(string Accomodation_SupplierRoomTypeMapping_Id)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetRTM_ML_Suggestions_Supervised_Semantic(Accomodation_SupplierRoomTypeMapping_Id);
+            }
+        }
+        public IList<DataContracts.DC_SRT_ML_Response_Semantic> GetRTM_ML_Suggestions_Semantic(string Accomodation_SupplierRoomTypeMapping_Id)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetRTM_ML_Suggestions_Semantic(Accomodation_SupplierRoomTypeMapping_Id);
+            }
+        }
+        public DataContracts.DC_SRT_ML_Response GetRTM_ML_Suggestions(string Accomodation_SupplierRoomTypeMapping_Id)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetRTM_ML_Suggestions(Accomodation_SupplierRoomTypeMapping_Id);
+            }
+        }
+        
         #endregion
     }
 }

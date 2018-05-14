@@ -5780,6 +5780,8 @@ namespace DataLayer
             }
         }
 
+
+
         public IList<DataContracts.DC_SRT_ML_Response_Syntactic> GetRTM_ML_Suggestions_Syntactic(Guid Accomodation_SupplierRoomTypeMapping_Id)
         {
             DataContracts.DC_SRT_ML_Request_Syntactic RQ = new DataContracts.DC_SRT_ML_Request_Syntactic();
@@ -5882,8 +5884,6 @@ namespace DataLayer
             }
 
         }
-
-
         public IList<DataContracts.DC_SRT_ML_Response_Semantic> GetRTM_ML_Suggestions_Semantic(Guid Accomodation_SupplierRoomTypeMapping_Id)
         {
             DataContracts.DC_SRT_ML_Request_Semantic RQ = new DataContracts.DC_SRT_ML_Request_Semantic();

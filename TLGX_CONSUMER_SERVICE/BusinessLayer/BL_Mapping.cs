@@ -203,27 +203,8 @@ namespace BusinessLayer
                 return objDL.AccomodationSupplierRoomTypeMapping_TTFUALL(Acco_RoomTypeMap_Ids);
             }
         }
-        public IList<DataContracts.DC_SRT_ML_Response_Syntactic> GetRTM_ML_Suggestions_Syntactic(string Accomodation_SupplierRoomTypeMapping_Id)
-        {
-            using (DL_Mapping objDL = new DL_Mapping())
-            {
-                return objDL.GetRTM_ML_Suggestions_Syntactic(Guid.Parse(Accomodation_SupplierRoomTypeMapping_Id));
-            }
-        }
-        public DataContracts.DC_SRT_ML_Response GetRTM_ML_Suggestions(string Accomodation_SupplierRoomTypeMapping_Id)
-        {
-            using (DL_Mapping objDL = new DL_Mapping())
-            {
-                return objDL.GetRTM_ML_Suggestions(Guid.Parse(Accomodation_SupplierRoomTypeMapping_Id));
-            }
-        }
-        public IList<DataContracts.DC_SRT_ML_Response_Semantic> GetRTM_ML_Suggestions_Semantic(string Accomodation_SupplierRoomTypeMapping_Id)
-        {
-            using (DL_Mapping objDL = new DL_Mapping())
-            {
-                return objDL.GetRTM_ML_Suggestions_Semantic(Guid.Parse(Accomodation_SupplierRoomTypeMapping_Id));
-            }
-        }
+
+
 
         public bool RoomTypeMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
@@ -338,7 +319,7 @@ namespace BusinessLayer
         #endregion
 
         #region Mapping Stats
-        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(string SupplierID, string PriorityId,string ProductCategory)
+        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(string SupplierID, string PriorityId, string ProductCategory)
         {
             Guid gSupplier_Id;
             int iPriorityId;
@@ -351,12 +332,12 @@ namespace BusinessLayer
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
             }
-            
-                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
-                {
-                    return objBL.GetMappingStatistics(gSupplier_Id, iPriorityId, ProductCategory);
-                }
-            
+
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetMappingStatistics(gSupplier_Id, iPriorityId, ProductCategory);
+            }
+
         }
 
         public bool DeleteSTGMappingTableIDs(string file_Id)
@@ -374,10 +355,10 @@ namespace BusinessLayer
                 return false;
         }
 
-        public List<DataContracts.Mapping.DC_MappingStatsForSuppliers> GetMappingStatisticsForSuppliers(string PriorityId,string ProductCategory)
+        public List<DataContracts.Mapping.DC_MappingStatsForSuppliers> GetMappingStatisticsForSuppliers(string PriorityId, string ProductCategory)
         {
             int iPriorityId;
-           
+
             if (!int.TryParse(PriorityId, out iPriorityId))
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
@@ -697,6 +678,37 @@ namespace BusinessLayer
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
                 return objBL.GetHotelListByCityCode(param);
+            }
+        }
+        #endregion
+
+        #region - ML Suggestion
+        public IList<DataContracts.DC_SRT_ML_Response_Syntactic> GetRTM_ML_Suggestions_Syntactic(string Accomodation_SupplierRoomTypeMapping_Id)
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                return objDL.GetRTM_ML_Suggestions_Syntactic(Guid.Parse(Accomodation_SupplierRoomTypeMapping_Id));
+            }
+        }
+        public IList<DataContracts.DC_SRT_ML_Response_Semantic> GetRTM_ML_Suggestions_Semantic(string Accomodation_SupplierRoomTypeMapping_Id)
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                return objDL.GetRTM_ML_Suggestions_Semantic(Guid.Parse(Accomodation_SupplierRoomTypeMapping_Id));
+            }
+        }
+        public IList<DataContracts.DC_SRT_ML_Response_Supervised_Semantic> GetRTM_ML_Suggestions_Supervised_Semantic(string Accomodation_SupplierRoomTypeMapping_Id)
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                return objDL.GetRTM_ML_Suggestions_Supervised_Semantic(Guid.Parse(Accomodation_SupplierRoomTypeMapping_Id));
+            }
+        }
+        public DataContracts.DC_SRT_ML_Response GetRTM_ML_Suggestions(string Accomodation_SupplierRoomTypeMapping_Id)
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                return objDL.GetRTM_ML_Suggestions(Guid.Parse(Accomodation_SupplierRoomTypeMapping_Id));
             }
         }
         #endregion
