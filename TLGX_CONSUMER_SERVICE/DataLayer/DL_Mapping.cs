@@ -3865,7 +3865,7 @@ namespace DataLayer
                     sbsqlwhere.Append(" and mav.MasterAttributeValue_Id = '" + obj.ProductType + "'  ");
                 }
 
-                sbsqlfrom.Append(" from Accommodation_ProductMapping apm left join Accommodation a on apm.Accommodation_Id = a.Accommodation_Id AND ISNULL(A.ISACTIVE,0) = 1 ");
+                sbsqlfrom.Append(" from Accommodation_ProductMapping apm with (nolock) left join Accommodation a  with (nolock) on apm.Accommodation_Id = a.Accommodation_Id AND ISNULL(A.ISACTIVE,0) = 1 ");
                 sbsqlfrom.Append(" " + sbsqlctmjoin);
                 sbsqlfrom.Append(" " + sbsqlcmjoin);
 
@@ -3905,7 +3905,7 @@ namespace DataLayer
 
                 #endregion
 
-                sbsqlorderby.Append(" ORDER BY apm.ProductName OFFSET ");
+                sbsqlorderby.Append(" ORDER BY ISNULL(apm.ProductName,'') OFFSET ");
                 if (total <= skip)
                 {
                     int PageIndex = 0;

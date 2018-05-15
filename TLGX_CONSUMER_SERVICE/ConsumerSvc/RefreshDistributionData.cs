@@ -71,6 +71,7 @@ namespace ConsumerSvc
         }
 
         #endregion
+
         #region Supplier
 
         public DC_Message SyncSupplierMaster(string supplier_id, string CreatedBy)
@@ -94,7 +95,7 @@ namespace ConsumerSvc
         }
         #endregion
 
-        #region port
+        #region State
 
         public DC_Message SyncStateMaster(string state_id, string CreatedBy)
         {
@@ -145,7 +146,5 @@ namespace ConsumerSvc
             }
         }
         #endregion
-
-
     }
 }
