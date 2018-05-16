@@ -1023,7 +1023,6 @@ namespace DataLayer
                         SupplierProductReference = g.ProductId,
                         ProductName = g.ProductName,
                         ProductId = g.ProductId,
-
                         Country_Id = g.Country_Id,
                         City_Id = g.City_Id,
                         CountryName = g.CountryName,
@@ -1032,7 +1031,6 @@ namespace DataLayer
                         CityName = g.CityName,
                         StateCode = g.StateCode,
                         StateName = g.StateName,
-
                         Supplier_Id = CurSupplier_Id,
                         SupplierName = g.SupplierName,
                         Status = "UNMAPPED",
@@ -1075,7 +1073,9 @@ namespace DataLayer
                         ReRunSupplierImporrtFile_Id = obj.File_Id ?? Guid.Empty,
                         ReRunBatch = obj.CurrentBatch ?? 0,
                         ProductType = g.ProductType,
+                        IsActive = true,
                         Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
+                        
                     }));
 
                 /*lstobj.InsertRange(lstobj.Count, clsMappingHotel.Where(a => a.stg_AccoMapping_Id != null && a.ActionType == "INSERT"
