@@ -5118,6 +5118,7 @@ namespace DataLayer
                 StringBuilder sbsqlselectcount = new StringBuilder();
                 sbsqlselectcount.Append("select count(1) ");
                 sbsqlselectcount.Append(" " + sbFrom);
+                sbsqlselectcount.Append(" " + sbWhere);
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
@@ -6370,7 +6371,9 @@ namespace DataLayer
                     request = null;
 
                 }
+
                 return RS;
+
             }
             catch (Exception ex)
             {
