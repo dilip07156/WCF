@@ -5254,7 +5254,13 @@ namespace DataLayer
 
                 List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS> result = new List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS>();
                 List<DataContracts.Mapping.DC_SupplierRoomTypeAttributes> resultRT = new List<DataContracts.Mapping.DC_SupplierRoomTypeAttributes>();
+                List<DC_SupplierRoomInfo_ForSuggestion> resultRinfo = new List<DC_SupplierRoomInfo_ForSuggestion>();
                 StringBuilder sbRoomTypeMapId = new StringBuilder();
+                StringBuilder sbAccommodationRoomInfoSelect = new StringBuilder();
+                StringBuilder sbAccoid = new StringBuilder();
+
+                sbAccommodationRoomInfoSelect.Append(" select Accommodation_RoomInfo_Id,RoomCategory,Accommodation_Id from Accommodation_RoomInfo where Accommodation_Id IN  ( ");
+
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
@@ -5263,13 +5269,18 @@ namespace DataLayer
                     {
                         result = context.Database.SqlQuery<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS>(sbfinalQuery.ToString()).ToList();
 
-                        foreach (var id in result.Select(x => x.Accommodation_SupplierRoomTypeMapping_Id))
+                        foreach (var id in result)
                         {
-                            sbRoomTypeMapId.Append("'" + id + "',");
+                            sbRoomTypeMapId.Append("'" + id.Accommodation_SupplierRoomTypeMapping_Id + "',");
+                            sbAccoid.Append("'" + id.Accommodation_Id + "',");
                         }
                         sbRoomTypefinalQuery.Append(sbRoomTypeMapId.ToString().TrimEnd(',') + ")");
+                        sbAccommodationRoomInfoSelect.Append(sbAccoid.ToString().TrimEnd(',') + ")");
+
+                        sbAccoid = new StringBuilder(string.Join(",", sbAccoid.ToString().Split(',').Distinct()));
 
                         resultRT = context.Database.SqlQuery<DataContracts.Mapping.DC_SupplierRoomTypeAttributes>(sbRoomTypefinalQuery.ToString()).ToList();
+                        resultRinfo = context.Database.SqlQuery<DataContracts.Mapping.DC_SupplierRoomInfo_ForSuggestion>(sbAccommodationRoomInfoSelect.ToString()).ToList();
                         foreach (var item in result)
                         {
                             item.RoomTypeAttributes = resultRT.Where(w => w.Accommodation_SupplierRoomTypeMap_Id == item.Accommodation_SupplierRoomTypeMapping_Id).ToList();
@@ -5279,11 +5290,12 @@ namespace DataLayer
                                 {
                                     if (!string.IsNullOrWhiteSpace(item.Tx_StrippedName))
                                     {
-                                        var resultRoomCategory = context.Accommodation_RoomInfo.Where(w => w.Accommodation_Id == item.Accommodation_Id && w.RoomCategory.ToLower().Replace("room", string.Empty).Replace("rooms", string.Empty).Trim() == item.Tx_StrippedName.ToLower().Replace("room", string.Empty).Replace("rooms", string.Empty).Trim()).Select(s => s).FirstOrDefault();
+                                        // var resultRoomCategory = context.Accommodation_RoomInfo.Where(w => w.Accommodation_Id == item.Accommodation_Id && w.RoomCategory.ToLower().Replace("room", string.Empty).Replace("rooms", string.Empty).Trim() == item.Tx_StrippedName.ToLower().Replace("room", string.Empty).Replace("rooms", string.Empty).Trim()).Select(s => s).FirstOrDefault();
+                                        var resultRoomCategory = resultRinfo.Where(w => w.Accommodation_Id == item.Accommodation_Id && w.Accommodation_RoomInfo_Name.ToLower().Replace("room", string.Empty).Replace("rooms", string.Empty).Trim() == item.Tx_StrippedName.ToLower().Replace("room", string.Empty).Replace("rooms", string.Empty).Trim()).Select(s => s).FirstOrDefault();
                                         if (resultRoomCategory != null)
                                         {
                                             item.Accommodation_RoomInfo_Id = resultRoomCategory.Accommodation_RoomInfo_Id;
-                                            item.Accommodation_RoomInfo_Name = resultRoomCategory.RoomCategory;
+                                            item.Accommodation_RoomInfo_Name = resultRoomCategory.Accommodation_RoomInfo_Name;
                                         }
                                     }
                                 }
@@ -6268,7 +6280,7 @@ namespace DataLayer
                     request = null;
 
                 }
-                return RS;
+                return RS.OrderBy(x => x.matches = x.matches.OrderByDescending(y => y.score).Select(s => s).ToList()).ToList();
             }
             catch (Exception ex)
             {
@@ -6372,7 +6384,7 @@ namespace DataLayer
 
                 }
 
-                return RS;
+                return RS.OrderBy(x => x.matches = x.matches.OrderByDescending(y => y.score).Select(s => s).ToList()).ToList();
 
             }
             catch (Exception ex)
@@ -6382,6 +6394,8 @@ namespace DataLayer
             }
 
         }
+
+
 
         public DataContracts.DC_SRT_ML_Response GetRTM_ML_Suggestions(Guid Accomodation_SupplierRoomTypeMapping_Id)
         {
