@@ -176,5 +176,16 @@ namespace DataContracts.Mapping
         public string IconClass { get; set; }
     }
 
+    [DataContract]
+    public class DC_SupplierRoomInfo_ForSuggestion
+    {
+        [DataMember]
+        public Guid Accommodation_Id { get; set; }
+        [DataMember]
+        public Guid Accommodation_RoomInfo_Id { get; set; }
+        [DataMember]
+        public string Accommodation_RoomInfo_Name { get; set; }
+    }
+
 
 }

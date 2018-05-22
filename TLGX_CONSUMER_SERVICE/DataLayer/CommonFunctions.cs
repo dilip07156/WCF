@@ -12,6 +12,8 @@ namespace DataLayer
 {
     public static class CommonFunctions
     {
+        //private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         public static string[] unitNumerMap = new[] { "ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN" };
 
         public static string RemoveSpecialCharacters(string str)
@@ -656,5 +658,13 @@ namespace DataLayer
 
             return text;
         }
+
+        //public static void ErrorLog(Exception ex, string message)
+        //{
+        //    NLog.LogManager.Configuration.Variables["requesturl"] = System.ServiceModel.Web.WebOperationContext.Current.IncomingRequest.UriTemplateMatch.RequestUri.OriginalString;
+        //    NLog.LogManager.Configuration.Variables["template"] = System.ServiceModel.Web.WebOperationContext.Current.IncomingRequest.UriTemplateMatch.Template.ToString();
+        //    NLog.LogManager.Configuration.Variables["targetsite"] = ex.TargetSite.ToString();
+        //    logger.Error(ex, message);
+        //}
     }
 }
