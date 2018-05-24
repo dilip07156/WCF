@@ -557,7 +557,7 @@ namespace DataLayer
                                        ,ISNULL(APM.Latitude,APM.GeoLocation.Lat) AS Latitude
                                        ,ISNULL(APM.Longitude,APM.GeoLocation.Long) AS Longitude,
                                         APM.Status AS Status,APM.Create_Date AS Create_Date,APM.Create_User AS Create_User,
-                                        APM.Edit_Date AS Edit_Date,APM.Edit_User AS Edit_User,APM.IsActive AS IsActive,APM.SupplierProductReference AS ProductId,
+                                        APM.Edit_Date AS Edit_Date,APM.Edit_User AS Edit_User,ISNULL(APM.IsActive,0) AS IsActive,APM.SupplierProductReference AS ProductId,
                                         CM.Name AS SystemCountryName,C.Name AS SystemCityName,AC.HotelName AS SystemProductName,S.StateName AS SystemStateName,
                                         APM.Remarks AS Remarks,APM.MapId AS MapId,
                                         (CASE WHEN APM.ADDRESS IS NOT NULL THEN APM.ADDRESS

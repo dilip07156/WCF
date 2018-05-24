@@ -5300,9 +5300,15 @@ namespace DataLayer
                             break;
                         case "accommodation_productmapping":
                             _lstColumnName = typeof(Accommodation_ProductMapping).GetProperties().Select(property => property.Name).ToList();
+                            _lstColumnName.Add("HotelName_Rank");
+                            _lstColumnName.Add("Address_Rank");
+                            _lstColumnName.Add("GeoLocation_Distance");
                             break;
                         case "accommodation":
                             _lstColumnName = typeof(Accommodation).GetProperties().Select(property => property.Name).ToList();
+                            _lstColumnName.Add("HotelName_Rank");
+                            _lstColumnName.Add("Address_Rank");
+                            _lstColumnName.Add("GeoLocation_Distance");
                             break;
                         case "accommodation_supplierroomtypemapping":
                             _lstColumnName = typeof(Accommodation_SupplierRoomTypeMapping).GetProperties().Select(property => property.Name).ToList();
