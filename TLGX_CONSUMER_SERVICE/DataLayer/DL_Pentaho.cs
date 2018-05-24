@@ -21,86 +21,99 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var apilocation = (from a in context.Supplier_APILocation
-                                       where a.Supplier_APILocation_Id == ApiLocationId
-                                       && a.STATUS.ToUpper() == "ACTIVE"
-                                       select a.API_Path).FirstOrDefault();
 
-                    if (!string.IsNullOrWhiteSpace(apilocation))
+
+                    var iCount = (from dlr in context.Supplier_ApiCallLog
+                                           where dlr.Status == "RUNNING"  && dlr.SupplierApiCallLog_Id == ApiLocationId
+                                  select true).Count();
+
+                    if (iCount > 0)
                     {
-                        var ApiCallId = Guid.NewGuid();
-                        Guid PentahoCallId = Guid.Empty;
+                        return new DC_Message { StatusMessage = "Transformation for GeoCode is already running.", StatusCode = ReadOnlyMessage.StatusCode.Information };
+                    }
 
-                        context.Supplier_ApiCallLog.Add(new Supplier_ApiCallLog
+                    else
+                    {
+                        var apilocation = (from a in context.Supplier_APILocation
+                                           where a.Supplier_APILocation_Id == ApiLocationId
+                                           && a.STATUS.ToUpper() == "ACTIVE"
+                                           select a.API_Path).FirstOrDefault();
+
+                        if (!string.IsNullOrWhiteSpace(apilocation))
                         {
-                            SupplierApiCallLog_Id = ApiCallId,
-                            SupplierApiLocation_Id = ApiLocationId,
-                            PentahoCall_Id = PentahoCallId,
-                            Create_Date = DateTime.Now,
-                            Create_User = CalledBy,
-                            Message = "Transformation Called.",
-                            Status = "SENT TO CARTE"
-                        });
-                        context.SaveChanges();
-                        var getInsertedRow = context.Supplier_ApiCallLog.Find(ApiCallId);
+                            var ApiCallId = Guid.NewGuid();
+                            Guid PentahoCallId = Guid.Empty;
 
-                        string endpointurl = "runTrans/?trans=" + apilocation + "&api_call_id=" + ApiCallId.ToString();
-                        object result;
-                        DHSVCProxy.GetData(ProxyFor.Pentaho, endpointurl, typeof(DataContracts.Pentaho.DC_PentahoApiCallResult), out result);
-                        DataContracts.Pentaho.DC_PentahoApiCallResult callResult = result as DataContracts.Pentaho.DC_PentahoApiCallResult;
-
-                        if (callResult != null)
-                        {
-                            if (callResult.result.ToUpper() == "OK")
+                            context.Supplier_ApiCallLog.Add(new Supplier_ApiCallLog
                             {
-                                dc.StatusMessage = callResult.message;
-                                dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                SupplierApiCallLog_Id = ApiCallId,
+                                SupplierApiLocation_Id = ApiLocationId,
+                                PentahoCall_Id = PentahoCallId,
+                                Create_Date = DateTime.Now,
+                                Create_User = CalledBy,
+                                Message = "Transformation Called.",
+                                Status = "SENT TO CARTE"
+                            });
+                            context.SaveChanges();
+                            var getInsertedRow = context.Supplier_ApiCallLog.Find(ApiCallId);
+
+                            string endpointurl = "runTrans/?trans=" + apilocation + "&api_call_id=" + ApiCallId.ToString();
+                            object result;
+                            DHSVCProxy.GetData(ProxyFor.Pentaho, endpointurl, typeof(DataContracts.Pentaho.DC_PentahoApiCallResult), out result);
+                            DataContracts.Pentaho.DC_PentahoApiCallResult callResult = result as DataContracts.Pentaho.DC_PentahoApiCallResult;
+
+                            if (callResult != null)
+                            {
+                                if (callResult.result.ToUpper() == "OK")
+                                {
+                                    dc.StatusMessage = callResult.message;
+                                    dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    dc.StatusMessage = callResult.message;
+                                    dc.StatusCode = ReadOnlyMessage.StatusCode.Danger;
+                                }
+
+
+                                Guid.TryParse(callResult.id, out PentahoCallId);
+                                getInsertedRow.PentahoCall_Id = PentahoCallId;
+                                getInsertedRow.Message = callResult.message;
+                                if (PentahoCallId == Guid.Empty)
+                                {
+                                    getInsertedRow.Status = "ERROR";
+                                }
+                                context.SaveChanges();
+
+                                return dc;
                             }
                             else
                             {
-                                dc.StatusMessage = callResult.message;
-                                dc.StatusCode = ReadOnlyMessage.StatusCode.Danger;
+                                getInsertedRow.PentahoCall_Id = Guid.Empty;
+                                getInsertedRow.Message = "Api Call failed.";
+                                getInsertedRow.Status = "FAILED";
+                                context.SaveChanges();
+
+                                return new DC_Message { StatusMessage = "Api Call failed.", StatusCode = ReadOnlyMessage.StatusCode.Failed };
                             }
-
-
-                            Guid.TryParse(callResult.id, out PentahoCallId);
-                            getInsertedRow.PentahoCall_Id = PentahoCallId;
-                            getInsertedRow.Message = callResult.message;
-                            if (PentahoCallId == Guid.Empty)
-                            {
-                                getInsertedRow.Status = "ERROR";
-                            }
-                            context.SaveChanges();
-
-                            return dc;
                         }
                         else
                         {
-                            getInsertedRow.PentahoCall_Id = Guid.Empty;
-                            getInsertedRow.Message = "Api Call failed.";
-                            getInsertedRow.Status = "FAILED";
+                            context.Supplier_ApiCallLog.Add(new Supplier_ApiCallLog
+                            {
+                                SupplierApiCallLog_Id = Guid.NewGuid(),
+                                SupplierApiLocation_Id = ApiLocationId,
+                                PentahoCall_Id = null,
+                                Create_Date = DateTime.Now,
+                                Create_User = CalledBy,
+                                Message = "Api Location is not found.",
+                                Status = "INVALID"
+                            });
                             context.SaveChanges();
-
-                            return new DC_Message { StatusMessage = "Api Call failed.", StatusCode = ReadOnlyMessage.StatusCode.Failed };
+                            return new DC_Message { StatusMessage = "Api Location is not found.", StatusCode = ReadOnlyMessage.StatusCode.Warning };
                         }
                     }
-                    else
-                    {
-                        context.Supplier_ApiCallLog.Add(new Supplier_ApiCallLog
-                        {
-                            SupplierApiCallLog_Id = Guid.NewGuid(),
-                            SupplierApiLocation_Id = ApiLocationId,
-                            PentahoCall_Id = null,
-                            Create_Date = DateTime.Now,
-                            Create_User = CalledBy,
-                            Message = "Api Location is not found.",
-                            Status = "INVALID"
-                        });
-                        context.SaveChanges();
-                        return new DC_Message { StatusMessage = "Api Location is not found.", StatusCode = ReadOnlyMessage.StatusCode.Warning };
-                    }
                 }
-
 
             }
             catch (Exception ex)
