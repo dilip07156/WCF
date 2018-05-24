@@ -3006,7 +3006,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="m_MasterAttributeMapping" EntityType="ConsumerModel.m_MasterAttributeMapping" />
           <EntitySet Name="m_MasterAttributeValueMapping" EntityType="ConsumerModel.m_MasterAttributeValueMapping" />
           <EntitySet Name="m_SupplierImportAttributes" EntityType="ConsumerModel.m_SupplierImportAttributes" />
-          <EntitySet Name="m_SupplierImportAttributeValues" EntityType="ConsumerModel.m_SupplierImportAttributeValues" />
           <EntitySet Name="SupplierImportFile_ErrorLog" EntityType="ConsumerModel.SupplierImportFile_ErrorLog" />
           <EntitySet Name="Activity_SupplierProductMapping" EntityType="ConsumerModel.Activity_SupplierProductMapping" />
           <EntitySet Name="m_keyword" EntityType="ConsumerModel.m_keyword" />
@@ -3084,6 +3083,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Activity_DeparturePoints" EntityType="ConsumerModel.Activity_DeparturePoints" />
           <EntitySet Name="Activity_SupplierCityDepartureCode" EntityType="ConsumerModel.Activity_SupplierCityDepartureCode" />
           <EntitySet Name="vwMappingStats" EntityType="ConsumerModel.vwMappingStats" />
+          <EntitySet Name="m_SupplierImportAttributeValues" EntityType="ConsumerModel.m_SupplierImportAttributeValues" />
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -4042,26 +4042,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="STG_Table" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Mapping_Table" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Master_Table" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="m_SupplierImportAttributeValues">
-          <Key>
-            <PropertyRef Name="SupplierImportAttributeValue_Id" />
-          </Key>
-          <Property Name="SupplierImportAttributeValue_Id" Type="Guid" Nullable="false" />
-          <Property Name="SupplierImportAttribute_Id" Type="Guid" Nullable="false" />
-          <Property Name="AttributeType" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="AttributeName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="AttributeValue" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="STATUS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
-          <Property Name="CREATE_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="EDIT_DATE" Type="DateTime" Precision="3" />
-          <Property Name="EDIT_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Priority" Type="Int32" />
-          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="AttributeValue_ID" Type="Guid" />
-          <Property Name="AttributeValueType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Comparison" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="SupplierImportFile_ErrorLog">
           <Key>
@@ -5809,6 +5789,26 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="totalcount" Type="Int32" />
           <Property Name="SuppliersCount" Type="Int32" />
         </EntityType>
+        <EntityType Name="m_SupplierImportAttributeValues">
+          <Key>
+            <PropertyRef Name="SupplierImportAttributeValue_Id" />
+          </Key>
+          <Property Name="SupplierImportAttributeValue_Id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierImportAttribute_Id" Type="Guid" Nullable="false" />
+          <Property Name="AttributeType" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeValue" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="STATUS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATE_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EDIT_DATE" Type="DateTime" Precision="3" />
+          <Property Name="EDIT_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Priority" Type="Int32" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeValue_ID" Type="Guid" />
+          <Property Name="AttributeValueType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Comparison" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
 
       </Schema>
     </edmx:ConceptualModels>
@@ -6790,27 +6790,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Entity" ColumnName="Entity" />
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
                 <ScalarProperty Name="SupplierImportAttribute_Id" ColumnName="SupplierImportAttribute_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="m_SupplierImportAttributeValues">
-            <EntityTypeMapping TypeName="ConsumerModel.m_SupplierImportAttributeValues">
-              <MappingFragment StoreEntitySet="m_SupplierImportAttributeValues">
-                <ScalarProperty Name="Comparison" ColumnName="Comparison" />
-                <ScalarProperty Name="AttributeValueType" ColumnName="AttributeValueType" />
-                <ScalarProperty Name="AttributeValue_ID" ColumnName="AttributeValue_ID" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Priority" ColumnName="Priority" />
-                <ScalarProperty Name="EDIT_USER" ColumnName="EDIT_USER" />
-                <ScalarProperty Name="EDIT_DATE" ColumnName="EDIT_DATE" />
-                <ScalarProperty Name="CREATE_USER" ColumnName="CREATE_USER" />
-                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
-                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
-                <ScalarProperty Name="AttributeValue" ColumnName="AttributeValue" />
-                <ScalarProperty Name="AttributeName" ColumnName="AttributeName" />
-                <ScalarProperty Name="AttributeType" ColumnName="AttributeType" />
-                <ScalarProperty Name="SupplierImportAttribute_Id" ColumnName="SupplierImportAttribute_Id" />
-                <ScalarProperty Name="SupplierImportAttributeValue_Id" ColumnName="SupplierImportAttributeValue_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8630,6 +8609,27 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="m_SupplierImportAttributeValues">
+            <EntityTypeMapping TypeName="ConsumerModel.m_SupplierImportAttributeValues">
+              <MappingFragment StoreEntitySet="m_SupplierImportAttributeValues">
+                <ScalarProperty Name="Comparison" ColumnName="Comparison" />
+                <ScalarProperty Name="AttributeValueType" ColumnName="AttributeValueType" />
+                <ScalarProperty Name="AttributeValue_ID" ColumnName="AttributeValue_ID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="EDIT_USER" ColumnName="EDIT_USER" />
+                <ScalarProperty Name="EDIT_DATE" ColumnName="EDIT_DATE" />
+                <ScalarProperty Name="CREATE_USER" ColumnName="CREATE_USER" />
+                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="AttributeValue" ColumnName="AttributeValue" />
+                <ScalarProperty Name="AttributeName" ColumnName="AttributeName" />
+                <ScalarProperty Name="AttributeType" ColumnName="AttributeType" />
+                <ScalarProperty Name="SupplierImportAttribute_Id" ColumnName="SupplierImportAttribute_Id" />
+                <ScalarProperty Name="SupplierImportAttributeValue_Id" ColumnName="SupplierImportAttributeValue_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

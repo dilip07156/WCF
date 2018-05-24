@@ -80,7 +80,6 @@ namespace DataLayer
         public virtual DbSet<m_MasterAttributeMapping> m_MasterAttributeMapping { get; set; }
         public virtual DbSet<m_MasterAttributeValueMapping> m_MasterAttributeValueMapping { get; set; }
         public virtual DbSet<m_SupplierImportAttributes> m_SupplierImportAttributes { get; set; }
-        public virtual DbSet<m_SupplierImportAttributeValues> m_SupplierImportAttributeValues { get; set; }
         public virtual DbSet<SupplierImportFile_ErrorLog> SupplierImportFile_ErrorLog { get; set; }
         public virtual DbSet<Activity_SupplierProductMapping> Activity_SupplierProductMapping { get; set; }
         public virtual DbSet<m_keyword> m_keyword { get; set; }
@@ -158,6 +157,7 @@ namespace DataLayer
         public virtual DbSet<Activity_DeparturePoints> Activity_DeparturePoints { get; set; }
         public virtual DbSet<Activity_SupplierCityDepartureCode> Activity_SupplierCityDepartureCode { get; set; }
         public virtual DbSet<vwMappingStats> vwMappingStats { get; set; }
+        public virtual DbSet<m_SupplierImportAttributeValues> m_SupplierImportAttributeValues { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {
