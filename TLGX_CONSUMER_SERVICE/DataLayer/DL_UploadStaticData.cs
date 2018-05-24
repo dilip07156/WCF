@@ -482,7 +482,9 @@ namespace DataLayer
                                              EDIT_USER = a.EDIT_USER,
                                              Description = a.Description,
                                              Priority = a.Priority ?? 0,
-                                             TotalRecords = total
+                                             TotalRecords = total,
+                                             AttributeValueType = a.AttributeValueType,
+                                             Comparison = a.Comparison
                                          }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 

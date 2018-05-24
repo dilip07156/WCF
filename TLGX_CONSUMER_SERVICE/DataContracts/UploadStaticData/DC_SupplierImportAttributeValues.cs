@@ -19,6 +19,7 @@ namespace DataContracts.UploadStaticData
 
         [DataMember]
         public string AttributeName { get; set; }
+
         [DataMember]
         public Guid? AttributeValue_ID { get; set; }
 
@@ -48,6 +49,12 @@ namespace DataContracts.UploadStaticData
 
         [DataMember]
         public string Description { get; set; }
+
+        [DataMember]
+        public string AttributeValueType { get; set; }
+
+        [DataMember]
+        public string Comparison { get; set; }
     }
 
     [DataContract]
