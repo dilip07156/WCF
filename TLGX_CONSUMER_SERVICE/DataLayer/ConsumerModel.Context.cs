@@ -131,7 +131,6 @@ namespace DataLayer
         public virtual DbSet<stg_SupplierActivityImageMapping> stg_SupplierActivityImageMapping { get; set; }
         public virtual DbSet<STG_SupplierActivityMetaDataMapping> STG_SupplierActivityMetaDataMapping { get; set; }
         public virtual DbSet<STG_SupplierActivityTypeMapping> STG_SupplierActivityTypeMapping { get; set; }
-        public virtual DbSet<vwMappingStat> vwMappingStats { get; set; }
         public virtual DbSet<STG_Mapping_TableIds> STG_Mapping_TableIds { get; set; }
         public virtual DbSet<SupplierImportFileDetail> SupplierImportFileDetails { get; set; }
         public virtual DbSet<SitemapInRole> SitemapInRoles { get; set; }
@@ -158,6 +157,7 @@ namespace DataLayer
         public virtual DbSet<DistributionLayerRefresh_Log> DistributionLayerRefresh_Log { get; set; }
         public virtual DbSet<Activity_DeparturePoints> Activity_DeparturePoints { get; set; }
         public virtual DbSet<Activity_SupplierCityDepartureCode> Activity_SupplierCityDepartureCode { get; set; }
+        public virtual DbSet<vwMappingStats> vwMappingStats { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

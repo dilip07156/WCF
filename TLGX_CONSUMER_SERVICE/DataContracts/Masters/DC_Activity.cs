@@ -1383,7 +1383,8 @@ namespace DataContracts.Masters
         public string ProductNameSubType { get; set; }
         [DataMember]
         public string SupplierProductNameSubType { get; set; }
-
+        [DataMember]
+        public string InterestType { get; set; }
 
         [DataMember]
         public int? Legacy_Product_ID { get; set; }
@@ -1496,6 +1497,10 @@ namespace DataContracts.Masters
         [DataMember]
         public Guid? ProductNameSubTypeId { get; set; }
         [DataMember]
+        public string InterestType { get; set; }
+        [DataMember]
+        public Guid? InterestTypeId { get; set; }
+        [DataMember]
         public int? PageNo { get; set; }
         [DataMember]
         public int? PageSize { get; set; }
@@ -1564,6 +1569,10 @@ namespace DataContracts.Masters
         public string SysProdSubType { get; set; }
         [DataMember]
         public Guid? SysProdSubTypeId { get; set; }
+        [DataMember]
+        public string SysInterestType { get; set; }
+        [DataMember]
+        public Guid? SysInterestTypeId { get; set; }
 
         [DataMember]
         public string User { get; set; }

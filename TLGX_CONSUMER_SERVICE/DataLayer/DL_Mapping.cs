@@ -9653,8 +9653,8 @@ namespace DataLayer
                 {
 
                     var searchasummary = context.vwMappingStats.
-                         Where(c => c.SupplierName != "ALL" && c.SupplierName != null && (c.Status == "UNMAPPED" || c.Status == "REVIEW") && c.supplier_id != Guid.Empty)
-                        .GroupBy(c => new { c.supplier_id, c.SupplierName })
+                         Where(c => c.SupplierName != "ALL" && c.SupplierName != null && (c.Status == "UNMAPPED" || c.Status == "REVIEW") && c.Supplier_Id != Guid.Empty)
+                        .GroupBy(c => new { c.Supplier_Id, c.SupplierName })
                         .Select(g => new
                         {
                             Country = g.Where(c => c.MappinFor == "Country").Sum(c => c.totalcount),
