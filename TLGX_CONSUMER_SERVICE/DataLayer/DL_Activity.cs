@@ -2478,6 +2478,16 @@ namespace DataLayer
                                 }
                                 res.ProductNameSubType = res.ProductNameSubType.TrimEnd(',');
                             }
+                            if (!string.IsNullOrWhiteSpace(RQ.InterestType))
+                            {
+                                res.InterestType = string.Empty;
+                                foreach (var str in RQ.InterestType.Split(','))
+                                {
+                                    Guid strGuid = Guid.Parse(str);
+                                    res.InterestType = res.InterestType + context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == strGuid).Select(s => s.AttributeValue).First() + ",";
+                                }
+                                res.InterestType = res.InterestType.TrimEnd(',');
+                            }
 
                             if ((RQ.Country_Id ?? Guid.Empty) != Guid.Empty)
                             {
@@ -2539,6 +2549,8 @@ namespace DataLayer
                             foreach (var type in RQ.Categories)
                             {
                                 var subtype = context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == type.SysProdSubTypeId).Select(s => s).FirstOrDefault();
+                                //Adding Interest Type
+                                var interestType =  context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == type.SysInterestTypeId).Select(s => s).FirstOrDefault();
                                 if (subtype != null)
                                 {
                                     var prodtype = context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == subtype.ParentAttributeValue_Id).Select(s => s).FirstOrDefault();
@@ -2559,22 +2571,43 @@ namespace DataLayer
                                             else
                                             {
                                                 //Insert
-                                                context.Activity_CategoriesType.Add(new Activity_CategoriesType
+                                                //context.Activity_CategoriesType.Add(new Activity_CategoriesType
+                                                //{
+                                                //    Activity_CategoriesType_ID = Guid.NewGuid(),
+                                                //    Activity_FlavourOptions_Id = null,
+                                                //    Activity_Flavour_Id = type.Activity_Flavour_Id ?? RQ.Activity_Flavour_Id ?? Guid.Empty,
+                                                //    SystemProductNameSubType_ID = subtype.MasterAttributeValue_Id,
+                                                //    SystemProductNameSubType = subtype.AttributeValue,
+                                                //    SystemProductType_ID = prodtype.MasterAttributeValue_Id,
+                                                //    SystemProductType = prodtype.AttributeValue,
+                                                //    SystemProductCategorySubType_ID = subcat.MasterAttributeValue_Id,
+                                                //    SystemProductCategorySubType = subcat.AttributeValue,
+                                                //    SystemProductCategory = "ACTIVITIES",
+                                                //    Create_Date = DateTime.Now,
+                                                //    Create_User = type.User,
+                                                //    IsActive = true
+                                                //});
+
+                                                Activity_CategoriesType _objCT = new Activity_CategoriesType();
+                                                _objCT.Activity_CategoriesType_ID = Guid.NewGuid();
+                                                _objCT.Activity_FlavourOptions_Id = null;
+                                                _objCT.Activity_Flavour_Id = type.Activity_Flavour_Id ?? RQ.Activity_Flavour_Id ?? Guid.Empty;
+                                                _objCT.SystemProductNameSubType_ID = subtype.MasterAttributeValue_Id;
+                                                _objCT.SystemProductNameSubType = subtype.AttributeValue;
+                                                _objCT.SystemProductType_ID = prodtype.MasterAttributeValue_Id;
+                                                _objCT.SystemProductType = prodtype.AttributeValue;
+                                                _objCT.SystemProductCategorySubType_ID = subcat.MasterAttributeValue_Id;
+                                                _objCT.SystemProductCategorySubType = subcat.AttributeValue;
+                                                _objCT.SystemProductCategory = "ACTIVITIES";
+                                                _objCT.Create_Date = DateTime.Now;
+                                                _objCT.Create_User = type.User;
+                                                _objCT.IsActive = true;
+
+                                                if(interestType != null)
                                                 {
-                                                    Activity_CategoriesType_ID = Guid.NewGuid(),
-                                                    Activity_FlavourOptions_Id = null,
-                                                    Activity_Flavour_Id = type.Activity_Flavour_Id ?? RQ.Activity_Flavour_Id ?? Guid.Empty,
-                                                    SystemProductNameSubType_ID = subtype.MasterAttributeValue_Id,
-                                                    SystemProductNameSubType = subtype.AttributeValue,
-                                                    SystemProductType_ID = prodtype.MasterAttributeValue_Id,
-                                                    SystemProductType = prodtype.AttributeValue,
-                                                    SystemProductCategorySubType_ID = subcat.MasterAttributeValue_Id,
-                                                    SystemProductCategorySubType = subcat.AttributeValue,
-                                                    SystemProductCategory = "ACTIVITIES",
-                                                    Create_Date = DateTime.Now,
-                                                    Create_User = type.User,
-                                                    IsActive = true
-                                                });
+                                                    _objCT.SystemInterestType = interestType.AttributeValue;
+                                                    _objCT.SystemInterestType_ID = interestType.MasterAttributeValue_Id; 
+                                                }
                                             }
                                         }
                                     }

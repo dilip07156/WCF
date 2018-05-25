@@ -12,9 +12,9 @@ namespace DataLayer
     using System;
     using System.Collections.Generic;
     
-    public partial class vwMappingStat
+    public partial class vwMappingStats
     {
-        public Nullable<System.Guid> supplier_id { get; set; }
+        public Nullable<System.Guid> Supplier_Id { get; set; }
         public string SupplierName { get; set; }
         public string Status { get; set; }
         public string MappinFor { get; set; }
