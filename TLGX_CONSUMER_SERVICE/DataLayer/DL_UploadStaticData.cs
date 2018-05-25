@@ -558,6 +558,8 @@ namespace DataLayer
                         objNew.STATUS = obj.STATUS;
                         objNew.Priority = obj.Priority;
                         objNew.Description = obj.Description;
+                        objNew.AttributeValueType = obj.AttributeValueType;
+                        objNew.Comparison = obj.Comparison;
                         context.m_SupplierImportAttributeValues.Add(objNew);
                         context.SaveChanges();
                         dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
@@ -615,6 +617,8 @@ namespace DataLayer
                                 search.EDIT_USER = obj.EDIT_USER;
                                 search.Priority = obj.Priority;
                                 search.Description = obj.Description;
+                                search.AttributeValueType = obj.AttributeValueType;
+                                search.Comparison = obj.Comparison;
                             }
                             context.SaveChanges();
                             dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
