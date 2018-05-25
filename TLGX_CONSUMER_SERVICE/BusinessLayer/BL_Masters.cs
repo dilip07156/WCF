@@ -681,12 +681,22 @@ namespace BusinessLayer
             }
         }
 
-        public DC_Message ReRunKeyword(string Entity)
+        public DC_Message ReRunKeyword(string Entity, string Table, string Supplier_Id)
         {
-            using (DataLayer.DL_Masters objDL = new DataLayer.DL_Masters())
+
+            Guid gSupplier_Id;
+            if (Guid.TryParse(Supplier_Id, out gSupplier_Id))
             {
-                return objDL.ReRunKeyword(Entity);
+                using (DataLayer.DL_Masters objDL = new DataLayer.DL_Masters())
+                {
+                    return objDL.ReRunKeyword(Entity, Table, gSupplier_Id);
+                }
             }
+            else
+            {
+                return new DC_Message { StatusMessage = "Invalid Supplier_id", StatusCode = ReadOnlyMessage.StatusCode.Danger };
+            }
+
         }
         #endregion
 
@@ -721,21 +731,21 @@ namespace BusinessLayer
                 return obj.AddZoneCityMapping(param);
             }
         }
-        public List<DataContracts.Masters.DC_ZoneSearch>SearchZone(DataContracts.Masters.DC_ZoneRQ param)
+        public List<DataContracts.Masters.DC_ZoneSearch> SearchZone(DataContracts.Masters.DC_ZoneRQ param)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
                 return obj.SearchZone(param);
             }
         }
-        public List<DC_ZoneCitiesSearch>SearchZoneCities(DataContracts.Masters.DC_ZoneRQ param)
+        public List<DC_ZoneCitiesSearch> SearchZoneCities(DataContracts.Masters.DC_ZoneRQ param)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
                 return obj.SearchZoneCities(param);
             }
         }
-      
+
         public DataContracts.DC_Message DeactivateOrActivateZones(DataContracts.Masters.DC_ZoneRQ param)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
