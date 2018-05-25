@@ -746,11 +746,11 @@ namespace ConsumerSvc
             }
         }
 
-        public DC_Message ReRunKeyword(string Entity)
+        public DC_Message ReRunKeyword(string Entity, string Table, string Supplier_Id)
         {
             using (BusinessLayer.BL_Masters obj = new BL_Masters())
             {
-                return obj.ReRunKeyword(Entity);
+                return obj.ReRunKeyword(Entity, Table, Supplier_Id);
             }
         }
         

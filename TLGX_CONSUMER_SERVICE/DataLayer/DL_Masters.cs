@@ -4901,319 +4901,45 @@ namespace DataLayer
             }
         }
 
-        public DC_Message ReRunKeyword(string Entity)
+        public DC_Message ReRunKeyword(string Entity, string Table, Guid Supplier_id)
         {
             try
             {
-                string TT_Value = string.Empty;
-                string TX_Value = string.Empty;
-                string SX_Value = string.Empty;
-
-                List<DC_SupplierRoomName_AttributeList> AttributeList = new List<DC_SupplierRoomName_AttributeList>();
-                List<DC_KeyWordReRun> keywordReRun = new List<DC_KeyWordReRun>();
+                DC_Message msg = new DC_Message();
+                List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
 
                 #region Get all entity related Keywords 
-
-                List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
                 using (DL_Masters objDL = new DL_Masters())
                 {
                     Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = Entity, PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
                 }
-
                 #endregion
 
-                #region Fetch and Process the data which needs to be TTFU
-
-                if (Entity.Trim().ToUpper() == "HOTELNAME")
+                if (Entity.Trim().ToUpper() == "HOTELNAME" && Table == "MASTER")
                 {
-                    #region For Accommodation
-                    //keywordReRun = new List<DC_KeyWordReRun>();
-
-                    //using (ConsumerEntities context = new ConsumerEntities())
-                    //{
-                    //    context.Configuration.AutoDetectChangesEnabled = false;
-                    //    context.Database.CommandTimeout = 0;
-
-                    //    using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
-                    //    {
-                    //        keywordReRun = context.Accommodations.AsNoTracking()
-                    //                    .Select(s => new DC_KeyWordReRun
-                    //                    {
-                    //                        RowId = s.Accommodation_Id,
-                    //                        OriginalValue = s.HotelName,
-                    //                        CityName = s.city ?? string.Empty,
-                    //                        CountryName = s.country ?? string.Empty
-                    //                    }).ToList();
-                    //    }
-                    //}
-
-                    //foreach (var data in keywordReRun)
-                    //{
-                    //    try
-                    //    {
-                    //        if (!string.IsNullOrWhiteSpace(data.OriginalValue))
-                    //        {
-                    //            TT_Value = string.Empty;
-                    //            TX_Value = string.Empty;
-                    //            SX_Value = string.Empty;
-
-                    //            TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { data.CityName, data.CountryName });
-
-                    //            using (ConsumerEntities context = new ConsumerEntities())
-                    //            {
-                    //                context.Database.ExecuteSqlCommand("UPDATE Accommodation SET HotelName_Tx = '" + TT_Value + "', Edit_Date = GETDATE(), Edit_User = 'KeywordReRun' WHERE Accommodation_Id = '" + data.RowId.ToString() + "';");
-                    //                //var entity = context.Accommodations.Find(data.RowId);
-                    //                //if (entity != null)
-                    //                //{
-                    //                //    entity.HotelName_Tx = TT_Value;
-                    //                //    entity.Edit_Date = DateTime.Now;
-                    //                //    entity.Edit_User = "KeywordReRun";
-                    //                //    context.SaveChanges();
-                    //                //    entity = null;
-                    //                //}
-                    //            }
-                    //        }
-                    //    }
-                    //    catch
-                    //    {
-                    //        continue;
-                    //    }
-                    //}
-                    #endregion
-
-                    #region For Accommodation Product Mapping
-                    keywordReRun = new List<DC_KeyWordReRun>();
-                    using (ConsumerEntities context = new ConsumerEntities())
-                    {
-                        context.Configuration.AutoDetectChangesEnabled = false;
-                        context.Database.CommandTimeout = 0;
-                        using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
-                        {
-                            keywordReRun = context.Accommodation_ProductMapping.AsNoTracking()
-                                .Where(w => (w.HotelName_Tx ?? string.Empty) == string.Empty)
-                                        .Select(s => new DC_KeyWordReRun
-                                        {
-                                            RowId = s.Accommodation_ProductMapping_Id,
-                                            OriginalValue = s.ProductName,
-                                            CityName = s.CityName ?? string.Empty,
-                                            CountryName = s.CountryName ?? string.Empty
-                                        }).ToList();
-                        }
-                    }
-
-                    foreach (var data in keywordReRun)
-                    {
-                        try
-                        {
-                            if (!string.IsNullOrWhiteSpace(data.OriginalValue))
-                            {
-                                TT_Value = string.Empty;
-                                TX_Value = string.Empty;
-                                SX_Value = string.Empty;
-
-                                TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { data.CityName, data.CountryName });
-
-                                using (ConsumerEntities context = new ConsumerEntities())
-                                {
-                                    context.Database.ExecuteSqlCommand("UPDATE Accommodation_ProductMapping SET HotelName_Tx = '" + TT_Value + "', Edit_Date = GETDATE(), Edit_User = 'KeywordReRun' WHERE Accommodation_ProductMapping_Id = '" + data.RowId.ToString() + "';");
-                                    //var entity = context.Accommodation_ProductMapping.Find(data.RowId);
-                                    //if (entity != null)
-                                    //{
-                                    //    entity.HotelName_Tx = TT_Value;
-                                    //    entity.Edit_Date = DateTime.Now;
-                                    //    entity.Edit_User = "KeywordReRun";
-                                    //    context.SaveChanges();
-                                    //    entity = null;
-                                    //}
-                                }
-                            }
-                        }
-                        catch
-                        {
-                            continue;
-                        }
-                    }
-                    #endregion
+                    Keywords = ReRunKeyword_HotelName_Acco(Keywords);
+                    msg = new DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword ReRun has been done." };
                 }
-
-                if (Entity.Trim().ToUpper() == "HOTELADDRESS")
+                else if (Entity.Trim().ToUpper() == "HOTELNAME" && Table == "SUPPLIER")
                 {
-                    #region For Accommodation
-                    keywordReRun = new List<DC_KeyWordReRun>();
-
-                    using (ConsumerEntities context = new ConsumerEntities())
-                    {
-                        context.Configuration.AutoDetectChangesEnabled = false;
-                        context.Database.CommandTimeout = 0;
-                        using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
-                        {
-                            keywordReRun = context.Accommodations.AsNoTracking()
-                                    .Select(s => new DC_KeyWordReRun
-                                    {
-                                        RowId = s.Accommodation_Id,
-                                        OriginalValue = s.FullAddress
-                                    }).ToList();
-                        }
-                    }
-
-                    foreach (var data in keywordReRun)
-                    {
-                        try
-                        {
-                            if (!string.IsNullOrWhiteSpace(data.OriginalValue))
-                            {
-                                TT_Value = string.Empty;
-                                TX_Value = string.Empty;
-                                SX_Value = string.Empty;
-
-                                TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { });
-
-                                using (ConsumerEntities context = new ConsumerEntities())
-                                {
-                                    context.Database.ExecuteSqlCommand("UPDATE Accommodation SET Address_Tx = '" + TT_Value + "', Edit_Date = GETDATE(), Edit_User = 'KeywordReRun' WHERE Accommodation_Id = '" + data.RowId.ToString() + "';");
-                                    //var entity = context.Accommodations.Find(data.RowId);
-                                    //if (entity != null)
-                                    //{
-                                    //    entity.Address_Tx = TT_Value;
-                                    //    entity.Edit_Date = DateTime.Now;
-                                    //    entity.Edit_User = "KeywordReRun";
-                                    //    context.SaveChanges();
-                                    //    entity = null;
-                                    //}
-                                }
-                            }
-                        }
-                        catch
-                        {
-                            continue;
-                        }
-                    }
-                    #endregion
-
-                    #region For Accommodation Product Mapping
-                    keywordReRun = new List<DC_KeyWordReRun>();
-                    using (ConsumerEntities context = new ConsumerEntities())
-                    {
-                        context.Configuration.AutoDetectChangesEnabled = false;
-                        context.Database.CommandTimeout = 0;
-                        using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
-                        {
-                            keywordReRun = context.Accommodation_ProductMapping.AsNoTracking()
-                                    .Select(s => new DC_KeyWordReRun
-                                    {
-                                        RowId = s.Accommodation_ProductMapping_Id,
-                                        OriginalValue = s.address
-                                    }).ToList();
-                        }
-                    }
-
-                    foreach (var data in keywordReRun)
-                    {
-                        try
-                        {
-                            if (!string.IsNullOrWhiteSpace(data.OriginalValue))
-                            {
-                                TT_Value = string.Empty;
-                                TX_Value = string.Empty;
-                                SX_Value = string.Empty;
-
-                                TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { });
-
-                                using (ConsumerEntities context = new ConsumerEntities())
-                                {
-                                    context.Database.ExecuteSqlCommand("UPDATE Accommodation_ProductMapping SET address_tx = '" + TT_Value + "', Edit_Date = GETDATE(), Edit_User = 'KeywordReRun' WHERE Accommodation_ProductMapping_Id = '" + data.RowId.ToString() + "';");
-                                    //var entity = context.Accommodation_ProductMapping.Find(data.RowId);
-                                    //if (entity != null)
-                                    //{
-                                    //    entity.address_tx = TT_Value;
-                                    //    entity.Edit_Date = DateTime.Now;
-                                    //    entity.Edit_User = "KeywordReRun";
-                                    //    context.SaveChanges();
-                                    //    entity = null;
-                                    //}
-                                }
-                            }
-                        }
-                        catch
-                        {
-                            continue;
-                        }
-                    }
-                    #endregion
+                    Keywords = ReRunKeyword_HotelName_AccoProdMap(Supplier_id, Keywords);
+                    msg = new DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword ReRun has been done." };
                 }
-
-                if (Entity.Trim().ToUpper() == "ROOMTYPE")
+                else if (Entity.Trim().ToUpper() == "HOTELADDRESS" && Table == "MASTER")
                 {
-                    #region For Supplier Room Mapping
-                    keywordReRun = new List<DC_KeyWordReRun>();
-
-                    using (ConsumerEntities context = new ConsumerEntities())
-                    {
-                        context.Configuration.AutoDetectChangesEnabled = false;
-                        context.Database.CommandTimeout = 0;
-                        using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
-                        {
-                            keywordReRun = context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
-                                    .Select(s => new DC_KeyWordReRun
-                                    {
-                                        RowId = s.Accommodation_SupplierRoomTypeMapping_Id,
-                                        OriginalValue = s.SupplierRoomName
-                                    }).ToList();
-                        }
-                    }
-
-                    foreach (var data in keywordReRun)
-                    {
-                        try
-                        {
-                            if (!string.IsNullOrWhiteSpace(data.OriginalValue))
-                            {
-                                TT_Value = string.Empty;
-                                TX_Value = string.Empty;
-                                SX_Value = string.Empty;
-                                AttributeList = new List<DC_SupplierRoomName_AttributeList>();
-
-                                TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { });
-
-                                //Update Room Name Stripped and Attributes
-                                using (ConsumerEntities context = new ConsumerEntities())
-                                {
-                                    //Remove Existing Attribute List Records
-                                    context.Accommodation_SupplierRoomTypeAttributes.RemoveRange(context.Accommodation_SupplierRoomTypeAttributes.Where(w => w.RoomTypeMap_Id == data.RowId));
-
-                                    context.Accommodation_SupplierRoomTypeAttributes.AddRange((from a in AttributeList
-                                                                                               select new Accommodation_SupplierRoomTypeAttributes
-                                                                                               {
-                                                                                                   RoomTypeMapAttribute_Id = Guid.NewGuid(),
-                                                                                                   RoomTypeMap_Id = data.RowId,
-                                                                                                   SupplierRoomTypeAttribute = a.SupplierRoomTypeAttribute,
-                                                                                                   SystemAttributeKeyword = a.SystemAttributeKeyword,
-                                                                                                   SystemAttributeKeyword_Id = a.SystemAttributeKeywordID
-                                                                                               }).ToList());
-
-                                    var srnm = context.Accommodation_SupplierRoomTypeMapping.Find(data.RowId);
-                                    if (srnm != null)
-                                    {
-                                        srnm.TX_RoomName = TT_Value;
-                                        srnm.Tx_StrippedName = SX_Value;
-                                        srnm.Tx_ReorderedName = SX_Value;
-                                        srnm.Edit_Date = DateTime.Now;
-                                        srnm.Edit_User = "KeywordReRun";
-                                    }
-
-                                    context.SaveChanges();
-                                }
-                            }
-                        }
-                        catch
-                        {
-                            continue;
-                        }
-                    }
-                    #endregion
+                    Keywords = ReRunKeyword_HotelAddress_Acco(Keywords);
+                    msg = new DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword ReRun has been done." };
                 }
-
-                #endregion
+                else if (Entity.Trim().ToUpper() == "HOTELADDRESS" && Table == "SUPPLIER")
+                {
+                    Keywords = ReRunKeyword_HotelAddress_AccoProdMap(Supplier_id, Keywords);
+                    msg = new DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword ReRun has been done." };
+                }
+                else if (Entity.Trim().ToUpper() == "ROOMTYPE" && Table == "SUPPLIER")
+                {
+                    Keywords = ReRunKeyword_RoomName_AccoRoomMap(Supplier_id, Keywords);
+                    msg = new DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword ReRun has been done." };
+                }
 
                 #region Update No Of Hits
                 var updatableAliases = (from k in Keywords
@@ -5227,10 +4953,447 @@ namespace DataLayer
                         objDL.DataHandler_Keyword_Update_NoOfHits(updatableAliases);
                     }
                 }
+                #endregion
+
+                return msg;
+
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while Keyword ReRun" + Environment.NewLine + ex.Message, ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public List<DataContracts.Masters.DC_Keyword> ReRunKeyword_HotelName_Acco(List<DataContracts.Masters.DC_Keyword> Keywords)
+        {
+            try
+            {
+                #region Fetch and Process the data which needs to be TTFU
+
+                List<DC_SupplierRoomName_AttributeList> AttributeList = new List<DC_SupplierRoomName_AttributeList>();
+                List<DC_KeyWordReRun> keywordReRun = new List<DC_KeyWordReRun>();
+                string TT_Value = string.Empty;
+                string TX_Value = string.Empty;
+                string SX_Value = string.Empty;
+
+                #region For Accommodation
+                keywordReRun = new List<DC_KeyWordReRun>();
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    context.Database.CommandTimeout = 0;
+
+                    using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                    {
+                        keywordReRun = context.Accommodations.AsNoTracking()
+                                    .Select(s => new DC_KeyWordReRun
+                                    {
+                                        RowId = s.Accommodation_Id,
+                                        OriginalValue = s.HotelName,
+                                        CityName = s.city ?? string.Empty,
+                                        CountryName = s.country ?? string.Empty
+                                    }).ToList();
+                    }
+                }
+
+                foreach (var data in keywordReRun)
+                {
+                    try
+                    {
+                        if (!string.IsNullOrWhiteSpace(data.OriginalValue))
+                        {
+                            TT_Value = string.Empty;
+                            TX_Value = string.Empty;
+                            SX_Value = string.Empty;
+
+                            TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { data.CityName, data.CountryName });
+
+                            using (ConsumerEntities context = new ConsumerEntities())
+                            {
+                                context.Database.ExecuteSqlCommand("UPDATE Accommodation SET HotelName_Tx = '" + TT_Value + "', Edit_Date = GETDATE(), Edit_User = 'KeywordReRun' WHERE Accommodation_Id = '" + data.RowId.ToString() + "';");
+                                //var entity = context.Accommodations.Find(data.RowId);
+                                //if (entity != null)
+                                //{
+                                //    entity.HotelName_Tx = TT_Value;
+                                //    entity.Edit_Date = DateTime.Now;
+                                //    entity.Edit_User = "KeywordReRun";
+                                //    context.SaveChanges();
+                                //    entity = null;
+                                //}
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+                #endregion
 
                 #endregion
 
-                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword ReRun has been done." };
+                return Keywords;
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while Keyword ReRun", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public List<DataContracts.Masters.DC_Keyword> ReRunKeyword_HotelName_AccoProdMap(Guid Supplier_id, List<DataContracts.Masters.DC_Keyword> Keywords)
+        {
+            try
+            {
+                string TT_Value = string.Empty;
+                string TX_Value = string.Empty;
+                string SX_Value = string.Empty;
+
+                List<DC_SupplierRoomName_AttributeList> AttributeList = new List<DC_SupplierRoomName_AttributeList>();
+                List<DC_KeyWordReRun> keywordReRun = new List<DC_KeyWordReRun>();
+
+                #region Fetch and Process the data which needs to be TTFU
+
+                #region For Accommodation Product Mapping
+                keywordReRun = new List<DC_KeyWordReRun>();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    context.Database.CommandTimeout = 0;
+                    using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                    {
+                        if (Supplier_id == Guid.Empty)
+                        {
+                            keywordReRun = context.Accommodation_ProductMapping.AsNoTracking()
+                                    .Select(s => new DC_KeyWordReRun
+                                    {
+                                        RowId = s.Accommodation_ProductMapping_Id,
+                                        OriginalValue = s.ProductName,
+                                        CityName = s.CityName ?? string.Empty,
+                                        CountryName = s.CountryName ?? string.Empty
+                                    }).ToList();
+                        }
+                        else
+                        {
+                            keywordReRun = context.Accommodation_ProductMapping.AsNoTracking()
+                            .Where(w => w.Supplier_Id == Supplier_id)
+                                    .Select(s => new DC_KeyWordReRun
+                                    {
+                                        RowId = s.Accommodation_ProductMapping_Id,
+                                        OriginalValue = s.ProductName,
+                                        CityName = s.CityName ?? string.Empty,
+                                        CountryName = s.CountryName ?? string.Empty
+                                    }).ToList();
+                        }
+
+                    }
+                }
+
+                foreach (var data in keywordReRun)
+                {
+                    try
+                    {
+                        if (!string.IsNullOrWhiteSpace(data.OriginalValue))
+                        {
+                            TT_Value = string.Empty;
+                            TX_Value = string.Empty;
+                            SX_Value = string.Empty;
+
+                            TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { data.CityName, data.CountryName });
+
+                            using (ConsumerEntities context = new ConsumerEntities())
+                            {
+                                context.Database.ExecuteSqlCommand("UPDATE Accommodation_ProductMapping SET HotelName_Tx = '" + TT_Value + "', Edit_Date = GETDATE(), Edit_User = 'KeywordReRun' WHERE Accommodation_ProductMapping_Id = '" + data.RowId.ToString() + "';");
+                                //var entity = context.Accommodation_ProductMapping.Find(data.RowId);
+                                //if (entity != null)
+                                //{
+                                //    entity.HotelName_Tx = TT_Value;
+                                //    entity.Edit_Date = DateTime.Now;
+                                //    entity.Edit_User = "KeywordReRun";
+                                //    context.SaveChanges();
+                                //    entity = null;
+                                //}
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+                #endregion
+
+                #endregion
+
+                return Keywords;
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while Keyword ReRun", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public List<DataContracts.Masters.DC_Keyword> ReRunKeyword_HotelAddress_Acco(List<DataContracts.Masters.DC_Keyword> Keywords)
+        {
+            try
+            {
+                string TT_Value = string.Empty;
+                string TX_Value = string.Empty;
+                string SX_Value = string.Empty;
+
+                List<DC_SupplierRoomName_AttributeList> AttributeList = new List<DC_SupplierRoomName_AttributeList>();
+                List<DC_KeyWordReRun> keywordReRun = new List<DC_KeyWordReRun>();
+
+                #region Fetch and Process the data which needs to be TTFU
+
+                #region For Accommodation
+                keywordReRun = new List<DC_KeyWordReRun>();
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    context.Database.CommandTimeout = 0;
+                    using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                    {
+                        keywordReRun = context.Accommodations.AsNoTracking()
+                                .Select(s => new DC_KeyWordReRun
+                                {
+                                    RowId = s.Accommodation_Id,
+                                    OriginalValue = s.FullAddress
+                                }).ToList();
+                    }
+                }
+
+                foreach (var data in keywordReRun)
+                {
+                    try
+                    {
+                        if (!string.IsNullOrWhiteSpace(data.OriginalValue))
+                        {
+                            TT_Value = string.Empty;
+                            TX_Value = string.Empty;
+                            SX_Value = string.Empty;
+
+                            TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { });
+
+                            using (ConsumerEntities context = new ConsumerEntities())
+                            {
+                                context.Database.ExecuteSqlCommand("UPDATE Accommodation SET Address_Tx = '" + TT_Value + "', Edit_Date = GETDATE(), Edit_User = 'KeywordReRun' WHERE Accommodation_Id = '" + data.RowId.ToString() + "';");
+                                //var entity = context.Accommodations.Find(data.RowId);
+                                //if (entity != null)
+                                //{
+                                //    entity.Address_Tx = TT_Value;
+                                //    entity.Edit_Date = DateTime.Now;
+                                //    entity.Edit_User = "KeywordReRun";
+                                //    context.SaveChanges();
+                                //    entity = null;
+                                //}
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+                #endregion
+
+                #endregion
+
+                return Keywords;
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while Keyword ReRun", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public List<DataContracts.Masters.DC_Keyword> ReRunKeyword_HotelAddress_AccoProdMap(Guid Supplier_id, List<DataContracts.Masters.DC_Keyword> Keywords)
+        {
+            try
+            {
+                string TT_Value = string.Empty;
+                string TX_Value = string.Empty;
+                string SX_Value = string.Empty;
+
+                List<DC_SupplierRoomName_AttributeList> AttributeList = new List<DC_SupplierRoomName_AttributeList>();
+                List<DC_KeyWordReRun> keywordReRun = new List<DC_KeyWordReRun>();
+
+                #region Fetch and Process the data which needs to be TTFU
+
+                #region For Accommodation Product Mapping
+                keywordReRun = new List<DC_KeyWordReRun>();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    context.Database.CommandTimeout = 0;
+                    using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                    {
+                        if (Supplier_id == Guid.Empty)
+                        {
+                            keywordReRun = context.Accommodation_ProductMapping.AsNoTracking()
+                                .Select(s => new DC_KeyWordReRun
+                                {
+                                    RowId = s.Accommodation_ProductMapping_Id,
+                                    OriginalValue = s.address
+                                }).ToList();
+                        }
+                        else
+                        {
+                            keywordReRun = context.Accommodation_ProductMapping.AsNoTracking()
+                                .Where(w => w.Supplier_Id == Supplier_id)
+                                .Select(s => new DC_KeyWordReRun
+                                {
+                                    RowId = s.Accommodation_ProductMapping_Id,
+                                    OriginalValue = s.address
+                                }).ToList();
+                        }
+
+
+                    }
+                }
+
+                foreach (var data in keywordReRun)
+                {
+                    try
+                    {
+                        if (!string.IsNullOrWhiteSpace(data.OriginalValue))
+                        {
+                            TT_Value = string.Empty;
+                            TX_Value = string.Empty;
+                            SX_Value = string.Empty;
+
+                            TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { });
+
+                            using (ConsumerEntities context = new ConsumerEntities())
+                            {
+                                context.Database.ExecuteSqlCommand("UPDATE Accommodation_ProductMapping SET address_tx = '" + TT_Value + "', Edit_Date = GETDATE(), Edit_User = 'KeywordReRun' WHERE Accommodation_ProductMapping_Id = '" + data.RowId.ToString() + "';");
+                                //var entity = context.Accommodation_ProductMapping.Find(data.RowId);
+                                //if (entity != null)
+                                //{
+                                //    entity.address_tx = TT_Value;
+                                //    entity.Edit_Date = DateTime.Now;
+                                //    entity.Edit_User = "KeywordReRun";
+                                //    context.SaveChanges();
+                                //    entity = null;
+                                //}
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+                #endregion
+
+                #endregion
+
+                return Keywords;
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while Keyword ReRun", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public List<DataContracts.Masters.DC_Keyword> ReRunKeyword_RoomName_AccoRoomMap(Guid Supplier_id, List<DataContracts.Masters.DC_Keyword> Keywords)
+        {
+            try
+            {
+                string TT_Value = string.Empty;
+                string TX_Value = string.Empty;
+                string SX_Value = string.Empty;
+
+                List<DC_SupplierRoomName_AttributeList> AttributeList = new List<DC_SupplierRoomName_AttributeList>();
+                List<DC_KeyWordReRun> keywordReRun = new List<DC_KeyWordReRun>();
+
+                #region Fetch and Process the data which needs to be TTFU
+
+                keywordReRun = new List<DC_KeyWordReRun>();
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    context.Database.CommandTimeout = 0;
+                    using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                    {
+                        if (Supplier_id == Guid.Empty)
+                        {
+                            keywordReRun = context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
+                                .Select(s => new DC_KeyWordReRun
+                                {
+                                    RowId = s.Accommodation_SupplierRoomTypeMapping_Id,
+                                    OriginalValue = s.SupplierRoomName
+                                }).ToList();
+                        }
+                        else
+                        {
+                            keywordReRun = context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
+                            .Where(w => w.Supplier_Id == Supplier_id)
+
+                                .Select(s => new DC_KeyWordReRun
+                                {
+                                    RowId = s.Accommodation_SupplierRoomTypeMapping_Id,
+                                    OriginalValue = s.SupplierRoomName
+                                }).ToList();
+                        }
+
+
+                    }
+                }
+
+                foreach (var data in keywordReRun)
+                {
+                    try
+                    {
+                        if (!string.IsNullOrWhiteSpace(data.OriginalValue))
+                        {
+                            TT_Value = string.Empty;
+                            TX_Value = string.Empty;
+                            SX_Value = string.Empty;
+                            AttributeList = new List<DC_SupplierRoomName_AttributeList>();
+
+                            TT_Value = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, data.OriginalValue, new string[] { });
+
+                            //Update Room Name Stripped and Attributes
+                            using (ConsumerEntities context = new ConsumerEntities())
+                            {
+                                //Remove Existing Attribute List Records
+                                context.Accommodation_SupplierRoomTypeAttributes.RemoveRange(context.Accommodation_SupplierRoomTypeAttributes.Where(w => w.RoomTypeMap_Id == data.RowId));
+
+                                context.Accommodation_SupplierRoomTypeAttributes.AddRange((from a in AttributeList
+                                                                                           select new Accommodation_SupplierRoomTypeAttributes
+                                                                                           {
+                                                                                               RoomTypeMapAttribute_Id = Guid.NewGuid(),
+                                                                                               RoomTypeMap_Id = data.RowId,
+                                                                                               SupplierRoomTypeAttribute = a.SupplierRoomTypeAttribute,
+                                                                                               SystemAttributeKeyword = a.SystemAttributeKeyword,
+                                                                                               SystemAttributeKeyword_Id = a.SystemAttributeKeywordID
+                                                                                           }).ToList());
+
+                                var srnm = context.Accommodation_SupplierRoomTypeMapping.Find(data.RowId);
+                                if (srnm != null)
+                                {
+                                    srnm.TX_RoomName = TT_Value;
+                                    srnm.Tx_StrippedName = SX_Value;
+                                    srnm.Tx_ReorderedName = SX_Value;
+                                    srnm.Edit_Date = DateTime.Now;
+                                    srnm.Edit_User = "KeywordReRun";
+                                }
+
+                                context.SaveChanges();
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+                #endregion
+
+                return Keywords;
             }
             catch (Exception ex)
             {
