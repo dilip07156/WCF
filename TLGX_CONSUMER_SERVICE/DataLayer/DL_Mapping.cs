@@ -1610,6 +1610,8 @@ namespace DataLayer
 
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
+                        context.Database.CommandTimeout = 0;
+
                         if (bIsGeoLookUp && !bIsFullIndexCheck)
                         {
                             string LookUpToDistanceInMeters = System.Configuration.ConfigurationManager.AppSettings["HotelLookUpToDistanceInMeters"].ToString();
@@ -1622,7 +1624,7 @@ namespace DataLayer
                             HotelLookUpSQL = HotelLookUpSQL + "and STATUS = 'UNMAPPED'";
                             HotelLookUpSQL = HotelLookUpSQL + ") ";
                             HotelLookUpSQL = HotelLookUpSQL + "INSERT INTO @TABLE SELECT APM.Accommodation_Product_Mapping_Id, ";
-                            HotelLookUpSQL = HotelLookUpSQL + "(SELECT TOP 1 A.Accommodation_Id from Accommodation A ";
+                            HotelLookUpSQL = HotelLookUpSQL + "(SELECT TOP 1 A.Accommodation_Id from Accommodation A WITH (NOLOCK) ";
                             HotelLookUpSQL = HotelLookUpSQL + "where A.Country_Id = APM.Country_Id ";
                             HotelLookUpSQL = HotelLookUpSQL + PriorityJoins;
                             HotelLookUpSQL = HotelLookUpSQL + "AND APM.GeoLocation.STDistance(A.GeoLocation) <= " + LookUpToDistanceInMeters + " ";
@@ -1747,6 +1749,7 @@ namespace DataLayer
                                 sqlFullIndexGeoSpatial.Append(" AND " + PriorityJoins);
                             }
 
+                            
                             try { context.Database.ExecuteSqlCommand(sqlFullIndexGeoSpatial.ToString()); } catch (Exception ex) { CallLogVerbose(File_Id, MatchByString, ex.Message); }
 
                         }
@@ -1786,6 +1789,8 @@ namespace DataLayer
                         sqlFull = "";
                         using (ConsumerEntities context = new ConsumerEntities())
                         {
+                            context.Database.CommandTimeout = 0;
+
                             sqlFull = sqlFull + "UPDATE APM ";
                             sqlFull = sqlFull + " SET Accommodation_Id = A.Accommodation_Id, STATUS = '" + MatchingStatus + "', MatchedBy = " + priority.ToString() + " ";
                             sqlFull = sqlFull + " , MatchedByString = '" + MatchByString.ToString() + "' ";
@@ -1808,6 +1813,8 @@ namespace DataLayer
                     }
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
+                        context.Database.CommandTimeout = 0;
+
                         string sqlUpdatedRecords = "SELECT COUNT(*) FROM Accommodation_ProductMapping WITH (NOLOCK) WHERE ";
                         sqlUpdatedRecords = sqlUpdatedRecords + "ReRun_SupplierImportFile_Id = '" + obj.File_Id.ToString() + "' ";
                         sqlUpdatedRecords = sqlUpdatedRecords + "AND ReRun_Batch = " + (obj.CurrentBatch).ToString() + " ";
