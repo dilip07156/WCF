@@ -2372,7 +2372,9 @@ namespace DataLayer
                                                        SysProdSubType = ct.SystemProductNameSubType,
                                                        SysProdSubTypeId = ct.SystemProductNameSubType_ID,
                                                        SysProdType = ct.SystemProductType,
-                                                       SysProdTypeId = ct.SystemProductType_ID
+                                                       SysProdTypeId = ct.SystemProductType_ID,
+                                                       SysInterestType = ct.SystemInterestType,
+                                                       SysInterestTypeId = ct.SystemInterestType_ID
                                                    }).ToList()
                                  };
 
@@ -2383,6 +2385,7 @@ namespace DataLayer
                     {
                         var CatType = context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s);
 
+                        item.InterestType = string.Join(",", CatType.Select(s => s.SystemInterestType).Distinct().ToArray()).TrimEnd(',').TrimStart(',');
                         item.ProductCategorySubType = string.Join(",", CatType.Select(s => s.SystemProductCategorySubType).Distinct().ToArray()).TrimEnd(',').TrimStart(',');
                         item.ProductNameSubType = string.Join(",", CatType.Select(s => s.SystemProductNameSubType).Distinct().ToArray()).TrimEnd(',').TrimStart(',');
                         item.ProductType = string.Join(",", CatType.Select(s => s.SystemProductType).Distinct().ToArray()).TrimEnd(',').TrimStart(',');
