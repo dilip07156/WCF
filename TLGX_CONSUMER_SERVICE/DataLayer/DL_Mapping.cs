@@ -4787,6 +4787,7 @@ namespace DataLayer
                     RQ.PageNo = 0;
                     RQ.PageSize = int.MaxValue;
                     RQ.SupplierImportFile_Id = File_Id;
+                    //Getting Stg Data 
                     clsSTGHotel = staticdata.GetSTGRoomTypeData(RQ);
                     PLog.PercentageValue = 15;
                     USD.AddStaticDataUploadProcessLog(PLog);
