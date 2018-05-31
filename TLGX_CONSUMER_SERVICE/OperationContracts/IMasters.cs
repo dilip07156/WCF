@@ -480,8 +480,8 @@ namespace OperationContracts
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "Master/Keyword/ReRun/{Entity}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DC_Message ReRunKeyword(string Entity);
+        [WebInvoke(Method = "GET", UriTemplate = "Master/Keyword/ReRun/{Entity}/{Table}/{Supplier_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_Message ReRunKeyword(string Entity, string Table, string Supplier_Id);
         #endregion
 
         //[OperationContract]
@@ -510,12 +510,12 @@ namespace OperationContracts
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "Master/Zone/Search", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        IList<DC_ZoneSearch>SearchZone(DataContracts.Masters.DC_ZoneRQ RQ);
+        IList<DC_ZoneSearch> SearchZone(DataContracts.Masters.DC_ZoneRQ RQ);
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "Master/Zone/SearchZoneCities", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        IList<DC_ZoneCitiesSearch>SearchZoneCities(DataContracts.Masters.DC_ZoneRQ RQ);
+        IList<DC_ZoneCitiesSearch> SearchZoneCities(DataContracts.Masters.DC_ZoneRQ RQ);
 
 
 

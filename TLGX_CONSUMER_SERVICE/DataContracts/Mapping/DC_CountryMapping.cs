@@ -470,7 +470,6 @@ namespace DataContracts.Mapping
         [DataMember]
         public List<DC_CountryMapping> lstCountryMapping { get; set; }
 
-
         [DataMember]
         public List<DC_CityMapping> lstCityMapping { get; set; }
 
@@ -479,7 +478,6 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public DataContracts.Masters.DC_Supplier SupplierDetail { get; set; }
-
 
         [DataMember]
         public List<DataContracts.UploadStaticData.DC_SupplierImportAttributeValues> lstConfigs { get; set; }
@@ -510,6 +508,7 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public List<int> Priorities { get; set; }
+
         [DataMember]
         public string FileEntity { get; set; }
     }
