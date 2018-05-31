@@ -1425,9 +1425,9 @@ namespace DataLayer
                     configWhere = "";
                     bool bIsGeoLookUp = false;
                     bool bIsFullIndexCheck = false;
-                    int? HotelRank = null;
-                    int? AddressRank = null;
-                    int? GeoDistance = null;
+                    int HotelRank = 0;
+                    int AddressRank = 0;
+                    int GeoDistance = 0;
 
                     foreach (DC_SupplierImportAttributeValues config in curAttributeVals)
                     {
@@ -1576,7 +1576,7 @@ namespace DataLayer
                             PriorityJoins = PriorityJoins + " A.HotelName_Rank " + config.Comparison + " " + config.AttributeValue + " ";
                             PriorityJoinsMaster = PriorityJoinsMaster + " A.HotelName_Rank " + config.Comparison + " " + config.AttributeValue + " ";
                             MatchByStringAppend = MatchByStringAppend + "HR" + config.Comparison.Trim() + config.AttributeValue.Trim() + ",";
-                            int.TryParse(config.AttributeValue,out HotelRank);
+                            int.TryParse(config.AttributeValue, out HotelRank);
                         }
                         else if (CurrConfig == "ADDRESS_RANK" && (config.AttributeValueType ?? string.Empty) == "VALUE")
                         {
