@@ -2756,6 +2756,18 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="sp_AccoFullTextSpatialMatch" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ReRun_SupplierImportFile_Id" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="ReRun_Batch" Type="int" Mode="In" />
+          <Parameter Name="MatchedBy" Type="int" Mode="In" />
+          <Parameter Name="MatchByString" Type="varchar" Mode="In" />
+          <Parameter Name="MatchByStringAppend" Type="varchar" Mode="In" />
+          <Parameter Name="MatchingStatus" Type="varchar" Mode="In" />
+          <Parameter Name="HotelRank" Type="int" Mode="In" />
+          <Parameter Name="AddressRank" Type="int" Mode="In" />
+          <Parameter Name="GeoDistance" Type="int" Mode="In" />
+          <Parameter Name="Edit_User" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="UDF_LatLongTX" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="nvarchar">
           <Parameter Name="LatLong" Type="nvarchar" Mode="In" />
         </Function>
@@ -3084,6 +3096,18 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="Activity_SupplierCityDepartureCode" EntityType="ConsumerModel.Activity_SupplierCityDepartureCode" />
           <EntitySet Name="vwMappingStats" EntityType="ConsumerModel.vwMappingStats" />
           <EntitySet Name="m_SupplierImportAttributeValues" EntityType="ConsumerModel.m_SupplierImportAttributeValues" />
+          <FunctionImport Name="sp_AccoFullTextSpatialMatch">
+            <Parameter Name="ReRun_SupplierImportFile_Id" Mode="In" Type="Guid" />
+            <Parameter Name="ReRun_Batch" Mode="In" Type="Int32" />
+            <Parameter Name="MatchedBy" Mode="In" Type="Int32" />
+            <Parameter Name="MatchByString" Mode="In" Type="String" />
+            <Parameter Name="MatchByStringAppend" Mode="In" Type="String" />
+            <Parameter Name="MatchingStatus" Mode="In" Type="String" />
+            <Parameter Name="HotelRank" Mode="In" Type="Int32" />
+            <Parameter Name="AddressRank" Mode="In" Type="Int32" />
+            <Parameter Name="GeoDistance" Mode="In" Type="Int32" />
+            <Parameter Name="Edit_User" Mode="In" Type="String" />
+          </FunctionImport>
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -8633,6 +8657,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_AccoFullTextSpatialMatch" FunctionName="ConsumerModel.Store.sp_AccoFullTextSpatialMatch" />
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
