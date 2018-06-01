@@ -175,6 +175,7 @@
     <Compile Include="ReadOnlyMessage.cs" />
     <Compile Include="Schedulers\DC_Supplier_Schedule.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
+    <Compile Include="STG\DC_Stg_Kafka.cs" />
     <Compile Include="STG\DC_STG_Mapping_Table_Ids.cs" />
     <Compile Include="STG\stg_SupplierCityMapping.cs" />
     <Compile Include="STG\stg_SupplierCountryMapping.cs" />

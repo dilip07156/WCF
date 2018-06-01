@@ -7,7 +7,7 @@ namespace OperationContracts
 {
     [ServiceContract]
     public interface IConsumer : IAccomodation, IMasters, IGeoLocation, IMapping, IAdmin, IStaticData, 
-        ISchedule, IUploadStaticData, IPentaho, IActivity, IFileTransfer,IRefreshDistributionData
+        ISchedule, IUploadStaticData, IPentaho, IActivity, IFileTransfer,IRefreshDistributionData,IKafka
     {
 
     }
