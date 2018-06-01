@@ -2032,6 +2032,7 @@ namespace DataLayer
                     var aCA = context.Activity_ClassificationAttributes.AsQueryable();
 
                     var aDOW = context.Activity_DaysOfWeek.AsQueryable();
+                    var aMedia = context.Activity_Media.AsQueryable();
 
                     bool isCAFilter = false;
                     bool isDurationFilter = false;
@@ -2062,6 +2063,13 @@ namespace DataLayer
                         {
                             aCA = aCA.Where(w => w.AttributeType == "Product" && w.AttributeSubType == "SuitableFor");
                             isCAFilter = true;
+                        }
+
+                        if (RQ.OnlyMedia)
+                        {
+                            search = (from a in search
+                                      join m in aMedia on a.Activity_Flavour_Id equals m.Activity_Flavour_Id
+                                      select a);
                         }
 
                         if (isCAFilter)
@@ -2253,7 +2261,20 @@ namespace DataLayer
                             isTypeMap = true;
                             ActTypes = ActTypes.Where(w => w.SupplierProductNameSubType == RQ.SupplierProductNameSubType);
                         }
-
+                        
+                        if (!string.IsNullOrWhiteSpace(RQ.InterestType))
+                        {
+                            if (RQ.InterestType.Contains("UNMAPPED"))
+                            {
+                                isTypeUnMap = true;
+                                ActTypeUnMap = ActTypeUnMap.Where(w => w.SystemInterestType_ID != null);
+                            }
+                            else if (RQ.InterestType != "-ALL-")
+                            {
+                                isTypeMap = true;
+                                ActTypes = ActTypes.Where(w => w.SystemInterestType_ID == RQ.InterestTypeId);
+                            }
+                        }
 
 
                         if (isTypeUnMap)
@@ -2275,7 +2296,7 @@ namespace DataLayer
                         {
                             search = search.Where(w => w.Activity_Status == RQ.Activity_Status);
                         }
-
+                        
                     }
 
                     int total = (from a in search
