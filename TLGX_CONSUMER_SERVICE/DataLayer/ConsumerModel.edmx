@@ -3130,6 +3130,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
             <Parameter Name="Edit_User" Mode="In" Type="String" />
           </FunctionImport>
           <EntitySet Name="Stg_Kafka" EntityType="ConsumerModel.Stg_Kafka" />
+      
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -5875,7 +5876,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Process_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Process_Date" Type="DateTime" Precision="3" />
         </EntityType>
-
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -8696,6 +8696,27 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="AttributeType" ColumnName="AttributeType" />
                 <ScalarProperty Name="SupplierImportAttribute_Id" ColumnName="SupplierImportAttribute_Id" />
                 <ScalarProperty Name="SupplierImportAttributeValue_Id" ColumnName="SupplierImportAttributeValue_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Stg_Kafka">
+            <EntityTypeMapping TypeName="ConsumerModel.Stg_Kafka">
+              <MappingFragment StoreEntitySet="Stg_Kafka">
+                <ScalarProperty Name="Process_Date" ColumnName="Process_Date" />
+                <ScalarProperty Name="Process_User" ColumnName="Process_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="TopicPartionOffset" ColumnName="TopicPartionOffset" />
+                <ScalarProperty Name="TopicPartion" ColumnName="TopicPartion" />
+                <ScalarProperty Name="TimeStamp" ColumnName="TimeStamp" />
+                <ScalarProperty Name="Partion" ColumnName="Partion" />
+                <ScalarProperty Name="Offset" ColumnName="Offset" />
+                <ScalarProperty Name="Key" ColumnName="Key" />
+                <ScalarProperty Name="Error" ColumnName="Error" />
+                <ScalarProperty Name="PayLoad" ColumnName="PayLoad" />
+                <ScalarProperty Name="Topic" ColumnName="Topic" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Row_Id" ColumnName="Row_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
