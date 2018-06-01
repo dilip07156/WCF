@@ -2032,6 +2032,7 @@ namespace DataLayer
                     var aCA = context.Activity_ClassificationAttributes.AsQueryable();
 
                     var aDOW = context.Activity_DaysOfWeek.AsQueryable();
+                    var aMedia = context.Activity_Media.AsQueryable();
 
                     bool isCAFilter = false;
                     bool isDurationFilter = false;
@@ -2062,6 +2063,13 @@ namespace DataLayer
                         {
                             aCA = aCA.Where(w => w.AttributeType == "Product" && w.AttributeSubType == "SuitableFor");
                             isCAFilter = true;
+                        }
+
+                        if (RQ.OnlyMedia)
+                        {
+                            search = (from a in search
+                                      join m in aMedia on a.Activity_Flavour_Id equals m.Activity_Flavour_Id
+                                      select a);
                         }
 
                         if (isCAFilter)
@@ -2253,7 +2261,20 @@ namespace DataLayer
                             isTypeMap = true;
                             ActTypes = ActTypes.Where(w => w.SupplierProductNameSubType == RQ.SupplierProductNameSubType);
                         }
-
+                        
+                        if (!string.IsNullOrWhiteSpace(RQ.InterestType))
+                        {
+                            if (RQ.InterestType.Contains("UNMAPPED"))
+                            {
+                                isTypeUnMap = true;
+                                ActTypeUnMap = ActTypeUnMap.Where(w => w.SystemInterestType_ID != null);
+                            }
+                            else if (RQ.InterestType != "-ALL-")
+                            {
+                                isTypeMap = true;
+                                ActTypes = ActTypes.Where(w => w.SystemInterestType_ID == RQ.InterestTypeId);
+                            }
+                        }
 
 
                         if (isTypeUnMap)
@@ -2275,7 +2296,7 @@ namespace DataLayer
                         {
                             search = search.Where(w => w.Activity_Status == RQ.Activity_Status);
                         }
-
+                        
                     }
 
                     int total = (from a in search
@@ -2372,7 +2393,9 @@ namespace DataLayer
                                                        SysProdSubType = ct.SystemProductNameSubType,
                                                        SysProdSubTypeId = ct.SystemProductNameSubType_ID,
                                                        SysProdType = ct.SystemProductType,
-                                                       SysProdTypeId = ct.SystemProductType_ID
+                                                       SysProdTypeId = ct.SystemProductType_ID,
+                                                       SysInterestType = ct.SystemInterestType,
+                                                       SysInterestTypeId = ct.SystemInterestType_ID
                                                    }).ToList()
                                  };
 
@@ -2383,6 +2406,7 @@ namespace DataLayer
                     {
                         var CatType = context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == item.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s);
 
+                        item.InterestType = string.Join(",", CatType.Select(s => s.SystemInterestType).Distinct().ToArray()).TrimEnd(',').TrimStart(',');
                         item.ProductCategorySubType = string.Join(",", CatType.Select(s => s.SystemProductCategorySubType).Distinct().ToArray()).TrimEnd(',').TrimStart(',');
                         item.ProductNameSubType = string.Join(",", CatType.Select(s => s.SystemProductNameSubType).Distinct().ToArray()).TrimEnd(',').TrimStart(',');
                         item.ProductType = string.Join(",", CatType.Select(s => s.SystemProductType).Distinct().ToArray()).TrimEnd(',').TrimStart(',');

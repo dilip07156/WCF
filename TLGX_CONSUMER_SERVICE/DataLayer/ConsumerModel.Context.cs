@@ -168,5 +168,50 @@ namespace DataLayer
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("USP_UpdateMapID", updateInParameter);
         }
+    
+        public virtual int sp_AccoFullTextSpatialMatch(Nullable<System.Guid> reRun_SupplierImportFile_Id, Nullable<int> reRun_Batch, Nullable<int> matchedBy, string matchByString, string matchByStringAppend, string matchingStatus, Nullable<int> hotelRank, Nullable<int> addressRank, Nullable<int> geoDistance, string edit_User)
+        {
+            var reRun_SupplierImportFile_IdParameter = reRun_SupplierImportFile_Id.HasValue ?
+                new ObjectParameter("ReRun_SupplierImportFile_Id", reRun_SupplierImportFile_Id) :
+                new ObjectParameter("ReRun_SupplierImportFile_Id", typeof(System.Guid));
+    
+            var reRun_BatchParameter = reRun_Batch.HasValue ?
+                new ObjectParameter("ReRun_Batch", reRun_Batch) :
+                new ObjectParameter("ReRun_Batch", typeof(int));
+    
+            var matchedByParameter = matchedBy.HasValue ?
+                new ObjectParameter("MatchedBy", matchedBy) :
+                new ObjectParameter("MatchedBy", typeof(int));
+    
+            var matchByStringParameter = matchByString != null ?
+                new ObjectParameter("MatchByString", matchByString) :
+                new ObjectParameter("MatchByString", typeof(string));
+    
+            var matchByStringAppendParameter = matchByStringAppend != null ?
+                new ObjectParameter("MatchByStringAppend", matchByStringAppend) :
+                new ObjectParameter("MatchByStringAppend", typeof(string));
+    
+            var matchingStatusParameter = matchingStatus != null ?
+                new ObjectParameter("MatchingStatus", matchingStatus) :
+                new ObjectParameter("MatchingStatus", typeof(string));
+    
+            var hotelRankParameter = hotelRank.HasValue ?
+                new ObjectParameter("HotelRank", hotelRank) :
+                new ObjectParameter("HotelRank", typeof(int));
+    
+            var addressRankParameter = addressRank.HasValue ?
+                new ObjectParameter("AddressRank", addressRank) :
+                new ObjectParameter("AddressRank", typeof(int));
+    
+            var geoDistanceParameter = geoDistance.HasValue ?
+                new ObjectParameter("GeoDistance", geoDistance) :
+                new ObjectParameter("GeoDistance", typeof(int));
+    
+            var edit_UserParameter = edit_User != null ?
+                new ObjectParameter("Edit_User", edit_User) :
+                new ObjectParameter("Edit_User", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_AccoFullTextSpatialMatch", reRun_SupplierImportFile_IdParameter, reRun_BatchParameter, matchedByParameter, matchByStringParameter, matchByStringAppendParameter, matchingStatusParameter, hotelRankParameter, addressRankParameter, geoDistanceParameter, edit_UserParameter);
+        }
     }
 }

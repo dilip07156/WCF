@@ -1516,6 +1516,8 @@ namespace DataContracts.Masters
         [DataMember]
         public bool NoSpecials { get; set; }
         [DataMember]
+        public bool OnlyMedia { get; set; }
+        [DataMember]
         public string Activity_Status { get; set; }
         [DataMember]
         public string SupplierProductNameSubType { get; set; }

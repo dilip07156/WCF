@@ -1402,6 +1402,7 @@ namespace DataLayer
 
                     //Get Matching Status from Master Attributes
                     string MatchingStatus = string.Empty;
+
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
                         MatchingStatus = (from MA in context.m_masterattribute
@@ -1424,6 +1425,9 @@ namespace DataLayer
                     configWhere = "";
                     bool bIsGeoLookUp = false;
                     bool bIsFullIndexCheck = false;
+                    int HotelRank = 0;
+                    int AddressRank = 0;
+                    int GeoDistance = 0;
 
                     foreach (DC_SupplierImportAttributeValues config in curAttributeVals)
                     {
@@ -1450,14 +1454,14 @@ namespace DataLayer
                     string PriorityJoins = "";
                     string PriorityJoinsMaster = "";
                     string MatchByStringAppend = string.Empty;
-                    
+
                     foreach (DC_SupplierImportAttributeValues config in curAttributeVals)
                     {
                         MatchByString = config.Description;
                         DontAppend = false;
                         curConfig = curConfig + 1;
                         string CurrConfig = string.Empty;
-                        
+
                         if ((config.AttributeValueType ?? string.Empty) == "VALUE")
                         {
                             CurrConfig = config.AttributeName.Replace("Accommodation_ProductMapping.", "").Trim().ToUpper();
@@ -1572,6 +1576,7 @@ namespace DataLayer
                             PriorityJoins = PriorityJoins + " A.HotelName_Rank " + config.Comparison + " " + config.AttributeValue + " ";
                             PriorityJoinsMaster = PriorityJoinsMaster + " A.HotelName_Rank " + config.Comparison + " " + config.AttributeValue + " ";
                             MatchByStringAppend = MatchByStringAppend + "HR" + config.Comparison.Trim() + config.AttributeValue.Trim() + ",";
+                            int.TryParse(config.AttributeValue, out HotelRank);
                         }
                         else if (CurrConfig == "ADDRESS_RANK" && (config.AttributeValueType ?? string.Empty) == "VALUE")
                         {
@@ -1579,6 +1584,7 @@ namespace DataLayer
                             PriorityJoins = PriorityJoins + " A.Address_Rank " + config.Comparison + " " + config.AttributeValue + " ";
                             PriorityJoinsMaster = PriorityJoinsMaster + " A.Address_Rank " + config.Comparison + " " + config.AttributeValue + " ";
                             MatchByStringAppend = MatchByStringAppend + "AR" + config.Comparison.Trim() + config.AttributeValue.Trim() + ",";
+                            int.TryParse(config.AttributeValue, out AddressRank);
                         }
                         else if (CurrConfig == "GEOLOCATION_DISTANCE" && (config.AttributeValueType ?? string.Empty) == "VALUE")
                         {
@@ -1586,6 +1592,7 @@ namespace DataLayer
                             PriorityJoins = PriorityJoins + " A.Geolocation_Distance " + config.Comparison + " " + config.AttributeValue + " ";
                             PriorityJoinsMaster = PriorityJoinsMaster + " A.Geolocation_Distance " + config.Comparison + " " + config.AttributeValue + " ";
                             MatchByStringAppend = MatchByStringAppend + "GD" + config.Comparison.Trim() + config.AttributeValue.Trim() + ",";
+                            int.TryParse(config.AttributeValue, out GeoDistance);
                         }
 
                         if (curConfig != curConfigCount && (!DontAppend))
@@ -1605,8 +1612,6 @@ namespace DataLayer
 
                     string sqlFull = "";
                     int toupdate = 0;
-
-                    toupdate = 0;
 
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
@@ -1636,121 +1641,128 @@ namespace DataLayer
                             HotelLookUpSQL = HotelLookUpSQL + "FROM @TABLE TBL ";
                             HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation_ProductMapping APM ON TBL.APM_ID = APM.Accommodation_ProductMapping_Id ";
                             HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation A ON TBL.A_ID = A.Accommodation_Id AND ISNULL(A.IsActive, 0) = 1 ; ";
+
                             try
                             {
-                                toupdate = context.Database.ExecuteSqlCommand(HotelLookUpSQL);
-                                CallLogVerbose(File_Id, "MATCH", toupdate.ToString() + " Matches Found for Combination GeoPanda Lookup");
+                                context.Database.ExecuteSqlCommand(HotelLookUpSQL);
                             }
                             catch (Exception ex)
                             {
-                                CallLogVerbose(File_Id, "MATCH", "Error GeoPanda Lookup " + Environment.NewLine + ex.Message);
+                                CallLogVerbose(File_Id, MatchByString, ex.Message);
                             }
                         }
                         else if (bIsFullIndexCheck && bIsGeoLookUp)
                         {
-                            StringBuilder sqlFullIndexGeoSpatial = new StringBuilder();
-                            sqlFullIndexGeoSpatial.Append(@"DECLARE @Results TABLE
-                                                            (
-                                                              APM_ID				UNIQUEIDENTIFIER,
-                                                              SUP_HTL_NME			NVARCHAR(500),
-                                                              SUP_CON_ID			UNIQUEIDENTIFIER,
-                                                              SUP_ADR				NVARCHAR(1000),
-                                                              SUP_LOC				GEOGRAPHY,
-                                                              HOTELNAME_RANK		INT,
-                                                              ADDRESS_RANK			INT,
-                                                              ACCO_ID				UNIQUEIDENTIFIER,
-                                                              GEOLOCATION_DISTANCE	FLOAT
-                                                            )
+                            //StringBuilder sqlFullIndexGeoSpatial = new StringBuilder();
+                            //sqlFullIndexGeoSpatial.Append(@"DECLARE @Results TABLE
+                            //                                (
+                            //                                  APM_ID				UNIQUEIDENTIFIER,
+                            //                                  SUP_HTL_NME			NVARCHAR(500),
+                            //                                  SUP_CON_ID			UNIQUEIDENTIFIER,
+                            //                                  SUP_ADR				NVARCHAR(1000),
+                            //                                  SUP_LOC				GEOGRAPHY,
+                            //                                  HOTELNAME_RANK		INT,
+                            //                                  ADDRESS_RANK			INT,
+                            //                                  ACCO_ID				UNIQUEIDENTIFIER,
+                            //                                  GEOLOCATION_DISTANCE	FLOAT
+                            //                                )
 
-                                                            INSERT INTO @Results (APM_ID, SUP_HTL_NME, SUP_ADR, SUP_LOC, SUP_CON_ID)
-                                                            SELECT Accommodation_ProductMapping_Id, ProductName, Address, GeoLocation, Country_Id
-                                                            FROM Accommodation_ProductMapping WITH (NOLOCK) WHERE Status = 'UNMAPPED' ");
-                            sqlFullIndexGeoSpatial.AppendLine();
-                            sqlFullIndexGeoSpatial.Append("AND ReRun_SupplierImportFile_Id = '" + obj.File_Id.ToString() + "' ");
-                            sqlFullIndexGeoSpatial.AppendLine();
-                            sqlFullIndexGeoSpatial.Append("AND ReRun_Batch = " + obj.CurrentBatch.ToString() + " ");
-                            sqlFullIndexGeoSpatial.AppendLine();
-                            sqlFullIndexGeoSpatial.Append(@"DECLARE
-                                                              @AccoMap_Id as UNIQUEIDENTIFIER
-                                                            , @HotelName AS NVARCHAR(1000)
-                                                            , @HotelNameTx AS NVARCHAR(1000)
-                                                            , @FullAddress AS NVARCHAR(1000)
-                                                            , @Country_Id as UNIQUEIDENTIFIER
-                                                            , @FromPoint geography
-                                                            , @HTL_RANK INT
-                                                            , @ADR_RANK INT
-                                                            , @ACCO_ID UNIQUEIDENTIFIER
-                                                            , @DIST FLOAT
+                            //                                INSERT INTO @Results (APM_ID, SUP_HTL_NME, SUP_ADR, SUP_LOC, SUP_CON_ID)
+                            //                                SELECT Accommodation_ProductMapping_Id, ProductName, Address, GeoLocation, Country_Id
+                            //                                FROM Accommodation_ProductMapping WITH (NOLOCK) WHERE Status = 'UNMAPPED' ");
+                            //sqlFullIndexGeoSpatial.AppendLine();
+                            //sqlFullIndexGeoSpatial.Append("AND ReRun_SupplierImportFile_Id = '" + obj.File_Id.ToString() + "' ");
+                            //sqlFullIndexGeoSpatial.AppendLine();
+                            //sqlFullIndexGeoSpatial.Append("AND ReRun_Batch = " + obj.CurrentBatch.ToString() + " ");
+                            //sqlFullIndexGeoSpatial.AppendLine();
+                            //sqlFullIndexGeoSpatial.Append(@"DECLARE
+                            //                                  @AccoMap_Id as UNIQUEIDENTIFIER
+                            //                                , @HotelName AS NVARCHAR(1000)
+                            //                                , @HotelNameTx AS NVARCHAR(1000)
+                            //                                , @FullAddress AS NVARCHAR(1000)
+                            //                                , @Country_Id as UNIQUEIDENTIFIER
+                            //                                , @FromPoint geography
+                            //                                , @HTL_RANK INT
+                            //                                , @ADR_RANK INT
+                            //                                , @ACCO_ID UNIQUEIDENTIFIER
+                            //                                , @DIST FLOAT
 
-                                                            DECLARE db_cursor CURSOR FOR
-                                                            SELECT APM_ID, SUP_HTL_NME, SUP_ADR, SUP_LOC, SUP_CON_ID FROM @Results
+                            //                                DECLARE db_cursor CURSOR FOR
+                            //                                SELECT APM_ID, SUP_HTL_NME, SUP_ADR, SUP_LOC, SUP_CON_ID FROM @Results
 
-                                                            OPEN db_cursor
-                                                            FETCH NEXT FROM db_cursor INTO @AccoMap_Id, @HotelName, @FullAddress, @FromPoint, @Country_Id
+                            //                                OPEN db_cursor
+                            //                                FETCH NEXT FROM db_cursor INTO @AccoMap_Id, @HotelName, @FullAddress, @FromPoint, @Country_Id
 
-                                                            WHILE @@FETCH_STATUS = 0
-                                                            BEGIN
+                            //                                WHILE @@FETCH_STATUS = 0
+                            //                                BEGIN
 
-                                                                BEGIN TRY
+                            //                                    BEGIN TRY
 
-                                                                    SELECT @ACCO_ID = NULL, @HTL_RANK = NULL, @ADR_RANK = NULL, @DIST = NULL
+                            //                                        SELECT @ACCO_ID = NULL, @HTL_RANK = NULL, @ADR_RANK = NULL, @DIST = NULL
 
-                                                                    SELECT TOP 1
-                                                                     @ACCO_ID = FT_TBL.Accommodation_Id
-                                                                    , @HTL_RANK = KEY_TBL.RANK
-                                                                    , @ADR_RANK = KEY_TBL_ADDR.RANK
-                                                                    , @DIST = @FromPoint.STDistance(FT_TBL.GeoLocation)
-                                                                    FROM Accommodation FT_TBL WITH (NOLOCK) 
-                                                                            INNER JOIN FREETEXTTABLE(Accommodation, HotelName, @HotelName) AS KEY_TBL ON FT_TBL.Accommodation_Id = KEY_TBL.[KEY]
-                                                                            INNER JOIN FREETEXTTABLE(Accommodation, FullAddress, @FullAddress) AS KEY_TBL_ADDR ON FT_TBL.Accommodation_Id = KEY_TBL_ADDR.[KEY]
-                                                                    WHERE FT_TBL.Country_Id = @Country_Id AND ISNULL(FT_TBL.IsActive, 0) = 1
+                            //                                        SELECT TOP 1
+                            //                                         @ACCO_ID = FT_TBL.Accommodation_Id
+                            //                                        , @HTL_RANK = KEY_TBL.RANK
+                            //                                        , @ADR_RANK = KEY_TBL_ADDR.RANK
+                            //                                        , @DIST = @FromPoint.STDistance(FT_TBL.GeoLocation)
+                            //                                        FROM Accommodation FT_TBL WITH (NOLOCK) 
+                            //                                                INNER JOIN FREETEXTTABLE(Accommodation, HotelName, @HotelName) AS KEY_TBL ON FT_TBL.Accommodation_Id = KEY_TBL.[KEY]
+                            //                                                INNER JOIN FREETEXTTABLE(Accommodation, FullAddress, @FullAddress) AS KEY_TBL_ADDR ON FT_TBL.Accommodation_Id = KEY_TBL_ADDR.[KEY]
+                            //                                        WHERE FT_TBL.Country_Id = @Country_Id AND ISNULL(FT_TBL.IsActive, 0) = 1
 
-                                                                    ORDER BY
+                            //                                        ORDER BY
 
-                                                                    KEY_TBL.RANK DESC,
-                                                                    KEY_TBL_ADDR.RANK DESC,
-                                                                    @FromPoint.STDistance(FT_TBL.GeoLocation)
+                            //                                        KEY_TBL.RANK DESC,
+                            //                                        KEY_TBL_ADDR.RANK DESC,
+                            //                                        @FromPoint.STDistance(FT_TBL.GeoLocation)
 
-                                                                    UPDATE @Results SET
+                            //                                        UPDATE @Results SET
 
-                                                                    HOTELNAME_RANK = @HTL_RANK,
-                                                                    ADDRESS_RANK = @ADR_RANK,
-                                                                    ACCO_ID = @ACCO_ID,
-                                                                    GEOLOCATION_DISTANCE = @DIST
+                            //                                        HOTELNAME_RANK = @HTL_RANK,
+                            //                                        ADDRESS_RANK = @ADR_RANK,
+                            //                                        ACCO_ID = @ACCO_ID,
+                            //                                        GEOLOCATION_DISTANCE = @DIST
 
-                                                                    WHERE APM_ID = @AccoMap_Id
+                            //                                        WHERE APM_ID = @AccoMap_Id
 
-                                                                END TRY
+                            //                                    END TRY
 
-                                                                BEGIN CATCH
+                            //                                    BEGIN CATCH
 
-                                                                END CATCH;
+                            //                                    END CATCH;
 
-                                                                FETCH NEXT FROM db_cursor INTO @AccoMap_Id, @HotelName, @FullAddress, @FromPoint, @Country_Id
-                                                            END
+                            //                                    FETCH NEXT FROM db_cursor INTO @AccoMap_Id, @HotelName, @FullAddress, @FromPoint, @Country_Id
+                            //                                END
 
-                                                            CLOSE db_cursor
-                                                            DEALLOCATE db_cursor ");
-                            sqlFullIndexGeoSpatial.AppendLine();
-                            sqlFullIndexGeoSpatial.Append("UPDATE APM SET ");
-                            sqlFullIndexGeoSpatial.Append("APM.MatchedBy = " + priority.ToString() + " ");
-                            sqlFullIndexGeoSpatial.Append(", APM.Accommodation_Id = A.ACCO_ID ");
-                            sqlFullIndexGeoSpatial.Append(", APM.Status = '" + MatchingStatus + "' ");
-                            sqlFullIndexGeoSpatial.Append(", APM.MatchedByString = '" + MatchByString.ToString() + " + MCON(" + MatchByStringAppend + ")' ");
-                            sqlFullIndexGeoSpatial.Append("+ ' + VALUE(HR:' + CAST(A.HOTELNAME_RANK AS varchar) + ',AR:' + CAST(A.ADDRESS_RANK AS varchar) + ',GD:' + CAST(CAST(A.GEOLOCATION_DISTANCE as decimal(18,2)) AS varchar) + ')' ");
-                            sqlFullIndexGeoSpatial.Append(", APM.Edit_Date = GETDATE() ");
-                            sqlFullIndexGeoSpatial.Append(", APM.Edit_User = 'TLGX_DataHandler' ");
-                            sqlFullIndexGeoSpatial.Append("FROM Accommodation_ProductMapping APM ");
-                            sqlFullIndexGeoSpatial.Append("INNER JOIN @Results A ON APM.Accommodation_ProductMapping_Id = A.APM_ID ");
-                            sqlFullIndexGeoSpatial.Append("WHERE A.ACCO_ID IS NOT NULL ");
+                            //                                CLOSE db_cursor
+                            //                                DEALLOCATE db_cursor ");
+                            //sqlFullIndexGeoSpatial.AppendLine();
+                            //sqlFullIndexGeoSpatial.Append("UPDATE APM SET ");
+                            //sqlFullIndexGeoSpatial.Append("APM.MatchedBy = " + priority.ToString() + " ");
+                            //sqlFullIndexGeoSpatial.Append(", APM.Accommodation_Id = A.ACCO_ID ");
+                            //sqlFullIndexGeoSpatial.Append(", APM.Status = '" + MatchingStatus + "' ");
+                            //sqlFullIndexGeoSpatial.Append(", APM.MatchedByString = '" + MatchByString.ToString() + " + MCON(" + MatchByStringAppend + ")' ");
+                            //sqlFullIndexGeoSpatial.Append("+ ' + VALUE(HR:' + CAST(A.HOTELNAME_RANK AS varchar) + ',AR:' + CAST(A.ADDRESS_RANK AS varchar) + ',GD:' + CAST(CAST(A.GEOLOCATION_DISTANCE as decimal(18,2)) AS varchar) + ')' ");
+                            //sqlFullIndexGeoSpatial.Append(", APM.Edit_Date = GETDATE() ");
+                            //sqlFullIndexGeoSpatial.Append(", APM.Edit_User = 'TLGX_DataHandler' ");
+                            //sqlFullIndexGeoSpatial.Append("FROM Accommodation_ProductMapping APM ");
+                            //sqlFullIndexGeoSpatial.Append("INNER JOIN @Results A ON APM.Accommodation_ProductMapping_Id = A.APM_ID ");
+                            //sqlFullIndexGeoSpatial.Append("WHERE A.ACCO_ID IS NOT NULL ");
 
-                            if (!string.IsNullOrWhiteSpace(PriorityJoins))
+                            //if (!string.IsNullOrWhiteSpace(PriorityJoins))
+                            //{
+                            //    sqlFullIndexGeoSpatial.Append(" AND " + PriorityJoins);
+                            //}
+
+                            try
                             {
-                                sqlFullIndexGeoSpatial.Append(" AND " + PriorityJoins);
+                                var totalRecordsEffected = context.sp_AccoFullTextSpatialMatch(obj.File_Id, obj.CurrentBatch, priority, MatchByString, MatchByStringAppend, MatchingStatus, HotelRank, AddressRank, GeoDistance, "TLGX_DataDandler");
+                                //context.Database.ExecuteSqlCommand(sqlFullIndexGeoSpatial.ToString());
                             }
-
-                            
-                            try { context.Database.ExecuteSqlCommand(sqlFullIndexGeoSpatial.ToString()); } catch (Exception ex) { CallLogVerbose(File_Id, MatchByString, ex.Message); }
+                            catch (Exception ex)
+                            {
+                                CallLogVerbose(File_Id, MatchByString, ex.Message);
+                            }
 
                         }
                         else
@@ -1769,9 +1781,9 @@ namespace DataLayer
                             sqlFull = sqlFull + " WHERE APM.ReRun_Batch = " + (obj.CurrentBatch).ToString();
                             sqlFull = sqlFull + " AND APM.ReRun_SupplierImportFile_Id =  '" + obj.File_Id.ToString() + "' ";
 
-                            try { toupdate = context.Database.ExecuteSqlCommand(sqlFull.Replace("#PutJoinConditionHere#", "(cm.CityCode = APM.CityCode)")); } catch (Exception ex) { CallLogVerbose(File_Id, "MATCH", ex.Message); }
-                            try { toupdate = toupdate + context.Database.ExecuteSqlCommand(sqlFull.Replace("#PutJoinConditionHere#", "(APM.cityname = cm.cityname and APM.CountryCode = APM.CountryCode)")); } catch (Exception ex) { CallLogVerbose(File_Id, "MATCH", ex.Message); }
-                            try { toupdate = toupdate + context.Database.ExecuteSqlCommand(sqlFull.Replace("#PutJoinConditionHere#", "(APM.cityname = cm.cityname and cm.CountryName = APM.CountryName)")); } catch (Exception ex) { CallLogVerbose(File_Id, "MATCH", ex.Message); }
+                            try { context.Database.ExecuteSqlCommand(sqlFull.Replace("#PutJoinConditionHere#", "(cm.CityCode = APM.CityCode)")); } catch (Exception ex) { CallLogVerbose(File_Id, "MATCH", ex.Message); }
+                            try { context.Database.ExecuteSqlCommand(sqlFull.Replace("#PutJoinConditionHere#", "(APM.cityname = cm.cityname and APM.CountryCode = APM.CountryCode)")); } catch (Exception ex) { CallLogVerbose(File_Id, MatchByString, ex.Message); }
+                            try { context.Database.ExecuteSqlCommand(sqlFull.Replace("#PutJoinConditionHere#", "(APM.cityname = cm.cityname and cm.CountryName = APM.CountryName)")); } catch (Exception ex) { CallLogVerbose(File_Id, MatchByString, ex.Message); }
                         }
                     }
 
@@ -1806,11 +1818,15 @@ namespace DataLayer
 
                             try
                             {
-                                toupdate = toupdate + context.Database.ExecuteSqlCommand(sqlFull);
+                                context.Database.ExecuteSqlCommand(sqlFull);
                             }
-                            catch (Exception ex) { }
+                            catch (Exception ex)
+                            {
+                                CallLogVerbose(File_Id, MatchByString, ex.Message);
+                            }
                         }
                     }
+
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
                         context.Database.CommandTimeout = 0;
@@ -1819,8 +1835,17 @@ namespace DataLayer
                         sqlUpdatedRecords = sqlUpdatedRecords + "ReRun_SupplierImportFile_Id = '" + obj.File_Id.ToString() + "' ";
                         sqlUpdatedRecords = sqlUpdatedRecords + "AND ReRun_Batch = " + (obj.CurrentBatch).ToString() + " ";
                         sqlUpdatedRecords = sqlUpdatedRecords + "AND MatchedBy = " + priority.ToString() + ";";
-                        try { toupdate = context.Database.SqlQuery<int>(sqlUpdatedRecords).Single(); } catch (Exception ex) { CallLogVerbose(File_Id, MatchByString, ex.Message); }
+
+                        try
+                        {
+                            toupdate = context.Database.SqlQuery<int>(sqlUpdatedRecords).Single();
+                        }
+                        catch (Exception ex)
+                        {
+                            CallLogVerbose(File_Id, MatchByString, ex.Message);
+                        }
                     }
+
                     CallLogVerbose(File_Id, "MATCH", toupdate.ToString() + " Matches Found for Combination " + priority.ToString() + ".");
 
                     if ((obj.FileMode ?? "ALL") == "ALL" && totPriorities == curPriority)
@@ -1840,22 +1865,25 @@ namespace DataLayer
                         //}
                     }
                     retrn = true;
+
                     if (totPriorities == curPriority)
                     {
                         PLog.PercentageValue = 100;
                         USD.AddStaticDataUploadProcessLog(PLog);
                     }
+
                     curPriority = curPriority + 1;
                 }
                 //if (Match_Direct_Master)
                 //{
                 //    bool ismatchmasterdone = UpdateHotelMappingStatusDirectMaster(obj);
                 //}
+
                 return retrn;
             }
             catch (Exception e)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating hotel mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating hotel mapping" + Environment.NewLine + e.Message, ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
 
@@ -4550,6 +4578,7 @@ namespace DataLayer
                     RQ.PageNo = 0;
                     RQ.PageSize = int.MaxValue;
                     RQ.SupplierImportFile_Id = File_Id;
+                    //Getting Stg Data 
                     clsSTGHotel = staticdata.GetSTGRoomTypeData(RQ);
                     PLog.PercentageValue = 15;
                     USD.AddStaticDataUploadProcessLog(PLog);
