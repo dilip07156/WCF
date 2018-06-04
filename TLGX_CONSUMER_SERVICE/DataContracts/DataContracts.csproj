@@ -122,10 +122,12 @@
     <Compile Include="DC_Master_City.cs" />
     <Compile Include="DC_Master_Country.cs" />
     <Compile Include="DC_GooglePlaceNearBy.cs" />
+    <Compile Include="ML\DC_SRT_ML_Request_Broker.cs" />
     <Compile Include="ML\DC_SRT_ML_Request_Supervised_Semantic.cs" />
     <Compile Include="ML\DC_SRT_ML_Request_Semantic.cs" />
     <Compile Include="ML\DC_SRT_ML_Response.cs" />
     <Compile Include="ML\DC_SRT_ML_Request_Syntactic.cs" />
+    <Compile Include="ML\DC_SRT_ML_Response_Broker.cs" />
     <Compile Include="ML\DC_SRT_ML_Response_Supervised_Semantic.cs" />
     <Compile Include="ML\DC_SRT_ML_Response_Semantic.cs" />
     <Compile Include="ML\DC_SRT_ML_Response_Syntactic.cs" />
