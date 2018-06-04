@@ -35,7 +35,7 @@ namespace DataLayer
                             Key = KafkaInfo.Key,
                             Offset = KafkaInfo.Offset,
                             Partion = KafkaInfo.Partion,
-                            TimeStamp = KafkaInfo.TimeStamp,
+                            //TimeStamp = KafkaInfo.TimeStamp.get,
                             TopicPartion = KafkaInfo.TopicPartion,
                             TopicPartionOffset = KafkaInfo.TopicPartionOffset,
                             Create_User = KafkaInfo.Create_User,
@@ -89,7 +89,7 @@ namespace DataLayer
                         if (search.Status != KafkaInfo.Status && KafkaInfo.Status != "") { search.Status = KafkaInfo.Status; };
                         search.Key = KafkaInfo.Key;
                         search.Offset = KafkaInfo.Offset;
-                        search.TimeStamp = KafkaInfo.TimeStamp;
+                        //search.TimeStamp = KafkaInfo.TimeStamp;
                         search.Partion = KafkaInfo.Partion;
                         search.TopicPartion = KafkaInfo.TopicPartion;
                         search.TopicPartionOffset = KafkaInfo.TopicPartionOffset;
