@@ -122,10 +122,12 @@
     <Compile Include="DC_Master_City.cs" />
     <Compile Include="DC_Master_Country.cs" />
     <Compile Include="DC_GooglePlaceNearBy.cs" />
+    <Compile Include="ML\DC_SRT_ML_Request_Broker.cs" />
     <Compile Include="ML\DC_SRT_ML_Request_Supervised_Semantic.cs" />
     <Compile Include="ML\DC_SRT_ML_Request_Semantic.cs" />
     <Compile Include="ML\DC_SRT_ML_Response.cs" />
     <Compile Include="ML\DC_SRT_ML_Request_Syntactic.cs" />
+    <Compile Include="ML\DC_SRT_ML_Response_Broker.cs" />
     <Compile Include="ML\DC_SRT_ML_Response_Supervised_Semantic.cs" />
     <Compile Include="ML\DC_SRT_ML_Response_Semantic.cs" />
     <Compile Include="ML\DC_SRT_ML_Response_Syntactic.cs" />
@@ -175,6 +177,7 @@
     <Compile Include="ReadOnlyMessage.cs" />
     <Compile Include="Schedulers\DC_Supplier_Schedule.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
+    <Compile Include="STG\DC_Stg_Kafka.cs" />
     <Compile Include="STG\DC_STG_Mapping_Table_Ids.cs" />
     <Compile Include="STG\stg_SupplierCityMapping.cs" />
     <Compile Include="STG\stg_SupplierCountryMapping.cs" />

@@ -110,6 +110,7 @@
     <Compile Include="BL_Admin.cs" />
     <Compile Include="BL_FileTransfer.cs" />
     <Compile Include="BL_GeoLocation.cs" />
+    <Compile Include="BL_Kafka.cs" />
     <Compile Include="BL_Mapping.cs" />
     <Compile Include="BL_Pentaho.cs" />
     <Compile Include="BL_RefreshDistributionData.cs" />

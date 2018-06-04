@@ -110,6 +110,7 @@
     <Compile Include="IAdmin.cs" />
     <Compile Include="IConsumer.cs" />
     <Compile Include="IGeoLocation.cs" />
+    <Compile Include="IKafka.cs" />
     <Compile Include="IMapping.cs" />
     <Compile Include="IMasters.cs" />
     <Compile Include="IPentaho.cs" />

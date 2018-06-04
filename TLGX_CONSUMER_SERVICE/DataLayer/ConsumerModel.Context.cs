@@ -158,6 +158,7 @@ namespace DataLayer
         public virtual DbSet<Activity_SupplierCityDepartureCode> Activity_SupplierCityDepartureCode { get; set; }
         public virtual DbSet<vwMappingStats> vwMappingStats { get; set; }
         public virtual DbSet<m_SupplierImportAttributeValues> m_SupplierImportAttributeValues { get; set; }
+        public virtual DbSet<Stg_Kafka> Stg_Kafka { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

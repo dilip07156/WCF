@@ -116,6 +116,8 @@
         <EntityTypeShape EntityType="ConsumerModel.stg_SupplierCountryMapping" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.stg_SupplierHotelRoomMapping" Width="1.5" PointX="4.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.stg_SupplierProductMapping" Width="1.5" PointX="6.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Stg_Kafka" Width="1.5" PointX="0.75" PointY="6.75" />
+
       </Diagram>
       <Diagram DiagramId="d221783c70dd4103bbce9171d3ae9186" Name="SupplierApiCall" >
         <EntityTypeShape EntityType="ConsumerModel.Supplier_ApiCallLog" Width="1.5" PointX="0.75" PointY="0.75" />

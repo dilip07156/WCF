@@ -179,6 +179,7 @@
     </Compile>
     <Compile Include="GlobalErrorBehaviorAttribute.cs" />
     <Compile Include="GlobalErrorHandler.cs" />
+    <Compile Include="Kafka.cs" />
     <Compile Include="Mapping.cs" />
     <Compile Include="Masters.cs" />
     <Compile Include="Pentaho.cs" />
