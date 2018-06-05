@@ -28,12 +28,12 @@ namespace ConsumerSvc
                 return objBL.UpdateKafkaInfo(KafkaInfo);
             }
         }
-
-        public IList<DataContracts.STG.DC_Stg_Kafka> SelectKafkaInfo(string Row_Id)
+               
+        public List<DataContracts.STG.DC_Stg_Kafka> GetPollData()
         {
             using (BL_Kafka objBL = new BL_Kafka())
             {
-                return objBL.SelectKafkaInfo(Row_Id);
+                return objBL.GetPollData();
             }
         }
     }

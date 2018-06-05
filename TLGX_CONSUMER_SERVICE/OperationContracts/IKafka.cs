@@ -21,10 +21,10 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "UpdateKafka/Info", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataContracts.DC_Message UpdateKafkaInfo(DataContracts.STG.DC_Stg_Kafka KafkaInfo);
-
+      
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "SelectKafka/Info/{Row_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        IList<DataContracts.STG.DC_Stg_Kafka> SelectKafkaInfo(string Row_Id);
+        [WebInvoke(Method = "GET", UriTemplate = "GetPoll/Info", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DataContracts.STG.DC_Stg_Kafka> GetPollData();
     }
 }
