@@ -156,6 +156,15 @@ namespace DataContracts.Mapping
         public string CountryCode { get; set; }
 
 
+        //For ML
+        [DataMember]
+        public string Score { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+
+
 
     }
 

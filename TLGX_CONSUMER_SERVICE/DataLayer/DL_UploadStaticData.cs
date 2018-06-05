@@ -9,6 +9,10 @@ using DataContracts;
 using System.Data;
 using DataContracts.STG;
 using DataContracts.UploadStaticData;
+using System.Net;
+using System.Runtime.Serialization.Json;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace DataLayer
 {
@@ -2746,6 +2750,88 @@ namespace DataLayer
         }
         #endregion
 
+        #region Update SRT By ML
+        public DataContracts.DC_SRT_ML_Response_Broker DataHandler_UpdateSRTByML(DataContracts.DC_SRT_ML_Request_Broker RQ)
+        {
+            DataContracts.DC_SRT_ML_Response_Broker _objRS = new DataContracts.DC_SRT_ML_Response_Broker();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_Broker"]);
+                    var proxyAddress = System.Configuration.ConfigurationManager.AppSettings["ProxyUri"];
+
+                    if (proxyAddress != null)
+                    {
+                        WebProxy myProxy = new WebProxy();
+                        Uri newUri = new Uri(proxyAddress);
+                        // Associate the newUri object to 'myProxy' object so that new myProxy settings can be set.
+                        myProxy.Address = newUri;
+                        // Create a NetworkCredential object and associate it with the 
+                        // Proxy property of request object.
+                        //myProxy.Credentials = new NetworkCredential(username, password);
+                        request.Proxy = myProxy;
+                    }
+
+                    request.Method = "POST";
+                    request.ContentType = "application/json";
+                    request.KeepAlive = false;
+                    //request.Credentials = CredentialCache.DefaultCredentials;
+
+                    DataContractJsonSerializer serializerToUpload = new DataContractJsonSerializer(typeof(DataContracts.DC_SRT_ML_Request_Broker));
+
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        using (var reader = new StreamReader(memoryStream))
+                        {
+                            serializerToUpload.WriteObject(memoryStream, RQ);
+                            memoryStream.Position = 0;
+                            string body = reader.ReadToEnd();
+
+                            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                            {
+                                streamWriter.Write(body);
+                            }
+                        }
+                    }
+
+                    var response = request.GetResponse();
+
+                    if (((System.Net.HttpWebResponse)response).StatusCode != HttpStatusCode.OK)
+                    {
+                        _objRS = null;
+                    }
+                    else
+                    {
+                        var stream = response.GetResponseStream();
+                        var encoding = ASCIIEncoding.UTF8;
+                        using (var reader = new System.IO.StreamReader(response.GetResponseStream(), encoding))
+                        {
+                            string responseText = reader.ReadToEnd();
+                            _objRS = JsonConvert.DeserializeObject<DataContracts.DC_SRT_ML_Response_Broker>(responseText);
+                        }
+                        //deserialize here
+
+
+                        stream = null;
+                    }
+
+                    serializerToUpload = null;
+
+                    response.Dispose();
+                    response = null;
+                    request = null;
+                }
+                return _objRS;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            //return _objRS;
+        }
+        #endregion
 
     }
 }
