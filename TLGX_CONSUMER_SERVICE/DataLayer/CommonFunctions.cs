@@ -91,7 +91,7 @@ namespace DataLayer
         {
 
             string returnString = string.Empty;
-            List<DC_SupplierRoomName_AttributeList>  AttributeList = new List<DC_SupplierRoomName_AttributeList>();
+            List<DC_SupplierRoomName_AttributeList> AttributeList = new List<DC_SupplierRoomName_AttributeList>();
             string TX_Value = string.Empty;
             string SX_Value = string.Empty;
 
@@ -240,7 +240,7 @@ namespace DataLayer
         {
             string text = OriginalValue;
 
-            if(string.IsNullOrWhiteSpace(text))
+            if (string.IsNullOrWhiteSpace(text))
             {
                 return text;
             }
@@ -258,9 +258,12 @@ namespace DataLayer
             #region ExtraToBeRemoved
             foreach (var extra in HardRemove)
             {
-                if(extra.Trim().Length > 0)
+                if (!string.IsNullOrWhiteSpace(extra))
                 {
-                    text = (" " + text + " ").Replace(" " + extra.ToUpper() + " ", " ");
+                    if (extra.Trim().Length > 0)
+                    {
+                        text = (" " + text + " ").Replace(" " + extra.ToUpper() + " ", " ");
+                    }
                 }
             }
             #endregion
@@ -581,7 +584,7 @@ namespace DataLayer
             #endregion
 
             #region Replace 1 to 10 with words
-            if(bGeneralisedNumbers)
+            if (bGeneralisedNumbers)
             {
                 roomWords = text.Split(' ');
                 foreach (string word in roomWords)
@@ -603,9 +606,12 @@ namespace DataLayer
             #region HardRemoveAgain
             foreach (var extra in HardRemove)
             {
-                if (extra.Trim().Length > 0)
+                if (!string.IsNullOrWhiteSpace(extra))
                 {
-                    text = text.Replace(extra.ToUpper(), " ");
+                    if (extra.Trim().Length > 0)
+                    {
+                        text = text.Replace(extra.ToUpper(), " ");
+                    }
                 }
             }
             #endregion
@@ -651,7 +657,7 @@ namespace DataLayer
             SX_text = text;
 
             //Retain original value if the post CleanUp data is blank / insufficient.
-            if(text.Length <= 1)
+            if (text.Length <= 1)
             {
                 text = OriginalValue.ToUpper();
             }
