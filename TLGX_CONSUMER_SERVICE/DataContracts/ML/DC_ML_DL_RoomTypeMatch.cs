@@ -30,11 +30,11 @@ namespace DataContracts.ML
         public string SupplierRoomCreateUser { get; set; }								
         public string SupplierRoomEditDate { get; set; }								
         public string SupplierRoomEditUser { get; set; }								
-        public string SupplierRoomMaxAdults { get; set; }								
-        public string SupplierRoomMaxChild { get; set; }								
-        public string SupplierRoomMaxInfants { get; set; }								
-        public string MaxGuestOccupancy { get; set; }									
-        public string SupplierRoomQuantity { get; set; }								
+        public int SupplierRoomMaxAdults { get; set; }								
+        public int SupplierRoomMaxChild { get; set; }								
+        public int SupplierRoomMaxInfants { get; set; }								
+        public int MaxGuestOccupancy { get; set; }									
+        public int SupplierRoomQuantity { get; set; }								
         public string SupplierRoomRatePlan { get; set; }								
         public string RatePlanCode { get; set; }										
         public string SupplierRoomSupplierProductName { get; set; }						
