@@ -6800,7 +6800,7 @@ namespace DataLayer
                     sbprodMapUpadate.Append(" , ASRTM.Edit_Date = GETDATE() ");
                     sbprodMapUpadate.Append(" , ASRTM.Edit_User = 'TLGX_DataHandler' ");
                     int intUpdateCount = 0;
-                    #region ml
+                    #region Implementing ML Code
                     /***************************** Implementing ML Code *************************************************/
                     StringBuilder sbprodMapSelectStatement = new StringBuilder();
                     sbprodMapSelectStatement.Append(@"SELECT  
