@@ -5678,13 +5678,30 @@ namespace DataLayer
 
             using (ConsumerEntities context = new ConsumerEntities())
             {
-                var res = (from a in context.Accommodation_SupplierRoomTypeMapping
-                           where a.ReRun_SupplierImportFile_Id == obj.File_Id && ((a.ReRun_Batch == obj.CurrentBatch && (obj.CurrentBatch ?? 0) != 0) || ((obj.CurrentBatch ?? 0) == 0))
-                           select new DC_SupplierRoomType_TTFU_RQ
-                           {
-                               Acco_RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
-                               Edit_User = a.Edit_User
-                           }).ToList();
+                if ((obj.CurrentBatch ?? 0) != 0)
+                {
+                    var res = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
+                               where a.ReRun_SupplierImportFile_Id == obj.File_Id && a.ReRun_Batch == obj.CurrentBatch
+                               select new DC_SupplierRoomType_TTFU_RQ
+                               {
+                                   Acco_RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                                   Edit_User = a.Edit_User
+                               }).ToList();
+
+                    return res;
+                }
+                else
+                {
+                    var res = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
+                               where a.ReRun_SupplierImportFile_Id == obj.File_Id && (obj.CurrentBatch ?? 0) == 0
+                               select new DC_SupplierRoomType_TTFU_RQ
+                               {
+                                   Acco_RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                                   Edit_User = a.Edit_User
+                               }).ToList();
+
+                    return res;
+                }
                 //var res = (from a in context.Accommodation_SupplierRoomTypeMapping
                 //           join j in context.STG_Mapping_TableIds on a.Accommodation_SupplierRoomTypeMapping_Id equals j.Mapping_Id
                 //           //join s in context.stg_SupplierHotelRoomMapping on j.STG_Id equals s.stg_SupplierHotelRoomMapping_Id  //a.stg_SupplierHotelRoomMapping_Id equals s.stg_SupplierHotelRoomMapping_Id
@@ -5694,7 +5711,6 @@ namespace DataLayer
                 //               Acco_RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
                 //               Edit_User = a.Edit_User
                 //           }).ToList();
-                return res;
             }
         }
 
@@ -6669,9 +6685,9 @@ namespace DataLayer
                                                 ASRTM.StateCode,
                                                 ASRTM.CountryName,
                                                 ASRTM.CountryCode
-                                                FROM Accommodation_SupplierRoomTypeMapping ASRTM
-                                                JOIN Accommodation ACCO ON ASRTM.Accommodation_Id = ACCO.Accommodation_Id
-                                                LEFT JOIN Accommodation_RoomInfo ARI ON ASRTM.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id
+                                                FROM Accommodation_SupplierRoomTypeMapping ASRTM WITH (NOLOCK) 
+                                                JOIN Accommodation ACCO WITH (NOLOCK) ON ASRTM.Accommodation_Id = ACCO.Accommodation_Id
+                                                LEFT JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) ON ASRTM.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id
                                                 WHERE ");
                     sbGetAllSupplierRooms.Append("ASRTM.ReRun_SupplierImportFile_Id = '" + Convert.ToString(supdata.File_Id) + "' AND ");
                     sbGetAllSupplierRooms.Append("ASRTM.Supplier_Id = '" + Convert.ToString(curSupplier_Id) + "' AND ");
@@ -6852,6 +6868,23 @@ namespace DataLayer
                     CallLogVerbose(File_Id, "MATCH", ex.Message);
                 }
                 CallLogVerbose(File_Id, "MATCH", "Received response from Broker API");
+
+                if (RS_Broker != null)
+                {
+                    if (RS_Broker.HotelRoomTypeMappingResponses != null)
+                    {
+                        CallLogVerbose(File_Id, "MATCH", "Returned Hotel RoomType Mapping Responses count : " + RS_Broker.HotelRoomTypeMappingResponses.Count().ToString());
+                    }
+                    else
+                    {
+                        CallLogVerbose(File_Id, "MATCH", "Returned NULL Hotel RoomType Mapping Responses.");
+                    }
+                }
+                else
+                {
+                    CallLogVerbose(File_Id, "MATCH", "Returned NULL from Broker.");
+                }
+
                 #endregion
 
                 PLog.PercentageValue = 70;
