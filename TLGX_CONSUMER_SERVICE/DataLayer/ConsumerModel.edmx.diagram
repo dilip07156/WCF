@@ -167,9 +167,9 @@
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierCityDepartureCode" Width="1.5" PointX="0.75" PointY="19.75" />
       </Diagram>
       <Diagram DiagramId="28746cebad1b4c418813bb18d8ac1b56" Name="ZoneManager" ZoomLevel="109" >
-        <EntityTypeShape EntityType="ConsumerModel.ZoneCity_Mapping" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.ZoneProduct_Mapping" Width="1.5" PointX="4.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.m_ZoneMaster" Width="1.5" PointX="0.5" PointY="0.875" />
+        <EntityTypeShape EntityType="ConsumerModel.m_ZoneMaster" Width="1.5" PointX="2.75" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.ZoneCity_Mapping" Width="1.5" PointX="0.5" PointY="1.375" />
       </Diagram>
       <Diagram DiagramId="79cb87589df34d7e908608ff5f8879f5" Name="Static Data" >
         <EntityTypeShape EntityType="ConsumerModel.SupplierEntity" Width="1.5" PointX="0.75" PointY="0.75" />

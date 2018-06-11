@@ -16,17 +16,19 @@ namespace DataLayer
     {
         public System.Guid Zone_id { get; set; }
         public string Zone_Type { get; set; }
+        public string Zone_SubType { get; set; }
         public string Zone_Name { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
         public string Status { get; set; }
         public bool IsActive { get; set; }
+        public Nullable<decimal> Zone_Radius { get; set; }
         public System.Data.Entity.Spatial.DbGeography Geography { get; set; }
         public string GooglePlace_Id { get; set; }
         public string Create_User { get; set; }
         public Nullable<System.DateTime> Create_Date { get; set; }
         public string Edit_User { get; set; }
         public Nullable<System.DateTime> Edit_Date { get; set; }
-        public Nullable<decimal> Zone_Radius { get; set; }
+        public Nullable<System.Guid> Country_Id { get; set; }
     }
 }

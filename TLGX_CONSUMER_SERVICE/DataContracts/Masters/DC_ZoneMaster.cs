@@ -14,16 +14,16 @@ namespace DataContracts.Masters
     public class DC_ZoneRQ
     {
         [DataMember]
-        public Guid Country_id { get; set; }
+        public Guid? Country_id { get; set; }
         [DataMember]
-        public Guid ZoneCityMapping_Id { get; set; }
+        public Guid? ZoneCityMapping_Id { get; set; }
 
         [DataMember]
-        public Guid ZoneProductMapping_Id { get; set; }
+        public Guid? ZoneProductMapping_Id { get; set; }
         [DataMember]
-        public Guid City_id { get; set; }
+        public Guid? City_id { get; set; }
         [DataMember]
-        public Guid Zone_id { get; set; }
+        public Guid? Zone_id { get; set; }
         [DataMember]
         public string Zone_Type { get; set; }
         [DataMember]
@@ -58,6 +58,8 @@ namespace DataContracts.Masters
         public double? Zone_Radius { get; set; }
         [DataMember]
         public bool? Included { get; set; }
+        [DataMember]
+        public string Zone_SubType { get; set; }
 
     }
     [DataContract]
@@ -66,9 +68,9 @@ namespace DataContracts.Masters
         [DataMember]
         public Guid Zone_id { get; set; }
         [DataMember]
-        public Guid City_id { get; set; }
+        public Guid? City_id { get; set; }
         [DataMember]
-        public Guid Country_id { get; set; }
+        public Guid? Country_id { get; set; }
         [DataMember]
         public string Zone_Type { get; set; }
         [DataMember]
@@ -91,7 +93,9 @@ namespace DataContracts.Masters
         public double? Zone_Radius { get; set; }
         [DataMember]
         public int? TotalRecords { get; set; }
-        
+        [DataMember]
+        public string Zone_SubType { get; set; }
+
     }
     [DataContract]
     public class DC_ZoneCitiesSearch
