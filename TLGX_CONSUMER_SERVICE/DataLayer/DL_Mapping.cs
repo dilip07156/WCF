@@ -14,6 +14,7 @@ using System.Runtime.Serialization.Json;
 using Newtonsoft.Json;
 using DataContracts.STG;
 using DataContracts;
+using System.Globalization;
 
 namespace DataLayer
 {
@@ -4280,6 +4281,7 @@ namespace DataLayer
         #endregion
 
         #region Supplier Room Type Mapping
+
         public IList<DataContracts.Mapping.DC_Accomodation_SupplierRoomTypeMapping> GetAccomodationSupplierRoomTypeMapping(int PageNo, int PageSize, Guid Accomodation_Id, Guid Supplier_Id)
         {
             try
@@ -6553,560 +6555,784 @@ namespace DataLayer
             return true;
         }
 
+        /// <summary>
+        /// Supplier Room Type matching batch wise
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public bool UpdateRoomTypeMappingStatus(DC_MappingMatch obj)
         {
-            bool retrn = false;
-            //List<DC_Accomodation_ProductMapping> CMS = obj.lstHotelMapping;
-            DataContracts.Masters.DC_Supplier supdata = new DataContracts.Masters.DC_Supplier();
-            supdata = obj.SupplierDetail;
-            List<DC_SupplierImportAttributeValues> configs = obj.lstConfigs;
-            string configWhere = "";
-            string curSupplier = "";
+            DataContracts.Masters.DC_Supplier supdata = obj.SupplierDetail;
             Guid? curSupplier_Id = Guid.Empty;
-            configWhere = "";
-            Guid File_Id = new Guid();
-            File_Id = Guid.Parse(obj.File_Id.ToString());
-
-            int totPriorities = obj.TotalPriorities;
-            int curPriority = obj.CurrentPriority;
-            int totConfigs = 0;
-            int curConfig = 0;
-            if (totPriorities <= 0)
-                totPriorities = 1;
-            int PerForEachPriority = 60 / totPriorities;
-
+            string curSupplier = string.Empty;
             if (supdata != null)
             {
                 curSupplier = supdata.Name;
                 curSupplier_Id = supdata.Supplier_Id;
             }
+            Guid File_Id = obj.File_Id ?? Guid.NewGuid();
 
-            List<DC_Accomodation_SupplierRoomTypeMapping> ret = new List<DC_Accomodation_SupplierRoomTypeMapping>();
             try
             {
-                #region Commented Code
-                //using (ConsumerEntities context = new ConsumerEntities())
-                //{
-                //if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
-                //{
-                //    List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
-                //    DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
-
-                //    lstSMT = (from a in context.Accommodation_SupplierRoomTypeMapping
-                //              join j in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_SupplierRoomTypeMapping_Id equals j.Mapping_Id into jact
-                //              from jdact in jact.DefaultIfEmpty()
-                //              where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
-                //              && (a.MappingStatus == "UNMAPPED" || a.Accommodation_RoomInfo_Id == null)
-                //              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
-                //              {
-                //                  STG_Mapping_Table_Id = Guid.NewGuid(),
-                //                  File_Id = obj.File_Id,
-                //                  Mapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
-                //                  STG_Id = null,
-                //                  Batch = obj.CurrentBatch ?? 1
-                //              }).Take(250).ToList();
-                //    if (lstSMT.Count > 0)
-                //    {
-                //        //idinsert = DeleteSTGMappingTableIDs(File_Id);
-                //        bool idinsert = AddSTGMappingTableIDs(lstSMT);
-                //    }
-                //}
-
-                //var prodMap = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
-                //                   //join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_SupplierRoomTypeMapping_Id equals s.Mapping_Id
-                //               where a.ReRun_SupplierImportFile_Id == supdata.File_Id && a.Accommodation_RoomInfo_Id == null && a.Supplier_Id == curSupplier_Id && a.Accommodation_Id != null
-                //               && a.MappingStatus.Trim().ToUpper() == "UNMAPPED" && a.ReRun_Batch == obj.CurrentBatch
-                //               select a);
-
-                // var prodMapSearch = prodMap.ToList();
-                #endregion
-
-                StringBuilder sbprodMapSelect = new StringBuilder();
-                StringBuilder sbprodMapWhere = new StringBuilder();
-
-
-                StringBuilder sbprodMapJoin = new StringBuilder();
-                StringBuilder sbprodMapUpadate = new StringBuilder();
-
-
-
-                sbprodMapSelect.Append(@" FROM Accommodation_SupplierRoomTypeMapping ASRTM ");
-
-                sbprodMapWhere.Append(" WHERE ASRTM.Accommodation_Id IS NOT NULL AND ASRTM.Accommodation_RoomInfo_Id IS NULL AND");
-                sbprodMapWhere.Append(" ASRTM.ReRun_SupplierImportFile_Id = '" + Convert.ToString(supdata.File_Id) + "' AND ");
-                sbprodMapWhere.Append(" ASRTM.Supplier_Id = '" + Convert.ToString(curSupplier_Id) + "' AND ");
-                sbprodMapWhere.Append(" UPPER(LTRIM(RTRIM(ASRTM.MappingStatus))) = 'UNMAPPED' ");
-                sbprodMapWhere.Append(" AND ASRTM.ReRun_Batch = '" + Convert.ToString(obj.CurrentBatch) + "' ");
-
-
-                //List<Accommodation_SupplierRoomTypeMapping> prodMapSearch = new List<Accommodation_SupplierRoomTypeMapping>();
-                //try { prodMapSearch = context.Database.SqlQuery<Accommodation_SupplierRoomTypeMapping>(sbprodMap.ToString()).ToList(); } catch (Exception ex) { }
-
-
-
-                /*if (obj.IsBatched)
-                {
-                    prodMap = (from a in prodMap
-                               join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_SupplierRoomTypeMapping_Id equals s.Mapping_Id
-                               //join s in context.stg_SupplierHotelRoomMapping.AsNoTracking() on a.stg_SupplierHotelRoomMapping_Id equals s.stg_SupplierHotelRoomMapping_Id
-                               where s.Batch == obj.CurrentBatch
-                               select a);
-                }*/
-                bool isRoomNameCheck = false;
-                totConfigs = configs.Count;
-                curConfig = 0;
-
                 PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
                 PLog.SupplierImportFile_Id = obj.File_Id;
                 PLog.Step = "MATCH";
                 PLog.Status = "MATCHING";
-                PLog.CurrentBatch = curPriority;
-                PLog.TotalBatch = totPriorities;
-                CallLogVerbose(File_Id, "MATCH", "Applying Matching Combination " + curPriority.ToString() + " out of Total " + totPriorities + " Combinations.");
+                PLog.CurrentBatch = obj.CurrentBatch ?? 0;
+                PLog.TotalBatch = obj.TotalBatch ?? 0;
+                PLog.PercentageValue = 10;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
-                foreach (DC_SupplierImportAttributeValues config in configs)
-                {
-                    configWhere = configWhere + " " + config.AttributeValue.Replace("Accommodation_RoomInfo.", "").Trim() + ",";
-                }
-                configWhere = configWhere.Remove(configWhere.Length - 1);
-                CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);
+                #region Update all review records to UnMapped in the running batch - Not required as of now
 
+                //StringBuilder sbUpdateRecordsToUnMap = new StringBuilder();
+                //sbUpdateRecordsToUnMap.Append("Update Accommodation_SupplierRoomTypeMapping Set MappingStatus = 'UNMAPPED' WHERE ");
+                //sbUpdateRecordsToUnMap.Append("ReRun_SupplierImportFile_Id = '" + Convert.ToString(supdata.File_Id) + "' AND ");
+                //sbUpdateRecordsToUnMap.Append("Supplier_Id = '" + Convert.ToString(curSupplier_Id) + "' AND ");
+                //sbUpdateRecordsToUnMap.Append("MappingStatus = 'REVIEW' AND ");
+                //sbUpdateRecordsToUnMap.Append("ReRun_Batch = '" + Convert.ToString(obj.CurrentBatch) + "' ");
+                //try
+                //{
+                //    using (ConsumerEntities context = new ConsumerEntities())
+                //    {
+                //        var UpdateCount = context.Database.ExecuteSqlCommand(sbUpdateRecordsToUnMap.ToString());
+                //    }
+                //}
+                //catch (Exception ex)
+                //{
+                //    CallLogVerbose(File_Id, "MATCH", ex.Message);
+                //}
 
-                sbprodMapJoin.Append(" JOIN Accommodation_RoomInfo ARI ON ASRTM.Accommodation_Id = ARI.Accommodation_Id");
-                foreach (DC_SupplierImportAttributeValues config in configs)
-                {
-                    curConfig = curConfig + 1;
-                    string CurrConfig = "";
-                    CurrConfig = config.AttributeValue.Replace("Accommodation_RoomInfo.", "").Trim().ToUpper();
-                    //CallLogVerbose(File_Id, "MATCH", "Applying Check for " + CurrConfig);
-                    if (CurrConfig == "ROOMCATEGORY")
-                    {
-                        isRoomNameCheck = true;
-
-
-
-                        sbprodMapWhere.Append(@"  AND
-	                                            ((CASE WHEN ASRTM.Tx_ReorderedName IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ASRTM.Tx_ReorderedName))) END) 
-	                                            = (CASE WHEN ARI.RoomCategory IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ARI.RoomCategory))) END) OR
-	                                            (CASE WHEN ASRTM.Tx_StrippedName IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ASRTM.Tx_StrippedName))) END) 
-	                                            = (CASE WHEN ARI.RoomCategory IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ARI.RoomCategory))) END) OR
-	                                            (CASE WHEN ASRTM.Tx_ReorderedName IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ASRTM.MappingStatus))) END) 
-	                                            = (CASE WHEN ARI.RoomCategory IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ARI.RoomCategory))) END) OR
-	                                            (CASE WHEN ASRTM.SupplierRoomName IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ASRTM.SupplierRoomName))) END) 
-	                                            = (CASE WHEN ARI.RoomCategory IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ARI.RoomCategory))) END) )");
-
-                        #region Comment Code
-
-                        //prodMapSearch = (from a in prodMapSearch
-                        //                 join ac in context.Accommodation_RoomInfo.AsNoTracking() on a.Accommodation_Id equals ac.Accommodation_Id
-                        //                 where (((a.Tx_ReorderedName ?? string.Empty).ToString().Trim().ToUpper()
-                        //                        == (ac.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
-                        //                        ||
-                        //                        ((a.Tx_StrippedName ?? string.Empty).ToString().Trim().ToUpper()
-                        //                        == (ac.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
-                        //                        ||
-                        //                        ((a.TX_RoomName ?? string.Empty).ToString().Trim().ToUpper()
-                        //                        == (ac.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
-                        //                        ||
-                        //                        ((a.SupplierRoomName ?? string.Empty).ToString().Trim().ToUpper()
-                        //                        == (ac.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
-                        //                        )
-                        //                 select a).Distinct().ToList();
-                        #endregion
-                    }
-
-                    //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
-                    PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + ((PerForEachPriority / totConfigs) * curConfig);
-                    USD.AddStaticDataUploadProcessLog(PLog);
-                }
-                List<DC_Accommodation_SupplierRoomTypeMap_SearchRS> res = new List<DC_Accommodation_SupplierRoomTypeMap_SearchRS>();
+                #endregion
 
                 List<DC_Accommodation_SupplierRoomTypeMap_SearchRS> resSupplierRoomTypeMap = new List<DC_Accommodation_SupplierRoomTypeMap_SearchRS>();
-                if (isRoomNameCheck)
+                List<DC_SupplierRoomTypeAttributes> AttributeList = new List<DC_SupplierRoomTypeAttributes>();
+                DataContracts.DC_SRT_ML_Request_Broker RQ_Broker = new DataContracts.DC_SRT_ML_Request_Broker();
+                DataContracts.DC_SRT_ML_Response_Broker RS_Broker = new DataContracts.DC_SRT_ML_Response_Broker();
+
+                CallLogVerbose(File_Id, "MATCH", "Fetch All the UnMapped/Review room data in the running batch");
+                #region Fetch All the UnMapped/Review room data in the running batch
+                try
                 {
-                    #region Commented Code
-
-                    //if (totPriorities == curPriority)
-                    //{
-                    //    PLog.PercentageValue = 65;
-                    //    USD.AddStaticDataUploadProcessLog(PLog);
-                    //}
-
-
-                    //sbprodMapWhere.Append(" AND ASRTM.Accommodation_RoomInfo_Id IS NOT NULL ");
-
-
-                    //res = (from a in prodMapSearch
-                    //       select new DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS
-                    //       {
-                    //           Accommodation_SupplierRoomTypeMapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
-                    //           Accommodation_Id = a.Accommodation_Id,
-                    //           Accommodation_RoomInfo_Id = a.Accommodation_RoomInfo_Id,
-                    //           SupplierProductName = a.SupplierProductName,
-                    //           SupplierName = a.SupplierName,
-                    //           SupplierProductId = a.SupplierProductId,
-                    //           SupplierRoomCategory = a.SupplierRoomCategory,
-                    //           SupplierRoomId = a.SupplierRoomId,
-                    //           SupplierRoomName = a.SupplierRoomName,
-                    //           Supplier_Id = a.Supplier_Id,
-                    //           Tx_ReorderedName = a.Tx_ReorderedName,
-                    //           TX_RoomName = a.TX_RoomName,
-                    //           Tx_StrippedName = a.Tx_StrippedName,
-                    //           MappingStatus = a.MappingStatus,
-                    //           MapId = a.MapId,
-                    //           stg_SupplierHotelRoomMapping_Id = a.stg_SupplierHotelRoomMapping_Id
-
-                    //       }).Distinct().ToList();
-
-
-                    //CallLogVerbose(File_Id, "MATCH", "Looking for Match in Master Data for Matching Combination " + curPriority.ToString() + ".");
-                    // res = res.Select(c =>
-                    //{
-                    //    c.Accommodation_RoomInfo_Id = (context.Accommodation_RoomInfo.AsNoTracking()
-                    //                    .Where(s => (
-                    //                                    ((isRoomNameCheck && (((c.Tx_ReorderedName ?? string.Empty).ToString().Trim().ToUpper()
-                    //                            == (s.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
-                    //                            ||
-                    //                            ((c.Tx_StrippedName ?? string.Empty).ToString().Trim().ToUpper()
-                    //                            == (s.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
-                    //                            ||
-                    //                            ((c.TX_RoomName ?? string.Empty).ToString().Trim().ToUpper()
-                    //                            == (s.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
-                    //                            ||
-                    //                            ((c.SupplierRoomName ?? string.Empty).ToString().Trim().ToUpper()
-                    //                            == (s.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
-                    //                            )) || (!isRoomNameCheck))
-                    //                                )
-                    //                           )
-                    //                    .Select(s1 => s1.Accommodation_RoomInfo_Id)
-                    //                    .FirstOrDefault()
-                    //                    );
-                    //    return c;
-                    //}).ToList();
-
-                    //if (totPriorities == curPriority)
-                    //{
-                    //    PLog.PercentageValue = 70;
-                    //    USD.AddStaticDataUploadProcessLog(PLog);
-                    //}
-
-                    //CallLogVerbose(File_Id, "MATCH", "Setting Appropriate Status.");
-                    //res.RemoveAll(p => p.Accommodation_RoomInfo_Id == Guid.Empty);
-
-                    #endregion
-
-                    //Update Query
-                    sbprodMapUpadate.Append("UPDATE ASRTM SET ASRTM.MappingStatus ='REVIEW' , ASRTM.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id ");
-                    sbprodMapUpadate.Append(" , ASRTM.Edit_Date = GETDATE() ");
-                    sbprodMapUpadate.Append(" , ASRTM.Edit_User = 'TLGX_DataHandler' ");
-                    int intUpdateCount = 0;
-                    #region Implementing ML Code
-                    /***************************** Implementing ML Code *************************************************/
-                    StringBuilder sbprodMapSelectStatement = new StringBuilder();
-                    sbprodMapSelectStatement.Append(@"SELECT  
-                                                        ASRTM.MapId,  ASRTM.Accommodation_SupplierRoomTypeMapping_Id,
-                                                        ASRTM.SupplierRoomId, ASRTM.SupplierRoomTypeCode,
-                                                        ASRTM.SupplierRoomName,ASRTM.TX_RoomName,
-                                                        ASRTM.SupplierRoomCategory,ASRTM.SupplierRoomCategoryId,
-                                                        ASRTM.MaxAdults,ASRTM.MaxChild,ASRTM.MaxInfants,
-                                                        ASRTM.MaxGuestOccupancy,ASRTM.Quantity,
-                                                        ASRTM.RatePlan,ASRTM.RatePlanCode,
-                                                        ASRTM.SupplierProductName,ASRTM.SupplierProductId,
-                                                        ASRTM.Tx_StrippedName,ASRTM.Tx_ReorderedName,
-                                                        ASRTM.MappingStatus,ASRTM.Accommodation_RoomInfo_Id,
-                                                        ASRTM.RoomSize,ASRTM.BathRoomType,
-                                                        ASRTM.RoomViewCode,ASRTM.FloorName,
-                                                        ASRTM.FloorNumber,ASRTM.Amenities,
-                                                        ASRTM.RoomLocationCode,ASRTM.ChildAge,
-                                                        ASRTM.ExtraBed,ASRTM.Bedrooms,
-                                                        ASRTM.Smoking,ASRTM.BedTypeCode,
-                                                        ASRTM.MinGuestOccupancy,ASRTM.PromotionalVendorCode,
-                                                        ASRTM.BeddingConfig,
-                                                        Acco.CompanyHotelID ");
-
-                    StringBuilder sbprodMapWhereStatement = new StringBuilder();
-                    StringBuilder sbprodMapJoinStatement = new StringBuilder();
-
-
-                    sbprodMapSelectStatement.Append(@" FROM Accommodation_SupplierRoomTypeMapping ASRTM ");
-
-                    sbprodMapJoinStatement.Append(" JOIN Accommodation_RoomInfo ARI ON ASRTM.Accommodation_Id = ARI.Accommodation_Id");
-                    sbprodMapJoinStatement.Append(" LEFT JOIN Accommodation Acco ON ASRTM.Accommodation_Id = Acco.Accommodation_Id");
-
-
-
-                    sbprodMapWhereStatement.Append(" WHERE ASRTM.Accommodation_Id IS NOT NULL AND ASRTM.Accommodation_RoomInfo_Id IS NULL AND");
-                    sbprodMapWhereStatement.Append(" ASRTM.ReRun_SupplierImportFile_Id = '" + Convert.ToString(supdata.File_Id) + "' AND ");
-                    sbprodMapWhereStatement.Append(" ASRTM.Supplier_Id = '" + Convert.ToString(curSupplier_Id) + "' AND ");
-                    sbprodMapWhereStatement.Append(" UPPER(LTRIM(RTRIM(ASRTM.MappingStatus))) = 'UNMAPPED' ");
-                    sbprodMapWhereStatement.Append(" AND ASRTM.ReRun_Batch = '" + Convert.ToString(obj.CurrentBatch) + "' ");
-
+                    StringBuilder sbGetAllSupplierRooms = new StringBuilder();
+                    sbGetAllSupplierRooms.Append(@"SELECT  
+                                                ASRTM.MapId, 
+                                                ASRTM.Accommodation_SupplierRoomTypeMapping_Id,
+                                                ASRTM.SupplierRoomId, 
+                                                ASRTM.SupplierRoomTypeCode,
+                                                ASRTM.SupplierRoomName, 
+                                                ASRTM.TX_RoomName,
+                                                ASRTM.SupplierRoomCategory, 
+                                                ASRTM.SupplierRoomCategoryId,
+                                                ASRTM.MaxAdults, 
+                                                ASRTM.MaxChild,
+                                                ASRTM.MaxInfants,
+                                                ASRTM.MaxGuestOccupancy,
+                                                ASRTM.Quantity,
+                                                ASRTM.RatePlan,
+                                                ASRTM.RatePlanCode,
+                                                ASRTM.SupplierProductName,
+                                                ASRTM.SupplierProductId,
+                                                ASRTM.Tx_StrippedName,
+                                                ASRTM.Tx_ReorderedName,
+                                                ASRTM.MappingStatus,
+                                                ASRTM.Accommodation_RoomInfo_Id,
+                                                ASRTM.RoomSize,
+                                                ASRTM.BathRoomType,
+                                                ASRTM.RoomViewCode,
+                                                ASRTM.FloorName,
+                                                ASRTM.FloorNumber,
+                                                ASRTM.Amenities,
+                                                ASRTM.RoomLocationCode,
+                                                ASRTM.ChildAge,
+                                                ASRTM.ExtraBed,
+                                                ASRTM.Bedrooms,
+                                                ASRTM.Smoking,
+                                                ASRTM.BedTypeCode,
+                                                ASRTM.MinGuestOccupancy,
+                                                ASRTM.PromotionalVendorCode,
+                                                ASRTM.BeddingConfig,
+                                                Convert(varchar,ACCO.CompanyHotelID) AS CommonProductId,
+                                                ACCO.Accommodation_Id,
+                                                ASRTM.ReRun_SupplierImportFile_Id AS ReRunSupplierImporrtFile_Id,
+                                                ASRTM.Supplier_Id,
+                                                ASRTM.SupplierName,
+                                                ISNULL(ASRTM.ReRun_Batch,0) as ReRunBatch,
+                                                ISNULL(ASRTM.Batch,0) as Batch,
+                                                ACCO.HotelName as ProductName,
+                                                ACCO.Location,
+                                                ARI.RoomName as Accommodation_RoomInfo_Name,
+                                                ASRTM.SupplierProvider,
+                                                ASRTM.CityName,
+                                                ASRTM.CityCode,
+                                                ASRTM.StateName,
+                                                ASRTM.StateCode,
+                                                ASRTM.CountryName,
+                                                ASRTM.CountryCode
+                                                FROM Accommodation_SupplierRoomTypeMapping ASRTM
+                                                JOIN Accommodation ACCO ON ASRTM.Accommodation_Id = ACCO.Accommodation_Id
+                                                LEFT JOIN Accommodation_RoomInfo ARI ON ASRTM.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id
+                                                WHERE ");
+                    sbGetAllSupplierRooms.Append("ASRTM.ReRun_SupplierImportFile_Id = '" + Convert.ToString(supdata.File_Id) + "' AND ");
+                    sbGetAllSupplierRooms.Append("ASRTM.Supplier_Id = '" + Convert.ToString(curSupplier_Id) + "' AND ");
+                    sbGetAllSupplierRooms.Append("ASRTM.MappingStatus IN ('REVIEW','UNMAPPED','ADD') AND ");
+                    sbGetAllSupplierRooms.Append("ASRTM.ReRun_Batch = '" + Convert.ToString(obj.CurrentBatch) + "' ");
 
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        StringBuilder sbfinalQuery = new StringBuilder();
-                        sbfinalQuery.Append(sbprodMapSelectStatement.ToString() + sbprodMapSelectStatement.ToString() + sbprodMapJoinStatement.ToString());
+                        resSupplierRoomTypeMap = context.Database.SqlQuery<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS>(sbGetAllSupplierRooms.ToString()).ToList();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    CallLogVerbose(File_Id, "MATCH", ex.Message);
+                }
+                #endregion
 
-                        try
+                PLog.PercentageValue = 20;
+                USD.AddStaticDataUploadProcessLog(PLog);
+
+                CallLogVerbose(File_Id, "MATCH", "Fetch all the room attributes in the running batch");
+                #region Fetch all the room attributes in the running batch
+                if (resSupplierRoomTypeMap != null && resSupplierRoomTypeMap.Count > 0)
+                {
+                    try
+                    {
+                        StringBuilder sbSupplierRoomTypeAttributes = new StringBuilder();
+                        sbSupplierRoomTypeAttributes.Append(@"Select 
+                                                            RoomTypeMapAttribute_Id AS Accommodation_SupplierRoomTypeMapAttribute_Id,
+                                                            RoomTypeMap_Id AS Accommodation_SupplierRoomTypeMap_Id,
+                                                            SupplierRoomTypeAttribute,
+                                                            SystemAttributeKeyword,
+                                                            SystemAttributeKeyword_Id,
+                                                            '' AS IconClass
+                                                            FROM Accommodation_SupplierRoomTypeAttributes WITH (NOLOCK)
+                                                            WHERE RoomTypeMap_Id IN (");
+
+                        foreach (var id in resSupplierRoomTypeMap)
                         {
-                            //Getting Data
-                            resSupplierRoomTypeMap = context.Database.SqlQuery<DC_Accommodation_SupplierRoomTypeMap_SearchRS>(sbfinalQuery.ToString()).ToList();
+                            sbSupplierRoomTypeAttributes.Append("'" + id.Accommodation_SupplierRoomTypeMapping_Id + "',");
+                        }
 
+                        using (ConsumerEntities context = new ConsumerEntities())
+                        {
+                            AttributeList = context.Database.SqlQuery<DataContracts.Mapping.DC_SupplierRoomTypeAttributes>(sbSupplierRoomTypeAttributes.ToString().TrimEnd(',') + ");").ToList();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        CallLogVerbose(File_Id, "MATCH", ex.Message);
+                    }
+                }
+                #endregion
 
-                            //Looping 
-                            if (resSupplierRoomTypeMap != null && resSupplierRoomTypeMap.Count > 0)
+                PLog.PercentageValue = 30;
+                USD.AddStaticDataUploadProcessLog(PLog);
+
+                CallLogVerbose(File_Id, "MATCH", "Loop through the Supplier Room info to generate Request for Broker");
+                #region Loop through the Supplier Room info to generate Request for Broker
+                try
+                {
+                    if (resSupplierRoomTypeMap != null && resSupplierRoomTypeMap.Count > 0)
+                    {
+                        #region Request Structure creation for Broker call
+
+                        RQ_Broker.Mode = "Offline";
+                        RQ_Broker.BatchId = Convert.ToString(obj.CurrentBatch) ?? string.Empty;
+                        RQ_Broker.Transaction = Convert.ToString(supdata.File_Id) ?? string.Empty;
+
+                        List<DataContracts.DC_HotelRoomTypeMappingRequest> _lstHotelRoomTypeMappingRequests = new List<DataContracts.DC_HotelRoomTypeMappingRequest>();
+
+                        foreach (var AccoId in resSupplierRoomTypeMap.Select(s => s.Accommodation_Id).Distinct())
+                        {
+                            var newHotelRoomTypeMappingRequest = new DC_HotelRoomTypeMappingRequest
                             {
-                                //Getting attributes against accom_room_id (Accommodation_SupplierRoomTypeAttributes)
+                                AccommodationId = Convert.ToString(AccoId) ?? string.Empty,
+                                TLGXCommonHotelId = resSupplierRoomTypeMap.Where(w => w.Accommodation_Id == AccoId).Select(s => s.CommonProductId ?? string.Empty).First(),
+                            };
 
-                                foreach (var item in resSupplierRoomTypeMap)
+                            var RoomInfoByAccoId = resSupplierRoomTypeMap.Where(w => w.Accommodation_Id == AccoId).ToList();
+                            List<DataContracts.DC_SupplierData> _lstSupplierData = new List<DataContracts.DC_SupplierData>();
+
+                            foreach (var SupplierId in RoomInfoByAccoId.Select(s => s.Supplier_Id).Distinct())
+                            {
+                                var newSupplierData = new DC_SupplierData
                                 {
-                                    DataContracts.DC_SRT_ML_Request_Broker _obj = new DataContracts.DC_SRT_ML_Request_Broker();
-                                    _obj.Mode = "Offline";
-                                    _obj.BatchId = Convert.ToString(item.Batch);
-                                    _obj.Transaction = Convert.ToString(item.SupplierImporrtFile_Id);
+                                    SupplierName = RoomInfoByAccoId.Where(w => w.Supplier_Id == SupplierId).Select(s => s.SupplierName ?? string.Empty).First(),
+                                    SupplierId = Convert.ToString(SupplierId) ?? string.Empty
+                                };
 
-                                    List<DataContracts.DC_SupplierRoomExtractedAttribute> _lstAttribute = new List<DataContracts.DC_SupplierRoomExtractedAttribute>();
-                                    List<DataContracts.DC_SupplierRoomType> _lstSupplierRoomType = new List<DataContracts.DC_SupplierRoomType>();
-                                    List<DataContracts.DC_SupplierData> _lstSupplierData = new List<DataContracts.DC_SupplierData>();
+                                var RoomInfoBySupplierId = RoomInfoByAccoId.Where(w => w.Supplier_Id == SupplierId).ToList();
+                                List<DataContracts.DC_SupplierRoomType> _lstSupplierRoomType = new List<DataContracts.DC_SupplierRoomType>();
 
-                                    List<DataContracts.DC_HotelRoomTypeMappingRequest> _lstDC_HotelRoomTypeMappingRequest = new List<DataContracts.DC_HotelRoomTypeMappingRequest>();
-
-                                    //Getting attributes against accom_room_id (Accommodation_SupplierRoomTypeAttributes)
-
-                                    _lstAttribute.Add(new DataContracts.DC_SupplierRoomExtractedAttribute
+                                foreach (var RoomMapId in RoomInfoBySupplierId.Select(s => s.Accommodation_SupplierRoomTypeMapping_Id).Distinct())
+                                {
+                                    var oneSupplierRoomType = RoomInfoBySupplierId.Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == RoomMapId).First();
+                                    var newSupplierRoomType = new DC_SupplierRoomType
                                     {
-
-                                    });
-
-                                    _lstSupplierRoomType.Add(new DataContracts.DC_SupplierRoomType
-                                    {
-                                        MapId = Convert.ToString(item.MapId),
-                                        AccommodationSupplierRoomTypeMappingId = Convert.ToString(item.Accommodation_SupplierRoomTypeMapping_Id),
-                                        SupplierRoomId = Convert.ToString(item.SupplierRoomId),
-                                        SupplierRoomTypeCode = Convert.ToString(item.SupplierRoomTypeCode),
-                                        SupplierRoomName = Convert.ToString(item.SupplierRoomName),
-                                        TXRoomName = Convert.ToString(item.TX_RoomName),
-                                        SupplierRoomCategory = Convert.ToString(item.SupplierRoomCategory),
-                                        SupplierRoomCategoryId = Convert.ToString(item.SupplierRoomCategoryId),
-                                        MaxAdults = Convert.ToString(item.MaxAdults),
-                                        MaxChild = Convert.ToString(item.MaxChild),
-                                        MaxInfants = Convert.ToString(item.MaxInfants),
-                                        MaxGuestOccupancy = Convert.ToString(item.MaxGuestOccupancy),
-                                        Quantity = Convert.ToString(item.Quantity),
-                                        RatePlan = Convert.ToString(item.RatePlan),
-                                        RatePlanCode = Convert.ToString(item.RatePlanCode),
-                                        SupplierProductName = Convert.ToString(item.SupplierProductName),
-                                        SupplierProductId = Convert.ToString(item.SupplierProductId),
-                                        TxStrippedName = Convert.ToString(item.Tx_StrippedName),
-                                        TxReorderedName = Convert.ToString(item.Tx_ReorderedName),
-                                        MappingStatus = Convert.ToString(item.MappingStatus),
-                                        AccommodationRoomInfoId = Convert.ToString(item.Accommodation_RoomInfo_Id),
-                                        RoomSize = Convert.ToString(item.RoomSize),
-                                        BathRoomType = Convert.ToString(item.BathRoomType),
-                                        RoomViewCode = Convert.ToString(item.RoomViewCode),
-                                        FloorName = Convert.ToString(item.FloorName),
-                                        FloorNumber = Convert.ToString(item.FloorNumber),
-                                        Amenities = Convert.ToString(item.Amenities),
-                                        RoomLocationCode = Convert.ToString(item.RoomLocationCode),
-                                        ChildAge = Convert.ToString(item.ChildAge),
-                                        ExtraBed = Convert.ToString(item.ExtraBed),
-                                        Bedrooms = Convert.ToString(item.Bedrooms),
-                                        Smoking = Convert.ToString(item.Smoking),
-                                        BedType = Convert.ToString(item.BedTypeCode),
-                                        MinGuestOccupancy = Convert.ToString(item.MinGuestOccupancy),
-                                        PromotionalVendorCode = Convert.ToString(item.PromotionalVendorCode),
-                                        BeddingConfig = Convert.ToString(item.BeddingConfig),
-                                        SupplierRoomExtractedAttributes = _lstAttribute
-                                    });
-                                    _lstSupplierData.Add(new DataContracts.DC_SupplierData
-                                    {
-                                        SupplierId = Convert.ToString(item.Supplier_Id),
-                                        SupplierName = Convert.ToString(item.SupplierName),
-                                        SupplierRoomTypes = _lstSupplierRoomType
-
-                                    });
-                                    _lstDC_HotelRoomTypeMappingRequest.Add(new DataContracts.DC_HotelRoomTypeMappingRequest
-                                    {
-                                        AccommodationId = Convert.ToString(item.Accommodation_Id),
-                                        //TLGXCommonHotelId = 
-                                        SupplierData = _lstSupplierData
-                                    });
-
-                                    _obj.HotelRoomTypeMappingRequests = _lstDC_HotelRoomTypeMappingRequest;
-
-                                    // Call Broker
-                                    DL_UploadStaticData _objUploadStaticData = new DL_UploadStaticData();
-                                    var response = _objUploadStaticData.DataHandler_UpdateSRTByML(_obj);
-                                    if (response != null)
-                                    {
-                                        //Check Batchid ,Transaction
-                                        if (response.BatchId == Convert.ToString(item.Batch) && response.Transaction == Convert.ToString(item.SupplierImporrtFile_Id))
+                                        MapId = Convert.ToString(oneSupplierRoomType.MapId) ?? string.Empty,
+                                        AccommodationSupplierRoomTypeMappingId = Convert.ToString(oneSupplierRoomType.Accommodation_SupplierRoomTypeMapping_Id) ?? string.Empty,
+                                        SupplierRoomId = Convert.ToString(oneSupplierRoomType.SupplierRoomId) ?? string.Empty,
+                                        SupplierRoomTypeCode = Convert.ToString(oneSupplierRoomType.SupplierRoomTypeCode) ?? string.Empty,
+                                        SupplierRoomName = Convert.ToString(oneSupplierRoomType.SupplierRoomName) ?? string.Empty,
+                                        TXRoomName = Convert.ToString(oneSupplierRoomType.TX_RoomName) ?? string.Empty,
+                                        SupplierRoomCategory = Convert.ToString(oneSupplierRoomType.SupplierRoomCategory) ?? string.Empty,
+                                        SupplierRoomCategoryId = Convert.ToString(oneSupplierRoomType.SupplierRoomCategoryId) ?? string.Empty,
+                                        MaxAdults = Convert.ToString(oneSupplierRoomType.MaxAdults) ?? string.Empty,
+                                        MaxChild = Convert.ToString(oneSupplierRoomType.MaxChild) ?? string.Empty,
+                                        MaxInfants = Convert.ToString(oneSupplierRoomType.MaxInfants) ?? string.Empty,
+                                        MaxGuestOccupancy = Convert.ToString(oneSupplierRoomType.MaxGuestOccupancy) ?? string.Empty,
+                                        Quantity = Convert.ToString(oneSupplierRoomType.Quantity) ?? string.Empty,
+                                        RatePlan = Convert.ToString(oneSupplierRoomType.RatePlan) ?? string.Empty,
+                                        RatePlanCode = Convert.ToString(oneSupplierRoomType.RatePlanCode) ?? string.Empty,
+                                        SupplierProductName = Convert.ToString(oneSupplierRoomType.SupplierProductName) ?? string.Empty,
+                                        SupplierProductId = Convert.ToString(oneSupplierRoomType.SupplierProductId) ?? string.Empty,
+                                        TxStrippedName = Convert.ToString(oneSupplierRoomType.Tx_StrippedName) ?? string.Empty,
+                                        TxReorderedName = Convert.ToString(oneSupplierRoomType.Tx_ReorderedName) ?? string.Empty,
+                                        MappingStatus = Convert.ToString(oneSupplierRoomType.MappingStatus) ?? string.Empty,
+                                        AccommodationRoomInfoId = Convert.ToString(oneSupplierRoomType.Accommodation_RoomInfo_Id) ?? string.Empty,
+                                        RoomSize = Convert.ToString(oneSupplierRoomType.RoomSize) ?? string.Empty,
+                                        BathRoomType = Convert.ToString(oneSupplierRoomType.BathRoomType) ?? string.Empty,
+                                        RoomViewCode = Convert.ToString(oneSupplierRoomType.RoomViewCode) ?? string.Empty,
+                                        FloorName = Convert.ToString(oneSupplierRoomType.FloorName) ?? string.Empty,
+                                        FloorNumber = Convert.ToString(oneSupplierRoomType.FloorNumber) ?? string.Empty,
+                                        Amenities = Convert.ToString(oneSupplierRoomType.Amenities) ?? string.Empty,
+                                        RoomLocationCode = Convert.ToString(oneSupplierRoomType.RoomLocationCode) ?? string.Empty,
+                                        ChildAge = Convert.ToString(oneSupplierRoomType.ChildAge) ?? string.Empty,
+                                        ExtraBed = Convert.ToString(oneSupplierRoomType.ExtraBed) ?? string.Empty,
+                                        Bedrooms = Convert.ToString(oneSupplierRoomType.Bedrooms) ?? string.Empty,
+                                        Smoking = Convert.ToString(oneSupplierRoomType.Smoking) ?? string.Empty,
+                                        BedType = Convert.ToString(oneSupplierRoomType.BedTypeCode) ?? string.Empty,
+                                        MinGuestOccupancy = Convert.ToString(oneSupplierRoomType.MinGuestOccupancy) ?? string.Empty,
+                                        PromotionalVendorCode = Convert.ToString(oneSupplierRoomType.PromotionalVendorCode) ?? string.Empty,
+                                        BeddingConfig = Convert.ToString(oneSupplierRoomType.BeddingConfig) ?? string.Empty,
+                                        SupplierRoomExtractedAttributes = AttributeList.Where(w => w.Accommodation_SupplierRoomTypeMap_Id == RoomMapId).Select(s => new DC_SupplierRoomExtractedAttribute
                                         {
-                                            //Looping for all hotelroomtype
-                                            foreach (var itemResponses in response.HotelRoomTypeMappingResponses)
+                                            Key = s.SystemAttributeKeyword,
+                                            Value = s.SupplierRoomTypeAttribute
+                                        }).ToList()
+                                    };
+                                    _lstSupplierRoomType.Add(newSupplierRoomType);
+                                }
+
+                                newSupplierData.SupplierRoomTypes = _lstSupplierRoomType;
+
+                                _lstSupplierData.Add(newSupplierData);
+                            }
+
+                            newHotelRoomTypeMappingRequest.SupplierData = _lstSupplierData;
+
+                            _lstHotelRoomTypeMappingRequests.Add(newHotelRoomTypeMappingRequest);
+                        }
+
+                        RQ_Broker.HotelRoomTypeMappingRequests = _lstHotelRoomTypeMappingRequests;
+
+                        #endregion
+                    }
+                }
+                catch (Exception ex)
+                {
+                    CallLogVerbose(File_Id, "MATCH", ex.Message);
+                }
+                #endregion
+
+                PLog.PercentageValue = 40;
+                USD.AddStaticDataUploadProcessLog(PLog);
+
+                #region GetResponse From Broker API
+                CallLogVerbose(File_Id, "MATCH", "Calling Broker API, Waiting for response..");
+                try
+                {
+                    RS_Broker = null;
+                    DL_UploadStaticData _objUploadStaticData = new DL_UploadStaticData();
+                    RS_Broker = _objUploadStaticData.DataHandler_UpdateSRTByML(RQ_Broker);
+                }
+                catch (Exception ex)
+                {
+                    CallLogVerbose(File_Id, "MATCH", ex.Message);
+                }
+                CallLogVerbose(File_Id, "MATCH", "Received response from Broker API");
+                #endregion
+
+                PLog.PercentageValue = 70;
+                USD.AddStaticDataUploadProcessLog(PLog);
+
+                CallLogVerbose(File_Id, "MATCH", "Read the response and update the data fetched in the batch");
+                #region Read the response and update the data fetched in the batch
+                try
+                {
+                    if (RS_Broker != null)
+                    {
+                        if (RS_Broker.HotelRoomTypeMappingResponses != null)
+                        {
+                            foreach (var itemResponses in RS_Broker.HotelRoomTypeMappingResponses)
+                            {
+                                if (itemResponses.SupplierData != null)
+                                {
+                                    foreach (var itemsupplierData in itemResponses.SupplierData)
+                                    {
+                                        if (itemsupplierData != null)
+                                        {
+                                            foreach (var itemRoomTypes in itemsupplierData.SupplierRoomTypes)
                                             {
-                                                //Check Acco id and AccommodationSupplierRoomTypeMappingId
-                                                if (itemResponses.AccommodationId == Convert.ToString(item.Accommodation_Id))
+                                                var recordToUpdate = resSupplierRoomTypeMap.Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == Guid.Parse(itemRoomTypes.AccommodationSupplierRoomTypeMappingId)).FirstOrDefault();
+                                                if (recordToUpdate != null)
                                                 {
-
-                                                    //Looping for supplier Data
-                                                    foreach (var itemsupplierData in itemResponses.SupplierData)
+                                                    if (itemRoomTypes.ProposedMappings != null && itemRoomTypes.ProposedMappings.Count > 0)
                                                     {
-                                                        //Check suppliername and id
-                                                        if (itemsupplierData.SupplierId == Convert.ToString(item.SupplierName) && itemsupplierData.SupplierId == Convert.ToString(item.Supplier_Id))
+                                                        var Sorted = (itemRoomTypes.ProposedMappings.OrderByDescending(x => x.Score).Select(s => s).FirstOrDefault());
+
+                                                        if (Sorted != null)
                                                         {
-                                                            //Looping for SupplierRoomTypes
-                                                            foreach (var itemRoomTypes in itemsupplierData.SupplierRoomTypes)
+                                                            //check ProposedMappings Mapping 
+                                                            //If Mapped (Will get only one record and take that only
+                                                            //If Matched (Will get 5 record then order by score and take top 1
+                                                            //If No Matched do nothing
+                                                            //Update the status,AccommodationRoomInfoId ,Score and Edited by details
+
+                                                            recordToUpdate.Score = Convert.ToString(Sorted.Score);
+                                                            recordToUpdate.Edit_Date = DateTime.Now;
+                                                            recordToUpdate.Edit_User = "PENDING_TO_UPDATE";
+
+                                                            Guid Accommodation_RoomInfo_Id;
+                                                            if (Guid.TryParse(Sorted.AccommodationRoomInfoId, out Accommodation_RoomInfo_Id))
                                                             {
-                                                                if (itemRoomTypes.AccommodationSupplierRoomTypeMappingId == Convert.ToString(item.Accommodation_SupplierRoomTypeMapping_Id))
-                                                                {
-                                                                    if (itemRoomTypes.ProposedMappings != null && itemRoomTypes.ProposedMappings.Count > 0)
-                                                                    {
-                                                                        var Sorted = (itemRoomTypes.ProposedMappings.OrderByDescending(x => x.Score).Select(s => s).First());
-                                                                        //check ProposedMappings Mapping 
-                                                                        //If Mapped (Will get only one record and take that only
-                                                                        //If Matched (Will get 5 record then order by score and take top 1
-                                                                        //If No Matched do nothing
-                                                                        if (Sorted.Status.Trim().ToUpper() == "MAPPED") //Automapped
-                                                                        {
-                                                                            //Update the status,AccommodationRoomInfoId ,Score and Edited by details
-                                                                            item.Score = Convert.ToString(Sorted.Score);
-                                                                            item.Edit_Date = DateTime.Today;
-                                                                            item.Edit_User = "Broker";
-                                                                            item.MappingStatus = "AUTOMAPPED";
-                                                                        }
-                                                                        else if (Sorted.Status.Trim().ToUpper() == "MATCHED") //Review
-                                                                        {
-                                                                            item.Score = Convert.ToString(Sorted.Score);
-                                                                            item.Edit_Date = DateTime.Today;
-                                                                            item.Edit_User = "Broker";
-                                                                            item.MappingStatus = "REVIEW";
+                                                                recordToUpdate.Accommodation_RoomInfo_Id = Accommodation_RoomInfo_Id;
+                                                            }
 
-                                                                        }
-
-                                                                    }
-
-                                                                }
+                                                            if (Sorted.Status.Trim().ToUpper() == "MAPPED") //Automapped
+                                                            {
+                                                                recordToUpdate.MappingStatus = "AUTOMAPPED";
+                                                            }
+                                                            else if (Sorted.Status.Trim().ToUpper() == "MATCHED") //Review
+                                                            {
+                                                                recordToUpdate.MappingStatus = "REVIEW";
+                                                            }
+                                                            else if (Sorted.Status.Trim().ToUpper() == "POTENTIAL NEW") //ADD
+                                                            {
+                                                                recordToUpdate.MappingStatus = "ADD";
+                                                            }
+                                                            else if (Sorted.Status.Trim().ToUpper() == "NOMATCH") //Unmapped
+                                                            {
+                                                                recordToUpdate.MappingStatus = "UNMAPPED";
+                                                            }
+                                                            else
+                                                            {
+                                                                recordToUpdate.MappingStatus = Sorted.Status.Trim().ToUpper();
                                                             }
                                                         }
                                                     }
-
                                                 }
                                             }
-
                                         }
                                     }
-
-
                                 }
-
-
-
-                                //Update 
-                                var Toupdate = context.Accommodation_SupplierRoomTypeMapping.Where(x => resSupplierRoomTypeMap.Select(a => a.Accommodation_SupplierRoomTypeMapping_Id).Contains(x.Accommodation_SupplierRoomTypeMapping_Id)).ToList();
-
-                                foreach (var itemToUpdate in Toupdate)
-                                {
-                                    var GetData = resSupplierRoomTypeMap.Where(x => x.Accommodation_SupplierRoomTypeMapping_Id == itemToUpdate.Accommodation_SupplierRoomTypeMapping_Id).Select(s => s).First();
-                                    if (GetData != null)
-                                    {
-                                        itemToUpdate.Edit_User = GetData.Edit_User;
-                                        itemToUpdate.Edit_Date = GetData.Edit_Date;
-                                        itemToUpdate.MappingStatus = GetData.MappingStatus;
-                                       // itemToUpdate.Score = GetData.Score;
-                                        itemToUpdate.Accommodation_RoomInfo_Id = GetData.Accommodation_RoomInfo_Id;
-                                    }
-                                }
-
-                                context.SaveChanges();
-
-
                             }
-
                         }
-                        catch (Exception ex) { }
+
                     }
+                }
+                catch (Exception ex)
+                {
+                    CallLogVerbose(File_Id, "MATCH", ex.Message);
+                }
+                #endregion
 
+                PLog.PercentageValue = 80;
+                USD.AddStaticDataUploadProcessLog(PLog);
 
-
-                    /**********************************End Here Implementing ML Code ***********************************/
-
-                    #endregion
-
-
-
+                CallLogVerbose(File_Id, "MATCH", "Update the Supplier Room Type mapping data into DB");
+                #region Update the Supplier Room Type mapping data into DB
+                foreach (var itemToUpdate in resSupplierRoomTypeMap.Where(w => w.Edit_User == "PENDING_TO_UPDATE").ToList())
+                {
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        StringBuilder sbfinalQuery = new StringBuilder();
-                        sbfinalQuery.Append(sbprodMapUpadate.ToString() + sbprodMapSelect.ToString() + sbprodMapJoin.ToString() + sbprodMapWhere.ToString());
+                        StringBuilder sbUpdateQuery = new StringBuilder();
+                        sbUpdateQuery.Append("UPDATE Accommodation_SupplierRoomTypeMapping SET Edit_Date = GETDATE(), Edit_User = 'ML_BROKER_API'");
+                        if (itemToUpdate.Accommodation_RoomInfo_Id == null)
+                        {
+                            sbUpdateQuery.Append(", Accommodation_RoomInfo_Id = NULL");
+                        }
+                        else
+                        {
+                            sbUpdateQuery.Append(", Accommodation_RoomInfo_Id = '" + itemToUpdate.Accommodation_RoomInfo_Id + "'");
+                        }
+
+                        sbUpdateQuery.Append(", MappingStatus = '" + itemToUpdate.MappingStatus + "'");
+                        //sbUpdateQuery.Append(", Score = '" + itemToUpdate.Score + "'");
+                        sbUpdateQuery.Append(" WHERE Accommodation_SupplierRoomTypeMapping_Id = '" + itemToUpdate.Accommodation_SupplierRoomTypeMapping_Id + "';");
 
                         try
                         {
-
-                            intUpdateCount = context.Database.ExecuteSqlCommand(sbfinalQuery.ToString());
+                            context.Database.ExecuteSqlCommand(sbUpdateQuery.ToString());
                         }
-                        catch (Exception ex) { }
-                    }
-
-
-                    //res = res.Select(c =>
-                    //{
-                    //    c.MappingStatus = ("REVIEW"); return c;
-                    //}).ToList();
-
-
-
-
-                    if (totPriorities == curPriority)
-                    {
-                        PLog.PercentageValue = 75;
-                        USD.AddStaticDataUploadProcessLog(PLog);
-                    }
-                    CallLogVerbose(File_Id, "MATCH", res.Count.ToString() + " Matches Found for Combination " + curPriority.ToString() + ".");
-                    //CallLogVerbose(File_Id, "MATCH", "Updating into Database.");
-
-                    //if (SupplierRoomTypeMapping_InsertUpdate(res))
-
-                    if (intUpdateCount > 0)
-                    {
-                        if ((obj.FileMode ?? "ALL") == "ALL" && totPriorities == curPriority)
+                        catch (Exception ex)
                         {
-                            DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
-                            objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
-                            objStat.SupplierImportFile_Id = obj.File_Id;
-                            objStat.From = "MATCHING";
-                            DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
-                            //bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
-                            //using (ConsumerEntities context1 = new ConsumerEntities())
-                            //{
-                            //    var oldRecords = (from y in context1.STG_Mapping_TableIds
-                            //                      where y.File_Id == File_Id
-                            //                      select y).ToList();
-                            //    context1.STG_Mapping_TableIds.RemoveRange(oldRecords);
-                            //    context1.SaveChanges();
-                            //}
+                            CallLogVerbose(File_Id, "MATCH", ex.Message);
                         }
-
-                        retrn = true;
-                    }
-                    if (totPriorities == curPriority)
-                    {
-                        PLog.PercentageValue = 100;
-                        USD.AddStaticDataUploadProcessLog(PLog);
                     }
                 }
-                CallLogVerbose(File_Id, "MATCH", "Update Done.");
+                #endregion
+
+                PLog.PercentageValue = 100;
+                USD.AddStaticDataUploadProcessLog(PLog);
+
+                #region Old Code Commented - Later to be deleted
+
+                //List<DC_SupplierImportAttributeValues> configs = obj.lstConfigs;
+                //string configWhere = "";
+                //int totPriorities = obj.TotalPriorities;
+                //int curPriority = obj.CurrentPriority;
+                //int totConfigs = 0;
+                //int curConfig = 0;
+                //if (totPriorities <= 0)
+                //    totPriorities = 1;
+                //int PerForEachPriority = 60 / totPriorities;
+
+                //#region Commented Code
+                ////using (ConsumerEntities context = new ConsumerEntities())
+                ////{
+                ////if ((obj.FileMode ?? "ALL") != "ALL" && curPriority == 1)
+                ////{
+                ////    List<DataContracts.STG.DC_STG_Mapping_Table_Ids> lstSMT = new List<DataContracts.STG.DC_STG_Mapping_Table_Ids>();
+                ////    DataContracts.STG.DC_STG_Mapping_Table_Ids SMT = new DataContracts.STG.DC_STG_Mapping_Table_Ids();
+
+                ////    lstSMT = (from a in context.Accommodation_SupplierRoomTypeMapping
+                ////              join j in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_SupplierRoomTypeMapping_Id equals j.Mapping_Id into jact
+                ////              from jdact in jact.DefaultIfEmpty()
+                ////              where a.Supplier_Id == curSupplier_Id && jdact.STG_Mapping_Table_Id == null
+                ////              && (a.MappingStatus == "UNMAPPED" || a.Accommodation_RoomInfo_Id == null)
+                ////              select new DataContracts.STG.DC_STG_Mapping_Table_Ids
+                ////              {
+                ////                  STG_Mapping_Table_Id = Guid.NewGuid(),
+                ////                  File_Id = obj.File_Id,
+                ////                  Mapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                ////                  STG_Id = null,
+                ////                  Batch = obj.CurrentBatch ?? 1
+                ////              }).Take(250).ToList();
+                ////    if (lstSMT.Count > 0)
+                ////    {
+                ////        //idinsert = DeleteSTGMappingTableIDs(File_Id);
+                ////        bool idinsert = AddSTGMappingTableIDs(lstSMT);
+                ////    }
+                ////}
+
+                ////var prodMap = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
+                ////                   //join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_SupplierRoomTypeMapping_Id equals s.Mapping_Id
+                ////               where a.ReRun_SupplierImportFile_Id == supdata.File_Id && a.Accommodation_RoomInfo_Id == null && a.Supplier_Id == curSupplier_Id && a.Accommodation_Id != null
+                ////               && a.MappingStatus.Trim().ToUpper() == "UNMAPPED" && a.ReRun_Batch == obj.CurrentBatch
+                ////               select a);
+
+                //// var prodMapSearch = prodMap.ToList();
+                //#endregion
+
+                //StringBuilder sbprodMapSelect = new StringBuilder();
+                //StringBuilder sbprodMapWhere = new StringBuilder();
+
+                //StringBuilder sbprodMapJoin = new StringBuilder();
+                //StringBuilder sbprodMapUpadate = new StringBuilder();
+
+                //sbprodMapSelect.Append(@" FROM Accommodation_SupplierRoomTypeMapping ASRTM ");
+
+                //sbprodMapWhere.Append(" WHERE ASRTM.Accommodation_Id IS NOT NULL AND ASRTM.Accommodation_RoomInfo_Id IS NULL AND");
+                //sbprodMapWhere.Append(" ASRTM.ReRun_SupplierImportFile_Id = '" + Convert.ToString(supdata.File_Id) + "' AND ");
+                //sbprodMapWhere.Append(" ASRTM.Supplier_Id = '" + Convert.ToString(curSupplier_Id) + "' AND ");
+                //sbprodMapWhere.Append(" UPPER(LTRIM(RTRIM(ASRTM.MappingStatus))) = 'UNMAPPED' ");
+                //sbprodMapWhere.Append(" AND ASRTM.ReRun_Batch = '" + Convert.ToString(obj.CurrentBatch) + "' ");
+
+
+                ////List<Accommodation_SupplierRoomTypeMapping> prodMapSearch = new List<Accommodation_SupplierRoomTypeMapping>();
+                ////try { prodMapSearch = context.Database.SqlQuery<Accommodation_SupplierRoomTypeMapping>(sbprodMap.ToString()).ToList(); } catch (Exception ex) { }
+
+                ///*if (obj.IsBatched)
+                //{
+                //    prodMap = (from a in prodMap
+                //               join s in context.STG_Mapping_TableIds.AsNoTracking() on a.Accommodation_SupplierRoomTypeMapping_Id equals s.Mapping_Id
+                //               //join s in context.stg_SupplierHotelRoomMapping.AsNoTracking() on a.stg_SupplierHotelRoomMapping_Id equals s.stg_SupplierHotelRoomMapping_Id
+                //               where s.Batch == obj.CurrentBatch
+                //               select a);
+                //}*/
+                //bool isRoomNameCheck = false;
+                //totConfigs = configs.Count;
+                //curConfig = 0;
+
+                //PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
+                //PLog.SupplierImportFile_Id = obj.File_Id;
+                //PLog.Step = "MATCH";
+                //PLog.Status = "MATCHING";
+                //PLog.CurrentBatch = curPriority;
+                //PLog.TotalBatch = totPriorities;
+                //CallLogVerbose(File_Id, "MATCH", "Applying Matching Combination " + curPriority.ToString() + " out of Total " + totPriorities + " Combinations.");
+
+                //foreach (DC_SupplierImportAttributeValues config in configs)
+                //{
+                //    configWhere = configWhere + " " + config.AttributeValue.Replace("Accommodation_RoomInfo.", "").Trim() + ",";
                 //}
+                //configWhere = configWhere.Remove(configWhere.Length - 1);
+                //CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);
+
+                //sbprodMapJoin.Append(" JOIN Accommodation_RoomInfo ARI ON ASRTM.Accommodation_Id = ARI.Accommodation_Id");
+                //foreach (DC_SupplierImportAttributeValues config in configs)
+                //{
+                //    curConfig = curConfig + 1;
+                //    string CurrConfig = "";
+                //    CurrConfig = config.AttributeValue.Replace("Accommodation_RoomInfo.", "").Trim().ToUpper();
+                //    //CallLogVerbose(File_Id, "MATCH", "Applying Check for " + CurrConfig);
+                //    if (CurrConfig == "ROOMCATEGORY")
+                //    {
+                //        isRoomNameCheck = true;
+
+
+
+                //        sbprodMapWhere.Append(@"  AND
+                //                             ((CASE WHEN ASRTM.Tx_ReorderedName IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ASRTM.Tx_ReorderedName))) END) 
+                //                             = (CASE WHEN ARI.RoomCategory IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ARI.RoomCategory))) END) OR
+                //                             (CASE WHEN ASRTM.Tx_StrippedName IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ASRTM.Tx_StrippedName))) END) 
+                //                             = (CASE WHEN ARI.RoomCategory IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ARI.RoomCategory))) END) OR
+                //                             (CASE WHEN ASRTM.Tx_ReorderedName IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ASRTM.MappingStatus))) END) 
+                //                             = (CASE WHEN ARI.RoomCategory IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ARI.RoomCategory))) END) OR
+                //                             (CASE WHEN ASRTM.SupplierRoomName IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ASRTM.SupplierRoomName))) END) 
+                //                             = (CASE WHEN ARI.RoomCategory IS NULL THEN NULL ELSE UPPER(LTRIM(RTRIM(ARI.RoomCategory))) END) )");
+
+                //        #region Comment Code
+
+                //        //prodMapSearch = (from a in prodMapSearch
+                //        //                 join ac in context.Accommodation_RoomInfo.AsNoTracking() on a.Accommodation_Id equals ac.Accommodation_Id
+                //        //                 where (((a.Tx_ReorderedName ?? string.Empty).ToString().Trim().ToUpper()
+                //        //                        == (ac.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
+                //        //                        ||
+                //        //                        ((a.Tx_StrippedName ?? string.Empty).ToString().Trim().ToUpper()
+                //        //                        == (ac.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
+                //        //                        ||
+                //        //                        ((a.TX_RoomName ?? string.Empty).ToString().Trim().ToUpper()
+                //        //                        == (ac.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
+                //        //                        ||
+                //        //                        ((a.SupplierRoomName ?? string.Empty).ToString().Trim().ToUpper()
+                //        //                        == (ac.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
+                //        //                        )
+                //        //                 select a).Distinct().ToList();
+                //        #endregion
+                //    }
+
+                //    //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
+                //    PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + ((PerForEachPriority / totConfigs) * curConfig);
+                //    USD.AddStaticDataUploadProcessLog(PLog);
+                //}
+                //List<DC_Accommodation_SupplierRoomTypeMap_SearchRS> res = new List<DC_Accommodation_SupplierRoomTypeMap_SearchRS>();
+
+
+                //if (isRoomNameCheck)
+                //{
+                //    #region Commented Code
+
+                //    //if (totPriorities == curPriority)
+                //    //{
+                //    //    PLog.PercentageValue = 65;
+                //    //    USD.AddStaticDataUploadProcessLog(PLog);
+                //    //}
+
+
+                //    //sbprodMapWhere.Append(" AND ASRTM.Accommodation_RoomInfo_Id IS NOT NULL ");
+
+
+                //    //res = (from a in prodMapSearch
+                //    //       select new DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS
+                //    //       {
+                //    //           Accommodation_SupplierRoomTypeMapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                //    //           Accommodation_Id = a.Accommodation_Id,
+                //    //           Accommodation_RoomInfo_Id = a.Accommodation_RoomInfo_Id,
+                //    //           SupplierProductName = a.SupplierProductName,
+                //    //           SupplierName = a.SupplierName,
+                //    //           SupplierProductId = a.SupplierProductId,
+                //    //           SupplierRoomCategory = a.SupplierRoomCategory,
+                //    //           SupplierRoomId = a.SupplierRoomId,
+                //    //           SupplierRoomName = a.SupplierRoomName,
+                //    //           Supplier_Id = a.Supplier_Id,
+                //    //           Tx_ReorderedName = a.Tx_ReorderedName,
+                //    //           TX_RoomName = a.TX_RoomName,
+                //    //           Tx_StrippedName = a.Tx_StrippedName,
+                //    //           MappingStatus = a.MappingStatus,
+                //    //           MapId = a.MapId,
+                //    //           stg_SupplierHotelRoomMapping_Id = a.stg_SupplierHotelRoomMapping_Id
+
+                //    //       }).Distinct().ToList();
+
+
+                //    //CallLogVerbose(File_Id, "MATCH", "Looking for Match in Master Data for Matching Combination " + curPriority.ToString() + ".");
+                //    // res = res.Select(c =>
+                //    //{
+                //    //    c.Accommodation_RoomInfo_Id = (context.Accommodation_RoomInfo.AsNoTracking()
+                //    //                    .Where(s => (
+                //    //                                    ((isRoomNameCheck && (((c.Tx_ReorderedName ?? string.Empty).ToString().Trim().ToUpper()
+                //    //                            == (s.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
+                //    //                            ||
+                //    //                            ((c.Tx_StrippedName ?? string.Empty).ToString().Trim().ToUpper()
+                //    //                            == (s.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
+                //    //                            ||
+                //    //                            ((c.TX_RoomName ?? string.Empty).ToString().Trim().ToUpper()
+                //    //                            == (s.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
+                //    //                            ||
+                //    //                            ((c.SupplierRoomName ?? string.Empty).ToString().Trim().ToUpper()
+                //    //                            == (s.RoomCategory ?? string.Empty).ToString().Trim().ToUpper())
+                //    //                            )) || (!isRoomNameCheck))
+                //    //                                )
+                //    //                           )
+                //    //                    .Select(s1 => s1.Accommodation_RoomInfo_Id)
+                //    //                    .FirstOrDefault()
+                //    //                    );
+                //    //    return c;
+                //    //}).ToList();
+
+                //    //if (totPriorities == curPriority)
+                //    //{
+                //    //    PLog.PercentageValue = 70;
+                //    //    USD.AddStaticDataUploadProcessLog(PLog);
+                //    //}
+
+                //    //CallLogVerbose(File_Id, "MATCH", "Setting Appropriate Status.");
+                //    //res.RemoveAll(p => p.Accommodation_RoomInfo_Id == Guid.Empty);
+
+                //    #endregion
+
+                //    //Update Query
+                //    sbprodMapUpadate.Append("UPDATE ASRTM SET ASRTM.MappingStatus ='REVIEW' , ASRTM.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id ");
+                //    sbprodMapUpadate.Append(" , ASRTM.Edit_Date = GETDATE() ");
+                //    sbprodMapUpadate.Append(" , ASRTM.Edit_User = 'TLGX_DataHandler' ");
+                //    int intUpdateCount = 0;
+                //    #region Implementing ML Code
+                //    /***************************** Implementing ML Code *************************************************/
+                //    StringBuilder sbprodMapSelectStatement = new StringBuilder();
+                //    sbprodMapSelectStatement.Append(@"SELECT  
+                //                                        ASRTM.MapId,  ASRTM.Accommodation_SupplierRoomTypeMapping_Id,
+                //                                        ASRTM.SupplierRoomId, ASRTM.SupplierRoomTypeCode,
+                //                                        ASRTM.SupplierRoomName,ASRTM.TX_RoomName,
+                //                                        ASRTM.SupplierRoomCategory,ASRTM.SupplierRoomCategoryId,
+                //                                        ASRTM.MaxAdults,ASRTM.MaxChild,ASRTM.MaxInfants,
+                //                                        ASRTM.MaxGuestOccupancy,ASRTM.Quantity,
+                //                                        ASRTM.RatePlan,ASRTM.RatePlanCode,
+                //                                        ASRTM.SupplierProductName,ASRTM.SupplierProductId,
+                //                                        ASRTM.Tx_StrippedName,ASRTM.Tx_ReorderedName,
+                //                                        ASRTM.MappingStatus,ASRTM.Accommodation_RoomInfo_Id,
+                //                                        ASRTM.RoomSize,ASRTM.BathRoomType,
+                //                                        ASRTM.RoomViewCode,ASRTM.FloorName,
+                //                                        ASRTM.FloorNumber,ASRTM.Amenities,
+                //                                        ASRTM.RoomLocationCode,ASRTM.ChildAge,
+                //                                        ASRTM.ExtraBed,ASRTM.Bedrooms,
+                //                                        ASRTM.Smoking,ASRTM.BedTypeCode,
+                //                                        ASRTM.MinGuestOccupancy,ASRTM.PromotionalVendorCode,
+                //                                        ASRTM.BeddingConfig,
+                //                                        Acco.CompanyHotelID ");
+
+                //    StringBuilder sbprodMapWhereStatement = new StringBuilder();
+                //    StringBuilder sbprodMapJoinStatement = new StringBuilder();
+
+
+                //    sbprodMapSelectStatement.Append(@" FROM Accommodation_SupplierRoomTypeMapping ASRTM ");
+
+                //    sbprodMapJoinStatement.Append(" JOIN Accommodation_RoomInfo ARI ON ASRTM.Accommodation_Id = ARI.Accommodation_Id");
+                //    sbprodMapJoinStatement.Append(" LEFT JOIN Accommodation Acco ON ASRTM.Accommodation_Id = Acco.Accommodation_Id");
+
+                //    sbprodMapWhereStatement.Append(" WHERE ASRTM.Accommodation_Id IS NOT NULL AND ASRTM.Accommodation_RoomInfo_Id IS NULL AND");
+                //    sbprodMapWhereStatement.Append(" ASRTM.ReRun_SupplierImportFile_Id = '" + Convert.ToString(supdata.File_Id) + "' AND ");
+                //    sbprodMapWhereStatement.Append(" ASRTM.Supplier_Id = '" + Convert.ToString(curSupplier_Id) + "' AND ");
+                //    sbprodMapWhereStatement.Append(" UPPER(LTRIM(RTRIM(ASRTM.MappingStatus))) = 'UNMAPPED' ");
+                //    sbprodMapWhereStatement.Append(" AND ASRTM.ReRun_Batch = '" + Convert.ToString(obj.CurrentBatch) + "' ");
+
+
+                //    using (ConsumerEntities context = new ConsumerEntities())
+                //    {
+                //        StringBuilder sbfinalQuery = new StringBuilder();
+                //        sbfinalQuery.Append(sbprodMapSelectStatement.ToString() + sbprodMapSelectStatement.ToString() + sbprodMapJoinStatement.ToString());
+
+                //        try
+                //        {
+                //            //Getting Data
+                //            resSupplierRoomTypeMap = context.Database.SqlQuery<DC_Accommodation_SupplierRoomTypeMap_SearchRS>(sbfinalQuery.ToString()).ToList();
+
+
+                //            //Looping 
+
+
+                //        }
+                //        catch (Exception ex) { }
+                //    }
+
+
+
+                //    /**********************************End Here Implementing ML Code ***********************************/
+
+                //    #endregion
+
+                //    using (ConsumerEntities context = new ConsumerEntities())
+                //    {
+                //        StringBuilder sbfinalQuery = new StringBuilder();
+                //        sbfinalQuery.Append(sbprodMapUpadate.ToString() + sbprodMapSelect.ToString() + sbprodMapJoin.ToString() + sbprodMapWhere.ToString());
+
+                //        try
+                //        {
+
+                //            intUpdateCount = context.Database.ExecuteSqlCommand(sbfinalQuery.ToString());
+                //        }
+                //        catch (Exception ex) { }
+                //    }
+
+                //    //res = res.Select(c =>
+                //    //{
+                //    //    c.MappingStatus = ("REVIEW"); return c;
+                //    //}).ToList();
+
+                //    if (totPriorities == curPriority)
+                //    {
+                //        PLog.PercentageValue = 75;
+                //        USD.AddStaticDataUploadProcessLog(PLog);
+                //    }
+                //    CallLogVerbose(File_Id, "MATCH", res.Count.ToString() + " Matches Found for Combination " + curPriority.ToString() + ".");
+
+                //    //CallLogVerbose(File_Id, "MATCH", "Updating into Database.");
+                //    //if (SupplierRoomTypeMapping_InsertUpdate(res))
+
+                //    if (intUpdateCount > 0)
+                //    {
+                //        if ((obj.FileMode ?? "ALL") == "ALL" && totPriorities == curPriority)
+                //        {
+                //            DataContracts.UploadStaticData.DC_SupplierImportFile_Statistics objStat = new DC_SupplierImportFile_Statistics();
+                //            objStat.SupplierImportFile_Statistics_Id = Guid.NewGuid();
+                //            objStat.SupplierImportFile_Id = obj.File_Id;
+                //            objStat.From = "MATCHING";
+                //            DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
+                //            //bool del = DeleteSTGMappingTableIDs(Guid.Parse(obj.File_Id.ToString()));
+                //            //using (ConsumerEntities context1 = new ConsumerEntities())
+                //            //{
+                //            //    var oldRecords = (from y in context1.STG_Mapping_TableIds
+                //            //                      where y.File_Id == File_Id
+                //            //                      select y).ToList();
+                //            //    context1.STG_Mapping_TableIds.RemoveRange(oldRecords);
+                //            //    context1.SaveChanges();
+                //            //}
+                //        }
+
+                //        retrn = true;
+                //    }
+
+                //    if (totPriorities == curPriority)
+                //    {
+                //        PLog.PercentageValue = 100;
+                //        USD.AddStaticDataUploadProcessLog(PLog);
+                //    }
+                //}
+
+                #endregion
             }
             catch (Exception e)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating hotel mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
+
             CallLogVerbose(File_Id, "MATCH", "Update Done.");
+
             return true;
         }
 
-        
         #endregion
 
         #region Country Mapping
