@@ -343,7 +343,6 @@ namespace DataLayer
         }
         #endregion
 
-
         #region "Mapping Config Attributes Values"
         public List<DC_SupplierImportAttributeValues> GetStaticDataMappingAttributeValues(DataContracts.UploadStaticData.DC_SupplierImportAttributeValues_RQ RQ)
         {
@@ -719,7 +718,6 @@ namespace DataLayer
 
         }
         #endregion
-
 
         #region "Upload File"
         public List<DataContracts.UploadStaticData.DC_SupplierImportFileDetails> GetStaticDataFileDetail(DataContracts.UploadStaticData.DC_SupplierImportFileDetails_RQ RQ)
@@ -2759,6 +2757,10 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_Broker"]);
+                    request.Timeout = System.Threading.Timeout.Infinite;
+                    request.ReadWriteTimeout = System.Threading.Timeout.Infinite;
+                    request.KeepAlive = false;
+
                     var proxyAddress = System.Configuration.ConfigurationManager.AppSettings["ProxyUri"];
 
                     if (proxyAddress != null)
@@ -2775,7 +2777,6 @@ namespace DataLayer
 
                     request.Method = "POST";
                     request.ContentType = "application/json";
-                    request.KeepAlive = false;
                     //request.Credentials = CredentialCache.DefaultCredentials;
 
                     DataContractJsonSerializer serializerToUpload = new DataContractJsonSerializer(typeof(DataContracts.DC_SRT_ML_Request_Broker));
@@ -2803,33 +2804,30 @@ namespace DataLayer
                     }
                     else
                     {
-                        var stream = response.GetResponseStream();
                         var encoding = ASCIIEncoding.UTF8;
                         using (var reader = new System.IO.StreamReader(response.GetResponseStream(), encoding))
                         {
                             string responseText = reader.ReadToEnd();
-                            _objRS = JsonConvert.DeserializeObject<DataContracts.DC_SRT_ML_Response_Broker>(responseText);
+
+                            var jsonSerializerSettings = new JsonSerializerSettings
+                            {
+                                MissingMemberHandling = MissingMemberHandling.Ignore
+                            };
+                            _objRS = JsonConvert.DeserializeObject<DataContracts.DC_SRT_ML_Response_Broker>(responseText, jsonSerializerSettings);
                         }
-                        //deserialize here
-
-
-                        stream = null;
                     }
 
                     serializerToUpload = null;
-
                     response.Dispose();
                     response = null;
                     request = null;
                 }
                 return _objRS;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw ex;
             }
-            //return _objRS;
         }
         #endregion
 
