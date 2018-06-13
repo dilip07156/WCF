@@ -116,11 +116,19 @@ namespace BusinessLayer
             }
         }
 
-        public List<DataContracts.Masters.DC_Master_State> GetStatesByCountry(Guid Country_Id)
+        public List<DataContracts.Masters.DC_Master_State> GetStatesByCountry(string Country_Id)
         {
-            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            Guid gCountry_Id;
+            if(Guid.TryParse(Country_Id, out gCountry_Id))
             {
-                return obj.GetStatesByCountry(Country_Id);
+                using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+                {
+                    return obj.GetStatesByCountry(gCountry_Id);
+                }
+            }
+            else
+            {
+                return new List<DC_Master_State>();
             }
         }
 

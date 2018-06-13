@@ -169,22 +169,13 @@ namespace ConsumerSvc
 
                 return searchResults;
             }
-
         }
 
         public IList<DC_Master_State> GetStatesByCountry(string Country_Id)
         {
             using (BL_Masters objBL = new BL_Masters())
             {
-                List<DC_Master_State> searchResults = new List<DC_Master_State>();
-                searchResults = objBL.GetStatesByCountry(Guid.Parse(Country_Id));
-
-                if (searchResults.Count == 0)
-                {
-                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
-                }
-
-                return searchResults;
+                return objBL.GetStatesByCountry(Country_Id);
             }
         }
 

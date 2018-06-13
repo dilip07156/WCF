@@ -20,7 +20,6 @@ namespace DataLayer
             Update
         }
 
-
         public void Dispose()
         { }
 
@@ -925,7 +924,6 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching City Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-
         public string GetNextCityCodeNumber(string codePrefix)
         {
             string ret = "000";
@@ -954,7 +952,6 @@ namespace DataLayer
 
             return ret;
         }
-
         public DataContracts.DC_Message AddCityMaster(DataContracts.Masters.DC_City param)
         {
             DataContracts.DC_Message ret = new DataContracts.DC_Message();
@@ -1033,7 +1030,6 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding city master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-
         public DC_Message UpdateCityMaster(DataContracts.Masters.DC_City param)
         {
             DC_Message _objMsg = new DC_Message();
@@ -1082,7 +1078,6 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating city master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-
         #endregion
 
         #region DynamicAttributes
@@ -3583,53 +3578,22 @@ namespace DataLayer
                 if (objName == "supplier")
                 {
                     ObjCode = context.Supplier.Find(obj_Id).Code;
-                    //(from ct in context.Suppliers.AsNoTracking()
-                    //           where ct.Supplier_Id == obj_Id
-                    //           select new { ct.Code }).FirstOrDefault();
-                    //if (supcode != null)
-                    //    ObjCode = supcode.Code;
                 }
                 if (objName == "country")
                 {
                     ObjCode = context.m_CountryMaster.Find(obj_Id).Code;
-
-                    //var countrycode = (from ct in context.m_CountryMaster.AsNoTracking()
-                    //                   where ct.Country_Id == obj_Id
-                    //                   select new { ct.Code }).FirstOrDefault();
-
-                    //if (countrycode != null)
-                    //    ObjCode = countrycode.Code;
                 }
                 if (objName == "city")
                 {
                     ObjCode = context.m_CityMaster.Find(obj_Id).Code;
-
-                    //var citycode = (from ct in context.m_CityMaster.AsNoTracking()
-                    //                where ct.City_Id == obj_Id
-                    //                select new { ct.Code }).FirstOrDefault();
-
-                    //if (citycode != null)
-                    //    ObjCode = citycode.Code;
                 }
                 if (objName == "state")
                 {
                     ObjCode = context.m_States.Find(obj_Id).StateCode;
-                    //var statecode = (from ct in context.m_States.AsNoTracking()
-                    //                 where ct.State_Id == obj_Id
-                    //                 select new { ct.StateCode }).FirstOrDefault();
-
-                    //if (statecode != null)
-                    //    ObjCode = statecode.StateCode;
                 }
                 if (objName == "product")
                 {
                     ObjCode = context.Accommodations.Find(obj_Id).CompanyHotelID.ToString();
-                    //var citycode = (from ct in context.Accommodations.AsNoTracking()
-                    //                where ct.Accommodation_Id == obj_Id
-                    //                select new { ct.CompanyHotelID }).FirstOrDefault();
-
-                    //if (citycode != null)
-                    //    ObjCode = citycode.CompanyHotelID.ToString();
                 }
                 return ObjCode;
             }
@@ -3641,29 +3605,19 @@ namespace DataLayer
             {
                 if (from == "country")
                 {
-                    var remarks = (from ct in context.m_CountryMapping
-                                   where ct.CountryMapping_Id == Mapping_Id
-                                   select new { ct.Remarks }).Single();
-                    Remarks = remarks.Remarks;
+                    Remarks = context.m_CountryMapping.Find(Mapping_Id).Remarks;
                 }
                 if (from == "city")
                 {
-                    var remarks = (from ct in context.m_CityMapping
-                                   where ct.CityMapping_Id == Mapping_Id
-                                   select new { ct.Remarks }).Single();
-                    Remarks = remarks.Remarks;
+                    Remarks = context.m_CityMapping.Find(Mapping_Id).Remarks;
                 }
                 if (from == "product")
                 {
-                    var remarks = (from ct in context.Accommodation_ProductMapping
-                                   where ct.Accommodation_ProductMapping_Id == Mapping_Id
-                                   select new { ct.Remarks }).Single();
-                    Remarks = remarks.Remarks;
+                    Remarks = context.Accommodation_ProductMapping.Find(Mapping_Id).Remarks;
                 }
             }
             return Remarks;
         }
-
         public DC_GenericMasterDetails_ByIDOrName GetDetailsByIdOrName(DC_GenericMasterDetails_ByIDOrName _obj)
         {
             DC_GenericMasterDetails_ByIDOrName _result = new DC_GenericMasterDetails_ByIDOrName();
@@ -3673,19 +3627,11 @@ namespace DataLayer
                 {
                     if (_obj.WhatFor == DetailsWhatFor.CodeById)
                     {
-                        var countrycode = (from ct in context.m_CountryMaster
-                                           where ct.Country_Id == _obj.ID
-                                           select new { ct.Code }).FirstOrDefault();
-
-                        if (countrycode != null)
-                            _result.Code = countrycode.Code;
+                        _result.Code = context.m_CountryMaster.Find(_obj.ID).Code;
                     }
                     else if (_obj.WhatFor == DetailsWhatFor.RemarksForMapping)
                     {
-                        var remarks = (from ct in context.m_CountryMapping
-                                       where ct.CountryMapping_Id == _obj.ID
-                                       select new { ct.Remarks }).FirstOrDefault();
-                        _result.Remark = remarks.Remarks;
+                        _result.Remark = context.m_CountryMapping.Find(_obj.ID).Remarks;
                     }
                     else if (_obj.WhatFor == DetailsWhatFor.IDByName)
                     {
@@ -3694,40 +3640,32 @@ namespace DataLayer
                             var country = (from ct in context.m_CountryMaster
                                            where ct.Status.ToUpper() == "ACTIVE" && ct.Name.ToUpper().Trim() == _obj.Name.Trim().ToUpper()
                                            select new { ct.Country_Id }).FirstOrDefault();
-
                             _result.ID = country.Country_Id;
                         }
                     }
-
                 }
                 else if (_obj.ObjName == EntityType.city)
                 {
                     if (_obj.WhatFor == DetailsWhatFor.CodeById)
                     {
-                        var citycode = (from ct in context.m_CityMaster
-                                        where ct.City_Id == _obj.ID
-                                        select new { ct.Code }).FirstOrDefault();
-
-                        if (citycode != null)
-                            _result.Code = citycode.Code;
+                        _result.Code = context.m_CityMaster.Find(_obj.ID).Code;
                     }
                     else if (_obj.WhatFor == DetailsWhatFor.RemarksForMapping)
                     {
-                        var remarks = (from ct in context.m_CityMapping
-                                       where ct.CityMapping_Id == _obj.ID
-                                       select new { ct.Remarks }).FirstOrDefault();
-                        _result.Remark = remarks.Remarks;
+                        _result.Remark = context.m_CityMapping.Find(_obj.ID).Remarks;
                     }
                     else if (_obj.WhatFor == DetailsWhatFor.IDByName)
                     {
                         if (!string.IsNullOrWhiteSpace(_obj.Optional1))
                         {
-                            var city = (from ct in context.m_CityMaster
-                                        where ct.Status.ToUpper() == "ACTIVE" && _obj.Name.Trim().ToUpper() == ct.Name.ToUpper().Trim()
-                                        && ct.CountryName.ToUpper().Trim() == _obj.Optional1.ToUpper().Trim()
-                                        select new { ct.City_Id }).FirstOrDefault();
+                            //Get Country_Id from Country master 
+                            Guid? Country_id = Guid.Empty;
+                            Country_id = (from a in context.m_CountryMaster.AsNoTracking() where a.Name.ToLower().Trim() == _obj.Optional1.ToLower().Trim() select a.Country_Id).FirstOrDefault();
 
-                            _result.ID = city.City_Id;
+                            _result.ID = (from ct in context.m_CityMaster.AsNoTracking()
+                                          where ct.Status.ToUpper() == "ACTIVE" && _obj.Name.Trim().ToUpper() == ct.Name.ToUpper().Trim()
+                                          && ct.Country_Id == Country_id
+                                          select ct.City_Id).FirstOrDefault();
                         }
                     }
                 }
@@ -3735,63 +3673,40 @@ namespace DataLayer
                 {
                     if (_obj.WhatFor == DetailsWhatFor.CodeById)
                     {
-                        var product = (from ct in context.Accommodations
-                                       where ct.Accommodation_Id == _obj.ID
-                                       select new { ct.CompanyHotelID }).FirstOrDefault();
-
-                        if (product != null)
-                            _result.Code = product.CompanyHotelID.ToString();
+                        _result.Code = context.Accommodations.Find(_obj.ID).CompanyHotelID.ToString();
                     }
                     else if (_obj.WhatFor == DetailsWhatFor.RemarksForMapping)
                     {
-                        var remarks = (from ct in context.Accommodation_ProductMapping
-                                       where ct.Accommodation_ProductMapping_Id == _obj.ID
-                                       select new { ct.Remarks }).FirstOrDefault();
-                        _result.Remark = remarks.Remarks;
+                        _result.Remark = context.Accommodation_ProductMapping.Find(_obj.ID).Remarks;
                     }
-
                 }
                 else if (_obj.ObjName == EntityType.supplier)
                 {
-                    var supcode = (from ct in context.Supplier
-                                   where ct.Supplier_Id == _obj.ID
-                                   select new { ct.Code }).FirstOrDefault();
-                    if (supcode != null)
-                        _result.Code = supcode.Code;
+                    _result.Code = context.Supplier.Find(_obj.ID).Code;
                 }
                 else if (_obj.ObjName == EntityType.state)
                 {
                     if (_obj.WhatFor == DetailsWhatFor.IDByName)
                     {
-                        //Get Country_Id from Country master 
                         if (!string.IsNullOrWhiteSpace(_obj.Name))
                         {
-                            var res = (from a in context.m_CountryMaster where a.Name.ToLower().Trim() == _obj.Optional1.ToLower().Trim() select a).ToList();
-                            Guid Country_id = Guid.Empty;
-                            if (res != null && res.Count > 0)
-                                Country_id = res[0].Country_Id;
+                            //Get Country_Id from Country master 
+                            Guid? Country_id = Guid.Empty;
+                            Country_id = (from a in context.m_CountryMaster.AsNoTracking() where a.Name.ToLower().Trim() == _obj.Optional1.ToLower().Trim() select a.Country_Id).FirstOrDefault();
 
-                            var state = (from st in context.m_States
-                                         where st.StateName.ToLower() == _obj.Name.ToLower() && st.Country_Id == Country_id
-                                         select new { st.State_Id }).FirstOrDefault();
-                            if (state != null)
-                                _result.ID = state.State_Id;
+                            _result.ID = (from st in context.m_States.AsNoTracking()
+                                          where st.StateName.ToLower() == _obj.Name.ToLower() && st.Country_Id == Country_id
+                                          select st.State_Id).FirstOrDefault();
                         }
                     }
                     else
                     {
-                        var statecode = (from ct in context.m_States
-                                         where ct.State_Id == _obj.ID
-                                         select new { ct.StateCode }).FirstOrDefault();
-
-                        if (statecode != null)
-                            _result.Code = statecode.StateCode;
+                        _result.Code = context.m_States.Find(_obj.ID).StateCode;
                     }
                 }
             }
             return _result;
         }
-
         #endregion
 
         #region To Fill DropDown
@@ -3801,9 +3716,9 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var productmaster = (from ct in context.Accommodations
-                                         where ct.city.TrimStart().TrimEnd().ToUpper() == _obj.CityName.TrimStart().TrimEnd().ToUpper()
-                                         && ct.country.TrimStart().TrimEnd().ToUpper() == _obj.CountryName.TrimStart().TrimEnd().ToUpper()
+                    var productmaster = (from ct in context.Accommodations.AsNoTracking()
+                                         where ct.city.Trim().ToUpper() == _obj.CityName.Trim().ToUpper()
+                                         && ct.country.Trim().ToUpper() == _obj.CountryName.Trim().ToUpper()
                                          && ct.IsActive == _obj.IsActive
                                          orderby ct.HotelName ascending
                                          select new DC_Accomodation_DDL
@@ -3826,7 +3741,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var stateMaster = (from ct in context.m_States
+                    var stateMaster = (from ct in context.m_States.AsNoTracking()
                                        where ct.Country_Id == _guidCountry_Id
                                        orderby ct.StateName ascending
                                        select new DC_State_Master_DDL
@@ -3849,26 +3764,21 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    Stopwatch timer = new Stopwatch();
-                    timer.Start();
-                    var citymaster = (from ct in context.m_CityMaster.AsQueryable()
+                    var citymaster = (from ct in context.m_CityMaster.AsNoTracking()
                                       where ct.Status.ToUpper() == "ACTIVE"
                                           && ct.Country_Id == _guidCountry_Id
-                                      orderby ct.Name ascending
                                       select new DC_City_Master_DDL
                                       {
                                           Name = ct.Name,
                                           City_Id = ct.City_Id,
                                           Code = ct.Code
                                       }).ToList();
-                    timer.Stop();
-                    var ElapsedTicks = timer.ElapsedMilliseconds;
-                    citymaster[0].Time = Convert.ToString(ElapsedTicks);
+
+                    citymaster = citymaster.OrderBy(o => o.Name).ToList();
                     return citymaster;
                 }
-
             }
-            catch
+            catch (Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching product master for dropdown", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -3879,8 +3789,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-
-                    var cityAreaLocationMaster = (from ct in context.m_CityAreaLocation
+                    var cityAreaLocationMaster = (from ct in context.m_CityAreaLocation.AsNoTracking()
                                                   where ct.CityAreaLocation_Id == CityAreaLocation_Id
                                                   orderby ct.Name ascending
                                                   select new DC_CityAreaLocation
@@ -3909,7 +3818,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var cityAreaMaster = (from ct in context.m_CityArea
+                    var cityAreaMaster = (from ct in context.m_CityArea.AsNoTracking()
                                           where ct.CityArea_Id == CityArea_Id
                                           orderby ct.Name ascending
                                           select new DC_CityArea
@@ -3936,7 +3845,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var suppliers = (from sm in context.Supplier
+                    var suppliers = (from sm in context.Supplier.AsNoTracking()
                                      where sm.StatusCode.ToUpper().Trim() == "ACTIVE"
                                      orderby sm.Name ascending
                                      select new DC_Supplier_DDL
@@ -3994,7 +3903,6 @@ namespace DataLayer
             }
             return supdata;
         }
-
         public List<DC_State_Master_DDL> GetStateByCity(Guid City_Id)
         {
             try
@@ -4024,7 +3932,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var countrycode = (from ct in context.m_CountryMaster
+                    var countrycode = (from ct in context.m_CountryMaster.AsNoTracking()
                                        where ct.Country_Id == obj_Id
                                        select new DC_CountryMaster
                                        {
@@ -4044,14 +3952,13 @@ namespace DataLayer
                 throw;
             }
         }
-
         public List<DC_CountryMaster> GetMasterCountryDataList()
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var countrycode = (from ct in context.m_CountryMaster
+                    var countrycode = (from ct in context.m_CountryMaster.AsNoTracking()
                                        where ct.Status.ToUpper() == "ACTIVE"
                                        orderby ct.Name ascending
                                        select new DC_CountryMaster
@@ -4073,14 +3980,13 @@ namespace DataLayer
                 throw;
             }
         }
-
         public List<DC_Activity_DDL> GetActivityByCountryCity(string CountryName, string CityName)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var resultActivity = (from a in context.Activities where a.Product_Name != null select a);
+                    var resultActivity = (from a in context.Activities.AsNoTracking() where a.Product_Name != null select a);
 
                     if (!string.IsNullOrWhiteSpace(CountryName))
                     {
@@ -4112,7 +4018,6 @@ namespace DataLayer
                 throw;
             }
         }
-
         public DC_State_Master_DDL GetStateNameAndCode(DC_State_Master_DDL_RQ RQ)
         {
             DC_State_Master_DDL _obj = new DC_State_Master_DDL();
@@ -4152,14 +4057,13 @@ namespace DataLayer
             }
             return _obj;
         }
-
         public List<DC_Supplier_DDL> GetSuppliersByProductCategory(string ProductCategory)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var suppliers = (from sm in context.Supplier
+                    var suppliers = (from sm in context.Supplier.AsNoTracking()
                                      where sm.StatusCode.ToUpper().Trim() == "ACTIVE"
                                      orderby sm.Name ascending
                                      select new DC_Supplier_DDL
@@ -4172,8 +4076,8 @@ namespace DataLayer
                                     ).ToList();
                     if (ProductCategory != "0")
                     {
-                        suppliers = (from sm in context.Supplier
-                                     join pm in context.Supplier_ProductCategory on sm.Supplier_Id equals pm.Supplier_Id
+                        suppliers = (from sm in context.Supplier.AsNoTracking()
+                                     join pm in context.Supplier_ProductCategory.AsNoTracking() on sm.Supplier_Id equals pm.Supplier_Id
                                      where sm.StatusCode.ToUpper().Trim() == "ACTIVE" &&
                                             pm.ProductCategory == ProductCategory
                                      orderby sm.Name ascending
@@ -4241,7 +4145,7 @@ namespace DataLayer
         {
             using (ConsumerEntities context = new ConsumerEntities())
             {
-                var cityAreaLocationMaster = (from ct in context.m_CityAreaLocation
+                var cityAreaLocationMaster = (from ct in context.m_CityAreaLocation.AsNoTracking()
                                               where ct.CityArea_Id == CityArea_Id
                                               orderby ct.Name ascending
                                               select new DC_CityAreaLocation
@@ -4254,7 +4158,6 @@ namespace DataLayer
                                                   Create_User = ct.Create_User,
                                                   Edit_Date = ct.Edit_Date,
                                                   Edit_User = ct.Edit_User
-
                                               }).ToList();
                 return cityAreaLocationMaster;
             }
@@ -4305,7 +4208,7 @@ namespace DataLayer
         {
             using (ConsumerEntities context = new ConsumerEntities())
             {
-                var cityAreaMaster = (from ct in context.m_CityArea
+                var cityAreaMaster = (from ct in context.m_CityArea.AsNoTracking()
                                       where ct.City_Id == City_Id
                                       orderby ct.Name ascending
                                       select new DC_CityArea
@@ -5505,7 +5408,7 @@ namespace DataLayer
                         }
                         m_ZoneMaster obj = new m_ZoneMaster()
                         {
-                            Zone_id = param.Zone_id??Guid.NewGuid(),
+                            Zone_id = param.Zone_id ?? Guid.NewGuid(),
                             Zone_Name = param.Zone_Name,
                             Zone_Type = param.Zone_Type,
                             Latitude = param.Latitude,
@@ -5515,10 +5418,10 @@ namespace DataLayer
                             Zone_Radius = (decimal)param.Zone_Radius,
                             Create_Date = param.Create_Date,
                             Create_User = param.Create_User,
-                            Country_Id=param.Country_id,
-                            Zone_SubType=param.Zone_SubType
+                            Country_Id = param.Country_id,
+                            Zone_SubType = param.Zone_SubType
                         };
-                        if(param.City_id !=null && param.City_id!= Guid.Empty)
+                        if (param.City_id != null && param.City_id != Guid.Empty)
                         {
                             ZoneCity_Mapping zcm = new ZoneCity_Mapping()
                             {
@@ -5533,7 +5436,7 @@ namespace DataLayer
                             context.ZoneCity_Mapping.Add(zcm);
                         }
                         context.m_ZoneMaster.Add(obj);
-                        
+
                     }
                     else if (param.Action == "UPDATE")
                     {
@@ -5604,7 +5507,7 @@ namespace DataLayer
                         }
                         ZoneCity_Mapping zcm = new ZoneCity_Mapping()
                         {
-                            ZoneCityMapping_Id = param.ZoneCityMapping_Id??Guid.NewGuid(),
+                            ZoneCityMapping_Id = param.ZoneCityMapping_Id ?? Guid.NewGuid(),
                             IsActive = true,
                             Status = "Active",
                             City_Id = param.City_id,
@@ -5678,29 +5581,29 @@ namespace DataLayer
                         ZonemasterIQ = ZonemasterIQ.Where(x => x.Zone_SubType == param.Zone_SubType);
                     }
                     var search = (from zm in ZonemasterIQ
-                                 join zcm in ZoneCityMasterIQ on zm.Zone_id equals zcm.Zone_Id into list1
-                                 from l1 in list1.DefaultIfEmpty()
-                                 join cm in CityMasterIQ on l1.City_Id equals cm.City_Id into list2
-                                 from l2 in list2.DefaultIfEmpty()
-                                 join com in CountrymasterIQ on zm.Country_Id equals com.Country_Id into list3
-                                 from l3 in list3.DefaultIfEmpty()
-                                 select (new DC_ZoneSearch
-                                 {
-                                     CountryName = l3.Name,
-                                     CityName = l2.Name,
-                                     Zone_Name = zm.Zone_Name,
-                                     Zone_Type = zm.Zone_Type,
-                                     Zone_id = zm.Zone_id,
-                                     City_id = l2.City_Id,
-                                     Country_id = l3.Country_Id,
-                                     IsActive = zm.IsActive,
-                                     Status = zm.Status,
-                                     Latitude = zm.Latitude,
-                                     Longitude = zm.Longitude,
-                                     Zone_Radius = (double)zm.Zone_Radius,
-                                     NoOfHotels = (context.ZoneProduct_Mapping.Where(x => x.Zone_Id == zm.Zone_id && (x.Included ?? false) == true).Count()),
-                                     Zone_SubType = zm.Zone_SubType
-                                 })).ToList().OrderBy(x => x.Zone_Name);
+                                  join zcm in ZoneCityMasterIQ on zm.Zone_id equals zcm.Zone_Id into list1
+                                  from l1 in list1.DefaultIfEmpty()
+                                  join cm in CityMasterIQ on l1.City_Id equals cm.City_Id into list2
+                                  from l2 in list2.DefaultIfEmpty()
+                                  join com in CountrymasterIQ on zm.Country_Id equals com.Country_Id into list3
+                                  from l3 in list3.DefaultIfEmpty()
+                                  select (new DC_ZoneSearch
+                                  {
+                                      CountryName = l3.Name,
+                                      CityName = l2.Name,
+                                      Zone_Name = zm.Zone_Name,
+                                      Zone_Type = zm.Zone_Type,
+                                      Zone_id = zm.Zone_id,
+                                      City_id = l2.City_Id,
+                                      Country_id = l3.Country_Id,
+                                      IsActive = zm.IsActive,
+                                      Status = zm.Status,
+                                      Latitude = zm.Latitude,
+                                      Longitude = zm.Longitude,
+                                      Zone_Radius = (double)zm.Zone_Radius,
+                                      NoOfHotels = (context.ZoneProduct_Mapping.Where(x => x.Zone_Id == zm.Zone_id && (x.Included ?? false) == true).Count()),
+                                      Zone_SubType = zm.Zone_SubType
+                                  })).ToList().OrderBy(x => x.Zone_Name);
 
                     int total = search.Count();
                     int skip = (param.PageNo ?? 0) * (param.PageSize ?? 0);
@@ -5721,7 +5624,7 @@ namespace DataLayer
                                      Longitude = a.Longitude,
                                      NoOfHotels = a.NoOfHotels,
                                      Zone_Radius = a.Zone_Radius,
-                                     Zone_SubType= a.Zone_SubType,
+                                     Zone_SubType = a.Zone_SubType,
                                      TotalRecords = total
                                  };
 
