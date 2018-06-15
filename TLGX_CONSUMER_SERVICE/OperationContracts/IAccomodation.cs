@@ -110,6 +110,11 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "AddAccomodation/Contacts", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool AddAccomodationContacts(DataContracts.DC_Accommodation_Contact AC);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Hotel/DeleteHotelsContactInTable", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message DeleteHotelsContactInTable(DataContracts.DC_Accommodation_Contact param);
         #endregion
 
         #region Accomodation Descriptions
@@ -128,6 +133,18 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "AddAccomodation/Descriptions", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool AddAccomodationDescriptions(DataContracts.DC_Accommodation_Descriptions AD);
 
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Hotel/DeleteHotelsDescInTable", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message DeleteHotelsDescInTable(DataContracts.DC_Accommodation_Descriptions param);
+
+
+        //[OperationContract]
+        //[FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        //[WebInvoke(Method = "GET", UriTemplate = "GetAccomodationByType/Descriptions/{Accomodation_Id}/{desc_type}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        //IList<DataContracts.DC_Accommodation_Descriptions> GetAccomodationDescriptionsByType(string Accomodation_Id, string Desc_type);
+
+
         #endregion
 
         #region Accomodation Facilities
@@ -145,6 +162,16 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "AddAccomodation/Facilities", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool AddAccomodationFacilities(DataContracts.DC_Accommodation_Facility AF);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Hotel/DeleteHotelsFacilitiesInTable", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message DeleteHotelsFacilitiesInTable(DataContracts.DC_Accommodation_Facility param);
+
+        //[OperationContract]
+        //[FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        //[WebInvoke(Method = "GET", UriTemplate = "GetAccomodationByCategory/Facilities/{Accomodation_Id}/{FacilityCategory}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        //IList<DataContracts.DC_Accommodation_Facility> GetAccomodationFacilitiesByCategory(string Accomodation_Id, string FacilityCategory);
         #endregion
 
         #region Accomodation HealthAndSafety
@@ -358,6 +385,11 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "AddAccomodation/Status", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool AddAccomodationStatus(DataContracts.DC_Accommodation_Status AS);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Hotel/DeleteHotelsStatusInTable", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message DeleteHotelsStatusInTable(DataContracts.DC_Accommodation_Status param);
 
         #endregion
 

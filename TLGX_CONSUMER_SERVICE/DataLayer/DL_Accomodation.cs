@@ -224,9 +224,7 @@ namespace DataLayer
         //        throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
         //    }
         //}
-
-
-
+            
         public List<DataContracts.DC_Accomodation_Search_RS> AccomodationSearch(DataContracts.DC_Accomodation_Search_RQ RQ)
         {
             try
@@ -1854,6 +1852,43 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding accomodation contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        public DC_Message DeleteHotelsContactInTable(DataContracts.DC_Accommodation_Contact param)
+        {
+            DC_Message _msg = new DC_Message();
+            if (param.Accommodation_Id == Guid.Empty)
+            {
+                _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning;
+                _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
+                return _msg;
+            }
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                try
+                {
+                    var search = (from a in context.Accommodation_Contact where a.Accommodation_Id == param.Accommodation_Id select a);
+                    if (search != null && search.Count() > 0)
+                    {
+                        context.Accommodation_Contact.RemoveRange(search);
+                    }
+                    if (context.SaveChanges() > 0)
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                    }
+                    else
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while deleting Hotel Contact", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                }
+            }
+            return _msg;
+        }
         #endregion
 
         #region Accomodation Descriptions
@@ -1980,6 +2015,81 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding accomodation contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        //public List<DataContracts.DC_Accommodation_Descriptions> GetAccomodationDescriptionsByType(Guid Accomodation_Id, string Desc_type)
+        //{
+        //    try
+        //    {
+        //        using (ConsumerEntities context = new ConsumerEntities())
+        //        {
+        //            var search = from ad in context.Accommodation_Descriptions
+        //                         where ad.Accommodation_Id == Accomodation_Id
+        //                         && ad.DescriptionType == Desc_type
+        //                         //&& (ad.IsActive ?? true) == true
+        //                         select new DataContracts.DC_Accommodation_Descriptions
+        //                         {
+        //                             Accommodation_Description_Id = ad.Accommodation_Description_Id,
+        //                             Accommodation_Id = ad.Accommodation_Id,
+        //                             Create_Date = ad.Create_Date,
+        //                             Create_User = ad.Create_User,
+        //                             Description = ad.Description,
+        //                             DescriptionType = ad.DescriptionType,
+        //                             Edit_Date = ad.Edit_Date,
+        //                             Edit_User = ad.Edit_User,
+        //                             FromDate = ad.FromDate,
+        //                             IsActive = (ad.IsActive ?? true),
+        //                             Language_Code = ad.Language_Code,
+        //                             Legacy_Htl_Id = ad.Legacy_Htl_Id,
+        //                             Source = ad.Source,
+        //                             ToDate = ad.ToDate
+        //                         };
+        //            return search.ToList();
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation descriptions by type", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+        //    }
+
+        //}
+
+        public DC_Message DeleteHotelsDescInTable(DataContracts.DC_Accommodation_Descriptions param)
+        {
+            DC_Message _msg = new DC_Message();
+            if (param.Accommodation_Id == Guid.Empty)
+            {
+                _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning;
+                _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
+                return _msg;
+            }
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                try
+                {
+                    var search = (from a in context.Accommodation_Descriptions where a.Accommodation_Id == param.Accommodation_Id select a);
+                    if (search != null && search.Count() > 0)
+                    {
+                        context.Accommodation_Descriptions.RemoveRange(search);
+                    }
+                    if (context.SaveChanges() > 0)
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                    }
+                    else
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while deleting Hotel Description", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                }
+            }
+            return _msg;
+        }
+
         #endregion
 
         #region Accomodation Facilities
@@ -2097,6 +2207,78 @@ namespace DataLayer
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding accomodation facilities", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
+        }
+
+        //public List<DataContracts.DC_Accommodation_Facility> GetAccomodationFacilitiesByCategory(Guid Accomodation_Id, string FacilityCategory)
+        //{
+        //    try
+        //    {
+        //        using (ConsumerEntities context = new ConsumerEntities())
+        //        {
+        //            var search = from af in context.Accommodation_Facility
+        //                         where af.Accommodation_Id == Accomodation_Id
+        //                         && af.FacilityType == FacilityCategory
+        //                         orderby af.FacilityCategory
+        //                         select new DataContracts.DC_Accommodation_Facility
+        //                         {
+        //                             Accommodation_Facility_Id = af.Accommodation_Facility_Id,
+        //                             Accommodation_Id = af.Accommodation_Id,
+        //                             FacilityCategory = af.FacilityCategory,
+        //                             FacilityName = af.FacilityName,
+        //                             FacilityType = af.FacilityType,
+        //                             Description = af.Description,
+        //                             Legacy_Htl_Id = af.Legacy_Htl_Id,
+        //                             Create_Date = af.Create_Date,
+        //                             Create_User = af.Create_User,
+        //                             Edit_Date = af.Edit_Date,
+        //                             Edit_User = af.Edit_User,
+        //                             IsActive = (af.IsActive ?? true)
+        //                         };
+        //            return search.ToList();
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation facilities", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+        //    }
+
+        //}
+
+        public DC_Message DeleteHotelsFacilitiesInTable(DataContracts.DC_Accommodation_Facility param)
+        {
+            DC_Message _msg = new DC_Message();
+            if (param.Accommodation_Id == Guid.Empty)
+            {
+                _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning;
+                _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
+                return _msg;
+            }
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                try
+                {
+                    var search = (from a in context.Accommodation_Facility where a.Accommodation_Id == param.Accommodation_Id select a);
+                    if (search != null && search.Count() > 0)
+                    {
+                        context.Accommodation_Facility.RemoveRange(search);
+                    }
+                    if (context.SaveChanges() > 0)
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                    }
+                    else
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while deleting Hotel Description", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                }
+            }
+            return _msg;
         }
 
         #endregion
@@ -3624,6 +3806,7 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation room info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
         #endregion
 
         #region Accomodation RouteInfo
@@ -3999,6 +4182,43 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding accomodation status", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        public DC_Message DeleteHotelsStatusInTable(DataContracts.DC_Accommodation_Status param)
+        {
+            DC_Message _msg = new DC_Message();
+            if (param.Accommodation_Id == Guid.Empty)
+            {
+                _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning;
+                _msg.StatusMessage = DataContracts.ReadOnlyMessage.strFailed;
+                return _msg;
+            }
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                try
+                {
+                    var search = (from a in context.Accommodation_Status where a.Accommodation_Id == param.Accommodation_Id select a);
+                    if (search != null && search.Count() > 0)
+                    {
+                        context.Accommodation_Status.RemoveRange(search);
+                    }
+                    if (context.SaveChanges() > 0)
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strDeleted;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                    }
+                    else
+                    {
+                        _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while deleting Hotel Status", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                }
+            }
+            return _msg;
+        }
         #endregion
 
         #region Accomodation ClassificationAttributes
@@ -4339,6 +4559,6 @@ namespace DataLayer
         }
 
         #endregion
-
+        
     }
 }

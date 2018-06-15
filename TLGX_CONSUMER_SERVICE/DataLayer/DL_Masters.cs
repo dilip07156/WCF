@@ -924,6 +924,75 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching City Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        public List<DataContracts.Masters.DC_City> GetCountryCityMaster(DataContracts.Masters.DC_City_Search_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    //var search = from c in context.m_CityMaster
+                    //             select c;                                     
+
+                    StringBuilder sbSelect = new StringBuilder();
+                    StringBuilder sbSelectCity = new StringBuilder();
+                    StringBuilder sbwhere = new StringBuilder();
+                    StringBuilder sbfrom = new StringBuilder();
+                    StringBuilder sbwhereCity = new StringBuilder();
+                    sbSelectCity.Append("Select  City_Id , CountryName ,Create_User , Country_Id, Create_Date,Edit_Date ,Edit_User, Google_PlaceId,Name ,StateCode ,StateName,State_Id,Status");
+                    sbSelect.Append("Select   CountryName ,Create_User , Country_Id, Create_Date,Edit_Date ,Edit_User, Google_PlaceId,Name ,StateCode ,StateName,State_Id,Status");
+                    sbwhere.Append(" WHERE 1 = 1 ");
+                    sbfrom.Append("from [m_CityMaster] a with (NoLock)");
+
+                    if (!string.IsNullOrWhiteSpace(RQ.City_Name))
+                    {
+                        sbwhereCity.Append(" WHERE 1 = 1 ");
+                        sbwhereCity.Append("AND a.Name ='" + RQ.City_Name + "'");
+                    }
+
+                    StringBuilder sbCityQuery = new StringBuilder();
+                    sbCityQuery.Append(sbSelectCity + " ");
+                    sbCityQuery.Append(" from [m_CityMaster] a with (NoLock)");
+                    sbCityQuery.Append(" " + sbwhereCity + " ");
+
+
+                    var retCity = context.Database.SqlQuery<DataContracts.Masters.DC_City>(sbCityQuery.ToString()).ToList();
+
+                    if (retCity.Count == 0)
+                    {
+                        if (!string.IsNullOrWhiteSpace(RQ.Country_Name))
+                        {
+                            sbwhere.Append(" AND a.CountryName= '" + RQ.Country_Name + "'");
+                        }
+                        if (!String.IsNullOrWhiteSpace(RQ.State_Name))
+                        {
+                            sbwhere.Append("AND a.StateName = '" + (RQ.State_Name)
+                                .Replace("District", "").Replace("province", "").Replace("Governorate", "").Replace("County", "").Replace("City", "").Replace("District", "")
+                              .Replace("Region", "").Replace("Islands", "").Replace("Regional", "").Replace("Council", "").Replace("Prefecture", "").Replace("Territory", "")
+                              .Replace("Atoll", "").Replace("North", "").Replace("Oblast", "").Replace("Republic", "").Replace("Subject", "").Replace("Krai", "").Replace("Dalmatia", "")
+                             .Replace("Department", "").Replace("Area", "").Replace("Voivodeship", "").Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(" ", "").Replace("-", "") + "'");
+
+                        }
+                        if (!string.IsNullOrWhiteSpace(RQ.Status))
+                        {
+                            sbwhere.Append("AND a.Status = 'ACTIVE'");
+                        }
+                        StringBuilder sbfinalQuery = new StringBuilder();
+                        sbfinalQuery.Append(sbSelect + " ");
+                        sbfinalQuery.Append(" " + sbfrom);
+                        sbfinalQuery.Append(" " + sbwhere + " ");
+                        var ret = context.Database.SqlQuery<DataContracts.Masters.DC_City>(sbfinalQuery.ToString()).ToList();
+                        return ret;
+                    }
+                    else
+                        return retCity;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching City Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
         public string GetNextCityCodeNumber(string codePrefix)
         {
             string ret = "000";

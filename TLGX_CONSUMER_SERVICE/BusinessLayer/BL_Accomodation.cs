@@ -150,6 +150,14 @@ namespace BusinessLayer
                 return obj.AddAccomodationContacts(AC);
             }
         }
+
+        public DataContracts.DC_Message DeleteHotelsContactInTable(DataContracts.DC_Accommodation_Contact param)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.DeleteHotelsContactInTable(param);
+            }
+        }
         #endregion
 
         #region Accomodation Descriptions
@@ -177,6 +185,21 @@ namespace BusinessLayer
                 return obj.AddAccomodationDescriptions(AD);
             }
         }
+
+        public DataContracts.DC_Message DeleteHotelsDescInTable(DataContracts.DC_Accommodation_Descriptions param)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.DeleteHotelsDescInTable(param);
+            }
+        }
+        //public List<DataContracts.DC_Accommodation_Descriptions> GetAccomodationDescriptionsByType(Guid Accomodation_Id, string Desc_Type)
+        //{
+        //    using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+        //    {
+        //        return obj.GetAccomodationDescriptionsByType(Accomodation_Id, Desc_Type);
+        //    }
+        //}
         #endregion
 
         #region Accomodation Facilities
@@ -202,6 +225,23 @@ namespace BusinessLayer
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
             {
                 return obj.AddAccomodationFacilities(AF);
+            }
+        }
+
+        //public List<DataContracts.DC_Accommodation_Facility> GetAccomodationFacilitiesByCategory(Guid Accomodation_Id, string FacilityCategory)
+        //{
+        //    using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+        //    {
+        //        return obj.GetAccomodationFacilitiesByCategory(Accomodation_Id, FacilityCategory);
+        //    }
+
+        //}
+
+        public DataContracts.DC_Message DeleteHotelsFacilitiesInTable(DataContracts.DC_Accommodation_Facility param)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.DeleteHotelsFacilitiesInTable(param);
             }
         }
         #endregion
@@ -560,6 +600,14 @@ namespace BusinessLayer
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
             {
                 return obj.AddAccomodationStatus(AS);
+            }
+        }
+
+        public DataContracts.DC_Message DeleteHotelsStatusInTable(DataContracts.DC_Accommodation_Status param)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.DeleteHotelsStatusInTable(param);
             }
         }
         #endregion

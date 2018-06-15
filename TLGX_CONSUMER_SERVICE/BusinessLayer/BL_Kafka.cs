@@ -29,7 +29,25 @@ namespace BusinessLayer
             {
                 return obj.UpdateKafkaInfo(KafkaInfo);
             }
-        }       
+        }
+
+        public List<DataContracts.STG.DC_Stg_Kafka> SelectKafkaInfo(string Row_Id)
+        {
+            Guid gRow_Id;
+
+            if (!Guid.TryParse(Row_Id, out gRow_Id))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            else
+            {
+                using (DataLayer.DL_Kafka objBL = new DataLayer.DL_Kafka())
+                {
+                    return objBL.SelectKafkaInfo(gRow_Id);
+                }
+            }
+
+        }
 
         public List<DataContracts.STG.DC_Stg_Kafka> GetPollData()
         {           
@@ -38,5 +56,6 @@ namespace BusinessLayer
                     return objBL.GetPollData();
                 }
         }
+
     }
 }

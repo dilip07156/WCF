@@ -218,6 +218,14 @@ namespace ConsumerSvc
                 return obj.AddAccomodationContacts(AC);
             }
         }
+
+        public DataContracts.DC_Message DeleteHotelsContactInTable(DataContracts.DC_Accommodation_Contact param)
+        {
+            using (BusinessLayer.BL_Accomodation obj = new BL_Accomodation())
+            {
+                return obj.DeleteHotelsContactInTable(param);
+            }
+        }
         #endregion
 
         #region Accomodation Descriptions
@@ -251,6 +259,23 @@ namespace ConsumerSvc
                 return objBL.AddAccomodationDescriptions(AD);
             }
         }
+
+        //public IList<DC_Accommodation_Descriptions> GetAccomodationDescriptionsByType(string Accomodation_Id, string Desc_Type)
+        //{
+        //    using (BL_Accomodation objBL = new BL_Accomodation())
+        //    {
+        //        return objBL.GetAccomodationDescriptionsByType(Guid.Parse(Accomodation_Id), Desc_Type);
+        //    }
+        //}
+
+        public DataContracts.DC_Message DeleteHotelsDescInTable(DataContracts.DC_Accommodation_Descriptions param)
+        {
+            using (BusinessLayer.BL_Accomodation obj = new BL_Accomodation())
+            {
+                return obj.DeleteHotelsDescInTable(param);
+            }
+        }
+
         #endregion
 
         #region Accomodation Facilities
@@ -284,6 +309,29 @@ namespace ConsumerSvc
                 return obj.AddAccomodationFacilities(AF);
             }
         }
+
+        public DataContracts.DC_Message DeleteHotelsFacilitiesInTable(DataContracts.DC_Accommodation_Facility param)
+        {
+            using (BusinessLayer.BL_Accomodation obj = new BL_Accomodation())
+            {
+                return obj.DeleteHotelsFacilitiesInTable(param);
+            }
+        }
+
+        //public IList<DC_Accommodation_Facility> GetAccomodationFacilitiesByCategory(string Accomodation_Id, string FacilityCategory)
+        //{
+        //    using (BL_Accomodation objBL = new BL_Accomodation())
+        //    {
+        //        List<DC_Accommodation_Facility> searchResults = new List<DC_Accommodation_Facility>();
+        //        searchResults = objBL.GetAccomodationFacilitiesByCategory(Guid.Parse(Accomodation_Id), FacilityCategory);
+
+        //        if (searchResults == null)
+        //        {
+        //            throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+        //        }
+        //        return searchResults;
+        //    }
+        //}
         #endregion
 
         #region Accomodation HealthAndSafety
@@ -722,6 +770,14 @@ namespace ConsumerSvc
             using (BL_Accomodation obj = new BL_Accomodation())
             {
                 return obj.AddAccomodationStatus(AS);
+            }
+        }
+
+        public DataContracts.DC_Message DeleteHotelsStatusInTable(DataContracts.DC_Accommodation_Status param)
+        {
+            using (BusinessLayer.BL_Accomodation obj = new BL_Accomodation())
+            {
+                return obj.DeleteHotelsStatusInTable(param);
             }
         }
         #endregion

@@ -115,7 +115,8 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                    
-                     _lstresult = (from a in context.Stg_Kafka                                   
+                     _lstresult = (from a in context.Stg_Kafka
+                                   where a.Status!= "Read" 
                                    select new DataContracts.STG.DC_Stg_Kafka
                                   {
                                       Row_Id=a.Row_Id,
@@ -124,7 +125,6 @@ namespace DataLayer
                                   }).ToList();
 
                     return _lstresult;
-
                 }
             }
 
@@ -134,6 +134,40 @@ namespace DataLayer
             }
 
         }
+
+        public List<DataContracts.STG.DC_Stg_Kafka> SelectKafkaInfo(Guid row_id)
+        {
+            try
+            {
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    var result = (from a in context.Stg_Kafka
+                                  where a.Row_Id == row_id
+                                  select new DataContracts.STG.DC_Stg_Kafka
+                                  {
+                                      Status = a.Status,
+                                      Topic = a.Topic,
+                                      PayLoad = a.PayLoad,
+                                      Create_Date = a.Create_Date,
+                                      Create_User = a.Create_User,
+                                      Process_Date = a.Process_Date,
+                                      Process_User = a.Process_User
+                                  }).ToList();
+
+                    return result;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while selecting Kafka details", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+
+        }
+
+
 
     }
 }

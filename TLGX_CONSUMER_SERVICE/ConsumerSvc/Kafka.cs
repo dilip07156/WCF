@@ -36,5 +36,13 @@ namespace ConsumerSvc
                 return objBL.GetPollData();
             }
         }
+
+        public List<DataContracts.STG.DC_Stg_Kafka> SelectKafkaInfo(string Row_Id)
+        {
+            using (BL_Kafka objBL = new BL_Kafka())
+            {
+                return objBL.SelectKafkaInfo(Row_Id);
+            }
+        }
     }
 }

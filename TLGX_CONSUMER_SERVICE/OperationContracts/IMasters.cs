@@ -122,6 +122,11 @@ namespace OperationContracts
         IList<DataContracts.Masters.City_AlphaPage> GetCityAlphaPaging(DataContracts.Masters.DC_City_Search_RQ RQ);
 
 
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Master/CountryCity/Get", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Masters.DC_City> GetCountryCityMaster(DataContracts.Masters.DC_City_Search_RQ RQ);
+
         #endregion
 
         #region DynamicAttributes

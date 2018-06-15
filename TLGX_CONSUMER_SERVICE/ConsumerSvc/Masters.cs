@@ -152,6 +152,14 @@ namespace ConsumerSvc
             }
         }
 
+        public IList<DataContracts.Masters.DC_City> GetCountryCityMaster(DataContracts.Masters.DC_City_Search_RQ RQ)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetCountryCityMaster(RQ);
+            }
+        }
+
         #endregion
 
         #region State Master

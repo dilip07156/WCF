@@ -104,6 +104,13 @@ namespace BusinessLayer
             }
 
         }
+        public List<DataContracts.Masters.DC_City> GetCountryCityMaster(DataContracts.Masters.DC_City_Search_RQ RQ)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetCountryCityMaster(RQ);
+            }
+        }
         #endregion
 
         #region State Master
