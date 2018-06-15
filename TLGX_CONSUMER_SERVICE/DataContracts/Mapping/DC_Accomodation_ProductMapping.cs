@@ -241,16 +241,14 @@ namespace DataContracts.Mapping
         string _address_tx;
         string _TelephoneNumber_tx;
 
-
-
         [DataMember]
         public Nullable<System.Guid> Supplier_Id { get; set; }
 
         [DataMember]
         public string Via { get; set; }
+
         [DataMember]
         public string HotelName_TX { get; set; }
-
 
         [DataMember]
         public Nullable<System.Guid> Country_Id { get; set; }
@@ -263,7 +261,6 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public string CalledFromTLGX { get; set; }
-
 
         [DataMember]
         public string StarRating { get; set; }
@@ -575,6 +572,7 @@ namespace DataContracts.Mapping
                 _source = value;
             }
         }
+
         [DataMember]
         public string Address_tx
         {
@@ -588,6 +586,7 @@ namespace DataContracts.Mapping
                 _address_tx = value;
             }
         }
+
         [DataMember]
         public string TelephoneNumber_tx
         {
@@ -601,8 +600,12 @@ namespace DataContracts.Mapping
                 _TelephoneNumber_tx = value;
             }
         }
+
         [DataMember]
         public string ProductType { get; set; }
+
+        [DataMember]
+        public Guid? City_Id { get; set; }
     }
 
     [DataContract]

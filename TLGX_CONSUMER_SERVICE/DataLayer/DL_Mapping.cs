@@ -3457,9 +3457,10 @@ namespace DataLayer
         {
             try
             {
-                string sql = "";
-                //string sqlselectcount = "";
-                //string sqlselect = "";
+                int skip = 0;
+                int total = 0;
+                skip = obj.PageSize * obj.PageNo;
+
                 StringBuilder sbsqlselectcount = new StringBuilder();
                 StringBuilder sbsqlselect = new StringBuilder();
                 StringBuilder sbsqlorderby = new StringBuilder();
@@ -3468,162 +3469,158 @@ namespace DataLayer
                 StringBuilder sbsqlcmjoin = new StringBuilder();
                 StringBuilder sbsqlctmjoin = new StringBuilder();
 
-                sbsqlwhere.Append(" where 1=1 ");
-                //string sqlfrom = "";
-                //string sqlcmjoin = "";
-                //string sqlctmjoin = "";
-                //string sqlwhere = " where 1=1 ";
-                //string sqlorderby = "";
+                sbsqlwhere.AppendLine(" where 1=1 ");
 
-                int skip = 0;
-                int total = 0;
-                skip = obj.PageSize * obj.PageNo;
-
-                //sqlctmjoin = " left outer join m_CityMapping ctm on apm.Supplier_Id = ctm.Supplier_Id and apm.Country_Id = ctm.Country_Id ";
-                //sqlctmjoin = sqlctmjoin + " and ((apm.CityCode is not null and apm.CityCode = ctm.CityCode) OR (apm.CityCode is null and apm.CityName = ctm.CityName)) ";
-                //sqlctmjoin = sqlctmjoin + " left outer join m_CityMaster mct on ctm.City_Id = mct.City_Id ";
-
-                if (!string.IsNullOrWhiteSpace(obj.SupplierId))
-                {
-                    sbsqlwhere.Append(" and apm.SupplierId = '" + obj.SupplierId.ToString() + "' ");
-                }
                 if (obj.Supplier_Id.HasValue)
                 {
-                    sbsqlwhere.Append(" and apm.Supplier_Id = '" + obj.Supplier_Id.ToString() + "' ");
-                }
-                if (!string.IsNullOrWhiteSpace(obj.SupplierName))
-                {
-                    sbsqlwhere.Append(" and apm.SupplierName = '" + obj.SupplierName.ToString() + "' ");
-
-                }
-                if (obj.MatchedBy != null)
-                {
-                    sbsqlwhere.Append(" and ISNULL(apm.MatchedBy, 99) = " + obj.MatchedBy.ToString() + " ");
-                }
-                if (!string.IsNullOrWhiteSpace(obj.Street))
-                {
-                    string address_tx = CommonFunctions.RemoveSpecialCharacters(obj.Street);
-                    sbsqlwhere.Append(" and apm.address_tx = '" + address_tx.ToString() + "' ");
-
-                }
-                if (!string.IsNullOrWhiteSpace(obj.Street2))
-                {
-                    sbsqlwhere.Append(" and apm.Street2 like '%" + obj.Street2.ToString() + "%' ");
-                }
-                if (!string.IsNullOrWhiteSpace(obj.Street3))
-                {
-                    sbsqlwhere.Append(" and apm.Street3 like '%" + obj.Street3.ToString() + "%' ");
-                }
-                if (!string.IsNullOrWhiteSpace(obj.ProductName))
-                {
-                    sbsqlwhere.Append(" and replace(ltrim(rtrim(lower(apm.ProductName))), 'hotel','') like '%" + obj.ProductName.ToLower().Replace("hotel", "").Trim() + "%' ");
-                }
-                if (!string.IsNullOrWhiteSpace(obj.PostCode))
-                {
-                    sbsqlwhere.Append(" and apm.PostCode like '%" + obj.PostCode.ToString() + "%' ");
-                }
-                if (!string.IsNullOrWhiteSpace(obj.TelephoneNumber))
-                {
-                    string telephoneNumber_tx = CommonFunctions.GetCharacter(obj.TelephoneNumber, 8);
-                    sbsqlwhere.Append(" and apm.TelephoneNumber_tx = '" + telephoneNumber_tx.ToString() + "' ");
-
-                }
-                if (!string.IsNullOrWhiteSpace(obj.CountryName))
-                {
-                    if (!string.IsNullOrWhiteSpace(obj.Source) && obj.Source.ToUpper() == "SYSTEMDATA")
-                    {
-                        sbsqlcmjoin.Append(" left outer join m_CountryMaster mc on apm.Country_Id = mc.Country_Id ");
-                        sbsqlwhere.Append(" and ltrim(rtrim(upper(mc.Name))) = '" + obj.CountryName.ToString().Trim().ToUpper() + "' ");
-
-                    }
-                    else
-                    {
-                        sbsqlcmjoin.Append(" left outer join m_CountryMapping cm on apm.Supplier_Id = cm.Supplier_Id ");
-                        sbsqlcmjoin.Append(" and ((apm.CountryCode is not null and apm.CountryCode = cm.CountryCode) OR (apm.CountryCode is null and apm.CountryName = cm.CountryName)) ");
-
-                        sbsqlwhere.Append(" and ltrim(rtrim(upper(cm.CountryName))) = '" + obj.CountryName.ToString().Trim().ToUpper() + "' ");
-
-                    }
-                }
-                if ((obj.Country_Id != null) && obj.Country_Id != Guid.Empty)
-                {
-                    sbsqlwhere.Append(" and apm.Country_Id = '" + obj.Country_Id.ToString() + "' ");
-                }
-                if (!string.IsNullOrWhiteSpace(obj.CityName))
-                {
-                    if (!string.IsNullOrWhiteSpace(obj.Source) && obj.Source.ToUpper() == "SYSTEMDATA")
-                    {
-                        sbsqlctmjoin.Append(" left outer join m_CityMapping ctm on apm.Supplier_Id = ctm.Supplier_Id and apm.Country_Id = ctm.Country_Id ");
-                        sbsqlctmjoin.Append(" and ((apm.CityCode is not null and apm.CityCode = ctm.CityCode) OR (apm.CityCode is null and apm.CityName = ctm.CityName)) ");
-
-                        sbsqlctmjoin.Append(" left outer join m_CityMaster mct on ctm.City_Id = mct.City_Id ");
-
-                        sbsqlwhere.Append(" and ltrim(rtrim(upper(mct.Name))) = '" + obj.CityName.ToString().Trim().ToUpper() + "' ");
-
-                    }
-                    else
-                    {
-                        sbsqlctmjoin.Append(" left outer join m_CityMapping ctm on apm.Supplier_Id = ctm.Supplier_Id and apm.Country_Id = ctm.Country_Id ");
-                        sbsqlctmjoin.Append(" and ((apm.CityCode is not null and apm.CityCode = ctm.CityCode) OR (apm.CityCode is null and apm.CityName = ctm.CityName)) ");
-
-
-                        sbsqlwhere.Append(" and ltrim(rtrim(upper(ctm.CityName))) = '" + obj.CityName.ToString().Trim().ToUpper() + "' ");
-
-                    }
-                }
-                if (!string.IsNullOrWhiteSpace(obj.CityCode))
-                {
-                    sbsqlwhere.Append(" and ltrim(rtrim(upper(apm.CityCode))) = '" + obj.CityCode.ToString().Trim().ToUpper() + "' ");
-                }
-                if (!string.IsNullOrWhiteSpace(obj.CountryCode))
-                {
-                    sbsqlwhere.Append(" and ltrim(rtrim(upper(apm.CountryCode))) = '" + obj.CountryCode.ToString().Trim().ToUpper() + "' ");
-
-                }
-                if (!string.IsNullOrWhiteSpace(obj.Status))
-                {
-                    sbsqlwhere.Append(" and apm.Status = '" + obj.Status.ToString().Trim() + "' ");
+                    sbsqlwhere.AppendLine(" and apm.Supplier_Id = '" + obj.Supplier_Id.ToString() + "' ");
                 }
                 else
                 {
-                    sbsqlwhere.Append(" and apm.Status != 'DELETE' ");
+                    if (!string.IsNullOrWhiteSpace(obj.SupplierId))
+                    {
+                        sbsqlwhere.AppendLine(" and apm.SupplierId = '" + obj.SupplierId.ToString() + "' ");
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(obj.SupplierName))
+                    {
+                        sbsqlwhere.AppendLine(" and apm.SupplierName = '" + obj.SupplierName.ToString() + "' ");
+                    }
                 }
+
+                if (obj.MatchedBy != null)
+                {
+                    sbsqlwhere.AppendLine(" and apm.MatchedBy = " + obj.MatchedBy.ToString() + " ");
+                }
+
+                if (!string.IsNullOrWhiteSpace(obj.Street))
+                {
+                    string address_tx = CommonFunctions.RemoveSpecialCharacters(obj.Street);
+                    sbsqlwhere.AppendLine(" and apm.address_tx = '" + address_tx.ToString() + "' ");
+                }
+
+                if (!string.IsNullOrWhiteSpace(obj.Street2))
+                {
+                    sbsqlwhere.AppendLine(" and apm.Street2 like '%" + obj.Street2.ToString() + "%' ");
+                }
+
+                if (!string.IsNullOrWhiteSpace(obj.Street3))
+                {
+                    sbsqlwhere.AppendLine(" and apm.Street3 like '%" + obj.Street3.ToString() + "%' ");
+                }
+
+                if (!string.IsNullOrWhiteSpace(obj.ProductName))
+                {
+                    sbsqlwhere.AppendLine(" and replace(ltrim(rtrim(apm.ProductName)), 'hotel','') like '%" + obj.ProductName.Replace("hotel", "").Trim() + "%' ");
+                }
+
+                if (!string.IsNullOrWhiteSpace(obj.PostCode))
+                {
+                    sbsqlwhere.AppendLine(" and apm.PostCode like '%" + obj.PostCode.ToString() + "%' ");
+                }
+
+                if (!string.IsNullOrWhiteSpace(obj.TelephoneNumber))
+                {
+                    string telephoneNumber_tx = CommonFunctions.GetCharacter(obj.TelephoneNumber, 8);
+                    sbsqlwhere.AppendLine(" and apm.TelephoneNumber_tx = '" + telephoneNumber_tx.ToString() + "' ");
+                }
+
+                if (!string.IsNullOrWhiteSpace(obj.StarRating))
+                {
+                    sbsqlwhere.AppendLine(" and apm.StarRating like '%" + obj.StarRating.ToString().Trim() + "%' ");
+                }
+
+                if (!string.IsNullOrWhiteSpace(obj.Status))
+                {
+                    sbsqlwhere.AppendLine(" and apm.Status = '" + obj.Status.ToString().Trim() + "' ");
+                }
+                else
+                {
+                    sbsqlwhere.AppendLine(" and apm.Status != 'DELETE' ");
+                }
+
                 if (!string.IsNullOrWhiteSpace(obj.Chain))
                 {
-                    sbsqlwhere.Append(" and apm.Accommodation_Id in ");
-                    sbsqlwhere.Append(" (select Accommodation_Id from Accommodations where Chain = '" + obj.Chain.ToString() + "') ");
-
+                    sbsqlwhere.AppendLine(" and a.Chain = '" + obj.Chain.ToString() + "' ");
                 }
+
                 if (!string.IsNullOrWhiteSpace(obj.Brand))
                 {
-                    sbsqlwhere.Append(" and apm.Accommodation_Id in ");
-                    sbsqlwhere.Append(" (select Accommodation_Id from Accommodations where Brand = '" + obj.Brand.ToString() + "') ");
-
+                    sbsqlwhere.AppendLine(" and a.Brand = '" + obj.Brand.ToString() + "' ");
                 }
+
                 if (obj.StatusExcept != null)
                 {
-                    sbsqlwhere.Append(" and apm.Status != '" + obj.StatusExcept.ToString().Trim() + "' ");
+                    sbsqlwhere.AppendLine(" and apm.Status != '" + obj.StatusExcept.ToString().Trim() + "' ");
                 }
+
                 if (!string.IsNullOrWhiteSpace(obj.Via) && Convert.ToString(obj.Via) == "CROSS")
                 {
-                    sbsqlwhere.Append(" and apm.Status NOT IN ('AUTOMAPPED','DELETE')  ");
+                    sbsqlwhere.AppendLine(" and apm.Status NOT IN ('AUTOMAPPED','DELETE') ");
+                }
+
+                if ((obj.Country_Id != null) && obj.Country_Id != Guid.Empty)
+                {
+                    sbsqlwhere.AppendLine(" and apm.Country_Id = '" + obj.Country_Id.ToString() + "' ");
+                }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(obj.CountryCode))
+                    {
+                        sbsqlwhere.AppendLine(" and apm.CountryCode = '" + obj.CountryCode.ToString().Trim() + "' ");
+                    }
+                    else if (!string.IsNullOrWhiteSpace(obj.CountryName))
+                    {
+                        if (!string.IsNullOrWhiteSpace(obj.Source) && obj.Source.ToUpper() == "SYSTEMDATA")
+                        {
+                            sbsqlcmjoin.AppendLine(" inner join m_CountryMaster mc with (nolock) on apm.Country_Id = mc.Country_Id ");
+                            sbsqlwhere.AppendLine(" and mc.Name = '" + obj.CountryName.ToString().Trim() + "' ");
+                        }
+                        else
+                        {
+                            sbsqlcmjoin.AppendLine(" inner join m_CountryMapping cm with (nolock) on apm.Supplier_Id = cm.Supplier_Id ");
+                            sbsqlcmjoin.AppendLine(" and ((apm.CountryCode is not null and apm.CountryCode = cm.CountryCode) OR (apm.CountryCode is null and apm.CountryName = cm.CountryName)) ");
+                            sbsqlwhere.AppendLine(" and cm.CountryName = '" + obj.CountryName.ToString().Trim() + "' ");
+                        }
+                    }
+                }
+
+                if ((obj.City_Id != null) && obj.City_Id != Guid.Empty)
+                {
+                    sbsqlwhere.AppendLine(" and apm.City_Id = '" + obj.City_Id.ToString() + "' ");
+                }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(obj.CityCode))
+                    {
+                        sbsqlwhere.AppendLine(" and apm.CityCode = '" + obj.CityCode.ToString().Trim() + "' ");
+                    }
+                    else if (!string.IsNullOrWhiteSpace(obj.CityName))
+                    {
+                        if (!string.IsNullOrWhiteSpace(obj.Source) && obj.Source.ToUpper() == "SYSTEMDATA")
+                        {
+                            sbsqlctmjoin.AppendLine(" inner join m_CityMaster mct on ctm.City_Id = mct.City_Id ");
+                            sbsqlwhere.AppendLine(" and mct.Name = '" + obj.CityName.ToString().Trim() + "' ");
+                        }
+                        else
+                        {
+                            sbsqlctmjoin.AppendLine(" inner join m_CityMapping ctm on apm.Supplier_Id = ctm.Supplier_Id and apm.Country_Id = ctm.Country_Id ");
+                            sbsqlctmjoin.AppendLine(" and ((apm.CityCode is not null and apm.CityCode = ctm.CityCode) OR (apm.CityCode is null and apm.CityName = ctm.CityName)) ");
+                            sbsqlwhere.AppendLine(" and ctm.CityName = '" + obj.CityName.ToString().Trim() + "' ");
+                        }
+                    }
                 }
 
                 if (!string.IsNullOrWhiteSpace(obj.SupplierCountryName))
                 {
-                    sbsqlcmjoin.Append(" left outer join m_CountryMapping cm on apm.Supplier_Id = cm.Supplier_Id ");
-                    sbsqlcmjoin.Append(" and ((apm.CountryCode is not null and apm.CountryCode = cm.CountryCode) OR (apm.CountryCode is null and apm.CountryName = cm.CountryName)) ");
-                    sbsqlwhere.Append(" and apm.CountryName = '" + obj.SupplierCountryName.ToString().Trim().ToUpper() + "' ");
-
+                    sbsqlwhere.AppendLine(" and apm.CountryName = '" + obj.SupplierCountryName.ToString().Trim().ToUpper() + "' ");
                 }
+
                 if (!string.IsNullOrWhiteSpace(obj.SupplierCityName))
                 {
-                    sbsqlctmjoin.Append(" left outer join m_CityMapping ctm on apm.Supplier_Id = ctm.Supplier_Id and apm.Country_Id = ctm.Country_Id ");
-                    sbsqlctmjoin.Append(" and ((apm.CityCode is not null and apm.CityCode = ctm.CityCode) OR (apm.CityCode is null and apm.CityName = ctm.CityName)) ");
-
-                    sbsqlwhere.Append(" and apm.CityName = '" + obj.SupplierCityName.ToString().Trim().ToUpper() + "' ");
-
+                    sbsqlwhere.AppendLine(" and apm.CityName = '" + obj.SupplierCityName.ToString().Trim().ToUpper() + "' ");
                 }
+
                 if (!string.IsNullOrWhiteSpace(obj.SupplierProductName))
                 {
                     bool isname = false;
@@ -3631,44 +3628,50 @@ namespace DataLayer
                     {
                         if (obj.Via.Trim().ToUpper() == "CROSS" && !string.IsNullOrWhiteSpace(obj.HotelName_TX))
                         {
-                            sbsqlwhere.Append(" and apm.HotelName_Tx = '" + obj.HotelName_TX.ToString().Trim() + "' ");
-
+                            sbsqlwhere.AppendLine(" and apm.HotelName_Tx = '" + obj.HotelName_TX.ToString().Trim() + "' ");
                         }
                         else
                             isname = true;
                     }
                     else
+                    {
                         isname = true;
+                    }
+
                     if (isname)
                     {
-                        sbsqlwhere.Append(" and ltrim(rtrim(upper(apm.ProductName))) like '%" + obj.SupplierProductName.ToString().Trim().ToUpper() + "%' ");
-
+                        sbsqlwhere.AppendLine(" and apm.ProductName like '%" + obj.SupplierProductName.ToString().Trim() + "%' ");
                     }
-                }
-                if (!string.IsNullOrWhiteSpace(obj.StarRating))
-                {
-                    sbsqlwhere.Append(" and apm.StarRating like '%" + obj.StarRating.ToString().Trim() + "%' ");
                 }
 
                 if (!string.IsNullOrWhiteSpace(obj.ProductType))
                 {
-                    sbsqlctmjoin.Append(" left outer join m_MasterAttributeValueMapping mavmp on mavmp.SupplierMasterAttributeValue = apm.ProductType ");
-                    sbsqlctmjoin.Append(" left outer join m_masterattributevalue mav on mav.MasterAttributeValue_Id = mavmp.SystemMasterAttributeValue_Id ");
-                    sbsqlwhere.Append(" and mav.MasterAttributeValue_Id = '" + obj.ProductType + "'  ");
+                    sbsqlctmjoin.AppendLine(" inner join m_MasterAttributeValueMapping mavmp on mavmp.SupplierMasterAttributeValue = apm.ProductType ");
+                    sbsqlctmjoin.AppendLine(" inner join m_masterattributevalue mav on mav.MasterAttributeValue_Id = mavmp.SystemMasterAttributeValue_Id ");
+                    sbsqlwhere.AppendLine(" and mav.MasterAttributeValue_Id = '" + obj.ProductType + "'  ");
                 }
 
-                sbsqlfrom.Append(" from Accommodation_ProductMapping apm with (nolock) left join Accommodation a  with (nolock) on apm.Accommodation_Id = a.Accommodation_Id AND ISNULL(A.ISACTIVE,0) = 1 ");
-                sbsqlfrom.Append(" " + sbsqlctmjoin);
-                sbsqlfrom.Append(" " + sbsqlcmjoin);
+                #region Select from Tables
 
-                sbsqlselectcount.Append("select count(apm.Accommodation_ProductMapping_Id) ");
-                sbsqlselectcount.Append(" " + sbsqlfrom);
-                sbsqlselectcount.Append(" " + sbsqlwhere);
+                sbsqlfrom.AppendLine(" from Accommodation_ProductMapping apm with (nolock) left join Accommodation a with (nolock) on apm.Accommodation_Id = a.Accommodation_Id AND ISNULL(A.ISACTIVE,0) = 1 ");
+                sbsqlfrom.AppendLine(sbsqlctmjoin.ToString());
+                sbsqlfrom.AppendLine(sbsqlcmjoin.ToString());
+
+                #endregion
+
+                #region Select Count of all records
+
+                sbsqlselectcount.AppendLine("select count(1) ");
+                sbsqlselectcount.AppendLine(sbsqlfrom.ToString());
+                sbsqlselectcount.AppendLine(sbsqlwhere.ToString());
+
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
                     try { total = context.Database.SqlQuery<int>(sbsqlselectcount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
                 }
+
+                #endregion
 
                 #region Select Query
 
@@ -3678,9 +3681,9 @@ namespace DataLayer
 	                                apm.ProductName as oldProductName,apm.Street, apm.Street2, apm.Street3, apm.Street4, 
 	                                apm.PostCode,  apm.CountryCode, apm.CountryName, apm.CityCode, apm.CityName,  apm.StateCode, 
 	                                apm.StateName, apm.TelephoneNumber, apm.Fax, apm.Email, apm.Website
-                                       ,ISNULL(APM.Latitude,APM.GeoLocation.Lat) AS Latitude
-                                       ,ISNULL(APM.Longitude,APM.GeoLocation.Long) AS Longitude
-                                       ,apm.Status, apm.Create_Date, apm.Create_User, apm.Edit_Date, apm.Edit_User, 
+                                    ,ISNULL(APM.Latitude,APM.GeoLocation.Lat) AS Latitude
+                                    ,ISNULL(APM.Longitude,APM.GeoLocation.Long) AS Longitude
+                                    ,apm.Status, apm.Create_Date, apm.Create_User, apm.Edit_Date, apm.Edit_User, 
 	                                ISNULL(apm.IsActive,1) AS IsActive, apm.SupplierProductReference as ProductId, 
 	                                apm.Remarks,  apm.MapId,
                                     (CASE WHEN APM.ADDRESS IS NOT NULL THEN APM.ADDRESS ELSE ISNULL(APM.Street + ',  ', '') + ISNULL(APM.Street2 + ' ', '')
@@ -3691,13 +3694,9 @@ namespace DataLayer
                                     ) AS FullAddress,
 	                                apm.StarRating, apm.MatchedBy, apm.MatchedByString,  a.HotelName as SystemProductName, 
 	                                a.city as SystemCityName, a.country as SystemCountryName, a.FullAddress as SystemFullAddress, 
-	                                a.Location, apm.ProductType, ");
+	                                a.Location, apm.ProductType, a.ProductCategorySubType as SystemProductType, ");
                 sbsqlselect.Append(total.ToString() + " as TotalRecords, ");
-                sbsqlselect.Append(" a.ProductCategorySubType as SystemProductType, ");
 
-                #endregion
-
-                sbsqlorderby.Append(" ORDER BY ISNULL(apm.ProductName,'') OFFSET ");
                 if (total <= skip)
                 {
                     int PageIndex = 0;
@@ -3713,20 +3712,48 @@ namespace DataLayer
                     }
 
                     skip = obj.PageSize * (PageIndex - 1);
-                    sbsqlselect.Append(Convert.ToString(PageIndex - 1) + " As PageIndex ");
 
+                    if ((PageIndex - 1) < 0)
+                    {
+                        sbsqlselect.Append("0 As PageIndex ");
+                    }
+                    else
+                    {
+                        sbsqlselect.Append(Convert.ToString(PageIndex - 1) + " As PageIndex ");
+                    }
                 }
                 else
+                {
                     sbsqlselect.Append(Convert.ToString(obj.PageNo) + " As PageIndex ");
+                }
 
-                sbsqlorderby.Append((skip).ToString());
-                sbsqlorderby.Append(" ROWS FETCH NEXT ");
-                sbsqlorderby.Append(obj.PageSize.ToString());
-                sbsqlorderby.Append(" ROWS ONLY ");
+                #endregion
 
-                sbsqlselect.Append(sbsqlfrom + " ");
-                sbsqlselect.Append(sbsqlwhere + " ");
-                sbsqlselect.Append(sbsqlorderby + " ");
+                #region OrderBy and Offset
+
+                sbsqlorderby.AppendLine("ORDER BY apm.ProductName OFFSET");
+
+                if (skip < 0)
+                {
+                    sbsqlorderby.AppendLine("0");
+                }
+                else
+                {
+                    sbsqlorderby.AppendLine(skip.ToString());
+                }
+
+                sbsqlorderby.AppendLine(" ROWS FETCH NEXT ");
+                sbsqlorderby.AppendLine(obj.PageSize.ToString());
+                sbsqlorderby.AppendLine(" ROWS ONLY ");
+                #endregion
+
+                #region Complete Query
+
+                sbsqlselect.AppendLine(sbsqlfrom.ToString());
+                sbsqlselect.AppendLine(sbsqlwhere.ToString());
+                sbsqlselect.AppendLine(sbsqlorderby.ToString());
+
+                #endregion
 
                 List<DataContracts.Mapping.DC_Accomodation_ProductMapping> result = new List<DC_Accomodation_ProductMapping>();
                 using (ConsumerEntities context = new ConsumerEntities())
@@ -3773,7 +3800,7 @@ namespace DataLayer
             }
             catch (Exception e)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation product mapping by supplier search", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation product mapping by supplier search" + Environment.NewLine + e.Message, ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
 
@@ -7026,11 +7053,11 @@ namespace DataLayer
                 DataContracts.DC_SRT_ML_Request_Broker RQ_Broker = new DataContracts.DC_SRT_ML_Request_Broker();
                 DataContracts.DC_SRT_ML_Response_Broker RS_Broker = new DataContracts.DC_SRT_ML_Response_Broker();
 
-                if(!IsCalledFromTTFU)
+                if (!IsCalledFromTTFU)
                 {
                     CallLogVerbose(File_Id, "MATCH", "Fetch All the UnMapped/Review room data in the running batch");
                 }
-                
+
                 #region Fetch All the UnMapped/Review room data in the running batch
                 try
                 {
