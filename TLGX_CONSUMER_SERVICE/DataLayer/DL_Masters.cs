@@ -5620,10 +5620,12 @@ namespace DataLayer
                     var ZonemasterIQ = context.m_ZoneMaster.AsNoTracking().AsQueryable();
                     var ZoneCityMasterIQ = context.ZoneCity_Mapping.AsNoTracking().AsQueryable().Where(s => s.IsActive == true);
                     var CountrymasterIQ = context.m_CountryMaster.AsNoTracking().AsQueryable();
+
                     if (param.Zone_id != Guid.Empty && param.Zone_id !=null)
                     {
                         ZonemasterIQ = ZonemasterIQ.Where(x => x.Zone_id == param.Zone_id);
                     }
+
                     if (param.City_id != Guid.Empty && param.City_id !=null)
                     {
                         CityMasterIQ = CityMasterIQ.Where(x => x.City_Id == param.City_id);
@@ -5632,27 +5634,35 @@ namespace DataLayer
                                         join bz in ZoneCityMasterIQ on az.Zone_id equals bz.Zone_Id
                                         select az);
                     }
+
                     if (param.Country_id != Guid.Empty && param.Country_id != null)
                     {
                         ZonemasterIQ = ZonemasterIQ.Where(x => x.Country_Id == param.Country_id);
-                        CountrymasterIQ = CountrymasterIQ.Where(y => y.Country_Id == param.Country_id);
+                        //CountrymasterIQ = CountrymasterIQ.Where(y => y.Country_Id == param.Country_id);
                     }
+
                     if (!string.IsNullOrWhiteSpace(param.Zone_Type))
                     {
                         ZonemasterIQ = ZonemasterIQ.Where(x => x.Zone_Type == param.Zone_Type);
                     }
+
                     if (!string.IsNullOrWhiteSpace(param.Zone_Name))
                     {
                         ZonemasterIQ = ZonemasterIQ.Where(x => x.Zone_Name.Contains(param.Zone_Name));
                     }
-                    if (param.Status != null)
+
+                    if (!string.IsNullOrWhiteSpace(param.Status))
                     {
                         ZonemasterIQ = ZonemasterIQ.Where(x => x.Status == param.Status);
                     }
+
                     if (!string.IsNullOrWhiteSpace(param.Zone_SubType))
                     {
                         ZonemasterIQ = ZonemasterIQ.Where(x => x.Zone_SubType == param.Zone_SubType);
                     }
+
+                    int total = ZonemasterIQ.Count();
+                    int skip = (param.PageNo ?? 0) * (param.PageSize ?? 0);
                     var search = (from zm in ZonemasterIQ
                                   join zcm in ZoneCityMasterIQ on zm.Zone_id equals zcm.Zone_Id into list1
                                   from l1 in list1.DefaultIfEmpty()
@@ -5674,34 +5684,19 @@ namespace DataLayer
                                       Latitude = zm.Latitude,
                                       Longitude = zm.Longitude,
                                       Zone_Radius = (double)zm.Zone_Radius,
-                                      NoOfHotels = (context.ZoneProduct_Mapping.Where(x => x.Zone_Id == zm.Zone_id && (x.Included ?? false) == true).Count()),
-                                      Zone_SubType = zm.Zone_SubType
-                                  })).ToList().OrderBy(x => x.Zone_Name);
+                                      //NoOfHotels = (context.ZoneProduct_Mapping.Where(x => x.Zone_Id == zm.Zone_id && (x.Included ?? false) == true).Count()),
+                                      Zone_SubType = zm.Zone_SubType,
+                                      TotalRecords = total
+                                  })).OrderBy(x => x.Zone_Name).Skip(skip).Take((param.PageSize ?? total)).ToList();
 
-                    int total = search.Count();
-                    int skip = (param.PageNo ?? 0) * (param.PageSize ?? 0);
 
-                    var result = from a in search
-                                 select new DC_ZoneSearch
-                                 {
-                                     CountryName = a.CountryName,
-                                     CityName = a.CityName,
-                                     Zone_Name = a.Zone_Name,
-                                     Zone_Type = a.Zone_Type,
-                                     Zone_id = a.Zone_id,
-                                     City_id = a.City_id,
-                                     Country_id = a.Country_id,
-                                     IsActive = a.IsActive,
-                                     Status = a.Status,
-                                     Latitude = a.Latitude,
-                                     Longitude = a.Longitude,
-                                     NoOfHotels = a.NoOfHotels,
-                                     Zone_Radius = a.Zone_Radius,
-                                     Zone_SubType = a.Zone_SubType,
-                                     TotalRecords = total
-                                 };
+                    foreach(var item in search)
+                    {
+                        item.NoOfHotels = (context.ZoneProduct_Mapping.Where(x => x.Zone_Id == item.Zone_id && (x.Included ?? false)).Count());
+                    }
 
-                    return result.OrderBy(p => p.Zone_Name).Skip(skip).Take((param.PageSize ?? total)).ToList();
+                    return search;
+
                 }
             }
             catch (Exception ex)
