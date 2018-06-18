@@ -5471,7 +5471,7 @@ namespace DataLayer
                 {
                     if (param.Action == "ADD")
                     {
-                        if (param.Zone_id == Guid.Empty)
+                        if (param.Zone_id == Guid.Empty || param.Zone_id == null)
                         {
                             param.Zone_id = Guid.NewGuid();
                         }
@@ -5620,15 +5620,19 @@ namespace DataLayer
                     var ZonemasterIQ = context.m_ZoneMaster.AsNoTracking().AsQueryable();
                     var ZoneCityMasterIQ = context.ZoneCity_Mapping.AsNoTracking().AsQueryable().Where(s => s.IsActive == true);
                     var CountrymasterIQ = context.m_CountryMaster.AsNoTracking().AsQueryable();
-                    if (param.Zone_id != Guid.Empty)
+                    if (param.Zone_id != Guid.Empty && param.Zone_id !=null)
                     {
                         ZonemasterIQ = ZonemasterIQ.Where(x => x.Zone_id == param.Zone_id);
                     }
-                    if (param.City_id != Guid.Empty)
+                    if (param.City_id != Guid.Empty && param.City_id !=null)
                     {
                         CityMasterIQ = CityMasterIQ.Where(x => x.City_Id == param.City_id);
+                        ZoneCityMasterIQ = ZoneCityMasterIQ.Where(x => x.City_Id == param.City_id);
+                        ZonemasterIQ = (from az in ZonemasterIQ
+                                        join bz in ZoneCityMasterIQ on az.Zone_id equals bz.Zone_Id
+                                        select az);
                     }
-                    if (param.Country_id != Guid.Empty)
+                    if (param.Country_id != Guid.Empty && param.Country_id != null)
                     {
                         ZonemasterIQ = ZonemasterIQ.Where(x => x.Country_Id == param.Country_id);
                         CountrymasterIQ = CountrymasterIQ.Where(y => y.Country_Id == param.Country_id);
