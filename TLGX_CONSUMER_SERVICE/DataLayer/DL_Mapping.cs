@@ -7101,7 +7101,7 @@ namespace DataLayer
                                                 ASRTM.BeddingConfig,
                                                 Convert(varchar,ACCO.CompanyHotelID) AS CommonProductId,
                                                 ACCO.Accommodation_Id,
-                                                ASRTM.ReRun_SupplierImportFile_Id AS ReRunSupplierImporrtFile_Id,
+                                                ISNULL(ASRTM.ReRun_SupplierImportFile_Id, cast(cast(0 as binary) as uniqueidentifier)) AS ReRunSupplierImporrtFile_Id,
                                                 ASRTM.Supplier_Id,
                                                 ASRTM.SupplierName,
                                                 ISNULL(ASRTM.ReRun_Batch,0) as ReRunBatch,
