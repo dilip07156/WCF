@@ -2574,15 +2574,20 @@ namespace DataLayer
                             {
                                 var subtype = context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == type.SysProdSubTypeId).Select(s => s).FirstOrDefault();
                                 //Adding Interest Type
-                                var interestType =  context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == type.SysInterestTypeId).Select(s => s).FirstOrDefault();
+                                
+                                //var interestType =  context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == type.SysInterestTypeId).Select(s => s).FirstOrDefault();
                                 if (subtype != null)
                                 {
+                                    
                                     var prodtype = context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == subtype.ParentAttributeValue_Id).Select(s => s).FirstOrDefault();
                                     if (prodtype != null)
                                     {
                                         var subcat = context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == prodtype.ParentAttributeValue_Id).Select(s => s).FirstOrDefault();
                                         if (subcat != null)
                                         {
+                                            var isInterstType = subcat.ParentAttributeValue_Id ?? Guid.Empty;
+                                            var InterstType = context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == isInterstType).Select(s => s).FirstOrDefault();
+
                                             var Cat_item = context.Activity_CategoriesType.Where(w => w.Activity_Flavour_Id == RQ.Activity_Flavour_Id && w.SystemProductNameSubType_ID == subtype.MasterAttributeValue_Id && w.SystemProductCategorySubType_ID == subcat.MasterAttributeValue_Id && w.SystemProductType_ID == prodtype.MasterAttributeValue_Id).FirstOrDefault();
                                             if (Cat_item != null)
                                             {
@@ -2627,11 +2632,14 @@ namespace DataLayer
                                                 _objCT.Create_User = type.User;
                                                 _objCT.IsActive = true;
 
-                                                if(interestType != null)
+                                                //Check parent (interest type )
+                                                if (InterstType != null)
                                                 {
-                                                    _objCT.SystemInterestType = interestType.AttributeValue;
-                                                    _objCT.SystemInterestType_ID = interestType.MasterAttributeValue_Id; 
+                                                    _objCT.SystemInterestType = InterstType.AttributeValue;
+                                                    _objCT.SystemInterestType_ID = InterstType.MasterAttributeValue_Id; 
                                                 }
+
+                                                context.Activity_CategoriesType.Add(_objCT);
                                             }
                                         }
                                     }

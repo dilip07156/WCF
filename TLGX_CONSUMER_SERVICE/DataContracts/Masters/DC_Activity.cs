@@ -1543,7 +1543,7 @@ namespace DataContracts.Masters
         public string SupProdCat { get; set; }
 
         [DataMember]
-        public string SupProdSubCat{ get; set; }
+        public string SupProdSubCat { get; set; }
 
         [DataMember]
         public string SupProdType { get; set; }
@@ -1634,10 +1634,10 @@ namespace DataContracts.Masters
         public Guid? Activity_FlavourOptions_Id { get; set; }
         [DataMember]
         public Guid? Activity_Flavour_Id { get; set; }
-        
+
         [DataMember]
         public string Activity_OptionCode { get; set; }
-        
+
         [DataMember]
         public string Status { get; set; }
         [DataMember]
@@ -2110,7 +2110,7 @@ namespace DataContracts.Masters
         [DataMember]
         public Guid Activity_Flavor_ID { get; set; }
         [DataMember]
-        public Guid?  Activity_DaysOfOperation_Id { get; set; }
+        public Guid? Activity_DaysOfOperation_Id { get; set; }
         [DataMember]
         public string SupplierFrequency { get; set; }
         [DataMember]
@@ -2178,7 +2178,7 @@ namespace DataContracts.Masters
     public class DC_ActivityFlavoursStatus
     {
         [DataMember]
-        public Guid? Activity_Flavour_Id { get; set; }        
+        public Guid? Activity_Flavour_Id { get; set; }
         [DataMember]
         public string Activity_Status { get; set; }
         [DataMember]

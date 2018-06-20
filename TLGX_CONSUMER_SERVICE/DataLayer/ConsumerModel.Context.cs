@@ -151,14 +151,14 @@ namespace DataLayer
         public virtual DbSet<stg_SupplierProductMapping> stg_SupplierProductMapping { get; set; }
         public virtual DbSet<m_PortMaster> m_PortMaster { get; set; }
         public virtual DbSet<SupplierEntity> SupplierEntity { get; set; }
-        public virtual DbSet<DistributionLayerRefresh_Log> DistributionLayerRefresh_Log { get; set; }
         public virtual DbSet<Activity_DeparturePoints> Activity_DeparturePoints { get; set; }
         public virtual DbSet<Activity_SupplierCityDepartureCode> Activity_SupplierCityDepartureCode { get; set; }
-        public virtual DbSet<vwMappingStats> vwMappingStats { get; set; }
         public virtual DbSet<m_SupplierImportAttributeValues> m_SupplierImportAttributeValues { get; set; }
-        public virtual DbSet<Stg_Kafka> Stg_Kafka { get; set; }
         public virtual DbSet<m_ZoneMaster> m_ZoneMaster { get; set; }
         public virtual DbSet<ZoneCity_Mapping> ZoneCity_Mapping { get; set; }
+        public virtual DbSet<Stg_Kafka> Stg_Kafka { get; set; }
+        public virtual DbSet<DistributionLayerRefresh_Log> DistributionLayerRefresh_Log { get; set; }
+        public virtual DbSet<vwMappingStats> vwMappingStats { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {
