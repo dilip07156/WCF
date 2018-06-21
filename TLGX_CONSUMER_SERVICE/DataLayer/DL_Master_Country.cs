@@ -27,9 +27,10 @@ namespace DataLayer
                     return country.ToList();
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching country master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching country master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw ex;
             }
         }
     }

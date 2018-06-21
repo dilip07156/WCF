@@ -21,12 +21,6 @@ namespace ConsumerSvc
             {
                 List<DC_Master_Country> searchResults = new List<DC_Master_Country>();
                 searchResults = objBL.GetCountryList();
-
-                if (searchResults.Count == 0)
-                {
-                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
-                }
-
                 return searchResults;
             }
         }
@@ -78,12 +72,6 @@ namespace ConsumerSvc
             {
                 List<DC_Master_City> searchResults = new List<DC_Master_City>();
                 searchResults = objBL.GetCityList();
-
-                if (searchResults.Count == 0)
-                {
-                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
-                }
-
                 return searchResults;
             }
 
@@ -102,12 +90,6 @@ namespace ConsumerSvc
             {
                 List<DC_Master_City> searchResults = new List<DC_Master_City>();
                 searchResults = objBL.GetCityList(Guid.Parse(Country_Id));
-
-                if (searchResults.Count == 0)
-                {
-                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
-                }
-
                 return searchResults;
             }
         }
@@ -169,12 +151,6 @@ namespace ConsumerSvc
             {
                 List<DC_Master_State> searchResults = new List<DC_Master_State>();
                 searchResults = objBL.GetAllStates();
-
-                if (searchResults.Count == 0)
-                {
-                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
-                }
-
                 return searchResults;
             }
         }
@@ -228,12 +204,6 @@ namespace ConsumerSvc
             {
                 List<DataContracts.Masters.DC_DynamicAttributes> searchResults = new List<DataContracts.Masters.DC_DynamicAttributes>();
                 searchResults = obj.GetDynamicAttributes(RQ);
-
-                if (searchResults.Count == 0)
-                {
-                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
-                }
-
                 return searchResults;
             }
         }
@@ -262,11 +232,6 @@ namespace ConsumerSvc
             {
                 List<DC_Teams> searchResults = new List<DC_Teams>();
                 searchResults = objBL.GetTeamMasterData(Guid.Parse(Team_Id));
-
-                if (searchResults.Count == 0)
-                {
-                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
-                }
 
                 return searchResults;
             }
@@ -356,8 +321,6 @@ namespace ConsumerSvc
                 return obj.GetAllAttributeAndValues(_obj);
             }
         }
-
-
 
         public IList<DC_M_masterattribute> GetMasterAttributes(DC_M_masterattribute _obj)
         {
