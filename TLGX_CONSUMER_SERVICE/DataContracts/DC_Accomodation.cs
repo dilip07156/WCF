@@ -5735,6 +5735,8 @@ namespace DataContracts
         public string BedType { get; set; }
         [DataMember]
         public string IsSomking { get; set; }
+        [DataMember]
+        public double? MatchingScore { get; set; }
     }
 
     [DataContract]
