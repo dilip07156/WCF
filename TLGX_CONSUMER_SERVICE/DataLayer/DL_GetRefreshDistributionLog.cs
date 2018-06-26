@@ -125,14 +125,14 @@ namespace DataLayer
 
                         var suppliers = context.Supplier.AsNoTracking().Where(w => distinctFullPullSuppliers.Any(x => x.Value == w.Supplier_Id)).ToList();
 
-                        var SupplierData = (from a in distinctFullPullSuppliers
-                                            join s in suppliers on a.Value equals s.Supplier_Id
-                                            join b in distribution on a.Value equals b.Supplier_Id into c
+                        var SupplierData = (from s in suppliers
+                                            join b in distribution on s.Supplier_Id equals b.Supplier_Id into c
                                             from subset in c.DefaultIfEmpty()
+                                            where s.StatusCode=="ACTIVE"
                                             orderby s.Name ascending
                                             select new DC_SupplierEntity
                                             {
-                                                Supplier_Id = a.Value,
+                                                Supplier_Id = s.Supplier_Id,
                                                 Supplier_Name = s.Name,
                                                 Element = (subset == null) ? "Hotels" : subset.Element,
                                                 Type = (subset == null) ? "Static" : subset.Type,

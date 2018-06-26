@@ -3547,7 +3547,7 @@ namespace DataLayer
                     objNew.NoOfRooms = RI.NoOfRooms;
                     objNew.RoomCategory = RI.RoomCategory;
                     objNew.RoomDecor = RI.RoomDecor;
-                    objNew.RoomId = CommonFunctions.GenerateRoomId(Guid.Parse(RI.Accommodation_Id.ToString())); //RI.RoomId;
+                    objNew.RoomId = RI.RoomId;// CommonFunctions.GenerateRoomId(Guid.Parse(RI.Accommodation_Id.ToString())); 
                     objNew.RoomName = RI.RoomName;
                     objNew.RoomSize = RI.RoomSize;
                     objNew.RoomView = RI.RoomView;
@@ -3712,6 +3712,70 @@ namespace DataLayer
                 throw;
             }
             return _msg;
+        }
+
+        public List<DataContracts.DC_Accommodation_RoomInfo> GetAccomodationRoomInfobyRoomId(Guid Accomodation_Id, string Room_id)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from ar in context.Accommodation_RoomInfo
+                                 where ar.Accommodation_Id == Accomodation_Id
+                                 && ar.RoomId == Room_id
+                                 select new DataContracts.DC_Accommodation_RoomInfo
+                                 {
+                                     Accommodation_Id = ar.Accommodation_Id,
+                                     Accommodation_RoomInfo_Id = ar.Accommodation_RoomInfo_Id,
+                                     AmenityTypes = ar.AmenityTypes,
+                                     BathRoomType = ar.BathRoomType,
+                                     BedType = ar.BedType,
+                                     Category = ar.Category,
+                                     CompanyName = ar.CompanyName,
+                                     CompanyRoomCategory = ar.CompanyRoomCategory,
+                                     Create_Date = ar.Create_Date,
+                                     Create_User = ar.Create_User,
+                                     Description = ar.Description,
+                                     Edit_Date = ar.Edit_Date,
+                                     Edit_User = ar.Edit_User,
+                                     FloorName = ar.FloorName,
+                                     FloorNumber = ar.FloorNumber,
+                                     Legacy_Htl_Id = ar.Legacy_Htl_Id,
+                                     MysteryRoom = ar.MysteryRoom,
+                                     NoOfInterconnectingRooms = ar.NoOfInterconnectingRooms,
+                                     NoOfRooms = ar.NoOfRooms,
+                                     RoomCategory = ar.RoomCategory,
+                                     RoomDecor = ar.RoomDecor,
+                                     RoomId = ar.RoomId,
+                                     RoomName = ar.RoomName,
+                                     RoomSize = ar.RoomSize,
+                                     RoomView = ar.RoomView,
+                                     Smoking = ar.Smoking,
+                                     IsActive = (ar.IsActive ?? true),
+                                     RoomFacilities = (from rf in context.Accommodation_RoomFacility
+                                                       where rf.Accommodation_Id == ar.Accommodation_Id
+                                                       && rf.Accommodation_RoomInfo_Id == ar.Accommodation_RoomInfo_Id
+                                                       select new DataContracts.DC_Accomodation_RoomFacilities
+                                                       {
+                                                           Accommodation_Id = rf.Accommodation_Id,
+                                                           Accommodation_RoomFacility_Id = rf.Accommodation_RoomFacility_Id,
+                                                           Accommodation_RoomInfo_Id = rf.Accommodation_RoomInfo_Id,
+                                                           AmenityName = rf.AmenityName,
+                                                           AmenityType = rf.AmenityType,
+                                                           Create_Date = rf.Create_Date,
+                                                           Create_User = rf.Create_User,
+                                                           Description = rf.Description,
+                                                           Edit_Date = rf.Edit_Date,
+                                                           Edit_user = rf.Edit_user
+                                                       }).ToList()
+                                 };
+                    return search.ToList();
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation room info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
         }
         #endregion
 
