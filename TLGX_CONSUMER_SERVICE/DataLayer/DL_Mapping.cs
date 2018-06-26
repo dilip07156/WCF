@@ -5700,45 +5700,57 @@ namespace DataLayer
 
         public List<DC_SupplierRoomType_TTFU_RQ> GetRoomTypeMapping_For_TTFU(DataContracts.Masters.DC_Supplier obj)
         {
-            string CurSupplierName = obj.Name;
-            Guid CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
-
-            using (ConsumerEntities context = new ConsumerEntities())
+            try
             {
-                if ((obj.CurrentBatch ?? 0) != 0)
-                {
-                    var res = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
-                               where a.ReRun_SupplierImportFile_Id == obj.File_Id && a.ReRun_Batch == obj.CurrentBatch
-                               select new DC_SupplierRoomType_TTFU_RQ
-                               {
-                                   Acco_RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
-                                   Edit_User = a.Edit_User
-                               }).ToList();
+                string CurSupplierName = obj.Name;
+                Guid CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
 
-                    return res;
-                }
-                else
+                using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var res = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
-                               where a.ReRun_SupplierImportFile_Id == obj.File_Id && (obj.CurrentBatch ?? 0) == 0
-                               select new DC_SupplierRoomType_TTFU_RQ
-                               {
-                                   Acco_RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
-                                   Edit_User = a.Edit_User
-                               }).ToList();
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    context.Database.CommandTimeout = 0;
 
-                    return res;
+                    if ((obj.CurrentBatch ?? 0) != 0)
+                    {
+                        var res = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
+                                   where a.ReRun_SupplierImportFile_Id == obj.File_Id && a.ReRun_Batch == obj.CurrentBatch
+                                   select new DC_SupplierRoomType_TTFU_RQ
+                                   {
+                                       Acco_RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id
+                                       //Edit_User = a.Edit_User
+                                   }).ToList();
+
+                        return res;
+                    }
+                    else
+                    {
+                        var res = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
+                                   where a.ReRun_SupplierImportFile_Id == obj.File_Id && (obj.CurrentBatch ?? 0) == 0
+                                   select new DC_SupplierRoomType_TTFU_RQ
+                                   {
+                                       Acco_RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id
+                                       //Edit_User = a.Edit_User
+                                   }).ToList();
+
+                        return res;
+                    }
+                    //var res = (from a in context.Accommodation_SupplierRoomTypeMapping
+                    //           join j in context.STG_Mapping_TableIds on a.Accommodation_SupplierRoomTypeMapping_Id equals j.Mapping_Id
+                    //           //join s in context.stg_SupplierHotelRoomMapping on j.STG_Id equals s.stg_SupplierHotelRoomMapping_Id  //a.stg_SupplierHotelRoomMapping_Id equals s.stg_SupplierHotelRoomMapping_Id
+                    //           where ((j.Batch == obj.CurrentBatch && (obj.CurrentBatch ?? 0) != 0) || ((obj.CurrentBatch ?? 0) == 0))
+                    //           select new DC_SupplierRoomType_TTFU_RQ
+                    //           {
+                    //               Acco_RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                    //               Edit_User = a.Edit_User
+                    //           }).ToList();
                 }
-                //var res = (from a in context.Accommodation_SupplierRoomTypeMapping
-                //           join j in context.STG_Mapping_TableIds on a.Accommodation_SupplierRoomTypeMapping_Id equals j.Mapping_Id
-                //           //join s in context.stg_SupplierHotelRoomMapping on j.STG_Id equals s.stg_SupplierHotelRoomMapping_Id  //a.stg_SupplierHotelRoomMapping_Id equals s.stg_SupplierHotelRoomMapping_Id
-                //           where ((j.Batch == obj.CurrentBatch && (obj.CurrentBatch ?? 0) != 0) || ((obj.CurrentBatch ?? 0) == 0))
-                //           select new DC_SupplierRoomType_TTFU_RQ
-                //           {
-                //               Acco_RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
-                //               Edit_User = a.Edit_User
-                //           }).ToList();
             }
+            catch (Exception ex)
+            {
+                return new List<DC_SupplierRoomType_TTFU_RQ>();
+            }
+
+
         }
 
         public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_TTFUALL(List<DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
@@ -5934,7 +5946,8 @@ namespace DataLayer
             }
             catch (Exception ex)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while TTFU", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Failed, StatusMessage = ex.Message };
+                //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while TTFU", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
 
@@ -7135,6 +7148,7 @@ namespace DataLayer
 
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
+                        context.Database.CommandTimeout = 0;
                         resSupplierRoomTypeMap = context.Database.SqlQuery<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS>(sbGetAllSupplierRooms.ToString()).ToList();
                     }
                 }
@@ -7182,6 +7196,7 @@ namespace DataLayer
 
                         using (ConsumerEntities context = new ConsumerEntities())
                         {
+                            context.Database.CommandTimeout = 0;
                             AttributeList = context.Database.SqlQuery<DataContracts.Mapping.DC_SupplierRoomTypeAttributes>(sbSupplierRoomTypeAttributes.ToString().TrimEnd(',') + ");").ToList();
                         }
                     }
@@ -7510,28 +7525,31 @@ namespace DataLayer
 
                         if (IsCalledFromTTFU)
                         {
-                            sbUpdateQuery.Append("UPDATE Accommodation_SupplierRoomTypeMapping SET Edit_Date = GETDATE(), Edit_User = '" + Convert.ToString(CallingUser) + "'");
+                            sbUpdateQuery.AppendLine("UPDATE Accommodation_SupplierRoomTypeMapping SET Edit_Date = GETDATE(), Edit_User = '" + Convert.ToString(CallingUser) + "'");
                         }
                         else
                         {
-                            sbUpdateQuery.Append("UPDATE Accommodation_SupplierRoomTypeMapping SET Edit_Date = GETDATE(), Edit_User = 'ML_BROKER_API'");
+                            sbUpdateQuery.AppendLine("UPDATE Accommodation_SupplierRoomTypeMapping SET Edit_Date = GETDATE(), Edit_User = 'ML_BROKER_API'");
                         }
 
                         if (itemToUpdate.Accommodation_RoomInfo_Id == null)
                         {
-                            sbUpdateQuery.Append(", Accommodation_RoomInfo_Id = NULL");
+                            sbUpdateQuery.AppendLine(", Accommodation_RoomInfo_Id = NULL");
+                            sbUpdateQuery.AppendLine(", MatchingScore = NULL");
                         }
                         else
                         {
-                            sbUpdateQuery.Append(", Accommodation_RoomInfo_Id = '" + itemToUpdate.Accommodation_RoomInfo_Id + "'");
+                            sbUpdateQuery.AppendLine(", Accommodation_RoomInfo_Id = '" + itemToUpdate.Accommodation_RoomInfo_Id + "'");
+                            sbUpdateQuery.AppendLine(", MatchingScore = " + itemToUpdate.Score);
                         }
 
-                        sbUpdateQuery.Append(", MappingStatus = '" + itemToUpdate.MappingStatus + "'");
-                        //sbUpdateQuery.Append(", Score = '" + itemToUpdate.Score + "'");
-                        sbUpdateQuery.Append(" WHERE Accommodation_SupplierRoomTypeMapping_Id = '" + itemToUpdate.Accommodation_SupplierRoomTypeMapping_Id + "';");
+                        sbUpdateQuery.AppendLine(", MappingStatus = '" + itemToUpdate.MappingStatus + "'");
+                        
+                        sbUpdateQuery.AppendLine(" WHERE Accommodation_SupplierRoomTypeMapping_Id = '" + itemToUpdate.Accommodation_SupplierRoomTypeMapping_Id + "';");
 
                         try
                         {
+                            context.Database.CommandTimeout = 0;
                             context.Database.ExecuteSqlCommand(sbUpdateQuery.ToString());
                         }
                         catch (Exception ex)
