@@ -3682,6 +3682,8 @@ namespace DataLayer
 
                 sbsqlselect.Append(Convert.ToString(obj.PageNo) + " As PageIndex ");
 
+                skip = obj.PageSize * obj.PageNo;
+
                 //if (total <= skip)
                 //{
                 //    int PageIndex = 0;
