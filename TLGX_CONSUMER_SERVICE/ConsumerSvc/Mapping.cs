@@ -412,7 +412,9 @@ namespace ConsumerSvc
                 return objBL.GetRTM_ML_Suggestions(Accomodation_SupplierRoomTypeMapping_Id);
             }
         }
-        
+
         #endregion
+
+        
     }
 }

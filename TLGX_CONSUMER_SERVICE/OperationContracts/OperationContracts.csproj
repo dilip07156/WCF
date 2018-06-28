@@ -117,6 +117,7 @@
     <Compile Include="IKafka.cs" />
     <Compile Include="IMapping.cs" />
     <Compile Include="IMasters.cs" />
+    <Compile Include="IMLDataTransfer.cs" />
     <Compile Include="IPentaho.cs" />
     <Compile Include="IRefreshDistributionData.cs" />
     <Compile Include="ISchedule.cs" />

@@ -18,7 +18,7 @@ namespace DataContracts.ML
     {
         public string AccommodationRoomInfoId { get; set; }
         public string AccommodationId { get; set; }
-        public int TLGXHotelId { get; set; }
+        public string TLGXHotelId { get; set; }
         public string RoomId { get; set; }
         public string RoomView { get; set; }
         public int NoOfRooms { get; set; }
