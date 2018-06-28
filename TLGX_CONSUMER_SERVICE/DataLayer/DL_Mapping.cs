@@ -3459,6 +3459,7 @@ namespace DataLayer
             {
                 int skip = 0;
                 int total = 0;
+
                 skip = obj.PageSize * obj.PageNo;
 
                 StringBuilder sbsqlselectcount = new StringBuilder();
@@ -3668,7 +3669,8 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    try { total = context.Database.SqlQuery<int>(sbsqlselectcount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
+                    context.Database.CommandTimeout = 0;
+                    total = context.Database.SqlQuery<int>(sbsqlselectcount.ToString()).First();
                 }
 
                 #endregion
@@ -3694,54 +3696,20 @@ namespace DataLayer
                                     ) AS FullAddress,
 	                                apm.StarRating, apm.MatchedBy, apm.MatchedByString,  a.HotelName as SystemProductName, 
 	                                a.city as SystemCityName, a.country as SystemCountryName, a.FullAddress as SystemFullAddress, 
-	                                a.Location, apm.ProductType, a.ProductCategorySubType as SystemProductType, ");
-                sbsqlselect.Append(total.ToString() + " as TotalRecords, ");
+	                                a.Location, apm.ProductType, a.ProductCategorySubType as SystemProductType ");
 
                 if (total <= skip)
                 {
-                    int PageIndex = 0;
-                    int intReminder = total % obj.PageSize;
-                    int intQuotient = total / obj.PageSize;
-                    if (intReminder > 0)
-                    {
-                        PageIndex = intQuotient + 1;
-                    }
-                    else
-                    {
-                        PageIndex = intQuotient;
-                    }
-
-                    skip = obj.PageSize * (PageIndex - 1);
-
-                    if ((PageIndex - 1) < 0)
-                    {
-                        sbsqlselect.Append("0 As PageIndex ");
-                    }
-                    else
-                    {
-                        sbsqlselect.Append(Convert.ToString(PageIndex - 1) + " As PageIndex ");
-                    }
-                }
-                else
-                {
-                    sbsqlselect.Append(Convert.ToString(obj.PageNo) + " As PageIndex ");
+                    int PageIndex = total / obj.PageSize;
+                    skip = obj.PageSize * PageIndex;
+                    obj.PageNo = PageIndex;
                 }
 
                 #endregion
 
                 #region OrderBy and Offset
-
-                sbsqlorderby.AppendLine("ORDER BY apm.ProductName OFFSET");
-
-                if (skip < 0)
-                {
-                    sbsqlorderby.AppendLine("0");
-                }
-                else
-                {
-                    sbsqlorderby.AppendLine(skip.ToString());
-                }
-
+                sbsqlorderby.AppendLine(" ORDER BY apm.ProductName OFFSET ");
+                sbsqlorderby.AppendLine(skip.ToString());
                 sbsqlorderby.AppendLine(" ROWS FETCH NEXT ");
                 sbsqlorderby.AppendLine(obj.PageSize.ToString());
                 sbsqlorderby.AppendLine(" ROWS ONLY ");
@@ -3759,7 +3727,16 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    try { result = context.Database.SqlQuery<DataContracts.Mapping.DC_Accomodation_ProductMapping>(sbsqlselect.ToString()).ToList(); } catch (Exception ex) { }
+                    context.Database.CommandTimeout = 0;
+                    result = context.Database.SqlQuery<DataContracts.Mapping.DC_Accomodation_ProductMapping>(sbsqlselect.ToString()).ToList();
+                    if (result != null)
+                    {
+                        result.ForEach(u =>
+                        {
+                            u.TotalRecords = total;
+                            u.PageIndex = obj.PageNo;
+                        });
+                    }
                 }
 
                 if (string.IsNullOrWhiteSpace(obj.CalledFromTLGX))
@@ -7544,7 +7521,7 @@ namespace DataLayer
                         }
 
                         sbUpdateQuery.AppendLine(", MappingStatus = '" + itemToUpdate.MappingStatus + "'");
-                        
+
                         sbUpdateQuery.AppendLine(" WHERE Accommodation_SupplierRoomTypeMapping_Id = '" + itemToUpdate.Accommodation_SupplierRoomTypeMapping_Id + "';");
 
                         try
