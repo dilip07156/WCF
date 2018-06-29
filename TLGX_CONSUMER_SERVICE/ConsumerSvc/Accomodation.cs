@@ -640,6 +640,21 @@ namespace ConsumerSvc
                 return obj.CopyAccomodationInfo(RI);
             }
         }
+
+        public IList<DC_Accommodation_RoomInfo> GetAccomodationRoomInfobyRoomId(string Accomodation_Id, string Room_id)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                List<DC_Accommodation_RoomInfo> searchResults = new List<DC_Accommodation_RoomInfo>();
+                searchResults = objBL.GetAccomodationRoomInfobyRoomId(Guid.Parse(Accomodation_Id), Room_id);
+
+                if (searchResults == null)
+                {
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                }
+                return searchResults;
+            }
+        }
         #endregion
 
         #region Accomodation Room Facilities

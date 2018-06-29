@@ -498,6 +498,14 @@ namespace BusinessLayer
                 return obj.CopyAccomodationInfo(RI);
             }
         }
+
+        public List<DataContracts.DC_Accommodation_RoomInfo> GetAccomodationRoomInfobyRoomId(Guid Accomodation_Id, string Room_id)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.GetAccomodationRoomInfobyRoomId(Accomodation_Id, Room_id);
+            }
+        }
         #endregion
 
         #region Accomodation Room Facilities

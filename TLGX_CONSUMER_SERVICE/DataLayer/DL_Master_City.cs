@@ -27,9 +27,10 @@ namespace DataLayer
                     return city.ToList();
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching city master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching city master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw ex;
             }
         }
 
@@ -46,9 +47,10 @@ namespace DataLayer
                     return city.ToList();
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching city master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching city master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw ex;
             }
         }
     }

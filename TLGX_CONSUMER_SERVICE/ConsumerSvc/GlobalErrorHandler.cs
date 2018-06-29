@@ -44,9 +44,10 @@ namespace ConsumerSvc
             NLog.LogManager.Configuration.Variables["targetsite"] = error.TargetSite.ToString();
             loggerGlobal.Error(error, string.Empty);
 
-            var newEx = new FaultException(string.Format("Exception caught at Service Application GlobalErrorHandler{0}Method: {1}{2}Message: {3}",
+            var newEx = new FaultException(string.Format("Exception caught at Service Application GlobalErrorHandler{0}Method: {1}{2}Message: {3}{4}InnerException: {5}",
                     Environment.NewLine, error.TargetSite.Name,
-                    Environment.NewLine, error.Message));
+                    Environment.NewLine, error.Message,
+                    Environment.NewLine, error.InnerException == null ? string.Empty : error.InnerException.Message));
 
             MessageFault msgFault = newEx.CreateMessageFault();
             fault = Message.CreateMessage(version, msgFault, newEx.Action);

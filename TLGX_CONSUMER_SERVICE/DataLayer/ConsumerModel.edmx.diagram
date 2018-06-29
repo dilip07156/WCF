@@ -87,7 +87,7 @@
         <EntityTypeShape EntityType="ConsumerModel.vwUserwisemappedStat" Width="1.5" PointX="3.375" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.Dashboard_MappingStat" Width="1.5" PointX="0.75" PointY="3.75" />
         <EntityTypeShape EntityType="ConsumerModel.Dashboard_UserwiseMappedStat" Width="1.5" PointX="3.375" PointY="4.75" />
-        <EntityTypeShape EntityType="ConsumerModel.vwMappingStats" Width="2.25" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.vwMappingStats" Width="1.5" PointX="0.75" PointY="0.75" />
       </Diagram>
       <Diagram DiagramId="33089e75a83142f0a8f1044a69f7561b" Name="Schedules" >
         <EntityTypeShape EntityType="ConsumerModel.m_FrequencyType" Width="1.5" PointX="0.75" PointY="0.75" />
@@ -158,11 +158,11 @@
         <EntityTypeShape EntityType="ConsumerModel.ActivityGeneralInfo" Width="1.5" PointX="10.75" PointY="11.75" />
         <EntityTypeShape EntityType="ConsumerModel.stg_ActivitySupplierProductMapping" Width="1.5" PointX="12.75" PointY="12.75" />
         <EntityTypeShape EntityType="ConsumerModel.stg_SupplierActivityImageMapping" Width="1.5" PointX="0.75" PointY="13.75" />
-        <EntityTypeShape EntityType="ConsumerModel.STG_SupplierActivityMetaDataMapping" Width="1.5" PointX="2.75" PointY="13.75" />
+        <EntityTypeShape EntityType="ConsumerModel.STG_SupplierActivityMetaDataMapping" Width="1.5" PointX="4.625" PointY="13.75" />
         <EntityTypeShape EntityType="ConsumerModel.STG_SupplierActivityTypeMapping" Width="1.5" PointX="14.75" PointY="13.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_DaysOfOperation" Width="1.5" PointX="5.25" PointY="16" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_DaysOfWeek" Width="1.5" PointX="6.875" PointY="16" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_CategoriesType" Width="1.5" PointX="17.375" PointY="13.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_CategoriesType" Width="3.625" PointX="18.5" PointY="13.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_DeparturePoints" Width="1.5" PointX="13.75" PointY="17.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierCityDepartureCode" Width="1.5" PointX="0.75" PointY="19.75" />
       </Diagram>

@@ -949,7 +949,10 @@ namespace DataLayer
                         sbwhereCity.Append(" WHERE 1 = 1 ");
                         sbwhereCity.Append("AND a.Name ='" + RQ.City_Name + "'");
                     }
-
+                    if (!string.IsNullOrWhiteSpace(RQ.Country_Name))
+                    {
+                        sbwhereCity.Append(" AND a.CountryName= '" + RQ.Country_Name + "'");
+                    }
                     StringBuilder sbCityQuery = new StringBuilder();
                     sbCityQuery.Append(sbSelectCity + " ");
                     sbCityQuery.Append(" from [m_CityMaster] a with (NoLock)");

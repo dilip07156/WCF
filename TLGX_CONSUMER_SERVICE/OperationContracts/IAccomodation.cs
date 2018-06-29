@@ -317,6 +317,11 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "UpdateAccomodation/RoomInfo", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool UpdateAccomodationRoomInfo(DataContracts.DC_Accommodation_RoomInfo RI);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "GetAccomodation/RoomInfobyId/{Accomodation_Id}/{room_id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.DC_Accommodation_RoomInfo> GetAccomodationRoomInfobyRoomId(string Accomodation_Id, string Room_id);
         #endregion
 
         #region Accomodation Room Facilities

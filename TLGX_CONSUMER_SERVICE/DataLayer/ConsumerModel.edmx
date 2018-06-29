@@ -501,6 +501,7 @@
           <Property Name="StateCode" Type="nvarchar" MaxLength="50" />
           <Property Name="CountryName" Type="nvarchar" MaxLength="255" />
           <Property Name="CountryCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="MatchingScore" Type="float" />
         </EntityType>
         <EntityType Name="Activity">
           <Key>
@@ -3112,12 +3113,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="stg_SupplierProductMapping" EntityType="ConsumerModel.stg_SupplierProductMapping" />
           <EntitySet Name="m_PortMaster" EntityType="ConsumerModel.m_PortMaster" />
           <EntitySet Name="SupplierEntity" EntityType="ConsumerModel.SupplierEntity" />
-          <EntitySet Name="DistributionLayerRefresh_Log" EntityType="ConsumerModel.DistributionLayerRefresh_Log" />
           <EntitySet Name="Activity_DeparturePoints" EntityType="ConsumerModel.Activity_DeparturePoints" />
           <EntitySet Name="Activity_SupplierCityDepartureCode" EntityType="ConsumerModel.Activity_SupplierCityDepartureCode" />
-          <EntitySet Name="vwMappingStats" EntityType="ConsumerModel.vwMappingStats" />
           <EntitySet Name="m_SupplierImportAttributeValues" EntityType="ConsumerModel.m_SupplierImportAttributeValues" />
-          <EntitySet Name="Stg_Kafka" EntityType="ConsumerModel.Stg_Kafka" />
           <FunctionImport Name="sp_AccoFullTextSpatialMatch">
             <Parameter Name="ReRun_SupplierImportFile_Id" Mode="In" Type="Guid" />
             <Parameter Name="ReRun_Batch" Mode="In" Type="Int32" />
@@ -3132,6 +3130,9 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           </FunctionImport>
           <EntitySet Name="m_ZoneMaster" EntityType="ConsumerModel.m_ZoneMaster" />
           <EntitySet Name="ZoneCity_Mapping" EntityType="ConsumerModel.ZoneCity_Mapping" />
+          <EntitySet Name="Stg_Kafka" EntityType="ConsumerModel.Stg_Kafka" />
+          <EntitySet Name="DistributionLayerRefresh_Log" EntityType="ConsumerModel.DistributionLayerRefresh_Log" />
+          <EntitySet Name="vwMappingStats" EntityType="ConsumerModel.vwMappingStats" />
       
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
@@ -5489,6 +5490,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="StateCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CountryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="CountryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MatchingScore" Type="Double" />
         </EntityType>
         <EntityType Name="ZoneProduct_Mapping">
           <Key>
@@ -5746,22 +5748,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Create_Date" Type="DateTime" Precision="3" />
           <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="DistributionLayerRefresh_Log">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="Element" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Supplier_Id" Type="Guid" />
-          <Property Name="Edit_date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TotalCount" Type="Int32" />
-          <Property Name="MongoPushCount" Type="Int32" />
-        </EntityType>
         <EntityType Name="Activity_DeparturePoints">
           <Key>
             <PropertyRef Name="Activity_DeparturePoints_ID" />
@@ -5792,19 +5778,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="DepartureCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="DepartureName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="vwMappingStats">
-          <Key>
-            <PropertyRef Name="SupplierName" />
-            <PropertyRef Name="Status" />
-            <PropertyRef Name="MappinFor" />
-          </Key>
-          <Property Name="Supplier_Id" Type="Guid" />
-          <Property Name="SupplierName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
-          <Property Name="totalcount" Type="Int32" />
-          <Property Name="SuppliersCount" Type="Int32" />
-        </EntityType>
         <EntityType Name="m_SupplierImportAttributeValues">
           <Key>
             <PropertyRef Name="SupplierImportAttributeValue_Id" />
@@ -5824,26 +5797,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="AttributeValue_ID" Type="Guid" />
           <Property Name="AttributeValueType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Comparison" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="Stg_Kafka">
-          <Key>
-            <PropertyRef Name="Row_Id" />
-          </Key>
-          <Property Name="Row_Id" Type="Guid" Nullable="false" />
-          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Topic" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PayLoad" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Error" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Key" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Offset" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Partion" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="TimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="TopicPartion" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="TopicPartionOffset" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Process_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Process_Date" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="m_ZoneMaster">
           <Key>
@@ -5879,6 +5832,55 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Create_Date" Type="DateTime" Precision="3" />
           <Property Name="Edit_User" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Stg_Kafka">
+          <Key>
+            <PropertyRef Name="Row_Id" />
+          </Key>
+          <Property Name="Row_Id" Type="Guid" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Topic" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PayLoad" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Error" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Key" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Offset" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Partion" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="TopicPartion" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TopicPartionOffset" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Process_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Process_Date" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="DistributionLayerRefresh_Log">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Element" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="Edit_date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalCount" Type="Int32" />
+          <Property Name="MongoPushCount" Type="Int32" />
+        </EntityType>
+        <EntityType Name="vwMappingStats">
+          <Key>
+            <PropertyRef Name="SupplierName" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="MappinFor" />
+          </Key>
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="SupplierName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="totalcount" Type="Int32" />
+          <Property Name="SuppliersCount" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -8263,6 +8265,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodation_SupplierRoomTypeMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeMapping">
               <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeMapping">
+                <ScalarProperty Name="MatchingScore" ColumnName="MatchingScore" />
                 <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
                 <ScalarProperty Name="CountryName" ColumnName="CountryName" />
                 <ScalarProperty Name="StateCode" ColumnName="StateCode" />
@@ -8586,23 +8589,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="DistributionLayerRefresh_Log">
-            <EntityTypeMapping TypeName="ConsumerModel.DistributionLayerRefresh_Log">
-              <MappingFragment StoreEntitySet="DistributionLayerRefresh_Log">
-                <ScalarProperty Name="MongoPushCount" ColumnName="MongoPushCount" />
-                <ScalarProperty Name="TotalCount" ColumnName="TotalCount" />
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Edit_date" ColumnName="Edit_date" />
-                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Element" ColumnName="Element" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Activity_DeparturePoints">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_DeparturePoints">
               <MappingFragment StoreEntitySet="Activity_DeparturePoints">
@@ -8635,18 +8621,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="vwMappingStats">
-            <EntityTypeMapping TypeName="ConsumerModel.vwMappingStats">
-              <MappingFragment StoreEntitySet="vwMappingStats">
-                <ScalarProperty Name="SuppliersCount" ColumnName="SuppliersCount" />
-                <ScalarProperty Name="totalcount" ColumnName="totalcount" />
-                <ScalarProperty Name="MappinFor" ColumnName="MappinFor" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
-                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="m_SupplierImportAttributeValues">
             <EntityTypeMapping TypeName="ConsumerModel.m_SupplierImportAttributeValues">
               <MappingFragment StoreEntitySet="m_SupplierImportAttributeValues">
@@ -8665,27 +8639,6 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="AttributeType" ColumnName="AttributeType" />
                 <ScalarProperty Name="SupplierImportAttribute_Id" ColumnName="SupplierImportAttribute_Id" />
                 <ScalarProperty Name="SupplierImportAttributeValue_Id" ColumnName="SupplierImportAttributeValue_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Stg_Kafka">
-            <EntityTypeMapping TypeName="ConsumerModel.Stg_Kafka">
-              <MappingFragment StoreEntitySet="Stg_Kafka">
-                <ScalarProperty Name="Process_Date" ColumnName="Process_Date" />
-                <ScalarProperty Name="Process_User" ColumnName="Process_User" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="TopicPartionOffset" ColumnName="TopicPartionOffset" />
-                <ScalarProperty Name="TopicPartion" ColumnName="TopicPartion" />
-                <ScalarProperty Name="TimeStamp" ColumnName="TimeStamp" />
-                <ScalarProperty Name="Partion" ColumnName="Partion" />
-                <ScalarProperty Name="Offset" ColumnName="Offset" />
-                <ScalarProperty Name="Key" ColumnName="Key" />
-                <ScalarProperty Name="Error" ColumnName="Error" />
-                <ScalarProperty Name="PayLoad" ColumnName="PayLoad" />
-                <ScalarProperty Name="Topic" ColumnName="Topic" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Row_Id" ColumnName="Row_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8724,6 +8677,56 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
                 <ScalarProperty Name="City_Id" ColumnName="City_Id" />
                 <ScalarProperty Name="Zone_Id" ColumnName="Zone_Id" />
                 <ScalarProperty Name="ZoneCityMapping_Id" ColumnName="ZoneCityMapping_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Stg_Kafka">
+            <EntityTypeMapping TypeName="ConsumerModel.Stg_Kafka">
+              <MappingFragment StoreEntitySet="Stg_Kafka">
+                <ScalarProperty Name="Process_Date" ColumnName="Process_Date" />
+                <ScalarProperty Name="Process_User" ColumnName="Process_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="TopicPartionOffset" ColumnName="TopicPartionOffset" />
+                <ScalarProperty Name="TopicPartion" ColumnName="TopicPartion" />
+                <ScalarProperty Name="TimeStamp" ColumnName="TimeStamp" />
+                <ScalarProperty Name="Partion" ColumnName="Partion" />
+                <ScalarProperty Name="Offset" ColumnName="Offset" />
+                <ScalarProperty Name="Key" ColumnName="Key" />
+                <ScalarProperty Name="Error" ColumnName="Error" />
+                <ScalarProperty Name="PayLoad" ColumnName="PayLoad" />
+                <ScalarProperty Name="Topic" ColumnName="Topic" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Row_Id" ColumnName="Row_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DistributionLayerRefresh_Log">
+            <EntityTypeMapping TypeName="ConsumerModel.DistributionLayerRefresh_Log">
+              <MappingFragment StoreEntitySet="DistributionLayerRefresh_Log">
+                <ScalarProperty Name="MongoPushCount" ColumnName="MongoPushCount" />
+                <ScalarProperty Name="TotalCount" ColumnName="TotalCount" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Edit_date" ColumnName="Edit_date" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Element" ColumnName="Element" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwMappingStats">
+            <EntityTypeMapping TypeName="ConsumerModel.vwMappingStats">
+              <MappingFragment StoreEntitySet="vwMappingStats">
+                <ScalarProperty Name="SuppliersCount" ColumnName="SuppliersCount" />
+                <ScalarProperty Name="totalcount" ColumnName="totalcount" />
+                <ScalarProperty Name="MappinFor" ColumnName="MappinFor" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
