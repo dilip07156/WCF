@@ -186,6 +186,7 @@
     <Compile Include="Kafka.cs" />
     <Compile Include="Mapping.cs" />
     <Compile Include="Masters.cs" />
+    <Compile Include="ML_DataTransfer.cs" />
     <Compile Include="Pentaho.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RefreshDistributionData.cs" />

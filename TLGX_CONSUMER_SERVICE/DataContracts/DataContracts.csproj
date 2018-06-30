@@ -156,6 +156,7 @@
     <Compile Include="DC_Master_City.cs" />
     <Compile Include="DC_Master_Country.cs" />
     <Compile Include="DC_GooglePlaceNearBy.cs" />
+    <Compile Include="DC_ML_DataTransfer.cs" />
     <Compile Include="ML\DC_ML_DL_MasterAccoRecord.cs" />
     <Compile Include="ML\DC_ML_DL_MasterAccoRoomFacility.cs" />
     <Compile Include="ML\DC_ML_DL_MasterAccoRoomInfo.cs" />

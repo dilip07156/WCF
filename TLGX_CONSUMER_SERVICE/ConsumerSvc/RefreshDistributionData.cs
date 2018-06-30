@@ -58,6 +58,14 @@ namespace ConsumerSvc
             }
         }
 
+        public DC_Message SyncHotelMappingLite(string hotel_id, string CreatedBy)
+        {
+            using (BusinessLayer.BL_RefreshDistributionData obj = new BL_RefreshDistributionData())
+            {
+                return obj.SyncHotelMappingLite(hotel_id, CreatedBy);
+            }
+        }
+
         #endregion
 
         #region Activity
