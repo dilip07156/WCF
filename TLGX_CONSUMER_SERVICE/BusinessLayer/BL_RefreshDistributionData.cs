@@ -90,13 +90,30 @@ namespace BusinessLayer
 
         public DC_Message SyncHotelMapping(string hotel_id, string CreatedBy)
         {
-            Guid hotelid = new Guid();
+            Guid hotelid;
 
             if (Guid.TryParse(hotel_id, out hotelid))
             {
                 using (DataLayer.DL_MongoPush obj = new DataLayer.DL_MongoPush())
                 {
                     return obj.SyncHotelMapping(hotelid, CreatedBy);
+                }
+            }
+            else
+            {
+                return new DC_Message { StatusMessage = "Invalid HotelID", StatusCode = ReadOnlyMessage.StatusCode.Danger };
+            }
+        }
+
+        public DC_Message SyncHotelMappingLite(string hotel_id, string CreatedBy)
+        {
+            Guid hotelid ;
+
+            if (Guid.TryParse(hotel_id, out hotelid))
+            {
+                using (DataLayer.DL_MongoPush obj = new DataLayer.DL_MongoPush())
+                {
+                    return obj.SyncHotelMappingLite(hotelid, CreatedBy);
                 }
             }
             else
