@@ -17,9 +17,11 @@ namespace DataContracts.ML
     public class DC_ML_DL_SupplierAcco_Data
     {
         public string AccommodationId { get; set; }
+        public string Accommodation_ProductMapping_Id { get; set; }
+        public string SupplierProductReference { get; set; }
         public string SupplierName { get; set; }
         public string SupplierId { get; set; }
-        public int TLGXHotelId { get; set; }
+        public int? TLGXHotelId { get; set; }
         public string AccommodationName { get; set; }
         public string Country { get; set; }
         public string City { get; set; }

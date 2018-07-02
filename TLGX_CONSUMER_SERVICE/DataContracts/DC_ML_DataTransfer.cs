@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace DataContracts
 {
@@ -71,17 +72,17 @@ namespace DataContracts
         [DataMember]
         public Guid Accommodation_Id { get; set; }
         [DataMember]
-        public int Legacy_Htl_Id { get; set; }
+        public int? Legacy_Htl_Id { get; set; }
         [DataMember]
         public string RoomId { get; set; }
         [DataMember]
         public string RoomView { get; set; }
         [DataMember]
-        public int NoOfRooms { get; set; }
+        public int? NoOfRooms { get; set; }
         [DataMember]
         public string RoomName { get; set; }
         [DataMember]
-        public int NoOfInterconnectingRooms { get; set; }
+        public int? NoOfInterconnectingRooms { get; set; }
         [DataMember]
         public string Description { get; set; }
         [DataMember]
@@ -89,13 +90,13 @@ namespace DataContracts
         [DataMember]
         public string RoomDecor { get; set; }
         [DataMember]
-        public bool Smoking { get; set; }
+        public bool? Smoking { get; set; }
         [DataMember]
         public string FloorName { get; set; }
         [DataMember]
         public string FloorNumber { get; set; }
         [DataMember]
-        public bool MysteryRoom { get; set; }
+        public bool? MysteryRoom { get; set; }
         [DataMember]
         public string BathRoomType { get; set; }
         [DataMember]
@@ -128,6 +129,42 @@ namespace DataContracts
         [DataMember]
         public string SystemAttributeKeyword { get; set; }
     }
+
+    [DataContract]
+    public class DC_ML_SupplierAcco_Data
+    {
+        [DataMember]
+        public Guid Accommodation_ProductMapping_Id { get; set; }
+        [DataMember]
+        public Guid? Accommodation_Id { get; set; }
+        [DataMember]
+        public string SupplierProductReference { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+        [DataMember]
+        public Guid SupplierId { get; set; }
+        [DataMember]
+        public int? TLGXHotelId { get; set; }
+        [DataMember]
+        public string AccommodationName { get; set; }
+        [DataMember]
+        public string Country { get; set; }
+        [DataMember]
+        public string City { get; set; }
+        [DataMember]
+        public string Address { get; set; }
+        [DataMember]
+        public string PostalCode { get; set; }
+        [DataMember]
+        public DateTime? CreateDate { get; set; }
+        [DataMember]
+        public string CreateUser { get; set; }
+        [DataMember]
+        public DateTime? EditDate { get; set; }
+        [DataMember]
+        public string Edituser { get; set; }
+    }
+
     [DataContract]
     public class DC_ML_SupplierAcco_Room_Data
     {
@@ -213,8 +250,10 @@ namespace DataContracts
         public int? TLGXCommonHotelId { get; set; }
         public string AccoRoomId { get; set; }
         public string AccoRoomView { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public int? AccoNoOfRooms { get; set; }
         public string AccoRoomName { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public int? AccoNoOfInterconnectingRooms { get; set; }
         public string AccoDescription { get; set; }
         public string AccoRoomSize { get; set; }
@@ -232,7 +271,7 @@ namespace DataContracts
         public DateTime? AccoEditDate { get; set; }
         public string AccoEditUser { get; set; }
         public string SimilarityIndicator { get; set; }
-        public int? SimilarityScore { get; set; }
+        public float SimilarityScore { get; set; }
 
     }
 }
