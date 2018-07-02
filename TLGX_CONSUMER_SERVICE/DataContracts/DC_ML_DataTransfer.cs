@@ -115,4 +115,124 @@ namespace DataContracts
         [DataMember]
         public DateTime? Edit_Date { get; set; }
     }
+
+    [DataContract]
+    public class DC_ML_SupplierAcco_RoomExtendedAttributes_Data
+    {
+        [DataMember]
+        public Guid RoomTypeMapAttribute_Id { get; set; }
+        [DataMember]
+        public Guid RoomTypeMap_Id { get; set; }
+        [DataMember]
+        public string SupplierRoomTypeAttribute { get; set; }
+        [DataMember]
+        public string SystemAttributeKeyword { get; set; }
+    }
+    [DataContract]
+    public class DC_ML_SupplierAcco_Room_Data
+    {
+        public Guid Accommodation_SupplierRoomTypeMapping_Id { get; set; }
+        public Guid? Accommodation_Id { get; set; }
+        public Guid Supplier_Id { get; set; }
+        public string SupplierName { get; set; }
+        public string SupplierRoomId { get; set; }
+        public string SupplierRoomTypeCode { get; set; }
+        public string SupplierRoomName { get; set; }
+        public string TX_RoomName { get; set; }
+        public string SupplierRoomCategory { get; set; }
+        public string SupplierRoomCategoryId { get; set; }
+        public DateTime? Create_Date { get; set; }
+        public string Create_User { get; set; }
+        public DateTime? Edit_Date { get; set; }
+        public string Edit_User { get; set; }
+        public int? MaxAdults { get; set; }
+        public int? MaxChild { get; set; }
+        public int? MaxInfants { get; set; }
+        public int? MaxGuestOccupancy { get; set; }
+        public int? Quantity { get; set; }
+        public string RatePlan { get; set; }
+        public string RatePlanCode { get; set; }
+        public string SupplierProductName { get; set; }
+        public string SupplierProductId { get; set; }
+        public string Tx_StrippedName { get; set; }
+        public string Tx_ReorderedName { get; set; }
+        public string MappingStatus { get; set; }
+        public int? MapId { get; set; }
+        public Guid? Accommodation_RoomInfo_Id { get; set; }
+        public string RoomSize { get; set; }
+        public string BathRoomType { get; set; }
+        public string RoomViewCode { get; set; }
+        public string FloorName { get; set; }
+        public int? FloorNumber { get; set; }
+        public string Amenities { get; set; }
+        public string RoomLocationCode { get; set; }
+        public int? ChildAge { get; set; }
+        public string ExtraBed { get; set; }
+        public string Bedrooms { get; set; }
+        public string Smoking { get; set; }
+        public string BedTypeCode { get; set; }
+        public int? MinGuestOccupancy { get; set; }
+        public string PromotionalVendorCode { get; set; }
+        public string BeddingConfig { get; set; }
+    }
+
+
+    [DataContract]
+    public class DC_ML_RoomTypeMatch_Data
+    {
+        public Guid AccommodationSupplierRoomTypeMappingId { get; set; }
+        public Guid? AccommodationId { get; set; }
+        public Guid? SupplierId { get; set; }
+        public string SupplierName { get; set; }
+        public string SupplierRoomId { get; set; }
+        public string SupplierRoomTypeCode { get; set; }
+        public string SupplierRoomName { get; set; }
+        public string TXRoomName { get; set; }
+        public string SupplierRoomCategory { get; set; }
+        public string SupplierRoomCategoryId { get; set; }
+        public DateTime? SupplierRoomCreateDate { get; set; }
+        public string SupplierRoomCreateUser { get; set; }
+        public DateTime? SupplierRoomEditDate { get; set; }
+        public string SupplierRoomEditUser { get; set; }
+        public int? SupplierRoomMaxAdults { get; set; }
+        public int? SupplierRoomMaxChild { get; set; }
+        public int? SupplierRoomMaxInfants { get; set; }
+        public int? MaxGuestOccupancy { get; set; }
+        public int? SupplierRoomQuantity { get; set; }
+        public string SupplierRoomRatePlan { get; set; }
+        public string RatePlanCode { get; set; }
+        public string SupplierRoomSupplierProductName { get; set; }
+        public string SupplierRoomSupplierProductId { get; set; }
+        public string TxStrippedName { get; set; }
+        public string TxReorderedName { get; set; }
+        public string SupplierRoomMappingStatus { get; set; }
+        public int? MapId { get; set; }
+        public Guid? AccommodationRoomInfoId { get; set; }
+        public string SupplierRoomRoomDescription { get; set; }
+        public string SupplierRoomRoomSize { get; set; }
+        public int? TLGXCommonHotelId { get; set; }
+        public string AccoRoomId { get; set; }
+        public string AccoRoomView { get; set; }
+        public int? AccoNoOfRooms { get; set; }
+        public string AccoRoomName { get; set; }
+        public int? AccoNoOfInterconnectingRooms { get; set; }
+        public string AccoDescription { get; set; }
+        public string AccoRoomSize { get; set; }
+        public string AccoRoomDecor { get; set; }
+        public bool AccoSmoking { get; set; }
+        public string AccoFloorName { get; set; }
+        public string AccoFloorNumber { get; set; }
+        public bool AccoMysteryRoom { get; set; }
+        public string AccoBathRoomType { get; set; }
+        public string AccoBedType { get; set; }
+        public string AccoCompanyRoomCategory { get; set; }
+        public string AccoRoomCategory { get; set; }
+        public DateTime? AccoCreateDate { get; set; }
+        public string AccoCreateUser { get; set; }
+        public DateTime? AccoEditDate { get; set; }
+        public string AccoEditUser { get; set; }
+        public string SimilarityIndicator { get; set; }
+        public int? SimilarityScore { get; set; }
+
+    }
 }
