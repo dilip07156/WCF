@@ -43,13 +43,13 @@ namespace OperationContracts
         #region Hotel
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "Load/HotelMapping/{Hotel_Id}/{CreatedBy}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DC_Message SyncHotelMapping(string hotel_id, string CreatedBy);
+        [WebInvoke(Method = "GET", UriTemplate = "Load/HotelMapping/{Hotel_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_Message SyncHotelMapping(string hotel_id);
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "Load/HotelMappingLite/{Hotel_Id}/{CreatedBy}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DC_Message SyncHotelMappingLite(string hotel_id, string CreatedBy);
+        [WebInvoke(Method = "GET", UriTemplate = "Load/HotelMappingLite/{Hotel_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_Message SyncHotelMappingLite(string hotel_id);
 
         #endregion
 

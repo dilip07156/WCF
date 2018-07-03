@@ -88,38 +88,20 @@ namespace BusinessLayer
 
         #region Hotel
 
-        public DC_Message SyncHotelMapping(string hotel_id, string CreatedBy)
+        public DC_Message SyncHotelMapping(string hotel_id)
         {
-            Guid hotelid;
-
-            if (Guid.TryParse(hotel_id, out hotelid))
-            {
                 using (DataLayer.DL_MongoPush obj = new DataLayer.DL_MongoPush())
                 {
-                    return obj.SyncHotelMapping(hotelid, CreatedBy);
+                    return obj.SyncHotelMapping(Convert.ToInt32(hotel_id));
                 }
-            }
-            else
-            {
-                return new DC_Message { StatusMessage = "Invalid HotelID", StatusCode = ReadOnlyMessage.StatusCode.Danger };
-            }
         }
 
-        public DC_Message SyncHotelMappingLite(string hotel_id, string CreatedBy)
+        public DC_Message SyncHotelMappingLite(string hotel_id)
         {
-            Guid hotelid ;
-
-            if (Guid.TryParse(hotel_id, out hotelid))
-            {
-                using (DataLayer.DL_MongoPush obj = new DataLayer.DL_MongoPush())
+            using (DataLayer.DL_MongoPush obj = new DataLayer.DL_MongoPush())
                 {
-                    return obj.SyncHotelMappingLite(hotelid, CreatedBy);
+                    return obj.SyncHotelMappingLite(Convert.ToInt32(hotel_id));
                 }
-            }
-            else
-            {
-                return new DC_Message { StatusMessage = "Invalid HotelID", StatusCode = ReadOnlyMessage.StatusCode.Danger };
-            }
         }
         #endregion
         #region Activity

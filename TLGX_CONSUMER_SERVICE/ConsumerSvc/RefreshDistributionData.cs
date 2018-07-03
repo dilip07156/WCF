@@ -50,19 +50,19 @@ namespace ConsumerSvc
 
         #region Hotel
 
-        public DC_Message SyncHotelMapping(string hotel_id, string CreatedBy)
+        public DC_Message SyncHotelMapping(string hotel_id)
         {
             using (BusinessLayer.BL_RefreshDistributionData obj = new BL_RefreshDistributionData())
             {
-                return obj.SyncHotelMapping(hotel_id, CreatedBy);
+                return obj.SyncHotelMapping(hotel_id);
             }
         }
 
-        public DC_Message SyncHotelMappingLite(string hotel_id, string CreatedBy)
+        public DC_Message SyncHotelMappingLite(string hotel_id)
         {
             using (BusinessLayer.BL_RefreshDistributionData obj = new BL_RefreshDistributionData())
             {
-                return obj.SyncHotelMappingLite(hotel_id, CreatedBy);
+                return obj.SyncHotelMappingLite(hotel_id);
             }
         }
 

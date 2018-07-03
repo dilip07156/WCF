@@ -4129,6 +4129,7 @@ namespace DataLayer
         public bool UpdateAccomodationProductMapping(List<DataContracts.Mapping.DC_Accomodation_ProductMapping> obj)
         {
 
+            DL_MongoPush MongoPush = new DL_MongoPush();
             List<DataLayer.Accommodation_ProductMapping> lstobjNew = new List<Accommodation_ProductMapping>();
             Guid SupplierImportFile_Id = Guid.Empty;
             int Batch = 0;
@@ -4204,7 +4205,7 @@ namespace DataLayer
 
                             context.SaveChanges();
                         }
-
+                        
                         if (search == null)
                         {
                             DataLayer.Accommodation_ProductMapping objNew = new Accommodation_ProductMapping();
@@ -4252,6 +4253,19 @@ namespace DataLayer
                             objNew.ProductType = PM.ProductType;
                             lstobjNew.Add(objNew);
                         }
+                        #region  === Push Updated Data in  Mongo
+                        var SearchUpdateddata = context.Accommodation_ProductMapping.Find(PM.Accommodation_ProductMapping_Id);
+                        var newStatus = SearchUpdateddata.Status.ToUpper().Trim();
+                        int newMapId = SearchUpdateddata.MapId??0;
+                        if (newMapId != 0)
+                            {
+                                var res = MongoPush.SyncHotelMapping(newMapId);
+                            }
+                        if (newStatus =="MAPPED" || newStatus == "AUTOMAPPED")
+                        {
+                            var res = MongoPush.SyncHotelMappingLite(newMapId);
+                        }
+                        #endregion
                     }
                     catch (Exception e)
                     {

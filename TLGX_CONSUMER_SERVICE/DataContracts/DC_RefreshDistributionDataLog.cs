@@ -24,4 +24,16 @@ namespace DataContracts
         [DataMember]
         public string SupplierId { get; set; }
     }
+    [DataContract]
+    public class DC_MogoDbSyncRQ
+    {
+        [DataMember]
+        public string Element { get; set; }
+        [DataMember]
+        public string Type { get; set; }
+        [DataMember]
+        public string Status { get; set; }
+        [DataMember]
+        public int MapId { get; set; }
+    }
 }
