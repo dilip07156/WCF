@@ -4254,17 +4254,13 @@ namespace DataLayer
                             lstobjNew.Add(objNew);
                         }
                         #region  === Push Updated Data in  Mongo
-                        var SearchUpdateddata = context.Accommodation_ProductMapping.Find(PM.Accommodation_ProductMapping_Id);
-                        var newStatus = SearchUpdateddata.Status.ToUpper().Trim();
-                        int newMapId = SearchUpdateddata.MapId??0;
-                        if (newMapId != 0)
-                            {
-                                var res = MongoPush.SyncHotelMapping(newMapId);
-                            }
-                        if (newStatus =="MAPPED" || newStatus == "AUTOMAPPED")
+                        if (PM.Accommodation_ProductMapping_Id != Guid.Empty)
                         {
-                            var res = MongoPush.SyncHotelMappingLite(newMapId);
+                            DL_MongoPush _obj = new DL_MongoPush();
+                            _obj.SyncHotelMapping(PM.Accommodation_ProductMapping_Id);
+                            _obj.SyncHotelMappingLite(PM.Accommodation_ProductMapping_Id);
                         }
+                      
                         #endregion
                     }
                     catch (Exception e)

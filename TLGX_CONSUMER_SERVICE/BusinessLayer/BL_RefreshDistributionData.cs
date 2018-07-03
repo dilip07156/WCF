@@ -88,20 +88,38 @@ namespace BusinessLayer
 
         #region Hotel
 
-        public DC_Message SyncHotelMapping(string hotel_id)
+        public DC_Message SyncHotelMapping(string ProdMapId)
         {
+            Guid iProdMapId = new Guid();
+
+            if (Guid.TryParse(ProdMapId, out iProdMapId))
+            {
                 using (DataLayer.DL_MongoPush obj = new DataLayer.DL_MongoPush())
                 {
-                    return obj.SyncHotelMapping(Convert.ToInt32(hotel_id));
+                    return obj.SyncHotelMapping(iProdMapId);
                 }
+            }
+            else
+            {
+                return new DC_Message { StatusMessage = "Invalid ProductMappingID", StatusCode = ReadOnlyMessage.StatusCode.Danger };
+            }
         }
 
-        public DC_Message SyncHotelMappingLite(string hotel_id)
+        public DC_Message SyncHotelMappingLite(string ProdMapId)
         {
-            using (DataLayer.DL_MongoPush obj = new DataLayer.DL_MongoPush())
+            Guid iProdMapId = new Guid();
+
+            if (Guid.TryParse(ProdMapId, out iProdMapId))
+            {
+                using (DataLayer.DL_MongoPush obj = new DataLayer.DL_MongoPush())
                 {
-                    return obj.SyncHotelMappingLite(Convert.ToInt32(hotel_id));
+                    return obj.SyncHotelMappingLite(iProdMapId);
                 }
+            }
+            else
+            {
+                return new DC_Message { StatusMessage = "Invalid ProductMappingID", StatusCode = ReadOnlyMessage.StatusCode.Danger };
+            }
         }
         #endregion
         #region Activity

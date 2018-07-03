@@ -256,17 +256,24 @@ namespace DataLayer
 
         #region Hotel
 
-        public DC_Message SyncHotelMapping(int Hotel_Id)
+        public DC_Message SyncHotelMapping(Guid ProdMap_Id)
         {
             DC_Message _msg = new DC_Message();
-            DC_MogoDbSyncRQ param = new DC_MogoDbSyncRQ();
-            param.Element = "Hotel";
-            param.Type = "Mapping";
-            param.MapId = Hotel_Id;
-
-            _msg = SynCProductData(param);
-            return _msg;
-
+            if (ProdMap_Id != Guid.Empty)
+            {
+                DHSVCProxyAsync DHP = new DHSVCProxyAsync();
+                string strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_ProductMapping"], (Guid.Empty).ToString(), ProdMap_Id.ToString());
+                DHP.GetAsync(ProxyFor.SqlToMongo, strURI);
+                return _msg;
+            }
+            else
+            {
+                DC_MogoDbSyncRQ param = new DC_MogoDbSyncRQ();
+                param.Element = "Hotel";
+                param.Type = "Mapping";
+                _msg = SynCProductData(param);
+                return _msg;
+            }
         }
         private DC_Message SynCProductData(DataContracts.DC_MogoDbSyncRQ RQ)
         {
@@ -276,9 +283,7 @@ namespace DataLayer
                 Guid LogId = new Guid();
                 IncomingWebRequestContext woc = WebOperationContext.Current.IncomingRequest;
                 string strURI = null;
-                if (RQ.MapId == 0)
-                {
-                    using (ConsumerEntities context = new ConsumerEntities())
+               using (ConsumerEntities context = new ConsumerEntities())
                     {
                         var iScheduledCount = context.DistributionLayerRefresh_Log.AsNoTracking()
                                            .Where(w => (w.Status.ToUpper().Trim() == "RUNNING" || w.Status.ToUpper().Trim() == "SCHEDULED") && w.Element.ToUpper().Trim() == RQ.Element.ToUpper().Trim() && w.Type.ToUpper().Trim() == RQ.Type.ToUpper().Trim()).Count();
@@ -301,11 +306,11 @@ namespace DataLayer
                             string newType = RQ.Type.ToUpper().Trim();
                             if (NewElement == "HOTEL" && newType == "MAPPING")
                             {
-                                strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_ProductMapping"], LogId.ToString(), RQ.MapId.ToString());
+                                strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_ProductMapping"], LogId.ToString(), (Guid.Empty).ToString());
                             }
                             else if (NewElement == "HOTEL" && newType == "MAPPINGLITE")
                             {
-                               strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_ProductMappingLite"], LogId.ToString(), RQ.MapId.ToString());
+                               strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_ProductMappingLite"], LogId.ToString(), (Guid.Empty).ToString());
                             }
                             if (strURI != null)
                             {
@@ -315,29 +320,6 @@ namespace DataLayer
 
                         return _msg;
                     }
-                }
-                else
-                {
-                    //Code goes here for Indert Update or Delete of a specific Hotel
-                    using (DHSVCProxyAsync DHP = new DHSVCProxyAsync())
-                    {
-                        string NewElement = RQ.Element.ToUpper().Trim();
-                        string newType = RQ.Type.ToUpper().Trim();
-                        if (NewElement == "HOTEL" && newType == "MAPPING")
-                        {
-                            strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_ProductMapping"], LogId.ToString(), RQ.MapId.ToString());
-                        }
-                        else if (NewElement == "HOTEL" && newType == "MAPPINGLITE")
-                        {
-                            strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_ProductMappingLite"], LogId.ToString(), RQ.MapId.ToString());
-                        }
-                        if (strURI != null)
-                        {
-                            DHP.GetAsync(ProxyFor.SqlToMongo, strURI);
-                        }
-                    }
-                    return _msg;
-                }
             }
             catch (Exception ex)
             {
@@ -345,16 +327,25 @@ namespace DataLayer
             }
         }
 
-        public DC_Message SyncHotelMappingLite(int Hotel_Id)
+        public DC_Message SyncHotelMappingLite(Guid ProdMap_Id)
         {
             DC_Message _msg = new DC_Message();
-            DC_MogoDbSyncRQ param = new DC_MogoDbSyncRQ();
-            param.Element = "Hotel";
-            param.Type = "MappingLite";
-            param.MapId = Hotel_Id;
-
-            _msg = SynCProductData(param);
-            return _msg;
+            if(ProdMap_Id != Guid.Empty)
+            {
+                DHSVCProxyAsync DHP = new DHSVCProxyAsync();
+                string strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_ProductMappingLite"], (Guid.Empty).ToString(),Convert.ToString(ProdMap_Id));
+                DHP.GetAsync(ProxyFor.SqlToMongo, strURI);
+                return _msg;
+            }
+            else
+            {
+                DC_MogoDbSyncRQ param = new DC_MogoDbSyncRQ();
+                param.Element = "Hotel";
+                param.Type = "MappingLite";
+                _msg = SynCProductData(param);
+                return _msg;
+            }
+            
         }
 
         private DC_Message InsertDistributionLogNewEntry(Guid LogId,string elementName, string Type,string status,string CreatedBy)
