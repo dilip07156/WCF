@@ -10,65 +10,65 @@ namespace ConsumerSvc
     public partial class Consumer : IConsumer
     {
         #region *** MasterAccommodationRecord ***
-        public string ML_DataTransferMasterAccommodation()
+        public void ML_DataTransferMasterAccommodation(string Logid)
         {
             using (BL_MLDataTransfer objBL = new BL_MLDataTransfer())
             {
-                return objBL.ML_DataTransferMasterAccommodation();
+                objBL.ML_DataTransferMasterAccommodation(Guid.Parse(Logid));
             }
         }
         #endregion
         #region *** MasterAccommodationRoomFacilities ***
-        public string ML_DataTransferMasterAccommodationRoomFacilities()
+        public void ML_DataTransferMasterAccommodationRoomFacilities(string Logid)
         {
             using (BL_MLDataTransfer objBL = new BL_MLDataTransfer())
             {
-                return objBL.ML_DataTransferMasterAccommodationRoomFacilities();
+                objBL.ML_DataTransferMasterAccommodationRoomFacilities(Guid.Parse(Logid));
             }
         }
         #endregion
         #region *** MasterAccommodationRoomInformation ***
-        public string ML_DataTransferMasterAccommodationRoomInformation()
+        public void ML_DataTransferMasterAccommodationRoomInformation(string Logid)
         {
             using (BL_MLDataTransfer objBL = new BL_MLDataTransfer())
             {
-                return objBL.ML_DataTransferMasterAccommodationRoomInformation();
+                objBL.ML_DataTransferMasterAccommodationRoomInformation(Guid.Parse(Logid));
             }
         }
         #endregion
         #region *** RoomTypeMatching ***
-        public string ML_DataTransferRoomTypeMatching()
+        public void ML_DataTransferRoomTypeMatching(string Logid)
         {
             using (BL_MLDataTransfer objBL = new BL_MLDataTransfer())
             {
-                return objBL.ML_DataTransferRoomTypeMatching();
+                objBL.ML_DataTransferRoomTypeMatching(Guid.Parse(Logid));
             }
         }
         #endregion
         #region ***SupplierAccommodationData ***
-        public string ML_DataTransferSupplierAccommodationData()
+        public void ML_DataTransferSupplierAccommodationData(string Logid)
         {
             using (BL_MLDataTransfer objBL = new BL_MLDataTransfer())
             {
-                return objBL.ML_DataTransferSupplierAccommodationData();
+                objBL.ML_DataTransferSupplierAccommodationData(Guid.Parse(Logid));
             }
         }
         #endregion
         #region *** SupplierAccommodationRoomData ***
-        public string ML_DataTransferSupplierAccommodationRoomData()
+        public void ML_DataTransferSupplierAccommodationRoomData(string Logid)
         {
             using (BL_MLDataTransfer objBL = new BL_MLDataTransfer())
             {
-                return objBL.ML_DataTransferSupplierAccommodationRoomData();
+                objBL.ML_DataTransferSupplierAccommodationRoomData(Guid.Parse(Logid));
             }
         }
         #endregion
         #region *** SupplierAccommodationRoomExtendedAttributes ***
-        public string ML_DataTransferSupplierAccommodationRoomExtendedAttributes()
+        public void ML_DataTransferSupplierAccommodationRoomExtendedAttributes(string Logid)
         {
             using (BL_MLDataTransfer objBL = new BL_MLDataTransfer())
             {
-                return objBL.ML_DataTransferSupplierAccommodationRoomExtendedAttributes();
+                objBL.ML_DataTransferSupplierAccommodationRoomExtendedAttributes(Guid.Parse(Logid));
             }
         }
         #endregion

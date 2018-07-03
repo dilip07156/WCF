@@ -14,65 +14,65 @@ namespace BusinessLayer
         }
 
         #region *** MasterAccommodationRecord ***
-        public string ML_DataTransferMasterAccommodation()
+        public void ML_DataTransferMasterAccommodation(Guid Logid)
         {
             using (DL_MLDataTransfer objDL = new DL_MLDataTransfer())
             {
-                return objDL.ML_DataTransferMasterAccommodation();
+                objDL.ML_DataTransferMasterAccommodation(Logid);
             }
         }
         #endregion
         #region *** MasterAccommodationRoomFacilities ***
-        public string ML_DataTransferMasterAccommodationRoomFacilities()
+        public void ML_DataTransferMasterAccommodationRoomFacilities(Guid Logid)
         {
             using (DL_MLDataTransfer objDL = new DL_MLDataTransfer())
             {
-                return objDL.ML_DataTransferMasterAccommodationRoomFacilities();
+                objDL.ML_DataTransferMasterAccommodationRoomFacilities(Logid);
             }
         }
         #endregion
         #region *** MasterAccommodationRoomInformation ***
-        public string ML_DataTransferMasterAccommodationRoomInformation()
+        public void ML_DataTransferMasterAccommodationRoomInformation(Guid Logid)
         {
             using (DL_MLDataTransfer objDL = new DL_MLDataTransfer())
             {
-                return objDL.ML_DataTransferMasterAccommodationRoomInformation();
+                objDL.ML_DataTransferMasterAccommodationRoomInformation(Logid);
             }
         }
         #endregion
         #region *** RoomTypeMatching ***
-        public string ML_DataTransferRoomTypeMatching()
+        public void ML_DataTransferRoomTypeMatching(Guid Logid)
         {
             using (DL_MLDataTransfer objDL = new DL_MLDataTransfer())
             {
-                return objDL.ML_DataTransferRoomTypeMatching();
+                objDL.ML_DataTransferRoomTypeMatching(Logid);
             }
         }
         #endregion
         #region *** SupplierAccommodationData ***
-        public string ML_DataTransferSupplierAccommodationData()
+        public void ML_DataTransferSupplierAccommodationData(Guid Logid)
         {
             using (DL_MLDataTransfer objDL = new DL_MLDataTransfer())
             {
-                return objDL.ML_DataTransferSupplierAccommodationData();
+                objDL.ML_DataTransferSupplierAccommodationData(Logid);
             }
         }
         #endregion
         #region *** SupplierAccommodationRoomData ***
-        public string ML_DataTransferSupplierAccommodationRoomData()
+        public void ML_DataTransferSupplierAccommodationRoomData(Guid Logid)
         {
             using (DL_MLDataTransfer objDL = new DL_MLDataTransfer())
             {
-                return objDL.ML_DataTransferSupplierAccommodationRoomData();
+                objDL.ML_DataTransferSupplierAccommodationRoomData(Logid);
             }
         }
         #endregion
         #region *** SupplierAccommodationRoomExtendedAttributes ***
-        public string ML_DataTransferSupplierAccommodationRoomExtendedAttributes()
+        public void ML_DataTransferSupplierAccommodationRoomExtendedAttributes(Guid Logid)
         {
             using (DL_MLDataTransfer objDL = new DL_MLDataTransfer())
             {
-                return objDL.ML_DataTransferSupplierAccommodationRoomExtendedAttributes();
+                objDL.ML_DataTransferSupplierAccommodationRoomExtendedAttributes(Logid);
             }
         }
         #endregion
