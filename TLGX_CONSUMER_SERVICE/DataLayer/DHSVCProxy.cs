@@ -9,6 +9,7 @@ using System.IO;
 using System.Net.Http;
 using System.Xml.Serialization;
 using System.Xml;
+using Newtonsoft.Json;
 
 namespace DataLayer
 {
@@ -102,7 +103,7 @@ namespace DataLayer
                 {
                     Stream stream = response.GetResponseStream();
 
-                    if(For == ProxyFor.Pentaho)
+                    if (For == ProxyFor.Pentaho)
                     {
                         if (ResponseType != typeof(void))
                         {
@@ -224,6 +225,71 @@ namespace DataLayer
                 return false;
             }
         }
+
+        public static bool PostDataNewtonsoft(ProxyFor For, string URI, object Param, Type RequestType, Type ResponseType, out object ReturnValue)
+        {
+            try
+            {
+                string AbsPath = string.Empty;
+                if (For == ProxyFor.DataHandler)
+                {
+                    AbsPath = DHSVCURL;
+                }
+                else if (For == ProxyFor.SqlToMongo)
+                {
+                    AbsPath = MONGOSVCURL;
+                }
+                else if (For == ProxyFor.MachingLearningDataTransfer)
+                {
+                    AbsPath = MLSVCURL_DataApi;
+                }
+
+                HttpWebRequest request;
+                request = (HttpWebRequest)WebRequest.Create(AbsPath + URI);
+
+                request.Method = "POST";
+                request.ContentType = "application/json";
+                request.KeepAlive = false;
+
+                var json = JsonConvert.SerializeObject(Param, Newtonsoft.Json.Formatting.None,
+                            new JsonSerializerSettings
+                            {
+                                NullValueHandling = NullValueHandling.Ignore
+                            });
+                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                {
+                    streamWriter.Write(json);
+                }
+
+                var response = request.GetResponse();
+
+                if (((System.Net.HttpWebResponse)response).StatusCode != HttpStatusCode.OK)
+                {
+                    ReturnValue = null;
+                }
+                else
+                {
+                    Stream newStream = response.GetResponseStream();
+                    StreamReader sr = new StreamReader(newStream);
+                    var result = sr.ReadToEnd();
+                    ReturnValue = JsonConvert.DeserializeObject(result, ResponseType);
+                    
+                }
+                response.Dispose();
+                response = null;
+                request = null;
+
+                if (ReturnValue != null)
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception e)
+            {
+                ReturnValue = null;
+                return false;
+            }
+        }
     }
 
     public class DHSVCProxyAsync : IDisposable
@@ -284,3 +350,6 @@ namespace DataLayer
         }
     }
 }
+
+
+
