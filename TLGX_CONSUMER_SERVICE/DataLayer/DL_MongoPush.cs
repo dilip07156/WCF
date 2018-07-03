@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -255,47 +256,70 @@ namespace DataLayer
 
         #region Hotel
 
-        public DC_Message SyncHotelMapping(Guid Hotel_Id, string CreatedBy)
+        public DC_Message SyncHotelMapping(Guid ProdMap_Id)
+        {
+            DC_Message _msg = new DC_Message();
+            if (ProdMap_Id != Guid.Empty)
+            {
+                DHSVCProxyAsync DHP = new DHSVCProxyAsync();
+                string strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_ProductMapping"], (Guid.Empty).ToString(), ProdMap_Id.ToString());
+                DHP.GetAsync(ProxyFor.SqlToMongo, strURI);
+                return _msg;
+            }
+            else
+            {
+                DC_MogoDbSyncRQ param = new DC_MogoDbSyncRQ();
+                param.Element = "Hotel";
+                param.Type = "Mapping";
+                _msg = SynCProductData(param);
+                return _msg;
+            }
+        }
+        private DC_Message SynCProductData(DataContracts.DC_MogoDbSyncRQ RQ)
         {
             DC_Message _msg = new DC_Message();
             try
             {
-                Guid LogId= new Guid();
-
-                using (ConsumerEntities context = new ConsumerEntities())
-
-                {
-                    var iScheduledCount = context.DistributionLayerRefresh_Log.AsNoTracking()
-                                       .Where(w => (w.Status.ToUpper().Trim() == "RUNNING" || w.Status.ToUpper().Trim() == "SCHEDULED") && w.Element.ToUpper().Trim() == "HOTEL" && w.Type.ToUpper().Trim() == "MAPPING").Count();
-
-                    if (iScheduledCount > 0)
+                Guid LogId = new Guid();
+                IncomingWebRequestContext woc = WebOperationContext.Current.IncomingRequest;
+                string strURI = null;
+               using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        _msg.StatusMessage = "Hotel Mapping sync has already been scheduled.";
-                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Information;
-                        return _msg;
-                        // return new DC_Message { StatusMessage = "HotelMapping sync has already been scheduled.", StatusCode = ReadOnlyMessage.StatusCode.Information };
-                    }
-                    else
-                    {
-                         LogId = Guid.NewGuid();
-                        _msg = InsertDistributionLogNewEntry(LogId, "Hotel", "Mapping", "Scheduled", CreatedBy);
-                    }
-                    if (Hotel_Id == Guid.Empty)
-                    {
+                        var iScheduledCount = context.DistributionLayerRefresh_Log.AsNoTracking()
+                                           .Where(w => (w.Status.ToUpper().Trim() == "RUNNING" || w.Status.ToUpper().Trim() == "SCHEDULED") && w.Element.ToUpper().Trim() == RQ.Element.ToUpper().Trim() && w.Type.ToUpper().Trim() == RQ.Type.ToUpper().Trim()).Count();
+
+                        if (iScheduledCount > 0)
+                        {
+                            _msg.StatusMessage =  RQ.Element+" "+RQ.Type+" sync has already been scheduled.";
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Information;
+                            return _msg;
+                        }
+                        else
+                        {
+                            LogId = Guid.NewGuid();
+                            _msg = InsertDistributionLogNewEntry(LogId, RQ.Element, RQ.Type, "Scheduled", woc.Headers["CallingUser"]);
+                        }
+
                         using (DHSVCProxyAsync DHP = new DHSVCProxyAsync())
                         {
-                            string strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_ProductMapping"], LogId.ToString());
-                            DHP.GetAsync(ProxyFor.SqlToMongo, strURI);
+                            string NewElement = RQ.Element.ToUpper().Trim();
+                            string newType = RQ.Type.ToUpper().Trim();
+                            if (NewElement == "HOTEL" && newType == "MAPPING")
+                            {
+                                strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_ProductMapping"], LogId.ToString(), (Guid.Empty).ToString());
+                            }
+                            else if (NewElement == "HOTEL" && newType == "MAPPINGLITE")
+                            {
+                               strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_ProductMappingLite"], LogId.ToString(), (Guid.Empty).ToString());
+                            }
+                            if (strURI != null)
+                            {
+                                DHP.GetAsync(ProxyFor.SqlToMongo, strURI);
+                            }
                         }
-                    }
-                    else
-                    {
-                        //Code goes here for Indert Update or Delete of a specific Hotel
-                    }
-                    return _msg;
 
-                   // return new DC_Message { StatusMessage = "HotelMapping sync has been scheduled successfully.", StatusCode = ReadOnlyMessage.StatusCode.Success };
-                }
+                        return _msg;
+                    }
             }
             catch (Exception ex)
             {
@@ -303,49 +327,25 @@ namespace DataLayer
             }
         }
 
-        public DC_Message SyncHotelMappingLite(Guid Hotel_Id, string CreatedBy)
+        public DC_Message SyncHotelMappingLite(Guid ProdMap_Id)
         {
             DC_Message _msg = new DC_Message();
-            try
+            if(ProdMap_Id != Guid.Empty)
             {
-                Guid LogId =new Guid();
-                using (ConsumerEntities context = new ConsumerEntities())
-                {
-                    var iScheduledCount = context.DistributionLayerRefresh_Log.AsNoTracking()
-                                        .Where(w => (w.Status.ToUpper().Trim() == "RUNNING" || w.Status.ToUpper().Trim() == "SCHEDULED") && w.Element.ToUpper().Trim() == "HOTEL" && w.Type.ToUpper().Trim() == "MAPPINGLITE").Count();
-                    
-                    if (iScheduledCount > 0)
-                    {
-                        _msg.StatusMessage = "Hotel MappingLite sync has already been scheduled.";
-                        _msg.StatusCode = ReadOnlyMessage.StatusCode.Information ;
-                        return _msg;
-                    }
-                    else
-                    {
-                        LogId = Guid.NewGuid();
-                        _msg = InsertDistributionLogNewEntry(LogId, "Hotel", "MappingLite", "Scheduled", CreatedBy);
-                    }
-                   
-                    if (Hotel_Id == Guid.Empty)
-                    {
-                        using (DHSVCProxyAsync DHP = new DHSVCProxyAsync())
-                        {
-                            string strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_ProductMappingLite"], LogId.ToString());
-                            DHP.GetAsync(ProxyFor.SqlToMongo, strURI);
-                        }
-                    }
-                    else
-                    {
-                        //Code goes here for Indert Update or Delete of a specific Hotel
-                    }
-                    return _msg;
-                    //return new DC_Message { StatusMessage = "Hotel MappingLite sync has been scheduled successfully.", StatusCode = ReadOnlyMessage.StatusCode.Success };
-                }
+                DHSVCProxyAsync DHP = new DHSVCProxyAsync();
+                string strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_ProductMappingLite"], (Guid.Empty).ToString(),Convert.ToString(ProdMap_Id));
+                DHP.GetAsync(ProxyFor.SqlToMongo, strURI);
+                return _msg;
             }
-            catch (Exception ex)
+            else
             {
-                return new DC_Message { StatusMessage = ex.Message, StatusCode = ReadOnlyMessage.StatusCode.Failed };
+                DC_MogoDbSyncRQ param = new DC_MogoDbSyncRQ();
+                param.Element = "Hotel";
+                param.Type = "MappingLite";
+                _msg = SynCProductData(param);
+                return _msg;
             }
+            
         }
 
         private DC_Message InsertDistributionLogNewEntry(Guid LogId,string elementName, string Type,string status,string CreatedBy)
