@@ -154,5 +154,16 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
+
+        #region == ML Data Integration
+        public DC_Message SyncMLAPIData(DC_Distribution_MLDataRQ _obj)
+        {
+            using (BusinessLayer.BL_RefreshDistributionData obj = new BusinessLayer.BL_RefreshDistributionData())
+            {
+                return obj.SyncMLAPIData(_obj);
+            }
+        }
+        #endregion
     }
 }

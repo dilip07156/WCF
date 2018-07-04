@@ -69,7 +69,7 @@ namespace OperationContracts
 
         #endregion
 
-        
+
 
         #region RefreshDistributionLog
         [OperationContract]
@@ -110,7 +110,15 @@ namespace OperationContracts
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "GET", UriTemplate = "Load/SupplierMaster/{log_id}/{supplier_id}/{CreatedBy}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DC_Message SyncSupplierStaticHotel(string log_id ,string supplier_id, string CreatedBy);
+        DC_Message SyncSupplierStaticHotel(string log_id, string supplier_id, string CreatedBy);
+        #endregion
+
+
+        #region == ML Data Integration
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "ML/SyncMLAPIData", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_Message SyncMLAPIData(DC_Distribution_MLDataRQ _obj);
         #endregion
 
 

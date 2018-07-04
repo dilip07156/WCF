@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer
 {
-   public class BL_RefreshDistributionData : IDisposable
+    public class BL_RefreshDistributionData : IDisposable
     {
         public void Dispose()
         {
-           
+
         }
 
         #region Refresh distributation data Country
@@ -246,6 +246,16 @@ namespace BusinessLayer
             else
             {
                 return new DC_Message { StatusMessage = "Invalid Supplier_id", StatusCode = ReadOnlyMessage.StatusCode.Danger };
+            }
+        }
+        #endregion
+
+        #region == ML Data Integration
+        public DC_Message SyncMLAPIData(DC_Distribution_MLDataRQ _obj)
+        {
+            using (DataLayer.DL_GetRefreshDistributionLog obj = new DataLayer.DL_GetRefreshDistributionLog())
+            {
+                return obj.SyncMLAPIData(_obj);
             }
         }
         #endregion

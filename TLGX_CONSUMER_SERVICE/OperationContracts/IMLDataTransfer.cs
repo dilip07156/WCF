@@ -14,46 +14,46 @@ namespace OperationContracts
         #region *** MasterAccommodationRecord ***
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "ML/Master/Accommodation", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        string ML_DataTransferMasterAccommodation();
+        [WebInvoke(Method = "GET", UriTemplate = "ML/Master/Accommodation/{Logid}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        void ML_DataTransferMasterAccommodation(string Logid);
         #endregion
 
 
         #region *** MasterAccommodationRoomFacilities ***
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "ML/Master/AccommodationRoomFacilities", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        string ML_DataTransferMasterAccommodationRoomFacilities();
+        [WebInvoke(Method = "GET", UriTemplate = "ML/Master/AccommodationRoomFacilities/{Logid}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        void ML_DataTransferMasterAccommodationRoomFacilities(string Logid);
         #endregion
         #region *** MasterAccommodationRoomInformation ***
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "ML/Master/AccommodationRoomInformation", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        string ML_DataTransferMasterAccommodationRoomInformation();
+        [WebInvoke(Method = "GET", UriTemplate = "ML/Master/AccommodationRoomInformation/{Logid}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        void ML_DataTransferMasterAccommodationRoomInformation(string Logid);
         #endregion
         #region *** RoomTypeMatching ***
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "ML/RoomTypeMatching", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        string ML_DataTransferRoomTypeMatching();
+        [WebInvoke(Method = "GET", UriTemplate = "ML/RoomTypeMatching/{Logid}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        void ML_DataTransferRoomTypeMatching(string Logid);
         #endregion
         #region *** SupplierAccommodationData ***
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "ML/Supplier/AccommodationData", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        string ML_DataTransferSupplierAccommodationData();
+        [WebInvoke(Method = "GET", UriTemplate = "ML/Supplier/AccommodationData/{Logid}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        void ML_DataTransferSupplierAccommodationData(string Logid);
         #endregion
         #region *** SupplierAccommodationRoomData ***
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "ML/Supplier/AccommodationRoomData", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        string ML_DataTransferSupplierAccommodationRoomData();
+        [WebInvoke(Method = "GET", UriTemplate = "ML/Supplier/AccommodationRoomData/{Logid}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        void ML_DataTransferSupplierAccommodationRoomData(string Logid);
         #endregion
         #region *** SupplierAccommodationRoomExtendedAttributes ***
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "ML/Supplier/AccommodationRoomExtendedAttributes", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        string ML_DataTransferSupplierAccommodationRoomExtendedAttributes();
+        [WebInvoke(Method = "GET", UriTemplate = "ML/Supplier/AccommodationRoomExtendedAttributes/{Logid}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        void ML_DataTransferSupplierAccommodationRoomExtendedAttributes(string Logid);
         #endregion
     }
 }

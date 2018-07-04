@@ -4,12 +4,21 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.Serialization.Json;
+using System.ServiceModel.Web;
 using System.Text;
 using System.Threading.Tasks;
 using DataContracts.ML;
 
 namespace DataLayer
 {
+    public enum PushStatus
+    {
+        SCHEDULED,
+        RUNNNING,
+        COMPLETED,
+        ERROR
+    }
+
     public class DL_MLDataTransfer : IDisposable
     {
 
@@ -18,42 +27,46 @@ namespace DataLayer
         }
 
         #region *** MasterAccommodationRecord Done***
-        public string ML_DataTransferMasterAccommodation()
+        public void ML_DataTransferMasterAccommodation(Guid LogId)
         {
             DataContracts.ML.DC_ML_DL_MasterAccoRecord _obj = new DataContracts.ML.DC_ML_DL_MasterAccoRecord();
+            int TotalCount = 0;
+            int MLDataInsertedCount = 0;
             try
             {
-
+                UpdateDistLogInfo(LogId, PushStatus.RUNNNING);
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    int total = 0;
+                    //int total = 0;
                     //Get Batch Size
                     int BatchSize = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["DataTransferBatchSize"]);
                     //Get Total Count
                     string strTotalCount = @"SELECT COUNT(1) FROM Accommodation with(nolock)";
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    try { total = context.Database.SqlQuery<int>(strTotalCount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
-                    int NoOfBatch = total / BatchSize;
-                    int mod = total % BatchSize;
+                    try { TotalCount = context.Database.SqlQuery<int>(strTotalCount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
+                    int NoOfBatch = TotalCount / BatchSize;
+                    int mod = TotalCount % BatchSize;
                     if (mod > 0)
                         NoOfBatch = NoOfBatch + 1;
                     for (int BatchNo = 0; BatchNo < NoOfBatch; BatchNo++)
                     {
                         _obj = GetMasterAccoDataForMLTrans(BatchSize, BatchNo);
+                        #region To update CounterIn DistributionLog
+                        MLDataInsertedCount = MLDataInsertedCount + BatchSize;
+                        UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
+                        #endregion
                         object result = null;
                         DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_MasterAccommodationRecord"], _obj, typeof(DataContracts.ML.DC_ML_DL_MasterAccoRecord), typeof(DC_ML_Message), out result);
                     }
-
+                    UpdateDistLogInfo(LogId, PushStatus.COMPLETED, TotalCount, MLDataInsertedCount);
                 }
-
-
             }
             catch (Exception ex)
             {
-
+                UpdateDistLogInfo(LogId, PushStatus.ERROR, TotalCount, MLDataInsertedCount);
                 throw;
             }
-            return string.Empty;
+            // return string.Empty;
         }
 
         private DC_ML_DL_MasterAccoRecord GetMasterAccoDataForMLTrans(int batchSize, int batchNo)
@@ -117,9 +130,8 @@ namespace DataLayer
 
                 return _obj;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
                 throw;
             }
 
@@ -127,14 +139,15 @@ namespace DataLayer
         }
         #endregion
 
-
-
         #region *** MasterAccommodationRoomFacilities ***
-        public string ML_DataTransferMasterAccommodationRoomFacilities()
+        public string ML_DataTransferMasterAccommodationRoomFacilities(Guid LogId)
         {
             DataContracts.ML.DC_ML_DL_MasterAccoRoomFacility _obj = new DataContracts.ML.DC_ML_DL_MasterAccoRoomFacility();
+            int TotalCount = 0;
+            int MLDataInsertedCount = 0;
             try
             {
+                UpdateDistLogInfo(LogId, PushStatus.RUNNNING);
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
@@ -152,17 +165,21 @@ namespace DataLayer
                     for (int BatchNo = 0; BatchNo < NoOfBatch; BatchNo++)
                     {
                         _obj = GetMasterAccoFacilityDataForMLTrans(BatchSize, BatchNo);
+                        #region To update CounterIn DistributionLog
+                        MLDataInsertedCount = MLDataInsertedCount + BatchSize;
+                        UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
+                        #endregion
                         object result = null;
                         DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_MasterAccommodationRoomFacilities"], _obj, typeof(DataContracts.ML.DC_ML_DL_MasterAccoRoomFacility), typeof(DC_ML_Message), out result);
                     }
-
+                    UpdateDistLogInfo(LogId, PushStatus.COMPLETED, TotalCount, MLDataInsertedCount);
                 }
 
 
             }
             catch (Exception ex)
             {
-
+                UpdateDistLogInfo(LogId, PushStatus.ERROR, TotalCount, MLDataInsertedCount);
                 throw;
             }
             return string.Empty;
@@ -226,9 +243,8 @@ namespace DataLayer
 
                 return _obj;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
                 throw;
             }
 
@@ -238,39 +254,45 @@ namespace DataLayer
 
 
         #region ***  MasterAccommodationRoomInformation Done ***
-        public string ML_DataTransferMasterAccommodationRoomInformation()
+        public string ML_DataTransferMasterAccommodationRoomInformation(Guid LogId)
         {
             DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo _obj = new DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo();
+            int TotalCount = 0;
+            int MLDataInsertedCount = 0;
             try
             {
-
+                UpdateDistLogInfo(LogId, PushStatus.RUNNNING);
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    int total = 0;
+                    //int total = 0;
                     //Get Batch Size
                     int BatchSize = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["DataTransferBatchSize"]);
                     //Get Total Count
                     string strTotalCount = @"SELECT COUNT(1) FROM Accommodation_RoomInfo with(nolock)";
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    try { total = context.Database.SqlQuery<int>(strTotalCount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
-                    int NoOfBatch = total / BatchSize;
-                    int mod = total % BatchSize;
+                    try { TotalCount = context.Database.SqlQuery<int>(strTotalCount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
+                    int NoOfBatch = TotalCount / BatchSize;
+                    int mod = TotalCount % BatchSize;
                     if (mod > 0)
                         NoOfBatch = NoOfBatch + 1;
                     for (int BatchNo = 0; BatchNo < NoOfBatch; BatchNo++)
                     {
                         _obj = GetMasterAccoRoomInformationDataForMLTrans(BatchSize, BatchNo);
+                        #region To update CounterIn DistributionLog
+                        MLDataInsertedCount = MLDataInsertedCount + BatchSize;
+                        UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
+                        #endregion
                         object result = null;
                         DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_MasterAccommodationRoomInformation"], _obj, typeof(DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo), typeof(DC_ML_Message), out result);
                     }
-
+                    UpdateDistLogInfo(LogId, PushStatus.COMPLETED, TotalCount, MLDataInsertedCount);
                 }
 
 
             }
             catch (Exception ex)
             {
-
+                UpdateDistLogInfo(LogId, PushStatus.ERROR, TotalCount, MLDataInsertedCount);
                 throw;
             }
             return string.Empty;
@@ -363,9 +385,8 @@ namespace DataLayer
 
                 return _obj;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
                 throw;
             }
 
@@ -375,15 +396,18 @@ namespace DataLayer
 
 
         #region *** RoomTypeMatching ***
-        public string ML_DataTransferRoomTypeMatching()
+        public string ML_DataTransferRoomTypeMatching(Guid LogId)
         {
             DataContracts.ML.DC_ML_DL_RoomTypeMatch _obj = new DataContracts.ML.DC_ML_DL_RoomTypeMatch();
+            int TotalCount = 0;
+            int MLDataInsertedCount = 0;
             try
             {
+                UpdateDistLogInfo(LogId, PushStatus.RUNNNING);
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    int total = 0;
+                    //int total = 0;
                     //Get Batch Size
                     int BatchSize = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["DataTransferBatchSize"]);
                     string DataTransferForTrainingDataMappingStatus = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["DataTransferForTrainingDataMappingStatus"]);
@@ -393,25 +417,29 @@ namespace DataLayer
                                              JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) ON SRTM.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id
                                              where SRTM.MappingStatus IN (" + DataTransferForTrainingDataMappingStatus + ")";
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    try { total = context.Database.SqlQuery<int>(strTotalCount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
-                    int NoOfBatch = total / BatchSize;
-                    int mod = total % BatchSize;
+                    try { TotalCount = context.Database.SqlQuery<int>(strTotalCount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
+                    int NoOfBatch = TotalCount / BatchSize;
+                    int mod = TotalCount % BatchSize;
                     if (mod > 0)
                         NoOfBatch = NoOfBatch + 1;
                     for (int BatchNo = 0; BatchNo < NoOfBatch; BatchNo++)
                     {
                         _obj = GetRoomTypeMatchDataForMLTrans(BatchSize, BatchNo);
+                        #region To update CounterIn DistributionLog
+                        MLDataInsertedCount = MLDataInsertedCount + BatchSize;
+                        UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
+                        #endregion
                         object result = null;
                         DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_RoomTypeMatching"], _obj, typeof(DataContracts.ML.DC_ML_DL_RoomTypeMatch), typeof(DC_ML_Message), out result);
                     }
-
+                    UpdateDistLogInfo(LogId, PushStatus.COMPLETED, TotalCount, MLDataInsertedCount);
                 }
 
 
             }
             catch (Exception ex)
             {
-
+                UpdateDistLogInfo(LogId, PushStatus.ERROR, TotalCount, MLDataInsertedCount);
                 throw;
             }
             return string.Empty;
@@ -568,7 +596,6 @@ namespace DataLayer
             }
             catch (Exception ex)
             {
-
                 throw;
             }
         }
@@ -576,39 +603,46 @@ namespace DataLayer
 
 
         #region *** SupplierAccommodationData ***
-        public string ML_DataTransferSupplierAccommodationData()
+        public string ML_DataTransferSupplierAccommodationData(Guid LogId)
         {
             DataContracts.ML.DC_ML_DL_SupplierAcco _obj = new DataContracts.ML.DC_ML_DL_SupplierAcco();
+            int TotalCount = 0;
+            int MLDataInsertedCount = 0;
             try
             {
+                UpdateDistLogInfo(LogId, PushStatus.RUNNNING);
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    int total = 0;
+                    //int total = 0;
                     //Get Batch Size
                     int BatchSize = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["DataTransferBatchSize"]);
                     //Get Total Count
                     string strTotalCount = @"SELECT COUNT(1) FROM Accommodation_ProductMapping with(nolock)";
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    try { total = context.Database.SqlQuery<int>(strTotalCount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
-                    int NoOfBatch = total / BatchSize;
-                    int mod = total % BatchSize;
+                    try { TotalCount = context.Database.SqlQuery<int>(strTotalCount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
+                    int NoOfBatch = TotalCount / BatchSize;
+                    int mod = TotalCount % BatchSize;
                     if (mod > 0)
                         NoOfBatch = NoOfBatch + 1;
                     for (int BatchNo = 0; BatchNo < NoOfBatch; BatchNo++)
                     {
                         _obj = GetSupplierAccoDataForMLTrans(BatchSize, BatchNo);
+                        #region To update CounterIn DistributionLog
+                        MLDataInsertedCount = MLDataInsertedCount + BatchSize;
+                        UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
+                        #endregion
                         object result = null;
                         DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_SupplierAccommodationData"], _obj, typeof(DataContracts.ML.DC_ML_DL_SupplierAcco), typeof(DC_ML_Message), out result);
                     }
-
+                    UpdateDistLogInfo(LogId, PushStatus.COMPLETED, TotalCount, MLDataInsertedCount);
                 }
 
 
             }
             catch (Exception ex)
             {
-
+                UpdateDistLogInfo(LogId, PushStatus.ERROR, TotalCount, MLDataInsertedCount);
                 throw;
             }
             return string.Empty;
@@ -682,9 +716,8 @@ namespace DataLayer
 
                 return _obj;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
                 throw;
             }
         }
@@ -692,37 +725,43 @@ namespace DataLayer
 
 
         #region *** SupplierAccommodationRoomData Done***
-        public string ML_DataTransferSupplierAccommodationRoomData()
+        public string ML_DataTransferSupplierAccommodationRoomData(Guid LogId)
         {
             DataContracts.ML.DC_ML_DL_SupplierAcco_Room _obj = new DataContracts.ML.DC_ML_DL_SupplierAcco_Room();
+            int TotalCount = 0;
+            int MLDataInsertedCount = 0;
             try
             {
-
+                UpdateDistLogInfo(LogId, PushStatus.RUNNNING);
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    int total = 0;
+                    //int total = 0;
                     //Get Batch Size
                     int BatchSize = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["DataTransferBatchSize"]);
                     //Get Total Count
                     string strTotalCount = @"SELECT COUNT(1) FROM Accommodation_SupplierRoomTypeMapping with(nolock)";
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    try { total = context.Database.SqlQuery<int>(strTotalCount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
-                    int NoOfBatch = total / BatchSize;
-                    int mod = total % BatchSize;
+                    try { TotalCount = context.Database.SqlQuery<int>(strTotalCount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
+                    int NoOfBatch = TotalCount / BatchSize;
+                    int mod = TotalCount % BatchSize;
                     if (mod > 0)
                         NoOfBatch = NoOfBatch + 1;
                     for (int BatchNo = 0; BatchNo < NoOfBatch; BatchNo++)
                     {
                         _obj = GetSupplierAcco_RoomDataForMLTrans(BatchSize, BatchNo);
                         object result = null;
+                        #region To update CounterIn DistributionLog
+                        MLDataInsertedCount = MLDataInsertedCount + BatchSize;
+                        UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
+                        #endregion
                         DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_SupplierAccommodationRoomData"], _obj, typeof(DataContracts.ML.DC_ML_DL_SupplierAcco_Room), typeof(DC_ML_Message), out result);
                     }
-
+                    UpdateDistLogInfo(LogId, PushStatus.COMPLETED, TotalCount, MLDataInsertedCount);
                 }
             }
             catch (Exception ex)
             {
-
+                UpdateDistLogInfo(LogId, PushStatus.ERROR, TotalCount, MLDataInsertedCount);
                 throw;
             }
             return string.Empty;
@@ -820,9 +859,8 @@ namespace DataLayer
 
                 return _obj;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
                 throw;
             }
         }
@@ -830,37 +868,44 @@ namespace DataLayer
 
 
         #region *** SupplierAccommodationRoomExtendedAttributes  Done***
-        public string ML_DataTransferSupplierAccommodationRoomExtendedAttributes()
+        public string ML_DataTransferSupplierAccommodationRoomExtendedAttributes(Guid LogId)
         {
             DataContracts.ML.DC_ML_DL_SupplierAcco_RoomExtendedAttributes _obj = new DataContracts.ML.DC_ML_DL_SupplierAcco_RoomExtendedAttributes();
+            int TotalCount = 0;
+            int MLDataInsertedCount = 0;
             try
             {
+                UpdateDistLogInfo(LogId, PushStatus.RUNNNING);
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    int total = 0;
+                    //  int total = 0;
                     //Get Batch Size
                     int BatchSize = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["DataTransferBatchSize"]);
                     //Get Total Count
                     string strTotalCount = @"SELECT COUNT(1) FROM Accommodation_SupplierRoomTypeAttributes with(nolock)";
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    try { total = context.Database.SqlQuery<int>(strTotalCount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
-                    int NoOfBatch = total / BatchSize;
-                    int mod = total % BatchSize;
+                    try { TotalCount = context.Database.SqlQuery<int>(strTotalCount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
+                    int NoOfBatch = TotalCount / BatchSize;
+                    int mod = TotalCount % BatchSize;
                     if (mod > 0)
                         NoOfBatch = NoOfBatch + 1;
                     for (int BatchNo = 0; BatchNo < NoOfBatch; BatchNo++)
                     {
                         _obj = GetSupplierAcco_RoomExtendedAttributesDataForMLTrans(BatchSize, BatchNo);
+                        #region To update CounterIn DistributionLog
+                        MLDataInsertedCount = MLDataInsertedCount + BatchSize;
+                        UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
+                        #endregion
                         object result = null;
                         DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_SupplierAccommodationRoomExtendedAttributes"], _obj, typeof(DataContracts.ML.DC_ML_DL_SupplierAcco_RoomExtendedAttributes), typeof(DC_ML_Message), out result);
                     }
-
+                    UpdateDistLogInfo(LogId, PushStatus.COMPLETED, TotalCount, MLDataInsertedCount);
                 }
             }
             catch (Exception ex)
             {
-
+                UpdateDistLogInfo(LogId, PushStatus.ERROR, TotalCount, MLDataInsertedCount);
                 throw;
             }
             return string.Empty;
@@ -913,14 +958,50 @@ namespace DataLayer
 
                 return _obj;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
                 throw;
             }
         }
         #endregion
+
+
+        private void UpdateDistLogInfo(Guid LogId, PushStatus status, int totalCount = 0, int insertedCount = 0)
+        {
+            IncomingWebRequestContext woc = WebOperationContext.Current.IncomingRequest;
+            string CallingAgent = woc.Headers["CallingAgent"];
+            string CallingUser = woc.Headers["CallingUser"];
+            string Status = string.Empty;
+            string EditUser = CallingUser;
+
+            if (status == PushStatus.RUNNNING)
+            {
+                Status = "Running";
+            }
+            else if (status == PushStatus.COMPLETED)
+            {
+                Status = "Completed";
+            }
+            else if (status == PushStatus.ERROR)
+            {
+                Status = "Error";
+            }
+
+            StringBuilder setNewStatus = new StringBuilder();
+            setNewStatus.Append("UPDATE DistributionLayerRefresh_Log SET TotalCount = " + totalCount.ToString() + " , MongoPushCount = " + insertedCount.ToString() + ", Status ='" + Status + "',  Edit_Date = getDate(),  Edit_User='" + EditUser + "' WHERE Id= '" + LogId + "';");
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+
+                context.Configuration.AutoDetectChangesEnabled = false;
+                var Log = context.DistributionLayerRefresh_Log.Find(LogId);
+                if (Log != null)
+                    context.Database.ExecuteSqlCommand(setNewStatus.ToString());
+            }
+            setNewStatus = null;
+        }
     }
+
+
 
     public class DC_ML_Message
     {
