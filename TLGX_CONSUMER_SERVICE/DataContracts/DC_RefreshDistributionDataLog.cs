@@ -32,6 +32,7 @@ namespace DataContracts
         [DataMember]
         public string Type { get; set; }
         [DataMember]
-        public string Status { get; set; }
+        public string Status { get; set; } 
+
     }
 }
