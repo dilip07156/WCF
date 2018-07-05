@@ -657,6 +657,8 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    context.Database.CommandTimeout = 0;
+                    context.Configuration.AutoDetectChangesEnabled = false;
                     StringBuilder sbSelect = new StringBuilder();
                     StringBuilder sbOrderby = new StringBuilder();
                     sbSelect.Append(@"  SELECT 
@@ -751,7 +753,7 @@ namespace DataLayer
                         _obj = GetSupplierAcco_RoomDataForMLTrans(BatchSize, BatchNo);
                         object result = null;
                         #region To update CounterIn DistributionLog
-                        MLDataInsertedCount = MLDataInsertedCount + BatchSize;
+                        MLDataInsertedCount = MLDataInsertedCount + _obj.SupplierAccommodationRoomData.Count(); ;
                         UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
                         #endregion
                         DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_SupplierAccommodationRoomData"], _obj, typeof(DataContracts.ML.DC_ML_DL_SupplierAcco_Room), typeof(DC_ML_Message), out result);
@@ -776,6 +778,8 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    context.Database.CommandTimeout = 0;
+                    context.Configuration.AutoDetectChangesEnabled = false;
                     StringBuilder sbSelect = new StringBuilder();
                     StringBuilder sbOrderby = new StringBuilder();
                     sbSelect.Append(@"SELECT  
@@ -998,6 +1002,37 @@ namespace DataLayer
                     context.Database.ExecuteSqlCommand(setNewStatus.ToString());
             }
             setNewStatus = null;
+        }
+
+        public List<DataContracts.ML.DL_ML_DL_EntityStatus> GetMLDataApiTransferStatus()
+        {
+            List<DataContracts.ML.DL_ML_DL_EntityStatus> _obj = new List<DataContracts.ML.DL_ML_DL_EntityStatus>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    StringBuilder sbSelect = new StringBuilder();
+                    sbSelect.Append(@"select t.[Element] AS EntityType, t.Edit_Date AS LastUpdate,t.Status,Cast(TotalCount As nvarchar(100)) AS TotalCount ,Cast(MongoPushCount As nvarchar(100)) AS PushedCount
+                                    ,CASE WHEN TotalCount != 0 THEN cast(round((((Cast(MongoPushCount As numeric))/cast(TotalCount As numeric)) * 100.0),2)as numeric(36,2)) ELSE 0 END AS Per                                    
+                                     from DistributionLayerRefresh_Log t with(Nolock)
+                                     INNER JOIN (
+                                        select [Element], max(Edit_Date) as MaxDate
+                                        from DistributionLayerRefresh_Log with(Nolock) where Element Like 'MLDATA%'
+                                        group by [Element]
+                                    ) tm on t.[Element] = tm.[Element] and t.Edit_Date = tm.MaxDate
+                                ");
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    try { _obj = context.Database.SqlQuery<DataContracts.ML.DL_ML_DL_EntityStatus>(sbSelect.ToString()).ToList(); } catch (Exception ex) { }
+
+                    return _obj;
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 
