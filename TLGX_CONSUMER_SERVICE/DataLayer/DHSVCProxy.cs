@@ -261,7 +261,7 @@ namespace DataLayer
                     streamWriter.Write(json);
                 }
 
-                var response = request.GetResponse();
+               var response = request.GetResponse();
 
                 if (((System.Net.HttpWebResponse)response).StatusCode != HttpStatusCode.OK)
                 {

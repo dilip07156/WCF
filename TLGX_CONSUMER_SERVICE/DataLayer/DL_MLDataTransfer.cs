@@ -52,7 +52,7 @@ namespace DataLayer
                     {
                         _obj = GetMasterAccoDataForMLTrans(BatchSize, BatchNo);
                         #region To update CounterIn DistributionLog
-                        MLDataInsertedCount = MLDataInsertedCount + BatchSize;
+                        MLDataInsertedCount = MLDataInsertedCount + _obj.MasterAccommodationRecord.Count();
                         UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
                         #endregion
                         object result = null;
@@ -279,7 +279,7 @@ namespace DataLayer
                     {
                         _obj = GetMasterAccoRoomInformationDataForMLTrans(BatchSize, BatchNo);
                         #region To update CounterIn DistributionLog
-                        MLDataInsertedCount = MLDataInsertedCount + BatchSize;
+                        MLDataInsertedCount = MLDataInsertedCount + _obj.MasterAccommodationRoomInformation.Count();
                         UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
                         #endregion
                         object result = null;
@@ -335,7 +335,7 @@ namespace DataLayer
                                         Edit_Date
                                         FROM Accommodation_RoomInfo with(nolock)  ");
                     int skip = batchNo * batchSize;
-                    sbOrderby.Append("  ORDER BY Accommodation_Id OFFSET " + (skip).ToString() + " ROWS FETCH NEXT " + batchSize.ToString() + " ROWS ONLY ");
+                    sbOrderby.Append("  ORDER BY Accommodation_RoomInfo_Id OFFSET " + (skip).ToString() + " ROWS FETCH NEXT " + batchSize.ToString() + " ROWS ONLY ");
 
                     StringBuilder sbfinal = new StringBuilder();
                     sbfinal.Append(sbSelect);
@@ -629,7 +629,7 @@ namespace DataLayer
                     {
                         _obj = GetSupplierAccoDataForMLTrans(BatchSize, BatchNo);
                         #region To update CounterIn DistributionLog
-                        MLDataInsertedCount = MLDataInsertedCount + BatchSize;
+                        MLDataInsertedCount = MLDataInsertedCount + _obj.SupplierAccommodationData.Count();
                         UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
                         #endregion
                         object result = null;
