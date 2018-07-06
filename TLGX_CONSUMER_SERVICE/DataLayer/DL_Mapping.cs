@@ -5768,17 +5768,20 @@ namespace DataLayer
                 string Edit_User = string.Empty;
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    context.Database.CommandTimeout = 0;
+
                     if (Acco_RoomTypeMap_Ids != null)
                     {
                         var MapIdsFilter = (from a in Acco_RoomTypeMap_Ids select a.Acco_RoomTypeMap_Id).ToList();
 
                         asrtmd = context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
                                      .Where(w => MapIdsFilter.Contains(w.Accommodation_SupplierRoomTypeMapping_Id))
-                                     .OrderBy(o => o.Accommodation_SupplierRoomTypeMapping_Id)
+                                     //.OrderBy(o => o.Accommodation_SupplierRoomTypeMapping_Id)
                                      .Select(s => new DC_SupplierRoomName_Details
                                      {
                                          RoomTypeMap_Id = s.Accommodation_SupplierRoomTypeMapping_Id,
-                                         SupplierRoomName = s.SupplierRoomName
+                                         SupplierRoomName = s.SupplierRoomName,
+                                         SupplierRoomDescription = s.RoomDescription
                                      }).ToList();
                         if (ISProgressLog)
                         {
@@ -5802,7 +5805,8 @@ namespace DataLayer
                                   select new DC_SupplierRoomName_Details
                                   {
                                       RoomTypeMap_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
-                                      SupplierRoomName = a.SupplierRoomName
+                                      SupplierRoomName = a.SupplierRoomName,
+                                      SupplierRoomDescription = a.RoomDescription
                                   }).ToList();
                         if (ISProgressLog)
                         {
@@ -5830,10 +5834,14 @@ namespace DataLayer
 
                     string TX_SupplierRoomName = string.Empty;
                     string TX_SupplierRoomName_Stripped = string.Empty;
+                    string TX_SupplierRoomDesc = string.Empty;
+                    string TX_SupplierRoomDesc_Stripped = string.Empty;
 
                     AttributeList = new List<DC_SupplierRoomName_AttributeList>();
 
-                    string BaseRoomName = "";
+                    string BaseRoomName = string.Empty;
+                    string RoomDescription = string.Empty;
+
                     if (string.IsNullOrWhiteSpace(srn.SupplierRoomName))
                         continue;
                     else
@@ -5841,12 +5849,16 @@ namespace DataLayer
 
                     BaseRoomName = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_SupplierRoomName, ref TX_SupplierRoomName_Stripped, BaseRoomName, new string[] { });
 
-                    #region UpdateToDB
                     //Value assignment
                     srn.TX_SupplierRoomName = TX_SupplierRoomName;
                     srn.TX_SupplierRoomName_Stripped = TX_SupplierRoomName_Stripped;
                     srn.TX_SupplierRoomName_Stripped_ReOrdered = TX_SupplierRoomName_Stripped;
                     srn.AttributeList = AttributeList;
+
+                    //Perform TTFU on Room Description to extract the Attributes.
+                    RoomDescription = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_SupplierRoomDesc, ref TX_SupplierRoomDesc_Stripped, RoomDescription, new string[] { });
+
+                    #region UpdateToDB
 
                     //Update Room Name Stripped and Attributes
                     using (ConsumerEntities context = new ConsumerEntities())
@@ -7223,8 +7235,8 @@ namespace DataLayer
                         else
                         {
                             RQ_Broker.Mode = "Offline";
-                            RQ_Broker.BatchId = Convert.ToString(obj.CurrentBatch) ?? string.Empty;
-                            RQ_Broker.Transaction = (Convert.ToString(supdata.File_Id) ?? string.Empty).ToUpper();
+                            RQ_Broker.BatchId = Convert.ToString(obj.CurrentBatch) ?? Guid.NewGuid().ToString().ToUpper();
+                            RQ_Broker.Transaction = Guid.NewGuid().ToString().ToUpper();//(Convert.ToString(supdata.File_Id) ?? Guid.NewGuid().ToString()).ToUpper();
                         }
 
                         List<DataContracts.DC_HotelRoomTypeMappingRequest> _lstHotelRoomTypeMappingRequests = new List<DataContracts.DC_HotelRoomTypeMappingRequest>();
