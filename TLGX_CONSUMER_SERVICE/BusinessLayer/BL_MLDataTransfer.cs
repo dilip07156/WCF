@@ -76,5 +76,13 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        public List<DataContracts.ML.DL_ML_DL_EntityStatus> GetMLDataApiTransferStatus()
+        {
+            using (DL_MLDataTransfer objDL = new DL_MLDataTransfer())
+            {
+               return objDL.GetMLDataApiTransferStatus();
+            }
+        }
     }
 }
