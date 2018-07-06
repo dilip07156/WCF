@@ -306,6 +306,9 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    context.Database.CommandTimeout = 0;
+                    context.Configuration.AutoDetectChangesEnabled = false;
+
                     StringBuilder sbSelect = new StringBuilder();
                     StringBuilder sbOrderby = new StringBuilder();
                     sbSelect.Append(@"SELECT  
@@ -335,13 +338,12 @@ namespace DataLayer
                                         Edit_Date
                                         FROM Accommodation_RoomInfo with(nolock)  ");
                     int skip = batchNo * batchSize;
-                    sbOrderby.Append("  ORDER BY Accommodation_RoomInfo_Id OFFSET " + (skip).ToString() + " ROWS FETCH NEXT " + batchSize.ToString() + " ROWS ONLY ");
+                    sbOrderby.Append("  ORDER BY CAST(REPLACE(TLGXAccoRoomId,'ACCOROOM','') AS INT) OFFSET " + (skip).ToString() + " ROWS FETCH NEXT " + batchSize.ToString() + " ROWS ONLY ");
 
                     StringBuilder sbfinal = new StringBuilder();
                     sbfinal.Append(sbSelect);
                     sbfinal.Append(sbOrderby);
 
-                    context.Configuration.AutoDetectChangesEnabled = false;
                     try { _objAcoo = context.Database.SqlQuery<DataContracts.DC_ML_MasterAccoRoomInfo_Data>(sbfinal.ToString()).ToList(); } catch (Exception ex) { }
 
                     _obj.MasterAccommodationRoomInformation = new List<DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo_Data>();
@@ -380,7 +382,6 @@ namespace DataLayer
                     _obj.Mode = "offline";
                     _obj.BatchId = Convert.ToString(batchNo);
                     _obj.Transaction = "1";
-
                 }
 
                 return _obj;
