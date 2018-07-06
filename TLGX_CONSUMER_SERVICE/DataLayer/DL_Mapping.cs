@@ -5845,18 +5845,23 @@ namespace DataLayer
                     if (string.IsNullOrWhiteSpace(srn.SupplierRoomName))
                         continue;
                     else
+                    {
                         BaseRoomName = srn.SupplierRoomName;
-
+                        RoomDescription = srn.SupplierRoomDescription;
+                    }
+                        
                     BaseRoomName = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_SupplierRoomName, ref TX_SupplierRoomName_Stripped, BaseRoomName, new string[] { });
 
                     //Value assignment
                     srn.TX_SupplierRoomName = TX_SupplierRoomName;
                     srn.TX_SupplierRoomName_Stripped = TX_SupplierRoomName_Stripped;
                     srn.TX_SupplierRoomName_Stripped_ReOrdered = TX_SupplierRoomName_Stripped;
-                    srn.AttributeList = AttributeList;
-
+                    
                     //Perform TTFU on Room Description to extract the Attributes.
                     RoomDescription = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_SupplierRoomDesc, ref TX_SupplierRoomDesc_Stripped, RoomDescription, new string[] { });
+
+                    //Assign the final Attribute List
+                    srn.AttributeList = AttributeList;
 
                     #region UpdateToDB
 
@@ -7465,7 +7470,7 @@ namespace DataLayer
                                                             {
                                                                 recordToUpdate.MappingStatus = "REVIEW";
                                                             }
-                                                            else if (Sorted.Status.Trim().ToUpper() == "POTENTIAL NEW") //ADD
+                                                            else if (Sorted.Status.Trim().ToUpper() == "POTENTIALNEW") //ADD
                                                             {
                                                                 recordToUpdate.MappingStatus = "ADD";
                                                             }
@@ -7477,6 +7482,15 @@ namespace DataLayer
                                                             {
                                                                 recordToUpdate.MappingStatus = Sorted.Status.Trim().ToUpper();
                                                             }
+
+                                                            if (!string.IsNullOrWhiteSpace(recordToUpdate.MappingStatus))
+                                                            {
+                                                                if (recordToUpdate.MappingStatus.Length > 100)
+                                                                {
+                                                                    recordToUpdate.MappingStatus = recordToUpdate.MappingStatus.Substring(0, 100);
+                                                                }
+                                                            }
+
                                                         }
                                                     }
                                                 }
