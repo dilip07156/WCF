@@ -39,7 +39,7 @@ namespace DataContracts
 
     }
     [DataContract]
-    public class DC_MogoDbSyncRQ
+    public class DC_MongoDbSyncRQ
     {
         [DataMember]
         public string Element { get; set; }

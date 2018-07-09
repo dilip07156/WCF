@@ -511,5 +511,8 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public string FileEntity { get; set; }
+
+        [DataMember]
+        public int? BatchSize { get; set; }
     }
 }
