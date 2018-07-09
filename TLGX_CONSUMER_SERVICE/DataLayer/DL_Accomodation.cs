@@ -3413,7 +3413,7 @@ namespace DataLayer
                 return search;
             }
         }
-        public List<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails> GetAccomodationRoomInfo_RoomCategoryWithDetails(Guid Accomodation_Id)
+        public List<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails> GetAccomodationRoomInfo_RoomCategoryWithDetails(Guid Accomodation_Id, Guid acco_SupplierRoomTypeMapping_Id)
         {
             using (ConsumerEntities context = new ConsumerEntities())
             {
@@ -3432,12 +3432,14 @@ namespace DataLayer
 	                                case when ar.Smoking is null then 'No'
 		                                 when ar.Smoking = 1 then 'Yes' 
 		                                 else 'No' End as IsSomking, 
-	                                (Select top 1 MatchingScore from Accommodation_SupplierRoomTypeMapping WITH(NOLOCK) where 
-                                     Accommodation_RoomInfo_Id = ar.Accommodation_RoomInfo_Id and Accommodation_Id = ar.Accommodation_Id
-                                     and MatchingScore IS NOT NULL) AS MatchingScore  ");
+	                                ASRTM.MatchingScore AS MatchingScore  ");
 
                 #endregion
-                sbFrom.Append(@" from Accommodation_RoomInfo ar WITH(NOLOCK) ");
+                sbFrom.Append(@" from Accommodation_RoomInfo ar WITH(NOLOCK) 
+                                LEFT JOIN Accommodation_SupplierRoomTypeMapping ASRTM WITH(NOLOCK) ON ar.Accommodation_RoomInfo_Id = ASRTM.Accommodation_RoomInfo_Id
+                                     and ar.Accommodation_Id = ASRTM.Accommodation_Id
+                                     and ASRTM.Accommodation_SupplierRoomTypeMapping_Id ='");
+                sbFrom.Append(Convert.ToString(acco_SupplierRoomTypeMapping_Id) + "'");
 
                 sbWhere.Append("where ar.Accommodation_Id ='");
                 sbWhere.Append(Convert.ToString(Accomodation_Id) + "'");
