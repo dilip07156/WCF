@@ -3429,6 +3429,7 @@ namespace DataLayer
 	                                ISNULL(ar.BedType,'') AS BedType,
                                     ISNULL(ar.RoomSize,'') As  RoomSize,
 	                                ISNULL(ar.RoomView,'') AS   RoomView,
+                                    ar.TLGXAccoRoomId As TLGXAccoRoomId,
 	                                case when ar.Smoking is null then 'No'
 		                                 when ar.Smoking = 1 then 'Yes' 
 		                                 else 'No' End as IsSomking, 

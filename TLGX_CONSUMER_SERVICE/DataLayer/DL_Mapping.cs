@@ -4708,6 +4708,7 @@ namespace DataLayer
                 sbSelect.Append(@" select asrtm.[Accommodation_Id] AS [Accommodation_Id],
 	                    ari.[Accommodation_RoomInfo_Id] AS [Accommodation_RoomInfo_Id], 
 	                    ari.[RoomName] AS  [Accommodation_RoomInfo_Name],
+                        ari.[RoomCategory] As [Accommodation_RoomInfo_Category],
 	                    asrtm.[Accommodation_SupplierRoomTypeMapping_Id] AS [Accommodation_SupplierRoomTypeMapping_Id], 
 	                    CAST(acco.[CompanyHotelID] AS nvarchar(200)) AS CommonProductId, 
 	                    CiM.Name + '(' + CoM.Code + ')' As [Location],
