@@ -4644,13 +4644,13 @@ namespace DataLayer
                 }
                 if (obj.Country != null)
                 {
-                    sbWhere.Append(" and acco.Country_Id =' " + obj.Country + "' ");
-                    sbWhere.Append(" and CoM.Country_Id =' " + obj.Country + "' ");
+                    sbWhere.Append(" and acco.Country_Id ='" + obj.Country + "' ");
+                    sbWhere.Append(" and CoM.Country_Id ='" + obj.Country + "' ");
                 }
                 if (obj.City != null)
                 {
-                    sbWhere.Append(" and acco.City_Id =' " + obj.City + "' ");
-                    sbWhere.Append(" and CoM.City_Id =' " + obj.City + "' ");
+                    sbWhere.Append(" and acco.City_Id ='" + obj.City + "' ");
+                    sbWhere.Append(" and CiM.City_Id ='" + obj.City + "' ");
                 }
 
 
