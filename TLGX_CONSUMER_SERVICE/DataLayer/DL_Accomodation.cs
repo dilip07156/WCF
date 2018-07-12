@@ -10,6 +10,7 @@ using DataContracts;
 using System.Text.RegularExpressions;
 using System.Device.Location;
 using System.Globalization;
+using DataContracts.Mapping;
 
 namespace DataLayer
 {
@@ -4430,15 +4431,13 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-
                     List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
                     using (DL_Masters objDL = new DL_Masters())
                     {
                         Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
                     }
-
                     var search = (from a in context.Accommodations
-                                  where a.HotelName_Tx == null && a.IsActive == true
+                                  where a.HotelName_Tx == null && a.IsActive == true && a.Edit_User.Trim() == "DataFromMongo"
                                   select new
                                   {
                                       a.Accommodation_Id,
@@ -4470,136 +4469,25 @@ namespace DataLayer
 
                         HotelName_Tx = CommonFunctions.HotelNameTX(hotel.HotelName, hotel.city, hotel.country, ref Keywords);
                         Latitude_Tx = CommonFunctions.LatLongTX(hotel.Latitude);
-                        Longitude_Tx = CommonFunctions.LatLongTX(hotel.Latitude);
+                        Longitude_Tx = CommonFunctions.LatLongTX(hotel.Longitude);
 
                         #region TTFUAddress
+
                         List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList> AttributeList = new List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList>();
+                        string TX_Value = string.Empty;
+                        string SX_Value = string.Empty;
 
-                        string BaseValue = hotel.FullAddress;
-
-                        #region PRE TTFU
-
-                        //HTML Decode
-                        BaseValue = System.Web.HttpUtility.HtmlDecode(BaseValue);
-
-                        //To Upper
-                        BaseValue = BaseValue.ToUpper();
-
-                        //Replace the braces
-                        BaseValue = BaseValue.Replace('{', '(');
-                        BaseValue = BaseValue.Replace('}', ')');
-                        BaseValue = BaseValue.Replace('[', '(');
-                        BaseValue = BaseValue.Replace(']', ')');
-
-                        BaseValue = BaseValue.Replace("( ", "(");
-                        BaseValue = BaseValue.Replace(" )", ")");
-
-                        //Replace UnNecessary chars to space
-                        BaseValue = BaseValue.Replace('<', ' ');
-                        BaseValue = BaseValue.Replace('>', ' ');
-                        BaseValue = BaseValue.Replace('?', ' ');
-                        BaseValue = BaseValue.Replace('#', ' ');
-                        BaseValue = BaseValue.Replace('!', ' ');
-                        BaseValue = BaseValue.Replace('@', ' ');
-                        BaseValue = BaseValue.Replace("&", " AND ");
-                        BaseValue = BaseValue.Replace('(', ' ');
-                        BaseValue = BaseValue.Replace(')', ' ');
-                        BaseValue = BaseValue.Replace('-', ' ');
-                        BaseValue = BaseValue.Replace(',', ' ');
-                        BaseValue = BaseValue.Replace('.', ' ');
-                        BaseValue = BaseValue.Replace('"', ' ');
-
-                        //Necessary Replace
-                        //BaseValue = BaseValue.Replace("/", " OR ");
-                        //BaseValue = BaseValue.Replace("+", " INCLUDING ");
-
-                        //Replace Multiple whitespaces into One Whitespace
-                        BaseValue = System.Text.RegularExpressions.Regex.Replace(BaseValue, @"\s{2,}", " ");
-
-                        //trim both end
-                        BaseValue = BaseValue.Trim();
-
-                        //Take only valid characters
-                        string BaseValue_ValidChars = string.Empty;
-                        foreach (char c in BaseValue)
+                        if (!string.IsNullOrWhiteSpace(hotel.FullAddress))
                         {
-                            if ((Convert.ToInt32(c) >= 32 && Convert.ToInt32(c) <= 196))// || (Convert.ToInt16(c) >= 97 && Convert.ToInt16(c) <= 122) || Convert.ToInt16(c) == 32)
-                            {
-                                BaseValue_ValidChars = BaseValue_ValidChars + c;
-                            }
-                        }
-
-                        BaseValue = BaseValue_ValidChars;
-
-                        //Check for Spaced Keyword and Replace
-                        List<DataContracts.Masters.DC_Keyword> SpacedKeywords = Keywords.Where(w => w.Attribute == false && w.Alias.Any(a => a.Value.Contains(' '))).ToList();
-                        foreach (DataContracts.Masters.DC_Keyword spacedkey in SpacedKeywords.OrderBy(o => o.Sequence))
-                        {
-                            var spacedAliases = spacedkey.Alias.Where(w => w.Value.Contains(' ')).OrderBy(o => o.Sequence).ThenByDescending(o => (o.NoOfHits + o.NewHits)).ToList();
-                            foreach (var alias in spacedAliases)
-                            {
-                                if (BaseValue.Contains(alias.Value.ToUpper()))
-                                {
-                                    BaseValue = BaseValue.Replace(alias.Value.ToUpper(), spacedkey.Keyword);
-                                    BaseValue = BaseValue.Replace("()", string.Empty);
-                                    BaseValue = BaseValue.Trim();
-
-                                    alias.NewHits += 1;
-
-                                    break;
-                                }
-                            }
-                        }
-
-                        //Split words and replace keywords
-                        string[] BaseValueWords = BaseValue.Split(' ');
-
-                        foreach (string word in BaseValueWords)
-                        {
-                            DataContracts.Masters.DC_Keyword keywordSearch = Keywords.Where(k => k.Alias.Any(a => a.Value.ToUpper() == word.ToUpper()) && k.Attribute == false).FirstOrDefault();
-
-                            if (keywordSearch != null)
-                            {
-                                BaseValue = BaseValue.Replace(word, keywordSearch.Keyword);
-                                var foundAlias = keywordSearch.Alias.Where(w => w.Value.ToUpper() == word.ToUpper()).FirstOrDefault();
-                                foundAlias.NoOfHits += 1;
-                            }
-
-                            keywordSearch = null;
+                            Address_Tx = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, hotel.FullAddress, new string[] { hotel.city, hotel.country });
                         }
 
                         #endregion
 
-                        #region POST TTFU
-                        //Replace UnNecessary chars to space
-                        BaseValue = BaseValue.Replace('<', ' ');
-                        BaseValue = BaseValue.Replace('>', ' ');
-                        BaseValue = BaseValue.Replace('?', ' ');
-                        BaseValue = BaseValue.Replace('#', ' ');
-                        BaseValue = BaseValue.Replace('!', ' ');
-                        BaseValue = BaseValue.Replace('@', ' ');
-                        BaseValue = BaseValue.Replace("&", " AND ");
-                        //BaseRoomName = BaseRoomName.Replace("+", " INCLUDING ");
-                        BaseValue = BaseValue.Replace('(', ' ');
-                        BaseValue = BaseValue.Replace(')', ' ');
-                        BaseValue = BaseValue.Replace('-', ' ');
-                        BaseValue = BaseValue.Replace(',', ' ');
-                        BaseValue = BaseValue.Replace('.', ' ');
-                        BaseValue = BaseValue.Replace('"', ' ');
-
-                        //Replace Multiple whitespaces into One Whitespace
-                        BaseValue = System.Text.RegularExpressions.Regex.Replace(BaseValue, @"\s{2,}", " ");
-
-                        //trim both end
-                        BaseValue = BaseValue.Trim();
-                        #endregion
-
-                        #endregion
-
-                        sql.Append("Update Accommodation set HotelName_Tx = '" + HotelName_Tx + "' ");
+                        sql.Append("Update Accommodation set HotelName_Tx = '" + HotelName_Tx.Replace("'", "''") + "' ");
                         sql.Append(",Latitude_Tx = '" + Latitude_Tx + "' ");
                         sql.Append(",Longitude_Tx = '" + Longitude_Tx + "' ");
-                        sql.Append(",Address_Tx = '" + BaseValue.Replace("'", "''") + "' ");
+                        sql.Append(",Address_Tx = '" + Address_Tx.Replace("'", "''") + "' ");
                         sql.Append("where Accommodation_Id = '" + hotel.Accommodation_Id + "'; ");
 
                         Counter++;
@@ -4612,7 +4500,9 @@ namespace DataLayer
                                 Counter = 0;
                                 sql.Clear();
                             }
-                            catch (Exception ex) { }
+                            catch (Exception ex)
+                            {
+                            }
                         }
                     }
 
