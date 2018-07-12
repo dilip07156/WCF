@@ -305,8 +305,8 @@ namespace OperationContracts
         IList<DataContracts.DC_Accomodation_Category_DDL> GetAccomodationRoomInfo_RoomCategory(string Accomodation_Id);
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "GetAccomodation/RoomInfo_RoomCategoryWithDetails/{Accomodation_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        IList<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails> GetAccomodationRoomInfo_RoomCategoryWithDetails(string Accomodation_Id);
+        [WebInvoke(Method = "GET", UriTemplate = "GetAccomodation/RoomInfo_RoomCategoryWithDetails/{Accomodation_Id}/{acco_SupplierRoomTypeMapping_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails> GetAccomodationRoomInfo_RoomCategoryWithDetails(string Accomodation_Id, string acco_SupplierRoomTypeMapping_Id);
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]

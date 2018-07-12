@@ -597,12 +597,12 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
-        public IList<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails> GetAccomodationRoomInfo_RoomCategoryWithDetails(string Accomodation_Id)
+        public IList<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails> GetAccomodationRoomInfo_RoomCategoryWithDetails(string Accomodation_Id, string acco_SupplierRoomTypeMapping_Id)
         {
             using (BL_Accomodation objBL = new BL_Accomodation())
             {
                 List<DC_Accomodation_Category_DDL_WithExtraDetails> searchResults = new List<DC_Accomodation_Category_DDL_WithExtraDetails>();
-                searchResults = objBL.GetAccomodationRoomInfo_RoomCategoryWithDetails(Guid.Parse(Accomodation_Id));
+                searchResults = objBL.GetAccomodationRoomInfo_RoomCategoryWithDetails(Guid.Parse(Accomodation_Id), Guid.Parse(acco_SupplierRoomTypeMapping_Id));
 
                 if (searchResults == null)
                 {

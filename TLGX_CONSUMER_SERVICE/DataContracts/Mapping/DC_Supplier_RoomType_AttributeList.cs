@@ -26,6 +26,8 @@ namespace DataContracts.Mapping
         [DataMember]
         public string SupplierRoomName { get; set; }
         [DataMember]
+        public string SupplierRoomDescription { get; set; }
+        [DataMember]
         public string TX_SupplierRoomName { get; set; }
         [DataMember]
         public string TX_SupplierRoomName_Stripped { get; set; }

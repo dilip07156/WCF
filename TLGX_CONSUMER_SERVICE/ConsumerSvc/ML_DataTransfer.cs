@@ -72,5 +72,14 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
+        public List<DataContracts.ML.DL_ML_DL_EntityStatus> GetMLDataApiTransferStatus()
+        {
+            using (BL_MLDataTransfer objBL = new BL_MLDataTransfer())
+            {
+                return objBL.GetMLDataApiTransferStatus();
+            }
+
+        }
     }
 }

@@ -211,6 +211,7 @@
     <Compile Include="Masters\DC_SupplierMarket.cs" />
     <Compile Include="Masters\DC_Supplier_ApiLocation.cs" />
     <Compile Include="Masters\DC_Supplier_ProductCategory.cs" />
+    <Compile Include="ML\DL_ML_DL_EntityStatus.cs" />
     <Compile Include="Pentaho\DC_PentahoApiCallLogDetails.cs" />
     <Compile Include="Pentaho\DC_PentahoApiCallLogDetails_RQ.cs" />
     <Compile Include="Pentaho\DC_PentahoApiCallResult.cs" />

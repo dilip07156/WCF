@@ -119,14 +119,8 @@ namespace DataLayer
                     using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
                     {
                         var distribution = context.DistributionLayerRefresh_Log.AsNoTracking().Where(x => x.Element == "Hotels" && x.Type == "Static").GroupBy(x => x.Supplier_Id).Select(g => g.OrderByDescending(x => x.Create_Date).FirstOrDefault()).ToList();
-
-                        var distinctFullPullSuppliers = context.SupplierEntity.AsNoTracking().Where(x => x.Parent_Id == null && x.Entity == "HotelInfo")
-                                                                                                .GroupBy(g => g.Supplier_Id)
-                                                                                                .Select(x => x.Key).ToList();
-
-                        var suppliers = context.Supplier.AsNoTracking().Where(w => distinctFullPullSuppliers.Any(x => x.Value == w.Supplier_Id)).ToList();
-
-                        var SupplierData = (from s in suppliers
+                        var supplier = (from s in context.Supplier select s).AsEnumerable();
+                        var SupplierData = (from s in supplier
                                             join b in distribution on s.Supplier_Id equals b.Supplier_Id into c
                                             from subset in c.DefaultIfEmpty()
                                             where s.StatusCode == "ACTIVE"
@@ -167,7 +161,7 @@ namespace DataLayer
 
                     if (iScheduledCount > 0)
                     {
-                        _msg.StatusMessage = _obj.Element + "sync has already been scheduled.";
+                        _msg.StatusMessage = GetMessageFromObjElemet(_obj.Element) + "sync has already been scheduled.";
                         _msg.StatusCode = ReadOnlyMessage.StatusCode.Information;
                         return _msg;
                     }
@@ -176,6 +170,7 @@ namespace DataLayer
                         Guid logid = Guid.NewGuid();
                         _obj.Logid = logid;
                         _msg = InsertDistributionLogNewEntryForMLDataAPI(_obj);
+                        _msg.StatusMessage = GetMessageFromObjElemet(_obj.Element) + _msg.StatusMessage;
                         string strURI = string.Empty;
                         string baseAddress = Convert.ToString(OperationContext.Current.Host.BaseAddresses[0]);
 
@@ -224,6 +219,26 @@ namespace DataLayer
                 throw;
             }
             return _msg;
+        }
+        private string GetMessageFromObjElemet(string Element)
+        {
+            string Entity = string.Empty;
+            string strElement = Element.Trim().ToUpper();
+            if (strElement == "MLDATAMASTERACCO")
+                Entity = "Master Accommodation Data";
+            else if (strElement == "MLDATAMASTERACCORMFACILITY")
+                Entity = "Master Accommodation Room Facility Data";
+            else if (strElement == "MLDATAMASTERACCORMINFO")
+                Entity = "Master Accommodation Room Info Data";
+            else if (strElement == "MLDATAROOMTYPEMATCHING")
+                Entity = "Room Type Matching Data";
+            else if (strElement == "MLDATASUPPLIERACCO")
+                Entity = "Supplier Accommodation Data";
+            else if (strElement == "MLDATASUPPLIERACCORM")
+                Entity = "Supplier Accommodation Room Data";
+            else if (strElement == "MLDATASUPPLIERACCORMEXTATTR")
+                Entity = "Supplier Accommodation Room Ext attribute Data";
+            return Entity;
         }
 
         private DC_Message InsertDistributionLogNewEntryForMLDataAPI(DC_Distribution_MLDataRQ obj)

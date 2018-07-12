@@ -110,6 +110,9 @@ namespace DataContracts.Mapping
         public string Accommodation_RoomInfo_Name { get; set; }
 
         [DataMember]
+        public string Accommodation_RoomInfo_Category { get; set; }
+
+        [DataMember]
         public List<DC_SupplierRoomTypeAttributes> RoomTypeAttributes { get; set; }
 
         [DataMember]

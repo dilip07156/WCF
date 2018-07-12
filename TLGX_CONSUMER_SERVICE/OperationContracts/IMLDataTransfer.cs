@@ -55,5 +55,12 @@ namespace OperationContracts
         [WebInvoke(Method = "GET", UriTemplate = "ML/Supplier/AccommodationRoomExtendedAttributes/{Logid}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         void ML_DataTransferSupplierAccommodationRoomExtendedAttributes(string Logid);
         #endregion
+
+        #region *** SupplierAccommodationRoomExtendedAttributes ***
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "ML/DataAPITransfer/status", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DataContracts.ML.DL_ML_DL_EntityStatus> GetMLDataApiTransferStatus();
+        #endregion
     }
 }

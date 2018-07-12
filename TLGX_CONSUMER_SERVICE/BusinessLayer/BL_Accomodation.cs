@@ -461,11 +461,11 @@ namespace BusinessLayer
             }
 
         }
-        public List<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails> GetAccomodationRoomInfo_RoomCategoryWithDetails(Guid Accomodation_Id)
+        public List<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails> GetAccomodationRoomInfo_RoomCategoryWithDetails(Guid Accomodation_Id, Guid acco_SupplierRoomTypeMapping_Id)
         {
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
             {
-                return obj.GetAccomodationRoomInfo_RoomCategoryWithDetails(Accomodation_Id);
+                return obj.GetAccomodationRoomInfo_RoomCategoryWithDetails(Accomodation_Id, acco_SupplierRoomTypeMapping_Id);
             }
 
         }

@@ -5736,6 +5736,8 @@ namespace DataContracts
         [DataMember]
         public string IsSomking { get; set; }
         [DataMember]
+        public string TLGXAccoRoomId { get; set; }
+        [DataMember]
         public double? MatchingScore { get; set; }
     }
 
@@ -5815,5 +5817,5 @@ namespace DataContracts
     }
 
 
-   
+
 }

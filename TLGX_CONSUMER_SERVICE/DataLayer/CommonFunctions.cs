@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace DataLayer
 {
@@ -251,6 +252,14 @@ namespace DataLayer
             text = System.Web.HttpUtility.HtmlDecode(text);
             #endregion
 
+            #region Remove Line endings
+            text = RemoveLineEndings(text);
+            #endregion
+
+            #region Remove Html Tags
+            text = RemoveAllHtmlTag(text);
+            #endregion
+
             #region To Upper
             text = text.ToUpper().Trim();
             #endregion
@@ -291,7 +300,8 @@ namespace DataLayer
             #endregion
 
             #region Replace Multiple whitespaces into One Whitespace
-            text = System.Text.RegularExpressions.Regex.Replace(text, @"\s{2,}", " ");
+            text = Regex.Replace(text, @"\s{2,}", " ");
+            text = Regex.Replace(text, @"\s+", " ");
             #endregion
 
             #region trim both end
@@ -634,7 +644,8 @@ namespace DataLayer
             #endregion
 
             #region Replace Multiple whitespaces into One Whitespace
-            text = System.Text.RegularExpressions.Regex.Replace(text, @"\s{2,}", " ");
+            text = Regex.Replace(text, @"\s{2,}", " ");
+            text = Regex.Replace(text, @"\s+", " ");
             #endregion
 
             #region trim whitespace both end
@@ -663,6 +674,40 @@ namespace DataLayer
             }
 
             return text;
+        }
+
+
+        /// <summary>
+        /// Remove all Html tag in a string
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public static string RemoveAllHtmlTag(string content)
+        {
+            string result = content;
+            result = Regex.Replace(result, "<.*?>", " ");
+            //result = Regex.Replace(result, "<(.|\n)*?>", " ");
+            result = Regex.Replace(result, @"\s+", " ");
+           
+            return result;
+        }
+
+        public static string RemoveLineEndings(this string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return value;
+            }
+            string lineSeparator = ((char)0x2028).ToString();
+            string paragraphSeparator = ((char)0x2029).ToString();
+
+            return value.Replace("\r\n", " ")
+                        .Replace("\n", " ")
+                        .Replace("\r", " ")
+                        .Replace("\f", " ")
+                        .Replace("\t", " ")
+                        .Replace(lineSeparator, " ")
+                        .Replace(paragraphSeparator, " ");
         }
 
         //public static void ErrorLog(Exception ex, string message)
