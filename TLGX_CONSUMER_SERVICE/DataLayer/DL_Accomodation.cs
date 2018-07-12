@@ -4440,7 +4440,7 @@ namespace DataLayer
                         Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
                     }
                     var search = (from a in context.Accommodations
-                                  where a.HotelName_Tx == null && a.IsActive == true && a.Edit_User.Trim() == "DataFromMongo"
+                                  where a.HotelName_Tx == null && a.IsActive == true 
                                   select new
                                   {
                                       a.Accommodation_Id,
