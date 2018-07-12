@@ -2261,7 +2261,7 @@ namespace DataLayer
                             isTypeMap = true;
                             ActTypes = ActTypes.Where(w => w.SupplierProductNameSubType == RQ.SupplierProductNameSubType);
                         }
-                        
+
                         if (!string.IsNullOrWhiteSpace(RQ.InterestType))
                         {
                             if (RQ.InterestType.Contains("UNMAPPED"))
@@ -2296,7 +2296,7 @@ namespace DataLayer
                         {
                             search = search.Where(w => w.Activity_Status == RQ.Activity_Status);
                         }
-                        
+
                     }
 
                     int total = (from a in search
@@ -2375,6 +2375,18 @@ namespace DataLayer
                                      Activity_Status_Edit_Date = a.Activity_Status_Edit_Date,
                                      Activity_Status_Edit_User = a.Activity_Status_Edit_User,
                                      Activity_StatusNotes = a.Activity_StatusNotes,
+                                     //TourType
+                                     Activity_TourType = a.TourType,
+                                     SupplierTourType = spm.SupplierTourType,
+
+
+                                     //TourType
+
+
+                                     // Area/Address
+                                     
+                                     SupplierLocation = spm.Location,
+
                                      Categories = (from ct in context.Activity_CategoriesType
                                                    where ct.Activity_Flavour_Id == a.Activity_Flavour_Id && ct.Activity_FlavourOptions_Id == null && ct.IsActive == true
                                                    select new DC_Activity_CategoryTypes
@@ -2574,11 +2586,11 @@ namespace DataLayer
                             {
                                 var subtype = context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == type.SysProdSubTypeId).Select(s => s).FirstOrDefault();
                                 //Adding Interest Type
-                                
+
                                 //var interestType =  context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == type.SysInterestTypeId).Select(s => s).FirstOrDefault();
                                 if (subtype != null)
                                 {
-                                    
+
                                     var prodtype = context.m_masterattributevalue.AsNoTracking().Where(w => w.MasterAttributeValue_Id == subtype.ParentAttributeValue_Id).Select(s => s).FirstOrDefault();
                                     if (prodtype != null)
                                     {
@@ -2636,7 +2648,7 @@ namespace DataLayer
                                                 if (InterstType != null)
                                                 {
                                                     _objCT.SystemInterestType = InterstType.AttributeValue;
-                                                    _objCT.SystemInterestType_ID = InterstType.MasterAttributeValue_Id; 
+                                                    _objCT.SystemInterestType_ID = InterstType.MasterAttributeValue_Id;
                                                 }
 
                                                 context.Activity_CategoriesType.Add(_objCT);
@@ -2670,6 +2682,12 @@ namespace DataLayer
                             //res.Street4 = RQ.Street4;
                             //res.Street5 = RQ.Street5;
                             //res.USP = RQ.USP;
+
+
+                            //TourType
+                            res.TourType = RQ.Activity_TourType;
+                            res.Location = RQ.Location;
+
 
                             if (context.SaveChanges() == 1)
                             {
@@ -2727,6 +2745,7 @@ namespace DataLayer
                         obj.USP = RQ.USP;
                         obj.Create_Date = DateTime.Now;
                         obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
+                        obj.TourType = RQ.Activity_TourType;
                         context.Activity_Flavour.Add(obj);
                         if (context.SaveChanges() == 1)
                         {

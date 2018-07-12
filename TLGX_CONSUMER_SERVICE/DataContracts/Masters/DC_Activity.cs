@@ -1463,6 +1463,14 @@ namespace DataContracts.Masters
         [DataMember]
         public DateTime? Activity_Status_Edit_Date { get; set; }
 
+        [DataMember]
+        public string Activity_TourType { get; set; }
+        [DataMember]
+        public string SupplierTourType { get; set; }
+
+
+        [DataMember]
+        public string SupplierLocation { get; set; }
 
         [DataMember]
         public List<DC_Activity_CategoryTypes> Categories { get; set; }
