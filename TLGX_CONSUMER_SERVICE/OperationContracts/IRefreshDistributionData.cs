@@ -51,6 +51,8 @@ namespace OperationContracts
         [WebInvoke(Method = "GET", UriTemplate = "Load/HotelMappingLite/{Hotel_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DC_Message SyncHotelMappingLite(string hotel_id);
 
+       
+
         #endregion
 
         #region Activity
@@ -119,6 +121,13 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "ML/SyncMLAPIData", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DC_Message SyncMLAPIData(DC_Distribution_MLDataRQ _obj);
+        #endregion
+
+        #region == Sync geographic Data
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Load/GeographyData", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_Message SyncGeographyData(DC_MongoDbSyncRQ RQ);
         #endregion
 
 

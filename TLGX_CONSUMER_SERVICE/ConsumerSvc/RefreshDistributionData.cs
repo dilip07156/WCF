@@ -165,5 +165,15 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
+        #region == Sync geographic Data
+        public DC_Message SyncGeographyData(DataContracts.DC_MongoDbSyncRQ RQ)
+        {
+            using (BusinessLayer.BL_RefreshDistributionData obj = new BL_RefreshDistributionData())
+            {
+                return obj.SyncGeographyData(RQ);
+            }
+        }
+        #endregion
     }
 }

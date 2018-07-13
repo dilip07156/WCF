@@ -47,6 +47,8 @@ namespace DataContracts
         public string Type { get; set; }
         [DataMember]
         public string Status { get; set; }
+        [DataMember]
+        public Guid Logid { get; set; }
 
     }
 }

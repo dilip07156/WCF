@@ -14,11 +14,11 @@ namespace DataLayer
     
     public partial class vwMappingStats
     {
+        public System.Guid RowId { get; set; }
         public Nullable<System.Guid> Supplier_Id { get; set; }
         public string SupplierName { get; set; }
         public string Status { get; set; }
         public string MappinFor { get; set; }
         public Nullable<int> totalcount { get; set; }
-        public Nullable<int> SuppliersCount { get; set; }
     }
 }

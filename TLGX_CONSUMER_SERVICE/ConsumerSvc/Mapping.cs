@@ -149,13 +149,7 @@ namespace ConsumerSvc
             }
         }
 
-        public IList<DataContracts.Mapping.DC_MappingStatsForSuppliers> GetMappingStatisticsForSuppliers(string PriorityId, string ProductCategory)
-        {
-            using (BL_Mapping objBL = new BL_Mapping())
-            {
-                return objBL.GetMappingStatisticsForSuppliers(PriorityId, ProductCategory);
-            }
-        }
+       
         #endregion
 
         #region roll_off_reports
