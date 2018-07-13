@@ -81,6 +81,7 @@
           <Property Name="gLocation" Type="nvarchar" MaxLength="255" />
           <Property Name="Area_Id" Type="uniqueidentifier" />
           <Property Name="Location_Id" Type="uniqueidentifier" />
+          <Property Name="TLGXAccoId" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Accommodation_ClassificationAttributes">
           <Key>
@@ -370,6 +371,7 @@
           <Property Name="Edit_User" Type="varchar" MaxLength="50" />
           <Property Name="Edit_Date" Type="datetime" />
           <Property Name="IsActive" Type="bit" />
+          <Property Name="TLGXAccoRoomId" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Accommodation_RouteInfo">
           <Key>
@@ -470,7 +472,7 @@
           <Property Name="SupplierProductId" Type="nvarchar" MaxLength="255" />
           <Property Name="Tx_StrippedName" Type="nvarchar" MaxLength="255" />
           <Property Name="Tx_ReorderedName" Type="nvarchar" MaxLength="255" />
-          <Property Name="MappingStatus" Type="nvarchar" MaxLength="10" />
+          <Property Name="MappingStatus" Type="nvarchar" MaxLength="100" />
           <Property Name="MapId" Type="int" />
           <Property Name="Accommodation_RoomInfo_Id" Type="uniqueidentifier" />
           <Property Name="stg_SupplierHotelRoomMapping_Id" Type="uniqueidentifier" />
@@ -809,6 +811,7 @@
           <Property Name="Activity_StatusNotes" Type="nvarchar(max)" />
           <Property Name="Activity_Status_Edit_User" Type="nvarchar" MaxLength="255" />
           <Property Name="Activity_Status_Edit_Date" Type="datetime" />
+          <Property Name="TourType" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="Activity_FlavourOptions">
           <Key>
@@ -1498,7 +1501,7 @@
           <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="supplier_id" Type="uniqueidentifier" />
           <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
-          <Property Name="Status" Type="nvarchar" MaxLength="10" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="MappingFor" Type="nvarchar" MaxLength="10" />
           <Property Name="totalcount" Type="int" />
           <Property Name="SuppliersCount" Type="int" />
@@ -1513,7 +1516,7 @@
           <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
           <Property Name="Username" Type="nvarchar" MaxLength="255" />
           <Property Name="Sequence" Type="int" />
-          <Property Name="Status" Type="nvarchar" MaxLength="10" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="MappingFor" Type="nvarchar" MaxLength="10" />
           <Property Name="Totalcount" Type="bigint" />
           <Property Name="EditDate" Type="date" />
@@ -2691,22 +2694,20 @@
           <Property Name="Edit_Date" Type="datetime" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwMappingStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'TLGX_MAPPING.dbo.vwMappingStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwMappingStats">
           <Key>
-            <PropertyRef Name="SupplierName" />
-            <PropertyRef Name="Status" />
-            <PropertyRef Name="MappinFor" />
+            <PropertyRef Name="RowId" />
           </Key>
+          <Property Name="RowId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Supplier_Id" Type="uniqueidentifier" />
-          <Property Name="SupplierName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="MappinFor" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="totalcount" Type="int" />
-          <Property Name="SuppliersCount" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwUserwisemappedStats">
           <Key>
             <PropertyRef Name="Sequence" />
@@ -2931,12 +2932,12 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySet Name="ZoneProduct_Mapping" EntityType="Self.ZoneProduct_Mapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="vwMappingStats" EntityType="Self.vwMappingStats" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
+    [vwMappingStats].[RowId] AS [RowId], 
     [vwMappingStats].[Supplier_Id] AS [Supplier_Id], 
     [vwMappingStats].[SupplierName] AS [SupplierName], 
     [vwMappingStats].[Status] AS [Status], 
     [vwMappingStats].[MappinFor] AS [MappinFor], 
-    [vwMappingStats].[totalcount] AS [totalcount], 
-    [vwMappingStats].[SuppliersCount] AS [SuppliersCount]
+    [vwMappingStats].[totalcount] AS [totalcount]
     FROM [dbo].[vwMappingStats] AS [vwMappingStats]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="vwUserwisemappedStats" EntityType="Self.vwUserwisemappedStats" store:Type="Views" store:Schema="dbo">
@@ -3316,6 +3317,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="IsActive" Type="Boolean" />
+          <Property Name="TLGXAccoRoomId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Accommodation_RouteInfo">
           <Key>
@@ -3845,6 +3847,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="gLocation" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Area_Id" Type="Guid" />
           <Property Name="Location_Id" Type="Guid" />
+          <Property Name="TLGXAccoId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="GoogleGeoCode">
           <Key>
@@ -4494,6 +4497,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Activity_Status_Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Activity_Status_Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="InterestType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TourType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Activity_Itinerary">
           <Key>
@@ -5336,7 +5340,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="supplier_id" Type="Guid" />
           <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MappingFor" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="totalcount" Type="Int32" />
           <Property Name="SuppliersCount" Type="Int32" />
@@ -5351,7 +5355,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Sequence" Type="Int32" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MappingFor" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Totalcount" Type="Int32" />
           <Property Name="EditDate" Type="DateTime" Precision="0" />
@@ -5459,7 +5463,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <Property Name="SupplierProductId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Tx_StrippedName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Tx_ReorderedName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="MappingStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MappingStatus" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="MapId" Type="Int32" />
           <Property Name="Accommodation_RoomInfo_Id" Type="Guid" />
           <Property Name="stg_SupplierHotelRoomMapping_Id" Type="Guid" />
@@ -5871,16 +5875,14 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
         </EntityType>
         <EntityType Name="vwMappingStats">
           <Key>
-            <PropertyRef Name="SupplierName" />
-            <PropertyRef Name="Status" />
-            <PropertyRef Name="MappinFor" />
+            <PropertyRef Name="RowId" />
           </Key>
+          <Property Name="RowId" Type="Guid" Nullable="false" />
           <Property Name="Supplier_Id" Type="Guid" />
-          <Property Name="SupplierName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="totalcount" Type="Int32" />
-          <Property Name="SuppliersCount" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -6045,6 +6047,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodation_RoomInfo">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_RoomInfo">
               <MappingFragment StoreEntitySet="Accommodation_RoomInfo">
+                <ScalarProperty Name="TLGXAccoRoomId" ColumnName="TLGXAccoRoomId" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
                 <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
@@ -6524,6 +6527,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Accommodations">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation">
               <MappingFragment StoreEntitySet="Accommodation">
+                <ScalarProperty Name="TLGXAccoId" ColumnName="TLGXAccoId" />
                 <ScalarProperty Name="Location_Id" ColumnName="Location_Id" />
                 <ScalarProperty Name="Area_Id" ColumnName="Area_Id" />
                 <ScalarProperty Name="gLocation" ColumnName="gLocation" />
@@ -7233,6 +7237,7 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="Activity_Flavour">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_Flavour">
               <MappingFragment StoreEntitySet="Activity_Flavour">
+                <ScalarProperty Name="TourType" ColumnName="TourType" />
                 <ScalarProperty Name="InterestType" ColumnName="InterestType" />
                 <ScalarProperty Name="Activity_Status_Edit_Date" ColumnName="Activity_Status_Edit_Date" />
                 <ScalarProperty Name="Activity_Status_Edit_User" ColumnName="Activity_Status_Edit_User" />
@@ -8721,12 +8726,12 @@ warning 6002: The table/view 'TLGX_MAPPING_DEV.dbo.vwUserwisemappedStats' does n
           <EntitySetMapping Name="vwMappingStats">
             <EntityTypeMapping TypeName="ConsumerModel.vwMappingStats">
               <MappingFragment StoreEntitySet="vwMappingStats">
-                <ScalarProperty Name="SuppliersCount" ColumnName="SuppliersCount" />
                 <ScalarProperty Name="totalcount" ColumnName="totalcount" />
                 <ScalarProperty Name="MappinFor" ColumnName="MappinFor" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="RowId" ColumnName="RowId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -355,19 +355,7 @@ namespace BusinessLayer
                 return false;
         }
 
-        public List<DataContracts.Mapping.DC_MappingStatsForSuppliers> GetMappingStatisticsForSuppliers(string PriorityId, string ProductCategory)
-        {
-            int iPriorityId;
-
-            if (!int.TryParse(PriorityId, out iPriorityId))
-            {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
-            }
-            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
-            {
-                return objBL.GetMappingStatisticsForSuppliers(iPriorityId, ProductCategory);
-            }
-        }
+        
         #endregion
         #region roll_off_reports
         public List<DataContracts.Mapping.DC_RollOffReportRule> getStatisticforRuleReport(DataContracts.Mapping.DC_RollOFParams param)

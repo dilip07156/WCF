@@ -86,5 +86,6 @@ namespace DataLayer
         public string gLocation { get; set; }
         public Nullable<System.Guid> Area_Id { get; set; }
         public Nullable<System.Guid> Location_Id { get; set; }
+        public string TLGXAccoId { get; set; }
     }
 }

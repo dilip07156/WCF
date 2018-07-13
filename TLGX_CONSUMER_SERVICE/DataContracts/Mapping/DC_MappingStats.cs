@@ -73,6 +73,9 @@ namespace DataContracts.Mapping
                 _NextRun = value;
             }
         }
+
+        [DataMember]
+        public List<DC_MappingStatsForSuppliers> MappingStatsForSuppliers { get; set; }
     }
 
    
