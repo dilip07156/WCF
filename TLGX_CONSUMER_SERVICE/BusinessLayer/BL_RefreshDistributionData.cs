@@ -259,5 +259,15 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        #region == Sync geographic Data
+        public DC_Message SyncGeographyData(DataContracts.DC_MongoDbSyncRQ RQ)
+        {
+            using (DataLayer.DL_MongoPush obj = new DataLayer.DL_MongoPush())
+            {
+                return obj.SyncGeographyData(RQ);
+            }
+        }
+        #endregion
     }
 }
