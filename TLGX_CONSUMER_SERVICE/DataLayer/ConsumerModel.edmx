@@ -2698,11 +2698,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwMappingStats' does not have a p
         <EntityType Name="vwMappingStats">
           <Key>
             <PropertyRef Name="RowId" />
-            <PropertyRef Name="Status" />
-            <PropertyRef Name="MappinFor" />
           </Key>
           <Property Name="RowId" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="RowId" Type="uniqueidentifier" />
           <Property Name="Supplier_Id" Type="uniqueidentifier" />
           <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="100" Nullable="false" />
@@ -5878,10 +5875,9 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
         </EntityType>
         <EntityType Name="vwMappingStats">
           <Key>
-            <PropertyRef Name="SupplierName" />
-            <PropertyRef Name="Status" />
-            <PropertyRef Name="MappinFor" />
+            <PropertyRef Name="RowId" />
           </Key>
+          <Property Name="RowId" Type="Guid" Nullable="false" />
           <Property Name="Supplier_Id" Type="Guid" />
           <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />

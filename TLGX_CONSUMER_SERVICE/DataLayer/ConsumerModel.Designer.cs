@@ -1,5 +1,4 @@
-﻿// T4 code generation is enabled for model 'D:\Project\TLGX_Consumer_WCF\TLGX_CONSUMER_SERVICE\DataLayer\ConsumerModel.edmx'. 
-// T4 code generation is enabled for model 'D:\Vishal Project Data\tlgx_consumer_wcf\TLGX_CONSUMER_SERVICE\DataLayer\ConsumerModel.edmx'. 
+﻿// T4 code generation is enabled for model 'D:\Projects\tlgx_consumer_wcf\TLGX_CONSUMER_SERVICE\DataLayer\ConsumerModel.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.
