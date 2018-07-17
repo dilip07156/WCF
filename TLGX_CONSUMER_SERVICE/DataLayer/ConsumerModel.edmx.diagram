@@ -84,10 +84,10 @@
         <EntityTypeShape EntityType="ConsumerModel.GoogleGeoCode" Width="1.5" PointX="0.75" PointY="0.75" />
       </Diagram>
       <Diagram DiagramId="dd7305d7f2f340ddb587fd72c40ae548" Name="Mapping Static Data" >
-        <EntityTypeShape EntityType="ConsumerModel.vwUserwisemappedStat" Width="1.5" PointX="3.375" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.Dashboard_MappingStat" Width="1.5" PointX="0.75" PointY="3.75" />
         <EntityTypeShape EntityType="ConsumerModel.Dashboard_UserwiseMappedStat" Width="1.5" PointX="3.375" PointY="4.75" />
         <EntityTypeShape EntityType="ConsumerModel.vwMappingStats" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.vwUserwisemappedStats" Width="1.5" PointX="3.375" PointY="0.75" />
       </Diagram>
       <Diagram DiagramId="33089e75a83142f0a8f1044a69f7561b" Name="Schedules" >
         <EntityTypeShape EntityType="ConsumerModel.m_FrequencyType" Width="1.5" PointX="0.75" PointY="0.75" />
@@ -98,7 +98,7 @@
         <EntityTypeShape EntityType="ConsumerModel.Supplier_Market" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.Supplier_ProductCategory" Width="1.5" PointX="4.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.Supplier_APILocation" Width="1.5" PointX="0.75" PointY="4.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Supplier" Width="1.5" PointX="0.5" PointY="0.625" />
+        <EntityTypeShape EntityType="ConsumerModel.Supplier" Width="1.5" PointX="3.375" PointY="4.75" />
       </Diagram>
       <Diagram DiagramId="2648cc592ec2449e869aa56c84772c33" Name="Upload Static Data" >
         <EntityTypeShape EntityType="ConsumerModel.m_SupplierImportAttributes" Width="1.5" PointX="0.75" PointY="0.75" />

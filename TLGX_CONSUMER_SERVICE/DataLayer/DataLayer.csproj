@@ -595,7 +595,7 @@
     <Compile Include="vwMappingStats.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="vwUserwisemappedStat.cs">
+    <Compile Include="vwUserwisemappedStats.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ZoneCity_Mapping.cs">

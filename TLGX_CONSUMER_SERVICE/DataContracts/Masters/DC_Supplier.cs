@@ -23,6 +23,8 @@ namespace DataContracts.Masters
         int _TotalRecords;
         int? _Priority;
         Guid? _File_Id;
+        [DataMember]
+        public bool? IsFullPull { get; set; }
 
         [DataMember]
         public int? CurrentBatch { get; set; }
@@ -419,5 +421,7 @@ namespace DataContracts.Masters
         public string Code { get; set; }
         [DataMember]
         public int Priority { get; set; }
+        [DataMember]
+        public bool? IsFullPull { get; set; }
     }
 }
