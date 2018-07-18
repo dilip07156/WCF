@@ -87,7 +87,6 @@ namespace DataLayer
         public virtual DbSet<Place> Places { get; set; }
         public virtual DbSet<SupplierImportFile_Progress> SupplierImportFile_Progress { get; set; }
         public virtual DbSet<SupplierImportFile_VerboseLog> SupplierImportFile_VerboseLog { get; set; }
-        public virtual DbSet<vwUserwisemappedStat> vwUserwisemappedStats { get; set; }
         public virtual DbSet<SupplierImportFile_Statistics> SupplierImportFile_Statistics { get; set; }
         public virtual DbSet<Accommodation_SupplierRoomTypeAttributes> Accommodation_SupplierRoomTypeAttributes { get; set; }
         public virtual DbSet<stg_SupplierActivityMapping> stg_SupplierActivityMapping { get; set; }
@@ -159,6 +158,7 @@ namespace DataLayer
         public virtual DbSet<Stg_Kafka> Stg_Kafka { get; set; }
         public virtual DbSet<DistributionLayerRefresh_Log> DistributionLayerRefresh_Log { get; set; }
         public virtual DbSet<vwMappingStats> vwMappingStats { get; set; }
+        public virtual DbSet<vwUserwisemappedStats> vwUserwisemappedStats { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

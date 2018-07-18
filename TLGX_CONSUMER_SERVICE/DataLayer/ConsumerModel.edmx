@@ -2697,6 +2697,8 @@
 warning 6002: The table/view 'TLGX_MAPPING.dbo.vwMappingStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwMappingStats">
           <Key>
+            
+            
             <PropertyRef Name="RowId" />
           </Key>
           <Property Name="RowId" Type="uniqueidentifier" Nullable="false" />
@@ -2710,16 +2712,12 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwMappingStats' does not have a p
 warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwUserwisemappedStats">
           <Key>
-            <PropertyRef Name="Sequence" />
-            <PropertyRef Name="Status" />
-            <PropertyRef Name="MappinFor" />
+            <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="uniqueidentifier" />
-          <Property Name="supplier_id" Type="uniqueidentifier" />
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="supplier_id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
           <Property Name="Username" Type="nvarchar" MaxLength="255" />
-          <Property Name="Sequence" Type="int" Nullable="false" />
-          <Property Name="Status" Type="varchar" MaxLength="6" Nullable="false" />
           <Property Name="MappinFor" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="totalcount" Type="int" />
           <Property Name="EditDate" Type="date" />
@@ -2946,8 +2944,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
     [vwUserwisemappedStats].[supplier_id] AS [supplier_id], 
     [vwUserwisemappedStats].[SupplierName] AS [SupplierName], 
     [vwUserwisemappedStats].[Username] AS [Username], 
-    [vwUserwisemappedStats].[Sequence] AS [Sequence], 
-    [vwUserwisemappedStats].[Status] AS [Status], 
     [vwUserwisemappedStats].[MappinFor] AS [MappinFor], 
     [vwUserwisemappedStats].[totalcount] AS [totalcount], 
     [vwUserwisemappedStats].[EditDate] AS [EditDate]
@@ -3050,7 +3046,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="Places" EntityType="ConsumerModel.Place" />
           <EntitySet Name="SupplierImportFile_Progress" EntityType="ConsumerModel.SupplierImportFile_Progress" />
           <EntitySet Name="SupplierImportFile_VerboseLog" EntityType="ConsumerModel.SupplierImportFile_VerboseLog" />
-          <EntitySet Name="vwUserwisemappedStats" EntityType="ConsumerModel.vwUserwisemappedStat" />
           <EntitySet Name="SupplierImportFile_Statistics" EntityType="ConsumerModel.SupplierImportFile_Statistics" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
           <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />
@@ -3134,6 +3129,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="Stg_Kafka" EntityType="ConsumerModel.Stg_Kafka" />
           <EntitySet Name="DistributionLayerRefresh_Log" EntityType="ConsumerModel.DistributionLayerRefresh_Log" />
           <EntitySet Name="vwMappingStats" EntityType="ConsumerModel.vwMappingStats" />
+          <EntitySet Name="vwUserwisemappedStats" EntityType="ConsumerModel.vwUserwisemappedStats" />
       
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
@@ -4260,22 +4256,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Step" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TimeStamp" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="vwUserwisemappedStat">
-          <Key>
-            <PropertyRef Name="Sequence" />
-            <PropertyRef Name="Status" />
-            <PropertyRef Name="MappinFor" />
-          </Key>
-          <Property Name="ID" Type="Guid" />
-          <Property Name="supplier_id" Type="Guid" />
-          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Sequence" Type="Int32" Nullable="false" />
-          <Property Name="Status" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
-          <Property Name="totalcount" Type="Int32" />
-          <Property Name="EditDate" Type="DateTime" Precision="0" />
         </EntityType>
         <EntityType Name="SupplierImportFile_Statistics">
           <Key>
@@ -5884,6 +5864,18 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="totalcount" Type="Int32" />
         </EntityType>
+        <EntityType Name="vwUserwisemappedStats">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="supplier_id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="totalcount" Type="Int32" />
+          <Property Name="EditDate" Type="DateTime" Precision="0" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7038,21 +7030,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
                 <ScalarProperty Name="Step" ColumnName="Step" />
                 <ScalarProperty Name="SupplierImportFile_Id" ColumnName="SupplierImportFile_Id" />
                 <ScalarProperty Name="SupplierImportFile_VerboseLog_Id" ColumnName="SupplierImportFile_VerboseLog_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="vwUserwisemappedStats">
-            <EntityTypeMapping TypeName="ConsumerModel.vwUserwisemappedStat">
-              <MappingFragment StoreEntitySet="vwUserwisemappedStats">
-                <ScalarProperty Name="EditDate" ColumnName="EditDate" />
-                <ScalarProperty Name="totalcount" ColumnName="totalcount" />
-                <ScalarProperty Name="MappinFor" ColumnName="MappinFor" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
-                <ScalarProperty Name="supplier_id" ColumnName="supplier_id" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8732,6 +8709,19 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
                 <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
                 <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
                 <ScalarProperty Name="RowId" ColumnName="RowId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwUserwisemappedStats">
+            <EntityTypeMapping TypeName="ConsumerModel.vwUserwisemappedStats">
+              <MappingFragment StoreEntitySet="vwUserwisemappedStats">
+                <ScalarProperty Name="EditDate" ColumnName="EditDate" />
+                <ScalarProperty Name="totalcount" ColumnName="totalcount" />
+                <ScalarProperty Name="MappinFor" ColumnName="MappinFor" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="supplier_id" ColumnName="supplier_id" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
