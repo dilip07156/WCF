@@ -134,7 +134,6 @@ namespace DataLayer
         public virtual DbSet<SitemapInRole> SitemapInRoles { get; set; }
         public virtual DbSet<Activity_DaysOfOperation> Activity_DaysOfOperation { get; set; }
         public virtual DbSet<Activity_DaysOfWeek> Activity_DaysOfWeek { get; set; }
-        public virtual DbSet<Supplier> Supplier { get; set; }
         public virtual DbSet<Activity_CategoriesType> Activity_CategoriesType { get; set; }
         public virtual DbSet<Dashboard_MappingStat> Dashboard_MappingStat { get; set; }
         public virtual DbSet<Dashboard_UserwiseMappedStat> Dashboard_UserwiseMappedStat { get; set; }
@@ -158,6 +157,7 @@ namespace DataLayer
         public virtual DbSet<Stg_Kafka> Stg_Kafka { get; set; }
         public virtual DbSet<DistributionLayerRefresh_Log> DistributionLayerRefresh_Log { get; set; }
         public virtual DbSet<vwMappingStats> vwMappingStats { get; set; }
+        public virtual DbSet<Supplier> Supplier { get; set; }
         public virtual DbSet<vwUserwisemappedStats> vwUserwisemappedStats { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)

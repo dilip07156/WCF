@@ -123,7 +123,7 @@ namespace DataLayer
                         var SupplierData = (from s in supplier
                                             join b in distribution on s.Supplier_Id equals b.Supplier_Id into c
                                             from subset in c.DefaultIfEmpty()
-                                            where s.StatusCode == "ACTIVE"
+                                            where s.StatusCode == "ACTIVE" && s.IsFullPull== true
                                             orderby s.Name ascending
                                             select new DC_SupplierEntity
                                             {

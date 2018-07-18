@@ -2499,7 +2499,8 @@ namespace DataLayer
                                      ProductCategory = string.Empty, //sup2.AttributeValue,
                                      CategorySubType = string.Empty, //sup3.AttributeValue,
                                      Priority = a.Priority,
-                                     TotalRecords = total
+                                     TotalRecords = total,
+                                     IsFullPull= a.IsFullPull
                                  };
 
                     return result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
@@ -2591,7 +2592,8 @@ namespace DataLayer
                                      Supplier_Id = a.Supplier_Id,
                                      Name = a.Name,
                                      Code = a.Code,
-                                     Priority = a.Priority ?? 0
+                                     Priority = a.Priority ?? 0,
+                                     IsFullPull= a.IsFullPull
                                  };
 
                     return result.OrderBy(p => p.Name).ToList();
@@ -2774,6 +2776,7 @@ namespace DataLayer
                         result.SupplierOwner = _objSup.SupplierOwner;
                         result.SupplierType = _objSup.SupplierType;
                         result.Priority = _objSup.Priority;
+                        result.IsFullPull = _objSup.IsFullPull;
 
                         if (context.SaveChanges() == 1)
                         {
@@ -2802,6 +2805,7 @@ namespace DataLayer
                         SupplierType = _objSup.SupplierType,
                         StatusCode = _objSup.StatusCode,
                         Priority = _objSup.Priority,
+                        IsFullPull=_objSup.IsFullPull
                     };
 
                     context.Supplier.Add(_obj);
