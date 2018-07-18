@@ -10558,84 +10558,67 @@ namespace DataLayer
 
 
                     newmapstats.SupplierId = parm.SupplierID;
-                    var unmapData = (from s in context.Dashboard_MappingStat.AsQueryable()
-                         .Where(cat => (cat.Batch == 1) && (cat.Status == "UNMAPPED" || cat.Status == "REVIEW"))
-                                     select s);
 
-                    var search = (from p in context.Dashboard_UserwiseMappedStat.AsQueryable()
-                                  where p.SupplierName != null && p.Batch == 1 && (p.EditDate >= parm.Fromdate && p.EditDate <= parm.ToDate)
-                                  group p by new { p.Supplier_id, p.Username, p.MappingFor, p.Sequence, p.Status, p.SupplierName } into g
+                    var unmapData = (from s in context.vwMappingStats
+                                     where s.Status == "UNMAPPED" || s.Status == "REVIEW"
+                                     select s
+                                     ).ToList();
+
+                    var MappedStats = (from p in context.vwUserwisemappedStats
+                                  where p.SupplierName != null  && (p.EditDate >= parm.Fromdate && p.EditDate <= parm.ToDate)
+                                  group p by new { p.supplier_id, p.Username, p.MappinFor, p.SupplierName } into g
                                   select new DC_AllSupplierMappedData
                                   {
-                                      supplierid = g.Key.Supplier_id,
+                                      supplierid = g.Key.supplier_id,
                                       SupplierName = g.Key.SupplierName,
                                       Username = g.Key.Username,
-                                      totalcount = (g.Sum(x => x.Totalcount) ?? 0),
-                                      MappinFor = g.Key.MappingFor,
-                                      Sequence = g.Key.Sequence ?? 0,
-                                      Status = g.Key.Status
-                                  });
+                                      totalcount = (g.Sum(x => x.totalcount) ?? 0),
+                                      MappinFor = g.Key.MappinFor
+                                  }).ToList();
+
                     if (parm.SupplierID != Guid.Empty)
                     {
-                        searchResult.AddRange(search.Where(w => w.supplierid == parm.SupplierID).ToList());
+                       MappedStats = MappedStats.Where(w => w.supplierid == parm.SupplierID).ToList();
+
                         unmapData = (from s in unmapData
-                                     where s.supplier_id == parm.SupplierID
-                                     select s);
+                                     where s.Supplier_Id == parm.SupplierID
+                                     select s).ToList();
+
+                        newmapstats.SupplierName = (from s in MappedStats where s.supplierid == parm.SupplierID select s.SupplierName).FirstOrDefault();
                     }
                     else if (parm.SupplierID == Guid.Empty)
                     {
-                        if (parm.Priority > 0)
-                        {
-                            searchResult.AddRange((from t1 in search.ToList()
-                                                   join t2 in context.Supplier on t1.supplierid equals t2.Supplier_Id
-                                                   where t2.Priority == parm.Priority
-                                                   group t1 by new { t1.Username, t1.MappinFor, t1.Sequence, t1.Status, } into g
-                                                   select new DC_AllSupplierMappedData
-                                                   {
-                                                       supplierid = Guid.Empty,
-                                                       SupplierName = "ALL",
-                                                       Username = g.Key.Username,
-                                                       totalcount = (g.Sum(x => x.totalcount) ?? 0),
-                                                       MappinFor = g.Key.MappinFor,
-                                                       Sequence = g.Key.Sequence,
-                                                       Status = g.Key.Status
-                                                   }).ToList());
-                            unmapData = (from t in unmapData
-                                         join t2 in context.Supplier on t.supplier_id equals t2.Supplier_Id
-                                         where t2.Priority == parm.Priority
-                                         select t);
-                        }
-                        else if (parm.Priority == 0)
-                        {
-                            searchResult.AddRange(search.Where(w => w.SupplierName == "ALL").ToList());
-                            unmapData = (from t in unmapData
-                                         where t.supplier_id == Guid.Empty
-                                         select t);
-                        }
-                    }
-                    var res_supplierName = (from s in searchResult where s.supplierid == parm.SupplierID select s).FirstOrDefault();
-                    if (res_supplierName != null)
-                        newmapstats.SupplierName = res_supplierName.SupplierName;
+                        var suppliermaster = (from s in context.Supplier
+                                             where (s.StatusCode.ToUpper().Trim() == "ACTIVE") && (parm.Priority > 0 ? s.Priority == parm.Priority : s.Priority == s.Priority)
+                                             select s).ToList();
+                        
+                        MappedStats = (from m in MappedStats
+                                       join s in suppliermaster on m.supplierid equals s.Supplier_Id
+                                       group m by new { m.MappinFor, m.Username } into g
+                                       select new DC_AllSupplierMappedData
+                                       {
+                                           Username = g.Key.Username,
+                                           SupplierName = "ALL",
+                                           supplierid = Guid.Empty,
+                                           MappinFor = g.Key.MappinFor,
+                                           totalcount = g.Sum(x => x.totalcount) ?? 0
+                                       }).ToList();
 
-                    var MapForList = "City,Country,Product,Activity,HotelRoom".Split(','); //(from s in search select s.MappinFor).ToList().Distinct();
+                        newmapstats.SupplierName = "ALL";
+                    }
+                    
+                    var MapForList = (from s in MappedStats select s.MappinFor).ToList().Distinct();
 
                     foreach (var mapfor in MapForList)
                     {
                         DataContracts.Mapping.DC_VelocityMappingStatsFor newmapstatsfor = new DataContracts.Mapping.DC_VelocityMappingStatsFor();
 
                         newmapstatsfor.MappingFor = mapfor;
-                        var unMappedDataCount = (from s in unmapData
-                                                 where s.MappingFor == mapfor
-                                                 select s.totalcount).Sum();
-
-                        var totalmappeddata = (from s in searchResult
-                                               where s.MappinFor == mapfor && s.Username == "Total" && s.Status == "Total"
-                                               select s.totalcount).FirstOrDefault();
-
-                        if (unMappedDataCount != null)
-                        {
-                            newmapstatsfor.Unmappeddata = unMappedDataCount.Value;
-                            if (unMappedDataCount.Value > 0 && totalmappeddata > 0)
+                        newmapstatsfor.Unmappeddata = unmapData.Where(w=> w.MappinFor == mapfor).Sum(s => s.totalcount) ?? 0;
+                        
+                        int totalmappeddata = MappedStats.Where(w => w.MappinFor == mapfor).Sum(s => s.totalcount) ?? 0;
+                       
+                            if (newmapstatsfor.Unmappeddata > 0 && totalmappeddata > 0)
                             {
                                 double days;
                                 if (parm.Fromdate == parm.ToDate)
@@ -10643,29 +10626,25 @@ namespace DataLayer
                                 else
                                     days = (Convert.ToDateTime(parm.ToDate) - Convert.ToDateTime(parm.Fromdate)).TotalDays;
                                 var perday = (totalmappeddata / days);
-                                newmapstatsfor.Estimate = Convert.ToInt32(unMappedDataCount.Value / perday);
+                                newmapstatsfor.Estimate = Convert.ToInt32(newmapstatsfor.Unmappeddata / perday);
                             }
                             else
                             {
                                 newmapstatsfor.Estimate = 0;
                             }
-                        }
-                        else
-                        {
-                            newmapstatsfor.Unmappeddata = 0;
-                            newmapstatsfor.Estimate = 0;
-                        }
+                        
                         if (totalmappeddata > 0)
                         {
-                            newmapstatsfor.MappingData = (from s in searchResult
+                            newmapstatsfor.MappingData = (from s in MappedStats
                                                           where s.MappinFor == mapfor
-                                                          orderby s.MappinFor, s.Sequence
-                                                          select new DataContracts.Mapping.DC_VelocityMappingdata { Username = s.Username, Sequence = s.Sequence, Totalcount = (s.totalcount ?? 0) }).ToList();
+                                                          orderby s.Username
+                                                          group s by new { s.Username } into g
+                                                          select new DataContracts.Mapping.DC_VelocityMappingdata
+                                                          { Username = g.Key.Username, Totalcount = g.Sum(x=>x.totalcount)??0 }).ToList();
                         }
 
                         newmapstatsforList.Add(newmapstatsfor);
                     }
-
                     newmapstats.MappingStatsFor = newmapstatsforList;
                     returnObj.Add(newmapstats);
                     return returnObj;
