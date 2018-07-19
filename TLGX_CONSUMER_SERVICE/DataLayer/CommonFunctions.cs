@@ -31,12 +31,12 @@ namespace DataLayer
             return new string(arr);
         }
 
-        public static string GetDigits(string str, int lenghth)
+        public static string GetDigits(string str, int length)
         {
             str = RemoveSpecialCharactersAndAlphabates(str);
             int len = str.Length;
-            if (len > lenghth)
-                return str.Substring(len - lenghth);
+            if (len > length)
+                return str.Substring(len - length);
             else
                 return str;
         }

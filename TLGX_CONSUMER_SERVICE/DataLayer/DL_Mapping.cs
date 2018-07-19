@@ -243,30 +243,29 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var AccoMappingIds = (from a in context.Accommodation_ProductMapping
-                                          where a.Accommodation_Id == obj.Accommodation_From_Id
-                                          select new DataContracts.Mapping.DC_Accomodation_ProductMapping
-                                          {
-                                              Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id
-                                          });
-                    foreach (DataContracts.Mapping.DC_Accomodation_ProductMapping AccoMappingId in AccoMappingIds)
+                    var AccoMappingIds = context.Accommodation_ProductMapping.Where(w => w.Accommodation_Id == obj.Accommodation_From_Id).Select(s => s.Accommodation_ProductMapping_Id).ToList();
+                    foreach (var AccoMappingId in AccoMappingIds)
                     {
-                        using (ConsumerEntities context1 = new ConsumerEntities())
+                        Accommodation_ProductMapping apm = context.Accommodation_ProductMapping.Attach(new Accommodation_ProductMapping
                         {
-                            var curRecord = (from a in context1.Accommodation_ProductMapping
-                                             where a.Accommodation_ProductMapping_Id == AccoMappingId.Accommodation_ProductMapping_Id
-                                             select a).FirstOrDefault();
-                            if (curRecord != null)
-                            {
-                                curRecord.Accommodation_Id = obj.Accommodation_To_Id;
-                                curRecord.Edit_Date = obj.Edit_Date;
-                                curRecord.Edit_User = obj.Edit_User;
-                                curRecord.Remarks = obj.Remarks;
-                                context1.SaveChanges();
-                            }
-                        }
+                            Accommodation_ProductMapping_Id = AccoMappingId
+                        });
+
+                        apm.Accommodation_Id = obj.Accommodation_To_Id;
+                        apm.Edit_Date = obj.Edit_Date;
+                        apm.Edit_User = obj.Edit_User;
+                        apm.Remarks = obj.Remarks;
+
+                        context.Entry<Accommodation_ProductMapping>(apm).Property(ee => ee.Accommodation_Id).IsModified = true;
+                        context.Entry<Accommodation_ProductMapping>(apm).Property(ee => ee.Edit_Date).IsModified = true;
+                        context.Entry<Accommodation_ProductMapping>(apm).Property(ee => ee.Edit_User).IsModified = true;
+                        context.Entry<Accommodation_ProductMapping>(apm).Property(ee => ee.Remarks).IsModified = true;
+
+                        context.Configuration.ValidateOnSaveEnabled = false;
+
+                        context.SaveChanges();
                     }
-                    context.SaveChanges();
+                    
                 }
             }
             catch (Exception e)
@@ -611,34 +610,27 @@ namespace DataLayer
 
         public void CheckHotelAlreadyExist(Guid File_Id, int Batch, Guid CurSupplier_Id, List<DataContracts.STG.DC_stg_SupplierProductMapping> stg, out List<DC_Accomodation_ProductMapping> updateMappingList, out List<DataContracts.STG.DC_stg_SupplierProductMapping> insertSTGList)
         {
-            bool ret = false;
-
             using (ConsumerEntities context = new ConsumerEntities())
             {
-
                 List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
                 using (DL_Masters objDL = new DL_Masters())
                 {
                     Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
                 }
 
-                //var prodMapList = context.Accommodation_ProductMapping.AsNoTracking().Where(w => stg.Any(a => a.ProductId == w.SupplierProductReference)).Select(s => s.SupplierProductReference ).ToList();
-                var accomap = (from a in context.Accommodation_ProductMapping.AsNoTracking()
-                               where a.Supplier_Id == CurSupplier_Id
-                               select a);
-                var toUpdate = (from a in accomap
-                                    //join s in stg on a.SupplierProductReference equals s.ProductId
+                //var accomap = (from a in context.Accommodation_ProductMapping.AsNoTracking()
+                //               where a.Supplier_Id == CurSupplier_Id
+                //               select a);
+
+                var toUpdate = (from a in context.Accommodation_ProductMapping.AsNoTracking()
                                 join s in context.stg_SupplierProductMapping.AsNoTracking() on
-                                new { Supplier_Id = a.Supplier_Id, SupplierProductReference = a.SupplierProductReference, CityCode = (a.CityCode ?? a.CityName) }
-                                equals new { Supplier_Id = s.Supplier_Id, SupplierProductReference = s.ProductId, CityCode = (s.CityCode ?? s.CityName) }
+                                new { a.Supplier_Id, a.SupplierProductReference } equals new { s.Supplier_Id, SupplierProductReference = s.ProductId }
                                 where s.SupplierImportFile_Id == File_Id
                                 select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                 {
                                     Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
                                     Accommodation_Id = a.Accommodation_Id,
                                     Supplier_Id = a.Supplier_Id,
-                                    //SupplierId = a.SupplierId,
-                                    //SupplierName = a.SupplierName,
                                     SupplierProductReference = a.SupplierProductReference,
                                     ProductName = s.ProductName,
                                     oldProductName = a.ProductName,
@@ -646,12 +638,13 @@ namespace DataLayer
                                     //Street2 = a.Street2,
                                     //Street3 = a.Street3,
                                     //Street4 = a.Street4,
-                                    CountryCode = a.CountryCode,
-                                    CountryName = a.CountryName,
-                                    CityCode = a.CityCode,
-                                    CityName = a.CityName,
-                                    StateCode = a.StateCode,
-                                    StateName = a.StateName,
+                                    CountryCode = s.CountryCode,
+                                    CountryName = s.CountryName,
+                                    CityCode = s.CityCode,
+                                    CityName = s.CityName,
+                                    StateCode = s.StateCode,
+                                    StateName = s.StateName,
+                                    FullAddress = s.Address,
                                     //PostCode = a.PostCode,
                                     //TelephoneNumber = a.TelephoneNumber,
                                     //Fax = a.Fax,
@@ -669,31 +662,41 @@ namespace DataLayer
                                     Remarks = a.Remarks,
                                     //MapId = a.MapId,
                                     //StarRating = a.StarRating,
-                                    //Country_Id = a.Country_Id,
-                                    //City_Id = a.City_Id,
+                                    Country_Id = s.Country_Id,
+                                    City_Id = s.City_Id,
                                     ActionType = (a.ProductName != s.ProductName) ? "UPDATE" : "",
                                     stg_AccoMapping_Id = (a.ProductName != s.ProductName) ? s.stg_AccoMapping_Id : Guid.Empty,
-                                    Latitude_Tx = a.Latitude_Tx,
-                                    Longitude_Tx = a.Longitude_Tx,
-                                    ProductType = s.ProductType,
-                                    OldProductType = a.ProductType,
                                     Latitude = s.Latitude,
                                     Longitude = s.Longitude,
+                                    TelephoneNumber = s.TelephoneNumber,
+                                    
+                                    ProductType = s.ProductType,
+                                    OldProductType = a.ProductType,
+                                    
                                     OldLatitude = a.Latitude,
                                     OldLongitude = a.Longitude,
                                     ReRunSupplierImporrtFile_Id = File_Id,
                                     ReRunBatch = Batch
-                                    //,HotelName_Tx = CommonFunctions.HotelNameTX(s.ProductName, a.CityName, a.CountryName)
                                 }).ToList();
+
+                List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList> AttributeList = new List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList>();
+                string TX_Value = string.Empty;
+                string SX_Value = string.Empty;
 
                 toUpdate = toUpdate.Select(c =>
                 {
                     c.HotelName_Tx = CommonFunctions.HotelNameTX(c.ProductName, c.CityName, c.CountryName, ref Keywords);
+                    c.TelephoneNumber_tx = CommonFunctions.GetDigits(c.TelephoneNumber, 8);
+                    c.Latitude_Tx = CommonFunctions.LatLongTX(c.Latitude);
+                    c.Longitude_Tx = CommonFunctions.LatLongTX(c.Longitude);
+                    c.Address_tx = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, c.FullAddress, new string[] { c.CityName, c.CountryName });
                     return c;
                 }).ToList();
 
-                insertSTGList = stg.Where(w => !toUpdate.Any(a => a.SupplierProductReference == w.ProductId && (a.CityCode ?? a.CityName) == (w.CityCode ?? w.CityName))).ToList();
-                updateMappingList = toUpdate.Where(w => w.ProductName != w.oldProductName || w.ProductType != w.OldProductType || w.Latitude != w.OldLatitude || w.Longitude != w.OldLongitude).ToList();
+                insertSTGList = stg.Where(w => !toUpdate.Any(a => a.SupplierProductReference == w.ProductId)).ToList();
+                //updateMappingList = toUpdate.Where(w => w.ProductName != w.oldProductName || w.ProductType != w.OldProductType || w.Latitude != w.OldLatitude || w.Longitude != w.OldLongitude).ToList();
+                //Take all records for updation where the SupplierProductReference matches
+                updateMappingList = toUpdate;
 
                 #region Update No Of Hits
                 var updatableAliases = (from k in Keywords
@@ -711,85 +714,7 @@ namespace DataLayer
                 #endregion
 
                 context.Dispose();
-                #region "Commented Code"
-                /*
-                List<DataContracts.Mapping.DC_Accomodation_ProductMapping> prodMapRes = new List<DC_Accomodation_ProductMapping>();
-                foreach (DataContracts.STG.DC_stg_SupplierProductMapping curSTG in stg)
-                {
-                    string curSupplierProductReference = curSTG.ProductId;
-
-                    prodMapRes.InsertRange(prodMapRes.Count, context.Accommodation_ProductMapping.AsNoTracking()
-                        .Where(w => w.Supplier_Id == CurSupplier_Id && w.SupplierProductReference == curSupplierProductReference)
-                        .Select
-                    (a => new DC_Accomodation_ProductMapping
-                    {
-                        Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
-                        Accommodation_Id = a.Accommodation_Id,
-                        Supplier_Id = a.Supplier_Id,
-                        SupplierId = a.SupplierId,
-                        SupplierName = a.SupplierName,
-                        SupplierProductReference = a.SupplierProductReference,
-                        ProductName = a.ProductName,
-                        oldProductName = a.ProductName,
-                        Street = a.Street,
-                        Street2 = a.Street2,
-                        Street3 = a.Street3,
-                        Street4 = a.Street4,
-                        CountryCode = a.CountryCode,
-                        CountryName = a.CountryName,
-                        CityCode = a.CityCode,
-                        CityName = a.CityName,
-                        StateCode = a.StateCode,
-                        StateName = a.StateName,
-                        PostCode = a.PostCode,
-                        TelephoneNumber = a.TelephoneNumber,
-                        Fax = a.Fax,
-                        Email = a.Email,
-                        Website = a.Website,
-                        Latitude = a.Latitude,
-                        Longitude = a.Longitude,
-                        Status = a.Status,
-                        Create_Date = a.Create_Date,
-                        Create_User = a.Create_User,
-                        Edit_Date = DateTime.Now,
-                        Edit_User = "TLGX_DataHandler",
-                        IsActive = (a.IsActive ?? true),
-                        ProductId = a.SupplierProductReference,
-                        Remarks = a.Remarks,
-                        MapId = a.MapId,
-                        StarRating = a.StarRating,
-                        Country_Id = a.Country_Id,
-                        City_Id = a.City_Id
-                    }
-                    ));
-                }
-
-                prodMapRes = prodMapRes.Select(c =>
-                {
-                    c.ProductName = (stg
-                    //.Where(s => (s.ProductId ?? s.ProductName) == (c.SupplierProductReference ?? c.ProductName) && s.Country_Id == c.Country_Id && s.City_Id == c.City_Id)
-                    //.Where(s => (s.CityCode ?? s.CityName) == (c.CityCode ?? c.CityName) && s.Country_Id == c.Country_Id)
-                    .Where(s => (s.ProductId == c.SupplierProductReference) 
-                    //&& ((s.CityCode == null) ? (s.CityName == c.CityName) : (s.CityCode == c.CityCode)) && ((s.CountryCode == null) ? (s.CountryName == c.CountryName) : (s.CountryCode == c.CountryCode))
-                    )
-                    .Select(s1 => s1.ProductName)
-                    .FirstOrDefault()
-                    ) ?? c.ProductName;
-                    c.Edit_Date = DateTime.Now;
-                    c.Edit_User = "TLGX_DataHandler";
-                    c.ActionType = "UPDATE";
-                    c.stg_AccoMapping_Id = (stg
-                    //.Where(s => (s.ProductId ?? s.ProductName) == (c.SupplierProductReference ?? c.ProductName) && s.Country_Id == c.Country_Id && s.City_Id == c.City_Id)
-                    .Where(s => (s.ProductId == c.SupplierProductReference) 
-                    //&& ((s.CityCode == null) ? (s.CityName == c.CityName) : (s.CityCode == c.CityCode)) && ((s.CountryCode == null) ? (s.CountryName == c.CountryName) : (s.CountryCode == c.CountryCode))
-                    )
-                    .Select(s1 => s1.stg_AccoMapping_Id)
-                    .FirstOrDefault()
-                    );
-                    return c;
-                }).ToList();
-                */
-                #endregion
+               
             }
         }
 
@@ -10565,20 +10490,20 @@ namespace DataLayer
                                      ).ToList();
 
                     var MappedStats = (from p in context.vwUserwisemappedStats
-                                  where p.SupplierName != null  && (p.EditDate >= parm.Fromdate && p.EditDate <= parm.ToDate)
-                                  group p by new { p.supplier_id, p.Username, p.MappinFor, p.SupplierName } into g
-                                  select new DC_AllSupplierMappedData
-                                  {
-                                      supplierid = g.Key.supplier_id,
-                                      SupplierName = g.Key.SupplierName,
-                                      Username = g.Key.Username,
-                                      totalcount = (g.Sum(x => x.totalcount) ?? 0),
-                                      MappinFor = g.Key.MappinFor
-                                  }).ToList();
+                                       where p.SupplierName != null && (p.EditDate >= parm.Fromdate && p.EditDate <= parm.ToDate)
+                                       group p by new { p.supplier_id, p.Username, p.MappinFor, p.SupplierName } into g
+                                       select new DC_AllSupplierMappedData
+                                       {
+                                           supplierid = g.Key.supplier_id,
+                                           SupplierName = g.Key.SupplierName,
+                                           Username = g.Key.Username,
+                                           totalcount = (g.Sum(x => x.totalcount) ?? 0),
+                                           MappinFor = g.Key.MappinFor
+                                       }).ToList();
 
                     if (parm.SupplierID != Guid.Empty)
                     {
-                       MappedStats = MappedStats.Where(w => w.supplierid == parm.SupplierID).ToList();
+                        MappedStats = MappedStats.Where(w => w.supplierid == parm.SupplierID).ToList();
 
                         unmapData = (from s in unmapData
                                      where s.Supplier_Id == parm.SupplierID
@@ -10589,9 +10514,9 @@ namespace DataLayer
                     else if (parm.SupplierID == Guid.Empty)
                     {
                         var suppliermaster = (from s in context.Supplier
-                                             where (s.StatusCode.ToUpper().Trim() == "ACTIVE") && (parm.Priority > 0 ? s.Priority == parm.Priority : s.Priority == s.Priority)
-                                             select s).ToList();
-                        
+                                              where (s.StatusCode.ToUpper().Trim() == "ACTIVE") && (parm.Priority > 0 ? s.Priority == parm.Priority : s.Priority == s.Priority)
+                                              select s).ToList();
+
                         MappedStats = (from m in MappedStats
                                        join s in suppliermaster on m.supplierid equals s.Supplier_Id
                                        group m by new { m.MappinFor, m.Username } into g
@@ -10606,7 +10531,7 @@ namespace DataLayer
 
                         newmapstats.SupplierName = "ALL";
                     }
-                    
+
                     var MapForList = (from s in MappedStats select s.MappinFor).ToList().Distinct();
 
                     foreach (var mapfor in MapForList)
@@ -10614,25 +10539,25 @@ namespace DataLayer
                         DataContracts.Mapping.DC_VelocityMappingStatsFor newmapstatsfor = new DataContracts.Mapping.DC_VelocityMappingStatsFor();
 
                         newmapstatsfor.MappingFor = mapfor;
-                        newmapstatsfor.Unmappeddata = unmapData.Where(w=> w.MappinFor == mapfor).Sum(s => s.totalcount) ?? 0;
-                        
+                        newmapstatsfor.Unmappeddata = unmapData.Where(w => w.MappinFor == mapfor).Sum(s => s.totalcount) ?? 0;
+
                         int totalmappeddata = MappedStats.Where(w => w.MappinFor == mapfor).Sum(s => s.totalcount) ?? 0;
-                       
-                            if (newmapstatsfor.Unmappeddata > 0 && totalmappeddata > 0)
-                            {
-                                double days;
-                                if (parm.Fromdate == parm.ToDate)
-                                    days = 1;
-                                else
-                                    days = (Convert.ToDateTime(parm.ToDate) - Convert.ToDateTime(parm.Fromdate)).TotalDays;
-                                var perday = (totalmappeddata / days);
-                                newmapstatsfor.Estimate = Convert.ToInt32(newmapstatsfor.Unmappeddata / perday);
-                            }
+
+                        if (newmapstatsfor.Unmappeddata > 0 && totalmappeddata > 0)
+                        {
+                            double days;
+                            if (parm.Fromdate == parm.ToDate)
+                                days = 1;
                             else
-                            {
-                                newmapstatsfor.Estimate = 0;
-                            }
-                        
+                                days = (Convert.ToDateTime(parm.ToDate) - Convert.ToDateTime(parm.Fromdate)).TotalDays;
+                            var perday = (totalmappeddata / days);
+                            newmapstatsfor.Estimate = Convert.ToInt32(newmapstatsfor.Unmappeddata / perday);
+                        }
+                        else
+                        {
+                            newmapstatsfor.Estimate = 0;
+                        }
+
                         if (totalmappeddata > 0)
                         {
                             newmapstatsfor.MappingData = (from s in MappedStats
@@ -10640,7 +10565,7 @@ namespace DataLayer
                                                           orderby s.Username
                                                           group s by new { s.Username } into g
                                                           select new DataContracts.Mapping.DC_VelocityMappingdata
-                                                          { Username = g.Key.Username, Totalcount = g.Sum(x=>x.totalcount)??0 }).ToList();
+                                                          { Username = g.Key.Username, Totalcount = g.Sum(x => x.totalcount) ?? 0 }).ToList();
                         }
 
                         newmapstatsforList.Add(newmapstatsfor);
