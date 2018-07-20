@@ -8702,7 +8702,11 @@ namespace DataLayer
                                         join q in suppliermaster on p.Supplier_Id equals q.Supplier_Id
                                         select p).ToList();
 
-                        newmapstats.SupplierNames = MappingStats.Select(s => s.SupplierName).Distinct().ToList();
+                        if (Priority == 0 && ProductCategory == "0")
+                            newmapstats.SupplierNames = new List<string> { "ALL" };
+                        else
+                            newmapstats.SupplierNames = MappingStats.Select(s => s.SupplierName).Distinct().ToList();
+
                         newmapstats.MappingStatsForSuppliers = (from m in MappingStats
                                                                 where (m.Status == "UNMAPPED" || m.Status == "REVIEW")
                                                                 group m by new { m.SupplierName, m.Supplier_Id, m.MappinFor, m.totalcount } into g
