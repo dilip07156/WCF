@@ -3387,9 +3387,20 @@ namespace DataLayer
 
                 if (total <= skip)
                 {
-                    int PageIndex = total / obj.PageSize;
+                    int PageIndex = 0;
+                    int intReminder = total % obj.PageSize;
+                    int intQuotient = total / obj.PageSize;
+
+                    if (intReminder > 0 || (intReminder == 0 && intQuotient == 0))
+                    {
+                        PageIndex = intQuotient;
+                    }
+                    else if (intReminder == 0 && intQuotient > 0)
+                    {
+                        PageIndex = intQuotient - 1;
+                    }
+
                     skip = obj.PageSize * PageIndex;
-                    obj.PageNo = PageIndex;
                 }
 
                 #endregion
@@ -4608,15 +4619,16 @@ namespace DataLayer
                     int intReminder = total % obj.PageSize;
                     int intQuotient = total / obj.PageSize;
 
-                    if (intReminder > 0)
-                    {
-                        PageIndex = intQuotient + 1;
-                    }
-                    else
+                    if (intReminder > 0 || (intReminder == 0 && intQuotient == 0))
                     {
                         PageIndex = intQuotient;
                     }
-                    skip = obj.PageSize * (PageIndex - 1);
+                    else if(intReminder == 0 && intQuotient > 0)
+                    {
+                        PageIndex = intQuotient - 1;
+                    }
+
+                    skip = obj.PageSize * PageIndex;
                 }
                 //else
                 //    sbsqlselect.Append(Convert.ToString(obj.PageNo) + " As PageIndex ");
