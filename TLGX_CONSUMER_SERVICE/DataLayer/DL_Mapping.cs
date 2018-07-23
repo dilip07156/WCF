@@ -265,7 +265,7 @@ namespace DataLayer
 
                         context.SaveChanges();
                     }
-                    
+
                 }
             }
             catch (Exception e)
@@ -669,10 +669,10 @@ namespace DataLayer
                                     Latitude = s.Latitude,
                                     Longitude = s.Longitude,
                                     TelephoneNumber = s.TelephoneNumber,
-                                    
+
                                     ProductType = s.ProductType,
                                     OldProductType = a.ProductType,
-                                    
+
                                     OldLatitude = a.Latitude,
                                     OldLongitude = a.Longitude,
                                     ReRunSupplierImporrtFile_Id = File_Id,
@@ -714,7 +714,7 @@ namespace DataLayer
                 #endregion
 
                 context.Dispose();
-               
+
             }
         }
 
@@ -3422,18 +3422,22 @@ namespace DataLayer
                 #endregion
 
                 List<DataContracts.Mapping.DC_Accomodation_ProductMapping> result = new List<DC_Accomodation_ProductMapping>();
-                using (ConsumerEntities context = new ConsumerEntities())
+
+                if (total > 0)
                 {
-                    context.Configuration.AutoDetectChangesEnabled = false;
-                    context.Database.CommandTimeout = 0;
-                    result = context.Database.SqlQuery<DataContracts.Mapping.DC_Accomodation_ProductMapping>(sbsqlselect.ToString()).ToList();
-                    if (result != null)
+                    using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        result.ForEach(u =>
+                        context.Configuration.AutoDetectChangesEnabled = false;
+                        context.Database.CommandTimeout = 0;
+                        result = context.Database.SqlQuery<DataContracts.Mapping.DC_Accomodation_ProductMapping>(sbsqlselect.ToString()).ToList();
+                        if (result != null)
                         {
-                            u.TotalRecords = total;
-                            u.PageIndex = obj.PageNo;
-                        });
+                            result.ForEach(u =>
+                            {
+                                u.TotalRecords = total;
+                                u.PageIndex = obj.PageNo;
+                            });
+                        }
                     }
                 }
 
@@ -4623,7 +4627,7 @@ namespace DataLayer
                     {
                         PageIndex = intQuotient;
                     }
-                    else if(intReminder == 0 && intQuotient > 0)
+                    else if (intReminder == 0 && intQuotient > 0)
                     {
                         PageIndex = intQuotient - 1;
                     }
@@ -8592,7 +8596,7 @@ namespace DataLayer
         #endregion
 
         #region Mapping Stats
-        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(Guid SupplierID, int Priority, string ProductCategory,bool isMDM)
+        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(Guid SupplierID, int Priority, string ProductCategory, bool isMDM)
         {
             try
             {
