@@ -3387,9 +3387,20 @@ namespace DataLayer
 
                 if (total <= skip)
                 {
-                    int PageIndex = total / obj.PageSize;
+                    int PageIndex = 0;
+                    int intReminder = total % obj.PageSize;
+                    int intQuotient = total / obj.PageSize;
+
+                    if (intReminder > 0 || (intReminder == 0 && intQuotient == 0))
+                    {
+                        PageIndex = intQuotient;
+                    }
+                    else if (intReminder == 0 && intQuotient > 0)
+                    {
+                        PageIndex = intQuotient - 1;
+                    }
+
                     skip = obj.PageSize * PageIndex;
-                    obj.PageNo = PageIndex;
                 }
 
                 #endregion
@@ -3411,18 +3422,22 @@ namespace DataLayer
                 #endregion
 
                 List<DataContracts.Mapping.DC_Accomodation_ProductMapping> result = new List<DC_Accomodation_ProductMapping>();
-                using (ConsumerEntities context = new ConsumerEntities())
+
+                if (total > 0)
                 {
-                    context.Configuration.AutoDetectChangesEnabled = false;
-                    context.Database.CommandTimeout = 0;
-                    result = context.Database.SqlQuery<DataContracts.Mapping.DC_Accomodation_ProductMapping>(sbsqlselect.ToString()).ToList();
-                    if (result != null)
+                    using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        result.ForEach(u =>
+                        context.Configuration.AutoDetectChangesEnabled = false;
+                        context.Database.CommandTimeout = 0;
+                        result = context.Database.SqlQuery<DataContracts.Mapping.DC_Accomodation_ProductMapping>(sbsqlselect.ToString()).ToList();
+                        if (result != null)
                         {
-                            u.TotalRecords = total;
-                            u.PageIndex = obj.PageNo;
-                        });
+                            result.ForEach(u =>
+                            {
+                                u.TotalRecords = total;
+                                u.PageIndex = obj.PageNo;
+                            });
+                        }
                     }
                 }
 
@@ -4608,15 +4623,16 @@ namespace DataLayer
                     int intReminder = total % obj.PageSize;
                     int intQuotient = total / obj.PageSize;
 
-                    if (intReminder > 0)
-                    {
-                        PageIndex = intQuotient + 1;
-                    }
-                    else
+                    if (intReminder > 0 || (intReminder == 0 && intQuotient == 0))
                     {
                         PageIndex = intQuotient;
                     }
-                    skip = obj.PageSize * (PageIndex - 1);
+                    else if (intReminder == 0 && intQuotient > 0)
+                    {
+                        PageIndex = intQuotient - 1;
+                    }
+
+                    skip = obj.PageSize * PageIndex;
                 }
                 //else
                 //    sbsqlselect.Append(Convert.ToString(obj.PageNo) + " As PageIndex ");
