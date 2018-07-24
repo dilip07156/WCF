@@ -149,7 +149,17 @@ namespace ConsumerSvc
             }
         }
 
-       
+
+        #endregion
+
+        #region Supplierdata Export
+        public IList<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport( string SupplierID, string IsMdmDataOnly)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetSupplierDataForExport(SupplierID, IsMdmDataOnly);
+            }
+        }
         #endregion
 
         #region roll_off_reports

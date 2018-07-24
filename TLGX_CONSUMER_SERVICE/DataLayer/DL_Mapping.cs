@@ -265,7 +265,7 @@ namespace DataLayer
 
                         context.SaveChanges();
                     }
-                    
+
                 }
             }
             catch (Exception e)
@@ -669,10 +669,10 @@ namespace DataLayer
                                     Latitude = s.Latitude,
                                     Longitude = s.Longitude,
                                     TelephoneNumber = s.TelephoneNumber,
-                                    
+
                                     ProductType = s.ProductType,
                                     OldProductType = a.ProductType,
-                                    
+
                                     OldLatitude = a.Latitude,
                                     OldLongitude = a.Longitude,
                                     ReRunSupplierImporrtFile_Id = File_Id,
@@ -714,7 +714,7 @@ namespace DataLayer
                 #endregion
 
                 context.Dispose();
-               
+
             }
         }
 
@@ -8580,7 +8580,7 @@ namespace DataLayer
         #endregion
 
         #region Mapping Stats
-        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(Guid SupplierID, int Priority, string ProductCategory,bool isMDM)
+        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(Guid SupplierID, int Priority, string ProductCategory, bool isMDM)
         {
             try
             {
@@ -8708,6 +8708,248 @@ namespace DataLayer
         }
 
         #endregion
+        #region Export Supplier Data
+        public List<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport(Guid Supplier_id, bool IsMdmDataOnly)
+        {
+            try
+            {
+                List<DC_SupplierExportDataReport> ReturnResult = new List<DC_SupplierExportDataReport>();
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    List<vwMappingStats> MappingData = new List<vwMappingStats>();
+                    List<vwMappingStatsMdmOnly> MappingDataIsMdm = new List<vwMappingStatsMdmOnly>();
+
+                    var suppliermaster = context.Supplier.Where(w => w.StatusCode == "ACTIVE" && w.Supplier_Id == (Supplier_id == Guid.Empty ? w.Supplier_Id : Supplier_id)).Select(s => new
+                    {
+                        s.Supplier_Id,
+                        s.Name,
+                        s.Priority
+                    }).OrderBy(o => o.Name).ToList();
+
+                    if (Supplier_id != Guid.Empty)
+                    {
+                        if (IsMdmDataOnly)
+                        {
+                            MappingDataIsMdm = context.vwMappingStatsMdmOnly.Where(x => x.Supplier_Id == Supplier_id).ToList();
+                            MappingData = MappingDataIsMdm.Select(s => new vwMappingStats
+                            {
+                                MappinFor = s.MappinFor,
+                                RowId = s.RowId,
+                                Status = s.Status,
+                                SupplierName = s.SupplierName,
+                                Supplier_Id = s.Supplier_Id,
+                                totalcount = s.totalcount
+                            }).ToList();
+                        }
+                        else
+                        {
+                            MappingData = context.vwMappingStats.Where(x => x.Supplier_Id == Supplier_id).ToList();
+                        }
+                    }
+                    else
+                    {
+                        if (IsMdmDataOnly)
+                        {
+                            MappingDataIsMdm = context.vwMappingStatsMdmOnly.ToList();
+                            MappingData = MappingDataIsMdm.Select(s => new vwMappingStats
+                            {
+                                MappinFor = s.MappinFor,
+                                RowId = s.RowId,
+                                Status = s.Status,
+                                SupplierName = s.SupplierName,
+                                Supplier_Id = s.Supplier_Id,
+                                totalcount = s.totalcount
+                            }).ToList();
+                        }
+                        else
+                        {
+                            MappingData = context.vwMappingStats.ToList();
+                        }
+                    }
+                    foreach (var supplier in suppliermaster)
+                    {
+                        var supplierResult = new DC_SupplierExportDataReport();
+
+                        supplierResult.Priority = Convert.ToString(supplier.Priority);
+                        supplierResult.Supplier_Id = supplier.Supplier_Id;
+                        supplierResult.SupplierName = supplier.Name;
+
+                        #region Country Mapping Data
+                        supplierResult.Country_LastFetched = DateTime.Now;
+                        supplierResult.Country_TotalRecordReceived = MappingData.Where(x => x.MappinFor == "Country" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.Country_AutoMapped = MappingData.Where(x => x.MappinFor == "Country" && x.Status == "AUTOMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.Country_MannualMapped = MappingData.Where(x => x.MappinFor == "Country" && x.Status == "MAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.Country_ReviewMapped = MappingData.Where(x => x.MappinFor == "Country" && x.Status == "REVIEW" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.Country_Unmapped = MappingData.Where(x => x.MappinFor == "Country" && x.Status == "UNMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.CountryTotal = MappingData.Where(w => w.MappinFor == "Country" && w.Supplier_Id == supplier.Supplier_Id).Sum(s => s.totalcount) ?? 0;
+
+                        if (supplierResult.CountryTotal > 0)
+                        {
+                            supplierResult.Country_CompletePercentage = Math.Round((Convert.ToDecimal(supplierResult.Country_AutoMapped + supplierResult.Country_MannualMapped) / Convert.ToDecimal(supplierResult.CountryTotal) * Convert.ToDecimal(100)), 2);
+                        }
+                        else
+                        {
+                            supplierResult.Country_CompletePercentage = 0;
+                        }
+                        #endregion
+
+                        #region City Mapping Data
+                        supplierResult.City_TotalRecordReceived = 0;
+                        supplierResult.City_AutoMapped = MappingData.Where(x => x.MappinFor == "City" && x.Status == "AUTOMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.City_MannualMapped = MappingData.Where(x => x.MappinFor == "City" && x.Status == "MAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.City_ReviewMapped = MappingData.Where(x => x.MappinFor == "City" && x.Status == "REVIEW" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.City_Unmapped = MappingData.Where(x => x.MappinFor == "City" && x.Status == "UNMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.CityTotal = MappingData.Where(w => w.MappinFor == "City" && w.Supplier_Id == supplier.Supplier_Id).Sum(s => s.totalcount) ?? 0;
+                        if (supplierResult.CityTotal > 0)
+                        {
+                            supplierResult.City_CompletePercentage = Math.Round((Convert.ToDecimal(supplierResult.City_AutoMapped + supplierResult.City_MannualMapped) / Convert.ToDecimal(supplierResult.CityTotal) * Convert.ToDecimal(100)), 2); ;
+                        }
+                        else
+                        {
+                            supplierResult.City_CompletePercentage = 0;
+                        }
+                        #endregion
+
+                        #region Hotel Mapping Data
+                        supplierResult.Hotel_TotalRecordReceived = 0;
+                        supplierResult.Hotel_AutoMapped = MappingData.Where(x => x.MappinFor == "Product" && x.Status == "AUTOMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.Hotel_MannualMapped = MappingData.Where(x => x.MappinFor == "Product" && x.Status == "MAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.Hotel_ReviewMapped = MappingData.Where(x => x.MappinFor == "Product" && x.Status == "REVIEW" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.Hotel_Unmapped = MappingData.Where(x => x.MappinFor == "Product" && x.Status == "UNMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.HotelTotal = MappingData.Where(w => w.MappinFor == "Product" && w.Supplier_Id == supplier.Supplier_Id).Sum(s => s.totalcount) ?? 0;
+                        if (supplierResult.HotelTotal > 0)
+                        {
+                            supplierResult.Hotel_CompletePercentage = Math.Round((Convert.ToDecimal(supplierResult.Hotel_AutoMapped + supplierResult.Hotel_MannualMapped) / Convert.ToDecimal(supplierResult.HotelTotal) * Convert.ToDecimal(100)), 2); ; ;
+                        }
+                        else
+                        {
+                            supplierResult.Hotel_CompletePercentage = 0;
+                        }
+                        #endregion
+
+                        #region Room Mapping Data
+                        supplierResult.AvaialbleFromSupplier = 0;
+                        supplierResult.HotelsMapped = MappingData.Where(x => x.MappinFor == "Product" && x.Status == "AUTOMAPPED" && x.Status == "MAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(s => s.totalcount) ?? 0;
+                        supplierResult.TotalEligibleRoom = 0;
+                        supplierResult.Room_AutoMapped = MappingData.Where(x => x.MappinFor == "HotelRoom" && x.Status == "AUTOMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.Room_MannualMapped = MappingData.Where(x => x.MappinFor == "HotelRoom" && x.Status == "MAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.Room_ReviewMapped = MappingData.Where(x => x.MappinFor == "HotelRoom" && x.Status == "REVIEW" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.Room_Add = MappingData.Where(x => x.MappinFor == "HotelRoom" && x.Status == "ADD" && x.Supplier_Id == supplier.Supplier_Id).Select(x => x.totalcount).FirstOrDefault() ?? 0;
+                        supplierResult.Room_Unmapped = MappingData.Where(x => x.MappinFor == "HotelRoom" && x.Status == "UNMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
+                        supplierResult.RoomTotal = MappingData.Where(w => w.MappinFor == "HotelRoom" && w.Supplier_Id == supplier.Supplier_Id).Sum(s => s.totalcount) ?? 0;
+
+                        if (supplierResult.RoomTotal > 0)
+                        {
+                            supplierResult.Room_CompletePercentage = Math.Round((Convert.ToDecimal(supplierResult.Room_AutoMapped + supplierResult.Room_MannualMapped) / Convert.ToDecimal(supplierResult.RoomTotal) * Convert.ToDecimal(100)), 2);
+                        }
+                        else
+                        {
+                            supplierResult.Room_CompletePercentage = 0;
+                        }
+                        #endregion
+
+
+
+                        ReturnResult.Add(supplierResult);
+                        // return result;
+                    }
+                    if (Supplier_id == Guid.Empty)
+                    {
+                        #region Insert Record for GrandTotal
+                        var GrandTotal = new DC_SupplierExportDataReport();
+
+                        GrandTotal.Priority = string.Empty;
+                        GrandTotal.Supplier_Id = Guid.Empty;
+                        GrandTotal.SupplierName = "Grand Total";
+
+                        #region Country Mapping Data
+                        GrandTotal.Country_LastFetched = null;
+                        GrandTotal.Country_TotalRecordReceived = MappingData.Where(x => x.MappinFor == "Country").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.Country_AutoMapped = MappingData.Where(x => x.MappinFor == "Country" && x.Status == "AUTOMAPPED").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.Country_MannualMapped = MappingData.Where(x => x.MappinFor == "Country" && x.Status == "MAPPED").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.Country_ReviewMapped = MappingData.Where(x => x.MappinFor == "Country" && x.Status == "REVIEW").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.Country_Unmapped = MappingData.Where(x => x.MappinFor == "Country" && x.Status == "UNMAPPED").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.CountryTotal = MappingData.Where(w => w.MappinFor == "Country").Sum(s => s.totalcount) ?? 0;
+
+                        if (GrandTotal.CountryTotal > 0)
+                        {
+                            GrandTotal.Country_CompletePercentage = Math.Round((Convert.ToDecimal(GrandTotal.Country_AutoMapped + GrandTotal.Country_MannualMapped) / Convert.ToDecimal(GrandTotal.CountryTotal) * Convert.ToDecimal(100)), 2);
+                        }
+                        else
+                        {
+                            GrandTotal.Country_CompletePercentage = 0;
+                        }
+                        #endregion
+
+                        #region City Mapping Data
+                        GrandTotal.City_TotalRecordReceived = 0;
+                        GrandTotal.City_AutoMapped = MappingData.Where(x => x.MappinFor == "City" && x.Status == "AUTOMAPPED").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.City_MannualMapped = MappingData.Where(x => x.MappinFor == "City" && x.Status == "MAPPED").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.City_ReviewMapped = MappingData.Where(x => x.MappinFor == "City" && x.Status == "REVIEW").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.City_Unmapped = MappingData.Where(x => x.MappinFor == "City" && x.Status == "UNMAPPED").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.CityTotal = MappingData.Where(w => w.MappinFor == "City").Sum(s => s.totalcount) ?? 0;
+                        if (GrandTotal.CityTotal > 0)
+                        {
+                            GrandTotal.City_CompletePercentage = Math.Round((Convert.ToDecimal(GrandTotal.City_AutoMapped + GrandTotal.City_MannualMapped) / Convert.ToDecimal(GrandTotal.CityTotal) * Convert.ToDecimal(100)), 2); ;
+                        }
+                        else
+                        {
+                            GrandTotal.City_CompletePercentage = 0;
+                        }
+                        #endregion
+
+                        #region Hotel Mapping Data
+                        GrandTotal.Hotel_TotalRecordReceived = 0;
+                        GrandTotal.Hotel_AutoMapped = MappingData.Where(x => x.MappinFor == "Product" && x.Status == "AUTOMAPPED").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.Hotel_MannualMapped = MappingData.Where(x => x.MappinFor == "Product" && x.Status == "MAPPED").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.Hotel_ReviewMapped = MappingData.Where(x => x.MappinFor == "Product" && x.Status == "REVIEW").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.Hotel_Unmapped = MappingData.Where(x => x.MappinFor == "Product" && x.Status == "UNMAPPED").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.HotelTotal = MappingData.Where(w => w.MappinFor == "Product").Sum(s => s.totalcount) ?? 0;
+                        if (GrandTotal.HotelTotal > 0)
+                        {
+                            GrandTotal.Hotel_CompletePercentage = Math.Round((Convert.ToDecimal(GrandTotal.Hotel_AutoMapped + GrandTotal.Hotel_MannualMapped) / Convert.ToDecimal(GrandTotal.HotelTotal) * Convert.ToDecimal(100)), 2); ; ;
+                        }
+                        else
+                        {
+                            GrandTotal.Hotel_CompletePercentage = 0;
+                        }
+                        #endregion
+
+                        #region Room Mapping Data
+                        GrandTotal.AvaialbleFromSupplier = 0;
+                        GrandTotal.HotelsMapped = MappingData.Where(x => x.MappinFor == "Product" && x.Status == "AUTOMAPPED" && x.Status == "MAPPED").Sum(s => s.totalcount) ?? 0;
+                        GrandTotal.TotalEligibleRoom = 0;
+                        GrandTotal.Room_AutoMapped = MappingData.Where(x => x.MappinFor == "HotelRoom" && x.Status == "AUTOMAPPED").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.Room_MannualMapped = MappingData.Where(x => x.MappinFor == "HotelRoom" && x.Status == "MAPPED").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.Room_ReviewMapped = MappingData.Where(x => x.MappinFor == "HotelRoom" && x.Status == "REVIEW").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.Room_Add = MappingData.Where(x => x.MappinFor == "HotelRoom" && x.Status == "ADD").Select(x => x.totalcount).FirstOrDefault() ?? 0;
+                        GrandTotal.Room_Unmapped = MappingData.Where(x => x.MappinFor == "HotelRoom" && x.Status == "UNMAPPED").Sum(x => x.totalcount) ?? 0;
+                        GrandTotal.RoomTotal = MappingData.Where(w => w.MappinFor == "HotelRoom").Sum(s => s.totalcount) ?? 0;
+
+                        if (GrandTotal.RoomTotal > 0)
+                        {
+                            GrandTotal.Room_CompletePercentage = Math.Round((Convert.ToDecimal(GrandTotal.Room_AutoMapped + GrandTotal.Room_MannualMapped) / Convert.ToDecimal(GrandTotal.RoomTotal) * Convert.ToDecimal(100)), 2);
+                        }
+                        else
+                        {
+                            GrandTotal.Room_CompletePercentage = 0;
+                        }
+                        #endregion
+
+                        #endregion
+                        ReturnResult.Add(GrandTotal);
+                    }
+                    return ReturnResult;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+        #endregion
+
 
         #region roll_off_reports
         public List<DataContracts.Mapping.DC_RollOffReportRule> getStatisticforRuleReport(DataContracts.Mapping.DC_RollOFParams parm)

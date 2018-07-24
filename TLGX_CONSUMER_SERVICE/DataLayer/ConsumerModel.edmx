@@ -1049,6 +1049,10 @@
           <Property Name="Activity_FlavourOptions_Id" Type="uniqueidentifier" />
           <Property Name="Price_ValidFrom" Type="datetime" />
           <Property Name="Price_ValidTo" Type="datetime" />
+          <Property Name="Market" Type="varchar" MaxLength="50" />
+          <Property Name="FromPax" Type="varchar" MaxLength="40" />
+          <Property Name="ToPax" Type="varchar" MaxLength="40" />
+          <Property Name="PersonType" Type="varchar" MaxLength="40" />
         </EntityType>
         <EntityType Name="Activity_ReviewsAndScores">
           <Key>
@@ -1533,7 +1537,7 @@
           <Property Name="Create_User" Type="nvarchar" MaxLength="50" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="Supplier_Id" Type="uniqueidentifier" />
-          <Property Name="Edit_date" Type="datetime" />
+          <Property Name="Edit_Date" Type="datetime" />
           <Property Name="Edit_User" Type="nvarchar" MaxLength="50" />
           <Property Name="TotalCount" Type="int" />
           <Property Name="MongoPushCount" Type="int" />
@@ -2710,9 +2714,24 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwMappingStats' does not have a p
           <Property Name="totalcount" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'TLGX_MAPPING.dbo.vwMappingStatsMdmOnly' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vwMappingStatsMdmOnly">
+          <Key>
+            <PropertyRef Name="RowId" />
+          </Key>
+          <Property Name="RowId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Supplier_Id" Type="uniqueidentifier" />
+          <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Status" Type="nvarchar" MaxLength="100" />
+          <Property Name="MappinFor" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="totalcount" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwUserwisemappedStats">
           <Key>
+            
+            
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
@@ -2939,6 +2958,16 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
     [vwMappingStats].[totalcount] AS [totalcount]
     FROM [dbo].[vwMappingStats] AS [vwMappingStats]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="vwMappingStatsMdmOnly" EntityType="Self.vwMappingStatsMdmOnly" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vwMappingStatsMdmOnly].[RowId] AS [RowId], 
+    [vwMappingStatsMdmOnly].[Supplier_Id] AS [Supplier_Id], 
+    [vwMappingStatsMdmOnly].[SupplierName] AS [SupplierName], 
+    [vwMappingStatsMdmOnly].[Status] AS [Status], 
+    [vwMappingStatsMdmOnly].[MappinFor] AS [MappinFor], 
+    [vwMappingStatsMdmOnly].[totalcount] AS [totalcount]
+    FROM [dbo].[vwMappingStatsMdmOnly] AS [vwMappingStatsMdmOnly]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="vwUserwisemappedStats" EntityType="Self.vwUserwisemappedStats" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [vwUserwisemappedStats].[ID] AS [ID], 
@@ -3127,10 +3156,11 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="m_ZoneMaster" EntityType="ConsumerModel.m_ZoneMaster" />
           <EntitySet Name="ZoneCity_Mapping" EntityType="ConsumerModel.ZoneCity_Mapping" />
           <EntitySet Name="Stg_Kafka" EntityType="ConsumerModel.Stg_Kafka" />
-          <EntitySet Name="DistributionLayerRefresh_Log" EntityType="ConsumerModel.DistributionLayerRefresh_Log" />
           <EntitySet Name="vwMappingStats" EntityType="ConsumerModel.vwMappingStats" />
           <EntitySet Name="Supplier" EntityType="ConsumerModel.Supplier" />
           <EntitySet Name="vwUserwisemappedStats" EntityType="ConsumerModel.vwUserwisemappedStats" />
+          <EntitySet Name="DistributionLayerRefresh_Log" EntityType="ConsumerModel.DistributionLayerRefresh_Log" />
+          <EntitySet Name="vwMappingStatsMdmOnly" EntityType="ConsumerModel.vwMappingStatsMdmOnly" />
       
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
@@ -5076,6 +5106,10 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Activity_FlavourOptions_Id" Type="Guid" />
           <Property Name="Price_ValidFrom" Type="DateTime" Precision="3" />
           <Property Name="Price_ValidTo" Type="DateTime" Precision="3" />
+          <Property Name="Market" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FromPax" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="ToPax" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="PersonType" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="ActivityGeneralInfo">
           <Key>
@@ -5821,22 +5855,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Process_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Process_Date" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="DistributionLayerRefresh_Log">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="Element" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Supplier_Id" Type="Guid" />
-          <Property Name="Edit_date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TotalCount" Type="Int32" />
-          <Property Name="MongoPushCount" Type="Int32" />
-        </EntityType>
         <EntityType Name="vwMappingStats">
           <Key>
             <PropertyRef Name="RowId" />
@@ -5877,6 +5895,33 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="totalcount" Type="Int32" />
           <Property Name="EditDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="DistributionLayerRefresh_Log">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Element" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalCount" Type="Int32" />
+          <Property Name="MongoPushCount" Type="Int32" />
+        </EntityType>
+        <EntityType Name="vwMappingStatsMdmOnly">
+          <Key>
+            <PropertyRef Name="RowId" />
+          </Key>
+          <Property Name="RowId" Type="Guid" Nullable="false" />
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="totalcount" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -7870,6 +7915,10 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="Activity_Prices">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_Prices">
               <MappingFragment StoreEntitySet="Activity_Prices">
+                <ScalarProperty Name="PersonType" ColumnName="PersonType" />
+                <ScalarProperty Name="ToPax" ColumnName="ToPax" />
+                <ScalarProperty Name="FromPax" ColumnName="FromPax" />
+                <ScalarProperty Name="Market" ColumnName="Market" />
                 <ScalarProperty Name="Price_ValidTo" ColumnName="Price_ValidTo" />
                 <ScalarProperty Name="Price_ValidFrom" ColumnName="Price_ValidFrom" />
                 <ScalarProperty Name="Activity_FlavourOptions_Id" ColumnName="Activity_FlavourOptions_Id" />
@@ -8667,23 +8716,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="DistributionLayerRefresh_Log">
-            <EntityTypeMapping TypeName="ConsumerModel.DistributionLayerRefresh_Log">
-              <MappingFragment StoreEntitySet="DistributionLayerRefresh_Log">
-                <ScalarProperty Name="MongoPushCount" ColumnName="MongoPushCount" />
-                <ScalarProperty Name="TotalCount" ColumnName="TotalCount" />
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Edit_date" ColumnName="Edit_date" />
-                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Element" ColumnName="Element" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="vwMappingStats">
             <EntityTypeMapping TypeName="ConsumerModel.vwMappingStats">
               <MappingFragment StoreEntitySet="vwMappingStats">
@@ -8725,6 +8757,35 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
                 <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
                 <ScalarProperty Name="supplier_id" ColumnName="supplier_id" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DistributionLayerRefresh_Log">
+            <EntityTypeMapping TypeName="ConsumerModel.DistributionLayerRefresh_Log">
+              <MappingFragment StoreEntitySet="DistributionLayerRefresh_Log">
+                <ScalarProperty Name="MongoPushCount" ColumnName="MongoPushCount" />
+                <ScalarProperty Name="TotalCount" ColumnName="TotalCount" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Element" ColumnName="Element" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwMappingStatsMdmOnly">
+            <EntityTypeMapping TypeName="ConsumerModel.vwMappingStatsMdmOnly">
+              <MappingFragment StoreEntitySet="vwMappingStatsMdmOnly">
+                <ScalarProperty Name="totalcount" ColumnName="totalcount" />
+                <ScalarProperty Name="MappinFor" ColumnName="MappinFor" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="RowId" ColumnName="RowId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

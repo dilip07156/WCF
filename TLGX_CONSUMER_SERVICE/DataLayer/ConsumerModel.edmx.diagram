@@ -175,6 +175,9 @@
         <EntityTypeShape EntityType="ConsumerModel.SupplierEntity" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.DistributionLayerRefresh_Log" Width="1.5" PointX="3.375" PointY="0.75" />
       </Diagram>
+      <Diagram DiagramId="5fcb9706eaee41e8af8872ae0f8c4f43" Name="Reports" >
+        <EntityTypeShape EntityType="ConsumerModel.vwMappingStatsMdmOnly" Width="1.5" PointX="0.75" PointY="0.75" />
+      </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

@@ -78,7 +78,89 @@ namespace DataContracts.Mapping
         public List<DC_MappingStatsForSuppliers> MappingStatsForSuppliers { get; set; }
     }
 
-   
+    [DataContract]
+    public class DC_SupplierExportDataReport
+    {
+        [DataMember]
+        public string Priority { get; set; }
+        [DataMember]
+        public Guid? Supplier_Id { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+        //Country
+        [DataMember]
+        public DateTime? Country_LastFetched { get; set; }
+        [DataMember]
+        public int Country_TotalRecordReceived { get; set; }
+        [DataMember]
+        public int Country_AutoMapped { get; set; }
+        [DataMember]
+        public int Country_MannualMapped { get; set; }
+        [DataMember]
+        public int Country_ReviewMapped { get; set; }
+        [DataMember]
+        public int Country_Unmapped { get; set; }
+        [DataMember]
+        public int CountryTotal { get; set; }
+        [DataMember]
+        public decimal Country_CompletePercentage { get; set; }
+
+        //City
+        [DataMember]
+        public int City_TotalRecordReceived { get; set; }
+        [DataMember]
+        public int City_AutoMapped { get; set; }
+        [DataMember]
+        public int City_MannualMapped { get; set; }
+        [DataMember]
+        public int City_ReviewMapped { get; set; }
+        [DataMember]
+        public int City_Unmapped { get; set; }
+        [DataMember]
+        public int CityTotal { get; set; }
+        [DataMember]
+        public decimal City_CompletePercentage { get; set; }
+
+        //Hotel
+        [DataMember]
+        public int Hotel_TotalRecordReceived { get; set; }
+        [DataMember]
+        public int Hotel_AutoMapped { get; set; }
+        [DataMember]
+        public int Hotel_MannualMapped { get; set; }
+        [DataMember]
+        public int Hotel_ReviewMapped { get; set; }
+        [DataMember]
+        public int Hotel_Unmapped { get; set; }
+        [DataMember]
+        public int HotelTotal { get; set; }
+        [DataMember]
+        public decimal Hotel_CompletePercentage { get; set; }
+
+        //Room
+        [DataMember]
+        public int AvaialbleFromSupplier { get; set; }
+        [DataMember]
+        public int HotelsMapped { get; set; }
+        [DataMember]
+        public int TotalEligibleRoom { get; set; }
+        
+        [DataMember]
+        public int Room_AutoMapped { get; set; }
+        [DataMember]
+        public int Room_MannualMapped { get; set; }
+        [DataMember]
+        public int Room_ReviewMapped { get; set; }
+        [DataMember]
+        public int Room_Add { get; set; }
+        [DataMember]
+        public int Room_Unmapped { get; set; }
+        [DataMember]
+        public int RoomTotal { get; set; }
+        [DataMember]
+        public decimal Room_CompletePercentage { get; set; }
+    }
+
     [DataContract]
     public class DC_MappingStatsFor
     {

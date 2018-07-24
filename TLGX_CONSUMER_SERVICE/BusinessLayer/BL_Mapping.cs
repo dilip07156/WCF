@@ -663,6 +663,28 @@ namespace BusinessLayer
         }
         #endregion
 
+        #region Supplier Data Export
+        public List<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport( string SupplierID, string IsMdmDataOnly)
+        {
+            Guid gSupplier_Id;
+            if (!Guid.TryParse(SupplierID, out gSupplier_Id))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+
+            bool bIsMdmDataOnly;
+            if (!bool.TryParse(IsMdmDataOnly, out bIsMdmDataOnly))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+
+            using (DL_Mapping objBL = new DL_Mapping())
+            {
+                return objBL.GetSupplierDataForExport(gSupplier_Id, bIsMdmDataOnly);
+            }
+        }
+
+        #endregion
         #region HotelListLinkedToCityCodeAndSupplierCode
         public IList<DataContracts.Mapping.DC_HotelListByCityCode> GetHotelListByCityCode(DataContracts.Mapping.DC_HotelListByCityCode_RQ param)
         {

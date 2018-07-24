@@ -155,10 +155,11 @@ namespace DataLayer
         public virtual DbSet<m_ZoneMaster> m_ZoneMaster { get; set; }
         public virtual DbSet<ZoneCity_Mapping> ZoneCity_Mapping { get; set; }
         public virtual DbSet<Stg_Kafka> Stg_Kafka { get; set; }
-        public virtual DbSet<DistributionLayerRefresh_Log> DistributionLayerRefresh_Log { get; set; }
         public virtual DbSet<vwMappingStats> vwMappingStats { get; set; }
         public virtual DbSet<Supplier> Supplier { get; set; }
         public virtual DbSet<vwUserwisemappedStats> vwUserwisemappedStats { get; set; }
+        public virtual DbSet<DistributionLayerRefresh_Log> DistributionLayerRefresh_Log { get; set; }
+        public virtual DbSet<vwMappingStatsMdmOnly> vwMappingStatsMdmOnly { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {
