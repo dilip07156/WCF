@@ -89,9 +89,9 @@ namespace DataContracts.Mapping
         public string SupplierName { get; set; }
         //Country
         [DataMember]
-        public DateTime? Country_LastFetched { get; set; }
+        public DateTime? LastFetchedDate { get; set; }
         [DataMember]
-        public int Country_TotalRecordReceived { get; set; }
+        public string Country_TotalRecordReceived { get; set; }
         [DataMember]
         public int Country_AutoMapped { get; set; }
         [DataMember]
@@ -107,7 +107,7 @@ namespace DataContracts.Mapping
 
         //City
         [DataMember]
-        public int City_TotalRecordReceived { get; set; }
+        public string City_TotalRecordReceived { get; set; }
         [DataMember]
         public int City_AutoMapped { get; set; }
         [DataMember]
@@ -123,7 +123,7 @@ namespace DataContracts.Mapping
 
         //Hotel
         [DataMember]
-        public int Hotel_TotalRecordReceived { get; set; }
+        public string Hotel_TotalRecordReceived { get; set; }
         [DataMember]
         public int Hotel_AutoMapped { get; set; }
         [DataMember]
