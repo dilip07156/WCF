@@ -8883,9 +8883,10 @@ namespace DataLayer
                                         group asrtm by new { asrtm.Supplier_Id } into g
                                         select new { g.Key.Supplier_Id, TotalEligibleRooms=g.Count()}).ToList();
 
-                    var lastFetchedDate = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
-                                           group a by new { a.Supplier_Id, a.Create_Date} into g
-                                           select new { g.Key.Supplier_Id, CreatedDate = g.Max(x => x.Create_Date) }).ToList();
+                    //var lastFetchedDate = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
+                    //                       where a.Create_User == "TLGX"
+                    //                       group a by new { a.Supplier_Id, a.Create_Date} into g
+                    //                       select new { g.Key.Supplier_Id, CreatedDate = g.Max(x => x.Create_Date) }).ToList();
 
                     foreach (var supplier in suppliermaster)
                     {
@@ -8896,7 +8897,7 @@ namespace DataLayer
                         supplierResult.SupplierName = supplier.Name;
 
                         #region Country Mapping Data
-                        supplierResult.LastFetchedDate = lastFetchedDate.Where(x => x.Supplier_Id == supplier.Supplier_Id).Max(x => x.CreatedDate);
+                        //supplierResult.LastFetchedDate = lastFetchedDate.Where(x => x.Supplier_Id == supplier.Supplier_Id).Max(x => x.CreatedDate);
                         supplierResult.Country_TotalRecordReceived = string.Empty;
                         supplierResult.Country_AutoMapped = MappingData.Where(x => x.MappinFor == "Country" && x.Status == "AUTOMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
                         supplierResult.Country_MannualMapped = MappingData.Where(x => x.MappinFor == "Country" && x.Status == "MAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.totalcount) ?? 0;
@@ -8992,7 +8993,7 @@ namespace DataLayer
                         GrandTotal.SupplierName = "Grand Total";
 
                         #region Country Mapping Data
-                        GrandTotal.LastFetchedDate = null;
+                        //GrandTotal.LastFetchedDate = null;
                         GrandTotal.Country_TotalRecordReceived = string.Empty;
                         GrandTotal.Country_AutoMapped = MappingData.Where(x => x.MappinFor == "Country" && x.Status == "AUTOMAPPED").Sum(x => x.totalcount) ?? 0;
                         GrandTotal.Country_MannualMapped = MappingData.Where(x => x.MappinFor == "Country" && x.Status == "MAPPED").Sum(x => x.totalcount) ?? 0;

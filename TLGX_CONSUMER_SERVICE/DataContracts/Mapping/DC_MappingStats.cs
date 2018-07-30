@@ -88,8 +88,8 @@ namespace DataContracts.Mapping
         [DataMember]
         public string SupplierName { get; set; }
         //Country
-        [DataMember]
-        public DateTime? LastFetchedDate { get; set; }
+        //[DataMember]
+        //public DateTime? LastFetchedDate { get; set; }
         [DataMember]
         public string Country_TotalRecordReceived { get; set; }
         [DataMember]
