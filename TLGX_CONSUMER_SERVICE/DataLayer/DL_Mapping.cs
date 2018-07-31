@@ -2584,6 +2584,16 @@ namespace DataLayer
         {
             Guid SupplierImportFile_Id = Guid.Empty;
             int Batch = 0;
+
+            if(obj.Count > 0)
+            {
+                SupplierImportFile_Id = obj[0].ReRunSupplierImporrtFile_Id;
+                if(SupplierImportFile_Id == Guid.Empty)
+                {
+                    SupplierImportFile_Id = obj[0].SupplierImporrtFile_Id;
+                }
+            }
+
             StringBuilder sbUpdateSRTMStatus = new StringBuilder();
 
             List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList> AttributeList = new List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList>();
@@ -2594,29 +2604,43 @@ namespace DataLayer
             {
                 //Get All Related Keywords
                 List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
-                using (DL_Masters objDL = new DL_Masters())
+                if (SupplierImportFile_Id != Guid.Empty)
                 {
-                    Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
+                    using (DL_Masters objDL = new DL_Masters())
+                    {
+                        Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
+                    }
                 }
 
                 foreach (var PM in obj)
                 {
                     if (SupplierImportFile_Id == Guid.Empty)
+                    {
                         SupplierImportFile_Id = PM.ReRunSupplierImporrtFile_Id;
+                        if (SupplierImportFile_Id == Guid.Empty)
+                        {
+                            SupplierImportFile_Id = obj[0].SupplierImporrtFile_Id;
+                        }
+                    }
 
                     if (Batch == 0)
+                    {
                         Batch = PM.ReRunBatch;
+                    }
 
                     if (PM.Accommodation_ProductMapping_Id == null)
                     {
                         continue;
                     }
 
-                    PM.HotelName_Tx = CommonFunctions.HotelNameTX(PM.ProductName, PM.CityName, PM.CountryName, ref Keywords);
-                    PM.TelephoneNumber_tx = CommonFunctions.GetDigits(PM.TelephoneNumber, 8);
-                    PM.Latitude_Tx = CommonFunctions.LatLongTX(PM.Latitude);
-                    PM.Longitude_Tx = CommonFunctions.LatLongTX(PM.Longitude);
-                    PM.Address_tx = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, PM.FullAddress, new string[] { PM.CityName, PM.CountryName });
+                    if (SupplierImportFile_Id != Guid.Empty)
+                    {
+                        PM.HotelName_Tx = CommonFunctions.HotelNameTX(PM.ProductName, PM.CityName, PM.CountryName, ref Keywords);
+                        PM.TelephoneNumber_tx = CommonFunctions.GetDigits(PM.TelephoneNumber, 8);
+                        PM.Latitude_Tx = CommonFunctions.LatLongTX(PM.Latitude);
+                        PM.Longitude_Tx = CommonFunctions.LatLongTX(PM.Longitude);
+                        PM.Address_tx = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, PM.FullAddress, new string[] { PM.CityName, PM.CountryName });
+                    }
 
                     try
                     {
@@ -2920,7 +2944,6 @@ namespace DataLayer
                             _obj.SyncHotelMappingLite(PM.Accommodation_ProductMapping_Id);
                         }
                         #endregion
-
                     }
                     catch (Exception e)
                     {
@@ -2928,15 +2951,18 @@ namespace DataLayer
                     }
                 }
 
-                string sql = "";
-                sql = "UPDATE Accommodation_ProductMapping Set GeoLocation = geography::Point(Latitude, Longitude, 4326) ";
-                sql = sql + " WHERE Latitude IS NOT NULL and Longitude IS NOT NULL ";
-                sql = sql + " AND TRY_CONVERT(float, Latitude) IS NOT NULL AND TRY_CONVERT(float, Longitude) IS NOT NULL ";
-                sql = sql + " AND (TRY_CONVERT(float, Latitude) >= -90 AND TRY_CONVERT(float, Latitude) <= 90) ";
-                sql = sql + " AND (TRY_CONVERT(float, Longitude) >= -180 AND TRY_CONVERT(float, Longitude) <= 180) ";
-                sql = sql + " AND ReRun_SupplierImportFile_Id = '" + SupplierImportFile_Id + "' AND ReRun_Batch = " + Batch + ";";
-                try { context.Database.ExecuteSqlCommand(sql); } catch (Exception ex) { }
-                //context.USP_UpdateMapID("product");
+                if(SupplierImportFile_Id != Guid.Empty)
+                {
+                    string sql = "";
+                    sql = "UPDATE Accommodation_ProductMapping Set GeoLocation = geography::Point(Latitude, Longitude, 4326) ";
+                    sql = sql + " WHERE Latitude IS NOT NULL and Longitude IS NOT NULL ";
+                    sql = sql + " AND TRY_CONVERT(float, Latitude) IS NOT NULL AND TRY_CONVERT(float, Longitude) IS NOT NULL ";
+                    sql = sql + " AND (TRY_CONVERT(float, Latitude) >= -90 AND TRY_CONVERT(float, Latitude) <= 90) ";
+                    sql = sql + " AND (TRY_CONVERT(float, Longitude) >= -180 AND TRY_CONVERT(float, Longitude) <= 180) ";
+                    sql = sql + " AND ReRun_SupplierImportFile_Id = '" + SupplierImportFile_Id + "' AND ReRun_Batch = " + Batch + ";";
+                    try { context.Database.ExecuteSqlCommand(sql); } catch (Exception ex) { }
+                    //context.USP_UpdateMapID("product");
+                }
 
                 #region Update No Of Hits
                 var updatableAliases = (from k in Keywords
@@ -2952,6 +2978,7 @@ namespace DataLayer
                 }
 
                 #endregion
+
             }
             return true;
         }

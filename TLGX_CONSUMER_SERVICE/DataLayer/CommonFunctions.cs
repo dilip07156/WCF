@@ -50,6 +50,11 @@ namespace DataLayer
 
         public static string GetCharacter(string str, int lenghth)
         {
+            if (string.IsNullOrWhiteSpace(str))
+            {
+                return string.Empty;
+            }
+
             str = RemoveSpecialCharacters(str);
             int len = str.Length;
             if (len > lenghth)
@@ -60,7 +65,7 @@ namespace DataLayer
 
         public static string LatLongTX(string param)
         {
-            if (!string.IsNullOrWhiteSpace(param))
+            if (string.IsNullOrWhiteSpace(param))
             {
                 return string.Empty;
             }
@@ -87,17 +92,38 @@ namespace DataLayer
 
         public static string RemoveSpecialChars(string str)
         {
-            return str.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "").Replace("'", "").Replace("!", "").Replace("#", "").Replace("\"", "");
+            if (!string.IsNullOrWhiteSpace(str))
+            {
+                return str.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "").Replace("'", "").Replace("!", "").Replace("#", "").Replace("\"", "");
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         public static string RemoveVowels(string str)
         {
-            return str.Replace("A", "").Replace("E", "").Replace("I", "").Replace("O", "").Replace("U", "");
+            if (!string.IsNullOrWhiteSpace(str))
+            {
+                return str.Replace("A", "").Replace("E", "").Replace("I", "").Replace("O", "").Replace("U", "");
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         public static string RemoveNumbers(string str)
         {
-            return str.Replace("0", "").Replace("1", "").Replace("2", "").Replace("3", "").Replace("4", "").Replace("5", "").Replace("6", "").Replace("7", "").Replace("8", "").Replace("9", "");
+            if (!string.IsNullOrWhiteSpace(str))
+            {
+                return str.Replace("0", "").Replace("1", "").Replace("2", "").Replace("3", "").Replace("4", "").Replace("5", "").Replace("6", "").Replace("7", "").Replace("8", "").Replace("9", "");
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         public static string HotelNameTX(string HotelName, string cityname, string countryname, ref List<DataContracts.Masters.DC_Keyword> Keywords)
@@ -251,12 +277,12 @@ namespace DataLayer
                                 ref string SX_text,
                                 string OriginalValue, string[] HardRemove)
         {
-            string text = OriginalValue;
-
-            if (string.IsNullOrWhiteSpace(text))
+            if (string.IsNullOrWhiteSpace(OriginalValue))
             {
-                return text;
+                return string.Empty;
             }
+
+            string text = OriginalValue;
 
             #region PRE TTFU
 
