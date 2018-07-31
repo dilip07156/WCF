@@ -2585,10 +2585,10 @@ namespace DataLayer
             Guid SupplierImportFile_Id = Guid.Empty;
             int Batch = 0;
 
-            if(obj.Count > 0)
+            if (obj.Count > 0)
             {
                 SupplierImportFile_Id = obj[0].ReRunSupplierImporrtFile_Id;
-                if(SupplierImportFile_Id == Guid.Empty)
+                if (SupplierImportFile_Id == Guid.Empty)
                 {
                     SupplierImportFile_Id = obj[0].SupplierImporrtFile_Id;
                 }
@@ -2863,7 +2863,7 @@ namespace DataLayer
 
                         if (search == null)
                         {
-                            if ((PM.Status == "AUTOMAPPED" || PM.Status == "MAPPED") && PM.Accommodation_Id != null) 
+                            if ((PM.Status == "AUTOMAPPED" || PM.Status == "MAPPED") && PM.Accommodation_Id != null)
                             {
                                 sbUpdateSRTMStatus.Clear();
                                 sbUpdateSRTMStatus.Append(" UPDATE Accommodation_SupplierRoomTypeMapping SET Accommodation_Id='" + PM.Accommodation_Id + "', ");
@@ -2931,7 +2931,7 @@ namespace DataLayer
 
                         if (sbUpdateSRTMStatus.Length > 0)
                         {
-                            try { context.Database.ExecuteSqlCommandAsync(sbUpdateSRTMStatus.ToString()); } catch (Exception ex) { }
+                            try { context.Database.ExecuteSqlCommand(sbUpdateSRTMStatus.ToString()); } catch (Exception ex) { }
                         }
 
                         #endregion
@@ -2951,7 +2951,7 @@ namespace DataLayer
                     }
                 }
 
-                if(SupplierImportFile_Id != Guid.Empty)
+                if (SupplierImportFile_Id != Guid.Empty)
                 {
                     string sql = "";
                     sql = "UPDATE Accommodation_ProductMapping Set GeoLocation = geography::Point(Latitude, Longitude, 4326) ";
