@@ -322,7 +322,8 @@ namespace DataLayer
         }
 
         #endregion
-        #region == Sync geographic Data
+
+        #region Sync geographic Data
         public DC_Message SyncGeographyData(DataContracts.DC_MongoDbSyncRQ RQ)
         {
             DC_Message _msg = new DC_Message();

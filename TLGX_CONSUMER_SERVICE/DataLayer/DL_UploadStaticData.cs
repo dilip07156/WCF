@@ -2310,14 +2310,13 @@ namespace DataLayer
                                     select a;
                     }
 
-
                     if (RQ.SupplierImportFile_Id.HasValue)
                     {
                         stgSearch = from a in stgSearch
                                     where a.SupplierImportFile_Id == RQ.SupplierImportFile_Id
                                     select a;
                     }
-                    if (!(RQ.Supplier_Id == Guid.Empty))
+                    if (RQ.Supplier_Id != Guid.Empty)
                     {
                         stgSearch = from a in stgSearch
                                     where a.Supplier_Id == RQ.Supplier_Id
@@ -2406,10 +2405,7 @@ namespace DataLayer
                                     select a;
                     }
 
-                    //var skip = RQ.PageSize * RQ.PageNo;
-
                     var stgResult = (from a in stgSearch
-                                         //orderby a.SupplierName, a.CountryName
                                      select new DataContracts.STG.DC_stg_SupplierProductMapping
                                      {
                                          stg_AccoMapping_Id = a.stg_AccoMapping_Id,
@@ -2453,9 +2449,7 @@ namespace DataLayer
                                          Supplier_Id = a.Supplier_Id,
                                          ProductType = a.ProductType,
                                          SupplierImportFile_Id = a.SupplierImportFile_Id
-                                     }
-                                        ).ToList();
-                    //.Skip(skip).Take(RQ.PageSize).ToList();
+                                     }).ToList();
 
                     return stgResult;
 

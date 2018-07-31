@@ -33,12 +33,19 @@ namespace DataLayer
 
         public static string GetDigits(string str, int length)
         {
-            str = RemoveSpecialCharactersAndAlphabates(str);
-            int len = str.Length;
-            if (len > length)
-                return str.Substring(len - length);
+            if (!string.IsNullOrWhiteSpace(str))
+            {
+                str = RemoveSpecialCharactersAndAlphabates(str);
+                int len = str.Length;
+                if (len > length)
+                    return str.Substring(len - length);
+                else
+                    return str;
+            }
             else
-                return str;
+            {
+                return string.Empty;
+            }
         }
 
         public static string GetCharacter(string str, int lenghth)
@@ -53,6 +60,11 @@ namespace DataLayer
 
         public static string LatLongTX(string param)
         {
+            if (!string.IsNullOrWhiteSpace(param))
+            {
+                return string.Empty;
+            }
+
             string ret = "";
             string[] brkparam = param.Split('.');
             if (brkparam.Length > 1)
@@ -102,7 +114,7 @@ namespace DataLayer
                 return returnString;
             }
             else
-                return "";
+                return string.Empty;
 
             //replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(A.hotelname))), ' ',''), 'HOTEL','')
             //, 'APARTMENT',''), replace(ltrim(rtrim(upper(A.city))), '''','') ,''),  replace(ltrim(rtrim(upper(A.country))), '''',''),'')
@@ -688,7 +700,7 @@ namespace DataLayer
             result = Regex.Replace(result, "<.*?>", " ");
             //result = Regex.Replace(result, "<(.|\n)*?>", " ");
             result = Regex.Replace(result, @"\s+", " ");
-           
+
             return result;
         }
 
