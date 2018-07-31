@@ -43,5 +43,12 @@ namespace DataContracts.Mapping
         [DataMember]
         public string CalledFromTLGX { get; set; }
 
+        [DataMember]
+        public string TLGXAccoId { get; set; }
+        [DataMember]
+        public string TLGXAccoRoomId { get; set; }
+        [DataMember]
+        public int? CompanyHotelID { get; set; }
+
     }
 }

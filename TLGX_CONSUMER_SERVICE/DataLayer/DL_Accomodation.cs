@@ -334,6 +334,10 @@ namespace DataLayer
                     {
                         sbwhere.Append(" AND ISNULL(a.InsertFrom,0) =" + (RQ.InsertFrom == true ? "1" : "0"));
                     }
+                    if (RQ.TLGXAccoId != null)
+                    {
+                        sbwhere.Append(" AND a.TLGXAccoId  = '" + RQ.TLGXAccoId + "' ");
+                    }
 
                     StringBuilder sbsqlselectcount = new StringBuilder();
                     sbsqlselectcount.Append("select count(*) ");
