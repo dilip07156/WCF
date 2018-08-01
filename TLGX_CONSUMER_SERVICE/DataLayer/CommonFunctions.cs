@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -56,6 +57,25 @@ namespace DataLayer
                 return str.Substring(len - lenghth);
             else
                 return str;
+        }
+
+        public static string SubString(string str, int length)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                return string.Empty;
+            }
+            else
+            {
+                if (str.Length <= length)
+                {
+                    return str;
+                }
+                else
+                {
+                    return str.Substring(0, length);
+                }
+            }
         }
 
         public static string LatLongTX(string param)
@@ -720,6 +740,33 @@ namespace DataLayer
                         .Replace("\t", " ")
                         .Replace(lineSeparator, " ")
                         .Replace(paragraphSeparator, " ");
+        }
+
+        public static List<DataContracts.DC_SqlTableColumnInfo> GetSqlTableColumnInfo(string tblname, List<string> datatypes)
+        {
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                string sqlquery = string.Empty;
+                string formatstring = string.Empty;
+                if (datatypes.Count > 0)
+                {
+                    formatstring = string.Format("{0}", string.Join("','", datatypes.Select(i => i.Replace("\"", "'"))));
+
+                    sqlquery = "SELECT COLUMN_NAME,CHARACTER_MAXIMUM_LENGTH from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME ='" + tblname + "'and DATA_TYPE in('" + formatstring + "');";
+                }
+                else
+                {
+                    sqlquery = "SELECT COLUMN_NAME,CHARACTER_MAXIMUM_LENGTH from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME ='" + tblname + "';";
+                }
+                var result = context.Database.SqlQuery<DataContracts.DC_SqlTableColumnInfo>(sqlquery).ToList();
+                return result;
+            }
+        }
+
+        public static string GetPropertyName<T>(Expression<Func<T>> expression)
+        {
+            MemberExpression memberExpression = (MemberExpression)expression.Body;
+            return memberExpression.Member.Name;
         }
 
         //public static void ErrorLog(Exception ex, string message)

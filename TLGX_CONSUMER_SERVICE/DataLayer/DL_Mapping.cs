@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using DataContracts.STG;
 using DataContracts;
 using System.Globalization;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataLayer
 {
@@ -2590,6 +2591,7 @@ namespace DataLayer
             string TX_Value = string.Empty;
             string SX_Value = string.Empty;
 
+
             using (ConsumerEntities context = new ConsumerEntities())
             {
                 //Get All Related Keywords
@@ -2598,6 +2600,9 @@ namespace DataLayer
                 {
                     Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
                 }
+
+                List<string> datatypes = new List<string> { "nvarchar", "varchar" };
+                var columnLength = CommonFunctions.GetSqlTableColumnInfo("Accommodation_ProductMapping", datatypes);
 
                 foreach (var PM in obj)
                 {
@@ -2651,7 +2656,7 @@ namespace DataLayer
                             #endregion
 
                             bool isReMap = false;
-
+                            int length = 0;
                             search.Accommodation_Id = PM.Accommodation_Id;
 
                             if (PM.Supplier_Id != null)
@@ -2670,42 +2675,53 @@ namespace DataLayer
 
                             if (search.ProductType != PM.ProductType && !string.IsNullOrWhiteSpace(PM.ProductType))
                             {
-                                search.ProductType = PM.ProductType;
+                                length = columnLength.Where(x => x.COLUMN_NAME == CommonFunctions.GetPropertyName(() => search.ProductType)).Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.ProductType = CommonFunctions.SubString(PM.ProductType, length);
                             }
 
                             if (search.ProductName != PM.ProductName && !string.IsNullOrWhiteSpace(PM.ProductName))
                             {
                                 isReMap = true;
-                                search.ProductName = PM.ProductName;
-                                search.HotelName_Tx = PM.HotelName_Tx;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "ProductName").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.ProductName = CommonFunctions.GetCharacter(PM.ProductName, length);
+                                length = columnLength.Where(x => x.COLUMN_NAME == "HotelName_Tx").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.HotelName_Tx = CommonFunctions.GetCharacter(PM.HotelName_Tx, length);
                             }
 
                             if (search.address != PM.FullAddress && !string.IsNullOrWhiteSpace(PM.FullAddress))
                             {
                                 isReMap = true;
-                                search.address = PM.FullAddress;
-                                search.address_tx = PM.Address_tx;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "address").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.address = CommonFunctions.GetCharacter(PM.FullAddress, length);
+                                length = columnLength.Where(x => x.COLUMN_NAME == "address_tx").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.address_tx = CommonFunctions.GetCharacter(PM.Address_tx, length);
                             }
 
                             if (search.Latitude != PM.Latitude && !string.IsNullOrWhiteSpace(PM.Latitude))
                             {
                                 isReMap = true;
-                                search.Latitude = PM.Latitude;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "Latitude").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.Latitude = CommonFunctions.GetCharacter(PM.Latitude, length);
+                                length = columnLength.Where(x => x.COLUMN_NAME == "Latitude_Tx").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
                                 search.Latitude_Tx = PM.Latitude_Tx;
                             }
 
                             if (search.Longitude != PM.Longitude && !string.IsNullOrWhiteSpace(PM.Longitude))
                             {
                                 isReMap = true;
-                                search.Longitude = PM.Longitude;
-                                search.Longitude_Tx = PM.Longitude_Tx;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "Longitude").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.Longitude = CommonFunctions.GetCharacter(PM.Longitude, length);
+                                length = columnLength.Where(x => x.COLUMN_NAME == "Longitude_Tx").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.Longitude_Tx = CommonFunctions.GetCharacter(PM.Longitude_Tx, length);
                             }
 
                             if (search.TelephoneNumber != PM.TelephoneNumber && !string.IsNullOrWhiteSpace(PM.TelephoneNumber))
                             {
                                 isReMap = true;
-                                search.TelephoneNumber = PM.TelephoneNumber;
-                                search.TelephoneNumber_tx = PM.TelephoneNumber_tx;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "TelephoneNumber").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.TelephoneNumber = CommonFunctions.GetCharacter(PM.TelephoneNumber, length);
+                                length = columnLength.Where(x => x.COLUMN_NAME == "TelephoneNumber_tx").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.TelephoneNumber_tx = CommonFunctions.GetCharacter(PM.TelephoneNumber_tx, length);
                             }
 
                             if (search.Country_Id != PM.Country_Id && PM.Country_Id != null)
@@ -2723,80 +2739,95 @@ namespace DataLayer
                             if (search.CityCode != PM.CityCode && !string.IsNullOrWhiteSpace(PM.CityCode))
                             {
                                 isReMap = true;
-                                search.CityCode = PM.CityCode;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "CityCode").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.CityCode = CommonFunctions.GetCharacter(PM.CityCode, length);
                             }
 
                             if (search.CityName != PM.CityName && !string.IsNullOrWhiteSpace(PM.CityName))
                             {
                                 isReMap = true;
-                                search.CityName = PM.CityName;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "CityName").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.CityName = CommonFunctions.GetCharacter(PM.CityName, length);
                             }
 
                             if (search.CountryName != PM.CountryName && !string.IsNullOrWhiteSpace(PM.CountryName))
                             {
                                 isReMap = true;
-                                search.CountryName = PM.CountryName;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "CountryName").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.CountryName = CommonFunctions.GetCharacter(PM.CountryName, length);
                             }
 
                             if (search.CountryCode != PM.CountryCode && !string.IsNullOrWhiteSpace(PM.CountryCode))
                             {
                                 isReMap = true;
-                                search.CountryCode = PM.CountryCode;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "CountryCode").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.CountryCode = CommonFunctions.GetCharacter(PM.CountryCode, length);
                             }
 
                             if (search.StateName != PM.StateName && !string.IsNullOrWhiteSpace(PM.StateName))
                             {
-                                search.StateName = PM.StateName;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "StateName").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.StateName = CommonFunctions.GetCharacter(PM.StateName, length);
                             }
 
                             if (search.StateCode != PM.StateCode && !string.IsNullOrWhiteSpace(PM.StateCode))
                             {
-                                search.StateCode = PM.StateCode;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "StateCode").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.StateCode = CommonFunctions.GetCharacter(PM.StateCode, length);
                             }
 
                             if (search.Email != PM.Email && !string.IsNullOrWhiteSpace(PM.Email))
                             {
-                                search.Email = PM.Email;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "Email").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.Email = CommonFunctions.GetCharacter(PM.Email, length);
                             }
 
                             if (search.Fax != PM.Fax && !string.IsNullOrWhiteSpace(PM.Fax))
                             {
-                                search.Fax = PM.Fax;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "Fax").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.Fax = CommonFunctions.GetCharacter(PM.Fax, length);
                             }
 
                             if (search.Website != PM.Website && !string.IsNullOrWhiteSpace(PM.Website))
                             {
-                                search.Website = PM.Website;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "Website").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.Website = CommonFunctions.GetCharacter(PM.Website, length);
                             }
 
                             if (search.StarRating != PM.StarRating && !string.IsNullOrWhiteSpace(PM.StarRating))
                             {
-                                search.StarRating = PM.StarRating;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "StarRating").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.StarRating = CommonFunctions.GetCharacter(PM.StarRating, length);
                             }
 
                             if (search.PostCode != PM.PostCode && !string.IsNullOrWhiteSpace(PM.PostCode))
                             {
-                                search.PostCode = PM.PostCode;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "PostCode").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.PostCode = CommonFunctions.GetCharacter(PM.PostCode, length);
                             }
 
                             if (search.Street != PM.Street && !string.IsNullOrWhiteSpace(PM.Street))
                             {
-                                search.Street = PM.Street;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "Street").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.Street = CommonFunctions.GetCharacter(PM.Street, length);
                             }
 
                             if (search.Street2 != PM.Street2 && !string.IsNullOrWhiteSpace(PM.Street2))
                             {
-                                search.Street2 = PM.Street2;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "Street2").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.Street2 = CommonFunctions.GetCharacter(PM.Street2, length);
                             }
 
                             if (search.Street3 != PM.Street3 && !string.IsNullOrWhiteSpace(PM.Street3))
                             {
-                                search.Street3 = PM.Street3;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "Street3").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.Street3 = CommonFunctions.GetCharacter(PM.Street3, length);
                             }
 
                             if (search.Street4 != PM.Street4 && !string.IsNullOrWhiteSpace(PM.Street4))
                             {
-                                search.Street4 = PM.Street4;
+                                length = columnLength.Where(x => x.COLUMN_NAME == "Street4").Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+                                search.Street4 = CommonFunctions.GetCharacter(PM.Street4, length);
                             }
 
                             if (isReMap && search.Status == "MAPPED" && search.Accommodation_Id != null)
@@ -2839,7 +2870,7 @@ namespace DataLayer
 
                         if (search == null)
                         {
-                            if ((PM.Status == "AUTOMAPPED" || PM.Status == "MAPPED") && PM.Accommodation_Id != null) 
+                            if ((PM.Status == "AUTOMAPPED" || PM.Status == "MAPPED") && PM.Accommodation_Id != null)
                             {
                                 sbUpdateSRTMStatus.Clear();
                                 sbUpdateSRTMStatus.Append(" UPDATE Accommodation_SupplierRoomTypeMapping SET Accommodation_Id='" + PM.Accommodation_Id + "', ");
