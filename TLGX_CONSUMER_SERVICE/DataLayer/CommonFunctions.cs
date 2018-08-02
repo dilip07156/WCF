@@ -72,7 +72,7 @@ namespace DataLayer
             }
             else
             {
-                if (str.Length <= length)
+                if (str.Length <= length && length == 0)
                 {
                     return str;
                 }
@@ -802,5 +802,12 @@ namespace DataLayer
         //    NLog.LogManager.Configuration.Variables["targetsite"] = ex.TargetSite.ToString();
         //    logger.Error(ex, message);
         //}
+
+        //public static string SubStringAsPerColumnLength<T>(List<DataContracts.DC_SqlTableColumnInfo> ColumnInfo, object OriginalValue, )
+        //{
+        //    int length = ColumnInfo.Where(x => x.COLUMN_NAME == CommonFunctions.GetPropertyName(() => T)).Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+        //    search.ProductType = CommonFunctions.SubString(PM.ProductType, length);
+        //}
+
     }
 }
