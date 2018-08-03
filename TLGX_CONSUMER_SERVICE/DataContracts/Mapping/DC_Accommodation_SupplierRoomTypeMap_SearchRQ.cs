@@ -50,5 +50,8 @@ namespace DataContracts.Mapping
         [DataMember]
         public int? CompanyHotelID { get; set; }
 
+        [DataMember]
+        public int? Priority { get; set; }
+
     }
 }

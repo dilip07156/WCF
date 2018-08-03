@@ -2686,7 +2686,7 @@ namespace DataLayer
                             #endregion
 
                             bool isReMap = false;
-                            
+
                             search.Accommodation_Id = PM.Accommodation_Id;
 
                             if (PM.Supplier_Id != null)
@@ -3028,7 +3028,7 @@ namespace DataLayer
 
                             length = columnLength.Where(x => x.COLUMN_NAME == CommonFunctions.GetPropertyName(() => objNew.address_tx)).Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
                             objNew.address_tx = CommonFunctions.GetCharacter(PM.Address_tx, length);
-                            
+
                             length = columnLength.Where(x => x.COLUMN_NAME == CommonFunctions.GetPropertyName(() => objNew.ProductType)).Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
                             objNew.ProductType = CommonFunctions.GetCharacter(PM.ProductType, length);
 
@@ -3723,6 +3723,12 @@ namespace DataLayer
                 {
                     sbWhere.Append(" and ari.TLGXAccoRoomId ='" + obj.TLGXAccoRoomId + "' ");
                 }
+
+                if (obj.Priority != null)
+                {
+                    sbWhere.Append(" and acco.Priority = " + obj.Priority.Value);
+                }
+
 
 
                 sbFrom.Append(@" FROM  [dbo].[Accommodation_SupplierRoomTypeMapping] AS  asrtm WITH (NOLOCK)
