@@ -2437,6 +2437,11 @@ namespace DataLayer
                     sbsqlwhere.AppendLine(" and apm.SupplierProductReference = '" + obj.SupplierProductCode.ToString().Trim() + "' ");
                 }
 
+                if (obj.Priority != null)
+                {
+                    sbsqlwhere.AppendLine(" and a.Priority=" + obj.Priority+"  ");
+                }
+
                 #region Select from Tables
 
                 sbsqlfrom.AppendLine(" from Accommodation_ProductMapping apm with (nolock) left join Accommodation a with (nolock) on apm.Accommodation_Id = a.Accommodation_Id AND ISNULL(A.ISACTIVE,0) = 1 ");
