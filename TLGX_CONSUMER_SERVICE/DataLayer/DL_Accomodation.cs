@@ -339,6 +339,11 @@ namespace DataLayer
                         sbwhere.Append(" AND a.TLGXAccoId  = '" + RQ.TLGXAccoId + "' ");
                     }
 
+                    if (RQ.Priority != null)
+                    {
+                        sbwhere.AppendLine(" and a.Priority=" + RQ.Priority + "  ");
+                    }
+
                     StringBuilder sbsqlselectcount = new StringBuilder();
                     sbsqlselectcount.Append("select count(*) ");
                     sbsqlselectcount.Append(" " + sbfrom);

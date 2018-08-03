@@ -241,6 +241,8 @@ namespace DataContracts.Mapping
         string _address_tx;
         string _TelephoneNumber_tx;
         [DataMember]
+        public int? Priority { get; set; }
+        [DataMember]
         public string SupplierProductCode { get; set; }
 
         [DataMember]
