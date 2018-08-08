@@ -66,13 +66,13 @@ namespace DataLayer
 
         public static string SubString(string str, int length)
         {
-            if (string.IsNullOrEmpty(str))
+            if (string.IsNullOrWhiteSpace(str))
             {
                 return string.Empty;
             }
             else
             {
-                if (str.Length <= length && length == 0)
+                if (str.Length <= length || length <= 0)
                 {
                     return str;
                 }
