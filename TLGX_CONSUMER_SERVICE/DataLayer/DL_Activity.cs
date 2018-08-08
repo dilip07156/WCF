@@ -3177,6 +3177,12 @@ namespace DataLayer
                                      Totalrecords = total,
                                      Create_Date = a.Create_Date,
                                      IsActive = a.IsActive,
+                                     FromPax = a.FromPax,
+                                     ToPax = a.ToPax,
+                                     Market = a.Market,
+                                     PersonType = a.PersonType,
+                                     Price_ValidFrom = a.Price_ValidFrom,
+                                     Price_ValidTo = a.Price_ValidTo,
                                      Price_InternalOptionCode = foljd.TLGXActivityOptionCode
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();

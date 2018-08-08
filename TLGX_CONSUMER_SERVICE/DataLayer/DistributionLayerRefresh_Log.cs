@@ -25,5 +25,6 @@ namespace DataLayer
         public string Edit_User { get; set; }
         public Nullable<int> TotalCount { get; set; }
         public Nullable<int> MongoPushCount { get; set; }
+        public Nullable<System.DateTime> Edit_Date { get; set; }
     }
 }

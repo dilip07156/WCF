@@ -122,7 +122,7 @@
       <Diagram DiagramId="d221783c70dd4103bbce9171d3ae9186" Name="SupplierApiCall" >
         <EntityTypeShape EntityType="ConsumerModel.Supplier_ApiCallLog" Width="1.5" PointX="0.75" PointY="0.75" />
       </Diagram>
-      <Diagram DiagramId="0653c78854a345c5ae84516693c7176c" Name="Activity" ZoomLevel="108" >
+      <Diagram DiagramId="0653c78854a345c5ae84516693c7176c" Name="Activity" ZoomLevel="99" >
         <EntityTypeShape EntityType="ConsumerModel.Activity_ClassificationAttributes" Width="1.5" PointX="0.5" PointY="0.5" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_Content" Width="1.5" PointX="0.5" PointY="4.25" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_Facility" Width="1.5" PointX="2.125" PointY="0.5" />
