@@ -319,10 +319,11 @@ namespace BusinessLayer
         #endregion
 
         #region Mapping Stats
-        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(string SupplierID, string PriorityId, string ProductCategory)
+        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(string SupplierID, string PriorityId, string ProductCategory,string isMDM)
         {
             Guid gSupplier_Id;
             int iPriorityId;
+            bool isMDMNew;
             if (!Guid.TryParse(SupplierID, out gSupplier_Id))
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
@@ -332,10 +333,13 @@ namespace BusinessLayer
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
             }
+            if(!bool.TryParse(isMDM, out isMDMNew)){
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
 
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
-                return objBL.GetMappingStatistics(gSupplier_Id, iPriorityId, ProductCategory);
+                return objBL.GetMappingStatistics(gSupplier_Id, iPriorityId, ProductCategory, isMDMNew);
             }
 
         }
@@ -659,6 +663,28 @@ namespace BusinessLayer
         }
         #endregion
 
+        #region Supplier Data Export
+        public List<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport( string SupplierID, string IsMdmDataOnly)
+        {
+            Guid gSupplier_Id;
+            if (!Guid.TryParse(SupplierID, out gSupplier_Id))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+
+            bool bIsMdmDataOnly;
+            if (!bool.TryParse(IsMdmDataOnly, out bIsMdmDataOnly))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+
+            using (DL_Mapping objBL = new DL_Mapping())
+            {
+                return objBL.GetSupplierDataForExport(gSupplier_Id, bIsMdmDataOnly);
+            }
+        }
+
+        #endregion
         #region HotelListLinkedToCityCodeAndSupplierCode
         public IList<DataContracts.Mapping.DC_HotelListByCityCode> GetHotelListByCityCode(DataContracts.Mapping.DC_HotelListByCityCode_RQ param)
         {

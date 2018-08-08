@@ -230,120 +230,132 @@ namespace DataLayer
         {
             try
             {
+                List<DataContracts.DC_Accomodation_Search_RS> accoList = new List<DC_Accomodation_Search_RS>();
+
+                var skip = RQ.PageSize * RQ.PageNo;
+                int total = 0;
+                StringBuilder sbSelect = new StringBuilder();
+                StringBuilder sbwhere = new StringBuilder();
+                StringBuilder sbfrom = new StringBuilder();
+
+                sbwhere.Append(" WHERE 1 = 1 ");
+
+                sbfrom.Append("from [Accommodation] a with (NoLock)");
+
+                if (!string.IsNullOrWhiteSpace(RQ.ProductCategory))
+                {
+                    sbwhere.Append(" AND a.ProductCategory = '" + RQ.ProductCategory + "'");
+                }
+
+                if (!string.IsNullOrWhiteSpace(RQ.ProductCategorySubType))
+                {
+                    sbwhere.Append(" AND a.ProductCategorySubType  = '" + RQ.ProductCategorySubType + "'");
+                }
+
+                if (!string.IsNullOrWhiteSpace(RQ.Status))
+                {
+                    string isActive = (RQ.Status == "ACTIVE") ? "1" : "0";
+                    sbwhere.Append(" AND ISNULL(a.IsActive,0) =" + isActive);
+                }
+
+                if (RQ.CompanyHotelId != null)
+                {
+                    sbwhere.Append(" AND a.CompanyHotelID  = " + RQ.CompanyHotelId);
+                }
+
+                if (!string.IsNullOrWhiteSpace(RQ.HotelName))
+                {
+                    if (RQ.HotelName.Length > 0)
+                    {
+                        //  sbwhere.Append("and  Replace (Replace(Rtrim(LTRIM(a.HotelName)),'Hotel', '') ,'-', '') like Replace (Replace(Rtrim(LTRIM( '" + RQ.HotelName + "' )),'Hotel', '') ,'-', '')");
+                        sbwhere.Append("and a.HotelName like ('%" + RQ.HotelName + "%')");
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(RQ.Country))
+                {
+                    if (RQ.Country.Length > 0)
+                    {
+                        sbwhere.Append(" AND a.country = '" + RQ.Country + "'");
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(RQ.City))
+                {
+                    if (RQ.City.Length > 0)
+                    {
+                        sbwhere.Append(" AND a.city = '" + RQ.City + "'");
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(RQ.Location))
+                {
+                    if (RQ.Location.Length > 0)
+                    {
+                        sbwhere.Append(" AND a.Location= '" + RQ.Location + "'");
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(RQ.Chain))
+                {
+                    if (RQ.Chain.Length > 0)
+                    {
+                        sbwhere.Append(" AND a.Chain like ('" + RQ.Chain + "')");
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(RQ.Brand))
+                {
+                    if (RQ.Brand.Length > 0)
+                    {
+                        sbwhere.Append(" AND a.Brand like ('" + RQ.Brand + "')");
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(RQ.Google_Place_Id))
+                {
+                    if (RQ.Google_Place_Id.Length > 0)
+                    {
+                        sbwhere.Append(" AND a.Google_Place_Id= '" + RQ.Google_Place_Id + "'");
+                    }
+                }
+                if (!string.IsNullOrWhiteSpace(RQ.AccomodationId))
+                {
+                    Guid _guidAccomodationId = Guid.Parse(RQ.AccomodationId);
+                    sbwhere.Append(" AND a.Accommodation_Id='" + _guidAccomodationId + "'");
+                }
+
+                if (!string.IsNullOrWhiteSpace(RQ.Starrating))
+                {
+                    sbwhere.Append(" AND a.HotelRating='" + RQ.Starrating + "'");
+                }
+
+                if (RQ.InsertFrom != null)
+                {
+                    sbwhere.Append(" AND ISNULL(a.InsertFrom,0) =" + (RQ.InsertFrom == true ? "1" : "0"));
+                }
+                if (RQ.TLGXAccoId != null)
+                {
+                    sbwhere.Append(" AND a.TLGXAccoId  = '" + RQ.TLGXAccoId + "' ");
+                }
+
+                if (RQ.Priority != null)
+                {
+                    sbwhere.AppendLine(" and a.Priority=" + RQ.Priority + "  ");
+                }
+
+                StringBuilder sbsqlselectcount = new StringBuilder();
+                sbsqlselectcount.Append("select count(*) ");
+                sbsqlselectcount.Append(" " + sbfrom);
+                sbsqlselectcount.Append(" " + sbwhere);
+
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var skip = RQ.PageSize * RQ.PageNo;
-                    int total = 0;
-                    StringBuilder sbSelect = new StringBuilder();
-                    StringBuilder sbwhere = new StringBuilder();
-                    StringBuilder sbfrom = new StringBuilder();
-
-                    sbwhere.Append(" WHERE 1 = 1 ");
-
-                    sbfrom.Append("from [Accommodation] a with (NoLock)");
-
-                    if (!string.IsNullOrWhiteSpace(RQ.ProductCategory))
-                    {
-                        sbwhere.Append(" AND a.ProductCategory = '" + RQ.ProductCategory + "'");
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(RQ.ProductCategorySubType))
-                    {
-                        sbwhere.Append(" AND a.ProductCategorySubType  = '" + RQ.ProductCategorySubType + "'");
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(RQ.Status))
-                    {
-                        string isActive = (RQ.Status == "ACTIVE") ? "1" : "0";
-                        sbwhere.Append(" AND ISNULL(a.IsActive,0) =" + isActive);
-                    }
-
-                    if (RQ.CompanyHotelId != null)
-                    {
-                        sbwhere.Append(" AND a.CompanyHotelID  = " + RQ.CompanyHotelId);
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(RQ.HotelName))
-                    {
-                        if (RQ.HotelName.Length > 0)
-                        {
-                            //  sbwhere.Append("and  Replace (Replace(Rtrim(LTRIM(a.HotelName)),'Hotel', '') ,'-', '') like Replace (Replace(Rtrim(LTRIM( '" + RQ.HotelName + "' )),'Hotel', '') ,'-', '')");
-                            sbwhere.Append("and a.HotelName like ('%" + RQ.HotelName + "%')");
-                        }
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(RQ.Country))
-                    {
-                        if (RQ.Country.Length > 0)
-                        {
-                            sbwhere.Append(" AND a.country = '" + RQ.Country + "'");
-                        }
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(RQ.City))
-                    {
-                        if (RQ.City.Length > 0)
-                        {
-                            sbwhere.Append(" AND a.city = '" + RQ.City + "'");
-                        }
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(RQ.Location))
-                    {
-                        if (RQ.Location.Length > 0)
-                        {
-                            sbwhere.Append(" AND a.Location= '" + RQ.Location + "'");
-                        }
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(RQ.Chain))
-                    {
-                        if (RQ.Chain.Length > 0)
-                        {
-                            sbwhere.Append(" AND a.Chain like ('" + RQ.Chain + "')");
-                        }
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(RQ.Brand))
-                    {
-                        if (RQ.Brand.Length > 0)
-                        {
-                            sbwhere.Append(" AND a.Brand like ('" + RQ.Brand + "')");
-                        }
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(RQ.Google_Place_Id))
-                    {
-                        if (RQ.Google_Place_Id.Length > 0)
-                        {
-                            sbwhere.Append(" AND a.Google_Place_Id= '" + RQ.Google_Place_Id + "'");
-                        }
-                    }
-                    if (!string.IsNullOrWhiteSpace(RQ.AccomodationId))
-                    {
-                        Guid _guidAccomodationId = Guid.Parse(RQ.AccomodationId);
-                        sbwhere.Append(" AND a.Accommodation_Id='" + _guidAccomodationId + "'");
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(RQ.Starrating))
-                    {
-                        sbwhere.Append(" AND a.HotelRating='" + RQ.Starrating + "'");
-                    }
-
-                    if (RQ.InsertFrom != null)
-                    {
-                        sbwhere.Append(" AND ISNULL(a.InsertFrom,0) =" + (RQ.InsertFrom == true ? "1" : "0"));
-                    }
-
-                    StringBuilder sbsqlselectcount = new StringBuilder();
-                    sbsqlselectcount.Append("select count(*) ");
-                    sbsqlselectcount.Append(" " + sbfrom);
-                    sbsqlselectcount.Append(" " + sbwhere);
-
-
-                    context.Configuration.AutoDetectChangesEnabled = false;
                     try { total = context.Database.SqlQuery<int>(sbsqlselectcount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
+                }
 
+                if (total > 0)
+                {
                     sbSelect.Append(" Select CONVERT(VARCHAR(36), a.Accommodation_Id) as AccomodationId, a.HotelName, a.CompanyName,str(a.CompanyHotelId) as CompanyHotelId,");
                     sbSelect.Append(" a.Chain as HotelChain,a.Brand as HotelBrand,a.Country,a.City,a.Location, iif(a.IsActive = 1, 'Active', 'InActive') as Status,");
                     sbSelect.Append(" a.PostalCode, a.Google_Place_Id ,(a.HotelName + ' / ' +  str(a.CompanyHotelID)) as HotelNameWithCode, 0 as MapCount,");
@@ -363,19 +375,24 @@ namespace DataLayer
                     sbfinalQuery.Append(" " + sbwhere + " ");
                     sbfinalQuery.Append(" " + sbOrderby);
 
-                    var accoList = context.Database.SqlQuery<DataContracts.DC_Accomodation_Search_RS>(sbfinalQuery.ToString()).ToList();
-
-                    if (!string.IsNullOrWhiteSpace(RQ.Searchfrom) && RQ.Searchfrom.ToLower().Trim() != "hotalsearch")
+                    using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        accoList = accoList.Select(c =>
-                        {
-                            c.MapCount = (context.Database.SqlQuery<int>("select count(Accommodation_ProductMapping_Id) from Accommodation_ProductMapping with (nolock) where Accommodation_Id = '" + c.AccomodationId + "';")).First();
-                            return c;
-                        }).ToList();
-                    }
+                        context.Configuration.AutoDetectChangesEnabled = false;
+                        accoList = context.Database.SqlQuery<DataContracts.DC_Accomodation_Search_RS>(sbfinalQuery.ToString()).ToList();
 
-                    return accoList;
+                        if (!string.IsNullOrWhiteSpace(RQ.Searchfrom) && RQ.Searchfrom.ToLower().Trim() != "hotalsearch")
+                        {
+                            accoList = accoList.Select(c =>
+                            {
+                                c.MapCount = (context.Database.SqlQuery<int>("select count(Accommodation_ProductMapping_Id) from Accommodation_ProductMapping with (nolock) where Accommodation_Id = '" + c.AccomodationId + "';")).First();
+                                return c;
+                            }).ToList();
+                        }
+                    }
                 }
+
+                return accoList;
+
             }
             catch (Exception ex)
             {
@@ -623,7 +640,6 @@ namespace DataLayer
             }
         }
 
-
         public List<DataContracts.DC_Accomodation> GetAccomodationListForMissingAttributeReports(DataContracts.DC_Accomodation_Search_RQ RQ)
         {
             try
@@ -857,6 +873,7 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation details", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
         public DataContracts.DC_Accomodation GetAccomodationDetails(Guid Accomodation_Id)
         {
             try
@@ -1256,10 +1273,7 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation details", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-
-
-
-
+        
         #endregion
 
         #region AccomodationInfo
@@ -4440,7 +4454,7 @@ namespace DataLayer
                         Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
                     }
                     var search = (from a in context.Accommodations
-                                  where a.HotelName_Tx == null && a.IsActive == true 
+                                  where a.HotelName_Tx == null && a.IsActive == true
                                   select new
                                   {
                                       a.Accommodation_Id,

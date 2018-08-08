@@ -322,7 +322,8 @@ namespace DataLayer
         }
 
         #endregion
-        #region == Sync geographic Data
+
+        #region Sync geographic Data
         public DC_Message SyncGeographyData(DataContracts.DC_MongoDbSyncRQ RQ)
         {
             DC_Message _msg = new DC_Message();
@@ -637,7 +638,7 @@ namespace DataLayer
                         objNew.Create_User = CreatedBy;// System.Web.HttpContext.Current.User.Identity.Name;
                         objNew.Status = "Scheduled";
                         objNew.Supplier_Id = supplier_Id;
-                        objNew.Edit_date = DateTime.Now;
+                        objNew.Edit_Date = DateTime.Now;
                         objNew.Edit_User = CreatedBy;
                         context.DistributionLayerRefresh_Log.Add(objNew);
                         context.SaveChanges();

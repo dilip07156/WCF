@@ -141,15 +141,25 @@ namespace ConsumerSvc
         #endregion
 
         #region Mapping Stats
-        public IList<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(string SupplierID, string PriorityId, string ProductCategory)
+        public IList<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(string SupplierID, string PriorityId, string ProductCategory, string isMDM)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
-                return objBL.GetMappingStatistics(SupplierID, PriorityId, ProductCategory);
+                return objBL.GetMappingStatistics(SupplierID, PriorityId, ProductCategory, isMDM);
             }
         }
 
-       
+
+        #endregion
+
+        #region Supplierdata Export
+        public IList<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport( string SupplierID, string IsMdmDataOnly)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetSupplierDataForExport(SupplierID, IsMdmDataOnly);
+            }
+        }
         #endregion
 
         #region roll_off_reports

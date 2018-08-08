@@ -240,6 +240,10 @@ namespace DataContracts.Mapping
         string _source;
         string _address_tx;
         string _TelephoneNumber_tx;
+        [DataMember]
+        public int? Priority { get; set; }
+        [DataMember]
+        public string SupplierProductCode { get; set; }
 
         [DataMember]
         public Nullable<System.Guid> Supplier_Id { get; set; }

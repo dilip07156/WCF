@@ -2349,50 +2349,51 @@ namespace DataLayer
             var retclass = new DC_M_masterattributelists();
             using (ConsumerEntities context = new ConsumerEntities())
             {
+                var MasterAttribute = context.m_masterattribute.Where(w => w.IsActive ?? false).AsQueryable();
+                if (!string.IsNullOrWhiteSpace(_obj.Name))
+                {
+                    MasterAttribute = MasterAttribute.Where(w => w.Name.Trim() == _obj.Name.Trim());
+                }
+                if (!string.IsNullOrWhiteSpace(_obj.MasterFor))
+                {
+                    MasterAttribute = MasterAttribute.Where(w => w.MasterFor.Trim() == _obj.MasterFor.Trim());
+                }
 
-                var attributenames = (from ma in context.m_masterattribute
-                                          //join pma in context.m_masterattribute on ma.ParentAttribute_Id equals pma.MasterAttribute_Id
-                                      orderby ma.Name ascending
-                                      where ma.MasterFor.TrimStart().TrimEnd().ToUpper() == _obj.MasterFor.TrimStart().TrimEnd().ToUpper()
-                                      && ma.Name.TrimStart().TrimEnd().ToUpper() == (_obj.Name == "" ? ma.Name.TrimStart().TrimEnd().ToUpper() : _obj.Name.TrimStart().TrimEnd().ToUpper())
-                                      && (ma.IsActive ?? false) == true
-                                      select new DC_M_masterattribute
-                                      {
-                                          MasterAttribute_Id = ma.MasterAttribute_Id,
-                                          Name = ma.Name.Trim(),
-                                          MasterFor = ma.MasterFor.Trim(),
-                                          OTA_CodeTableCode = ma.OTA_CodeTableCode.Trim(),
-                                          OTA_CodeTableName = ma.OTA_CodeTableName.Trim(),
-                                          ParentAttribute_Id = ma.ParentAttribute_Id,
+                var MasterAttributeValues = context.m_masterattributevalue.Where(w => w.IsActive ?? false).AsQueryable();
 
-                                          //ParentAttributeName = pma.Name,
-                                          IsActive = ma.IsActive ?? false == true ? "Y" : "N"
-                                      }).ToList();
-                retclass.MasterAttributes = attributenames;
+                retclass.MasterAttributes = (from ma in MasterAttribute
+                                             join pma in MasterAttribute on ma.ParentAttribute_Id equals pma.ParentAttribute_Id into pmaval
+                                             from pmavalid in pmaval.DefaultIfEmpty()
+                                             orderby ma.Name
+                                             select new DC_M_masterattribute
+                                             {
+                                                 MasterAttribute_Id = ma.MasterAttribute_Id,
+                                                 Name = ma.Name.Trim(),
+                                                 MasterFor = ma.MasterFor.Trim(),
+                                                 OTA_CodeTableCode = ma.OTA_CodeTableCode.Trim(),
+                                                 OTA_CodeTableName = ma.OTA_CodeTableName.Trim(),
+                                                 ParentAttribute_Id = ma.ParentAttribute_Id,
+                                                 ParentAttributeName = pmavalid.Name.Trim(),
+                                                 IsActive = "Y"
+                                             }).ToList();
 
-                var attributevaluesnames = (from mav in context.m_masterattributevalue
-                                            join ma in context.m_masterattribute on mav.MasterAttribute_Id equals ma.MasterAttribute_Id
-                                            //join pma in context.m_masterattribute on ma.ParentAttribute_Id equals pma.MasterAttribute_Id
-                                            join pav in context.m_masterattributevalue on mav.ParentAttributeValue_Id equals pav.MasterAttributeValue_Id into paval
-                                            from pavalid in paval.DefaultIfEmpty()
-                                            orderby mav.AttributeValue ascending
-                                            where ma.MasterFor.TrimStart().TrimEnd().ToUpper() == _obj.MasterFor.TrimStart().TrimEnd().ToUpper()
-                                            && ma.Name.TrimStart().TrimEnd().ToUpper() == (_obj.Name == "" ? ma.Name.TrimStart().TrimEnd().ToUpper() : _obj.Name.TrimStart().TrimEnd().ToUpper())
-                                            && (ma.IsActive ?? false) == true
-                                            && (mav.IsActive ?? false) == true
-                                            select new DC_M_masterattributevalue
-                                            {
-                                                MasterAttributeValue_Id = mav.MasterAttributeValue_Id,
-                                                AttributeValue = mav.AttributeValue.Trim(),
-                                                MasterAttribute_Id = mav.MasterAttribute_Id,
-                                                MasterAttribute_Name = mav.MasterAttribute_Name.Trim(),
-                                                OTA_CodeTableValue = mav.OTA_CodeTableValue.Trim(),
-                                                IsActive = mav.IsActive ?? false == true ? "Y" : "N",
-                                                ParentAttributeValue = pavalid.AttributeValue,
-                                                ParentAttributeValue_Id = pavalid.MasterAttributeValue_Id
-
-                                            }).ToList();
-                retclass.MasterAttributeValues = attributevaluesnames;
+                retclass.MasterAttributeValues = (from mav in MasterAttributeValues
+                                                  join ma in MasterAttribute on mav.MasterAttribute_Id equals ma.MasterAttribute_Id
+                                                  join pav in MasterAttributeValues on mav.ParentAttributeValue_Id equals pav.MasterAttributeValue_Id into paval
+                                                  from pavalid in paval.DefaultIfEmpty()
+                                                  orderby mav.AttributeValue
+                                                  where (mav.IsActive ?? false) == true
+                                                  select new DC_M_masterattributevalue
+                                                  {
+                                                      MasterAttributeValue_Id = mav.MasterAttributeValue_Id,
+                                                      AttributeValue = mav.AttributeValue.Trim(),
+                                                      MasterAttribute_Id = mav.MasterAttribute_Id,
+                                                      MasterAttribute_Name = mav.MasterAttribute_Name.Trim(),
+                                                      OTA_CodeTableValue = mav.OTA_CodeTableValue.Trim(),
+                                                      IsActive = "Y",
+                                                      ParentAttributeValue = pavalid.AttributeValue,
+                                                      ParentAttributeValue_Id = pavalid.MasterAttributeValue_Id
+                                                  }).ToList();
             }
             return retclass;
         }
@@ -2499,7 +2500,8 @@ namespace DataLayer
                                      ProductCategory = string.Empty, //sup2.AttributeValue,
                                      CategorySubType = string.Empty, //sup3.AttributeValue,
                                      Priority = a.Priority,
-                                     TotalRecords = total
+                                     TotalRecords = total,
+                                     IsFullPull = a.IsFullPull
                                  };
 
                     return result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
@@ -2591,7 +2593,8 @@ namespace DataLayer
                                      Supplier_Id = a.Supplier_Id,
                                      Name = a.Name,
                                      Code = a.Code,
-                                     Priority = a.Priority ?? 0
+                                     Priority = a.Priority ?? 0,
+                                     IsFullPull = a.IsFullPull
                                  };
 
                     return result.OrderBy(p => p.Name).ToList();
@@ -2774,6 +2777,7 @@ namespace DataLayer
                         result.SupplierOwner = _objSup.SupplierOwner;
                         result.SupplierType = _objSup.SupplierType;
                         result.Priority = _objSup.Priority;
+                        result.IsFullPull = _objSup.IsFullPull;
 
                         if (context.SaveChanges() == 1)
                         {
@@ -2802,6 +2806,7 @@ namespace DataLayer
                         SupplierType = _objSup.SupplierType,
                         StatusCode = _objSup.StatusCode,
                         Priority = _objSup.Priority,
+                        IsFullPull = _objSup.IsFullPull
                     };
 
                     context.Supplier.Add(_obj);
@@ -5624,12 +5629,12 @@ namespace DataLayer
                     var ZoneCityMasterIQ = context.ZoneCity_Mapping.AsNoTracking().AsQueryable().Where(s => s.IsActive == true);
                     var CountrymasterIQ = context.m_CountryMaster.AsNoTracking().AsQueryable();
 
-                    if (param.Zone_id != Guid.Empty && param.Zone_id !=null)
+                    if (param.Zone_id != Guid.Empty && param.Zone_id != null)
                     {
                         ZonemasterIQ = ZonemasterIQ.Where(x => x.Zone_id == param.Zone_id);
                     }
 
-                    if (param.City_id != Guid.Empty && param.City_id !=null)
+                    if (param.City_id != Guid.Empty && param.City_id != null)
                     {
                         CityMasterIQ = CityMasterIQ.Where(x => x.City_Id == param.City_id);
                         ZoneCityMasterIQ = ZoneCityMasterIQ.Where(x => x.City_Id == param.City_id);
@@ -5693,7 +5698,7 @@ namespace DataLayer
                                   })).OrderBy(x => x.Zone_Name).Skip(skip).Take((param.PageSize ?? total)).ToList();
 
 
-                    foreach(var item in search)
+                    foreach (var item in search)
                     {
                         item.NoOfHotels = (context.ZoneProduct_Mapping.Where(x => x.Zone_Id == item.Zone_id && (x.Included ?? false)).Count());
                     }

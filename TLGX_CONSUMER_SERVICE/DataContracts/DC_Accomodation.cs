@@ -4854,6 +4854,10 @@ namespace DataContracts
         int? _TotalRecords;
         Nullable<System.DateTime> _FromDate;
         Nullable<System.DateTime> _ToDate;
+        [DataMember]
+        public string TLGXAccoId { get; set; }
+        [DataMember]
+        public int? Priority { get; set; }
 
         //[DataMember]
         //public string GroupOfCompanies

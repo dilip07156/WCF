@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -31,18 +32,30 @@ namespace DataLayer
             return new string(arr);
         }
 
-        public static string GetDigits(string str, int lenghth)
+        public static string GetDigits(string str, int length)
         {
-            str = RemoveSpecialCharactersAndAlphabates(str);
-            int len = str.Length;
-            if (len > lenghth)
-                return str.Substring(len - lenghth);
+            if (!string.IsNullOrWhiteSpace(str))
+            {
+                str = RemoveSpecialCharactersAndAlphabates(str);
+                int len = str.Length;
+                if (len > length)
+                    return str.Substring(len - length);
+                else
+                    return str;
+            }
             else
-                return str;
+            {
+                return string.Empty;
+            }
         }
 
         public static string GetCharacter(string str, int lenghth)
         {
+            if (string.IsNullOrWhiteSpace(str))
+            {
+                return string.Empty;
+            }
+
             str = RemoveSpecialCharacters(str);
             int len = str.Length;
             if (len > lenghth)
@@ -51,8 +64,32 @@ namespace DataLayer
                 return str;
         }
 
+        public static string SubString(string str, int length)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+            {
+                return string.Empty;
+            }
+            else
+            {
+                if (str.Length <= length || length <= 0)
+                {
+                    return str;
+                }
+                else
+                {
+                    return str.Substring(0, length);
+                }
+            }
+        }
+
         public static string LatLongTX(string param)
         {
+            if (string.IsNullOrWhiteSpace(param))
+            {
+                return string.Empty;
+            }
+
             string ret = "";
             string[] brkparam = param.Split('.');
             if (brkparam.Length > 1)
@@ -75,17 +112,38 @@ namespace DataLayer
 
         public static string RemoveSpecialChars(string str)
         {
-            return str.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "").Replace("'", "").Replace("!", "").Replace("#", "").Replace("\"", "");
+            if (!string.IsNullOrWhiteSpace(str))
+            {
+                return str.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "").Replace("'", "").Replace("!", "").Replace("#", "").Replace("\"", "");
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         public static string RemoveVowels(string str)
         {
-            return str.Replace("A", "").Replace("E", "").Replace("I", "").Replace("O", "").Replace("U", "");
+            if (!string.IsNullOrWhiteSpace(str))
+            {
+                return str.Replace("A", "").Replace("E", "").Replace("I", "").Replace("O", "").Replace("U", "");
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         public static string RemoveNumbers(string str)
         {
-            return str.Replace("0", "").Replace("1", "").Replace("2", "").Replace("3", "").Replace("4", "").Replace("5", "").Replace("6", "").Replace("7", "").Replace("8", "").Replace("9", "");
+            if (!string.IsNullOrWhiteSpace(str))
+            {
+                return str.Replace("0", "").Replace("1", "").Replace("2", "").Replace("3", "").Replace("4", "").Replace("5", "").Replace("6", "").Replace("7", "").Replace("8", "").Replace("9", "");
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         public static string HotelNameTX(string HotelName, string cityname, string countryname, ref List<DataContracts.Masters.DC_Keyword> Keywords)
@@ -102,7 +160,7 @@ namespace DataLayer
                 return returnString;
             }
             else
-                return "";
+                return string.Empty;
 
             //replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(ltrim(rtrim(upper(A.hotelname))), ' ',''), 'HOTEL','')
             //, 'APARTMENT',''), replace(ltrim(rtrim(upper(A.city))), '''','') ,''),  replace(ltrim(rtrim(upper(A.country))), '''',''),'')
@@ -239,12 +297,12 @@ namespace DataLayer
                                 ref string SX_text,
                                 string OriginalValue, string[] HardRemove)
         {
-            string text = OriginalValue;
-
-            if (string.IsNullOrWhiteSpace(text))
+            if (string.IsNullOrWhiteSpace(OriginalValue))
             {
-                return text;
+                return string.Empty;
             }
+
+            string text = OriginalValue;
 
             #region PRE TTFU
 
@@ -688,7 +746,7 @@ namespace DataLayer
             result = Regex.Replace(result, "<.*?>", " ");
             //result = Regex.Replace(result, "<(.|\n)*?>", " ");
             result = Regex.Replace(result, @"\s+", " ");
-           
+
             return result;
         }
 
@@ -710,6 +768,33 @@ namespace DataLayer
                         .Replace(paragraphSeparator, " ");
         }
 
+        public static List<DataContracts.DC_SqlTableColumnInfo> GetSqlTableColumnInfo(string tblname, List<string> datatypes)
+        {
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                string sqlquery = string.Empty;
+                string formatstring = string.Empty;
+                if (datatypes.Count > 0)
+                {
+                    formatstring = string.Format("{0}", string.Join("','", datatypes.Select(i => i.Replace("\"", "'"))));
+
+                    sqlquery = "SELECT COLUMN_NAME,CHARACTER_MAXIMUM_LENGTH from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME ='" + tblname + "'and DATA_TYPE in('" + formatstring + "');";
+                }
+                else
+                {
+                    sqlquery = "SELECT COLUMN_NAME,CHARACTER_MAXIMUM_LENGTH from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME ='" + tblname + "';";
+                }
+                var result = context.Database.SqlQuery<DataContracts.DC_SqlTableColumnInfo>(sqlquery).ToList();
+                return result;
+            }
+        }
+
+        public static string GetPropertyName<T>(Expression<Func<T>> expression)
+        {
+            MemberExpression memberExpression = (MemberExpression)expression.Body;
+            return memberExpression.Member.Name;
+        }
+
         //public static void ErrorLog(Exception ex, string message)
         //{
         //    NLog.LogManager.Configuration.Variables["requesturl"] = System.ServiceModel.Web.WebOperationContext.Current.IncomingRequest.UriTemplateMatch.RequestUri.OriginalString;
@@ -717,5 +802,12 @@ namespace DataLayer
         //    NLog.LogManager.Configuration.Variables["targetsite"] = ex.TargetSite.ToString();
         //    logger.Error(ex, message);
         //}
+
+        //public static string SubStringAsPerColumnLength<T>(List<DataContracts.DC_SqlTableColumnInfo> ColumnInfo, object OriginalValue, )
+        //{
+        //    int length = ColumnInfo.Where(x => x.COLUMN_NAME == CommonFunctions.GetPropertyName(() => T)).Select(x => x.CHARACTER_MAXIMUM_LENGTH).FirstOrDefault();
+        //    search.ProductType = CommonFunctions.SubString(PM.ProductType, length);
+        //}
+
     }
 }
