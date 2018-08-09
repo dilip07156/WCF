@@ -353,6 +353,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    context.Database.CommandTimeout = 0;
                     Guid File_Id = new Guid();
                     File_Id = Guid.Parse(obj.File_Id.ToString());
                     string CurSupplierName = obj.Name;
