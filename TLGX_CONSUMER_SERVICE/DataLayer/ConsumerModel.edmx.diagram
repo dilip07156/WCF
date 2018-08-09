@@ -85,7 +85,6 @@
       </Diagram>
       <Diagram DiagramId="dd7305d7f2f340ddb587fd72c40ae548" Name="Mapping Static Data" >
         <EntityTypeShape EntityType="ConsumerModel.Dashboard_MappingStat" Width="1.5" PointX="0.75" PointY="3.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Dashboard_UserwiseMappedStat" Width="1.5" PointX="3.375" PointY="4.75" />
         <EntityTypeShape EntityType="ConsumerModel.vwMappingStats" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.vwUserwisemappedStats" Width="1.5" PointX="3.375" PointY="0.75" />
       </Diagram>
@@ -122,11 +121,10 @@
       <Diagram DiagramId="d221783c70dd4103bbce9171d3ae9186" Name="SupplierApiCall" >
         <EntityTypeShape EntityType="ConsumerModel.Supplier_ApiCallLog" Width="1.5" PointX="0.75" PointY="0.75" />
       </Diagram>
-      <Diagram DiagramId="0653c78854a345c5ae84516693c7176c" Name="Activity" ZoomLevel="99" >
+      <Diagram DiagramId="0653c78854a345c5ae84516693c7176c" Name="Activity" ZoomLevel="70" >
         <EntityTypeShape EntityType="ConsumerModel.Activity_ClassificationAttributes" Width="1.5" PointX="0.5" PointY="0.5" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_Content" Width="1.5" PointX="0.5" PointY="4.25" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_Facility" Width="1.5" PointX="2.125" PointY="0.5" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Flavour" Width="1.5" PointX="2.125" PointY="4.375" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_Itinerary" Width="1.5" PointX="0.5" PointY="7.5" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_PickUpDrop" Width="1.5" PointX="10.25" PointY="0.5" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_PickUpDropDetail" Width="1.5" PointX="3.75" PointY="5.75" />
@@ -165,6 +163,7 @@
         <EntityTypeShape EntityType="ConsumerModel.Activity_CategoriesType" Width="3.625" PointX="18.5" PointY="13.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_DeparturePoints" Width="1.5" PointX="13.75" PointY="17.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierCityDepartureCode" Width="1.5" PointX="0.75" PointY="19.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Flavour" Width="1.5" PointX="3.375" PointY="19.75" />
       </Diagram>
       <Diagram DiagramId="28746cebad1b4c418813bb18d8ac1b56" Name="ZoneManager" ZoomLevel="109" >
         <EntityTypeShape EntityType="ConsumerModel.ZoneProduct_Mapping" Width="1.5" PointX="4.75" PointY="0.75" />

@@ -95,7 +95,6 @@ namespace DataLayer
         public virtual DbSet<Activity_ClassificationAttributes> Activity_ClassificationAttributes { get; set; }
         public virtual DbSet<Activity_Content> Activity_Content { get; set; }
         public virtual DbSet<Activity_Facility> Activity_Facility { get; set; }
-        public virtual DbSet<Activity_Flavour> Activity_Flavour { get; set; }
         public virtual DbSet<Activity_Itinerary> Activity_Itinerary { get; set; }
         public virtual DbSet<Activity_PickUpDrop> Activity_PickUpDrop { get; set; }
         public virtual DbSet<Activity_PickUpDropDetail> Activity_PickUpDropDetail { get; set; }
@@ -136,7 +135,6 @@ namespace DataLayer
         public virtual DbSet<Activity_DaysOfWeek> Activity_DaysOfWeek { get; set; }
         public virtual DbSet<Activity_CategoriesType> Activity_CategoriesType { get; set; }
         public virtual DbSet<Dashboard_MappingStat> Dashboard_MappingStat { get; set; }
-        public virtual DbSet<Dashboard_UserwiseMappedStat> Dashboard_UserwiseMappedStat { get; set; }
         public virtual DbSet<m_CityMapping> m_CityMapping { get; set; }
         public virtual DbSet<m_CountryMapping> m_CountryMapping { get; set; }
         public virtual DbSet<m_CityMapping_EntityCount> m_CityMapping_EntityCount { get; set; }
@@ -156,10 +154,11 @@ namespace DataLayer
         public virtual DbSet<ZoneCity_Mapping> ZoneCity_Mapping { get; set; }
         public virtual DbSet<Stg_Kafka> Stg_Kafka { get; set; }
         public virtual DbSet<vwMappingStats> vwMappingStats { get; set; }
-        public virtual DbSet<Supplier> Supplier { get; set; }
-        public virtual DbSet<vwUserwisemappedStats> vwUserwisemappedStats { get; set; }
         public virtual DbSet<DistributionLayerRefresh_Log> DistributionLayerRefresh_Log { get; set; }
         public virtual DbSet<vwMappingStatsMdmOnly> vwMappingStatsMdmOnly { get; set; }
+        public virtual DbSet<Supplier> Supplier { get; set; }
+        public virtual DbSet<Activity_Flavour> Activity_Flavour { get; set; }
+        public virtual DbSet<vwUserwisemappedStats> vwUserwisemappedStats { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

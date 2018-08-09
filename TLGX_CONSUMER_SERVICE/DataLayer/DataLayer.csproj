@@ -372,9 +372,6 @@
     <Compile Include="Dashboard_MappingStat.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Dashboard_UserwiseMappedStat.cs">
-      <DependentUpon>ConsumerModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="DHSVCProxy.cs" />
     <Compile Include="DistributionLayerRefresh_Log.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>

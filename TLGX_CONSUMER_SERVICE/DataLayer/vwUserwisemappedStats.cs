@@ -14,7 +14,7 @@ namespace DataLayer
     
     public partial class vwUserwisemappedStats
     {
-        public Nullable<System.Guid> ID { get; set; }
+        public System.Guid ID { get; set; }
         public System.Guid supplier_id { get; set; }
         public string SupplierName { get; set; }
         public string Username { get; set; }
