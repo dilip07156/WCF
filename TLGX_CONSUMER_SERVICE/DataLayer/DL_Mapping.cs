@@ -931,7 +931,7 @@ namespace DataLayer
 
                     configWhere = configWhere.Remove(configWhere.Length - 1);
 
-                    CallLogVerbose(File_Id, "MATCH", "Matching Combination " + curPriority.ToString() + " consist of Match by " + configWhere);
+                    CallLogVerbose(File_Id, "MATCH", "Matching Combination " + priority.ToString() + " consist of Match by " + configWhere);
 
                     string PriorityJoins = string.Empty;
                     string PriorityJoinsMaster = string.Empty;
