@@ -1328,12 +1328,6 @@ namespace DataLayer
                         }
                     }
 
-                    if (totPriorities == curPriority)
-                    {
-                        PLog.PercentageValue = 70;
-                        USD.AddStaticDataUploadProcessLog(PLog);
-                    }
-
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
                         context.Database.CommandTimeout = 0;
@@ -1362,29 +1356,18 @@ namespace DataLayer
                         objStat.SupplierImportFile_Id = obj.File_Id;
                         objStat.From = "MATCHING";
                         DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
-                        //using (ConsumerEntities context1 = new ConsumerEntities())
-                        //{
-                        //    var oldRecords = (from y in context1.STG_Mapping_TableIds
-                        //                      where y.File_Id == File_Id
-                        //                      select y).ToList();
-                        //    context1.STG_Mapping_TableIds.RemoveRange(oldRecords);
-                        //    context1.SaveChanges();
-                        //}
                     }
-                    retrn = true;
 
-                    if (totPriorities == curPriority)
+                    if (curPriority == totPriorities)
                     {
                         PLog.PercentageValue = 100;
                         USD.AddStaticDataUploadProcessLog(PLog);
                     }
 
                     curPriority = curPriority + 1;
+
+                    retrn = true;
                 }
-                //if (Match_Direct_Master)
-                //{
-                //    bool ismatchmasterdone = UpdateHotelMappingStatusDirectMaster(obj);
-                //}
 
                 return retrn;
             }
@@ -2440,7 +2423,7 @@ namespace DataLayer
 
                 if (obj.Priority != null)
                 {
-                    sbsqlwhere.AppendLine(" and a.Priority=" + obj.Priority+"  ");
+                    sbsqlwhere.AppendLine(" and a.Priority=" + obj.Priority + "  ");
                 }
 
                 #region Select from Tables
