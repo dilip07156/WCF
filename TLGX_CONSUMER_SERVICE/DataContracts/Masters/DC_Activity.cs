@@ -1746,6 +1746,19 @@ namespace DataContracts.Masters
         public DateTime? Edit_Date { get; set; }
         [DataMember]
         public bool? IsActive { get; set; }
+        [DataMember]
+        public DateTime? Price_ValidFrom { get; set; }
+        [DataMember]
+        public DateTime? Price_ValidTo { get; set; }
+        [DataMember]
+        public string Market { get; set; }
+        [DataMember]
+        public string FromPax { get; set; }
+        [DataMember]
+        public string ToPax { get; set; }
+        [DataMember]
+        public string PersonType { get; set; }
+
     }
     [DataContract]
     public class DC_Activity_Prices_RQ

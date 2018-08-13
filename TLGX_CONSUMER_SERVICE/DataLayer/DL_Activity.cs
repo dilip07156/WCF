@@ -3156,7 +3156,25 @@ namespace DataLayer
                     }
 
                     int total = search.Count();
-                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+                    int? skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+                    if (total <= skip)
+                    {
+                        int? PageIndex = 0;
+                        int? intReminder = total % RQ.PageSize;
+                        int? intQuotient = total / RQ.PageSize;
+
+                        if (intReminder > 0 || (intReminder == 0 && intQuotient == 0))
+                        {
+                            PageIndex = intQuotient;
+                        }
+                        else if (intReminder == 0 && intQuotient > 0)
+                        {
+                            PageIndex = intQuotient - 1;
+                        }
+
+                        skip = RQ.PageSize * PageIndex;
+                    }
+                    
 
                     var result = from a in search
                                  join fo in flavourOptions on a.Activity_FlavourOptions_Id equals fo.Activity_FlavourOptions_Id into folj
@@ -3177,9 +3195,15 @@ namespace DataLayer
                                      Totalrecords = total,
                                      Create_Date = a.Create_Date,
                                      IsActive = a.IsActive,
+                                     FromPax = a.FromPax,
+                                     ToPax = a.ToPax,
+                                     Market = a.Market,
+                                     PersonType = a.PersonType,
+                                     Price_ValidFrom = a.Price_ValidFrom,
+                                     Price_ValidTo = a.Price_ValidTo,
                                      Price_InternalOptionCode = foljd.TLGXActivityOptionCode
                                  };
-                    return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+                    return result.Skip(skip ?? 0).Take((RQ.PageSize ?? total)).ToList();
                 }
             }
             catch (Exception ex)
