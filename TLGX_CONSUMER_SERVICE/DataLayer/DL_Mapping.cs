@@ -684,7 +684,7 @@ namespace DataLayer
                     toUpdateByCityCode = (from a in context.Accommodation_ProductMapping.AsNoTracking()
                                           join s in context.stg_SupplierProductMapping.AsNoTracking() on
                                           new { a.Supplier_Id, a.SupplierProductReference, a.CityCode } equals new { s.Supplier_Id, SupplierProductReference = s.ProductId, s.CityCode }
-                                          where s.SupplierImportFile_Id == File_Id && a.SupplierImportFile_Id != File_Id
+                                          where s.SupplierImportFile_Id == File_Id
                                           select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                           {
                                               Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
@@ -728,7 +728,7 @@ namespace DataLayer
                         toUpdateByCityName = (from a in context.Accommodation_ProductMapping.AsNoTracking()
                                               join s in context.stg_SupplierProductMapping.AsNoTracking() on
                                               new { a.Supplier_Id, a.SupplierProductReference, a.CountryCode, a.CityName } equals new { s.Supplier_Id, SupplierProductReference = s.ProductId, s.CountryCode, s.CityName }
-                                              where s.SupplierImportFile_Id == File_Id && a.SupplierImportFile_Id != File_Id
+                                              where s.SupplierImportFile_Id == File_Id
                                               select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                               {
                                                   Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
@@ -780,7 +780,7 @@ namespace DataLayer
                     toUpdate = (from a in context.Accommodation_ProductMapping.AsNoTracking()
                                 join s in context.stg_SupplierProductMapping.AsNoTracking() on
                                 new { a.Supplier_Id, a.SupplierProductReference } equals new { s.Supplier_Id, SupplierProductReference = s.ProductId }
-                                where s.SupplierImportFile_Id == File_Id && a.SupplierImportFile_Id != File_Id
+                                where s.SupplierImportFile_Id == File_Id
                                 select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                 {
                                     Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
