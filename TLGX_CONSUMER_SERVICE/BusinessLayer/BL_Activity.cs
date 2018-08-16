@@ -401,27 +401,52 @@ namespace BusinessLayer
             }
         }
 
-        public List<DataContracts.Masters.DC_Activity_OperatingDays> GetActivityNonOperatingDays(string Activity_Flavour_Id)
+        public List<DataContracts.Masters.DC_Activity_OperatingDays> GetActivityNonOperatingDays(string Activity_Flavour_Id, string PageSize, string PageNo)
         {
             Guid gActivity_Flavour_Id;
+            int pageSize;
+            int pageNo;
+            if (!Guid.TryParse(Activity_Flavour_Id, out gActivity_Flavour_Id))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            if (!int.TryParse(PageSize, out pageSize))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            if (!int.TryParse(PageNo, out pageNo))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
 
-            if (Guid.TryParse(Activity_Flavour_Id, out gActivity_Flavour_Id))
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
-                using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
-                {
-                    return obj.GetActivityNonOperatingDays(gActivity_Flavour_Id);
-                }
+                return obj.GetActivityNonOperatingDays(gActivity_Flavour_Id, pageSize, pageNo);
             }
-            else
-            {
-                return new List<DC_Activity_OperatingDays>();
-            }
+            //else
+            //{
+            //    return new List<DC_Activity_OperatingDays>();
+            //}
         }
         public DataContracts.DC_Message AddUpdateActivityNonOperatingDays(List<DataContracts.Masters.DC_Activity_OperatingDays> RQ)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
                 return obj.AddUpdateActivityNonOperatingDays(RQ);
+            }
+        }
+
+        public DataContracts.DC_Message DeleteActivityNonOperatingDaysById(string ActivityDaysOfOperationId)
+        {
+            Guid gActivity_Days_Of_Opration_Id;
+            if (!Guid.TryParse(ActivityDaysOfOperationId, out gActivity_Days_Of_Opration_Id))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.DeleteActivityNonOperatingDaysById(gActivity_Days_Of_Opration_Id);
             }
         }
         #endregion
