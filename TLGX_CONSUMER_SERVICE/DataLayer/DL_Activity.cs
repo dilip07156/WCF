@@ -4405,12 +4405,13 @@ namespace DataLayer
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while updating Activity Days Of Week", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-        public List<DataContracts.Masters.DC_Activity_OperatingDays> GetActivityNonOperatingDays(Guid Activity_Flavour_Id)
+        public List<DataContracts.Masters.DC_Activity_OperatingDays> GetActivityNonOperatingDays(Guid Activity_Flavour_Id,  int? pageSize, int? pageNo)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    var totalcount = context.Activity_DaysOfOperation.Where(x => x.Activity_Flavor_ID == Activity_Flavour_Id && x.IsOperatingDays == false).Count();
                     var DaysOfNonOperation = (from nod in context.Activity_DaysOfOperation.AsNoTracking()
                                               where nod.Activity_Flavor_ID == Activity_Flavour_Id && nod.IsOperatingDays == false
                                               select new DC_Activity_OperatingDays
@@ -4422,10 +4423,32 @@ namespace DataLayer
                                                   EndDate = nod.ToDate,
                                                   FromDate = nod.FromDate,
                                                   IsActive = nod.IsActive,
-                                                  IsOperatingDays = nod.IsOperatingDays
-                                              }).ToList();
+                                                  IsOperatingDays = nod.IsOperatingDays,
+                                                  TotalRecords= totalcount
+                                              }).OrderByDescending(x=>x.FromDate).ToList();
+                    
+                    
+                    int? skip = (pageNo ?? 0) * (pageSize ?? 0);
+                    if (totalcount <= skip)
+                    {
+                        int? PageIndex = 0;
+                        int? intReminder = totalcount %  pageSize;
+                        int? intQuotient = totalcount / pageSize;
 
-                    return DaysOfNonOperation;
+                        if (intReminder > 0 || (intReminder == 0 && intQuotient == 0))
+                        {
+                            PageIndex = intQuotient;
+                        }
+                        else if (intReminder == 0 && intQuotient > 0)
+                        {
+                            PageIndex = intQuotient - 1;
+                        }
+
+                        skip = pageSize * PageIndex;
+                    }
+
+                    //return DaysOfNonOperation;
+                    return DaysOfNonOperation.Skip(skip ?? 0).Take((pageSize ?? totalcount)).ToList();
                 }
             }
             catch (Exception e)
@@ -4477,14 +4500,14 @@ namespace DataLayer
                         context.SaveChanges();
                     }
 
-                    if (Activity_Flavour_Id != null)
-                    {
-                        var NOD_VALID = (from a in RQ select a.Activity_DaysOfOperation_Id).Distinct();
-                        var NOD_TO_REMOVE = context.Activity_DaysOfOperation.Where(p => p.Activity_Flavor_ID == Activity_Flavour_Id && p.IsOperatingDays == false && !NOD_VALID.Any(p2 => p2 == p.Activity_DaysOfOperation_Id));
-                        context.Activity_DaysOfOperation.RemoveRange(NOD_TO_REMOVE);
+                    //if (Activity_Flavour_Id != null)
+                    //{
+                    //    var NOD_VALID = (from a in RQ select a.Activity_DaysOfOperation_Id).Distinct();
+                    //    var NOD_TO_REMOVE = context.Activity_DaysOfOperation.Where(p => p.Activity_Flavor_ID == Activity_Flavour_Id && p.IsOperatingDays == false && !NOD_VALID.Any(p2 => p2 == p.Activity_DaysOfOperation_Id));
+                    //    context.Activity_DaysOfOperation.RemoveRange(NOD_TO_REMOVE);
 
-                        context.SaveChanges();
-                    }
+                    //    context.SaveChanges();
+                    //}
 
                     return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Saved Successfully" };
                 }
@@ -4492,6 +4515,32 @@ namespace DataLayer
             catch (Exception ex)
             {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while updating Activity Non Operating Days", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public DataContracts.DC_Message DeleteActivityNonOperatingDaysById(Guid ActivityDaysOfOperationId)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var ToRemoveRecord = context.Activity_DaysOfOperation.Find(ActivityDaysOfOperationId);
+                    if (ToRemoveRecord != null)
+                    {
+                        context.Activity_DaysOfOperation.Remove(ToRemoveRecord);
+                        context.SaveChanges();
+                        return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Delete Successfully" };
+                    }
+                    else
+                    {
+                        return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Delete Failed" };
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while Deleting Activity Non Operating Days", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
         #endregion

@@ -2190,6 +2190,8 @@ namespace DataContracts.Masters
         [DataMember]
         public string EditUser { get; set; }
         [DataMember]
+        public int? TotalRecords { get; set; }
+        [DataMember]
         public List<DC_Activity_DaysOfWeek> DaysOfWeek { get; set; }
     }
     #endregion

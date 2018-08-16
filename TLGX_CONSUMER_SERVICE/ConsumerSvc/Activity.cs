@@ -470,11 +470,11 @@ namespace ConsumerSvc
             }
         }
 
-        public List<DataContracts.Masters.DC_Activity_OperatingDays> GetActivityNonOperatingDays(string Activity_Flavour_Id)
+        public List<DataContracts.Masters.DC_Activity_OperatingDays> GetActivityNonOperatingDays(string Activity_Flavour_Id, string PageSize, string PageNo)
         {
             using (BL_Activity objBL = new BL_Activity())
             {
-                return objBL.GetActivityNonOperatingDays(Activity_Flavour_Id);
+                return objBL.GetActivityNonOperatingDays(Activity_Flavour_Id, PageSize, PageNo);
             }
         }
         public DataContracts.DC_Message AddUpdateActivityNonOperatingDays(List<DataContracts.Masters.DC_Activity_OperatingDays> RQ)
@@ -482,6 +482,14 @@ namespace ConsumerSvc
             using (BusinessLayer.BL_Activity obj = new BL_Activity())
             {
                 return obj.AddUpdateActivityNonOperatingDays(RQ);
+            }
+        }
+
+        public DataContracts.DC_Message DeleteActivityNonOperatingDaysById(string ActivityDaysOfOperationId)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                return objBL.DeleteActivityNonOperatingDaysById(ActivityDaysOfOperationId);
             }
         }
         #endregion
