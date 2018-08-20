@@ -590,9 +590,6 @@
     <Compile Include="UserEntity.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="vwMappingStats.cs">
-      <DependentUpon>ConsumerModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="vwMappingStatsMdmOnly.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>

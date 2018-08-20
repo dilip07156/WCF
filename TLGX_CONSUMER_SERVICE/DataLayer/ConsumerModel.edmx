@@ -1502,15 +1502,14 @@
         </EntityType>
         <EntityType Name="Dashboard_MappingStat">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="RowId" />
           </Key>
-          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="supplier_id" Type="uniqueidentifier" />
+          <Property Name="RowId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Supplier_Id" Type="uniqueidentifier" />
           <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="MappingFor" Type="nvarchar" MaxLength="10" />
-          <Property Name="totalcount" Type="int" />
-          <Property Name="SuppliersCount" Type="int" />
+          <Property Name="TotalCount" Type="int" />
           <Property Name="Batch" Type="int" />
         </EntityType>
         <EntityType Name="DistributionLayerRefresh_Log">
@@ -2686,21 +2685,6 @@
           <Property Name="Edit_Date" Type="datetime" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'TLGX_MAPPING.dbo.vwMappingStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="vwMappingStats">
-          <Key>
-            
-            
-            <PropertyRef Name="RowId" />
-          </Key>
-          <Property Name="RowId" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="Supplier_Id" Type="uniqueidentifier" />
-          <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
-          <Property Name="Status" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="MappinFor" Type="varchar" MaxLength="9" Nullable="false" />
-          <Property Name="totalcount" Type="int" />
-        </EntityType>
-        <!--Errors Found During Generation:
 warning 6002: The table/view 'TLGX_MAPPING.dbo.vwMappingStatsMdmOnly' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwMappingStatsMdmOnly">
           <Key>
@@ -2718,6 +2702,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwMappingStatsMdmOnly' does not h
 warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwUserwisemappedStats">
           <Key>
+            
+            
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
@@ -2933,16 +2919,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="UserEntity" EntityType="Self.UserEntity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZoneCity_Mapping" EntityType="Self.ZoneCity_Mapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZoneProduct_Mapping" EntityType="Self.ZoneProduct_Mapping" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="vwMappingStats" EntityType="Self.vwMappingStats" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [vwMappingStats].[RowId] AS [RowId], 
-    [vwMappingStats].[Supplier_Id] AS [Supplier_Id], 
-    [vwMappingStats].[SupplierName] AS [SupplierName], 
-    [vwMappingStats].[Status] AS [Status], 
-    [vwMappingStats].[MappinFor] AS [MappinFor], 
-    [vwMappingStats].[totalcount] AS [totalcount]
-    FROM [dbo].[vwMappingStats] AS [vwMappingStats]</DefiningQuery>
-          </EntitySet>
           <EntitySet Name="vwMappingStatsMdmOnly" EntityType="Self.vwMappingStatsMdmOnly" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [vwMappingStatsMdmOnly].[RowId] AS [RowId], 
@@ -3108,7 +3084,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="Activity_DaysOfOperation" EntityType="ConsumerModel.Activity_DaysOfOperation" />
           <EntitySet Name="Activity_DaysOfWeek" EntityType="ConsumerModel.Activity_DaysOfWeek" />
           <EntitySet Name="Activity_CategoriesType" EntityType="ConsumerModel.Activity_CategoriesType" />
-          <EntitySet Name="Dashboard_MappingStat" EntityType="ConsumerModel.Dashboard_MappingStat" />
           <EntitySet Name="m_CityMapping" EntityType="ConsumerModel.m_CityMapping" />
           <EntitySet Name="m_CountryMapping" EntityType="ConsumerModel.m_CountryMapping" />
           <EntitySet Name="m_CityMapping_EntityCount" EntityType="ConsumerModel.m_CityMapping_EntityCount" />
@@ -3139,12 +3114,12 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="m_ZoneMaster" EntityType="ConsumerModel.m_ZoneMaster" />
           <EntitySet Name="ZoneCity_Mapping" EntityType="ConsumerModel.ZoneCity_Mapping" />
           <EntitySet Name="Stg_Kafka" EntityType="ConsumerModel.Stg_Kafka" />
-          <EntitySet Name="vwMappingStats" EntityType="ConsumerModel.vwMappingStats" />
           <EntitySet Name="DistributionLayerRefresh_Log" EntityType="ConsumerModel.DistributionLayerRefresh_Log" />
           <EntitySet Name="vwMappingStatsMdmOnly" EntityType="ConsumerModel.vwMappingStatsMdmOnly" />
           <EntitySet Name="Supplier" EntityType="ConsumerModel.Supplier" />
           <EntitySet Name="Activity_Flavour" EntityType="ConsumerModel.Activity_Flavour" />
           <EntitySet Name="vwUserwisemappedStats" EntityType="ConsumerModel.vwUserwisemappedStats" />
+          <EntitySet Name="Dashboard_MappingStat" EntityType="ConsumerModel.Dashboard_MappingStat" />
 
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
@@ -5264,19 +5239,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="SystemInterestType" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="SystemInterestType_ID" Type="Guid" />
         </EntityType>
-        <EntityType Name="Dashboard_MappingStat">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="supplier_id" Type="Guid" />
-          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MappingFor" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="totalcount" Type="Int32" />
-          <Property Name="SuppliersCount" Type="Int32" />
-          <Property Name="Batch" Type="Int32" />
-        </EntityType>
         <EntityType Name="m_CityMapping">
           <Key>
             <PropertyRef Name="CityMapping_Id" />
@@ -5774,17 +5736,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Process_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Process_Date" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="vwMappingStats">
-          <Key>
-            <PropertyRef Name="RowId" />
-          </Key>
-          <Property Name="RowId" Type="Guid" Nullable="false" />
-          <Property Name="Supplier_Id" Type="Guid" />
-          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
-          <Property Name="totalcount" Type="Int32" />
-        </EntityType>
         <EntityType Name="DistributionLayerRefresh_Log">
           <Key>
             <PropertyRef Name="Id" />
@@ -5893,6 +5844,18 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="totalcount" Type="Int32" />
           <Property Name="EditDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="Dashboard_MappingStat">
+          <Key>
+            <PropertyRef Name="RowId" />
+          </Key>
+          <Property Name="RowId" Type="Guid" Nullable="false" />
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MappingFor" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="TotalCount" Type="Int32" />
+          <Property Name="Batch" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -8090,20 +8053,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Dashboard_MappingStat">
-            <EntityTypeMapping TypeName="ConsumerModel.Dashboard_MappingStat">
-              <MappingFragment StoreEntitySet="Dashboard_MappingStat">
-                <ScalarProperty Name="Batch" ColumnName="Batch" />
-                <ScalarProperty Name="SuppliersCount" ColumnName="SuppliersCount" />
-                <ScalarProperty Name="totalcount" ColumnName="totalcount" />
-                <ScalarProperty Name="MappingFor" ColumnName="MappingFor" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
-                <ScalarProperty Name="supplier_id" ColumnName="supplier_id" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="m_CityMapping">
             <EntityTypeMapping TypeName="ConsumerModel.m_CityMapping">
               <MappingFragment StoreEntitySet="m_CityMapping">
@@ -8620,18 +8569,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="vwMappingStats">
-            <EntityTypeMapping TypeName="ConsumerModel.vwMappingStats">
-              <MappingFragment StoreEntitySet="vwMappingStats">
-                <ScalarProperty Name="totalcount" ColumnName="totalcount" />
-                <ScalarProperty Name="MappinFor" ColumnName="MappinFor" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
-                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
-                <ScalarProperty Name="RowId" ColumnName="RowId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="DistributionLayerRefresh_Log">
             <EntityTypeMapping TypeName="ConsumerModel.DistributionLayerRefresh_Log">
               <MappingFragment StoreEntitySet="DistributionLayerRefresh_Log">
@@ -8743,6 +8680,19 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
                 <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
                 <ScalarProperty Name="supplier_id" ColumnName="supplier_id" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dashboard_MappingStat">
+            <EntityTypeMapping TypeName="ConsumerModel.Dashboard_MappingStat">
+              <MappingFragment StoreEntitySet="Dashboard_MappingStat">
+                <ScalarProperty Name="Batch" ColumnName="Batch" />
+                <ScalarProperty Name="TotalCount" ColumnName="TotalCount" />
+                <ScalarProperty Name="MappingFor" ColumnName="MappingFor" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="RowId" ColumnName="RowId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

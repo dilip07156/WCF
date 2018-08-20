@@ -14,13 +14,12 @@ namespace DataLayer
     
     public partial class Dashboard_MappingStat
     {
-        public System.Guid Id { get; set; }
-        public Nullable<System.Guid> supplier_id { get; set; }
+        public System.Guid RowId { get; set; }
+        public Nullable<System.Guid> Supplier_Id { get; set; }
         public string SupplierName { get; set; }
         public string Status { get; set; }
         public string MappingFor { get; set; }
-        public Nullable<int> totalcount { get; set; }
-        public Nullable<int> SuppliersCount { get; set; }
+        public Nullable<int> TotalCount { get; set; }
         public Nullable<int> Batch { get; set; }
     }
 }
