@@ -302,5 +302,12 @@ namespace OperationContracts
         IList<DataContracts.Masters.DC_Activity_CategoryTypes_DDL> GetSupplierProductSubType(DataContracts.Masters.DC_Supplier_DDL _objAct);
         #endregion
 
+        #region Activity Reports
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Activity/GetActivitiesReport/Get/{ReportType}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DC_Activity_Report_RS> GetActivitiesReport(string ReportType);
+        #endregion
+
     }
 }
