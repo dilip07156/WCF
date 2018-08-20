@@ -2384,7 +2384,7 @@ namespace DataLayer
 
 
                                      // Area/Address
-                                     
+
                                      SupplierLocation = spm.Location,
 
                                      Categories = (from ct in context.Activity_CategoriesType
@@ -3174,7 +3174,7 @@ namespace DataLayer
 
                         skip = RQ.PageSize * PageIndex;
                     }
-                    
+
 
                     var result = from a in search
                                  join fo in flavourOptions on a.Activity_FlavourOptions_Id equals fo.Activity_FlavourOptions_Id into folj
@@ -4405,7 +4405,7 @@ namespace DataLayer
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while updating Activity Days Of Week", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-        public List<DataContracts.Masters.DC_Activity_OperatingDays> GetActivityNonOperatingDays(Guid Activity_Flavour_Id,  int? pageSize, int? pageNo)
+        public List<DataContracts.Masters.DC_Activity_OperatingDays> GetActivityNonOperatingDays(Guid Activity_Flavour_Id, int? pageSize, int? pageNo)
         {
             try
             {
@@ -4424,15 +4424,15 @@ namespace DataLayer
                                                   FromDate = nod.FromDate,
                                                   IsActive = nod.IsActive,
                                                   IsOperatingDays = nod.IsOperatingDays,
-                                                  TotalRecords= totalcount
-                                              }).OrderByDescending(x=>x.FromDate).ToList();
-                    
-                    
+                                                  TotalRecords = totalcount
+                                              }).OrderByDescending(x => x.FromDate).ToList();
+
+
                     int? skip = (pageNo ?? 0) * (pageSize ?? 0);
                     if (totalcount <= skip)
                     {
                         int? PageIndex = 0;
-                        int? intReminder = totalcount %  pageSize;
+                        int? intReminder = totalcount % pageSize;
                         int? intQuotient = totalcount / pageSize;
 
                         if (intReminder > 0 || (intReminder == 0 && intQuotient == 0))
@@ -4633,6 +4633,78 @@ namespace DataLayer
             {
 
                 throw;
+            }
+        }
+        #endregion
+
+        #region Activities Reports
+        //DC_Activity_Report_RS
+        public List<DataContracts.Masters.DC_Activity_Report_RS> GetActivitiesReport(int? ReportType)
+        {
+            List<DC_Activity_Report_RS> result = new List<DC_Activity_Report_RS>();
+            try
+            {
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (ReportType == 1)
+                    {
+                        result = (from af in context.Activity_Flavour.AsNoTracking()
+                                  join aspm in context.Activity_SupplierProductMapping.AsNoTracking()
+                                  on af.Activity_Flavour_Id equals aspm.Activity_ID
+                                  join sp in context.Supplier_ProductCategory
+                                  on aspm.Supplier_ID equals sp.Supplier_Id
+                                  where af.Country_Id != null && af.City_Id != null && sp.ProductCategory == "Activities" && sp.ProductCategorySubType == "Sightseeing"
+                                  group aspm by new { aspm.SupplierName, aspm.SupplierCountryName } into g
+                                  select new DC_Activity_Report_RS
+                                  {
+                                      SupplierName = g.Key.SupplierName,
+                                      SupplierCountryName = g.Key.SupplierCountryName,
+                                      ActivitiesCount = g.Count()
+                                  }).OrderBy(x => x.SupplierCountryName).ToList();
+                    }
+                    if (ReportType == 2)
+                    {
+                        result = (from af in context.Activity_Flavour.AsNoTracking()
+                                  join aspm in context.Activity_SupplierProductMapping.AsNoTracking()
+                                  on af.Activity_Flavour_Id equals aspm.Activity_ID
+                                  join sp in context.Supplier_ProductCategory
+                                  on aspm.Supplier_ID equals sp.Supplier_Id
+                                  where af.Country_Id != null && af.City_Id != null && sp.ProductCategory == "Activities" && sp.ProductCategorySubType == "Sightseeing"
+                                  group aspm by new { aspm.SupplierName, aspm.SupplierCityName } into g
+                                  select new DC_Activity_Report_RS
+                                  {
+                                      SupplierName = g.Key.SupplierName,
+                                      SupplierCityName = g.Key.SupplierCityName,
+                                      ActivitiesCount = g.Count()
+                                  }).OrderBy(x => x.SupplierCityName).ToList();
+                    }
+
+                    if (ReportType == 3)
+                    {
+                        result = (from af in context.Activity_Flavour.AsNoTracking()
+                                  join aspm in context.Activity_SupplierProductMapping.AsNoTracking()
+                                  on af.Activity_Flavour_Id equals aspm.Activity_ID
+                                  join sp in context.Supplier_ProductCategory
+                                  on aspm.Supplier_ID equals sp.Supplier_Id
+                                  where af.Country_Id != null && af.City_Id != null && sp.ProductCategory == "Activities" && sp.ProductCategorySubType == "Sightseeing"
+                                  group aspm by new { aspm.SupplierName } into g
+                                  select new DC_Activity_Report_RS
+                                  {
+                                      SupplierName = g.Key.SupplierName,
+                                      ActivitiesCount = g.Count()
+                                  }).OrderBy(x=>x.SupplierName).ToList();
+
+                    }
+                    if (result.Count > 0)
+                        return result;
+                    else
+                       return result = new List<DC_Activity_Report_RS> { };
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
             }
         }
         #endregion

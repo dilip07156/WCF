@@ -469,7 +469,23 @@ namespace BusinessLayer
                 return obj.GetSupplierProductSubType(_objAct);
             }
         }
-        
+
+        #endregion
+
+        #region Activity Reports
+        public List<DataContracts.Masters.DC_Activity_Report_RS> GetActivitiesReport(string ReportType)
+        {
+            int reportType;
+            if (!int.TryParse(ReportType, out reportType))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivitiesReport(reportType);
+            }
+        }
         #endregion
     }
 }

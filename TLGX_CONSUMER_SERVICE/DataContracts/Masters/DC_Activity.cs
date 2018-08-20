@@ -2214,7 +2214,22 @@ namespace DataContracts.Masters
     }
     #endregion
 
-}
+    #region Activities Reports
+    public class DC_Activity_Report_RS
+    {
+        [DataMember]
+        public string SupplierName { get; set; }
+        [DataMember]
+        public string SupplierCountryName { get; set; }
+        [DataMember]
+        public string SupplierCityName { get; set; }
+        [DataMember]
+        public int? ActivitiesCount { get; set; }
+       
+    }
+        #endregion
+
+    }
 
 
 
