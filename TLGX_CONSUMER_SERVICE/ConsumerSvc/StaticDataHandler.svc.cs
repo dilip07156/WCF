@@ -362,5 +362,21 @@ namespace ConsumerSvc
                 return objBL.GetMappingHotelDataForTTFU(obj);
             }
         }
+
+        public DC_SupplierImportFileDetails InsertAndGetMongoFileDetails(string SupplierId, string EntityId)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.AddStaticDataFileDetailForMongo(SupplierId, EntityId);
+            }
+        }
+
+        public List<DC_Accommodation_SupplierRoomTypeMapping_Online> RoomTypeMappingOnline_Insert(List<DC_Accommodation_SupplierRoomTypeMapping_Online> obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.RoomTypeMappingOnline_Insert(obj);
+            }
+        }
     }
 }

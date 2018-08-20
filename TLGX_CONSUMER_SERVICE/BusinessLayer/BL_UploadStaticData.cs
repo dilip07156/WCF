@@ -8,6 +8,7 @@ using System.ServiceModel.Web;
 using DataLayer;
 using System.Data;
 using DataContracts.STG;
+using DataContracts.Mapping;
 
 namespace BusinessLayer
 {
@@ -68,7 +69,6 @@ namespace BusinessLayer
         }
         #endregion
 
-
         #region "Mapping Config Attributes Values"
         public List<DataContracts.UploadStaticData.DC_SupplierImportAttributeValues> GetStaticDataMappingAttributeValues(DataContracts.UploadStaticData.DC_SupplierImportAttributeValues_RQ obj)
         {
@@ -110,7 +110,6 @@ namespace BusinessLayer
         }
         #endregion
 
-
         #region "Upload File"
         public List<DataContracts.UploadStaticData.DC_SupplierImportFileDetails> GetStaticDataFileDetail(DataContracts.UploadStaticData.DC_SupplierImportFileDetails_RQ obj)
         {
@@ -121,12 +120,20 @@ namespace BusinessLayer
         }
         public DataContracts.DC_Message AddStaticDataFileDetail(DataContracts.UploadStaticData.DC_SupplierImportFileDetails obj)
         {
-            DataContracts.DC_Message dc = new DataContracts.DC_Message();
             using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
             {
                 return objBL.AddStaticDataFileDetail(obj);
             }
         }
+
+        public DataContracts.UploadStaticData.DC_SupplierImportFileDetails AddStaticDataFileDetailForMongo(string SupplierId, string Entity)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.AddStaticDataFileDetailForMongo(SupplierId, Entity);
+            }
+        }
+
         public DataContracts.DC_Message UpdateStaticDataFileDetail(List<DataContracts.UploadStaticData.DC_SupplierImportFileDetails> obj)
         {
             using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
@@ -143,7 +150,6 @@ namespace BusinessLayer
         }
 
         #endregion
-
 
         #region "Logging"
         public DataContracts.DC_Message AddStaticDataUploadErrorLog(DataContracts.UploadStaticData.DC_SupplierImportFile_ErrorLog obj)
@@ -207,7 +213,6 @@ namespace BusinessLayer
         }
         #endregion
 
-
         #region "STG Tables"
         public DataContracts.DC_Message AddSTGCountryData(List<DataContracts.STG.DC_stg_SupplierCountryMapping> obj)
         {
@@ -268,6 +273,15 @@ namespace BusinessLayer
                 return objBL.GetSTGRoomTypeData(obj);
             }
         }
+
+        public List<DC_Accommodation_SupplierRoomTypeMapping_Online> RoomTypeMappingOnline_Insert(List<DC_Accommodation_SupplierRoomTypeMapping_Online> obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.RoomTypeMappingOnline_Insert(obj);
+            }
+        }
+
         #endregion
 
         #region Process Or Test Uploaded Files
@@ -295,6 +309,7 @@ namespace BusinessLayer
             }
         }
         #endregion
+
         #region  File Progress DashBoard
         public DataContracts.DC_FileProgressDashboard getFileProgressDashBoardData(string fileid)
         {
@@ -313,5 +328,8 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        
+
     }
 }

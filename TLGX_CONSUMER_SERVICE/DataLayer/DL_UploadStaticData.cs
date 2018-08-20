@@ -13,6 +13,7 @@ using System.Net;
 using System.Runtime.Serialization.Json;
 using System.IO;
 using Newtonsoft.Json;
+using DataContracts.Mapping;
 
 namespace DataLayer
 {
@@ -897,6 +898,67 @@ namespace DataLayer
                 dc.StatusMessage = ReadOnlyMessage.strFailed;
                 dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
                 return dc;
+            }
+        }
+
+
+        public DataContracts.UploadStaticData.DC_SupplierImportFileDetails AddStaticDataFileDetailForMongo(string SupplierId, string Entity)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    Guid Supplier_Id = context.Supplier.Where(w => (w.Name == SupplierId || w.Code == SupplierId) && w.StatusCode == "ACTIVE").Select(s => s.Supplier_Id).FirstOrDefault();
+
+                    if (Supplier_Id != Guid.Empty)
+                    {
+                        DataLayer.SupplierImportFileDetail objNew = new DataLayer.SupplierImportFileDetail
+                        {
+                            SupplierImportFile_Id = Guid.NewGuid(),
+                            Supplier_Id = Supplier_Id,
+                            Entity = Entity,
+                            STATUS = "UPLOADED",
+                            ArchiveFilePath = "",
+                            OriginalFilePath = SupplierId.ToLower() + "." + "mongo",
+                            SavedFilePath = SupplierId.ToLower() + "." + "mongo",
+                            CREATE_DATE = DateTime.Now,
+                            CREATE_USER = "TLGX_DataHandler",
+                            Mode = "ALL",
+                            IsActive = true
+                        };
+
+                        context.SupplierImportFileDetails.Add(objNew);
+                        context.SaveChanges();
+
+                        return new DC_SupplierImportFileDetails
+                        {
+                            Supplier_Id = objNew.Supplier_Id,
+                            ArchiveFilePath = objNew.ArchiveFilePath,
+                            CREATE_DATE = objNew.CREATE_DATE,
+                            CREATE_USER = objNew.CREATE_USER,
+                            Entity = objNew.Entity,
+                            IsActive = objNew.IsActive,
+                            Mode = objNew.Mode,
+                            OriginalFilePath = objNew.OriginalFilePath,
+                            PROCESS_DATE = objNew.PROCESS_DATE,
+                            PROCESS_USER = objNew.PROCESS_USER,
+                            SavedFilePath = objNew.SavedFilePath,
+                            STATUS = objNew.STATUS,
+                            Supplier = SupplierId,
+                            SupplierImportFile_Id = objNew.SupplierImportFile_Id,
+                            TotalRecords = 1
+                        };
+                    }
+                    else
+                    {
+                        return new DC_SupplierImportFileDetails();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return new DC_SupplierImportFileDetails();
             }
         }
 
@@ -2622,6 +2684,208 @@ namespace DataLayer
                 });
             }
         }
+
+        public List<DC_Accommodation_SupplierRoomTypeMapping_Online> RoomTypeMappingOnline_Insert(List<DC_Accommodation_SupplierRoomTypeMapping_Online> obj)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    Guid Supplier_Id = Guid.Empty;
+
+                    foreach (var data in obj)
+                    {
+                        //Check SupplierId
+                        if (Supplier_Id == Guid.Empty)
+                        {
+                            Supplier_Id = context.Supplier.Where(w => w.Name == data.SupplierId || w.Code == data.SupplierId).Select(s => s.Supplier_Id).FirstOrDefault();
+                            if (Supplier_Id == Guid.Empty)
+                            {
+                                continue;
+                            }
+                        }
+
+                        //Check Accommodation_id
+                        var AccommodationSearch = context.Accommodations.Where(w => w.TLGXAccoId == data.TLGXCommonHotelId).Select(s => new { s.Accommodation_Id, s.CompanyHotelID }).FirstOrDefault();
+
+                        //check duplicate
+                        var srtm = context.Accommodation_SupplierRoomTypeMapping.AsQueryable();
+
+                        srtm = srtm.Where(w => w.Supplier_Id == Supplier_Id);
+
+                        if (AccommodationSearch != null)
+                        {
+                            data.Accommodation_Id = AccommodationSearch.Accommodation_Id.ToString().ToUpper();
+
+                            srtm = srtm.Where(w => w.Accommodation_Id == AccommodationSearch.Accommodation_Id);
+                        }
+                        else
+                        {
+                            srtm = srtm.Where(w => w.SupplierProductId == data.SupplierProductId);
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(data.SupplierRoomTypeCode))
+                        {
+                            srtm = srtm.Where(w => w.SupplierRoomTypeCode == data.SupplierRoomTypeCode);
+                        }
+                        else
+                        {
+                            srtm = srtm.Where(w => w.SupplierRoomId == data.SupplierRoomId);
+                        }
+
+                        var dupeRecordFound = srtm.FirstOrDefault();
+
+                        if (dupeRecordFound != null)
+                        {
+                            data.Accommodation_SupplierRoomType_Id = dupeRecordFound.Accommodation_SupplierRoomTypeMapping_Id.ToString().ToUpper();
+                            data.Status = dupeRecordFound.MappingStatus;
+                            data.SystemRoomTypeMapId = dupeRecordFound.MapId;
+                            data.SystemProductCode = AccommodationSearch.CompanyHotelID;
+
+                            if (dupeRecordFound.MatchingScore != null)
+                            {
+                                float matchingscore;
+                                if (float.TryParse(Convert.ToString(dupeRecordFound.MatchingScore), out matchingscore))
+                                {
+                                    data.MatchingScore = data.MatchingScore;
+                                }
+                            }
+
+                            dupeRecordFound.SupplierImportFile_Id = Guid.Parse(data.ProcessBatchId);
+                            dupeRecordFound.ReRun_SupplierImportFile_Id = Guid.Parse(data.ProcessBatchId);
+                            dupeRecordFound.Batch = data.ProcessBatchNo ?? 0;
+                            dupeRecordFound.ReRun_Batch = data.ProcessBatchNo ?? 0;
+                        }
+                        else
+                        {
+                            Guid ASRTM_ID = Guid.NewGuid();
+                            Accommodation_SupplierRoomTypeMapping newRTM = new Accommodation_SupplierRoomTypeMapping();
+
+                            newRTM.Accommodation_Id = AccommodationSearch.Accommodation_Id;
+                            newRTM.Accommodation_SupplierRoomTypeMapping_Id = ASRTM_ID;
+
+                            if (data.Amenities != null)
+                            {
+                                newRTM.Amenities = string.Join(",", data.Amenities);
+                            }
+
+                            newRTM.BathRoomType = data.BathRoomType;
+                            newRTM.BeddingConfig = data.BeddingConfig;
+                            newRTM.Bedrooms = data.Bedrooms;
+                            newRTM.BedTypeCode = data.BedType;
+
+                            if (int.TryParse(data.ChildAge, out int ChildAge))
+                            {
+                                newRTM.ChildAge = ChildAge;
+                            }
+
+                            newRTM.CityCode = data.CityCode;
+                            newRTM.CityName = data.CityName;
+                            newRTM.CountryCode = data.CountryCode;
+                            newRTM.CountryName = data.CountryName;
+                            newRTM.StateCode = data.StateCode;
+                            newRTM.StateName = data.StateName;
+
+                            newRTM.Create_Date = DateTime.Now;
+                            newRTM.Create_User = "TLGX_Datahandler";
+                            newRTM.Edit_Date = null;
+                            newRTM.Edit_User = null;
+                            newRTM.ExtraBed = data.ExtraBed;
+                            newRTM.FloorName = data.FloorName;
+
+                            if (int.TryParse(data.FloorNumber, out int FloorNumber))
+                            {
+                                newRTM.FloorNumber = FloorNumber;
+                            }
+
+                            newRTM.MapId = null;
+                            newRTM.MappingStatus = "UNMAPPED";
+                            newRTM.MatchingScore = null;
+
+                            if (int.TryParse(data.MaxAdults, out int MaxAdults))
+                            {
+                                newRTM.MaxAdults = MaxAdults;
+                            }
+
+                            if (int.TryParse(data.MaxChild, out int MaxChild))
+                            {
+                                newRTM.MaxChild = MaxChild;
+                            }
+
+                            if (int.TryParse(data.MaxGuestOccupancy, out int MaxGuestOccupancy))
+                            {
+                                newRTM.MaxGuestOccupancy = MaxGuestOccupancy;
+                            }
+
+                            if (int.TryParse(data.MaxInfants, out int MaxInfants))
+                            {
+                                newRTM.MaxInfants = MaxInfants;
+                            }
+
+                            if (int.TryParse(data.MinGuestOccupancy, out int MinGuestOccupancy))
+                            {
+                                newRTM.MinGuestOccupancy = MinGuestOccupancy;
+                            }
+
+                            if (int.TryParse(data.Quantity, out int Quantity))
+                            {
+                                newRTM.Quantity = Quantity;
+                            }
+
+                            newRTM.PromotionalVendorCode = data.PromotionalVendorCode;
+                            newRTM.RatePlan = data.RatePlan;
+                            newRTM.RatePlanCode = data.RatePlanCode;
+
+                            newRTM.RoomDescription = data.RoomDescription;
+                            newRTM.RoomLocationCode = data.RoomLocationCode;
+                            newRTM.RoomSize = data.RoomSize;
+
+
+                            newRTM.RoomViewCode = data.RoomView;
+                            newRTM.Smoking = data.Smoking;
+                           
+                            newRTM.stg_SupplierHotelRoomMapping_Id = null;
+
+                            newRTM.SupplierImportFile_Id = Guid.Parse(data.ProcessBatchId);
+                            newRTM.ReRun_Batch = data.ProcessBatchNo;
+                            newRTM.ReRun_SupplierImportFile_Id = Guid.Parse(data.ProcessBatchId);
+                            newRTM.Batch = data.ProcessBatchNo;
+
+                            newRTM.SupplierName = data.SupplierId;
+                            newRTM.SupplierProductId = data.SupplierProductId;
+                            newRTM.SupplierProductName = data.SupplierProductName;
+                            newRTM.SupplierProvider = data.SupplierProvider;
+                            newRTM.SupplierRoomCategory = data.SupplierRoomCategory;
+                            newRTM.SupplierRoomCategoryId = data.SupplierRoomCategoryId;
+                            newRTM.SupplierRoomName = data.SupplierRoomName;
+                            newRTM.SupplierRoomTypeCode = data.SupplierRoomTypeCode;
+                            newRTM.Supplier_Id = Supplier_Id;
+
+                            newRTM.Tx_ReorderedName = null;
+                            newRTM.TX_RoomName = null;
+                            newRTM.Tx_StrippedName = null;
+
+                            context.Accommodation_SupplierRoomTypeMapping.Add(newRTM);
+
+                            data.Accommodation_SupplierRoomType_Id = ASRTM_ID.ToString().ToUpper();
+                            data.Status = "UNMAPPED";
+                            data.SystemRoomTypeMapId = null;
+                            data.SystemProductCode = AccommodationSearch.CompanyHotelID;
+
+                        }
+
+                        context.SaveChangesAsync();
+                    }
+                }
+
+                return obj;
+            }
+            catch (Exception e)
+            {
+                return obj;
+            }
+        }
+
         #endregion
 
         #region Process Or Test Uploaded Files
