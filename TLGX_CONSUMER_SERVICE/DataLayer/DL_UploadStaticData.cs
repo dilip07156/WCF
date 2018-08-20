@@ -2691,6 +2691,17 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    //Mapp ID
+                    var counterRTM = context.Counters.Where(w => w.TableName == "Accommodation_SupplierRoomTypeMapping" && w.ColumnName == "MapId").Select(s => s).FirstOrDefault();
+                    int CurrentCounter = 0;
+                    int CounterIncreaseBy = 0;
+
+                    if (counterRTM != null)
+                    {
+                        CurrentCounter = counterRTM.LastCounterNo ?? 0;
+                        CounterIncreaseBy = counterRTM.IncreaseBy ?? 0;
+                    }
+
                     Guid Supplier_Id = Guid.Empty;
 
                     foreach (var data in obj)
@@ -2755,10 +2766,13 @@ namespace DataLayer
                             dupeRecordFound.ReRun_SupplierImportFile_Id = Guid.Parse(data.ProcessBatchId);
                             dupeRecordFound.Batch = data.ProcessBatchNo ?? 0;
                             dupeRecordFound.ReRun_Batch = data.ProcessBatchNo ?? 0;
+
                         }
                         else
                         {
                             Guid ASRTM_ID = Guid.NewGuid();
+                            CurrentCounter = CurrentCounter + CounterIncreaseBy;
+
                             Accommodation_SupplierRoomTypeMapping newRTM = new Accommodation_SupplierRoomTypeMapping();
 
                             newRTM.Accommodation_Id = AccommodationSearch.Accommodation_Id;
@@ -2798,7 +2812,7 @@ namespace DataLayer
                                 newRTM.FloorNumber = FloorNumber;
                             }
 
-                            newRTM.MapId = null;
+                            newRTM.MapId = CurrentCounter;
                             newRTM.MappingStatus = "UNMAPPED";
                             newRTM.MatchingScore = null;
 
@@ -2843,7 +2857,7 @@ namespace DataLayer
 
                             newRTM.RoomViewCode = data.RoomView;
                             newRTM.Smoking = data.Smoking;
-                           
+
                             newRTM.stg_SupplierHotelRoomMapping_Id = null;
 
                             newRTM.SupplierImportFile_Id = Guid.Parse(data.ProcessBatchId);
@@ -2865,16 +2879,30 @@ namespace DataLayer
                             newRTM.TX_RoomName = null;
                             newRTM.Tx_StrippedName = null;
 
-                            context.Accommodation_SupplierRoomTypeMapping.Add(newRTM);
-
                             data.Accommodation_SupplierRoomType_Id = ASRTM_ID.ToString().ToUpper();
                             data.Status = "UNMAPPED";
-                            data.SystemRoomTypeMapId = null;
-                            data.SystemProductCode = AccommodationSearch.CompanyHotelID;
+                            data.SystemRoomTypeMapId = CurrentCounter;
+                            if(AccommodationSearch != null)
+                            {
+                                data.SystemProductCode = AccommodationSearch.CompanyHotelID;
+                                data.Accommodation_Id = AccommodationSearch.Accommodation_Id.ToString().ToUpper();
+                            }
 
+                            context.Accommodation_SupplierRoomTypeMapping.Add(newRTM);
                         }
 
-                        context.SaveChangesAsync();
+                        context.SaveChanges();
+                    }
+
+                    //update counter
+                    if (counterRTM != null)
+                    {
+                        var counterRow = context.Counters.Find(counterRTM.Counter_Id);
+                        if (counterRow != null)
+                        {
+                            counterRow.LastCounterNo = CurrentCounter;
+                            context.SaveChanges();
+                        }
                     }
                 }
 
