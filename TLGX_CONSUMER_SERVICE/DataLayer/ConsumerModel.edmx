@@ -1055,6 +1055,8 @@
           <Property Name="FromPax" Type="varchar" MaxLength="40" />
           <Property Name="ToPax" Type="varchar" MaxLength="40" />
           <Property Name="PersonType" Type="varchar" MaxLength="40" />
+          <Property Name="AgeFrom" Type="varchar" MaxLength="40" />
+          <Property Name="AgeTo" Type="varchar" MaxLength="40" />
         </EntityType>
         <EntityType Name="Activity_ReviewsAndScores">
           <Key>
@@ -2642,6 +2644,7 @@
           <Property Name="PROCESS_USER" Type="nvarchar" MaxLength="255" />
           <Property Name="IsActive" Type="bit" />
           <Property Name="Mode" Type="nvarchar" MaxLength="255" />
+         
         </EntityType>
         <EntityType Name="UserEntity">
           <Key>
@@ -5018,6 +5021,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="FromPax" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
           <Property Name="ToPax" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
           <Property Name="PersonType" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="AgeFrom" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="AgeTo" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="ActivityGeneralInfo">
           <Key>
@@ -5158,6 +5163,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="PROCESS_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="Mode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+         
         </EntityType>
         <EntityType Name="SitemapInRole">
           <Key>
@@ -7797,6 +7803,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="Activity_Prices">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_Prices">
               <MappingFragment StoreEntitySet="Activity_Prices">
+                <ScalarProperty Name="AgeTo" ColumnName="AgeTo" />
+                <ScalarProperty Name="AgeFrom" ColumnName="AgeFrom" />
                 <ScalarProperty Name="PersonType" ColumnName="PersonType" />
                 <ScalarProperty Name="ToPax" ColumnName="ToPax" />
                 <ScalarProperty Name="FromPax" ColumnName="FromPax" />
@@ -7953,7 +7961,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="SupplierImportFileDetails">
             <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFileDetail">
               <MappingFragment StoreEntitySet="SupplierImportFileDetails">
-                <ScalarProperty Name="Mode" ColumnName="Mode" />
+                                <ScalarProperty Name="Mode" ColumnName="Mode" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="PROCESS_USER" ColumnName="PROCESS_USER" />
                 <ScalarProperty Name="PROCESS_DATE" ColumnName="PROCESS_DATE" />
