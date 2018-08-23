@@ -5546,16 +5546,12 @@ namespace DataLayer
                                                 ASRTM.MinGuestOccupancy,
                                                 ASRTM.PromotionalVendorCode,
                                                 ASRTM.BeddingConfig,
-                                                Convert(varchar,ACCO.CompanyHotelID) AS CommonProductId,
-                                                ACCO.Accommodation_Id,
+                                                ASRTM.Accommodation_Id,
                                                 ISNULL(ASRTM.ReRun_SupplierImportFile_Id, cast(cast(0 as binary) as uniqueidentifier)) AS ReRunSupplierImporrtFile_Id,
                                                 ASRTM.Supplier_Id,
                                                 ASRTM.SupplierName,
                                                 ISNULL(ASRTM.ReRun_Batch,0) as ReRunBatch,
                                                 ISNULL(ASRTM.Batch,0) as Batch,
-                                                ACCO.HotelName as ProductName,
-                                                ACCO.Location,
-                                                ARI.RoomName as Accommodation_RoomInfo_Name,
                                                 ASRTM.SupplierProvider,
                                                 ASRTM.CityName,
                                                 ASRTM.CityCode,
@@ -5564,9 +5560,14 @@ namespace DataLayer
                                                 ASRTM.CountryName,
                                                 ASRTM.CountryCode
                                                 FROM Accommodation_SupplierRoomTypeMapping ASRTM WITH (NOLOCK) 
-                                                JOIN Accommodation ACCO WITH (NOLOCK) ON ASRTM.Accommodation_Id = ACCO.Accommodation_Id
-                                                LEFT JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) ON ASRTM.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id
                                                 WHERE ");
+
+                    //Convert(varchar, ACCO.CompanyHotelID) AS CommonProductId,
+                    //ACCO.HotelName as ProductName,
+                    //ACCO.Location,
+                    //ARI.RoomName as Accommodation_RoomInfo_Name,
+                    //JOIN Accommodation ACCO WITH (NOLOCK) ON ASRTM.Accommodation_Id = ACCO.Accommodation_Id
+                    //LEFT JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) ON ASRTM.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id
 
                     if (IsCalledFromTTFU)
                     {
@@ -5574,8 +5575,10 @@ namespace DataLayer
                     }
                     else
                     {
+                        //Commented below line as FileId filter is unique across run. So no need for SupplierId filter
+                        //sbGetAllSupplierRooms.Append("ASRTM.Supplier_Id = '" + Convert.ToString(curSupplier_Id) + "' AND ");
+                        sbGetAllSupplierRooms.Append("ASRTM.Accommodation_Id IS NOT NULL AND ");
                         sbGetAllSupplierRooms.Append("ASRTM.ReRun_SupplierImportFile_Id = '" + Convert.ToString(supdata.File_Id) + "' AND ");
-                        sbGetAllSupplierRooms.Append("ASRTM.Supplier_Id = '" + Convert.ToString(curSupplier_Id) + "' AND ");
                         sbGetAllSupplierRooms.Append("ASRTM.MappingStatus IN ('REVIEW','UNMAPPED','ADD') AND ");
                         sbGetAllSupplierRooms.Append("ASRTM.ReRun_Batch = '" + Convert.ToString(obj.CurrentBatch) + "';");
                     }
