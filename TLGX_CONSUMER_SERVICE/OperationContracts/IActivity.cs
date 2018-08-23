@@ -305,8 +305,8 @@ namespace OperationContracts
         #region Activity Reports
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "Activity/GetActivitiesReport/Get/{ReportType}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        IList<DC_Activity_Report_RS> GetActivitiesReport(string ReportType);
+        [WebInvoke(Method = "POST", UriTemplate = "Activity/GetActivitiesReport/Get", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DC_Activity_Report_RS> GetActivitiesReport(DC_ActivityCountStats ReportType);
         #endregion
 
     }

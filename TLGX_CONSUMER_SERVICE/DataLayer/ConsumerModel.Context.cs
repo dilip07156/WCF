@@ -155,9 +155,9 @@ namespace DataLayer
         public virtual DbSet<DistributionLayerRefresh_Log> DistributionLayerRefresh_Log { get; set; }
         public virtual DbSet<vwMappingStatsMdmOnly> vwMappingStatsMdmOnly { get; set; }
         public virtual DbSet<Supplier> Supplier { get; set; }
-        public virtual DbSet<Activity_Flavour> Activity_Flavour { get; set; }
         public virtual DbSet<vwUserwisemappedStats> vwUserwisemappedStats { get; set; }
         public virtual DbSet<Dashboard_MappingStat> Dashboard_MappingStat { get; set; }
+        public virtual DbSet<Activity_Flavour> Activity_Flavour { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

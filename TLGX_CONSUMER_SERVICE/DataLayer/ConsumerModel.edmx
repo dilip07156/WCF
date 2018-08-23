@@ -791,8 +791,8 @@
           <Property Name="Duration" Type="nvarchar" MaxLength="50" />
           <Property Name="CountryCode" Type="nvarchar" MaxLength="255" />
           <Property Name="CityCode" Type="nvarchar" MaxLength="255" />
-          <Property Name="Latitude" Type="decimal" Precision="18" Scale="9" />
-          <Property Name="Longitude" Type="decimal" Precision="18" Scale="9" />
+          <Property Name="Latitude" Type="varchar" MaxLength="100" />
+          <Property Name="Longitude" Type="varchar" MaxLength="100" />
           <Property Name="Street" Type="nvarchar" MaxLength="255" />
           <Property Name="Street2" Type="nvarchar" MaxLength="255" />
           <Property Name="Street3" Type="nvarchar" MaxLength="255" />
@@ -3117,9 +3117,9 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="DistributionLayerRefresh_Log" EntityType="ConsumerModel.DistributionLayerRefresh_Log" />
           <EntitySet Name="vwMappingStatsMdmOnly" EntityType="ConsumerModel.vwMappingStatsMdmOnly" />
           <EntitySet Name="Supplier" EntityType="ConsumerModel.Supplier" />
-          <EntitySet Name="Activity_Flavour" EntityType="ConsumerModel.Activity_Flavour" />
           <EntitySet Name="vwUserwisemappedStats" EntityType="ConsumerModel.vwUserwisemappedStats" />
           <EntitySet Name="Dashboard_MappingStat" EntityType="ConsumerModel.Dashboard_MappingStat" />
+          <EntitySet Name="Activity_Flavour" EntityType="ConsumerModel.Activity_Flavour" />
 
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
@@ -5781,6 +5781,30 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="EZ1_SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="IsFullPull" Type="Boolean" />
         </EntityType>
+        <EntityType Name="vwUserwisemappedStats">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="supplier_id" Type="Guid" Nullable="false" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="totalcount" Type="Int32" />
+          <Property Name="EditDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="Dashboard_MappingStat">
+          <Key>
+            <PropertyRef Name="RowId" />
+          </Key>
+          <Property Name="RowId" Type="Guid" Nullable="false" />
+          <Property Name="Supplier_Id" Type="Guid" />
+          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MappingFor" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="TotalCount" Type="Int32" />
+          <Property Name="Batch" Type="Int32" />
+        </EntityType>
         <EntityType Name="Activity_Flavour">
           <Key>
             <PropertyRef Name="Activity_Flavour_Id" />
@@ -5809,8 +5833,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Duration" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CountryCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="CityCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Latitude" Type="Decimal" Precision="18" Scale="9" />
-          <Property Name="Longitude" Type="Decimal" Precision="18" Scale="9" />
+          <Property Name="Latitude" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Longitude" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Street" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Street2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Street3" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -5832,30 +5856,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Activity_Status_Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Activity_Status_Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="TourType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="vwUserwisemappedStats">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="supplier_id" Type="Guid" Nullable="false" />
-          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
-          <Property Name="totalcount" Type="Int32" />
-          <Property Name="EditDate" Type="DateTime" Precision="0" />
-        </EntityType>
-        <EntityType Name="Dashboard_MappingStat">
-          <Key>
-            <PropertyRef Name="RowId" />
-          </Key>
-          <Property Name="RowId" Type="Guid" Nullable="false" />
-          <Property Name="Supplier_Id" Type="Guid" />
-          <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MappingFor" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="TotalCount" Type="Int32" />
-          <Property Name="Batch" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -8617,6 +8617,32 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="vwUserwisemappedStats">
+            <EntityTypeMapping TypeName="ConsumerModel.vwUserwisemappedStats">
+              <MappingFragment StoreEntitySet="vwUserwisemappedStats">
+                <ScalarProperty Name="EditDate" ColumnName="EditDate" />
+                <ScalarProperty Name="totalcount" ColumnName="totalcount" />
+                <ScalarProperty Name="MappinFor" ColumnName="MappinFor" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="supplier_id" ColumnName="supplier_id" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dashboard_MappingStat">
+            <EntityTypeMapping TypeName="ConsumerModel.Dashboard_MappingStat">
+              <MappingFragment StoreEntitySet="Dashboard_MappingStat">
+                <ScalarProperty Name="Batch" ColumnName="Batch" />
+                <ScalarProperty Name="TotalCount" ColumnName="TotalCount" />
+                <ScalarProperty Name="MappingFor" ColumnName="MappingFor" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="RowId" ColumnName="RowId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Activity_Flavour">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_Flavour">
               <MappingFragment StoreEntitySet="Activity_Flavour">
@@ -8667,32 +8693,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
                 <ScalarProperty Name="ProductName" ColumnName="ProductName" />
                 <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
                 <ScalarProperty Name="Activity_Flavour_Id" ColumnName="Activity_Flavour_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="vwUserwisemappedStats">
-            <EntityTypeMapping TypeName="ConsumerModel.vwUserwisemappedStats">
-              <MappingFragment StoreEntitySet="vwUserwisemappedStats">
-                <ScalarProperty Name="EditDate" ColumnName="EditDate" />
-                <ScalarProperty Name="totalcount" ColumnName="totalcount" />
-                <ScalarProperty Name="MappinFor" ColumnName="MappinFor" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
-                <ScalarProperty Name="supplier_id" ColumnName="supplier_id" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Dashboard_MappingStat">
-            <EntityTypeMapping TypeName="ConsumerModel.Dashboard_MappingStat">
-              <MappingFragment StoreEntitySet="Dashboard_MappingStat">
-                <ScalarProperty Name="Batch" ColumnName="Batch" />
-                <ScalarProperty Name="TotalCount" ColumnName="TotalCount" />
-                <ScalarProperty Name="MappingFor" ColumnName="MappingFor" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
-                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
-                <ScalarProperty Name="RowId" ColumnName="RowId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
