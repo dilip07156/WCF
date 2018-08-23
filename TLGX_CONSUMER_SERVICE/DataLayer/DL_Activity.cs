@@ -4639,68 +4639,102 @@ namespace DataLayer
 
         #region Activities Reports
         //DC_Activity_Report_RS
-        public List<DataContracts.Masters.DC_Activity_Report_RS> GetActivitiesReport(int? ReportType)
+        public List<DataContracts.Masters.DC_Activity_Report_RS> GetActivitiesReport(DC_ActivityCountStats _obj)
         {
+            StringBuilder sbSelect = new StringBuilder();
+            StringBuilder sbFrom = new StringBuilder();
+            StringBuilder sbJoin = new StringBuilder();
+            StringBuilder sbWhere = new StringBuilder();
+            StringBuilder sbGroupBy = new StringBuilder();
+            StringBuilder sborderBy = new StringBuilder();
             List<DC_Activity_Report_RS> result = new List<DC_Activity_Report_RS>();
             try
             {
 
+                sbSelect.Append(" Select spm.SupplierName, Count(spm.SuplierProductCode) As TotalCount ");
+                sbFrom.Append(" From Activity_Flavour F with(NOLOCK) ");
+                sbJoin.Append(" Join Activity_SupplierProductMapping spm with(nolock) on F.Activity_Flavour_Id = spm.Activity_ID");
+                sbJoin.Append(@" join [Supplier_ProductCategory] SP with(nolock) on spm.Supplier_ID = sp.Supplier_Id 
+                                        and SP.ProductCategory = 'Activities' and SP.ProductCategorySubType = 'Sightseeing'");
+
+
+                sbWhere.Append(" where Country_Id is not null and  City_Id is not null ");
+                sbGroupBy.Append(" group by SupplierName");
+                sborderBy.Append(" order by SupplierName");
+                bool flagCountry = false;
+                if (!string.IsNullOrEmpty(_obj.SupplierID) && _obj.SupplierID != "0")
+                {
+                    sbWhere.Append(" and SPM.Supplier_Id='" + Guid.Parse(_obj.SupplierID) + "' ");
+                }
+                if (_obj.CountryID == "1") //All countries
+                {
+                    flagCountry = true;
+                    sbSelect.Append(" ,F.Country  ");
+                    sbGroupBy.Append(" ,F.Country ");
+                    sborderBy.Append(" ,F.Country ");
+                    //sbWhere.Append(@"F.Country_Id='" + Guid.Parse(_obj.CountryID) + "' ");
+                }
+                else if (_obj.CountryID != "0" && _obj.CountryID != "1") //Single countries
+                {
+                    flagCountry = true;
+                    sbSelect.Append(" ,F.Country ");
+                    sbGroupBy.Append(" ,F.Country ");
+                    sborderBy.Append(" ,F.Country ");
+                    sbWhere.Append(@" and F.Country_Id='" + Guid.Parse(_obj.CountryID) + "' ");
+                }
+                if (_obj.CityID == "1")
+                {
+                    if (!flagCountry)
+                    {
+                        sbSelect.Append(" ,F.Country ");
+                        sbGroupBy.Append(" ,F.Country ");
+                        sborderBy.Append(" ,F.Country ");
+                    }
+                    sbSelect.Append(" ,F.City ");
+                    sbGroupBy.Append(" ,F.City ");
+                    sborderBy.Append(" ,F.City ");
+
+                }
+                else if (_obj.CityID != "1" && _obj.CityID != "0")
+                {
+                    if (!flagCountry)
+                    {
+                        sbSelect.Append(" ,F.Country ");
+                        sbGroupBy.Append(" ,F.Country ");
+                        sborderBy.Append(" ,F.Country ");
+                    }
+                    sbSelect.Append(" ,F.City ");
+                    sbGroupBy.Append(" ,F.City ");
+                    sborderBy.Append(" ,F.City ");
+                    sbWhere.Append(@" and F.City_Id='" + Guid.Parse(_obj.CityID) + "' ");
+
+                }
+
+
+                StringBuilder sbfinalquery = new StringBuilder();
+                sbfinalquery.Append(sbSelect); sbfinalquery.Append(" ");
+                sbfinalquery.Append(sbFrom); sbfinalquery.Append(" ");
+                sbfinalquery.Append(sbJoin); sbfinalquery.Append(" ");
+                sbfinalquery.Append(sbWhere); sbfinalquery.Append(" ");
+                sbfinalquery.Append(sbGroupBy);
+                sbfinalquery.Append(sborderBy);
+
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    if (ReportType == 1)
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    try
                     {
-                        result = (from af in context.Activity_Flavour.AsNoTracking()
-                                  join aspm in context.Activity_SupplierProductMapping.AsNoTracking()
-                                  on af.Activity_Flavour_Id equals aspm.Activity_ID
-                                  join sp in context.Supplier_ProductCategory
-                                  on aspm.Supplier_ID equals sp.Supplier_Id
-                                  where af.Country_Id != null && af.City_Id != null && sp.ProductCategory == "Activities" && sp.ProductCategorySubType == "Sightseeing"
-                                  group aspm by new { aspm.SupplierName, aspm.SupplierCountryName } into g
-                                  select new DC_Activity_Report_RS
-                                  {
-                                      SupplierName = g.Key.SupplierName,
-                                      SupplierCountryName = g.Key.SupplierCountryName,
-                                      ActivitiesCount = g.Count()
-                                  }).OrderBy(x => x.SupplierCountryName).ToList();
-                    }
-                    if (ReportType == 2)
-                    {
-                        result = (from af in context.Activity_Flavour.AsNoTracking()
-                                  join aspm in context.Activity_SupplierProductMapping.AsNoTracking()
-                                  on af.Activity_Flavour_Id equals aspm.Activity_ID
-                                  join sp in context.Supplier_ProductCategory
-                                  on aspm.Supplier_ID equals sp.Supplier_Id
-                                  where af.Country_Id != null && af.City_Id != null && sp.ProductCategory == "Activities" && sp.ProductCategorySubType == "Sightseeing"
-                                  group aspm by new { aspm.SupplierName, aspm.SupplierCityName } into g
-                                  select new DC_Activity_Report_RS
-                                  {
-                                      SupplierName = g.Key.SupplierName,
-                                      SupplierCityName = g.Key.SupplierCityName,
-                                      ActivitiesCount = g.Count()
-                                  }).OrderBy(x => x.SupplierCityName).ToList();
-                    }
+                        result = context.Database.SqlQuery<DC_Activity_Report_RS>(sbfinalquery.ToString()).ToList();
 
-                    if (ReportType == 3)
-                    {
-                        result = (from af in context.Activity_Flavour.AsNoTracking()
-                                  join aspm in context.Activity_SupplierProductMapping.AsNoTracking()
-                                  on af.Activity_Flavour_Id equals aspm.Activity_ID
-                                  join sp in context.Supplier_ProductCategory
-                                  on aspm.Supplier_ID equals sp.Supplier_Id
-                                  where af.Country_Id != null && af.City_Id != null && sp.ProductCategory == "Activities" && sp.ProductCategorySubType == "Sightseeing"
-                                  group aspm by new { aspm.SupplierName } into g
-                                  select new DC_Activity_Report_RS
-                                  {
-                                      SupplierName = g.Key.SupplierName,
-                                      ActivitiesCount = g.Count()
-                                  }).OrderBy(x=>x.SupplierName).ToList();
-
+                        if (result.Count == 0)
+                            return result = new List<DC_Activity_Report_RS> { };
                     }
-                    if (result.Count > 0)
-                        return result;
-                    else
-                       return result = new List<DC_Activity_Report_RS> { };
+                    catch (Exception ex)
+                    {
+                    }
                 }
+                return result;
+                // }
             }
             catch (Exception ex)
             {

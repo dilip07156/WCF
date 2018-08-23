@@ -518,7 +518,7 @@ namespace ConsumerSvc
         #endregion
 
         #region ActivityReports
-        public IList<DataContracts.Masters.DC_Activity_Report_RS> GetActivitiesReport(string ReportType)
+        public IList<DataContracts.Masters.DC_Activity_Report_RS> GetActivitiesReport(DC_ActivityCountStats ReportType)
         {
             using (BL_Activity objBL = new BL_Activity())
             {

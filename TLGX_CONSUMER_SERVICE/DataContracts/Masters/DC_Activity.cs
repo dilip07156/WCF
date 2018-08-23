@@ -1415,9 +1415,9 @@ namespace DataContracts.Masters
         [DataMember]
         public string CityCode { get; set; }
         [DataMember]
-        public decimal? Latitude { get; set; }
+        public string Latitude { get; set; }
         [DataMember]
-        public decimal? Longitude { get; set; }
+        public string Longitude { get; set; }
         [DataMember]
         public string Street { get; set; }
         [DataMember]
@@ -2215,21 +2215,32 @@ namespace DataContracts.Masters
     #endregion
 
     #region Activities Reports
+    public class DC_ActivityCountStats
+    {
+        [DataMember]
+        public string SupplierID { get; set; }
+        [DataMember]
+        public string CountryID { get; set; }
+        [DataMember]
+        public string CityID { get; set; }
+    }
     public class DC_Activity_Report_RS
     {
         [DataMember]
         public string SupplierName { get; set; }
         [DataMember]
-        public string SupplierCountryName { get; set; }
+        public string Country { get; set; }
         [DataMember]
-        public string SupplierCityName { get; set; }
+        public string City { get; set; }
         [DataMember]
-        public int? ActivitiesCount { get; set; }
-       
-    }
-        #endregion
+        public int? TotalCount { get; set; }
 
     }
+    #endregion
+
+
+
+}
 
 
 

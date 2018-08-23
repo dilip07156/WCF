@@ -473,17 +473,17 @@ namespace BusinessLayer
         #endregion
 
         #region Activity Reports
-        public List<DataContracts.Masters.DC_Activity_Report_RS> GetActivitiesReport(string ReportType)
+        public List<DataContracts.Masters.DC_Activity_Report_RS> GetActivitiesReport(DC_ActivityCountStats _obj)
         {
-            int reportType;
-            if (!int.TryParse(ReportType, out reportType))
-            {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
-            }
+            //int reportType;
+            //if (!int.TryParse(ReportType, out reportType))
+            //{
+            //    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            //}
 
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
-                return obj.GetActivitiesReport(reportType);
+                return obj.GetActivitiesReport( _obj);
             }
         }
         #endregion
