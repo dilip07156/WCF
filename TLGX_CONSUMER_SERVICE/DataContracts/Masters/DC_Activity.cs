@@ -1758,6 +1758,10 @@ namespace DataContracts.Masters
         public string ToPax { get; set; }
         [DataMember]
         public string PersonType { get; set; }
+        [DataMember]
+        public string AgeFrom { get; set; }
+        [DataMember]
+        public string AgeTo { get; set; }
 
     }
     [DataContract]

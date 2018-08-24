@@ -3201,7 +3201,9 @@ namespace DataLayer
                                      PersonType = a.PersonType,
                                      Price_ValidFrom = a.Price_ValidFrom,
                                      Price_ValidTo = a.Price_ValidTo,
-                                     Price_InternalOptionCode = foljd.TLGXActivityOptionCode
+                                     Price_InternalOptionCode = foljd.TLGXActivityOptionCode,
+                                     AgeFrom = a.AgeFrom,
+                                     AgeTo = a.AgeTo
                                  };
                     return result.Skip(skip ?? 0).Take((RQ.PageSize ?? total)).ToList();
                 }
@@ -3251,6 +3253,12 @@ namespace DataLayer
                             res.Price = RQ.Price;
                             res.Price_For = RQ.Price_For;
                             res.Price_Type = RQ.Price_Type;
+                            res.AgeFrom = RQ.AgeFrom;
+                            res.AgeTo = RQ.AgeTo;
+                            res.PersonType = RQ.Price_Type;
+                            res.FromPax = RQ.FromPax;
+                            res.ToPax = RQ.ToPax;
+                            res.Market = RQ.Market;
                             res.Price_OptionCode = RQ.Price_OptionCode;
                             res.Edit_Date = DateTime.Now;
                             res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
