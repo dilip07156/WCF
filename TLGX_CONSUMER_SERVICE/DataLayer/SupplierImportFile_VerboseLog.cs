@@ -19,5 +19,6 @@ namespace DataLayer
         public string Step { get; set; }
         public string Message { get; set; }
         public Nullable<System.DateTime> TimeStamp { get; set; }
+        public Nullable<int> BatchNumber { get; set; }
     }
 }

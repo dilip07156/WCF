@@ -324,6 +324,7 @@
           <Property Name="ReRun_Batch" Type="int" />
           <Property Name="ProductType" Type="varchar" MaxLength="50" />
           <Property Name="GeoLocation" Type="geography" />
+          <Property Name="RowCounter" Type="int" />
         </EntityType>
         <EntityType Name="Accommodation_RoomFacility">
           <Key>
@@ -505,6 +506,7 @@
           <Property Name="CountryName" Type="nvarchar" MaxLength="255" />
           <Property Name="CountryCode" Type="nvarchar" MaxLength="50" />
           <Property Name="MatchingScore" Type="float" />
+          <Property Name="RowCounter" Type="int" />
         </EntityType>
         <EntityType Name="Activity">
           <Key>
@@ -1055,6 +1057,8 @@
           <Property Name="FromPax" Type="varchar" MaxLength="40" />
           <Property Name="ToPax" Type="varchar" MaxLength="40" />
           <Property Name="PersonType" Type="varchar" MaxLength="40" />
+          <Property Name="AgeFrom" Type="varchar" MaxLength="40" />
+          <Property Name="AgeTo" Type="varchar" MaxLength="40" />
         </EntityType>
         <EntityType Name="Activity_ReviewsAndScores">
           <Key>
@@ -1686,6 +1690,7 @@
           <Property Name="Batch" Type="int" />
           <Property Name="ReRun_SupplierImportFile_Id" Type="uniqueidentifier" />
           <Property Name="ReRun_Batch" Type="int" />
+          <Property Name="RowCounter" Type="int" />
         </EntityType>
         <EntityType Name="m_CityMapping_EntityCount">
           <Key>
@@ -1748,6 +1753,7 @@
           <Property Name="Batch" Type="int" />
           <Property Name="ReRun_SupplierImportFile_Id" Type="uniqueidentifier" />
           <Property Name="ReRun_Batch" Type="int" />
+          <Property Name="RowCounter" Type="int" />
         </EntityType>
         <EntityType Name="m_CountryMaster">
           <Key>
@@ -2166,7 +2172,7 @@
           <Property Name="CityCode" Type="nvarchar" MaxLength="150" />
           <Property Name="CityName" Type="nvarchar" MaxLength="150" />
           <Property Name="ActivityId" Type="nvarchar" MaxLength="150" />
-          <Property Name="FullResponse" Type="nvarchar(max)" />
+          <Property Name="FullResponse" Type="text" />
           <Property Name="ResponseFormat" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="CreatedUser" Type="nvarchar" MaxLength="250" />
@@ -2624,6 +2630,7 @@
           <Property Name="Step" Type="nvarchar" MaxLength="255" />
           <Property Name="Message" Type="nvarchar(max)" />
           <Property Name="TimeStamp" Type="datetime" />
+          <Property Name="BatchNumber" Type="int" />
         </EntityType>
         <EntityType Name="SupplierImportFileDetails">
           <Key>
@@ -2642,6 +2649,11 @@
           <Property Name="PROCESS_USER" Type="nvarchar" MaxLength="255" />
           <Property Name="IsActive" Type="bit" />
           <Property Name="Mode" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsStopped" Type="bit" />
+          <Property Name="IsRestarted" Type="bit" />
+          <Property Name="IsPaused" Type="bit" />
+          <Property Name="IsResumed" Type="bit" />
+          <Property Name="CurrentBatch" Type="int" />
         </EntityType>
         <EntityType Name="UserEntity">
           <Key>
@@ -4247,6 +4259,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Step" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TimeStamp" Type="DateTime" Precision="3" />
+          <Property Name="BatchNumber" Type="Int32" />
         </EntityType>
         <EntityType Name="SupplierImportFile_Statistics">
           <Key>
@@ -5018,6 +5031,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="FromPax" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
           <Property Name="ToPax" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
           <Property Name="PersonType" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="AgeFrom" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="AgeTo" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="ActivityGeneralInfo">
           <Key>
@@ -5067,7 +5082,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="CityCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="CityName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="ActivityId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="FullResponse" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FullResponse" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="ResponseFormat" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CreatedUser" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
@@ -5158,6 +5173,11 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="PROCESS_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="Mode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsStopped" Type="Boolean" />
+          <Property Name="IsRestarted" Type="Boolean" />
+          <Property Name="IsPaused" Type="Boolean" />
+          <Property Name="IsResumed" Type="Boolean" />
+          <Property Name="CurrentBatch" Type="Int32" />
         </EntityType>
         <EntityType Name="SitemapInRole">
           <Key>
@@ -5271,6 +5291,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Batch" Type="Int32" />
           <Property Name="ReRun_SupplierImportFile_Id" Type="Guid" />
           <Property Name="ReRun_Batch" Type="Int32" />
+          <Property Name="RowCounter" Type="Int32" />
         </EntityType>
         <EntityType Name="m_CountryMapping">
           <Key>
@@ -5300,6 +5321,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Batch" Type="Int32" />
           <Property Name="ReRun_SupplierImportFile_Id" Type="Guid" />
           <Property Name="ReRun_Batch" Type="Int32" />
+          <Property Name="RowCounter" Type="Int32" />
         </EntityType>
         <EntityType Name="m_CityMapping_EntityCount">
           <Key>
@@ -5373,6 +5395,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="CountryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="CountryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MatchingScore" Type="Double" />
+          <Property Name="RowCounter" Type="Int32" />
         </EntityType>
         <EntityType Name="ZoneProduct_Mapping">
           <Key>
@@ -5450,6 +5473,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="ReRun_Batch" Type="Int32" />
           <Property Name="ProductType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="GeoLocation" Type="Geography" />
+          <Property Name="RowCounter" Type="Int32" />
         </EntityType>
         <EntityType Name="stg_SupplierCityMapping">
           <Key>
@@ -7007,6 +7031,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="SupplierImportFile_VerboseLog">
             <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFile_VerboseLog">
               <MappingFragment StoreEntitySet="SupplierImportFile_VerboseLog">
+                <ScalarProperty Name="BatchNumber" ColumnName="BatchNumber" />
                 <ScalarProperty Name="TimeStamp" ColumnName="TimeStamp" />
                 <ScalarProperty Name="Message" ColumnName="Message" />
                 <ScalarProperty Name="Step" ColumnName="Step" />
@@ -7797,6 +7822,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="Activity_Prices">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_Prices">
               <MappingFragment StoreEntitySet="Activity_Prices">
+                <ScalarProperty Name="AgeTo" ColumnName="AgeTo" />
+                <ScalarProperty Name="AgeFrom" ColumnName="AgeFrom" />
                 <ScalarProperty Name="PersonType" ColumnName="PersonType" />
                 <ScalarProperty Name="ToPax" ColumnName="ToPax" />
                 <ScalarProperty Name="FromPax" ColumnName="FromPax" />
@@ -7953,6 +7980,11 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="SupplierImportFileDetails">
             <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFileDetail">
               <MappingFragment StoreEntitySet="SupplierImportFileDetails">
+                <ScalarProperty Name="CurrentBatch" ColumnName="CurrentBatch" />
+                <ScalarProperty Name="IsResumed" ColumnName="IsResumed" />
+                <ScalarProperty Name="IsPaused" ColumnName="IsPaused" />
+                <ScalarProperty Name="IsRestarted" ColumnName="IsRestarted" />
+                <ScalarProperty Name="IsStopped" ColumnName="IsStopped" />
                 <ScalarProperty Name="Mode" ColumnName="Mode" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="PROCESS_USER" ColumnName="PROCESS_USER" />
@@ -8056,6 +8088,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="m_CityMapping">
             <EntityTypeMapping TypeName="ConsumerModel.m_CityMapping">
               <MappingFragment StoreEntitySet="m_CityMapping">
+                <ScalarProperty Name="RowCounter" ColumnName="RowCounter" />
                 <ScalarProperty Name="ReRun_Batch" ColumnName="ReRun_Batch" />
                 <ScalarProperty Name="ReRun_SupplierImportFile_Id" ColumnName="ReRun_SupplierImportFile_Id" />
                 <ScalarProperty Name="Batch" ColumnName="Batch" />
@@ -8090,6 +8123,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="m_CountryMapping">
             <EntityTypeMapping TypeName="ConsumerModel.m_CountryMapping">
               <MappingFragment StoreEntitySet="m_CountryMapping">
+                <ScalarProperty Name="RowCounter" ColumnName="RowCounter" />
                 <ScalarProperty Name="ReRun_Batch" ColumnName="ReRun_Batch" />
                 <ScalarProperty Name="ReRun_SupplierImportFile_Id" ColumnName="ReRun_SupplierImportFile_Id" />
                 <ScalarProperty Name="Batch" ColumnName="Batch" />
@@ -8132,6 +8166,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="Accommodation_SupplierRoomTypeMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeMapping">
               <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeMapping">
+                <ScalarProperty Name="RowCounter" ColumnName="RowCounter" />
                 <ScalarProperty Name="MatchingScore" ColumnName="MatchingScore" />
                 <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
                 <ScalarProperty Name="CountryName" ColumnName="CountryName" />
@@ -8214,6 +8249,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="Accommodation_ProductMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_ProductMapping">
               <MappingFragment StoreEntitySet="Accommodation_ProductMapping">
+                <ScalarProperty Name="RowCounter" ColumnName="RowCounter" />
                 <ScalarProperty Name="GeoLocation" ColumnName="GeoLocation" />
                 <ScalarProperty Name="ProductType" ColumnName="ProductType" />
                 <ScalarProperty Name="ReRun_Batch" ColumnName="ReRun_Batch" />

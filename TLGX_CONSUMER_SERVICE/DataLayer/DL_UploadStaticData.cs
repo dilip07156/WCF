@@ -1040,7 +1040,7 @@ namespace DataLayer
                     dc.StatusMessage = "Supplier File Status" + ReadOnlyMessage.strUpdatedSuccessfully;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 dc.StatusMessage = ReadOnlyMessage.strFailed;
                 dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
@@ -1526,7 +1526,8 @@ namespace DataLayer
                         SupplierImportFile_Id = obj.SupplierImportFile_Id,
                         Message = obj.Message,
                         Step = obj.Step,
-                        TimeStamp = obj.TimeStamp
+                        TimeStamp = obj.TimeStamp,
+                        BatchNumber = obj.BatchNumber
                     };
                     context.SupplierImportFile_VerboseLog.Add(objNew);
                     context.SaveChanges();
@@ -1584,7 +1585,8 @@ namespace DataLayer
                                              Step = a.Step,
                                              Message = a.Message,
                                              TimeStamp = a.TimeStamp ?? DateTime.Now,
-                                             TotalCount = total
+                                             TotalCount = total,
+                                             BatchNumber = a.BatchNumber
                                          }).Skip(skip ?? 0).Take(RQ.PageSize ?? total).ToList();
 
                     return ProgLogResult;
