@@ -2905,6 +2905,10 @@ namespace DataLayer
                                 search.Street4 = CommonFunctions.SubString(PM.Street4, length);
                             }
 
+                            #region This code is written as business don't require REMAP logic as of now and this logic needs to be improved further for better match result
+                            isReMap = false;
+                            #endregion
+                            
                             if (isReMap && search.Status == "MAPPED" && search.Accommodation_Id != null)
                             {
                                 PM.Status = "REMAP";
