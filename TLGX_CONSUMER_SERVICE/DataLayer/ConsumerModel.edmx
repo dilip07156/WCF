@@ -1055,6 +1055,8 @@
           <Property Name="FromPax" Type="varchar" MaxLength="40" />
           <Property Name="ToPax" Type="varchar" MaxLength="40" />
           <Property Name="PersonType" Type="varchar" MaxLength="40" />
+          <Property Name="AgeFrom" Type="varchar" MaxLength="40" />
+          <Property Name="AgeTo" Type="varchar" MaxLength="40" />
         </EntityType>
         <EntityType Name="Activity_ReviewsAndScores">
           <Key>
@@ -2166,7 +2168,7 @@
           <Property Name="CityCode" Type="nvarchar" MaxLength="150" />
           <Property Name="CityName" Type="nvarchar" MaxLength="150" />
           <Property Name="ActivityId" Type="nvarchar" MaxLength="150" />
-          <Property Name="FullResponse" Type="nvarchar(max)" />
+          <Property Name="FullResponse" Type="text" />
           <Property Name="ResponseFormat" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="CreatedUser" Type="nvarchar" MaxLength="250" />
@@ -2642,6 +2644,11 @@
           <Property Name="PROCESS_USER" Type="nvarchar" MaxLength="255" />
           <Property Name="IsActive" Type="bit" />
           <Property Name="Mode" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsStopped" Type="bit" />
+          <Property Name="IsRestarted" Type="bit" />
+          <Property Name="IsPaused" Type="bit" />
+          <Property Name="IsResumed" Type="bit" />
+          <Property Name="CurrentBatch" Type="int" />
         </EntityType>
         <EntityType Name="UserEntity">
           <Key>
@@ -5018,6 +5025,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="FromPax" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
           <Property Name="ToPax" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
           <Property Name="PersonType" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="AgeFrom" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="AgeTo" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="ActivityGeneralInfo">
           <Key>
@@ -5067,7 +5076,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="CityCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="CityName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="ActivityId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="FullResponse" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FullResponse" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="ResponseFormat" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CreatedUser" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
@@ -5158,6 +5167,11 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="PROCESS_USER" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="Mode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsStopped" Type="Boolean" />
+          <Property Name="IsRestarted" Type="Boolean" />
+          <Property Name="IsPaused" Type="Boolean" />
+          <Property Name="IsResumed" Type="Boolean" />
+          <Property Name="CurrentBatch" Type="Int32" />
         </EntityType>
         <EntityType Name="SitemapInRole">
           <Key>
@@ -7797,6 +7811,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="Activity_Prices">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_Prices">
               <MappingFragment StoreEntitySet="Activity_Prices">
+                <ScalarProperty Name="AgeTo" ColumnName="AgeTo" />
+                <ScalarProperty Name="AgeFrom" ColumnName="AgeFrom" />
                 <ScalarProperty Name="PersonType" ColumnName="PersonType" />
                 <ScalarProperty Name="ToPax" ColumnName="ToPax" />
                 <ScalarProperty Name="FromPax" ColumnName="FromPax" />
@@ -7953,6 +7969,11 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="SupplierImportFileDetails">
             <EntityTypeMapping TypeName="ConsumerModel.SupplierImportFileDetail">
               <MappingFragment StoreEntitySet="SupplierImportFileDetails">
+                <ScalarProperty Name="CurrentBatch" ColumnName="CurrentBatch" />
+                <ScalarProperty Name="IsResumed" ColumnName="IsResumed" />
+                <ScalarProperty Name="IsPaused" ColumnName="IsPaused" />
+                <ScalarProperty Name="IsRestarted" ColumnName="IsRestarted" />
+                <ScalarProperty Name="IsStopped" ColumnName="IsStopped" />
                 <ScalarProperty Name="Mode" ColumnName="Mode" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="PROCESS_USER" ColumnName="PROCESS_USER" />

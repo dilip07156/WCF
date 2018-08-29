@@ -197,5 +197,15 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
+        #region 
+        public DataContracts.DC_Message UpdateSupplierImportFileDetails(DataContracts.UploadStaticData.DC_SupplierImportFileDetails obj)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.UpdateSupplierImportFileDetails(obj);
+            }
+        }
+        #endregion
     }
 }

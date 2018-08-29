@@ -24,10 +24,25 @@ namespace DataLayer.DHSVC {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> CurrentBatchField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Data.DataSet DataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string EntityField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<bool> IsPausedField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<bool> IsRestartedField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<bool> IsResumedField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<bool> IsStoppedField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string ModeField;
@@ -64,6 +79,19 @@ namespace DataLayer.DHSVC {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> CurrentBatch {
+            get {
+                return this.CurrentBatchField;
+            }
+            set {
+                if ((this.CurrentBatchField.Equals(value) != true)) {
+                    this.CurrentBatchField = value;
+                    this.RaisePropertyChanged("CurrentBatch");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public System.Data.DataSet Data {
             get {
                 return this.DataField;
@@ -85,6 +113,58 @@ namespace DataLayer.DHSVC {
                 if ((object.ReferenceEquals(this.EntityField, value) != true)) {
                     this.EntityField = value;
                     this.RaisePropertyChanged("Entity");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<bool> IsPaused {
+            get {
+                return this.IsPausedField;
+            }
+            set {
+                if ((this.IsPausedField.Equals(value) != true)) {
+                    this.IsPausedField = value;
+                    this.RaisePropertyChanged("IsPaused");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<bool> IsRestarted {
+            get {
+                return this.IsRestartedField;
+            }
+            set {
+                if ((this.IsRestartedField.Equals(value) != true)) {
+                    this.IsRestartedField = value;
+                    this.RaisePropertyChanged("IsRestarted");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<bool> IsResumed {
+            get {
+                return this.IsResumedField;
+            }
+            set {
+                if ((this.IsResumedField.Equals(value) != true)) {
+                    this.IsResumedField = value;
+                    this.RaisePropertyChanged("IsResumed");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<bool> IsStopped {
+            get {
+                return this.IsStoppedField;
+            }
+            set {
+                if ((this.IsStoppedField.Equals(value) != true)) {
+                    this.IsStoppedField = value;
+                    this.RaisePropertyChanged("IsStopped");
                 }
             }
         }

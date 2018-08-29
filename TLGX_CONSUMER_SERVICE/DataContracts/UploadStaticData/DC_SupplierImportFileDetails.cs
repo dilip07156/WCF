@@ -49,6 +49,21 @@ namespace DataContracts.UploadStaticData
 
         [DataMember]
         public string Mode { get; set; }
+
+        [DataMember]
+        public bool? IsStopped { get; set; }
+
+        [DataMember]
+        public bool? IsRestarted { get; set; }
+
+        [DataMember]
+        public bool? IsPaused { get; set; }
+
+        [DataMember]
+        public bool? IsResumed { get; set; }
+
+        [DataMember]
+        public int? CurrentBatch { get; set; }
     }
 
     [DataContract]
@@ -86,5 +101,20 @@ namespace DataContracts.UploadStaticData
 
         [DataMember]
         public string Mode { get; set; }
+
+        [DataMember]
+        public bool? IsStopped { get; set; }
+
+        [DataMember]
+        public bool? IsRestarted { get; set; }
+
+        [DataMember]
+        public bool? IsPaused { get; set; }
+
+        [DataMember]
+        public bool? IsResumed { get; set; }
+
+        [DataMember]
+        public int? CurrentBatch { get; set; }
     }
 }

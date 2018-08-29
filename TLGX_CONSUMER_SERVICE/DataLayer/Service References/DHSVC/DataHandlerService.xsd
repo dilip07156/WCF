@@ -3,6 +3,7 @@
   <xs:import schemaLocation="http://localhost:64450/DataHandlerService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
   <xs:complexType name="DC_SupplierImportFileDetails_TestProcess">
     <xs:sequence>
+      <xs:element minOccurs="0" name="CurrentBatch" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Data" nillable="true">
         <xs:complexType>
           <xs:annotation>
@@ -17,6 +18,10 @@
         </xs:complexType>
       </xs:element>
       <xs:element minOccurs="0" name="Entity" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IsPaused" nillable="true" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsRestarted" nillable="true" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsResumed" nillable="true" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsStopped" nillable="true" type="xs:boolean" />
       <xs:element minOccurs="0" name="Mode" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="No_Of_Records_ToProcess" type="xs:int" />
       <xs:element minOccurs="0" name="PROCESS_USER" nillable="true" type="xs:string" />

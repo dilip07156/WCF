@@ -27,5 +27,10 @@ namespace DataLayer
         public string PROCESS_USER { get; set; }
         public Nullable<bool> IsActive { get; set; }
         public string Mode { get; set; }
+        public Nullable<bool> IsStopped { get; set; }
+        public Nullable<bool> IsRestarted { get; set; }
+        public Nullable<bool> IsPaused { get; set; }
+        public Nullable<bool> IsResumed { get; set; }
+        public Nullable<int> CurrentBatch { get; set; }
     }
 }

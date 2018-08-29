@@ -817,7 +817,11 @@ namespace DataLayer
                                                 PROCESS_USER = a.PROCESS_USER,
                                                 Mode = a.Mode,
                                                 IsActive = a.IsActive ?? true,
-                                                TotalRecords = total
+                                                TotalRecords = total,
+                                                IsStopped=a.IsStopped,
+                                                IsPaused=a.IsPaused,
+                                                IsRestarted=a.IsRestarted,
+                                                IsResumed=a.IsResumed
                                             }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 
@@ -2950,6 +2954,13 @@ namespace DataLayer
                 file.Supplier = obj.Supplier;
                 file.Mode = obj.Mode;
 
+                file.IsStopped = obj.IsStopped;
+                file.IsRestarted = obj.IsRestarted;
+                file.IsPaused = obj.IsPaused;
+                file.IsResumed = obj.IsResumed;
+                file.CurrentBatch = obj.CurrentBatch;
+
+
                 DHSVCProxyAsync DHP = new DHSVCProxyAsync();
                 DHP.PostAsync(ProxyFor.DataHandler, System.Configuration.ConfigurationManager.AppSettings["Data_Handler_Process_File"], file, file.GetType());
                 DHP = null;
@@ -3029,6 +3040,76 @@ namespace DataLayer
             catch (Exception ex)
             {
                 return null;
+            }
+
+        }
+        #endregion
+
+        #region Update Supplier ImportFile Details
+        public DataContracts.DC_Message UpdateSupplierImportFileDetails(DataContracts.UploadStaticData.DC_SupplierImportFileDetails RQ)
+        {
+            DataContracts.DC_Message dc = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    
+                        var searchFileId = context.SupplierImportFileDetails.Find(RQ.SupplierImportFile_Id);
+                        if (searchFileId != null)
+                        {
+                            searchFileId.IsStopped = RQ.IsStopped;
+                            searchFileId.IsRestarted = RQ.IsRestarted;
+                            if (RQ.IsRestarted == true)//check for mode ALL/scheduled
+                            {
+                            //searchFileId.STATUS = "UPLOADED";
+                                if (searchFileId.Mode == null || searchFileId.Mode=="ALL")
+                                {
+                                    searchFileId.STATUS = "UPLOADED";
+                                }
+                                if (searchFileId.Mode == "RE_RUN")
+                                {
+                                    searchFileId.STATUS = "SCHEDULED";
+                                }
+                                
+                            }
+                            searchFileId.PROCESS_DATE = DateTime.Now;
+                            searchFileId.IsPaused = RQ.IsPaused;
+                            searchFileId.IsResumed = RQ.IsResumed;
+                            searchFileId.CurrentBatch = RQ.CurrentBatch;
+                            context.SaveChanges();
+                        }
+                    
+                }
+
+                if (RQ.IsRestarted == true || RQ.IsResumed == true)
+                {
+                    var msg = StaticFileUploadProcessFile(RQ);
+                    //DHSVC.DC_SupplierImportFileDetails_TestProcess file = new DHSVC.DC_SupplierImportFileDetails_TestProcess();
+                    //file.SupplierImportFile_Id = RQ.SupplierImportFile_Id;
+                    //file.Supplier_Id = RQ.Supplier_Id;
+                    //file.IsStopped = RQ.IsStopped;
+                    //file.IsRestarted = RQ.IsRestarted;
+                    //file.IsPaused = RQ.IsPaused;
+                    //file.IsResumed = RQ.IsResumed;
+                    //file.CurrentBatch = RQ.CurrentBatch;
+                    //file.SavedFilePath = RQ.SavedFilePath;
+                    //file.PROCESS_USER = RQ.PROCESS_USER;
+                    //file.Entity = RQ.Entity;
+                    //file.STATUS = "PROCESSING";
+                    //file.Supplier = RQ.Supplier;
+                    //file.Mode = RQ.Mode;
+
+                    //DHSVCProxyAsync DHP = new DHSVCProxyAsync();
+                    //DHP.PostAsync(ProxyFor.DataHandler, System.Configuration.ConfigurationManager.AppSettings["Data_Handler_Process_File"], file, file.GetType());
+                    //DHP = null;
+                    //file = null;
+                }
+                return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Status Updated Successfully" };
+        
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while updating supplier import details status", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError});
             }
 
         }

@@ -135,5 +135,12 @@ namespace OperationContracts
         [WebInvoke(Method = "GET", UriTemplate = "UploadStaticData/Mapping/FileProgressDashboard/Get/{fileid}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataContracts.DC_FileProgressDashboard getFileProgressDashBoardData(string fileid);
         #endregion
+
+        #region Update Supplier Import Details
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "UploadStaticData/Mapping/UpdateSupplierImportDetails/Update", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message UpdateSupplierImportFileDetails(DataContracts.UploadStaticData.DC_SupplierImportFileDetails obj);
+        #endregion
     }
 }
