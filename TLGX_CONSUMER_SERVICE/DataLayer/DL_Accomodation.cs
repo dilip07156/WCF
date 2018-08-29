@@ -30,16 +30,16 @@ namespace DataLayer
         //        {
 
         //            ////my query
-        //            //var search = "select * from context.Accommodations";
+        //            //var search = "select * from context.Accommodation";
 
         //            if (!string.IsNullOrWhiteSpace(RQ.ProductCategory))
         //            {
         //            }
-        //                //var accoSearch = from a in context.Accommodations
+        //                //var accoSearch = from a in context.Accommodation
         //                //                 where a.ProductCategory == RQ.ProductCategory
         //                //                 && a.ProductCategorySubType == RQ.ProductCategorySubType
         //                //                 select a;
-        //                var accoSearch = from a in context.Accommodations
+        //                var accoSearch = from a in context.Accommodation
         //                             select a;
 
         //            if (!string.IsNullOrWhiteSpace(RQ.ProductCategory))
@@ -407,7 +407,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
 
-                    var accoSearch = from a in context.Accommodations
+                    var accoSearch = from a in context.Accommodation
                                      where a.ProductCategory == RQ.ProductCategory
                                      && a.ProductCategorySubType == RQ.ProductCategorySubType
                                      select a;
@@ -486,7 +486,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
 
-                    var total = context.Accommodations.Select(p => p.Accommodation_Id).Count();
+                    var total = context.Accommodation.Select(p => p.Accommodation_Id).Count();
 
                     var skip = PageSize * (PageNo - 1);
 
@@ -495,7 +495,7 @@ namespace DataLayer
                     if (!canPage) // do what you wish if you can page no further
                         return null;
 
-                    var acco = (from a in context.Accommodations
+                    var acco = (from a in context.Accommodation
                                 orderby a.HotelName
                                 select new DataContracts.DC_Accomodation
                                 {
@@ -590,7 +590,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var acco = from a in context.Accommodations
+                    var acco = from a in context.Accommodation
                                where a.Accommodation_Id == Accomodation_Id
                                select new DataContracts.DC_Accomodation
                                {
@@ -646,7 +646,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var acco = (from a in context.Accommodations
+                    var acco = (from a in context.Accommodation
                                 where (a.Edit_Date ?? a.Create_Date) >= RQ.FromDate && (a.Edit_Date ?? a.Create_Date) <= RQ.ToDate
                                 select new
                                 {
@@ -740,7 +740,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var acco = from a in context.Accommodations
+                    var acco = from a in context.Accommodation
                                where a.Accommodation_Id == Accomodation_Id
                                select new DataContracts.DC_Accomodation
                                {
@@ -880,7 +880,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var acco = from a in context.Accommodations
+                    var acco = from a in context.Accommodation
                                where a.Accommodation_Id == Accomodation_Id
                                select new DataContracts.DC_Accomodation
                                {
@@ -1283,7 +1283,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var acco = from a in context.Accommodations
+                    var acco = from a in context.Accommodation
                                where a.Accommodation_Id == Accomodation_Id
                                select new DataContracts.DC_Accomodation
                                {
@@ -1382,7 +1382,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var acco = from a in context.Accommodations
+                    var acco = from a in context.Accommodation
                                where a.Accommodation_Id == Accomodation_Id
                                select new DataContracts.DC_AccomodationBasic
                                {
@@ -1457,7 +1457,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = (from a in context.Accommodations
+                    var search = (from a in context.Accommodation
                                   where a.Accommodation_Id == AccomodationDetails.Accommodation_Id
                                   select a).First();
 
@@ -1485,7 +1485,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = (from a in context.Accommodations
+                    var search = (from a in context.Accommodation
                                   where a.Accommodation_Id == AccomodationDetails.Accommodation_Id
                                   select a).First();
 
@@ -1695,7 +1695,7 @@ namespace DataLayer
                     newAcco.City_Id = AccomodationDetails.City_Id;
                     newAcco.InsertFrom = AccomodationDetails.InsertFrom;
                     newAcco.HotelName_Tx = CommonFunctions.HotelNameTX(AccomodationDetails.HotelName, AccomodationDetails.City, AccomodationDetails.Country, ref Keywords);
-                    context.Accommodations.Add(newAcco);
+                    context.Accommodation.Add(newAcco);
 
                     context.SaveChanges();
 
@@ -1733,7 +1733,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = (from a in context.Accommodations
+                    var search = (from a in context.Accommodation
                                   where a.Accommodation_Id == obj.Accommodation_Id
                                   select a).First();
 
@@ -3060,7 +3060,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var result = context.Accommodations.Where(a => a.Accommodation_Id == acco_id).FirstOrDefault();
+                    var result = context.Accommodation.Where(a => a.Accommodation_Id == acco_id).FirstOrDefault();
                     if (result != null)
                     {
                         var sCoord = new GeoCoordinate(Convert.ToDouble(result.Latitude), Convert.ToDouble(result.Longitude));
@@ -3086,7 +3086,7 @@ namespace DataLayer
 
                     //Check duplicate 
                     var result = context.Accommodation_NearbyPlaces.Where(p => p.Accomodation_Id == accomodation_Id).Where(p => p.Place_Id == placeID).Where(p => p.PlaceCategory == placeCategory).FirstOrDefault();
-                    var acco = context.Accommodations.Where(a => a.Accommodation_Id == accomodation_Id).FirstOrDefault();
+                    var acco = context.Accommodation.Where(a => a.Accommodation_Id == accomodation_Id).FirstOrDefault();
                     int? Legacy_Htl_Id = null;
                     if (acco != null)
                         Legacy_Htl_Id = acco.Legacy_HTL_ID;
@@ -4453,7 +4453,7 @@ namespace DataLayer
                     {
                         Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
                     }
-                    var search = (from a in context.Accommodations
+                    var search = (from a in context.Accommodation
                                   where a.HotelName_Tx == null && a.IsActive == true
                                   select new
                                   {

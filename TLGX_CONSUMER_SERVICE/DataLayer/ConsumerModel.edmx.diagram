@@ -17,7 +17,7 @@
         <EntityTypeShape EntityType="ConsumerModel.m_EntityType" Width="1.5" PointX="0.75" PointY="8.75" />
         <EntityTypeShape EntityType="ConsumerModel.Counter" Width="1.5" PointX="3.375" PointY="8.75" />
         </Diagram>
-      <Diagram DiagramId="71315cf0089e483d98a8ea653619edde" Name="Accomodation" ZoomLevel="93" >
+      <Diagram DiagramId="71315cf0089e483d98a8ea653619edde" Name="Accomodation" ZoomLevel="46" >
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_Contact" Width="1.875" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_Facility" Width="1.875" PointX="2.75" PointY="4.75" />
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_HealthAndSafety" Width="1.875" PointX="4.75" PointY="4.75" />
@@ -32,8 +32,8 @@
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_RoomFacility" Width="1.875" PointX="11.375" PointY="4.75" />
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_ClassificationAttributes" Width="1.875" PointX="11.375" PointY="8.75" />
         <EntityTypeShape EntityType="ConsumerModel.Media_Attributes" Width="1.5" PointX="10.375" PointY="12.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Accommodation" Width="2.625" PointX="0.5" PointY="0.5" />
         <EntityTypeShape EntityType="ConsumerModel.Place" Width="1.5" PointX="12.375" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ConsumerModel.Accommodation" Width="1.5" PointX="0.625" PointY="1.125" />
       </Diagram>
       <Diagram DiagramId="202d9098866b4029ba86a3a0a36dc3d4" Name="DynamicAttribute" >
         <EntityTypeShape EntityType="ConsumerModel.DynamicAttribute" Width="1.625" PointX="0.75" PointY="0.75" />

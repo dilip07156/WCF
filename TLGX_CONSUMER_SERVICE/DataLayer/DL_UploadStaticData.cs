@@ -2719,7 +2719,7 @@ namespace DataLayer
                         }
 
                         //Check Accommodation_id
-                        var AccommodationSearch = context.Accommodations.Where(w => w.TLGXAccoId == data.TLGXCommonHotelId).Select(s => new { s.Accommodation_Id, s.CompanyHotelID }).FirstOrDefault();
+                        var AccommodationSearch = context.Accommodation.Where(w => w.TLGXAccoId == data.TLGXCommonHotelId).Select(s => new { s.Accommodation_Id, s.CompanyHotelID }).FirstOrDefault();
 
                         //check duplicate
                         var srtm = context.Accommodation_SupplierRoomTypeMapping.AsQueryable();

@@ -509,13 +509,13 @@ namespace DataLayer
                                 var prodcode = item.ProductId;
                                 if (!string.IsNullOrWhiteSpace(prodname) && prodname.ToUpper() != "&NBSP;")
                                 {
-                                    var searchprod = context.Accommodations.Where(a => ((a.IsActive ?? false) == true) && (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper().Equals(item.ProductName.ToLower().Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper())).FirstOrDefault();
+                                    var searchprod = context.Accommodation.Where(a => ((a.IsActive ?? false) == true) && (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper().Equals(item.ProductName.ToLower().Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper())).FirstOrDefault();
                                     if (searchprod == null)
-                                        searchprod = context.Accommodations.Where(a => ((a.IsActive ?? false) == true) && (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper().Contains(item.ProductName.ToLower().Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper())).FirstOrDefault();
+                                        searchprod = context.Accommodation.Where(a => ((a.IsActive ?? false) == true) && (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper().Contains(item.ProductName.ToLower().Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper())).FirstOrDefault();
                                     if (!string.IsNullOrWhiteSpace(prodcode) && prodname.ToUpper() != "&NBSP;")
                                     {
                                         if (searchprod == null)
-                                            searchprod = context.Accommodations.Where(a => ((a.IsActive ?? false) == true) && (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).ToUpper().Equals(prodcode)).FirstOrDefault();
+                                            searchprod = context.Accommodation.Where(a => ((a.IsActive ?? false) == true) && (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).ToUpper().Equals(prodcode)).FirstOrDefault();
                                     }
                                     if (searchprod != null)
                                     {
@@ -536,7 +536,7 @@ namespace DataLayer
                         }
                         else
                         {
-                            var systemproduct = context.Accommodations.Where(a => ((a.IsActive ?? false) == true) && a.Accommodation_Id == item.Accommodation_Id).FirstOrDefault();
+                            var systemproduct = context.Accommodation.Where(a => ((a.IsActive ?? false) == true) && a.Accommodation_Id == item.Accommodation_Id).FirstOrDefault();
                             if (systemproduct != null)
                             {
                                 item.SystemProductName = systemproduct.HotelName;
@@ -1390,7 +1390,7 @@ namespace DataLayer
                         }
                         catch (Exception ex)
                         {
-                            CallLogVerbose(File_Id, MatchByString, ex.Message);
+                            CallLogVerbose(File_Id, MatchByString, ex.Message, obj.CurrentBatch);
                         }
                     }
 
@@ -1593,7 +1593,7 @@ namespace DataLayer
                                 res.RemoveAll(p => p.Accommodation_Id != null && p.Accommodation_Id != Guid.Empty); //Guid.Empty
                                 res = res.Select(c =>
                                 {
-                                    c.Accommodation_Id = (context.Accommodations.AsNoTracking()
+                                    c.Accommodation_Id = (context.Accommodation.AsNoTracking()
                                                     .Where(s => (
                                                                     //((isCountryNameCheck && s.country.ToUpper().Trim() == c.SystemCountryName.ToUpper().Trim()) || (!isCountryNameCheck)) &&
                                                                     //((isCityNameCheck && s.city.ToUpper().Trim() == c.SystemCityName.ToUpper().Trim()) || (!isCityNameCheck)) &&
@@ -1628,7 +1628,7 @@ namespace DataLayer
                                                  && a.Status.Trim().ToUpper() == "UNMAPPED"
                                                  select a);
                                 res = (from a in prodMapSearch
-                                       join ac in context.Accommodations.AsNoTracking() on a.address_tx equals ac.Address_Tx
+                                       join ac in context.Accommodation.AsNoTracking() on a.address_tx equals ac.Address_Tx
                                        where ac.Address_Tx != null && ac.Address_Tx != ""
                                        select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                        {
@@ -1679,7 +1679,7 @@ namespace DataLayer
                                                  && a.Status.Trim().ToUpper() == "UNMAPPED"
                                                  select a);
                                 res = (from a in prodMapSearch
-                                       join ac in context.Accommodations.AsNoTracking() on a.TelephoneNumber_tx equals ac.Telephone_Tx
+                                       join ac in context.Accommodation.AsNoTracking() on a.TelephoneNumber_tx equals ac.Telephone_Tx
                                        where ac.Telephone_Tx != null && ac.Telephone_Tx != ""
                                        select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                        {
@@ -1854,7 +1854,7 @@ namespace DataLayer
                     if (obj.Accommodation_Id != Guid.Empty)
                     {
                         prodMapList = (from a in prodMapSearch
-                                       join ac in context.Accommodations on a.Accommodation_Id equals ac.Accommodation_Id
+                                       join ac in context.Accommodation on a.Accommodation_Id equals ac.Accommodation_Id
                                        where ac.Accommodation_Id == obj.Accommodation_Id
                                        orderby a.ProductName //a.SupplierName, a.ProductName, a.SupplierProductReference
                                        select new DataContracts.Mapping.DC_Accomodation_ProductMapping
@@ -2148,7 +2148,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(obj.Chain))
                     {
                         prodMapSearch = from a in prodMapSearch
-                                        join m in context.Accommodations on a.Accommodation_Id equals m.Accommodation_Id
+                                        join m in context.Accommodation on a.Accommodation_Id equals m.Accommodation_Id
                                         where m.Chain == obj.Chain
                                         select a;
                     }
@@ -2156,7 +2156,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(obj.Brand))
                     {
                         prodMapSearch = from a in prodMapSearch
-                                        join m in context.Accommodations on a.Accommodation_Id equals m.Accommodation_Id
+                                        join m in context.Accommodation on a.Accommodation_Id equals m.Accommodation_Id
                                         where m.Brand == obj.Brand
                                         select a;
                     }
@@ -2591,9 +2591,9 @@ namespace DataLayer
                                     using (ConsumerEntities context = new ConsumerEntities())
                                     {
                                         context.Configuration.AutoDetectChangesEnabled = false;
-                                        var searchprod = context.Accommodations.Where(a => ((a.IsActive ?? false) == true) && (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper().Equals(prodname)).Select(s => new { s.Accommodation_Id, s.HotelName, s.FullAddress }).FirstOrDefault();
+                                        var searchprod = context.Accommodation.Where(a => ((a.IsActive ?? false) == true) && (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper().Equals(prodname)).Select(s => new { s.Accommodation_Id, s.HotelName, s.FullAddress }).FirstOrDefault();
                                         if (searchprod == null)
-                                            searchprod = context.Accommodations.Where(a => ((a.IsActive ?? false) == true) && (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper().Contains(prodname)).Select(s => new { s.Accommodation_Id, s.HotelName, s.FullAddress }).FirstOrDefault();
+                                            searchprod = context.Accommodation.Where(a => ((a.IsActive ?? false) == true) && (a.country == item.SystemCountryName) && (a.city == item.SystemCityName) && (a.HotelName ?? string.Empty).Replace("*", "").Replace("-", "").Replace(" ", "").Replace("#", "").Replace("@", "").Replace("(", "").Replace(")", "").Replace("hotel", "").ToUpper().Contains(prodname)).Select(s => new { s.Accommodation_Id, s.HotelName, s.FullAddress }).FirstOrDefault();
 
                                         if (searchprod != null)
                                         {
@@ -4003,7 +4003,7 @@ namespace DataLayer
                     //{
                     #region queries
                     var Accommodation_SupplierRoomTypeMapping = (from a in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking() select a).AsQueryable();
-                    var Accommodation = (from a in context.Accommodations.AsNoTracking() where a.IsActive ?? false == true select a).AsQueryable();
+                    var Accommodation = (from a in context.Accommodation.AsNoTracking() where a.IsActive ?? false == true select a).AsQueryable();
                     var Country = (from a in context.m_CountryMaster.AsNoTracking() select a).AsQueryable();
                     var City = (from a in context.m_CityMaster.AsNoTracking() select a).AsQueryable();
                     var Accommodation_RoomInfo = (from a in context.Accommodation_RoomInfo.AsNoTracking() where a.IsActive ?? false == true select a).AsQueryable();
@@ -4279,7 +4279,7 @@ namespace DataLayer
                         if (item.Accommodation_SupplierRoomTypeMapping_Id != null && !string.IsNullOrWhiteSpace(item.Status))
                         {
                             var accoSuppRoomTypeMap = context.Accommodation_SupplierRoomTypeMapping.Find(item.Accommodation_SupplierRoomTypeMapping_Id);
-                            var acco = context.Accommodations.Find(item.Accommodation_Id);
+                            var acco = context.Accommodation.Find(item.Accommodation_Id);
 
                             if (acco != null && accoSuppRoomTypeMap != null)
                             {
@@ -7988,7 +7988,7 @@ namespace DataLayer
                     DateTime fd = Convert.ToDateTime(parm.Fromdate);
                     DateTime td = Convert.ToDateTime(parm.ToDate);
                     var search = (from t in context.Accommodation_RuleInfo
-                                  join t1 in context.Accommodations on t.Accommodation_Id equals t1.Accommodation_Id
+                                  join t1 in context.Accommodation on t.Accommodation_Id equals t1.Accommodation_Id
                                   where (t.Create_Date >= fd && t.Edit_Date <= td)
                                   select new
                                   {
@@ -8037,7 +8037,7 @@ namespace DataLayer
                     DateTime fd = Convert.ToDateTime(parm.Fromdate);
                     DateTime td = Convert.ToDateTime(parm.ToDate);
                     var search = (from t in context.Accommodation_Status
-                                  join t1 in context.Accommodations on t.Accommodation_Id equals t1.Accommodation_Id
+                                  join t1 in context.Accommodation on t.Accommodation_Id equals t1.Accommodation_Id
                                   where (t.From >= fd && t.To <= td)
                                   select new
                                   {
@@ -8103,7 +8103,7 @@ namespace DataLayer
                     DateTime fd = Convert.ToDateTime(parm.Fromdate);
                     DateTime td = Convert.ToDateTime(parm.ToDate);
                     var search = (from t in context.Accommodation_HotelUpdates
-                                  join t1 in context.Accommodations on t.Accommodation_Id equals t1.Accommodation_Id
+                                  join t1 in context.Accommodation on t.Accommodation_Id equals t1.Accommodation_Id
                                   where (t.FromDate >= fd && t.ToDate <= td)
                                   select new
                                   {
@@ -9699,7 +9699,7 @@ namespace DataLayer
                 {
                     DateTime fd = Convert.ToDateTime(parm.Fromdate);
                     DateTime td = Convert.ToDateTime(parm.ToDate);
-                    var search = (from t in context.Accommodations
+                    var search = (from t in context.Accommodation
                                   where (t.Create_Date >= fd && t.Create_Date <= td) && (t.InsertFrom == true)
                                   select new
                                   {

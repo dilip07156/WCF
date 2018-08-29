@@ -61,7 +61,6 @@ namespace DataLayer
         public virtual DbSet<m_CityMaster> m_CityMaster { get; set; }
         public virtual DbSet<m_CountryMaster> m_CountryMaster { get; set; }
         public virtual DbSet<m_States> m_States { get; set; }
-        public virtual DbSet<Accommodation> Accommodations { get; set; }
         public virtual DbSet<GoogleGeoCode> GoogleGeoCodes { get; set; }
         public virtual DbSet<m_EntityType> m_EntityType { get; set; }
         public virtual DbSet<Client> Clients { get; set; }
@@ -158,6 +157,7 @@ namespace DataLayer
         public virtual DbSet<vwUserwisemappedStats> vwUserwisemappedStats { get; set; }
         public virtual DbSet<Dashboard_MappingStat> Dashboard_MappingStat { get; set; }
         public virtual DbSet<Activity_Flavour> Activity_Flavour { get; set; }
+        public virtual DbSet<Accommodation> Accommodation { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {
