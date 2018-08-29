@@ -2797,6 +2797,11 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
         <Function Name="UDF_LatLongTX" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="nvarchar">
           <Parameter Name="LatLong" Type="nvarchar" Mode="In" />
         </Function>
+        <Function Name="USP_MappingStatus" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="AccommodationPriority" Type="int" Mode="In" />
+          <Parameter Name="MDMAccommodationDataOnly" Type="bit" Mode="In" />
+          <Parameter Name="Supplier_Id" Type="uniqueidentifier" Mode="In" />
+        </Function>
         <Function Name="USP_UpdateMapID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="UpdateIn" Type="varchar" Mode="In" />
         </Function>
@@ -3132,6 +3137,11 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="Dashboard_MappingStat" EntityType="ConsumerModel.Dashboard_MappingStat" />
           <EntitySet Name="Activity_Flavour" EntityType="ConsumerModel.Activity_Flavour" />
           <EntitySet Name="Accommodation" EntityType="ConsumerModel.Accommodation" />
+          <FunctionImport Name="USP_MappingStatus" ReturnType="Collection(ConsumerModel.USP_MappingStatus_Result)">
+            <Parameter Name="AccommodationPriority" Mode="In" Type="Int32" />
+            <Parameter Name="MDMAccommodationDataOnly" Mode="In" Type="Boolean" />
+            <Parameter Name="Supplier_Id" Mode="In" Type="Guid" />
+          </FunctionImport>
 
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
@@ -5881,6 +5891,14 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="TLGXAccoId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Priority" Type="Int32" />
         </EntityType>
+        <ComplexType Name="USP_MappingStatus_Result">
+          <Property Type="Guid" Name="RowId" Nullable="false" />
+          <Property Type="Guid" Name="Supplier_Id" Nullable="true" />
+          <Property Type="String" Name="SupplierName" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Status" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="MappingFor" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="TotalCount" Nullable="true" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -8732,6 +8750,18 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="USP_MappingStatus" FunctionName="ConsumerModel.Store.USP_MappingStatus">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ConsumerModel.USP_MappingStatus_Result">
+                <ScalarProperty Name="RowId" ColumnName="RowId" />
+                <ScalarProperty Name="Supplier_Id" ColumnName="Supplier_Id" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="MappingFor" ColumnName="MappingFor" />
+                <ScalarProperty Name="TotalCount" ColumnName="TotalCount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

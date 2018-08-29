@@ -7700,7 +7700,7 @@ namespace DataLayer
         #endregion
 
         #region Export Supplier Data
-        public List<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport(Guid Supplier_id, bool IsMdmDataOnly)
+        public List<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport(int? AccoPriority, Guid? Supplier_id, bool IsMdmDataOnly)
         {
             try
             {
@@ -7710,9 +7710,10 @@ namespace DataLayer
                 {
                     context.Database.CommandTimeout = 0;
 
-                    List<Dashboard_MappingStat> MappingData = new List<Dashboard_MappingStat>();
-                    List<vwMappingStatsMdmOnly> MappingDataIsMdm = new List<vwMappingStatsMdmOnly>();
+                    //List<Dashboard_MappingStat> MappingData = new List<Dashboard_MappingStat>();
+                    List<USP_MappingStatus_Result> MappingData = new List<USP_MappingStatus_Result>();
 
+                    //var temp = context.USP_MappingStatus();
                     var suppliermaster = context.Supplier.Where(w => w.StatusCode == "ACTIVE" && w.Supplier_Id == (Supplier_id == Guid.Empty ? w.Supplier_Id : Supplier_id)).Select(s => new
                     {
                         s.Supplier_Id,
@@ -7720,48 +7721,61 @@ namespace DataLayer
                         s.Priority
                     }).OrderBy(o => o.Name).ToList();
 
-                    if (Supplier_id != Guid.Empty)
+                    if (AccoPriority == 0)
                     {
-                        if (IsMdmDataOnly)
-                        {
-                            MappingDataIsMdm = context.vwMappingStatsMdmOnly.Where(x => x.Supplier_Id == Supplier_id).ToList();
-                            MappingData = MappingDataIsMdm.Select(s => new Dashboard_MappingStat
-                            {
-                                MappingFor = s.MappinFor,
-                                RowId = s.RowId,
-                                Status = s.Status,
-                                SupplierName = s.SupplierName,
-                                Supplier_Id = s.Supplier_Id,
-                                TotalCount = s.totalcount
-                            }).ToList();
-                        }
-                        else
-                        {
-                            MappingData = context.Dashboard_MappingStat.Where(x => x.Supplier_Id == Supplier_id).ToList();
-                        }
+                        AccoPriority = null;
                     }
-                    else
+                    if (Supplier_id == Guid.Empty)
                     {
-                        if (IsMdmDataOnly)
-                        {
-                            MappingDataIsMdm = context.vwMappingStatsMdmOnly.ToList();
-                            MappingData = MappingDataIsMdm.Select(s => new Dashboard_MappingStat
-                            {
-                                MappingFor = s.MappinFor,
-                                RowId = s.RowId,
-                                Status = s.Status,
-                                SupplierName = s.SupplierName,
-                                Supplier_Id = s.Supplier_Id,
-                                TotalCount = s.totalcount
-                            }).ToList();
-                        }
-                        else
-                        {
-                            MappingData = context.Dashboard_MappingStat.ToList();
-                        }
+                        Supplier_id = null;
                     }
 
-                    List<Guid> RoomSuppliers = context.Accommodation_SupplierRoomTypeMapping.AsNoTracking().Select(s => s.Supplier_Id ?? Guid.Empty).Distinct().ToList();
+                    MappingData = context.USP_MappingStatus(AccoPriority, IsMdmDataOnly, Supplier_id).ToList();
+                  
+
+
+                    //if (Supplier_id != Guid.Empty)
+                    //{
+                    //    if (IsMdmDataOnly)
+                    //    {
+                    //        MappingDataIsMdm = context.vwMappingStatsMdmOnly.Where(x => x.Supplier_Id == Supplier_id).ToList();
+                    //        MappingData = MappingDataIsMdm.Select(s => new Dashboard_MappingStat
+                    //        {
+                    //            MappingFor = s.MappinFor,
+                    //            RowId = s.RowId,
+                    //            Status = s.Status,
+                    //            SupplierName = s.SupplierName,
+                    //            Supplier_Id = s.Supplier_Id,
+                    //            TotalCount = s.totalcount
+                    //        }).ToList();
+                    //    }
+                    //    else
+                    //    {
+                    //        MappingData = context.Dashboard_MappingStat.Where(x => x.Supplier_Id == Supplier_id).ToList();
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    if (IsMdmDataOnly)
+                    //    {
+                    //        MappingDataIsMdm = context.vwMappingStatsMdmOnly.ToList();
+                    //        MappingData = MappingDataIsMdm.Select(s => new Dashboard_MappingStat
+                    //        {
+                    //            MappingFor = s.MappinFor,
+                    //            RowId = s.RowId,
+                    //            Status = s.Status,
+                    //            SupplierName = s.SupplierName,
+                    //            Supplier_Id = s.Supplier_Id,
+                    //            TotalCount = s.totalcount
+                    //        }).ToList();
+                    //    }
+                    //    else
+                    //    {
+                    //        MappingData = context.Dashboard_MappingStat.ToList();
+                    //    }
+                    //}
+
+                    List < Guid> RoomSuppliers = context.Accommodation_SupplierRoomTypeMapping.AsNoTracking().Select(s => s.Supplier_Id ?? Guid.Empty).Distinct().ToList();
 
                     var probableRoomType = (from p in context.Accommodation_SupplierRoomTypeMapping
                                             where (p.MappingStatus == "ADD")
@@ -7879,7 +7893,7 @@ namespace DataLayer
 
                         ReturnResult.Add(supplierResult);
                     }
-                    if (Supplier_id == Guid.Empty)
+                    if (Supplier_id == null)
                     {
                         #region Insert Record for GrandTotal
                         var GrandTotal = new DC_SupplierExportDataReport();
