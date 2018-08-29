@@ -2302,6 +2302,7 @@ namespace DataLayer
                     int total = (from a in search
                                  join spm in spmQ on a.Activity_Flavour_Id equals spm.Activity_ID
                                  join s in context.Supplier on spm.Supplier_ID equals s.Supplier_Id
+                                 where s.StatusCode == "ACTIVE"
                                  select a).Count();
 
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
@@ -2309,6 +2310,7 @@ namespace DataLayer
                     var result = from a in search
                                  join spm in spmQ on a.Activity_Flavour_Id equals spm.Activity_ID
                                  join s in context.Supplier on spm.Supplier_ID equals s.Supplier_Id
+                                 where s.StatusCode == "ACTIVE"
                                  orderby a.ProductName
                                  select new DataContracts.Masters.DC_Activity_Flavour
                                  {
@@ -2332,8 +2334,8 @@ namespace DataLayer
                                      EndingPoint = a.EndingPoint,
                                      FinanceControlId = a.FinanceControlId,
                                      IsPickUpDropDefined = a.IsPickUpDropDefined ?? false,
-                                     Latitude = a.Latitude,
-                                     Longitude = a.Longitude,
+                                     //Latitude = a.Latitude,
+                                     //Longitude = a.Longitude,
                                      Location = a.Location,
                                      MustSeeInCountry = a.MustSeeInCountry ?? false,
                                      PlaceOfEvent = a.PlaceOfEvent,
@@ -2384,7 +2386,7 @@ namespace DataLayer
 
 
                                      // Area/Address
-
+                                     
                                      SupplierLocation = spm.Location,
 
                                      Categories = (from ct in context.Activity_CategoriesType
