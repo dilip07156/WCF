@@ -818,10 +818,11 @@ namespace DataLayer
                                                 Mode = a.Mode,
                                                 IsActive = a.IsActive ?? true,
                                                 TotalRecords = total,
-                                                IsStopped=a.IsStopped,
-                                                IsPaused=a.IsPaused,
-                                                IsRestarted=a.IsRestarted,
-                                                IsResumed=a.IsResumed
+                                                IsStopped = a.IsStopped,
+                                                IsPaused = a.IsPaused,
+                                                IsRestarted = a.IsRestarted,
+                                                IsResumed = a.IsResumed,
+                                                CurrentBatch = a.CurrentBatch
                                             }
                                         ).Skip(skip).Take(RQ.PageSize).ToList();
 
@@ -1038,10 +1039,24 @@ namespace DataLayer
                         search.PROCESS_USER = obj.PROCESS_USER;
                         search.PROCESS_DATE = obj.PROCESS_DATE;
                         search.IsActive = obj.IsActive;
+                        search.CurrentBatch = obj.CurrentBatch;
                     }
                     context.SaveChanges();
-                    dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
-                    dc.StatusMessage = "Supplier File Status" + ReadOnlyMessage.strUpdatedSuccessfully;
+                    if (obj.IsStopped == true)
+                    {
+                        dc.StatusCode = ReadOnlyMessage.StatusCode.Stopped;
+                        dc.StatusMessage = "Supplier File Status" + ReadOnlyMessage.strStopped;
+                    }
+                    else if (obj.IsPaused == true)
+                    {
+                        dc.StatusCode = ReadOnlyMessage.StatusCode.Paused;
+                        dc.StatusMessage = "Supplier File Status" + ReadOnlyMessage.strPaused;
+                    }
+                    else
+                    {
+                        dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        dc.StatusMessage = "Supplier File Status" + ReadOnlyMessage.strUpdatedSuccessfully;
+                    }
                 }
             }
             catch (Exception)
@@ -2886,7 +2901,7 @@ namespace DataLayer
                             data.Accommodation_SupplierRoomType_Id = ASRTM_ID.ToString().ToUpper();
                             data.Status = "UNMAPPED";
                             data.SystemRoomTypeMapId = CurrentCounter;
-                            if(AccommodationSearch != null)
+                            if (AccommodationSearch != null)
                             {
                                 data.SystemProductCode = AccommodationSearch.CompanyHotelID;
                                 data.Accommodation_Id = AccommodationSearch.Accommodation_Id.ToString().ToUpper();
@@ -2929,8 +2944,9 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var FileRecord = (from a in context.SupplierImportFileDetails
-                                      where a.SupplierImportFile_Id == obj.SupplierImportFile_Id && a.STATUS == "UPLOADED"
+                                      where a.SupplierImportFile_Id == obj.SupplierImportFile_Id && a.STATUS == "UPLOADED" || a.STATUS == "SCHEDULED" || a.STATUS=="RESUMED"
                                       select a).FirstOrDefault();
+
                     if (FileRecord != null)
                     {
                         FileRecord.STATUS = "PROCESSING";
@@ -3053,37 +3069,41 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    
-                        var searchFileId = context.SupplierImportFileDetails.Find(RQ.SupplierImportFile_Id);
-                        if (searchFileId != null)
+
+                    var searchFileId = context.SupplierImportFileDetails.Find(RQ.SupplierImportFile_Id);
+
+                    if (searchFileId != null)
+                    {
+                        searchFileId.IsStopped = RQ.IsStopped;
+                        searchFileId.IsRestarted = RQ.IsRestarted;
+                        if (RQ.IsRestarted == true)//check for mode ALL/scheduled
                         {
-                            searchFileId.IsStopped = RQ.IsStopped;
-                            searchFileId.IsRestarted = RQ.IsRestarted;
-                            if (RQ.IsRestarted == true)//check for mode ALL/scheduled
-                            {
                             //searchFileId.STATUS = "UPLOADED";
-                                if (searchFileId.Mode == null || searchFileId.Mode=="ALL")
-                                {
-                                    searchFileId.STATUS = "UPLOADED";
-                                }
-                                if (searchFileId.Mode == "RE_RUN")
-                                {
-                                    searchFileId.STATUS = "SCHEDULED";
-                                }
-                                
+                            if (searchFileId.Mode == null || searchFileId.Mode == "ALL")
+                            {
+                                searchFileId.STATUS = "UPLOADED";
                             }
-                            searchFileId.PROCESS_DATE = DateTime.Now;
-                            searchFileId.IsPaused = RQ.IsPaused;
-                            searchFileId.IsResumed = RQ.IsResumed;
-                            searchFileId.CurrentBatch = RQ.CurrentBatch;
-                            context.SaveChanges();
+                            if (searchFileId.Mode == "RE_RUN")
+                            {
+                                searchFileId.STATUS = "SCHEDULED";
+                            }
                         }
-                    
+                        if (RQ.IsResumed == true)
+                        {
+                            searchFileId.STATUS = "RESUMED";
+                        }
+                        searchFileId.PROCESS_DATE = DateTime.Now;
+                        searchFileId.IsPaused = RQ.IsPaused;
+                        searchFileId.IsResumed = RQ.IsResumed;
+                        searchFileId.CurrentBatch = RQ.CurrentBatch;
+                        context.SaveChanges();
+                    }
+
                 }
 
                 if (RQ.IsRestarted == true || RQ.IsResumed == true)
                 {
-                    var msg = StaticFileUploadProcessFile(RQ);
+                    var response = StaticFileUploadProcessFile(RQ);
                     //DHSVC.DC_SupplierImportFileDetails_TestProcess file = new DHSVC.DC_SupplierImportFileDetails_TestProcess();
                     //file.SupplierImportFile_Id = RQ.SupplierImportFile_Id;
                     //file.Supplier_Id = RQ.Supplier_Id;
@@ -3105,11 +3125,11 @@ namespace DataLayer
                     //file = null;
                 }
                 return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Status Updated Successfully" };
-        
+
             }
             catch (Exception ex)
             {
-                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while updating supplier import details status", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError});
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while updating supplier import details status", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
 
         }

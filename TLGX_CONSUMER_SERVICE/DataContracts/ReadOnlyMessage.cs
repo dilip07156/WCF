@@ -23,6 +23,10 @@ namespace DataContracts
         public static string strDeleted = " has been deleted successfully.";
         [DataMember]
         public static string strUnDeleted = " has been un deleted successfully.";
+        [DataMember]
+        public static string strStopped = " has been Stopped.";
+        [DataMember]
+        public static string strPaused = " has been Paused.";
 
         public enum StatusCode
         {
@@ -41,6 +45,10 @@ namespace DataContracts
             Duplicate,
 
             Failed,
+
+            Stopped,
+
+            Paused,
         };
 
        
