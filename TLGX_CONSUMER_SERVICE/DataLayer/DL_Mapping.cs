@@ -8018,7 +8018,7 @@ namespace DataLayer
                     {
 
                         DC_RollOffReportRule obj = new DC_RollOffReportRule();
-                        obj.Hotelid = item.HotelID.Value;
+                        obj.Hotelid = item.HotelID;
                         obj.Hotelname = item.HotelName;
                         obj.RuleName = item.RuleName;
                         obj.Description = item.Description;
@@ -8070,7 +8070,7 @@ namespace DataLayer
                     {
 
                         DC_RollOffReportStatus obj = new DC_RollOffReportStatus();
-                        obj.Hotelid = item.HotelID.Value;
+                        obj.Hotelid = item.HotelID;
                         obj.Hotelname = item.HotelName;
                         obj.Companymarket = item.market;
                         obj.Status = item.status;
@@ -8135,7 +8135,7 @@ namespace DataLayer
                     {
 
                         DC_RollOffReportUpdate obj = new DC_RollOffReportUpdate();
-                        obj.Hotelid = item.HotelID.Value;
+                        obj.Hotelid = item.HotelID;
                         obj.Hotelname = item.HotelName;
                         obj.Hotelupdate = item.HotelUpdate;
                         obj.Descriptionsource = item.source;
@@ -9729,7 +9729,7 @@ namespace DataLayer
                     {
 
                         DC_newHotelsReport obj = new DC_newHotelsReport();
-                        obj.Hotelid = item.HotelID.Value;
+                        obj.Hotelid = item.HotelID;
                         obj.Hotelname = item.HotelName;
                         obj.Country = item.country;
                         obj.City = item.city;

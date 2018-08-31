@@ -1640,7 +1640,7 @@ namespace DataLayer
                     newAcco.CheckOutTime = AccomodationDetails.CheckOutTime;
                     newAcco.city = AccomodationDetails.City;
                     newAcco.City_ISO = AccomodationDetails.City_ISO;
-                    newAcco.CompanyHotelID = AccomodationDetails.CompanyHotelID;
+                    newAcco.CompanyHotelID = AccomodationDetails.CompanyHotelID ?? 0;
                     newAcco.CompanyName = AccomodationDetails.CompanyName;
                     newAcco.CompanyRating = AccomodationDetails.CompanyRating;
                     newAcco.CompanyRecommended = AccomodationDetails.CompanyRecommended;
