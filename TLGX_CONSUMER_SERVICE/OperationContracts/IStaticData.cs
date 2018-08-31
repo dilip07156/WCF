@@ -19,8 +19,8 @@ namespace OperationContracts
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "Mapping/Statistics/GetSupplierDataExport/{SupplierID}/{IsMdmDataOnly}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        IList<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport(string SupplierID, string IsMdmDataOnly);
+        [WebInvoke(Method = "GET", UriTemplate = "Mapping/Statistics/GetSupplierDataExport/{AccoPriority}/{SupplierID}/{IsMdmDataOnly}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport(string AccoPriority, string SupplierID, string IsMdmDataOnly);
 
         #region roll_off_reports
 

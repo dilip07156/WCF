@@ -14,6 +14,9 @@ namespace DataContracts.UploadStaticData
         public Nullable<System.Guid> SupplierImportFile_Id { get; set; }
 
         [DataMember]
+        public Nullable<System.Int32> BatchNumber { get; set; }
+
+        [DataMember]
         public string Step { get; set; }
 
         [DataMember]

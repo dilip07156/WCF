@@ -514,5 +514,8 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public int? BatchSize { get; set; }
+
+        [DataMember]
+        public int? TotalRecords { get; set; }
     }
 }

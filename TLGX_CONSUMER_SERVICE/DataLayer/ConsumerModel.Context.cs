@@ -61,7 +61,6 @@ namespace DataLayer
         public virtual DbSet<m_CityMaster> m_CityMaster { get; set; }
         public virtual DbSet<m_CountryMaster> m_CountryMaster { get; set; }
         public virtual DbSet<m_States> m_States { get; set; }
-        public virtual DbSet<Accommodation> Accommodations { get; set; }
         public virtual DbSet<GoogleGeoCode> GoogleGeoCodes { get; set; }
         public virtual DbSet<m_EntityType> m_EntityType { get; set; }
         public virtual DbSet<Client> Clients { get; set; }
@@ -158,6 +157,7 @@ namespace DataLayer
         public virtual DbSet<vwUserwisemappedStats> vwUserwisemappedStats { get; set; }
         public virtual DbSet<Dashboard_MappingStat> Dashboard_MappingStat { get; set; }
         public virtual DbSet<Activity_Flavour> Activity_Flavour { get; set; }
+        public virtual DbSet<Accommodation> Accommodation { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {
@@ -211,6 +211,23 @@ namespace DataLayer
                 new ObjectParameter("Edit_User", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_AccoFullTextSpatialMatch", reRun_SupplierImportFile_IdParameter, reRun_BatchParameter, matchedByParameter, matchByStringParameter, matchByStringAppendParameter, matchingStatusParameter, hotelRankParameter, addressRankParameter, geoDistanceParameter, edit_UserParameter);
+        }
+    
+        public virtual ObjectResult<USP_MappingStatus_Result> USP_MappingStatus(Nullable<int> accommodationPriority, Nullable<bool> mDMAccommodationDataOnly, Nullable<System.Guid> supplier_Id)
+        {
+            var accommodationPriorityParameter = accommodationPriority.HasValue ?
+                new ObjectParameter("AccommodationPriority", accommodationPriority) :
+                new ObjectParameter("AccommodationPriority", typeof(int));
+    
+            var mDMAccommodationDataOnlyParameter = mDMAccommodationDataOnly.HasValue ?
+                new ObjectParameter("MDMAccommodationDataOnly", mDMAccommodationDataOnly) :
+                new ObjectParameter("MDMAccommodationDataOnly", typeof(bool));
+    
+            var supplier_IdParameter = supplier_Id.HasValue ?
+                new ObjectParameter("Supplier_Id", supplier_Id) :
+                new ObjectParameter("Supplier_Id", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<USP_MappingStatus_Result>("USP_MappingStatus", accommodationPriorityParameter, mDMAccommodationDataOnlyParameter, supplier_IdParameter);
         }
     }
 }

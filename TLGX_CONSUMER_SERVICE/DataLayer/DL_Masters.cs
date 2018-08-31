@@ -745,7 +745,7 @@ namespace DataLayer
                     var search = from c in context.m_CityMaster
                                  select c;
 
-                    var searchHotel = from h in context.Accommodations
+                    var searchHotel = from h in context.Accommodation
                                       select h;
 
                     var searchActivity = from ac in context.Activity_Flavour
@@ -3670,7 +3670,7 @@ namespace DataLayer
                 }
                 if (objName == "product")
                 {
-                    ObjCode = context.Accommodations.Find(obj_Id).CompanyHotelID.ToString();
+                    ObjCode = context.Accommodation.Find(obj_Id).CompanyHotelID.ToString();
                 }
                 return ObjCode;
             }
@@ -3750,7 +3750,7 @@ namespace DataLayer
                 {
                     if (_obj.WhatFor == DetailsWhatFor.CodeById)
                     {
-                        _result.Code = context.Accommodations.Find(_obj.ID).CompanyHotelID.ToString();
+                        _result.Code = context.Accommodation.Find(_obj.ID).CompanyHotelID.ToString();
                     }
                     else if (_obj.WhatFor == DetailsWhatFor.RemarksForMapping)
                     {
@@ -3793,7 +3793,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var productmaster = (from ct in context.Accommodations.AsNoTracking()
+                    var productmaster = (from ct in context.Accommodation.AsNoTracking()
                                          where ct.city.Trim().ToUpper() == _obj.CityName.Trim().ToUpper()
                                          && ct.country.Trim().ToUpper() == _obj.CountryName.Trim().ToUpper()
                                          && ct.IsActive == _obj.IsActive
@@ -4729,7 +4729,7 @@ namespace DataLayer
                         var PKIdsFilter = RQ.TablePrimaryKeys.Select(x => Guid.Parse(x)).ToList();
                         using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
                         {
-                            targetStructure = context.Accommodations.AsQueryable()
+                            targetStructure = context.Accommodation.AsQueryable()
                                     .Where(w => PKIdsFilter.Contains(w.Accommodation_Id))
                                     .Select(s => new DC_keywordApplyToTarget
                                     {
@@ -4814,7 +4814,7 @@ namespace DataLayer
 
                             if (inputData.TableName.Trim().ToUpper() == "ACCOMMODATION" && inputData.TargetColumnName.Trim().ToUpper() == "ADDRESS_TX")
                             {
-                                var search = context.Accommodations.Find(Guid.Parse(inputData.PrimaryKey));
+                                var search = context.Accommodation.Find(Guid.Parse(inputData.PrimaryKey));
                                 if (search != null)
                                 {
                                     search.Address_Tx = inputData.TargetColumnValue;
@@ -4966,7 +4966,7 @@ namespace DataLayer
 
                     using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
                     {
-                        keywordReRun = context.Accommodations.AsNoTracking()
+                        keywordReRun = context.Accommodation.AsNoTracking()
                                     .Select(s => new DC_KeyWordReRun
                                     {
                                         RowId = s.Accommodation_Id,
@@ -4992,7 +4992,7 @@ namespace DataLayer
                             using (ConsumerEntities context = new ConsumerEntities())
                             {
                                 context.Database.ExecuteSqlCommand("UPDATE Accommodation SET HotelName_Tx = '" + TT_Value + "', Edit_Date = GETDATE(), Edit_User = 'KeywordReRun' WHERE Accommodation_Id = '" + data.RowId.ToString() + "';");
-                                //var entity = context.Accommodations.Find(data.RowId);
+                                //var entity = context.Accommodation.Find(data.RowId);
                                 //if (entity != null)
                                 //{
                                 //    entity.HotelName_Tx = TT_Value;
@@ -5135,7 +5135,7 @@ namespace DataLayer
                     context.Database.CommandTimeout = 0;
                     using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
                     {
-                        keywordReRun = context.Accommodations.AsNoTracking()
+                        keywordReRun = context.Accommodation.AsNoTracking()
                                 .Select(s => new DC_KeyWordReRun
                                 {
                                     RowId = s.Accommodation_Id,
@@ -5159,7 +5159,7 @@ namespace DataLayer
                             using (ConsumerEntities context = new ConsumerEntities())
                             {
                                 context.Database.ExecuteSqlCommand("UPDATE Accommodation SET Address_Tx = '" + TT_Value + "', Edit_Date = GETDATE(), Edit_User = 'KeywordReRun' WHERE Accommodation_Id = '" + data.RowId.ToString() + "';");
-                                //var entity = context.Accommodations.Find(data.RowId);
+                                //var entity = context.Accommodation.Find(data.RowId);
                                 //if (entity != null)
                                 //{
                                 //    entity.Address_Tx = TT_Value;
@@ -5860,7 +5860,7 @@ namespace DataLayer
                     context.Database.CommandTimeout = 0;
 
                     var Search = (from s in context.ZoneProduct_Mapping
-                                  join a in context.Accommodations on s.Product_Id equals a.Accommodation_Id
+                                  join a in context.Accommodation on s.Product_Id equals a.Accommodation_Id
                                   where s.Zone_Id == param.Zone_id
                                   select new DC_ZoneHotelList
                                   {

@@ -10,15 +10,14 @@
 namespace DataLayer
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class SupplierImportFile_VerboseLog
+    public partial class USP_MappingStatus_Result
     {
-        public System.Guid SupplierImportFile_VerboseLog_Id { get; set; }
-        public Nullable<System.Guid> SupplierImportFile_Id { get; set; }
-        public string Step { get; set; }
-        public string Message { get; set; }
-        public Nullable<System.DateTime> TimeStamp { get; set; }
-        public Nullable<int> BatchNumber { get; set; }
+        public System.Guid RowId { get; set; }
+        public Nullable<System.Guid> Supplier_Id { get; set; }
+        public string SupplierName { get; set; }
+        public string Status { get; set; }
+        public string MappingFor { get; set; }
+        public Nullable<int> TotalCount { get; set; }
     }
 }
