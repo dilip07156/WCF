@@ -11,7 +11,7 @@
           </Key>
           <Property Name="Accommodation_Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="CompanyName" Type="nvarchar" MaxLength="100" />
-          <Property Name="CompanyHotelID" Type="int" />
+          <Property Name="CompanyHotelID" Type="int" Nullable="false" />
           <Property Name="FinanceControlID" Type="int" />
           <Property Name="OnlineDate" Type="datetime" />
           <Property Name="OfflineDate" Type="datetime" />
@@ -52,7 +52,7 @@
           <Property Name="PostalCode" Type="nvarchar" MaxLength="255" />
           <Property Name="Town" Type="nvarchar" MaxLength="255" />
           <Property Name="Location" Type="nvarchar" MaxLength="255" />
-          <Property Name="Area" Type="nvarchar" MaxLength="255" />
+          <Property Name="Area" Type="nvarchar" MaxLength="1000" />
           <Property Name="city" Type="nvarchar" MaxLength="255" />
           <Property Name="country" Type="nvarchar" MaxLength="255" />
           <Property Name="SuburbDowntown" Type="nvarchar" MaxLength="255" />
@@ -81,7 +81,7 @@
           <Property Name="gLocation" Type="nvarchar" MaxLength="255" />
           <Property Name="Area_Id" Type="uniqueidentifier" />
           <Property Name="Location_Id" Type="uniqueidentifier" />
-          <Property Name="TLGXAccoId" Type="nvarchar" MaxLength="50" />
+          <Property Name="TLGXAccoId" Type="nvarchar" MaxLength="100" />
           <Property Name="Priority" Type="int" />
         </EntityType>
         <EntityType Name="Accommodation_ClassificationAttributes">
@@ -318,12 +318,12 @@
           <Property Name="Latitude_Tx" Type="varchar" MaxLength="50" />
           <Property Name="Longitude_Tx" Type="varchar" MaxLength="50" />
           <Property Name="MatchedByString" Type="varchar" MaxLength="255" />
+          <Property Name="GeoLocation" Type="geography" />
           <Property Name="SupplierImportFile_Id" Type="uniqueidentifier" />
           <Property Name="Batch" Type="int" />
           <Property Name="ReRun_SupplierImportFile_Id" Type="uniqueidentifier" />
           <Property Name="ReRun_Batch" Type="int" />
           <Property Name="ProductType" Type="varchar" MaxLength="50" />
-          <Property Name="GeoLocation" Type="geography" />
           <Property Name="RowCounter" Type="int" />
         </EntityType>
         <EntityType Name="Accommodation_RoomFacility">
@@ -1220,7 +1220,7 @@
           <Property Name="SupplierStateName" Type="nvarchar" MaxLength="255" />
           <Property Name="SupplierStateCode" Type="nvarchar" MaxLength="255" />
           <Property Name="SupplierCityIATACode" Type="nvarchar" MaxLength="255" />
-          <Property Name="Duration" Type="nvarchar" MaxLength="255" />
+          <Property Name="Duration" Type="nvarchar(max)" />
           <Property Name="SupplierProductName" Type="nvarchar" MaxLength="255" />
           <Property Name="SupplierDataLangaugeCode" Type="nvarchar" MaxLength="255" />
           <Property Name="Introduction" Type="nvarchar(max)" />
@@ -1268,7 +1268,7 @@
           <Property Name="Specials" Type="nvarchar" MaxLength="255" />
           <Property Name="Recommonded" Type="bit" />
           <Property Name="Rating" Type="float" />
-          <Property Name="Location" Type="nvarchar" MaxLength="255" />
+          <Property Name="Location" Type="nvarchar(max)" />
           <Property Name="Area" Type="nvarchar" MaxLength="255" />
           <Property Name="IsActive" Type="bit" />
           <Property Name="SupplierProductID" Type="nvarchar" MaxLength="50" />
@@ -1983,8 +1983,8 @@
           <Property Name="Priority" Type="int" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="AttributeValue_ID" Type="uniqueidentifier" />
-          <Property Name="AttributeValueType" Type="nvarchar" MaxLength="100" />
-          <Property Name="Comparison" Type="nvarchar" MaxLength="50" />
+          <Property Name="AttributeValueType" Type="nvarchar" MaxLength="200" />
+          <Property Name="Comparison" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="m_TeamMembers">
           <Key>
@@ -2172,7 +2172,7 @@
           <Property Name="CityCode" Type="nvarchar" MaxLength="150" />
           <Property Name="CityName" Type="nvarchar" MaxLength="150" />
           <Property Name="ActivityId" Type="nvarchar" MaxLength="150" />
-          <Property Name="FullResponse" Type="text" />
+          <Property Name="FullResponse" Type="nvarchar(max)" />
           <Property Name="ResponseFormat" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="CreatedUser" Type="nvarchar" MaxLength="250" />
@@ -2467,7 +2467,7 @@
           <Property Name="City_Id" Type="uniqueidentifier" />
           <Property Name="Supplier_Id" Type="uniqueidentifier" />
           <Property Name="TLGXProductCode" Type="nvarchar" MaxLength="255" />
-          <Property Name="ProductType" Type="nvarchar" MaxLength="500" />
+          <Property Name="ProductType" Type="nvarchar" MaxLength="1000" />
           <Property Name="SupplierImportFile_Id" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Supplier">
@@ -2649,11 +2649,11 @@
           <Property Name="PROCESS_USER" Type="nvarchar" MaxLength="255" />
           <Property Name="IsActive" Type="bit" />
           <Property Name="Mode" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsStopped" Type="bit" />
           <Property Name="IsRestarted" Type="bit" />
           <Property Name="IsPaused" Type="bit" />
           <Property Name="IsResumed" Type="bit" />
           <Property Name="CurrentBatch" Type="int" />
-          <Property Name="IsStopped" Type="bit" />
         </EntityType>
         <EntityType Name="UserEntity">
           <Key>
@@ -2706,7 +2706,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwMappingStatsMdmOnly' does not h
           <Property Name="RowId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Supplier_Id" Type="uniqueidentifier" />
           <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
-          <Property Name="Status" Type="nvarchar" MaxLength="100" />
+          <Property Name="Status" Type="nvarchar" MaxLength="4000" />
           <Property Name="MappinFor" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="totalcount" Type="int" />
         </EntityType>
@@ -2721,7 +2721,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="supplier_id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="SupplierName" Type="nvarchar" MaxLength="255" />
-          <Property Name="Username" Type="nvarchar" MaxLength="255" />
+          <Property Name="Username" Type="nvarchar" MaxLength="4000" />
           <Property Name="MappinFor" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="totalcount" Type="int" />
           <Property Name="EditDate" Type="date" />
@@ -4060,7 +4060,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="SupplierStateName" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="SupplierStateCode" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="SupplierCityIATACode" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
-          <Property Name="Duration" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Duration" MaxLength="Max" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="SupplierProductName" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="SupplierDataLangaugeCode" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="Introduction" MaxLength="Max" FixedLength="false" Unicode="true" Type="String" />
@@ -4108,7 +4108,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Specials" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="Recommonded" Type="Boolean" />
           <Property Name="Rating" Type="Double" />
-          <Property Name="Location" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="Location" MaxLength="Max" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="Area" MaxLength="255" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="SupplierProductID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5013,7 +5013,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="CityCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="CityName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="ActivityId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="FullResponse" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="FullResponse" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ResponseFormat" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CreatedUser" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
@@ -5543,7 +5543,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="City_Id" Type="Guid" />
           <Property Name="Supplier_Id" Type="Guid" />
           <Property Name="TLGXProductCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ProductType" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ProductType" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="SupplierImportFile_Id" Type="Guid" />
         </EntityType>
         <EntityType Name="m_PortMaster">
@@ -5633,8 +5633,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Priority" Type="Int32" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="AttributeValue_ID" Type="Guid" />
-          <Property Name="AttributeValueType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Comparison" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AttributeValueType" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Comparison" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="m_ZoneMaster">
           <Key>
@@ -5714,7 +5714,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="RowId" Type="Guid" Nullable="false" />
           <Property Name="Supplier_Id" Type="Guid" />
           <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="totalcount" Type="Int32" />
         </EntityType>
@@ -5743,7 +5743,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="ID" Type="Guid" Nullable="false" />
           <Property Name="supplier_id" Type="Guid" Nullable="false" />
           <Property Name="SupplierName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Username" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <Property Name="MappinFor" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="totalcount" Type="Int32" />
           <Property Name="EditDate" Type="DateTime" Precision="0" />
@@ -5818,7 +5818,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           </Key>
           <Property Name="Accommodation_Id" Type="Guid" Nullable="false" />
           <Property Name="CompanyName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CompanyHotelID" Type="Int32" />
+          <Property Name="CompanyHotelID" Type="Int32" Nullable="false" />
           <Property Name="FinanceControlID" Type="Int32" />
           <Property Name="OnlineDate" Type="DateTime" Precision="3" />
           <Property Name="OfflineDate" Type="DateTime" Precision="3" />
@@ -5859,7 +5859,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="PostalCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Town" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Location" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Area" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Area" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="city" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="country" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="SuburbDowntown" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -5888,7 +5888,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="gLocation" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Area_Id" Type="Guid" />
           <Property Name="Location_Id" Type="Guid" />
-          <Property Name="TLGXAccoId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TLGXAccoId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Priority" Type="Int32" />
         </EntityType>
         <ComplexType Name="USP_MappingStatus_Result">
