@@ -7787,8 +7787,27 @@ namespace DataLayer
                                              group ac by new { ac.Supplier_Id } into g
                                              select new { g.Key.Supplier_Id, Totalcount = g.Count() }).ToList();
 
+
+                    IQueryable<Accommodation_RoomInfo> AccoRoomsEligible = context.Accommodation_RoomInfo.AsNoTracking().AsQueryable();
+
+                    if(AccoPriority != null)
+                    {
+                        AccoRoomsEligible = from ar in AccoRoomsEligible
+                                            join ap in context.Accommodation on ar.Accommodation_Id equals ap.Accommodation_Id
+                                            where ap.Priority == AccoPriority
+                                            select ar;
+                    }
+
+                    if (IsMdmDataOnly)
+                    {
+                        AccoRoomsEligible = from ar in AccoRoomsEligible
+                                            join ap in context.Accommodation on ar.Accommodation_Id equals ap.Accommodation_Id
+                                            where ap.TLGXAccoId != null
+                                            select ar;
+                    }
+
                     var eligibleRooms = (from asrtm in context.Accommodation_SupplierRoomTypeMapping.AsNoTracking()
-                                         join a in (context.Accommodation_RoomInfo.AsNoTracking().Select(s => s.Accommodation_Id).Distinct())
+                                         join a in (AccoRoomsEligible.Select(s => s.Accommodation_Id).Distinct())
                                          on asrtm.Accommodation_Id equals a.Value
                                          group asrtm by new { asrtm.Supplier_Id } into g
                                          select new { g.Key.Supplier_Id, TotalEligibleRooms = g.Count() }).ToList();
