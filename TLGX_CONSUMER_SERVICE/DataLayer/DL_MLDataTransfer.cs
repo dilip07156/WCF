@@ -408,6 +408,9 @@ namespace DataLayer
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    context.Database.CommandTimeout = 0;
+
                     //int total = 0;
                     //Get Batch Size
                     int BatchSize = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["DataTransferBatchSize"]);
@@ -417,7 +420,7 @@ namespace DataLayer
                     string strTotalCount = @"SELECT COUNT(1) FROM Accommodation_SupplierRoomTypeMapping SRTM with(nolock)
                                              JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) ON SRTM.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id
                                              where SRTM.MappingStatus IN (" + DataTransferForTrainingDataMappingStatus + ")";
-                    context.Configuration.AutoDetectChangesEnabled = false;
+
                     try { TotalCount = context.Database.SqlQuery<int>(strTotalCount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
                     int NoOfBatch = TotalCount / BatchSize;
                     int mod = TotalCount % BatchSize;
@@ -427,16 +430,17 @@ namespace DataLayer
                     {
                         _obj = GetRoomTypeMatchDataForMLTrans(BatchSize, BatchNo);
                         #region To update CounterIn DistributionLog
-                        MLDataInsertedCount = MLDataInsertedCount + BatchSize;
-                        UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
+                        if(_obj != null)
+                        {
+                            MLDataInsertedCount = MLDataInsertedCount + _obj.RoomTypeMatching.Count();
+                            UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
+                        }
                         #endregion
                         object result = null;
                         DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_RoomTypeMatching"], _obj, typeof(DataContracts.ML.DC_ML_DL_RoomTypeMatch), typeof(DC_ML_Message), out result);
                     }
                     UpdateDistLogInfo(LogId, PushStatus.COMPLETED, TotalCount, MLDataInsertedCount);
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -468,6 +472,12 @@ namespace DataLayer
                                         SRTM.SupplierRoomTypeCode AS SupplierRoomTypeCode, 
                                         SRTM.SupplierRoomName AS SupplierRoomName, 
                                         SRTM.TX_RoomName AS TXRoomName, 
+
+                                        SRTM.RoomViewCode AS SupplierRoomView, 
+                                        ISNULL(SRTM.Bedrooms,'') AS SupplierRoomBedType, 
+                                        ISNULL(SRTM.BedTypeCode,'') AS SupplierRoomBedTypeCode, 
+                                        SRTM.Smoking AS SupplierRoomSmoking, 
+
                                         SRTM.SupplierRoomCategory AS SupplierRoomCategory, 
                                         SRTM.SupplierRoomCategoryId AS SupplierRoomCategoryId, 
                                         SRTM.Create_Date AS SupplierRoomCreateDate, 
@@ -499,7 +509,7 @@ namespace DataLayer
                                         ARI.Description AS AccoDescription,
                                         ARI.RoomSize AS AccoRoomSize,
                                         ARI.RoomDecor AS AccoRoomDecor,
-                                         ISNULL(ARI.Smoking,0) AS AccoSmoking,
+                                        ISNULL(ARI.Smoking,0) AS AccoSmoking,
                                         ARI.FloorName AS AccoFloorName,
                                         ARI.FloorNumber As AccoFloorNumber,
                                         ISNULL(ARI.MysteryRoom,0) AS AccoMysteryRoom,
@@ -507,8 +517,11 @@ namespace DataLayer
                                         ARI.BedType AS AccoBedType,
                                         ARI.CompanyRoomCategory AS AccoCompanyRoomCategory,
                                         ARI.RoomCategory AS AccoRoomCategory,
-                                        ARI.Create_User AS AccoCreateUser,ARI.Create_Date AS AccoCreateUser,
-                                        ARI.Edit_User as AccoEditUser,ARI.Edit_Date as AccoEditDate,SRTM.MatchingScore,
+                                        ARI.Create_User AS AccoCreateUser,
+                                        ARI.Create_Date AS AccoCreateUser,
+                                        ARI.Edit_User as AccoEditUser,
+                                        ARI.Edit_Date as AccoEditDate,
+                                        SRTM.MatchingScore,
                                         '' AS SimilarityIndicator         
                                         FROM Accommodation_SupplierRoomTypeMapping SRTM WITH (NOLOCK) 
                                         JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) ON SRTM.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id ");
@@ -526,12 +539,39 @@ namespace DataLayer
                     context.Configuration.AutoDetectChangesEnabled = false;
                     try { _objAcooRoomMatching = context.Database.SqlQuery<DataContracts.DC_ML_RoomTypeMatch_Data>(sbfinal.ToString()).ToList(); } catch (Exception ex) { }
 
+                    #region get room attributes
+                    string Accommodation_SupplierRoomTypeMapping_Ids = string.Empty;
+                    foreach (var item in _objAcooRoomMatching)
+                    {
+                        Accommodation_SupplierRoomTypeMapping_Ids = Accommodation_SupplierRoomTypeMapping_Ids + "'" + item.AccommodationSupplierRoomTypeMappingId.ToString() + "',";
+                    }
+                    Accommodation_SupplierRoomTypeMapping_Ids = Accommodation_SupplierRoomTypeMapping_Ids.TrimEnd(',');
+
+                    List<DataContracts.DC_ML_SupplierAcco_RoomExtendedAttributes_Data> SRTA = new List<DataContracts.DC_ML_SupplierAcco_RoomExtendedAttributes_Data>();
+                    try
+                    {
+                        StringBuilder sbSelectSRTA = new StringBuilder();
+                        sbSelectSRTA.Append(@"SELECT  
+                                        RoomTypeMapAttribute_Id,
+                                        RoomTypeMap_Id,
+                                        SupplierRoomTypeAttribute,
+                                        SystemAttributeKeyword
+                                        FROM Accommodation_SupplierRoomTypeAttributes with(nolock) where RoomTypeMap_Id in (");
+                        sbSelectSRTA.AppendLine(Accommodation_SupplierRoomTypeMapping_Ids);
+                        sbSelectSRTA.AppendLine(");");
+
+                        try { SRTA = context.Database.SqlQuery<DataContracts.DC_ML_SupplierAcco_RoomExtendedAttributes_Data>(sbSelectSRTA.ToString()).ToList(); } catch (Exception ex) { }
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                    #endregion get room attributes
+
                     _obj.RoomTypeMatching = new List<DataContracts.ML.DC_ML_DL_RoomTypeMatch_Data>();
                     foreach (var item in _objAcooRoomMatching)
                     {
                         _obj.RoomTypeMatching.Add(new DataContracts.ML.DC_ML_DL_RoomTypeMatch_Data
                         {
-
                             AccommodationSupplierRoomTypeMappingId = Convert.ToString(item.AccommodationSupplierRoomTypeMappingId),
                             AccommodationId = Convert.ToString(item.AccommodationId),
                             SupplierId = Convert.ToString(item.SupplierId),
@@ -540,6 +580,10 @@ namespace DataLayer
                             SupplierRoomTypeCode = item.SupplierRoomTypeCode,
                             SupplierRoomName = item.SupplierRoomName,
                             TXRoomName = item.TXRoomName,
+                            SupplierRoomBedType = Convert.ToString(item.SupplierRoomBedType) + "-" + Convert.ToString(item.SupplierRoomBedTypeCode),
+                            SupplierRoomSmoking = item.SupplierRoomSmoking,
+                            SupplierRoomView = item.SupplierRoomView,
+                            SupplierRoomExtractedAttributes = SRTA.Where(w => w.RoomTypeMap_Id == item.AccommodationSupplierRoomTypeMappingId).Select(s => new DC_ML_RoomTypeMatch_ExtractedAttributes { Key = s.SystemAttributeKeyword, Value = s.SupplierRoomTypeAttribute }).ToList(),
                             SupplierRoomCategory = item.SupplierRoomCategory,
                             SupplierRoomCategoryId = item.SupplierRoomCategoryId,
                             SupplierRoomCreateDate = Convert.ToString(item.SupplierRoomCreateDate),

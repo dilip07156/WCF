@@ -14,6 +14,12 @@ namespace DataContracts.ML
         public List<DC_ML_DL_RoomTypeMatch_Data> RoomTypeMatching { get; set; }
     }
 
+    public class DC_ML_RoomTypeMatch_ExtractedAttributes
+    {
+        public string Key { get; set; }
+        public string Value { get; set; }
+    }
+
     public class DC_ML_DL_RoomTypeMatch_Data
     {
         public string AccommodationSupplierRoomTypeMappingId { get; set; }				
@@ -23,7 +29,11 @@ namespace DataContracts.ML
         public string SupplierRoomId { get; set; }										
         public string SupplierRoomTypeCode { get; set; }								
         public string SupplierRoomName { get; set; }									
-        public string TXRoomName { get; set; }											
+        public string TXRoomName { get; set; }
+        public string SupplierRoomView { get; set; }
+        public string SupplierRoomBedType { get; set; }
+        public string SupplierRoomSmoking { get; set; }
+        public List<DC_ML_RoomTypeMatch_ExtractedAttributes> SupplierRoomExtractedAttributes { get; set; }
         public string SupplierRoomCategory { get; set; }								
         public string SupplierRoomCategoryId { get; set; }								
         public string SupplierRoomCreateDate { get; set; }								
