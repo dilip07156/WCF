@@ -161,6 +161,7 @@
     <Compile Include="DC_GooglePlaceNearBy.cs" />
     <Compile Include="DC_ML_DataTransfer.cs" />
     <Compile Include="DC_SqlTableColumnInfo.cs" />
+    <Compile Include="Mapping\DC_Accommodation_SupplierRoomTypeMapping_Values.cs" />
     <Compile Include="Mapping\DC_Accommodation_SupplierRoomTypeMapping_Online.cs" />
     <Compile Include="ML\DC_ML_DL_MasterAccoRecord.cs" />
     <Compile Include="ML\DC_ML_DL_MasterAccoRoomFacility.cs" />

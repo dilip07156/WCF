@@ -3445,16 +3445,27 @@ namespace DataLayer
                                     ISNULL(ar.RoomSize,'') As  RoomSize,
 	                                ISNULL(ar.RoomView,'') AS   RoomView,
                                     ar.TLGXAccoRoomId As TLGXAccoRoomId,
-	                                case when ar.Smoking is null then 'No'
+	                                case when ar.Smoking is null then ''
 		                                 when ar.Smoking = 1 then 'Yes' 
 		                                 else 'No' End as IsSomking, 
-	                                ASRTM.MatchingScore AS MatchingScore  ");
+                                    ASRTM.Accommodation_SupplierRoomTypeMapping_Value_Id,
+	                                ASRTM.MatchingScore AS MatchingScore,
+                                        ASRTM.UserMappingStatus,
+                                        ASRTM.SystemMappingStatus,
+                                        ASRTM.SystemEditDate,
+                                        ASRTM.UserEditDate");
 
                 #endregion
+                //sbFrom.Append(@" from Accommodation_RoomInfo ar WITH(NOLOCK) 
+                //                LEFT JOIN Accommodation_SupplierRoomTypeMapping ASRTM WITH(NOLOCK) ON ar.Accommodation_RoomInfo_Id = ASRTM.Accommodation_RoomInfo_Id
+                //                     and ar.Accommodation_Id = ASRTM.Accommodation_Id
+                //                     and ASRTM.Accommodation_SupplierRoomTypeMapping_Id ='");
+
                 sbFrom.Append(@" from Accommodation_RoomInfo ar WITH(NOLOCK) 
-                                LEFT JOIN Accommodation_SupplierRoomTypeMapping ASRTM WITH(NOLOCK) ON ar.Accommodation_RoomInfo_Id = ASRTM.Accommodation_RoomInfo_Id
-                                     and ar.Accommodation_Id = ASRTM.Accommodation_Id
+                                LEFT JOIN Accommodation_SupplierRoomTypeMapping_Values ASRTM WITH(NOLOCK) ON ar.Accommodation_RoomInfo_Id = ASRTM.Accommodation_RoomInfo_Id
+                                    
                                      and ASRTM.Accommodation_SupplierRoomTypeMapping_Id ='");
+
                 sbFrom.Append(Convert.ToString(acco_SupplierRoomTypeMapping_Id) + "'");
 
                 sbWhere.Append("where ar.Accommodation_Id ='");

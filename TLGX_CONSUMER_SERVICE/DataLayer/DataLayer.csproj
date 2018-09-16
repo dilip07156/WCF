@@ -219,6 +219,9 @@
     <Compile Include="Accommodation_SupplierRoomTypeMapping.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Accommodation_SupplierRoomTypeMapping_Values.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Activity.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>

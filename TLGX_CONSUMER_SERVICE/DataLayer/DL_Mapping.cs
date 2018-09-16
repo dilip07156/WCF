@@ -16,6 +16,7 @@ using DataContracts.STG;
 using DataContracts;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.SqlClient;
 
 namespace DataLayer
 {
@@ -3128,6 +3129,59 @@ namespace DataLayer
             return true;
         }
 
+        public DataContracts.DC_Message UpdateAccomodationSupplierRoomTypeMappingValues(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMapping_Values> obj)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Database.CommandTimeout = 0;
+                    IncomingWebRequestContext woc = WebOperationContext.Current.IncomingRequest;
+                    string CallingAgent = woc.Headers["CallingAgent"];
+                    string CallingUser = woc.Headers["CallingUser"];
+
+                    foreach (DC_Accommodation_SupplierRoomTypeMapping_Values item in obj)
+                    {
+                        if (item.Accommodation_SupplierRoomTypeMapping_Value_Id != null && !string.IsNullOrWhiteSpace(item.UserMappingStatus))
+                        {
+                            var accoSuppRoomTypeMapVal = context.Accommodation_SupplierRoomTypeMapping_Values.Find(item.Accommodation_SupplierRoomTypeMapping_Value_Id);
+                            if (accoSuppRoomTypeMapVal != null)
+                            {
+                                accoSuppRoomTypeMapVal.Edit_User = CallingUser;
+                                accoSuppRoomTypeMapVal.UserEditDate = DateTime.Now;
+                                accoSuppRoomTypeMapVal.UserMappingStatus = item.UserMappingStatus;
+                            }
+                            else
+                            {
+                                Accommodation_SupplierRoomTypeMapping_Values dc = new Accommodation_SupplierRoomTypeMapping_Values();
+                                dc.Accommodation_SupplierRoomTypeMapping_Value_Id = Guid.NewGuid();
+                                dc.Accommodation_SupplierRoomTypeMapping_Id = item.Accommodation_SupplierRoomTypeMapping_Id;
+                                dc.Accommodation_RoomInfo_Id = item.Accommodation_RoomInfo_Id;
+                                dc.Create_User = CallingUser;
+                                dc.Edit_User = CallingUser;
+                                dc.Create_Date = DateTime.Now;
+                                dc.UserEditDate = DateTime.Now;
+                                dc.UserMappingStatus = item.UserMappingStatus;
+                                if (!string.IsNullOrEmpty(item.MatchingScore))
+                                    dc.MatchingScore = Convert.ToDouble(item.MatchingScore);
+                                else
+                                    dc.MatchingScore = null;
+                                context.Accommodation_SupplierRoomTypeMapping_Values.Add(dc);
+                            }
+
+                        }
+                        context.SaveChanges();
+                    }
+
+                }
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "All Valid Records are successfully updated." };
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation product supplier mapping" + ex.Message, ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
         #endregion
 
         #region Supplier Room Type Mapping
@@ -4420,7 +4474,7 @@ namespace DataLayer
 
                             }
                         }
-                        context.SaveChanges();
+                       // context.SaveChanges();
                     }
 
                 }
@@ -4432,6 +4486,8 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation product supplier mapping" + ex.Message, ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        
 
         public bool SupplierRoomTypeMapping_InsertUpdate(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS> lstobj)
         {
@@ -5808,46 +5864,98 @@ namespace DataLayer
                 string CallingAgent = woc.Headers["CallingAgent"];
                 string CallingUser = woc.Headers["CallingUser"];
 
+                
+
                 foreach (var itemToUpdate in resSupplierRoomTypeMap.Where(w => w.Edit_User == "PENDING_TO_UPDATE").ToList())
                 {
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
                         StringBuilder sbUpdateQuery = new StringBuilder();
+                        var SupplierRoomTypeId = itemToUpdate.Accommodation_SupplierRoomTypeMapping_Id;
+                        var matchedData = context.Accommodation_SupplierRoomTypeMapping_Values.Find(itemToUpdate.Accommodation_SupplierRoomTypeMapping_Id);
 
-                        if (IsCalledFromTTFU)
+                        if (matchedData != null)
                         {
-                            sbUpdateQuery.AppendLine("UPDATE Accommodation_SupplierRoomTypeMapping SET Edit_Date = GETDATE(), Edit_User = '" + Convert.ToString(CallingUser) + "'");
-                        }
-                        else
-                        {
-                            sbUpdateQuery.AppendLine("UPDATE Accommodation_SupplierRoomTypeMapping SET Edit_Date = GETDATE(), Edit_User = 'ML_BROKER_API'");
-                        }
+                            context.Accommodation_SupplierRoomTypeMapping_Values.Remove(matchedData);
+                            context.SaveChanges();
 
-                        if (itemToUpdate.Accommodation_RoomInfo_Id == null)
-                        {
-                            sbUpdateQuery.AppendLine(", Accommodation_RoomInfo_Id = NULL");
-                            sbUpdateQuery.AppendLine(", MatchingScore = NULL");
-                        }
-                        else
-                        {
-                            sbUpdateQuery.AppendLine(", Accommodation_RoomInfo_Id = '" + itemToUpdate.Accommodation_RoomInfo_Id + "'");
-                            sbUpdateQuery.AppendLine(", MatchingScore = " + itemToUpdate.Score);
-                        }
 
-                        sbUpdateQuery.AppendLine(", MappingStatus = '" + itemToUpdate.MappingStatus + "'");
+                            string insertQuery = "Insert into Accommodation_SupplierRoomTypeMapping_Values " +
+                                                        "(Accommodation_SupplierRoomTypeMapping_Value_Id," +
+                                                        "Accommodation_SupplierRoomTypeMapping_Id," +
+                                                        "Accommodation_RoomInfo_Id," +
+                                                        "UserMappingStatus," +
+                                                        "SystemMappingStatus," +
+                                                        "MatchingScore," +
+                                                        "Create_User," +
+                                                        "Create_Date," +
+                                                        "Edit_User," +
+                                                        "Edit_SystemUser," +
+                                                        "SystemEditDate," +
+                                                        "UserEditDate) VALUES(@P1,@P2,@P3,@P4,@P5,@P6,@P7,@P8,@P9,@P10,@P11,@P12)";
+                            var newId = Guid.NewGuid();
+                            List<SqlParameter> parameterList = new List<SqlParameter>();
+                            parameterList.Add(new SqlParameter("@P1", newId));
+                            parameterList.Add(new SqlParameter("@P2", SupplierRoomTypeId));
 
-                        sbUpdateQuery.AppendLine(" WHERE Accommodation_SupplierRoomTypeMapping_Id = '" + itemToUpdate.Accommodation_SupplierRoomTypeMapping_Id + "';");
-
-                        try
-                        {
-                            context.Database.CommandTimeout = 0;
-                            context.Database.ExecuteSqlCommand(sbUpdateQuery.ToString());
-                        }
-                        catch (Exception ex)
-                        {
-                            if (!IsCalledFromTTFU)
+                            if (itemToUpdate.Accommodation_RoomInfo_Id == null)
                             {
-                                CallLogVerbose(File_Id, "MATCH", ex.Message, obj.CurrentBatch);
+                                parameterList.Add(new SqlParameter("@P3", DBNull.Value));
+                                parameterList.Add(new SqlParameter("@P6", DBNull.Value));
+                                //sbUpdateQuery.AppendLine(", Accommodation_RoomInfo_Id = NULL");
+                                //sbUpdateQuery.AppendLine(", MatchingScore = NULL");
+                            }
+                            else
+                            {
+                                parameterList.Add(new SqlParameter("@P3", itemToUpdate.Accommodation_RoomInfo_Id));
+                                parameterList.Add(new SqlParameter("@P6", itemToUpdate.Score));
+                                //sbUpdateQuery.AppendLine(", Accommodation_RoomInfo_Id = '" + itemToUpdate.Accommodation_RoomInfo_Id + "'");
+                                //sbUpdateQuery.AppendLine(", MatchingScore = " + itemToUpdate.Score);
+                            }
+
+                            if (IsCalledFromTTFU)
+                            {
+                                parameterList.Add(new SqlParameter("@P4", itemToUpdate.MappingStatus));
+                                parameterList.Add(new SqlParameter("@P5", DBNull.Value));
+                                parameterList.Add(new SqlParameter("@P7", Convert.ToString(CallingUser)));
+                                parameterList.Add(new SqlParameter("@P8", DateTime.Now));
+                                parameterList.Add(new SqlParameter("@P9", Convert.ToString(CallingUser)));
+                                parameterList.Add(new SqlParameter("@P10", DBNull.Value));
+                                parameterList.Add(new SqlParameter("@P11", DBNull.Value));
+                                parameterList.Add(new SqlParameter("@P12", DateTime.Now));
+
+                                //sbUpdateQuery.AppendLine("UPDATE Accommodation_SupplierRoomTypeMapping_Values SET UserEditDate = GETDATE(), Edit_User = '" + Convert.ToString(CallingUser) + "'");
+
+                            }
+                            else
+                            {
+                                parameterList.Add(new SqlParameter("@P4", DBNull.Value));
+                                parameterList.Add(new SqlParameter("@P5", itemToUpdate.MappingStatus));
+                                parameterList.Add(new SqlParameter("@P7", "ML_BROKER_API"));
+                                parameterList.Add(new SqlParameter("@P8", DateTime.Now));
+                                parameterList.Add(new SqlParameter("@P9", DBNull.Value));
+                                parameterList.Add(new SqlParameter("@P10", "ML_BROKER_API"));
+                                parameterList.Add(new SqlParameter("@P11", DateTime.Now));
+                                parameterList.Add(new SqlParameter("@P12", DBNull.Value));
+                                //sbUpdateQuery.AppendLine("SystemEditDate = GETDATE(), Edit_User = 'ML_BROKER_API'");
+                            }
+
+                            //sbUpdateQuery.AppendLine(", UserMappingStatus = '" + itemToUpdate.MappingStatus + "'");
+
+                            //sbUpdateQuery.AppendLine(" WHERE Accommodation_SupplierRoomTypeMapping_Id = '" + itemToUpdate.Accommodation_SupplierRoomTypeMapping_Id + "';");
+                            SqlParameter[] parameters = parameterList.ToArray();
+                            try
+                            {
+                                context.Database.CommandTimeout = 0;
+                                context.Database.ExecuteSqlCommand(insertQuery, parameters);
+                                // context.Database.ExecuteSqlCommand(sbUpdateQuery.ToString());
+                            }
+                            catch (Exception ex)
+                            {
+                                if (!IsCalledFromTTFU)
+                                {
+                                    CallLogVerbose(File_Id, "MATCH", ex.Message, obj.CurrentBatch);
+                                }
                             }
                         }
                     }
@@ -8037,7 +8145,7 @@ namespace DataLayer
                     {
 
                         DC_RollOffReportRule obj = new DC_RollOffReportRule();
-                        obj.Hotelid = item.HotelID;
+                        obj.Hotelid = item.HotelID ?? 0;
                         obj.Hotelname = item.HotelName;
                         obj.RuleName = item.RuleName;
                         obj.Description = item.Description;
@@ -8089,7 +8197,7 @@ namespace DataLayer
                     {
 
                         DC_RollOffReportStatus obj = new DC_RollOffReportStatus();
-                        obj.Hotelid = item.HotelID;
+                        obj.Hotelid = item.HotelID ?? 0;
                         obj.Hotelname = item.HotelName;
                         obj.Companymarket = item.market;
                         obj.Status = item.status;
@@ -8154,7 +8262,7 @@ namespace DataLayer
                     {
 
                         DC_RollOffReportUpdate obj = new DC_RollOffReportUpdate();
-                        obj.Hotelid = item.HotelID;
+                        obj.Hotelid = item.HotelID ?? 0;
                         obj.Hotelname = item.HotelName;
                         obj.Hotelupdate = item.HotelUpdate;
                         obj.Descriptionsource = item.source;
@@ -9748,7 +9856,7 @@ namespace DataLayer
                     {
 
                         DC_newHotelsReport obj = new DC_newHotelsReport();
-                        obj.Hotelid = item.HotelID;
+                        obj.Hotelid = item.HotelID ?? 0;
                         obj.Hotelname = item.HotelName;
                         obj.Country = item.country;
                         obj.City = item.city;

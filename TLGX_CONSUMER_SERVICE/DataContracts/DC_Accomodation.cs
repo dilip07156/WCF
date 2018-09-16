@@ -5743,6 +5743,16 @@ namespace DataContracts
         public string TLGXAccoRoomId { get; set; }
         [DataMember]
         public double? MatchingScore { get; set; }
+        [DataMember]
+        public string UserMappingStatus { get; set; }
+        [DataMember]
+        public System.Guid? Accommodation_SupplierRoomTypeMapping_Value_Id { get; set; }
+        [DataMember]
+        public string SystemMappingStatus { get; set; }
+        [DataMember]
+        public DateTime? SystemEditDate { get; set; }
+        [DataMember]
+        public DateTime? UserEditDate { get; set; }
     }
 
     [DataContract]
