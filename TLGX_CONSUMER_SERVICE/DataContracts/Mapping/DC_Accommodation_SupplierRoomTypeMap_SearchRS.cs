@@ -113,6 +113,9 @@ namespace DataContracts.Mapping
         public string Accommodation_RoomInfo_Category { get; set; }
 
         [DataMember]
+        public List<DC_MappedRoomInfo> MappedRoomInfo { get; set; } 
+
+        [DataMember]
         public List<DC_SupplierRoomTypeAttributes> RoomTypeAttributes { get; set; }
 
         [DataMember]
@@ -237,5 +240,21 @@ namespace DataContracts.Mapping
         public string Accommodation_RoomInfo_Name { get; set; }
     }
 
+    [DataContract]
+    public class DC_MappedRoomInfo
+    {
+        [DataMember]
+        public System.Guid Accommodation_SupplierRoomTypeMap_Id { get; set; }
+        [DataMember]
+        public Guid Accommodation_RoomInfo_Id { get; set; }
+        [DataMember]
+        public string Accommodation_RoomInfo_Name { get; set; }
+        [DataMember]
+        public string Accommodation_RoomInfo_Category { get; set; }
+        [DataMember]
+        public string MappingStatus { get; set; }
+        [DataMember]
+        public double? MatchingScore { get; set; }
+    }
 
 }

@@ -514,7 +514,7 @@
           </Key>
           <Property Name="Accommodation_SupplierRoomTypeMapping_Value_Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Accommodation_SupplierRoomTypeMapping_Id" Type="uniqueidentifier" />
-          <Property Name="MapId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MapId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Accommodation_RoomInfo_Id" Type="uniqueidentifier" />
           <Property Name="MatchingScore" Type="float" />
           <Property Name="UserMappingStatus" Type="varchar" MaxLength="50" />
@@ -5925,7 +5925,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           </Key>
           <Property Name="Accommodation_SupplierRoomTypeMapping_Value_Id" Type="Guid" Nullable="false" />
           <Property Name="Accommodation_SupplierRoomTypeMapping_Id" Type="Guid" />
-          <Property Name="MapId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MapId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Accommodation_RoomInfo_Id" Type="Guid" />
           <Property Name="MatchingScore" Type="Double" />
           <Property Name="UserMappingStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />

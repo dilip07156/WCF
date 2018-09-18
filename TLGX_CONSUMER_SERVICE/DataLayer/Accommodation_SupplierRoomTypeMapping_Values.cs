@@ -16,7 +16,7 @@ namespace DataLayer
     {
         public System.Guid Accommodation_SupplierRoomTypeMapping_Value_Id { get; set; }
         public Nullable<System.Guid> Accommodation_SupplierRoomTypeMapping_Id { get; set; }
-        public int MapId { get; set; }
+        public long MapId { get; set; }
         public Nullable<System.Guid> Accommodation_RoomInfo_Id { get; set; }
         public Nullable<double> MatchingScore { get; set; }
         public string UserMappingStatus { get; set; }

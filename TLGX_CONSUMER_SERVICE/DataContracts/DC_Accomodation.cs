@@ -5738,7 +5738,7 @@ namespace DataContracts
         [DataMember]
         public string BedType { get; set; }
         [DataMember]
-        public string IsSomking { get; set; }
+        public string IsSmoking { get; set; }
         [DataMember]
         public string TLGXAccoRoomId { get; set; }
         [DataMember]

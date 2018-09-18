@@ -3428,6 +3428,7 @@ namespace DataLayer
                 return search;
             }
         }
+
         public List<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails> GetAccomodationRoomInfo_RoomCategoryWithDetails(Guid Accomodation_Id, Guid acco_SupplierRoomTypeMapping_Id)
         {
             using (ConsumerEntities context = new ConsumerEntities())
@@ -3447,13 +3448,13 @@ namespace DataLayer
                                     ar.TLGXAccoRoomId As TLGXAccoRoomId,
 	                                case when ar.Smoking is null then ''
 		                                 when ar.Smoking = 1 then 'Yes' 
-		                                 else 'No' End as IsSomking, 
-                                    ASRTM.Accommodation_SupplierRoomTypeMapping_Value_Id,
+		                                 else 'No' End as IsSmoking, 
+                                    ISNULL(ASRTM.Accommodation_SupplierRoomTypeMapping_Value_Id, NEWID()) AS Accommodation_SupplierRoomTypeMapping_Value_Id,
 	                                ASRTM.MatchingScore AS MatchingScore,
-                                        ASRTM.UserMappingStatus,
-                                        ASRTM.SystemMappingStatus,
-                                        ASRTM.SystemEditDate,
-                                        ASRTM.UserEditDate");
+                                    ISNULL(ASRTM.UserMappingStatus,'UNMAPPED') AS UserMappingStatus,
+                                    ISNULL(ASRTM.SystemMappingStatus,'UNMAPPED') AS SystemMappingStatus,
+                                    ISNULL(ASRTM.SystemEditDate,CAST('01-Jan-1990' AS DATE)) AS SystemEditDate,
+                                    ISNULL(ASRTM.UserEditDate,CAST('01-Jan-1990' AS DATE)) AS UserEditDate ");
 
                 #endregion
                 //sbFrom.Append(@" from Accommodation_RoomInfo ar WITH(NOLOCK) 
@@ -3463,14 +3464,12 @@ namespace DataLayer
 
                 sbFrom.Append(@" from Accommodation_RoomInfo ar WITH(NOLOCK) 
                                 LEFT JOIN Accommodation_SupplierRoomTypeMapping_Values ASRTM WITH(NOLOCK) ON ar.Accommodation_RoomInfo_Id = ASRTM.Accommodation_RoomInfo_Id
-                                    
-                                     and ASRTM.Accommodation_SupplierRoomTypeMapping_Id ='");
+                                and ASRTM.Accommodation_SupplierRoomTypeMapping_Id ='");
 
                 sbFrom.Append(Convert.ToString(acco_SupplierRoomTypeMapping_Id) + "'");
 
                 sbWhere.Append("where ar.Accommodation_Id ='");
                 sbWhere.Append(Convert.ToString(Accomodation_Id) + "'");
-
 
                 StringBuilder sbFinalquery = new StringBuilder();
                 sbFinalquery.Append(sbSelect);
@@ -3478,7 +3477,6 @@ namespace DataLayer
                 sbFinalquery.Append(sbWhere);
 
                 sbFinalquery.Append(" order by ar.RoomName ");
-
 
                 List<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails> result = new List<DC_Accomodation_Category_DDL_WithExtraDetails>();
                 context.Configuration.AutoDetectChangesEnabled = false;
