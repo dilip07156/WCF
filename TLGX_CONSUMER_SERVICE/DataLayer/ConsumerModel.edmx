@@ -507,6 +507,7 @@
           <Property Name="CountryCode" Type="nvarchar" MaxLength="50" />
           <Property Name="MatchingScore" Type="float" />
           <Property Name="RowCounter" Type="int" />
+          <Property Name="IsNotTraining" Type="bit" />
         </EntityType>
         <EntityType Name="Accommodation_SupplierRoomTypeMapping_Values">
           <Key>
@@ -5347,6 +5348,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="CountryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MatchingScore" Type="Double" />
           <Property Name="RowCounter" Type="Int32" />
+          <Property Name="IsNotTraining" Type="Boolean" />
         </EntityType>
         <EntityType Name="ZoneProduct_Mapping">
           <Key>
@@ -8142,6 +8144,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="Accommodation_SupplierRoomTypeMapping">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_SupplierRoomTypeMapping">
               <MappingFragment StoreEntitySet="Accommodation_SupplierRoomTypeMapping">
+                <ScalarProperty Name="IsNotTraining" ColumnName="IsNotTraining" />
                 <ScalarProperty Name="RowCounter" ColumnName="RowCounter" />
                 <ScalarProperty Name="MatchingScore" ColumnName="MatchingScore" />
                 <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />

@@ -210,6 +210,10 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public DateTime? Edit_Date { get; set; }
+
+        [DataMember]
+        public bool IsNotTraining { get; set; }
+
     }
 
     [DataContract]

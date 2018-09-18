@@ -24,7 +24,7 @@ namespace DataContracts.Mapping
         public List<DC_SupplierRoomTypeAttributes> RoomTypeAttributes { get; set; }
         [DataMember]
         public string Edit_User { get; set; }
-
-
+        [DataMember]
+        public bool IsNotTraining { get; set; }
     }
 }

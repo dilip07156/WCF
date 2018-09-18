@@ -74,6 +74,10 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "Mapping/AccoSupplierRoomType/UpdateMapping", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataContracts.DC_Message UpdateAccomodationSupplierRoomTypeMappingValues(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMapping_Values> obj);
 
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Mapping/AccoSupplierRoomType/UpdateTrainingFlag", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message UpdateAccomodationSupplierRoomTypeMapping_TrainingFlag(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_Update> obj);
 
         #endregion
 

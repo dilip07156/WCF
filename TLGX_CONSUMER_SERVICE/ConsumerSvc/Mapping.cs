@@ -106,7 +106,13 @@ namespace ConsumerSvc
             }
         }
 
-
+        public DataContracts.DC_Message UpdateAccomodationSupplierRoomTypeMapping_TrainingFlag(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_Update> obj)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.UpdateAccomodationSupplierRoomTypeMapping_TrainingFlag(obj);
+            }
+        }
         #endregion
 
         #region Country Mapping

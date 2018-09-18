@@ -212,6 +212,14 @@ namespace BusinessLayer
             }
         }
 
+        public DataContracts.DC_Message UpdateAccomodationSupplierRoomTypeMapping_TrainingFlag(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_Update> obj)
+        {
+            using (DL_Mapping objDL = new DL_Mapping())
+            {
+                return objDL.UpdateAccomodationSupplierRoomTypeMapping_TrainingFlag(obj);
+            }
+        }
+
         public bool RoomTypeMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())

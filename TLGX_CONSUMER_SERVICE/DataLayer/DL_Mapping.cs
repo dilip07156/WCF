@@ -3180,6 +3180,37 @@ namespace DataLayer
             }
         }
 
+        public DataContracts.DC_Message UpdateAccomodationSupplierRoomTypeMapping_TrainingFlag(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_Update> obj)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Database.CommandTimeout = 0;
+                    IncomingWebRequestContext woc = WebOperationContext.Current.IncomingRequest;
+                    string CallingAgent = woc.Headers["CallingAgent"];
+                    string CallingUser = woc.Headers["CallingUser"];
+
+                    foreach(var item in obj)
+                    {
+                        var accoSuppRoomTypeMap = context.Accommodation_SupplierRoomTypeMapping.Find(item.Accommodation_SupplierRoomTypeMapping_Id);
+                        if (accoSuppRoomTypeMap != null)
+                        {
+                            accoSuppRoomTypeMap.IsNotTraining = item.IsNotTraining;
+                            accoSuppRoomTypeMap.Edit_User = item.Edit_User ?? CallingUser;
+                            accoSuppRoomTypeMap.Edit_Date = DateTime.Now;
+                        }
+                    }
+                    context.SaveChanges();
+                }
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Flag Updated successfully." };
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating Training flag" + ex.Message, ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
         public IList<DataContracts.Mapping.DC_Accomodation_SupplierRoomTypeMapping> GetAccomodationSupplierRoomTypeMapping(int PageNo, int PageSize, Guid Accomodation_Id, Guid Supplier_Id)
         {
             try
@@ -3933,7 +3964,8 @@ namespace DataLayer
 	                    CiM.[Name] AS [Name],
                         Tx_ReorderedName = asrtm.Tx_ReorderedName,
                         TX_RoomName = asrtm.TX_RoomName,
-                        Tx_StrippedName = asrtm.Tx_StrippedName, ");
+                        Tx_StrippedName = asrtm.Tx_StrippedName, 
+                        ISNULL(asrtm.IsNotTraining,0) as IsNotTraining, ");
 
                     sbSelect.Append(total + " AS TotalRecords ");
 
@@ -4014,32 +4046,6 @@ namespace DataLayer
                                                                    MappingStatus = (asrtmv.SystemEditDate > asrtmv.UserEditDate) ? asrtmv.SystemMappingStatus : asrtmv.UserMappingStatus,
                                                                    MatchingScore = asrtmv.MatchingScore
                                                                }).ToList();
-
-                                        //var MARI = context.Accommodation_RoomInfo.AsNoTracking().Where(w => w.Accommodation_Id == item.Accommodation_Id).Select(s => new { s.Accommodation_RoomInfo_Id, s.RoomName, s.RoomCategory }).ToList();
-                                        //var ASRTMV = context.Accommodation_SupplierRoomTypeMapping_Values.AsNoTracking().Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == item.Accommodation_SupplierRoomTypeMapping_Id).Select(s => new
-                                        //{
-                                        //    s.Accommodation_SupplierRoomTypeMapping_Id,
-                                        //    s.Accommodation_RoomInfo_Id,
-                                        //    s.UserEditDate,
-                                        //    s.UserMappingStatus,
-                                        //    s.SystemMappingStatus,
-                                        //    s.SystemEditDate,
-                                        //    s.MatchingScore
-                                        //}).ToList();
-
-                                        //item.MappedRoomInfo = (from ari in MARI
-                                        //                       join asrtmv in ASRTMV 
-                                        //                       on ari.Accommodation_RoomInfo_Id equals asrtmv.Accommodation_RoomInfo_Id
-                                        //                       where ((asrtmv.SystemEditDate > asrtmv.UserEditDate) ? (asrtmv.SystemMappingStatus ?? "UNMAPPED") : (asrtmv.UserMappingStatus ?? "UNMAPPED")) != "UNMAPPED"
-                                        //                       select new DC_MappedRoomInfo
-                                        //                       {
-                                        //                           Accommodation_RoomInfo_Category = ari.RoomCategory,
-                                        //                           Accommodation_RoomInfo_Id = asrtmv.Accommodation_RoomInfo_Id ?? Guid.Empty,
-                                        //                           Accommodation_RoomInfo_Name = ari.RoomName,
-                                        //                           Accommodation_SupplierRoomTypeMap_Id = asrtmv.Accommodation_SupplierRoomTypeMapping_Id ?? Guid.Empty,
-                                        //                           MappingStatus = ((asrtmv.SystemEditDate > asrtmv.UserEditDate) ? (asrtmv.SystemMappingStatus ?? "UNMAPPED") : (asrtmv.UserMappingStatus ?? "UNMAPPED")),
-                                        //                           MatchingScore = asrtmv.MatchingScore
-                                        //                       }).ToList();
 
                                         //    if (item.Accommodation_RoomInfo_Id == null)
                                         //    {
@@ -5905,7 +5911,7 @@ namespace DataLayer
                         context.Database.CommandTimeout = 0;
                         var SupplierRoomTypeId = itemToUpdate.Accommodation_SupplierRoomTypeMapping_Id;
 
-                        if(itemToUpdate.MappingStatus == "ADD")
+                        if (itemToUpdate.MappingStatus == "ADD")
                         {
                             var ASRTM = context.Accommodation_SupplierRoomTypeMapping.Find(SupplierRoomTypeId);
                             if (ASRTM != null)
