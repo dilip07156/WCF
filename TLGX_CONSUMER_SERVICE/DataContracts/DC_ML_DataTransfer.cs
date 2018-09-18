@@ -213,7 +213,6 @@ namespace DataContracts
         public string BeddingConfig { get; set; }
     }
 
-
     [DataContract]
     public class DC_ML_RoomTypeMatch_Data
     {
@@ -225,6 +224,10 @@ namespace DataContracts
         public string SupplierRoomTypeCode { get; set; }
         public string SupplierRoomName { get; set; }
         public string TXRoomName { get; set; }
+        public string SupplierRoomView { get; set; }
+        public string SupplierRoomBedType { get; set; }
+        public string SupplierRoomBedTypeCode { get; set; }
+        public string SupplierRoomSmoking { get; set; }
         public string SupplierRoomCategory { get; set; }
         public string SupplierRoomCategoryId { get; set; }
         public DateTime? SupplierRoomCreateDate { get; set; }

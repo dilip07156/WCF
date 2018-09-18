@@ -2711,7 +2711,7 @@ namespace DataLayer
                             else if (search.Accommodation_Id == PM.Accommodation_Id && (search.Status != PM.Status) && (PM.Status == "AUTOMAPPED" || PM.Status == "MAPPED"))
                             {
                                 sbUpdateSRTMStatus.Clear();
-                                sbUpdateSRTMStatus.AppendLine(" UPDATE Accommodation_SupplierRoomTypeMapping SET Accommodation_Id = '" + PM.Accommodation_Id + "' ");
+                                sbUpdateSRTMStatus.AppendLine(" UPDATE Accommodation_SupplierRoomTypeMapping SET Accommodation_Id = '" + PM.Accommodation_Id + "', ");
                                 sbUpdateSRTMStatus.AppendLine(" Edit_User= '" + PM.Edit_User + "', Edit_Date = getdate() ");
                                 sbUpdateSRTMStatus.AppendLine(" Where Supplier_Id='" + search.Supplier_Id + "' and SupplierProductId='" + search.SupplierProductReference + "';");
                             }
