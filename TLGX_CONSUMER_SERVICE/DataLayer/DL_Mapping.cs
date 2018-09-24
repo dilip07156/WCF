@@ -3211,6 +3211,34 @@ namespace DataLayer
             }
         }
 
+        public IList<DataContracts.Mapping.DC_SupplierRoomTypeAttributes> GetAttributesForAccomodationSupplierRoomTypeMapping(Guid SupplierRoomtypeMappingID)
+        {
+             List<DC_SupplierRoomTypeAttributes> lstAttributes = new List<DC_SupplierRoomTypeAttributes>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                       lstAttributes = (from asrta in context.Accommodation_SupplierRoomTypeAttributes
+                                        join k in context.m_keyword
+                                        on asrta.SystemAttributeKeyword_Id equals k.Keyword_Id
+                                        where asrta.RoomTypeMap_Id == SupplierRoomtypeMappingID
+                                        select new DC_SupplierRoomTypeAttributes
+                                        {
+                                            Accommodation_SupplierRoomTypeMap_Id = asrta.RoomTypeMapAttribute_Id,
+                                            SupplierRoomTypeAttribute = asrta.SupplierRoomTypeAttribute,
+                                            SystemAttributeKeyword = asrta.SystemAttributeKeyword,
+                                            SystemAttributeKeyword_Id = asrta.SystemAttributeKeyword_Id,
+                                            IconClass = k.Icon
+                                        }).ToList();
+                }
+                return lstAttributes;
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation product supplier mapping attributes", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
         public IList<DataContracts.Mapping.DC_Accomodation_SupplierRoomTypeMapping> GetAccomodationSupplierRoomTypeMapping(int PageNo, int PageSize, Guid Accomodation_Id, Guid Supplier_Id)
         {
             try

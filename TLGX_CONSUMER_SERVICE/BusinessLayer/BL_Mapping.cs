@@ -220,6 +220,24 @@ namespace BusinessLayer
             }
         }
 
+        public IList<DataContracts.Mapping.DC_SupplierRoomTypeAttributes> GetAttributesForAccomodationSupplierRoomTypeMapping(string SupplierRoomtypeMappingID)
+        {
+            Guid gSupplierRoomtypeMappingID;
+
+            if (!Guid.TryParse(SupplierRoomtypeMappingID, out gSupplierRoomtypeMappingID))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+            else
+            {
+                using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+                {
+                    return objBL.GetAttributesForAccomodationSupplierRoomTypeMapping(gSupplierRoomtypeMappingID);
+                }
+            }
+        }
+
+
         public bool RoomTypeMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())

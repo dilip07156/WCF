@@ -113,6 +113,14 @@ namespace ConsumerSvc
                 return objBL.UpdateAccomodationSupplierRoomTypeMapping_TrainingFlag(obj);
             }
         }
+
+        public IList<DataContracts.Mapping.DC_SupplierRoomTypeAttributes> GetAttributesForAccomodationSupplierRoomTypeMapping(string SupplierRoomtypeMappingID)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetAttributesForAccomodationSupplierRoomTypeMapping(SupplierRoomtypeMappingID);
+            }
+        }
         #endregion
 
         #region Country Mapping
