@@ -525,6 +525,14 @@ namespace ConsumerSvc
                 return objBL.GetActivitiesReport(ReportType);
             }
         }
+
+        public IList<DataContracts.Masters.DC_ActivityProductDetailsReport> GetActivitiesProductDetailsReport(DC_ActivityCountStats ReportType)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                return objBL.GetActivitiesProductDetailsReport(ReportType);
+            }
+        }
         #endregion
 
     }

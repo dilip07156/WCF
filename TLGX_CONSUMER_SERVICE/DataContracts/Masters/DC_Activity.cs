@@ -2242,6 +2242,51 @@ namespace DataContracts.Masters
     }
     #endregion
 
+    #region
+    [DataContract]
+    public class DC_ActivityProductDetailsReport
+    {
+        [DataMember]
+        public string SupplierName { get; set; }
+        [DataMember]
+        public string ActivityCode { get; set; }
+        [DataMember]
+        public string ActivityName { get; set; }
+        [DataMember]
+        public string LongDescription { get; set; }
+        [DataMember]
+        public string ShortDescription { get; set; }
+        [DataMember]
+        public string Country { get; set; }
+        [DataMember]
+        public string City { get; set; }
+        [DataMember]
+        public string InterestType { get; set; }
+        [DataMember]
+        public string CategorySubType { get; set; }
+        [DataMember]
+        public string ProductType { get; set; }
+        [DataMember]
+        public string ProductSubType { get; set; }
+        [DataMember]
+        public string SuitableFor { get; set; }
+        [DataMember]
+        public string PhysicalLevel { get; set; }
+        [DataMember]
+        public string AreaAddress { get; set; }
+        [DataMember]
+        public string Inclusions { get; set; }
+        [DataMember]
+        public string Exclusions { get; set; }
+        [DataMember]
+        public DateTime? FromDate { get; set; }
+        [DataMember]
+        public DateTime? ToDate { get; set; }
+        [DataMember]
+        public string Duration { get; set; }
+    }
+    #endregion
+
 
 
 }

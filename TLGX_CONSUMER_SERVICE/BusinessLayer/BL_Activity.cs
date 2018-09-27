@@ -486,6 +486,14 @@ namespace BusinessLayer
                 return obj.GetActivitiesReport( _obj);
             }
         }
+
+        public List<DataContracts.Masters.DC_ActivityProductDetailsReport> GetActivitiesProductDetailsReport(DC_ActivityCountStats _obj)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivitiesProductDetailsReport(_obj);
+            }
+        }
         #endregion
     }
 }
