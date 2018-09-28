@@ -6028,7 +6028,8 @@ namespace DataLayer
 
             catch (Exception e)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating hotel mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating hotel mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                return false;
             }
 
             return true;
