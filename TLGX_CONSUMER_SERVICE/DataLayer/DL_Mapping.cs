@@ -5999,7 +5999,7 @@ namespace DataLayer
                                 existingmap.Edit_SystemUser = "ML_BROKER_API";
                                 existingmap.SystemEditDate = DateTime.Now;
                                 existingmap.SystemMappingStatus = "UNMAPPED";
-                                existingmap.MatchingScore = 0;
+                                existingmap.MatchingScore = null;
                             }
                         }
 
