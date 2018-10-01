@@ -5999,7 +5999,7 @@ namespace DataLayer
                                 existingmap.Edit_SystemUser = "ML_BROKER_API";
                                 existingmap.SystemEditDate = DateTime.Now;
                                 existingmap.SystemMappingStatus = "UNMAPPED";
-                                existingmap.MatchingScore = 0;
+                                existingmap.MatchingScore = null;
                             }
                         }
 
@@ -6028,7 +6028,8 @@ namespace DataLayer
 
             catch (Exception e)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating hotel mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating hotel mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                return false;
             }
 
             return true;
