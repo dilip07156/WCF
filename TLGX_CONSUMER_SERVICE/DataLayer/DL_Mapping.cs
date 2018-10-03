@@ -3137,6 +3137,11 @@ namespace DataLayer
         {
             try
             {
+                if (obj == null || obj.Count == 0)
+                {
+                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Request message has no records." };
+                }
+
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     context.Database.CommandTimeout = 0;
@@ -3144,11 +3149,14 @@ namespace DataLayer
                     string CallingAgent = woc.Headers["CallingAgent"];
                     string CallingUser = woc.Headers["CallingUser"];
 
+                    //get all records for this supplier room record.
+                    var allaccoSuppRoomTypeMapVals = context.Accommodation_SupplierRoomTypeMapping_Values.Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == obj[0].Accommodation_SupplierRoomTypeMapping_Id).ToList();
+
                     foreach (DC_Accommodation_SupplierRoomTypeMapping_Values item in obj)
                     {
                         if (item.Accommodation_SupplierRoomTypeMapping_Id != null && item.Accommodation_RoomInfo_Id != null && !string.IsNullOrWhiteSpace(item.UserMappingStatus))
                         {
-                            var accoSuppRoomTypeMapVal = context.Accommodation_SupplierRoomTypeMapping_Values.Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == item.Accommodation_SupplierRoomTypeMapping_Id && w.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).FirstOrDefault();
+                            var accoSuppRoomTypeMapVal = allaccoSuppRoomTypeMapVals.Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == item.Accommodation_SupplierRoomTypeMapping_Id && w.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).FirstOrDefault();
                             if (accoSuppRoomTypeMapVal != null)
                             {
                                 accoSuppRoomTypeMapVal.Edit_User = CallingUser;
@@ -3169,8 +3177,47 @@ namespace DataLayer
                                 context.Accommodation_SupplierRoomTypeMapping_Values.Add(dc);
                             }
                         }
+                    }
+
+                    if (context.ChangeTracker.HasChanges())
+                    {
+                        var AUTOMAPPED_CNT = allaccoSuppRoomTypeMapVals.Where(w => w.SystemMappingStatus == "AUTOMAPPED").Count();
+                        var MAPPED_CNT = allaccoSuppRoomTypeMapVals.Where(w => w.UserMappingStatus == "MAPPED").Count();
+                        var REVIEW_CNT = allaccoSuppRoomTypeMapVals.Where(w => w.SystemMappingStatus == "REVIEW" || w.UserMappingStatus == "REVIEW").Count();
+
+                        var srtm = context.Accommodation_SupplierRoomTypeMapping.Find(obj[0].Accommodation_SupplierRoomTypeMapping_Id);
+
+                        if (srtm != null)
+                        {
+                            if (AUTOMAPPED_CNT != 0 && srtm.MappingStatus != "AUTOMAPPED")
+                            {
+                                srtm.MappingStatus = "AUTOMAPPED";
+                                srtm.Edit_User = CallingUser;
+                                srtm.Edit_Date = DateTime.Now;
+                            }
+                            else if (AUTOMAPPED_CNT == 0 && MAPPED_CNT != 0 && srtm.MappingStatus != "MAPPED")
+                            {
+                                srtm.MappingStatus = "MAPPED";
+                                srtm.Edit_User = CallingUser;
+                                srtm.Edit_Date = DateTime.Now;
+                            }
+                            else if (AUTOMAPPED_CNT == 0 && MAPPED_CNT == 0 && REVIEW_CNT != 0 && srtm.MappingStatus != "REVIEW")
+                            {
+                                srtm.MappingStatus = "REVIEW";
+                                srtm.Edit_User = CallingUser;
+                                srtm.Edit_Date = DateTime.Now;
+                            }
+                            else if (AUTOMAPPED_CNT == 0 && MAPPED_CNT == 0 && REVIEW_CNT == 0 && srtm.MappingStatus != "UNMAPPED")
+                            {
+                                srtm.MappingStatus = "UNMAPPED";
+                                srtm.Edit_User = CallingUser;
+                                srtm.Edit_Date = DateTime.Now;
+                            }
+                        }
+
                         context.SaveChanges();
                     }
+
                 }
                 return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "All Valid Records are successfully updated." };
             }
@@ -4118,7 +4165,7 @@ namespace DataLayer
                                 foreach (var id in result)
                                 {
                                     sbRoomTypeMapId.Append("'" + id.Accommodation_SupplierRoomTypeMapping_Id + "',");
-                                    if(id.Accommodation_Id != null)
+                                    if (id.Accommodation_Id != null)
                                     {
                                         sbAccoid.Append("'" + id.Accommodation_Id + "',");
                                     }
@@ -4140,14 +4187,14 @@ namespace DataLayer
                                                                join ar in context.Accommodation_RoomInfo.AsNoTracking()
                                                                on asrtmv.Accommodation_RoomInfo_Id equals ar.Accommodation_RoomInfo_Id
                                                                where asrtmv.Accommodation_SupplierRoomTypeMapping_Id == item.Accommodation_SupplierRoomTypeMapping_Id
-                                                               && ((asrtmv.SystemEditDate > asrtmv.UserEditDate) ? (asrtmv.SystemMappingStatus ?? "UNMAPPED") : (asrtmv.UserMappingStatus ?? "UNMAPPED")) != "UNMAPPED"
+                                                               && (((asrtmv.SystemEditDate ?? DateTime.MinValue) > (asrtmv.UserEditDate ?? DateTime.MinValue)) ? (asrtmv.SystemMappingStatus ?? "UNMAPPED") : (asrtmv.UserMappingStatus ?? "UNMAPPED")) != "UNMAPPED"
                                                                select new DC_MappedRoomInfo
                                                                {
                                                                    Accommodation_RoomInfo_Category = ar.RoomCategory,
                                                                    Accommodation_RoomInfo_Id = asrtmv.Accommodation_RoomInfo_Id ?? Guid.Empty,
                                                                    Accommodation_RoomInfo_Name = ar.RoomName,
                                                                    Accommodation_SupplierRoomTypeMap_Id = asrtmv.Accommodation_SupplierRoomTypeMapping_Id ?? Guid.Empty,
-                                                                   MappingStatus = (asrtmv.SystemEditDate > asrtmv.UserEditDate) ? asrtmv.SystemMappingStatus : asrtmv.UserMappingStatus,
+                                                                   MappingStatus = ((asrtmv.SystemEditDate ?? DateTime.MinValue) > (asrtmv.UserEditDate ?? DateTime.MinValue)) ? asrtmv.SystemMappingStatus : asrtmv.UserMappingStatus,
                                                                    MatchingScore = asrtmv.MatchingScore
                                                                }).ToList();
 
@@ -5739,22 +5786,47 @@ namespace DataLayer
                         context.Database.CommandTimeout = 0;
                         var SupplierRoomTypeId = itemToUpdate.Accommodation_SupplierRoomTypeMapping_Id;
 
-                        if (itemToUpdate.MappingStatus == "ADD")
-                        {
-                            var ASRTM = context.Accommodation_SupplierRoomTypeMapping.Find(SupplierRoomTypeId);
-                            if (ASRTM != null)
-                            {
-                                if (ASRTM.MappingStatus != itemToUpdate.MappingStatus)
-                                {
-                                    ASRTM.MappingStatus = itemToUpdate.MappingStatus;
-                                    ASRTM.Edit_Date = DateTime.Now;
-                                    ASRTM.Edit_User = "ML_BROKER_API";
-                                }
-                            }
-                        }
+                        var ASRTM = context.Accommodation_SupplierRoomTypeMapping.Find(SupplierRoomTypeId);
 
                         var ExistingMappedRecords = context.Accommodation_SupplierRoomTypeMapping_Values.Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == SupplierRoomTypeId).ToList();
                         var CurrentMappedRecords = ListOfMappedRooms.Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == SupplierRoomTypeId).ToList();
+
+                        int AUTOMAPPED_CNT = CurrentMappedRecords.Where(w => w.SystemMappingStatus == "AUTOMAPPED").Count();
+                        var MAPPED_CNT = CurrentMappedRecords.Where(w => w.SystemMappingStatus == "MAPPED").Count(); ;
+                        var REVIEW_CNT = CurrentMappedRecords.Where(w => w.SystemMappingStatus == "REVIEW").Count(); ;
+                        if (ASRTM != null)
+                        {
+                            if (itemToUpdate.MappingStatus == "ADD" && ASRTM.MappingStatus != itemToUpdate.MappingStatus)
+                            {
+                                ASRTM.MappingStatus = itemToUpdate.MappingStatus;
+                                ASRTM.Edit_Date = DateTime.Now;
+                                ASRTM.Edit_User = "ML_BROKER_API";
+                            }
+                            else if (AUTOMAPPED_CNT != 0 && ASRTM.MappingStatus != "AUTOMAPPED")
+                            {
+                                ASRTM.MappingStatus = "AUTOMAPPED";
+                                ASRTM.Edit_User = CallingUser;
+                                ASRTM.Edit_Date = DateTime.Now;
+                            }
+                            else if (AUTOMAPPED_CNT == 0 && MAPPED_CNT != 0 && ASRTM.MappingStatus != "MAPPED")
+                            {
+                                ASRTM.MappingStatus = "MAPPED";
+                                ASRTM.Edit_User = CallingUser;
+                                ASRTM.Edit_Date = DateTime.Now;
+                            }
+                            else if (AUTOMAPPED_CNT == 0 && MAPPED_CNT == 0 && REVIEW_CNT != 0 && ASRTM.MappingStatus != "REVIEW")
+                            {
+                                ASRTM.MappingStatus = "REVIEW";
+                                ASRTM.Edit_User = CallingUser;
+                                ASRTM.Edit_Date = DateTime.Now;
+                            }
+                            else if (AUTOMAPPED_CNT == 0 && MAPPED_CNT == 0 && REVIEW_CNT == 0 && ASRTM.MappingStatus != "UNMAPPED")
+                            {
+                                ASRTM.MappingStatus = "UNMAPPED";
+                                ASRTM.Edit_User = CallingUser;
+                                ASRTM.Edit_Date = DateTime.Now;
+                            }
+                        }
 
                         foreach (var currentmap in CurrentMappedRecords)
                         {
