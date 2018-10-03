@@ -7795,7 +7795,7 @@ namespace DataLayer
                         supplierResult.Country_MannualMapped = MappingData.Where(x => x.MappingFor == "Country" && x.Status == "MAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
                         supplierResult.Country_ReviewMapped = MappingData.Where(x => x.MappingFor == "Country" && x.Status == "REVIEW" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
                         supplierResult.Country_Unmapped = MappingData.Where(x => x.MappingFor == "Country" && x.Status == "UNMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
-                        supplierResult.CountryTotal = MappingData.Where(w => w.MappingFor == "Country" && w.Supplier_Id == supplier.Supplier_Id).Sum(s => s.TotalCount) ?? 0;
+                        supplierResult.CountryTotal = supplierResult.Country_AutoMapped + supplierResult.Country_MannualMapped + supplierResult.Country_ReviewMapped + supplierResult.Country_Unmapped;//MappingData.Where(w => w.MappingFor == "Country" && w.Supplier_Id == supplier.Supplier_Id).Sum(s => s.TotalCount) ?? 0;
 
                         if (supplierResult.CountryTotal > 0)
                         {
@@ -7813,7 +7813,7 @@ namespace DataLayer
                         supplierResult.City_MannualMapped = MappingData.Where(x => x.MappingFor == "City" && x.Status == "MAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
                         supplierResult.City_ReviewMapped = MappingData.Where(x => x.MappingFor == "City" && x.Status == "REVIEW" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
                         supplierResult.City_Unmapped = MappingData.Where(x => x.MappingFor == "City" && x.Status == "UNMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
-                        supplierResult.CityTotal = MappingData.Where(w => w.MappingFor == "City" && w.Supplier_Id == supplier.Supplier_Id).Sum(s => s.TotalCount) ?? 0;
+                        supplierResult.CityTotal = supplierResult.City_AutoMapped + supplierResult.City_MannualMapped + supplierResult.City_ReviewMapped + supplierResult.City_Unmapped; //MappingData.Where(w => w.MappingFor == "City" && w.Supplier_Id == supplier.Supplier_Id).Sum(s => s.TotalCount) ?? 0;
                         if (supplierResult.CityTotal > 0)
                         {
                             supplierResult.City_CompletePercentage = Math.Round((Convert.ToDecimal(supplierResult.City_AutoMapped + supplierResult.City_MannualMapped) / Convert.ToDecimal(supplierResult.CityTotal) * Convert.ToDecimal(100)), 2);
@@ -7830,7 +7830,7 @@ namespace DataLayer
                         supplierResult.Hotel_MannualMapped = MappingData.Where(x => x.MappingFor == "Product" && x.Status == "MAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
                         supplierResult.Hotel_ReviewMapped = MappingData.Where(x => x.MappingFor == "Product" && x.Status == "REVIEW" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
                         supplierResult.Hotel_Unmapped = MappingData.Where(x => x.MappingFor == "Product" && x.Status == "UNMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
-                        supplierResult.HotelTotal = MappingData.Where(w => w.MappingFor == "Product" && w.Supplier_Id == supplier.Supplier_Id).Sum(s => s.TotalCount) ?? 0;
+                        supplierResult.HotelTotal = supplierResult.Hotel_AutoMapped + supplierResult.Hotel_MannualMapped + supplierResult.Hotel_ReviewMapped + supplierResult.Hotel_Unmapped; //MappingData.Where(w => w.MappingFor == "Product" && w.Supplier_Id == supplier.Supplier_Id).Sum(s => s.TotalCount) ?? 0;
                         if (supplierResult.HotelTotal > 0)
                         {
                             supplierResult.Hotel_CompletePercentage = Math.Round((Convert.ToDecimal(supplierResult.Hotel_AutoMapped + supplierResult.Hotel_MannualMapped) / Convert.ToDecimal(supplierResult.HotelTotal) * Convert.ToDecimal(100)), 2);
@@ -7860,7 +7860,7 @@ namespace DataLayer
                         supplierResult.Room_ReviewMapped = MappingData.Where(x => x.MappingFor == "HotelRoom" && x.Status == "REVIEW" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
                         supplierResult.Room_Add = probableRoomType.Where(x => x.Supplier_id == supplier.Supplier_Id).Sum(s => s.Totalcount);
                         supplierResult.Room_Unmapped = MappingData.Where(x => x.MappingFor == "HotelRoom" && x.Status == "UNMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
-                        supplierResult.RoomTotal = (MappingData.Where(w => w.MappingFor == "HotelRoom" && w.Supplier_Id == supplier.Supplier_Id).Sum(s => s.TotalCount) ?? 0);
+                        supplierResult.RoomTotal = supplierResult.Room_AutoMapped + supplierResult.Room_MannualMapped + supplierResult.Room_ReviewMapped + supplierResult.Room_Unmapped; //(MappingData.Where(w => w.MappingFor == "HotelRoom" && w.Supplier_Id == supplier.Supplier_Id).Sum(s => s.TotalCount) ?? 0);
 
                         if (supplierResult.RoomTotal > 0)
                         {
@@ -7887,11 +7887,11 @@ namespace DataLayer
                         #region Country Mapping Data
                         //GrandTotal.LastFetchedDate = null;
                         GrandTotal.Country_TotalRecordReceived = string.Empty;
-                        GrandTotal.Country_AutoMapped = MappingData.Where(x => x.MappingFor == "Country" && x.Status == "AUTOMAPPED").Sum(x => x.TotalCount) ?? 0;
-                        GrandTotal.Country_MannualMapped = MappingData.Where(x => x.MappingFor == "Country" && x.Status == "MAPPED").Sum(x => x.TotalCount) ?? 0;
-                        GrandTotal.Country_ReviewMapped = MappingData.Where(x => x.MappingFor == "Country" && x.Status == "REVIEW").Sum(x => x.TotalCount) ?? 0;
-                        GrandTotal.Country_Unmapped = MappingData.Where(x => x.MappingFor == "Country" && x.Status == "UNMAPPED").Sum(x => x.TotalCount) ?? 0;
-                        GrandTotal.CountryTotal = ReturnResult.Sum(s => s.CountryTotal);
+                        GrandTotal.Country_AutoMapped = ReturnResult.Sum(s => s.Country_AutoMapped); //MappingData.Where(x => x.MappingFor == "Country" && x.Status == "AUTOMAPPED").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.Country_MannualMapped = ReturnResult.Sum(s => s.Country_MannualMapped); //MappingData.Where(x => x.MappingFor == "Country" && x.Status == "MAPPED").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.Country_ReviewMapped = ReturnResult.Sum(s => s.Country_ReviewMapped); //MappingData.Where(x => x.MappingFor == "Country" && x.Status == "REVIEW").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.Country_Unmapped = ReturnResult.Sum(s => s.Country_Unmapped); //MappingData.Where(x => x.MappingFor == "Country" && x.Status == "UNMAPPED").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.CountryTotal = GrandTotal.Country_AutoMapped + GrandTotal.Country_MannualMapped + GrandTotal.Country_ReviewMapped + GrandTotal.Country_Unmapped;  //ReturnResult.Sum(s => s.CountryTotal);
 
                         if (GrandTotal.CountryTotal > 0)
                         {
@@ -7906,11 +7906,11 @@ namespace DataLayer
                         #region City Mapping Data
                         //Need to check with actual data
                         GrandTotal.City_TotalRecordReceived = string.Empty;
-                        GrandTotal.City_AutoMapped = MappingData.Where(x => x.MappingFor == "City" && x.Status == "AUTOMAPPED").Sum(x => x.TotalCount) ?? 0;
-                        GrandTotal.City_MannualMapped = MappingData.Where(x => x.MappingFor == "City" && x.Status == "MAPPED").Sum(x => x.TotalCount) ?? 0;
-                        GrandTotal.City_ReviewMapped = MappingData.Where(x => x.MappingFor == "City" && x.Status == "REVIEW").Sum(x => x.TotalCount) ?? 0;
-                        GrandTotal.City_Unmapped = MappingData.Where(x => x.MappingFor == "City" && x.Status == "UNMAPPED").Sum(x => x.TotalCount) ?? 0;
-                        GrandTotal.CityTotal = ReturnResult.Sum(s => s.CityTotal);
+                        GrandTotal.City_AutoMapped = ReturnResult.Sum(s => s.City_AutoMapped); //MappingData.Where(x => x.MappingFor == "City" && x.Status == "AUTOMAPPED").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.City_MannualMapped = ReturnResult.Sum(s => s.City_MannualMapped); //MappingData.Where(x => x.MappingFor == "City" && x.Status == "MAPPED").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.City_ReviewMapped = ReturnResult.Sum(s => s.City_ReviewMapped); //MappingData.Where(x => x.MappingFor == "City" && x.Status == "REVIEW").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.City_Unmapped = ReturnResult.Sum(s => s.City_Unmapped); //MappingData.Where(x => x.MappingFor == "City" && x.Status == "UNMAPPED").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.CityTotal = GrandTotal.City_AutoMapped + GrandTotal.City_MannualMapped + GrandTotal.City_ReviewMapped + GrandTotal.City_Unmapped; //ReturnResult.Sum(s => s.CityTotal);
                         if (GrandTotal.CityTotal > 0)
                         {
                             GrandTotal.City_CompletePercentage = Math.Round((Convert.ToDecimal(GrandTotal.City_AutoMapped + GrandTotal.City_MannualMapped) / Convert.ToDecimal(GrandTotal.CityTotal) * Convert.ToDecimal(100)), 2);
@@ -7924,11 +7924,11 @@ namespace DataLayer
                         #region Hotel Mapping Data
                         //Need to check with actual data
                         GrandTotal.Hotel_TotalRecordReceived = string.Empty;
-                        GrandTotal.Hotel_AutoMapped = MappingData.Where(x => x.MappingFor == "Product" && x.Status == "AUTOMAPPED").Sum(x => x.TotalCount) ?? 0;
-                        GrandTotal.Hotel_MannualMapped = MappingData.Where(x => x.MappingFor == "Product" && x.Status == "MAPPED").Sum(x => x.TotalCount) ?? 0;
-                        GrandTotal.Hotel_ReviewMapped = MappingData.Where(x => x.MappingFor == "Product" && x.Status == "REVIEW").Sum(x => x.TotalCount) ?? 0;
-                        GrandTotal.Hotel_Unmapped = MappingData.Where(x => x.MappingFor == "Product" && x.Status == "UNMAPPED").Sum(x => x.TotalCount) ?? 0;
-                        GrandTotal.HotelTotal = ReturnResult.Sum(s => s.HotelTotal); ;
+                        GrandTotal.Hotel_AutoMapped = ReturnResult.Sum(s => s.Hotel_AutoMapped); //MappingData.Where(x => x.MappingFor == "Product" && x.Status == "AUTOMAPPED").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.Hotel_MannualMapped = ReturnResult.Sum(s => s.Hotel_MannualMapped); //MappingData.Where(x => x.MappingFor == "Product" && x.Status == "MAPPED").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.Hotel_ReviewMapped = ReturnResult.Sum(s => s.Hotel_ReviewMapped); //MappingData.Where(x => x.MappingFor == "Product" && x.Status == "REVIEW").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.Hotel_Unmapped = ReturnResult.Sum(s => s.Hotel_Unmapped); //MappingData.Where(x => x.MappingFor == "Product" && x.Status == "UNMAPPED").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.HotelTotal = GrandTotal.Hotel_AutoMapped + GrandTotal.Hotel_MannualMapped + GrandTotal.Hotel_ReviewMapped + GrandTotal.Hotel_Unmapped; //ReturnResult.Sum(s => s.HotelTotal); ;
                         if (GrandTotal.HotelTotal > 0)
                         {
                             GrandTotal.Hotel_CompletePercentage = Math.Round((Convert.ToDecimal(GrandTotal.Hotel_AutoMapped + GrandTotal.Hotel_MannualMapped) / Convert.ToDecimal(GrandTotal.HotelTotal) * Convert.ToDecimal(100)), 2);
@@ -7943,12 +7943,12 @@ namespace DataLayer
                         GrandTotal.AvaialbleFromSupplier = MappingData.Where(w => w.MappingFor == "HotelRoom").Sum(s => s.TotalCount) ?? 0;
                         GrandTotal.HotelsMapped = (MappingData.Where(x => x.MappingFor == "Product" && x.Status == "AUTOMAPPED").Sum(s => s.TotalCount) ?? 0) + (MappingData.Where(x => x.MappingFor == "Product" && x.Status == "MAPPED").Sum(s => s.TotalCount) ?? 0);
                         GrandTotal.TotalEligibleRoom = eligibleRooms.Sum(s => s.TotalEligibleRooms);
-                        GrandTotal.Room_AutoMapped = MappingData.Where(x => x.MappingFor == "HotelRoom" && x.Status == "AUTOMAPPED").Sum(x => x.TotalCount) ?? 0;
-                        GrandTotal.Room_MannualMapped = MappingData.Where(x => x.MappingFor == "HotelRoom" && x.Status == "MAPPED").Sum(x => x.TotalCount) ?? 0;
-                        GrandTotal.Room_ReviewMapped = MappingData.Where(x => x.MappingFor == "HotelRoom" && x.Status == "REVIEW").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.Room_AutoMapped = ReturnResult.Sum(s => s.Room_AutoMapped); //MappingData.Where(x => x.MappingFor == "HotelRoom" && x.Status == "AUTOMAPPED").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.Room_MannualMapped = ReturnResult.Sum(s => s.Room_MannualMapped); //MappingData.Where(x => x.MappingFor == "HotelRoom" && x.Status == "MAPPED").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.Room_ReviewMapped = ReturnResult.Sum(s => s.Room_ReviewMapped); //MappingData.Where(x => x.MappingFor == "HotelRoom" && x.Status == "REVIEW").Sum(x => x.TotalCount) ?? 0;
                         GrandTotal.Room_Add = probableRoomType.Sum(s => s.Totalcount);
-                        GrandTotal.Room_Unmapped = MappingData.Where(x => x.MappingFor == "HotelRoom" && x.Status == "UNMAPPED").Sum(x => x.TotalCount) ?? 0;
-                        GrandTotal.RoomTotal = ReturnResult.Sum(s => s.RoomTotal); ;
+                        GrandTotal.Room_Unmapped = ReturnResult.Sum(s => s.Room_Unmapped); //MappingData.Where(x => x.MappingFor == "HotelRoom" && x.Status == "UNMAPPED").Sum(x => x.TotalCount) ?? 0;
+                        GrandTotal.RoomTotal = GrandTotal.Room_AutoMapped + GrandTotal.Room_MannualMapped + GrandTotal.Room_ReviewMapped + GrandTotal.Room_Unmapped; //ReturnResult.Sum(s => s.RoomTotal); ;
 
                         if (GrandTotal.RoomTotal > 0)
                         {
