@@ -2945,7 +2945,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var FileRecord = (from a in context.SupplierImportFileDetails
-                                      where a.SupplierImportFile_Id == obj.SupplierImportFile_Id && a.STATUS == "UPLOADED" || a.STATUS == "SCHEDULED" || a.STATUS=="RESUMED"
+                                      where a.SupplierImportFile_Id == obj.SupplierImportFile_Id && a.STATUS == "UPLOADED" || a.STATUS == "SCHEDULED" || a.STATUS == "RESUMED"
                                       select a).FirstOrDefault();
 
                     if (FileRecord != null)
@@ -3113,6 +3113,40 @@ namespace DataLayer
                         }
 
                         context.SaveChanges();
+                    }
+                }
+                return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Status Updated Successfully" };
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while updating supplier import details status", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+
+        }
+
+
+        public DataContracts.DC_Message UpdateSupplierImportFileDetailsFromNewToUploaded(DataContracts.UploadStaticData.DC_SupplierImportFileDetails RQ)
+        {
+            DataContracts.DC_Message dc = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+
+                    if (RQ != null)
+                    {
+                        StringBuilder sbUpdateSRTMStatus = new StringBuilder();
+
+
+                        sbUpdateSRTMStatus.Clear();
+                        sbUpdateSRTMStatus.Append(" UPDATE SupplierImportFileDetails SET STATUS = 'UPLOADED' where Supplier_Id = '" + RQ.Supplier_Id + "'");
+                        sbUpdateSRTMStatus.Append(" and Entity='" + RQ.Entity + "' and IsActive = 1 and STATUS = '" + RQ.STATUS + "';");
+
+                        if (sbUpdateSRTMStatus.Length > 0)
+                        {
+                            try { context.Database.ExecuteSqlCommand(sbUpdateSRTMStatus.ToString()); } catch (Exception ex) { }
+                        }
                     }
                 }
                 return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Status Updated Successfully" };
