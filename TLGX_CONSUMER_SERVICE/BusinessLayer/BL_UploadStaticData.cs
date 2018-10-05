@@ -148,6 +148,7 @@ namespace BusinessLayer
                 return objBL.UpdateStaticDataFileDetailStatus(obj);
             }
         }
+       
 
         #endregion
 
@@ -335,6 +336,14 @@ namespace BusinessLayer
             using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
             {
                 return objBL.UpdateSupplierImportFileDetails(obj);
+            }
+        }
+
+        public DataContracts.DC_Message UpdateSupplierImportFileDetailsFromNewToUploaded(DataContracts.UploadStaticData.DC_SupplierImportFileDetails obj)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.UpdateSupplierImportFileDetailsFromNewToUploaded(obj);
             }
         }
         #endregion
