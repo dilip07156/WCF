@@ -31,5 +31,7 @@ namespace DataLayer
         public string CountryCode { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
+        public Nullable<int> KeyNo { get; set; }
+        public Nullable<int> RankNo { get; set; }
     }
 }

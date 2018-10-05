@@ -54,6 +54,7 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Country Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
         public List<DataContracts.Masters.DC_Country> GetCountryMaster(DataContracts.Masters.DC_Country_Search_RQ RQ)
         {
             try
@@ -81,6 +82,27 @@ namespace DataLayer
                     {
                         search = from a in search
                                  where a.Name.StartsWith(RQ.Country_Name)
+                                 select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.RegionCode))
+                    {
+                        search = from a in search
+                                 where a.RegionCode.StartsWith(RQ.RegionCode)
+                                 select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.Key))
+                    {
+                        search = from a in search
+                                 where a.Key.StartsWith(RQ.Key)
+                                 select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.Rank))
+                    {
+                        search = from a in search
+                                 where a.Rank.StartsWith(RQ.Rank)
                                  select a;
                     }
 
@@ -121,7 +143,13 @@ namespace DataLayer
                                      WMO = a.WMO,
                                      TotalRecords = total,
                                      Latitude = a.Latitude,
-                                     Longitude = a.Longitude
+                                     Longitude = a.Longitude,
+                                     RegionCode = a.RegionCode,
+                                     RegionName = a.RegionName,
+                                     Key = a.Key,
+                                     Rank = a.Rank,
+                                     Priority = a.Priority
+
                                  };
 
                     return result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
@@ -133,6 +161,77 @@ namespace DataLayer
             }
         }
 
+        //public List<DataContracts.Masters.DC_Field> GetFields(DataContracts.Masters.DC_Field_Search_RQ RQ)
+        //{
+        //    try
+        //    {
+        //        using (ConsumerEntities context = new ConsumerEntities())
+        //        {
+        //            var search = from c in context.m_CountryMaster
+        //                         select c;
+
+        //            if (RQ.RegionCode != null)
+        //            {
+        //                search = from a in search
+        //                         where a.RegionCode == RQ.RegionCode
+        //                         select a;
+        //            }
+
+
+        //            int total = search.Count();
+        //            //int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
+
+        //            var result = from a in search
+        //                         select new DataContracts.Masters.DC_Field
+        //                         {
+        //                             Name = a.Name,
+        //                             Code = a.Code,
+        //                             Country_Id = a.Country_Id,
+        //                             Create_Date = a.Create_Date,
+        //                             Create_User = a.Create_User,
+        //                             Dial = a.Dial,
+        //                             DS = a.DS,
+        //                             Edit_Date = a.Edit_Date,
+        //                             Edit_User = a.Edit_User,
+        //                             GooglePlaceID = a.GooglePlaceID,
+        //                             ISO3166_1_Alpha_2 = a.ISO3166_1_Alpha_2,
+        //                             ISO3166_1_Alpha_3 = a.ISO3166_1_Alpha_3,
+        //                             ISO3166_1_Capital = a.ISO3166_1_Capital,
+        //                             ISO3166_1_Continent = a.ISO3166_1_Continent,
+        //                             ISO3166_1_EDGAR = a.ISO3166_1_EDGAR,
+        //                             ISO3166_1_Geoname_ID = a.ISO3166_1_Geoname_ID,
+        //                             ISO3166_1_ITU = a.ISO3166_1_ITU,
+        //                             ISO3166_1_Languages = a.ISO3166_1_Languages,
+        //                             ISO3166_1_M49 = a.ISO3166_1_M49,
+        //                             ISO3166_1_TLD = a.ISO3166_1_TLD,
+        //                             ISO4217_currency_alphabetic_code = a.ISO4217_currency_alphabetic_code,
+        //                             ISO4217_currency_country_name = a.ISO4217_currency_country_name,
+        //                             ISO4217_currency_minor_unit = a.ISO4217_currency_minor_unit,
+        //                             ISO4217_currency_name = a.ISO4217_currency_name,
+        //                             ISO4217_currency_numeric_code = a.ISO4217_currency_numeric_code,
+        //                             ISOofficial_name_en = a.ISOofficial_name_en,
+        //                             MARC = a.MARC,
+        //                             Status = a.Status,
+        //                             WMO = a.WMO,
+        //                             TotalRecords = total,
+        //                             Latitude = a.Latitude,
+        //                             Longitude = a.Longitude,
+        //                             RegionCode = a.RegionCode,
+        //                             RegionName = a.RegionName,
+        //                             Key = a.Key,
+        //                             Rank = a.Rank,
+        //                             Priority = a.Priority
+
+        //                         };
+
+        //            return result.OrderBy(p => p.Name).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Country Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+        //    }
+        //}
 
         public DC_Message AddUpdateCountryMaster(DataContracts.Masters.DC_Country param)
         {
@@ -157,6 +256,13 @@ namespace DataLayer
                         objNew.Name = param.Name;
                         objNew.Code = param.Code;
                         objNew.Dial = param.Dial;
+
+                        objNew.RegionCode = param.RegionCode;
+                        objNew.RegionName = param.RegionName;
+                        objNew.Key = param.Key;
+                        objNew.Rank = param.Rank;
+                        objNew.Priority = param.Priority;
+
                         objNew.DS = param.DS;
                         objNew.Create_Date = param.Create_Date;
                         objNew.Create_User = param.Create_User;
@@ -193,6 +299,13 @@ namespace DataLayer
                             search.Name = param.Name;
                             search.Code = param.Code;
                             search.Dial = param.Dial;
+
+                            search.RegionName = param.RegionName;
+                            search.RegionCode = param.RegionCode;
+                            search.Key = param.Key;
+                            search.Rank = param.Rank;
+                            search.Priority = param.Priority;
+
                             search.DS = param.DS;
                             search.Edit_Date = param.Edit_Date;
                             search.Edit_User = param.Edit_User;
@@ -742,16 +855,19 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = from c in context.m_CityMaster
+
+                    context.Database.CommandTimeout = 0;
+
+                    var search = from c in context.m_CityMaster.AsNoTracking()
                                  select c;
 
-                    var searchHotel = from h in context.Accommodation
+                    var searchHotel = from h in context.Accommodation.AsNoTracking()
                                       select h;
 
-                    var searchActivity = from ac in context.Activity_Flavour
+                    var searchActivity = from ac in context.Activity_Flavour.AsNoTracking()
                                          select ac;
 
-                    var searchSupplierCity = from ct in context.m_CityMapping
+                    var searchSupplierCity = from ct in context.m_CityMapping.AsNoTracking()
                                              select ct;
 
                     if (RQ.Country_Id != null)
@@ -768,10 +884,9 @@ namespace DataLayer
                                          where ac.Country_Id == RQ.Country_Id
                                          select ac;
 
-                        searchSupplierCity = from ct in context.m_CityMapping
+                        searchSupplierCity = from ct in searchSupplierCity
                                              where ct.Country_Id == RQ.Country_Id
                                              select ct;
-
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.Country_Name))
@@ -851,11 +966,9 @@ namespace DataLayer
                                                 group h by h.City_Id into grp
                                                 select new
                                                 {
-                                                    City_Id = grp.Key ?? Guid.Empty,
-                                                    SCTCount = grp.Count(x => x.City_Id != null)
+                                                    City_Id = grp.Key,
+                                                    SCTCount = grp.Count()
                                                 }).ToList();
-
-
 
                     var result = from a in search
                                  select new DataContracts.Masters.DC_City
@@ -913,7 +1026,7 @@ namespace DataLayer
                                           Longitude = a.Longitude,
                                           TotalHotelRecords = (dlst0 == null ? 0 : dlst0.Count),
                                           TotalAttractionsRecords = (dlstAct == null ? 0 : dlstAct.ACTCount),
-                                          TotalSupplierCityRecords = (dlst == null ? 0 : dlst.SCTCount)
+                                          TotalSupplierCityRecords = (dlst == null ? 0 : dlst.SCTCount) //context.m_CityMapping.AsNoTracking().Where(w => w.City_Id == a.City_Id).Count() //
                                       }).ToList();
 
                     return returnList;

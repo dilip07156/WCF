@@ -1743,6 +1743,8 @@
           <Property Name="Google_PlaceId" Type="nvarchar" MaxLength="255" />
           <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
           <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="KeyNo" Type="int" />
+          <Property Name="RankNo" Type="int" />
         </EntityType>
         <EntityType Name="m_CountryMapping">
           <Key>
@@ -1809,6 +1811,11 @@
           <Property Name="GooglePlaceID" Type="nvarchar" MaxLength="255" />
           <Property Name="Latitude" Type="nvarchar" MaxLength="255" />
           <Property Name="Longitude" Type="nvarchar" MaxLength="255" />
+          <Property Name="RegionName" Type="varchar" MaxLength="50" />
+          <Property Name="RegionCode" Type="varchar" MaxLength="50" />
+          <Property Name="Key" Type="varchar" MaxLength="50" />
+          <Property Name="Rank" Type="varchar" MaxLength="50" />
+          <Property Name="Priority" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="m_EntityType">
           <Key>
@@ -2191,7 +2198,7 @@
           <Property Name="CityCode" Type="nvarchar" MaxLength="150" />
           <Property Name="CityName" Type="nvarchar" MaxLength="150" />
           <Property Name="ActivityId" Type="nvarchar" MaxLength="150" />
-          <Property Name="FullResponse" Type="text" />
+          <Property Name="FullResponse" Type="nvarchar(max)" />
           <Property Name="ResponseFormat" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="CreatedUser" Type="nvarchar" MaxLength="250" />
@@ -3043,7 +3050,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="m_CityArea" EntityType="ConsumerModel.m_CityArea" />
           <EntitySet Name="m_CityAreaLocation" EntityType="ConsumerModel.m_CityAreaLocation" />
           <EntitySet Name="m_CityMaster" EntityType="ConsumerModel.m_CityMaster" />
-          <EntitySet Name="m_CountryMaster" EntityType="ConsumerModel.m_CountryMaster" />
           <EntitySet Name="m_States" EntityType="ConsumerModel.m_States" />
           <EntitySet Name="GoogleGeoCodes" EntityType="ConsumerModel.GoogleGeoCode" />
           <EntitySet Name="m_EntityType" EntityType="ConsumerModel.m_EntityType" />
@@ -3163,6 +3169,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
             <Parameter Name="Supplier_Id" Mode="In" Type="Guid" />
           </FunctionImport>
           <EntitySet Name="Accommodation_SupplierRoomTypeMapping_Values" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping_Values" />
+          <EntitySet Name="m_CountryMaster" EntityType="ConsumerModel.m_CountryMaster" />
 
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
@@ -3749,42 +3756,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="CountryCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="m_CountryMaster">
-          <Key>
-            <PropertyRef Name="Country_Id" />
-          </Key>
-          <Property Name="Country_Id" Type="Guid" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISOofficial_name_en" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISO3166_1_Alpha_2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISO3166_1_Alpha_3" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISO3166_1_M49" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISO3166_1_ITU" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="MARC" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="WMO" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="DS" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Dial" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISO4217_currency_alphabetic_code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISO4217_currency_country_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISO4217_currency_minor_unit" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISO4217_currency_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISO4217_currency_numeric_code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISO3166_1_Capital" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISO3166_1_Continent" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISO3166_1_TLD" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISO3166_1_Languages" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISO3166_1_Geoname_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ISO3166_1_EDGAR" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="GooglePlaceID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="KeyNo" Type="Int32" />
+          <Property Name="RankNo" Type="Int32" />
         </EntityType>
         <EntityType Name="m_States">
           <Key>
@@ -5034,7 +5007,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="CityCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="CityName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="ActivityId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="FullResponse" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="FullResponse" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ResponseFormat" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CreatedUser" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
@@ -5939,6 +5912,47 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="SystemEditDate" Type="DateTime" Precision="3" />
           <Property Name="UserEditDate" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="m_CountryMaster">
+          <Key>
+            <PropertyRef Name="Country_Id" />
+          </Key>
+          <Property Name="Country_Id" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISOofficial_name_en" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISO3166_1_Alpha_2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISO3166_1_Alpha_3" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISO3166_1_M49" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISO3166_1_ITU" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="MARC" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WMO" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DS" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Dial" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISO4217_currency_alphabetic_code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISO4217_currency_country_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISO4217_currency_minor_unit" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISO4217_currency_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISO4217_currency_numeric_code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISO3166_1_Capital" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISO3166_1_Continent" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISO3166_1_TLD" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISO3166_1_Languages" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISO3166_1_Geoname_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ISO3166_1_EDGAR" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="GooglePlaceID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="RegionName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RegionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Key" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Rank" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Priority" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6507,6 +6521,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="m_CityMaster">
             <EntityTypeMapping TypeName="ConsumerModel.m_CityMaster">
               <MappingFragment StoreEntitySet="m_CityMaster">
+                <ScalarProperty Name="RankNo" ColumnName="RankNo" />
+                <ScalarProperty Name="KeyNo" ColumnName="KeyNo" />
                 <ScalarProperty Name="Longitude" ColumnName="Longitude" />
                 <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
@@ -6524,43 +6540,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="City_Id" ColumnName="City_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="m_CountryMaster">
-            <EntityTypeMapping TypeName="ConsumerModel.m_CountryMaster">
-              <MappingFragment StoreEntitySet="m_CountryMaster">
-                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
-                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
-                <ScalarProperty Name="GooglePlaceID" ColumnName="GooglePlaceID" />
-                <ScalarProperty Name="ISO3166_1_EDGAR" ColumnName="ISO3166-1-EDGAR" />
-                <ScalarProperty Name="ISO3166_1_Geoname_ID" ColumnName="ISO3166-1-Geoname ID" />
-                <ScalarProperty Name="ISO3166_1_Languages" ColumnName="ISO3166-1-Languages" />
-                <ScalarProperty Name="ISO3166_1_TLD" ColumnName="ISO3166-1-TLD" />
-                <ScalarProperty Name="ISO3166_1_Continent" ColumnName="ISO3166-1-Continent" />
-                <ScalarProperty Name="ISO3166_1_Capital" ColumnName="ISO3166-1-Capital" />
-                <ScalarProperty Name="ISO4217_currency_numeric_code" ColumnName="ISO4217-currency_numeric_code" />
-                <ScalarProperty Name="ISO4217_currency_name" ColumnName="ISO4217-currency_name" />
-                <ScalarProperty Name="ISO4217_currency_minor_unit" ColumnName="ISO4217-currency_minor_unit" />
-                <ScalarProperty Name="ISO4217_currency_country_name" ColumnName="ISO4217-currency_country_name" />
-                <ScalarProperty Name="ISO4217_currency_alphabetic_code" ColumnName="ISO4217-currency_alphabetic_code" />
-                <ScalarProperty Name="Dial" ColumnName="Dial" />
-                <ScalarProperty Name="DS" ColumnName="DS" />
-                <ScalarProperty Name="WMO" ColumnName="WMO" />
-                <ScalarProperty Name="MARC" ColumnName="MARC" />
-                <ScalarProperty Name="ISO3166_1_ITU" ColumnName="ISO3166-1-ITU" />
-                <ScalarProperty Name="ISO3166_1_M49" ColumnName="ISO3166-1-M49" />
-                <ScalarProperty Name="ISO3166_1_Alpha_3" ColumnName="ISO3166-1-Alpha-3" />
-                <ScalarProperty Name="ISO3166_1_Alpha_2" ColumnName="ISO3166-1-Alpha-2" />
-                <ScalarProperty Name="ISOofficial_name_en" ColumnName="ISOofficial_name_en" />
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8819,6 +8798,48 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
                 <ScalarProperty Name="MapId" ColumnName="MapId" />
                 <ScalarProperty Name="Accommodation_SupplierRoomTypeMapping_Id" ColumnName="Accommodation_SupplierRoomTypeMapping_Id" />
                 <ScalarProperty Name="Accommodation_SupplierRoomTypeMapping_Value_Id" ColumnName="Accommodation_SupplierRoomTypeMapping_Value_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="m_CountryMaster">
+            <EntityTypeMapping TypeName="ConsumerModel.m_CountryMaster">
+              <MappingFragment StoreEntitySet="m_CountryMaster">
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="Rank" ColumnName="Rank" />
+                <ScalarProperty Name="Key" ColumnName="Key" />
+                <ScalarProperty Name="RegionCode" ColumnName="RegionCode" />
+                <ScalarProperty Name="RegionName" ColumnName="RegionName" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="GooglePlaceID" ColumnName="GooglePlaceID" />
+                <ScalarProperty Name="ISO3166_1_EDGAR" ColumnName="ISO3166-1-EDGAR" />
+                <ScalarProperty Name="ISO3166_1_Geoname_ID" ColumnName="ISO3166-1-Geoname ID" />
+                <ScalarProperty Name="ISO3166_1_Languages" ColumnName="ISO3166-1-Languages" />
+                <ScalarProperty Name="ISO3166_1_TLD" ColumnName="ISO3166-1-TLD" />
+                <ScalarProperty Name="ISO3166_1_Continent" ColumnName="ISO3166-1-Continent" />
+                <ScalarProperty Name="ISO3166_1_Capital" ColumnName="ISO3166-1-Capital" />
+                <ScalarProperty Name="ISO4217_currency_numeric_code" ColumnName="ISO4217-currency_numeric_code" />
+                <ScalarProperty Name="ISO4217_currency_name" ColumnName="ISO4217-currency_name" />
+                <ScalarProperty Name="ISO4217_currency_minor_unit" ColumnName="ISO4217-currency_minor_unit" />
+                <ScalarProperty Name="ISO4217_currency_country_name" ColumnName="ISO4217-currency_country_name" />
+                <ScalarProperty Name="ISO4217_currency_alphabetic_code" ColumnName="ISO4217-currency_alphabetic_code" />
+                <ScalarProperty Name="Dial" ColumnName="Dial" />
+                <ScalarProperty Name="DS" ColumnName="DS" />
+                <ScalarProperty Name="WMO" ColumnName="WMO" />
+                <ScalarProperty Name="MARC" ColumnName="MARC" />
+                <ScalarProperty Name="ISO3166_1_ITU" ColumnName="ISO3166-1-ITU" />
+                <ScalarProperty Name="ISO3166_1_M49" ColumnName="ISO3166-1-M49" />
+                <ScalarProperty Name="ISO3166_1_Alpha_3" ColumnName="ISO3166-1-Alpha-3" />
+                <ScalarProperty Name="ISO3166_1_Alpha_2" ColumnName="ISO3166-1-Alpha-2" />
+                <ScalarProperty Name="ISOofficial_name_en" ColumnName="ISOofficial_name_en" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
