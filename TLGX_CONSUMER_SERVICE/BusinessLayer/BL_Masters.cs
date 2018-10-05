@@ -33,6 +33,7 @@ namespace BusinessLayer
                 return obj.GetCountryMaster(RQ);
             }
         }
+
         public DC_Message AddUpdateCountryMaster(DataContracts.Masters.DC_Country param)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
@@ -126,7 +127,7 @@ namespace BusinessLayer
         public List<DataContracts.Masters.DC_Master_State> GetStatesByCountry(string Country_Id)
         {
             Guid gCountry_Id;
-            if(Guid.TryParse(Country_Id, out gCountry_Id))
+            if (Guid.TryParse(Country_Id, out gCountry_Id))
             {
                 using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
                 {
