@@ -106,6 +106,13 @@ namespace DataLayer
                                  select a;
                     }
 
+                    if (!string.IsNullOrWhiteSpace(RQ.Priority))
+                    {
+                        search = from a in search
+                                 where a.Priority.StartsWith(RQ.Priority)
+                                 select a;
+                    }
+
                     int total = search.Count();
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
@@ -924,6 +931,27 @@ namespace DataLayer
                                  select a;
                     }
 
+                    if (!string.IsNullOrWhiteSpace(RQ.Key))
+                    {
+                        search = from a in search
+                                 where a.Key.Contains(RQ.Key)
+                                 select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.Rank))
+                    {
+                        search = from a in search
+                                 where a.Rank.Contains(RQ.Rank)
+                                 select a;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(RQ.Priority))
+                    {
+                        search = from a in search
+                                 where a.Priority.Contains(RQ.Priority)
+                                 select a;
+                    }
+
                     if (!string.IsNullOrWhiteSpace(RQ.AlphaPageIndex))
                     {
                         if (RQ.AlphaPageIndex != "All")
@@ -989,8 +1017,10 @@ namespace DataLayer
                                      Status = a.Status,
                                      TotalRecords = total,
                                      Latitude = a.Latitude,
-                                     Longitude = a.Longitude
-
+                                     Longitude = a.Longitude,
+                                     Key = a.Key,
+                                     Rank = a.Rank,
+                                     Priority = a.Priority
                                  };
 
                     List<DC_City> ret = new List<DC_City>();
@@ -1024,6 +1054,9 @@ namespace DataLayer
                                           TotalRecords = total,
                                           Latitude = a.Latitude,
                                           Longitude = a.Longitude,
+                                          Key = a.Key,
+                                          Rank = a.Rank,
+                                          Priority = a.Priority,
                                           TotalHotelRecords = (dlst0 == null ? 0 : dlst0.Count),
                                           TotalAttractionsRecords = (dlstAct == null ? 0 : dlstAct.ACTCount),
                                           TotalSupplierCityRecords = (dlst == null ? 0 : dlst.SCTCount) //context.m_CityMapping.AsNoTracking().Where(w => w.City_Id == a.City_Id).Count() //
@@ -1188,6 +1221,9 @@ namespace DataLayer
                         objNew.Create_User = param.Create_User;
                         objNew.Google_PlaceId = param.Google_PlaceId;
                         objNew.Name = param.Name;
+                        objNew.Key = param.Key;
+                        objNew.Rank = param.Rank;
+                        objNew.Priority = param.Priority;
                         objNew.StateCode = param.StateCode;
                         objNew.StateName = param.StateName;
                         objNew.State_Id = param.State_Id;
@@ -1240,6 +1276,9 @@ namespace DataLayer
                         search.Edit_User = param.Edit_User;
                         search.Google_PlaceId = param.Google_PlaceId;
                         search.Name = param.Name;
+                        search.Key = param.Key;
+                        search.Rank = param.Rank;
+                        search.Priority = param.Priority;
                         search.StateCode = param.StateCode;
                         search.StateName = param.StateName;
                         //search.State_Id = param.State_Id;

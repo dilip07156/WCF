@@ -18,6 +18,7 @@ namespace DataLayer
         public string Name { get; set; }
         public string Code { get; set; }
         public string CountryName { get; set; }
+        public string CountryCode { get; set; }
         public System.Guid Country_Id { get; set; }
         public Nullable<System.DateTime> Create_Date { get; set; }
         public string Create_User { get; set; }
@@ -28,10 +29,10 @@ namespace DataLayer
         public string StateName { get; set; }
         public string StateCode { get; set; }
         public string Google_PlaceId { get; set; }
-        public string CountryCode { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
-        public Nullable<int> KeyNo { get; set; }
-        public Nullable<int> RankNo { get; set; }
+        public string Key { get; set; }
+        public string Rank { get; set; }
+        public string Priority { get; set; }
     }
 }
