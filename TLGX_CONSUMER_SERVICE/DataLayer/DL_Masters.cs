@@ -88,28 +88,28 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(RQ.RegionCode))
                     {
                         search = from a in search
-                                 where a.RegionCode.StartsWith(RQ.RegionCode)
+                                 where a.RegionCode == RQ.RegionCode
                                  select a;
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.Key))
                     {
                         search = from a in search
-                                 where a.Key.StartsWith(RQ.Key)
+                                 where a.Key == RQ.Key
                                  select a;
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.Rank))
                     {
                         search = from a in search
-                                 where a.Rank.StartsWith(RQ.Rank)
+                                 where a.Rank == RQ.Rank
                                  select a;
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.Priority))
                     {
                         search = from a in search
-                                 where a.Priority.StartsWith(RQ.Priority)
+                                 where a.Priority == RQ.Priority
                                  select a;
                     }
 
@@ -934,21 +934,21 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(RQ.Key))
                     {
                         search = from a in search
-                                 where a.Key.Contains(RQ.Key)
+                                 where a.Key == RQ.Key
                                  select a;
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.Rank))
                     {
                         search = from a in search
-                                 where a.Rank.Contains(RQ.Rank)
+                                 where a.Rank == RQ.Rank
                                  select a;
                     }
 
                     if (!string.IsNullOrWhiteSpace(RQ.Priority))
                     {
                         search = from a in search
-                                 where a.Priority.Contains(RQ.Priority)
+                                 where a.Priority == RQ.Priority
                                  select a;
                     }
 
