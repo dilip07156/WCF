@@ -38,6 +38,16 @@ namespace DataContracts.Masters
 
         [DataMember]
         public string Longitude { get; set; }
+
+        [DataMember]
+        public string Key { get; set; }
+
+        [DataMember]
+        public string Rank { get; set; }
+
+        [DataMember]
+        public string Priority { get; set; }
+
         [DataMember]
         public Guid City_Id
         {
@@ -340,6 +350,15 @@ namespace DataContracts.Masters
 
         [DataMember]
         public string Longitude { get; set; }
+
+        [DataMember]
+        public string Key { get; set; }
+
+        [DataMember]
+        public string Rank { get; set; }
+
+        [DataMember]
+        public string Priority { get; set; }
 
         [DataMember]
         public Guid? Country_Id

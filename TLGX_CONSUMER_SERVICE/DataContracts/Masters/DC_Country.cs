@@ -558,6 +558,9 @@ namespace DataContracts.Masters
         public string Key { get; set; }
 
         [DataMember]
+        public string Priority { get; set; }
+
+        [DataMember]
         public string Country_Code
         {
             get
