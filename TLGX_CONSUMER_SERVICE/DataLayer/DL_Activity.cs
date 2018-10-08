@@ -4893,5 +4893,45 @@ namespace DataLayer
         }
         #endregion
 
+
+        #region Activity MediaAttributes
+        public bool AddActivityMediaAttributes(DataContracts.Masters.DC_Activity_MediaAttributes AM)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    Activity_MediaAttributes objNew = new Activity_MediaAttributes();
+
+                    if (AM.Activity_MediaAttributes_Id == null)
+                    {
+                        AM.Activity_MediaAttributes_Id = Guid.NewGuid();
+                    }
+
+                    objNew.Activity_MediaAttributes_Id = AM.Activity_MediaAttributes_Id;
+                    objNew.Activity_Media_Id = AM.Activity_Media_Id;
+                    objNew.AttributeType = AM.AttributeType;
+                    objNew.AttributeValue = AM.AttributeValue;
+                    objNew.Create_Date = AM.Create_Date;
+                    objNew.Create_User = AM.Create_User;
+                    objNew.Status = AM.Status;
+                    objNew.IsActive = AM.IsActive;
+                    objNew.IsSystemAttribute = AM.IsSystemAttribute;
+
+                    context.Activity_MediaAttributes.Add(objNew);
+                    context.SaveChanges();
+
+                    objNew = null;
+
+                    return true;
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding accomodation media attributes", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
+
     }
 }

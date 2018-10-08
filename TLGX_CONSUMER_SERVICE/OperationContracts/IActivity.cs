@@ -314,5 +314,13 @@ namespace OperationContracts
         IList<DC_ActivityProductDetailsReport> GetActivitiesProductDetailsReport(DC_ActivityCountStats ReportType);
         #endregion
 
+
+        #region Activity_MediaAttributeFrom_CallingFromKTR
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "AddActivity/MediaAttributes", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        bool AddActivityMediaAttributes(DataContracts.Masters.DC_Activity_MediaAttributes AM);
+        #endregion
+
     }
 }

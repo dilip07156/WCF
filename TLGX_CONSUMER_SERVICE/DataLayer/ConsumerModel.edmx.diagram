@@ -72,15 +72,15 @@
       <Diagram DiagramId="126ae2806a9947d181b4fd5044a5e5aa" Name="Masters" >
         <EntityTypeShape EntityType="ConsumerModel.m_CityArea" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.m_CityAreaLocation" Width="1.5" PointX="2.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.m_CityMaster" Width="1.5" PointX="4.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.m_States" Width="1.5" PointX="2.75" PointY="5.75" />
-        <EntityTypeShape EntityType="ConsumerModel.m_masterattribute" Width="1.5" PointX="7.375" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.m_masterattributevalue" Width="1.5" PointX="7.375" PointY="4.75" />
-        <EntityTypeShape EntityType="ConsumerModel.m_Statuses" Width="1.5" PointX="7.375" PointY="8.75" />
+        <EntityTypeShape EntityType="ConsumerModel.m_States" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.m_masterattribute" Width="1.5" PointX="6.625" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.m_masterattributevalue" Width="1.5" PointX="0.625" PointY="3.875" />
+        <EntityTypeShape EntityType="ConsumerModel.m_Statuses" Width="1.5" PointX="2.75" PointY="4" />
         <EntityTypeShape EntityType="ConsumerModel.m_keyword" Width="1.5" PointX="11.375" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.m_keyword_alias" Width="1.5" PointX="3.375" PointY="11.75" />
-        <EntityTypeShape EntityType="ConsumerModel.m_PortMaster" Width="1.5" PointX="9.125" PointY="4.5" />
-        <EntityTypeShape EntityType="ConsumerModel.m_CountryMaster" Width="1.5" PointX="0.75" PointY="9.75" />
+        <EntityTypeShape EntityType="ConsumerModel.m_keyword_alias" Width="1.5" PointX="4.875" PointY="4.125" />
+        <EntityTypeShape EntityType="ConsumerModel.m_PortMaster" Width="1.5" PointX="8.625" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.m_CityMaster" Width="1.5" PointX="6.75" PointY="3.375" />
+        <EntityTypeShape EntityType="ConsumerModel.m_CountryMaster" Width="1.5" PointX="13.25" PointY="0.75" />
       </Diagram>
       <Diagram DiagramId="863bf8af439c4e9c9eddc1d7026c2f57" Name="GeoCode" >
         <EntityTypeShape EntityType="ConsumerModel.GoogleGeoCode" Width="1.5" PointX="0.75" PointY="0.75" />
@@ -165,6 +165,7 @@
         <EntityTypeShape EntityType="ConsumerModel.Activity_DeparturePoints" Width="1.5" PointX="13.75" PointY="17.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierCityDepartureCode" Width="1.5" PointX="0.75" PointY="19.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_Flavour" Width="1.5" PointX="3.375" PointY="19.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_MediaAttributes" Width="1.5" PointX="19.375" PointY="8.75" />
       </Diagram>
       <Diagram DiagramId="28746cebad1b4c418813bb18d8ac1b56" Name="ZoneManager" ZoomLevel="109" >
         <EntityTypeShape EntityType="ConsumerModel.ZoneProduct_Mapping" Width="1.5" PointX="4.75" PointY="0.75" />
