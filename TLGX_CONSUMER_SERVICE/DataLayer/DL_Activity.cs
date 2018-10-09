@@ -2032,7 +2032,7 @@ namespace DataLayer
                     var aCA = context.Activity_ClassificationAttributes.AsQueryable();
 
                     var aDOW = context.Activity_DaysOfWeek.AsQueryable();
-                    var aMedia = context.Activity_Media.AsQueryable();
+                    var aMedia = context.Activity_Media.Select(x=>x.Activity_Flavour_Id).Distinct().AsQueryable();
 
                     bool isCAFilter = false;
                     bool isDurationFilter = false;
@@ -2068,7 +2068,7 @@ namespace DataLayer
                         if (RQ.OnlyMedia)
                         {
                             search = (from a in search
-                                      join m in aMedia on a.Activity_Flavour_Id equals m.Activity_Flavour_Id
+                                      join m in aMedia on a.Activity_Flavour_Id equals m.Value
                                       select a);
                         }
 
