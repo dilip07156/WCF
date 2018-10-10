@@ -10137,12 +10137,10 @@ namespace DataLayer
                 StringBuilder sbselect = new StringBuilder();
                 StringBuilder sbfrom = new StringBuilder();
                 StringBuilder sbwhere = new StringBuilder();
-
-
+                List<DataContracts.Mapping.DC_CountryMapping> result = new List<DataContracts.Mapping.DC_CountryMapping>();
 
                 sbfrom.Append(@" FROM m_CountryMapping CMP 
                                  LEFT JOIN m_CountryMaster CM ON CMP.Country_Id = CM.Country_Id");
-
 
                 #region Get where Clause
                 sbwhere.Append(" WHERE 1=1 ");
@@ -10178,7 +10176,7 @@ namespace DataLayer
                 skip = RQ.PageSize * RQ.PageNo;
 
                 StringBuilder sbsqlselectcount = new StringBuilder();
-                sbsqlselectcount.Append("select count(apm.Accommodation_ProductMapping_Id) ");
+                sbsqlselectcount.Append("select count(CMP.CountryMapping_Id) ");
                 sbsqlselectcount.Append(" " + sbfrom);
                 sbsqlselectcount.Append(" " + sbwhere);
 
@@ -10188,8 +10186,11 @@ namespace DataLayer
                     try { total = context.Database.SqlQuery<int>(sbsqlselectcount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
                 }
 
-                #region -- Select query
-                sbselect.Append(@"  SELECT 
+                if (total > 0)
+                {
+
+                    #region -- Select query
+                    sbselect.Append(@"  SELECT 
                                     CMP.CountryMapping_Id   AS  CountryMapping_Id, 
                                     CMP.Country_Id  AS  Country_Id,
                                     CMP.Supplier_Id  AS  Supplier_Id,
@@ -10212,54 +10213,50 @@ namespace DataLayer
                                     CMP.SupplierImportFile_Id AS  SupplierImporrtFile_Id,
                                     ISNULL(CMP.Batch, 0)  AS  Batch,
                                     CMP.ReRun_SupplierImportFile_Id  AS  ReRunSupplierImporrtFile_Id,
-                                    ISNULL(CMP.ReRun_Batch,0) AS ReRunBatch ");
-                sbselect.Append(total.ToString() + " AS  TotalRecord ");
+                                    ISNULL(CMP.ReRun_Batch,0) AS ReRunBatch,");
+                    sbselect.Append(total.ToString() + " AS  TotalRecord ");
 
-                #endregion
+                    #endregion
 
-                if (total <= skip)
-                {
-                    int PageIndex = 0;
-                    int intReminder = total % RQ.PageSize;
-                    int intQuotient = total / RQ.PageSize;
-
-                    if (intReminder > 0)
+                    if (total <= skip)
                     {
-                        PageIndex = intQuotient + 1;
+                        int PageIndex = 0;
+                        int intReminder = total % RQ.PageSize;
+                        int intQuotient = total / RQ.PageSize;
+
+                        if (intReminder > 0)
+                        {
+                            PageIndex = intQuotient + 1;
+                        }
+                        else
+                        {
+                            PageIndex = intQuotient;
+                        }
+
+                        skip = RQ.PageSize * (PageIndex - 1);
                     }
-                    else
+
+                    StringBuilder sbOrderby = new StringBuilder();
+                    sbOrderby.Append(" ORDER BY CMP.CountryName ");
+                    sbOrderby.Append(" OFFSET ");
+                    sbOrderby.Append((skip).ToString());
+                    sbOrderby.Append(" ROWS FETCH NEXT ");
+                    sbOrderby.Append(RQ.PageSize.ToString());
+                    sbOrderby.Append(" ROWS ONLY ");
+
+                    StringBuilder sbfinalQuery = new StringBuilder();
+                    sbfinalQuery.Append(sbselect + " ");
+                    sbfinalQuery.Append(" " + sbfrom + " ");
+                    sbfinalQuery.Append(" " + sbwhere + " ");
+                    sbfinalQuery.Append(" " + sbOrderby);
+
+                    using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        PageIndex = intQuotient;
+                        context.Configuration.AutoDetectChangesEnabled = false;
+                        try { result = context.Database.SqlQuery<DataContracts.Mapping.DC_CountryMapping>(sbfinalQuery.ToString()).ToList(); } catch (Exception ex) { }
                     }
-
-                    skip = RQ.PageSize * (PageIndex - 1);
-
-                    // sbsqlselect.Append(Convert.ToString(PageIndex - 1) + " As PageIndex ");
-
                 }
-                //else
-                //    sbsqlselect.Append(Convert.ToString(obj.PageNo) + " As PageIndex ");
 
-                StringBuilder sbOrderby = new StringBuilder();
-                sbOrderby.Append((skip).ToString());
-                sbOrderby.Append(" ROWS FETCH NEXT ");
-                sbOrderby.Append(RQ.PageSize.ToString());
-                sbOrderby.Append(" ROWS ONLY ");
-
-                // List<DataContracts.Mapping.DC_CountryMapping> result = new List<DataContracts.Mapping.DC_CountryMapping>();
-
-                StringBuilder sbfinalQuery = new StringBuilder();
-                sbfinalQuery.Append(sbselect + " ");
-                sbfinalQuery.Append(" " + sbfrom + " ");
-                sbfinalQuery.Append(" " + sbwhere + " ");
-                sbfinalQuery.Append(" " + sbOrderby);
-
-                List<DataContracts.Mapping.DC_CountryMapping> result = new List<DataContracts.Mapping.DC_CountryMapping>();
-                using (ConsumerEntities context = new ConsumerEntities())
-                {
-                    context.Configuration.AutoDetectChangesEnabled = false;
-                    try { result = context.Database.SqlQuery<DataContracts.Mapping.DC_CountryMapping>(sbfinalQuery.ToString()).ToList(); } catch (Exception ex) { }
-                }
                 return result;
             }
             catch (Exception e)
