@@ -17,6 +17,7 @@ using DataContracts;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.SqlClient;
+using DataContracts.ML;
 
 namespace DataLayer
 {
@@ -3141,6 +3142,7 @@ namespace DataLayer
                 {
                     return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Request message has no records." };
                 }
+                bool IsNotTrainingflag = true;
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
@@ -3150,7 +3152,8 @@ namespace DataLayer
                     string CallingUser = woc.Headers["CallingUser"];
 
                     //get all records for this supplier room record.
-                    var allaccoSuppRoomTypeMapVals = context.Accommodation_SupplierRoomTypeMapping_Values.Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == obj[0].Accommodation_SupplierRoomTypeMapping_Id).ToList();
+                    Guid _acoo_supRoomId = Guid.Parse(Convert.ToString(obj[0].Accommodation_SupplierRoomTypeMapping_Id));
+                    var allaccoSuppRoomTypeMapVals = context.Accommodation_SupplierRoomTypeMapping_Values.Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == _acoo_supRoomId).ToList();
 
                     foreach (DC_Accommodation_SupplierRoomTypeMapping_Values item in obj)
                     {
@@ -3177,6 +3180,7 @@ namespace DataLayer
                                 context.Accommodation_SupplierRoomTypeMapping_Values.Add(dc);
                             }
                         }
+                        IsNotTrainingflag = item.IsNotTraining ?? true;
                     }
 
                     if (context.ChangeTracker.HasChanges())
@@ -3216,8 +3220,20 @@ namespace DataLayer
                         }
 
                         context.SaveChanges();
+
+
                     }
 
+                    //Call Training Data To push 
+                    if (!IsNotTrainingflag)
+                    {
+                        string baseAddress = Convert.ToString(OperationContext.Current.Host.BaseAddresses[0]);
+                        string strURI = string.Format(baseAddress + System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_TrainingDataPushToAIML"] + obj[0].Accommodation_SupplierRoomTypeMapping_Id.ToString());
+                        using (DHSVCProxyAsync DHP = new DHSVCProxyAsync())
+                        {
+                            DHP.GetAsync(ProxyFor.MachingLearningDataTransfer, strURI);
+                        }
+                    }
                 }
                 return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "All Valid Records are successfully updated." };
             }
@@ -3237,12 +3253,29 @@ namespace DataLayer
                     IncomingWebRequestContext woc = WebOperationContext.Current.IncomingRequest;
                     string CallingAgent = woc.Headers["CallingAgent"];
                     string CallingUser = woc.Headers["CallingUser"];
+                    string baseAddress = Convert.ToString(OperationContext.Current.Host.BaseAddresses[0]);
+                    string strURI;
 
                     foreach (var item in obj)
                     {
                         var accoSuppRoomTypeMap = context.Accommodation_SupplierRoomTypeMapping.Find(item.Accommodation_SupplierRoomTypeMapping_Id);
                         if (accoSuppRoomTypeMap != null)
                         {
+                            //If IsNotTraining is true & system falg is true then delete else do nothing
+                            if (item.IsNotTraining)
+                            {
+                                //Calling Delete API is located
+                                strURI = string.Format(baseAddress + System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_DeleteTrainingData"] + item.Accommodation_SupplierRoomTypeMapping_Id.ToString());
+                            }
+                            else
+                            {
+                                //Sent releavent data to training system. string baseAddress = Convert.ToString(OperationContext.Current.Host.BaseAddresses[0]);
+                                strURI = string.Format(baseAddress + System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_TrainingDataPushToAIML"] + item.Accommodation_SupplierRoomTypeMapping_Id.ToString());
+                            }
+                            using (DHSVCProxyAsync DHP = new DHSVCProxyAsync())
+                            {
+                                DHP.GetAsync(ProxyFor.MachingLearningDataTransfer, strURI);
+                            }
                             accoSuppRoomTypeMap.IsNotTraining = item.IsNotTraining;
                             accoSuppRoomTypeMap.Edit_User = item.Edit_User ?? CallingUser;
                             accoSuppRoomTypeMap.Edit_Date = DateTime.Now;
@@ -3257,6 +3290,10 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating Training flag" + ex.Message, ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+
+
+
 
         public IList<DataContracts.Mapping.DC_SupplierRoomTypeAttributes> GetAttributesForAccomodationSupplierRoomTypeMapping(Guid SupplierRoomtypeMappingID)
         {
