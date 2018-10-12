@@ -1093,7 +1093,7 @@ namespace DataLayer
                     objToDelete.Transaction = Convert.ToString(Guid.NewGuid());
                     objToDelete.AccommodationSupplierRoomTypeMappingIds.Add(Convert.ToString(accommodation_SupplierRoomTypeMapping_Id));
                     object result = null;
-                    DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_Delete"], objToDelete, typeof(DataContracts.ML.DC_ML_DL_SupplierAcco_Room_Data_Delete), typeof(DC_ML_DL_SupplierAcco_Room_Data_SuccessResponse), out result);
+                    DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_Delete"], objToDelete, typeof(DataContracts.ML.DC_ML_DL_SupplierAcco_Room_Data_Delete), typeof(DC_ML_DL_SupplierAcco_Room_Data_SuccessResponse), out result,"DELETE");
                 }
             }
             catch (Exception)
