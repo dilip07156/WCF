@@ -3227,12 +3227,7 @@ namespace DataLayer
                     //Call Training Data To push 
                     if (!IsNotTrainingflag)
                     {
-                        string baseAddress = Convert.ToString(OperationContext.Current.Host.BaseAddresses[0]);
-                        string strURI = string.Format(baseAddress + System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_TrainingDataPushToAIML"] + obj[0].Accommodation_SupplierRoomTypeMapping_Id.ToString());
-                        using (DHSVCProxyAsync DHP = new DHSVCProxyAsync())
-                        {
-                            DHP.GetAsync(ProxyFor.MachingLearningDataTransfer, strURI);
-                        }
+                        DeleteOrSendTraingData(Guid.Parse(Convert.ToString(obj[0].Accommodation_SupplierRoomTypeMapping_Id)), IsNotTrainingflag);
                     }
                 }
                 return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "All Valid Records are successfully updated." };
@@ -3253,8 +3248,6 @@ namespace DataLayer
                     IncomingWebRequestContext woc = WebOperationContext.Current.IncomingRequest;
                     string CallingAgent = woc.Headers["CallingAgent"];
                     string CallingUser = woc.Headers["CallingUser"];
-                    string baseAddress = Convert.ToString(OperationContext.Current.Host.BaseAddresses[0]);
-                    string strURI;
 
                     foreach (var item in obj)
                     {
@@ -3262,20 +3255,7 @@ namespace DataLayer
                         if (accoSuppRoomTypeMap != null)
                         {
                             //If IsNotTraining is true & system falg is true then delete else do nothing
-                            if (item.IsNotTraining)
-                            {
-                                //Calling Delete API is located
-                                strURI = string.Format(baseAddress + System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_DeleteTrainingData"] + item.Accommodation_SupplierRoomTypeMapping_Id.ToString());
-                            }
-                            else
-                            {
-                                //Sent releavent data to training system. string baseAddress = Convert.ToString(OperationContext.Current.Host.BaseAddresses[0]);
-                                strURI = string.Format(baseAddress + System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_TrainingDataPushToAIML"] + item.Accommodation_SupplierRoomTypeMapping_Id.ToString());
-                            }
-                            using (DHSVCProxyAsync DHP = new DHSVCProxyAsync())
-                            {
-                                DHP.GetAsync(ProxyFor.MachingLearningDataTransfer, strURI);
-                            }
+                            DeleteOrSendTraingData(item.Accommodation_SupplierRoomTypeMapping_Id, item.IsNotTraining);
                             accoSuppRoomTypeMap.IsNotTraining = item.IsNotTraining;
                             accoSuppRoomTypeMap.Edit_User = item.Edit_User ?? CallingUser;
                             accoSuppRoomTypeMap.Edit_Date = DateTime.Now;
@@ -3292,7 +3272,26 @@ namespace DataLayer
         }
 
 
+        public void DeleteOrSendTraingData(Guid Accommodation_SupplierRoomTypeMapping_Id, bool IsNotTraining)
+        {
+            string strURI;
+            string baseAddress = Convert.ToString(OperationContext.Current.Host.BaseAddresses[0]);
 
+            if (IsNotTraining)
+            {
+                //Calling Delete API is located
+                strURI = string.Format(baseAddress + System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_DeleteTrainingData"] + Accommodation_SupplierRoomTypeMapping_Id.ToString());
+            }
+            else
+            {
+                //Sent releavent data to training system. string baseAddress = Convert.ToString(OperationContext.Current.Host.BaseAddresses[0]);
+                strURI = string.Format(baseAddress + System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_TrainingDataPushToAIML"] + Accommodation_SupplierRoomTypeMapping_Id.ToString());
+            }
+            using (DHSVCProxyAsync DHP = new DHSVCProxyAsync())
+            {
+                DHP.GetAsync(ProxyFor.MachingLearningDataTransfer, strURI);
+            }
+        }
 
 
         public IList<DataContracts.Mapping.DC_SupplierRoomTypeAttributes> GetAttributesForAccomodationSupplierRoomTypeMapping(Guid SupplierRoomtypeMappingID)

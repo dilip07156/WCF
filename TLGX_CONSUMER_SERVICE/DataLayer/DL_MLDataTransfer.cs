@@ -627,8 +627,8 @@ namespace DataLayer
                             AccoCreateUser = item.AccoCreateUser,
                             AccoEditDate = Convert.ToString(item.AccoEditDate),
                             AccoEditUser = item.AccoEditUser,
-                            SimilarityIndicator = (item.SimilarityIndicator == string.Empty ? Convert.ToBoolean(0) : Convert.ToBoolean(item.SimilarityIndicator)),
-                            SimilarityScore = Convert.ToDouble(item.SimilarityScore)
+                            SimilarityIndicator = true,
+                            SimilarityScore = 1
                         });
                     }
                     _obj.Mode = "offline";
@@ -1093,7 +1093,7 @@ namespace DataLayer
                     objToDelete.Transaction = Convert.ToString(Guid.NewGuid());
                     objToDelete.AccommodationSupplierRoomTypeMappingIds.Add(Convert.ToString(accommodation_SupplierRoomTypeMapping_Id));
                     object result = null;
-                    DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_Delete"], objToDelete, typeof(DataContracts.ML.DC_ML_DL_SupplierAcco_Room_Data_Delete), typeof(DC_ML_DL_SupplierAcco_Room_Data_SuccessResponse), out result,"DELETE");
+                    DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_Delete"], objToDelete, typeof(DataContracts.ML.DC_ML_DL_SupplierAcco_Room_Data_Delete), typeof(DC_ML_DL_SupplierAcco_Room_Data_SuccessResponse), out result, "DELETE");
                 }
             }
             catch (Exception)
@@ -1112,18 +1112,19 @@ namespace DataLayer
                 //Getting Data from DB
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var result = context.Accommodation_SupplierRoomTypeMapping.Where(r => r.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id).FirstOrDefault();
+                    var result = context.Accommodation_SupplierRoomTypeMapping.Find(accommodation_SupplierRoomTypeMapping_Id);
                     if (result != null)
                     {
                         var SupplierRoomTypeMappingValue = context.Accommodation_SupplierRoomTypeMapping_Values.Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id).ToList();
                         var accodetails = context.Accommodation.Where(a => a.Accommodation_Id == result.Accommodation_Id).FirstOrDefault();
+
                         if (SupplierRoomTypeMappingValue != null)
                         {
+                            var roominfo = context.Accommodation_RoomInfo.Where(RInfo => RInfo.Accommodation_RoomInfo_Id == result.Accommodation_RoomInfo_Id).FirstOrDefault();
                             DC_ML_DL_SupplierAcco_Room_Data_RealTime _objToSendAIML;
                             foreach (var item in SupplierRoomTypeMappingValue)
                             {
                                 //Creating Data to send AIML
-                                var roominfo = context.Accommodation_RoomInfo.Where(RInfo => RInfo.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).FirstOrDefault();
                                 _objToSendAIML = new DC_ML_DL_SupplierAcco_Room_Data_RealTime()
                                 {
                                     AccommodationSupplierRoomTypeMappingId = Convert.ToString(item.Accommodation_SupplierRoomTypeMapping_Id),
@@ -1181,6 +1182,7 @@ namespace DataLayer
                                     AccoEditDate = Convert.ToString(accodetails.Edit_Date),
                                     AccoEditUser = accodetails.Edit_User
                                 };
+
                                 //Setting SimilarityIndicator and SimilarityScore
                                 #region -- Setting SimilarityIndicator and SimilarityScore
                                 if (item.UserMappingStatus == MappingStatus.MAPPED.ToString())
@@ -1188,12 +1190,13 @@ namespace DataLayer
                                     _objToSendAIML.SimilarityIndicator = true;
                                     _objToSendAIML.SimilarityScore = 1;
                                 }
-                                else if (item.UserMappingStatus == MappingStatus.UNMAPPED.ToString() && (item.SystemMappingStatus == MappingStatus.MAPPED.ToString() || item.SystemMappingStatus == MappingStatus.AUTOMAPPED.ToString() || item.SystemMappingStatus == MappingStatus.REVIEW.ToString()))
+                                else if (item.UserMappingStatus == MappingStatus.UNMAPPED.ToString() && (item.SystemMappingStatus == MappingStatus.AUTOMAPPED.ToString() || item.SystemMappingStatus == MappingStatus.REVIEW.ToString()))
                                 {
                                     _objToSendAIML.SimilarityIndicator = false;
                                     _objToSendAIML.SimilarityScore = 0;
                                 }
                                 #endregion
+
                                 //Get Attribute master
                                 #region -- Get Attribute master
                                 var attribtes = context.Accommodation_SupplierRoomTypeAttributes.Where(srta => srta.RoomTypeMap_Id == accommodation_SupplierRoomTypeMapping_Id).ToList();
