@@ -1273,7 +1273,7 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation details", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-        
+
         #endregion
 
         #region AccomodationInfo
@@ -3476,10 +3476,13 @@ namespace DataLayer
                 sbFinalquery.Append(sbFrom);
                 sbFinalquery.Append(sbWhere);
 
-                sbFinalquery.Append(" order by ar.RoomName ");
+                //Order by Mapping Status & Score
+                sbFinalquery.Append(" order by CASE WHEN ISNULL(ASRTM.SystemEditDate,CAST('01-Jan-1990' AS DATE)) > ISNULL(ASRTM.UserEditDate,CAST('01-Jan-1990' AS DATE)) THEN ISNULL(ASRTM.SystemMappingStatus,'UNMAPPED') ELSE ISNULL(ASRTM.UserMappingStatus,'UNMAPPED') END ");
+                sbFinalquery.Append(" , ASRTM.MatchingScore DESC ");
 
                 List<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails> result = new List<DC_Accomodation_Category_DDL_WithExtraDetails>();
                 context.Configuration.AutoDetectChangesEnabled = false;
+                context.Database.CommandTimeout = 0;
                 try { result = context.Database.SqlQuery<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails>(sbFinalquery.ToString()).ToList(); } catch (Exception ex) { }
                 return result;
             }
