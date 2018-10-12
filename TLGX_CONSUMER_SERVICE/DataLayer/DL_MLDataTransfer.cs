@@ -430,7 +430,7 @@ namespace DataLayer
                     {
                         _obj = GetRoomTypeMatchDataForMLTrans(BatchSize, BatchNo);
                         #region To update CounterIn DistributionLog
-                        if(_obj != null)
+                        if (_obj != null)
                         {
                             MLDataInsertedCount = MLDataInsertedCount + _obj.RoomTypeMatching.Count();
                             UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
@@ -627,8 +627,8 @@ namespace DataLayer
                             AccoCreateUser = item.AccoCreateUser,
                             AccoEditDate = Convert.ToString(item.AccoEditDate),
                             AccoEditUser = item.AccoEditUser,
-                            SimilarityIndicator = (item.SimilarityIndicator == string.Empty ? Convert.ToBoolean(0) : Convert.ToBoolean(item.SimilarityIndicator)),
-                            SimilarityScore = Convert.ToDouble(item.SimilarityScore)
+                            SimilarityIndicator = true,
+                            SimilarityScore = 1
                         });
                     }
                     _obj.Mode = "offline";
@@ -1079,6 +1079,164 @@ namespace DataLayer
                 throw;
             }
         }
+
+
+        //RealTime Data Tranasction
+        #region To Delete Training Data
+        public void ML_DataTransfer_DeleteTrainingData(Guid accommodation_SupplierRoomTypeMapping_Id)
+        {
+            try
+            {
+                using (DHSVCProxyAsync DHP = new DHSVCProxyAsync())
+                {
+                    var objToDelete = new DC_ML_DL_SupplierAcco_Room_Data_Delete();
+                    objToDelete.Transaction = Convert.ToString(Guid.NewGuid());
+                    objToDelete.AccommodationSupplierRoomTypeMappingIds.Add(Convert.ToString(accommodation_SupplierRoomTypeMapping_Id));
+                    object result = null;
+                    DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_Delete"], objToDelete, typeof(DataContracts.ML.DC_ML_DL_SupplierAcco_Room_Data_Delete), typeof(DC_ML_DL_SupplierAcco_Room_Data_SuccessResponse), out result, "DELETE");
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        #endregion
+        #region
+        enum MappingStatus { MAPPED = 0, UNMAPPED, AUTOMAPPED, REVIEW }
+        public void ML_DataTransfer_TrainingDataPushToAIML(Guid accommodation_SupplierRoomTypeMapping_Id)
+        {
+            try
+            {
+                //Getting Data from DB
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var result = context.Accommodation_SupplierRoomTypeMapping.Find(accommodation_SupplierRoomTypeMapping_Id);
+                    if (result != null)
+                    {
+                        var SupplierRoomTypeMappingValue = context.Accommodation_SupplierRoomTypeMapping_Values.Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id).ToList();
+                        var accodetails = context.Accommodation.Where(a => a.Accommodation_Id == result.Accommodation_Id).FirstOrDefault();
+
+                        if (SupplierRoomTypeMappingValue != null)
+                        {
+                            var roominfo = context.Accommodation_RoomInfo.Where(RInfo => RInfo.Accommodation_RoomInfo_Id == result.Accommodation_RoomInfo_Id).FirstOrDefault();
+                            DC_ML_DL_SupplierAcco_Room_Data_RealTime _objToSendAIML;
+                            foreach (var item in SupplierRoomTypeMappingValue)
+                            {
+                                //Creating Data to send AIML
+                                _objToSendAIML = new DC_ML_DL_SupplierAcco_Room_Data_RealTime()
+                                {
+                                    AccommodationSupplierRoomTypeMappingId = Convert.ToString(item.Accommodation_SupplierRoomTypeMapping_Id),
+                                    AccommodationId = Convert.ToString(result.Accommodation_Id),
+                                    SupplierId = Convert.ToString(result.Supplier_Id),
+                                    SupplierName = result.SupplierName,
+                                    SupplierRoomId = result.SupplierRoomId,
+                                    SupplierRoomTypeCode = result.SupplierRoomTypeCode,
+                                    SupplierRoomName = result.SupplierRoomName,
+                                    TXRoomName = result.TX_RoomName,
+                                    SupplierRoomView = result.RoomViewCode,
+                                    SupplierRoomBedType = result.BedTypeCode,
+                                    SupplierRoomSmoking = result.Smoking,
+                                    SupplierRoomCategory = result.SupplierRoomCategory,
+                                    SupplierRoomCategoryId = result.SupplierRoomCategoryId,
+                                    SupplierRoomCreateDate = Convert.ToString(result.Create_Date),
+                                    SupplierRoomCreateUser = result.Create_User,
+                                    SupplierRoomEditDate = Convert.ToString(result.Edit_Date),
+                                    SupplierRoomEditUser = result.Edit_User,
+                                    SupplierRoomMaxAdults = result.MaxAdults,
+                                    SupplierRoomMaxChild = result.MaxChild,
+                                    SupplierRoomMaxInfants = result.MaxInfants,
+                                    MaxGuestOccupancy = result.MaxGuestOccupancy,
+                                    SupplierRoomQuantity = result.Quantity,
+                                    SupplierRoomRatePlan = result.RatePlan,
+                                    RatePlanCode = result.RatePlanCode,
+                                    SupplierRoomSupplierProductName = result.SupplierProductName,
+                                    SupplierRoomSupplierProductId = result.SupplierProductId,
+                                    TxStrippedName = result.Tx_StrippedName,
+                                    TxReorderedName = result.Tx_ReorderedName,
+                                    SupplierRoomMappingStatus = result.MappingStatus,
+                                    MapId = item.MapId,
+                                    AccommodationRoomInfoId = Convert.ToString(item.Accommodation_RoomInfo_Id),
+                                    SupplierRoomRoomDescription = result.RoomDescription,
+                                    SupplierRoomRoomSize = result.RoomSize,
+                                    TLGXCommonHotelId = accodetails.CompanyHotelID,
+                                    AccoRoomId = Convert.ToString(item.Accommodation_RoomInfo_Id),
+                                    AccoRoomView = roominfo.RoomView,
+                                    AccoNoOfRooms = roominfo.NoOfRooms,
+                                    AccoRoomName = roominfo.RoomName,
+                                    AccoNoOfInterconnectingRooms = roominfo.NoOfInterconnectingRooms,
+                                    AccoDescription = roominfo.Description,
+                                    AccoRoomSize = roominfo.RoomSize,
+                                    AccoRoomDecor = roominfo.RoomDecor,
+                                    AccoSmoking = roominfo.Smoking,
+                                    AccoFloorName = roominfo.FloorName,
+                                    AccoFloorNumber = roominfo.FloorNumber,
+                                    AccoMysteryRoom = roominfo.MysteryRoom,
+                                    AccoBathRoomType = roominfo.BathRoomType,
+                                    AccoBedType = roominfo.BedType,
+                                    AccoCompanyRoomCategory = roominfo.CompanyRoomCategory,
+                                    AccoRoomCategory = roominfo.RoomCategory,
+                                    AccoCreateDate = Convert.ToString(accodetails.Create_Date),
+                                    AccoCreateUser = accodetails.Create_User,
+                                    AccoEditDate = Convert.ToString(accodetails.Edit_Date),
+                                    AccoEditUser = accodetails.Edit_User
+                                };
+
+                                //Setting SimilarityIndicator and SimilarityScore
+                                #region -- Setting SimilarityIndicator and SimilarityScore
+                                if (item.UserMappingStatus == MappingStatus.MAPPED.ToString())
+                                {
+                                    _objToSendAIML.SimilarityIndicator = true;
+                                    _objToSendAIML.SimilarityScore = 1;
+                                }
+                                else if (item.UserMappingStatus == MappingStatus.UNMAPPED.ToString() && (item.SystemMappingStatus == MappingStatus.AUTOMAPPED.ToString() || item.SystemMappingStatus == MappingStatus.REVIEW.ToString()))
+                                {
+                                    _objToSendAIML.SimilarityIndicator = false;
+                                    _objToSendAIML.SimilarityScore = 0;
+                                }
+                                #endregion
+
+                                //Get Attribute master
+                                #region -- Get Attribute master
+                                var attribtes = context.Accommodation_SupplierRoomTypeAttributes.Where(srta => srta.RoomTypeMap_Id == accommodation_SupplierRoomTypeMapping_Id).ToList();
+                                if (attribtes != null && attribtes.Count > 0)
+                                {
+                                    foreach (var itemattribtes in attribtes)
+                                    {
+                                        _objToSendAIML.SupplierRoomExtractedAttributes.Add(
+                                            new DC_ML_DL_SupplierAcco_Room_Attributes_Data_RealTime()
+                                            {
+                                                Key = itemattribtes.SystemAttributeKeyword,
+                                                Value = itemattribtes.SupplierRoomTypeAttribute
+                                            });
+                                    }
+                                }
+                                #endregion
+
+                                DC_ML_DL_SupplierAcco_Room_RealTime _objMain = new DC_ML_DL_SupplierAcco_Room_RealTime();
+                                _objMain.RoomTypeMatching.Add(_objToSendAIML);
+                                _objMain.Mode = "Online";
+                                _objMain.BatchId = Convert.ToString(Guid.NewGuid());
+                                _objMain.Transaction = Convert.ToString(Guid.NewGuid());
+                                object resultobj = null;
+                                DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_RoomTypeMatching"], _objMain, typeof(DataContracts.ML.DC_ML_DL_SupplierAcco_Room_RealTime), typeof(DC_ML_DL_SupplierAcco_Room_Data_SuccessResponse), out resultobj);
+
+                            }
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+        #endregion
+
+
     }
 
 

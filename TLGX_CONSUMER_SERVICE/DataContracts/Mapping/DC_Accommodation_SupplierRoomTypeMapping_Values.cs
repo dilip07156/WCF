@@ -13,7 +13,7 @@ namespace DataContracts.Mapping
         [DataMember]
         public System.Guid Accommodation_SupplierRoomTypeMapping_Value_Id { get; set; }
         [DataMember]
-        public System.Guid Accommodation_SupplierRoomTypeMapping_Id { get; set; }
+        public System.Guid? Accommodation_SupplierRoomTypeMapping_Id { get; set; }
         [DataMember]
         public string RoomCategory { get; set; }
         [DataMember]
@@ -32,5 +32,7 @@ namespace DataContracts.Mapping
         public string MatchingScore { get; set; }
         [DataMember]
         public Guid? Accommodation_Id { get; set; }
+        [DataMember]
+        public bool? IsNotTraining { get; set; }
     }
 }
