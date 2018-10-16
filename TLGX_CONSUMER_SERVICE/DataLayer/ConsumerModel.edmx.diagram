@@ -39,14 +39,14 @@
       <Diagram DiagramId="202d9098866b4029ba86a3a0a36dc3d4" Name="DynamicAttribute" >
         <EntityTypeShape EntityType="ConsumerModel.DynamicAttribute" Width="1.625" PointX="0.75" PointY="0.75" />
       </Diagram>
-      <Diagram DiagramId="68f2bdb02b35425b9cc8f92095493a63" Name="Mapping" ZoomLevel="62" >
+      <Diagram DiagramId="68f2bdb02b35425b9cc8f92095493a63" Name="Mapping" ZoomLevel="57" >
         <EntityTypeShape EntityType="ConsumerModel.m_MasterAttributeMapping" Width="1.5" PointX="0.75" PointY="0.5" />
-        <EntityTypeShape EntityType="ConsumerModel.m_MasterAttributeValueMapping" Width="2.75" PointX="10.75" PointY="0.5" />
+        <EntityTypeShape EntityType="ConsumerModel.m_MasterAttributeValueMapping" Width="2.75" PointX="21.25" PointY="0.625" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierProductMapping" PointX="13.75" PointY="3.125" Width="2.875" />
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" Width="2" PointX="14.125" PointY="0.5" />
         <EntityTypeShape EntityType="ConsumerModel.stg_SupplierActivityMapping" Width="3.375" PointX="17.375" PointY="0.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ConsumerModel.Supplier_APILocation" Width="1.5" PointX="0.875" PointY="3.75" />
-        <EntityTypeShape EntityType="ConsumerModel.m_CityMapping" Width="2.5" PointX="10.875" PointY="3.75" />
+        <EntityTypeShape EntityType="ConsumerModel.m_CityMapping" Width="2.5" PointX="21.875" PointY="4.375" />
         <EntityTypeShape EntityType="ConsumerModel.m_CountryMapping" Width="1.5" PointX="2.75" PointY="0.5" />
         <EntityTypeShape EntityType="ConsumerModel.m_CityMapping_EntityCount" Width="1.5" PointX="4.625" PointY="0.5" />
         <EntityTypeShape EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping" Width="2.625" PointX="8.375" PointY="0.5" />
@@ -79,8 +79,8 @@
         <EntityTypeShape EntityType="ConsumerModel.m_keyword" Width="1.5" PointX="11.375" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.m_keyword_alias" Width="1.5" PointX="4.875" PointY="4.125" />
         <EntityTypeShape EntityType="ConsumerModel.m_PortMaster" Width="1.5" PointX="8.625" PointY="0.75" />
-        <EntityTypeShape EntityType="ConsumerModel.m_CityMaster" Width="1.5" PointX="6.75" PointY="3.375" />
         <EntityTypeShape EntityType="ConsumerModel.m_CountryMaster" Width="1.5" PointX="13.25" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.m_CityMaster" Width="1.5" PointX="0.75" PointY="7.75" />
       </Diagram>
       <Diagram DiagramId="863bf8af439c4e9c9eddc1d7026c2f57" Name="GeoCode" >
         <EntityTypeShape EntityType="ConsumerModel.GoogleGeoCode" Width="1.5" PointX="0.75" PointY="0.75" />

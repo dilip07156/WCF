@@ -3925,6 +3925,10 @@ namespace DataLayer
                 {
                     sbWhere.Append(" and acco.Priority = " + obj.Priority.Value);
                 }
+                if (!string.IsNullOrWhiteSpace(obj.Source))
+                {
+                    sbWhere.Append(" and asrtm.Source = '" + obj.Source + "' ");
+                }
 
                 sbFrom.Append(@" FROM  [dbo].[Accommodation_SupplierRoomTypeMapping] AS  asrtm WITH (NOLOCK)
                                 INNER JOIN [dbo].[Accommodation] AS acco WITH (NOLOCK) ON  asrtm.[Accommodation_Id] = acco.[Accommodation_Id] AND ISNULL(acco.IsActive,0) = 1
