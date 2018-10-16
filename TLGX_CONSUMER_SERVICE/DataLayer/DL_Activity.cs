@@ -2032,7 +2032,7 @@ namespace DataLayer
                     var aCA = context.Activity_ClassificationAttributes.AsQueryable();
 
                     var aDOW = context.Activity_DaysOfWeek.AsQueryable();
-                    var aMedia = context.Activity_Media.AsQueryable();
+                    var aMedia = context.Activity_Media.Select(x=>x.Activity_Flavour_Id).Distinct().AsQueryable();
 
                     bool isCAFilter = false;
                     bool isDurationFilter = false;
@@ -2068,7 +2068,7 @@ namespace DataLayer
                         if (RQ.OnlyMedia)
                         {
                             search = (from a in search
-                                      join m in aMedia on a.Activity_Flavour_Id equals m.Activity_Flavour_Id
+                                      join m in aMedia on a.Activity_Flavour_Id equals m.Value
                                       select a);
                         }
 
@@ -4890,6 +4890,46 @@ namespace DataLayer
                     }   
                 
                 return result;
+        }
+        #endregion
+
+
+        #region Activity MediaAttributes
+        public bool AddActivityMediaAttributes(DataContracts.Masters.DC_Activity_MediaAttributes AM)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    Activity_MediaAttributes objNew = new Activity_MediaAttributes();
+
+                    if (AM.Activity_MediaAttributes_Id == null)
+                    {
+                        AM.Activity_MediaAttributes_Id = Guid.NewGuid();
+                    }
+
+                    objNew.Activity_MediaAttributes_Id = AM.Activity_MediaAttributes_Id;
+                    objNew.Activity_Media_Id = AM.Activity_Media_Id;
+                    objNew.AttributeType = AM.AttributeType;
+                    objNew.AttributeValue = AM.AttributeValue;
+                    objNew.Create_Date = AM.Create_Date;
+                    objNew.Create_User = AM.Create_User;
+                    objNew.Status = AM.Status;
+                    objNew.IsActive = AM.IsActive;
+                    objNew.IsSystemAttribute = AM.IsSystemAttribute;
+
+                    context.Activity_MediaAttributes.Add(objNew);
+                    context.SaveChanges();
+
+                    objNew = null;
+
+                    return true;
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding accomodation media attributes", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
         }
         #endregion
 

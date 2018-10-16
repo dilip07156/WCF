@@ -62,5 +62,19 @@ namespace OperationContracts
         [WebInvoke(Method = "GET", UriTemplate = "ML/DataAPITransfer/status", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         List<DataContracts.ML.DL_ML_DL_EntityStatus> GetMLDataApiTransferStatus();
         #endregion
+
+        #region *** Training Data Delete ***
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "ML/Supplier/DeleteTrainingData/{accommodation_SupplierRoomTypeMapping_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        void ML_DataTransfer_DeleteTrainingData(string accommodation_SupplierRoomTypeMapping_Id);
+        #endregion
+
+        #region *** Training Data push(+ve & -ve) ***
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "ML/Supplier/TrainingDataPushToAIML/{accommodation_SupplierRoomTypeMapping_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        void ML_DataTransfer_TrainingDataPushToAIML(string accommodation_SupplierRoomTypeMapping_Id);
+        #endregion
     }
 }

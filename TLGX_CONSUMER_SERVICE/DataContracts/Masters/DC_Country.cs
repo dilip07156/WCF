@@ -15,6 +15,13 @@ namespace DataContracts.Masters
         string _Name;
         string _Code;
         string _Status;
+
+        string _RegionName;
+        string _RegionCode;
+        string _Key;
+        string _Rank;
+        string _Priority;
+
         Nullable<System.DateTime> _Create_Date;
         string _Create_User;
         Nullable<System.DateTime> _Edit_Date;
@@ -42,6 +49,21 @@ namespace DataContracts.Masters
         string _GooglePlaceID;
         string _action;
         int _TotalRecords;
+
+        [DataMember]
+        public string RegionName { get { return _RegionName; } set { _RegionName = value; } }
+
+        [DataMember]
+        public string RegionCode { get { return _RegionCode; } set { _RegionCode = value; } }
+
+        [DataMember]
+        public string Key { get { return _Key; } set { _Key = value; } }
+
+        [DataMember]
+        public string Priority { get { return _Priority; } set { _Priority = value; } }
+
+        [DataMember]
+        public string Rank { get { return _Rank; } set { _Rank = value; } }
 
         [DataMember]
         public string Latitude { get; set; }
@@ -525,6 +547,18 @@ namespace DataContracts.Masters
                 _Country_Name = value;
             }
         }
+
+        [DataMember]
+        public string RegionCode { get; set; }
+
+        [DataMember]
+        public string Rank { get; set; }
+
+        [DataMember]
+        public string Key { get; set; }
+
+        [DataMember]
+        public string Priority { get; set; }
 
         [DataMember]
         public string Country_Code

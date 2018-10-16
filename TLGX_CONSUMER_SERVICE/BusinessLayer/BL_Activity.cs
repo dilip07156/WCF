@@ -66,7 +66,7 @@ namespace BusinessLayer
                 return obj.AddActivityContacts(AC);
             }
         }
-        
+
         public int GetLegacyProductId(Guid Activity_Flavour_Id)
         {
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
@@ -174,7 +174,7 @@ namespace BusinessLayer
 
         public bool UpdateActivityClassifiationAttributes(DataContracts.Masters.DC_Activity_ClassificationAttributes RQ)
         {
-            using(DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
                 return obj.UpdateActivityClassifiationAttributes(RQ);
             }
@@ -381,7 +381,7 @@ namespace BusinessLayer
         {
             Guid gActivity_Flavour_Id;
 
-            if(Guid.TryParse(Activity_Flavour_Id, out gActivity_Flavour_Id))
+            if (Guid.TryParse(Activity_Flavour_Id, out gActivity_Flavour_Id))
             {
                 using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
                 {
@@ -443,7 +443,7 @@ namespace BusinessLayer
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
             }
-            
+
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
                 return obj.DeleteActivityNonOperatingDaysById(gActivity_Days_Of_Opration_Id);
@@ -483,7 +483,7 @@ namespace BusinessLayer
 
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
-                return obj.GetActivitiesReport( _obj);
+                return obj.GetActivitiesReport(_obj);
             }
         }
 
@@ -495,5 +495,15 @@ namespace BusinessLayer
             }
         }
         #endregion
+        #region Activity MediaAttributes
+        public bool AddActivityMediaAttributes(DataContracts.Masters.DC_Activity_MediaAttributes AM)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddActivityMediaAttributes(AM);
+            }
+        }
+        #endregion
+
     }
 }

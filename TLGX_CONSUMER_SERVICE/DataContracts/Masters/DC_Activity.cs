@@ -899,6 +899,33 @@ namespace DataContracts.Masters
         [DataMember]
         public string MediaType { get; set; }
     }
+
+    [DataContract]
+    public class DC_Activity_MediaAttributes
+    {
+        [DataMember]
+        public Guid Activity_MediaAttributes_Id { get; set; }
+        [DataMember]
+        public Guid Activity_Media_Id { get; set; }
+        [DataMember]
+        public string AttributeType { get; set; }
+        [DataMember]
+        public string AttributeValue { get; set; }
+        [DataMember]
+        public bool IsActive { get; set; }
+        [DataMember]
+        public string Status { get; set; }
+        [DataMember]
+        public DateTime? Create_Date { get; set; }
+        [DataMember]
+        public string Create_User { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+        [DataMember]
+        public bool IsSystemAttribute { get; set; }
+    }
     #endregion
 
     #region inclusions

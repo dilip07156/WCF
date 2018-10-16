@@ -535,5 +535,15 @@ namespace ConsumerSvc
         }
         #endregion
 
+        #region Activity MediaAttributes
+        public bool AddActivityMediaAttributes(DataContracts.Masters.DC_Activity_MediaAttributes AM)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                return objBL.AddActivityMediaAttributes(AM);
+            }
+        }
+        #endregion
+
     }
 }

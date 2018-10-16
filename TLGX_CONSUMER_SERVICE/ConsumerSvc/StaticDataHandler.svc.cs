@@ -378,5 +378,6 @@ namespace ConsumerSvc
                 return objBL.RoomTypeMappingOnline_Insert(obj);
             }
         }
+      
     }
 }

@@ -279,6 +279,9 @@
     <Compile Include="Activity_Media.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Activity_MediaAttributes.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Activity_PickUpDrop.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
