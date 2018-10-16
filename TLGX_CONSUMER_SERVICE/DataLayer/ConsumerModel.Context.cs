@@ -158,9 +158,8 @@ namespace DataLayer
         public virtual DbSet<Accommodation> Accommodation { get; set; }
         public virtual DbSet<Accommodation_SupplierRoomTypeMapping_Values> Accommodation_SupplierRoomTypeMapping_Values { get; set; }
         public virtual DbSet<Activity_MediaAttributes> Activity_MediaAttributes { get; set; }
-        public virtual DbSet<m_CityMaster> m_CityMaster { get; set; }
         public virtual DbSet<m_CountryMaster> m_CountryMaster { get; set; }
-        //public virtual DbSet<m_CityMaster> m_CityMaster { get; set; }
+        public virtual DbSet<m_CityMaster> m_CityMaster { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

@@ -42,6 +42,7 @@ namespace DataContracts
         string _AwardsReceived;
         bool? _IsActive;
         bool _IsMysteryProduct;
+        bool _IsRoomMappingCompleted;
         string _Create_User;
         System.DateTime? _Create_Date;
         string _Edit_User;
@@ -552,7 +553,19 @@ namespace DataContracts
                 _IsMysteryProduct = value;
             }
         }
+        [DataMember]
+        public bool IsRoomMappingCompleted
+        {
+            get
+            {
+                return _IsRoomMappingCompleted;
+            }
 
+            set
+            {
+                _IsRoomMappingCompleted = value;
+            }
+        }
         [DataMember]
         public string Create_User
         {
