@@ -173,11 +173,11 @@ namespace ConsumerSvc
         #endregion
 
         #region Supplierdata Export
-        public IList<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport( string AccoPriority, string SupplierID, string IsMdmDataOnly)
+        public IList<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport( string AccoPriority, string SupplierID, string IsMdmDataOnly, string SuppPriority)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
-                return objBL.GetSupplierDataForExport(AccoPriority, SupplierID, IsMdmDataOnly);
+                return objBL.GetSupplierDataForExport(AccoPriority, SupplierID, IsMdmDataOnly, SuppPriority);
             }
         }
         #endregion

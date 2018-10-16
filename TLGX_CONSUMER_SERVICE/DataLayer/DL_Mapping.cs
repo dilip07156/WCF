@@ -7663,7 +7663,7 @@ namespace DataLayer
         #endregion
 
         #region Export Supplier Data
-        public List<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport(int? AccoPriority, Guid? Supplier_id, bool IsMdmDataOnly)
+        public List<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport(int? AccoPriority, Guid? Supplier_id, bool IsMdmDataOnly, int? SuppPriority)
         {
             try
             {
@@ -7676,8 +7676,13 @@ namespace DataLayer
                     //List<Dashboard_MappingStat> MappingData = new List<Dashboard_MappingStat>();
                     List<USP_MappingStatus_Result> MappingData = new List<USP_MappingStatus_Result>();
 
+                    if (SuppPriority == 0)
+                    {
+                        SuppPriority = null;
+                    }
+
                     //var temp = context.USP_MappingStatus();
-                    var suppliermaster = context.Supplier.Where(w => w.StatusCode == "ACTIVE" && w.Supplier_Id == (Supplier_id == Guid.Empty ? w.Supplier_Id : Supplier_id)).Select(s => new
+                    var suppliermaster = context.Supplier.Where(w => w.StatusCode == "ACTIVE" && w.Priority==(SuppPriority == null ? w.Priority: SuppPriority) && w.Supplier_Id == (Supplier_id == Guid.Empty ? w.Supplier_Id : Supplier_id)).Select(s => new
                     {
                         s.Supplier_Id,
                         s.Name,
@@ -7784,7 +7789,7 @@ namespace DataLayer
                     {
                         var supplierResult = new DC_SupplierExportDataReport();
 
-                        supplierResult.Priority = Convert.ToString(supplier.Priority);
+                        supplierResult.Priority = Convert.ToString(supplier.Priority == null ? "" : "P"+supplier.Priority);
                         supplierResult.Supplier_Id = supplier.Supplier_Id;
                         supplierResult.SupplierName = supplier.Name;
 
