@@ -763,5 +763,18 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+
+        #region NewDashBoardReport
+        public List<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise(DataContracts.Mapping.DC_NewDashBoardReport_RQ parm)
+        {
+
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetNewDashboardReport_CountryWise(parm);
+            }
+
+        }
+        #endregion NewDashBoardReport
     }
 }

@@ -229,9 +229,16 @@ namespace OperationContracts
         [WebInvoke(Method = "GET", UriTemplate = "Mapping/AccoSupplierRoomType/GetRTM_ML_Suggestions/{Accomodation_SupplierRoomTypeMapping_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataContracts.DC_SRT_ML_Response GetRTM_ML_Suggestions(string Accomodation_SupplierRoomTypeMapping_Id);
 
-        
+
         #endregion
 
+        #region NewDashBoardReport
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Mapping/NewDashboardReport/Country", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise(DataContracts.Mapping.DC_NewDashBoardReport_RQ parm);
+
+        #endregion NewDashBoardReport
     }
 }
 

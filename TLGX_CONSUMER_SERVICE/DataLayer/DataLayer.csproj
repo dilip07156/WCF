@@ -501,6 +501,9 @@
     <Compile Include="m_ZoneMaster.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="NewDashBoardReport.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Organisation_Company.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>

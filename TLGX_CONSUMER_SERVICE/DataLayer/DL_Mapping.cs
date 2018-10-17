@@ -10341,5 +10341,127 @@ namespace DataLayer
             var msg = _obj.AddStaticDataUploadErrorLog(obj);
         }
         #endregion
+
+        #region NewDashBoardReport
+        public List<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise(DataContracts.Mapping.DC_NewDashBoardReport_RQ RQ)
+        {
+            try
+            {
+                List<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> returnObj = new List<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS>();
+
+                int total = 0;
+                //int TotalAPMSuppliers = 0;
+                //int TotalSRTSuppliers = 0;
+                StringBuilder sbSelect = new StringBuilder();
+                StringBuilder sbwhere = new StringBuilder();
+                StringBuilder sbfrom = new StringBuilder();
+                StringBuilder sbGroupBy = new StringBuilder();
+                StringBuilder sbOrderBy = new StringBuilder();
+
+
+                sbwhere.Append(" WHERE 1 = 1 and  Country_Id!='00000000-0000-0000-0000-000000000000'");
+
+                sbfrom.Append("from [NewDashBoardReport]  with (NoLock)");
+
+                sbGroupBy.Append("group by RegionName ,CountryName , Country_Id ");
+
+                sbOrderBy.Append(" order by CountryName");
+
+                if (!string.IsNullOrWhiteSpace(RQ.CountryName))
+                {
+                    sbwhere.Append(" AND CountryName = '" + RQ.CountryName + "'");
+                }
+
+                if (!string.IsNullOrWhiteSpace(RQ.CityName))
+                {
+                    sbwhere.Append(" AND CityName  = '" + RQ.CityName + "'");
+                }
+
+                if (RQ.StarRating != 0)
+                {
+                    sbwhere.Append(" AND a.StarRating=" + RQ.StarRating);
+                }
+
+                if (RQ.Country_Id != Guid.Empty)
+                {
+                    sbwhere.Append(" AND Country_Id = '" + RQ.Country_Id + "'");
+                }
+
+                if (RQ.City_Id != Guid.Empty)
+                {
+                    sbwhere.Append(" AND City_Id  = '" + RQ.City_Id + "'");
+                }
+
+                StringBuilder sbsqlselectcount = new StringBuilder();
+                sbsqlselectcount.Append("select count(*) ");
+                sbsqlselectcount.Append(" " + sbfrom);
+                sbsqlselectcount.Append(" " + sbwhere);
+
+                //String NoOfSuppliersInHotel = "SELECT COUNT(DISTINCT SUPPLIER_ID FROM Accommodation_ProductMapping WITH(NO LOCK))";
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    try { total = context.Database.SqlQuery<int>(sbsqlselectcount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
+                }
+
+                if (total > 0)
+                {
+                    sbSelect.Append(@" Select RegionName, CountryName, 0 as PreferredHotels , 0.0 as ContentScore 
+                                    , sum(Count_APM_Mapped_And_AutoMapped) + sum(Count_APM_Review) as TotalSupplierHotels 
+                                    , sum(Count_APM_Mapped_And_AutoMapped) Mapped_Hotel
+                                    , sum(Count_APM_Review) as Review_Hotel
+                                    , 0 as Unmapped_Hotel
+                                    ,CASE (sum(Count_APM_Mapped_And_AutoMapped) + sum(Count_APM_Review)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_APM_Mapped_And_AutoMapped)) / CONVERT(decimal(10,2),(sum(Count_APM_Mapped_And_AutoMapped) + sum(Count_APM_Review))) * 100.00,1)) END as Per_Mapped_Hotel
+                                    ,CASE (sum(Count_APM_Mapped_And_AutoMapped) + sum(Count_APM_Review)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_APM_Review)) / CONVERT(decimal(10,2),(sum(Count_APM_Mapped_And_AutoMapped) + sum(Count_APM_Review))) * 100.00,1)) END as Per_Review_Hotel
+                                    ,0 as NoOfSuppliers_H                                    
+                                    , sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add) as TotalSupplierRoom
+                                    , sum(Count_SRT_Mapped) as Mapped_Room
+                                    , sum(Count_SRT_Review) as Review_Room
+                                    , sum(Count_SRT_Unmapped) as Unmapped_Room
+                                    , sum(Count_SRT_Add) as Add_Room
+                                    , sum(Count_SRT_Automapped) as AutoMapped_Room
+                                    , CASE (sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_SRT_Mapped)) / CONVERT(decimal(10,2),(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add))) * 100.00,1)) END as Per_Mapped_Room
+                                    , CASE (sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_SRT_Automapped)) / CONVERT(decimal(10,2),(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add))) * 100.00,1)) END as Per_AutoMapped_Room
+                                    , CASE (sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_SRT_Review)) / CONVERT(decimal(10,2),(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add))) * 100.00,1)) END as Per_Review_Room
+                                    , CASE (sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_SRT_UnMapped)) / CONVERT(decimal(10,2),(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add))) * 100.00,1)) END as Per_Unmapped_Room
+                                    , CASE (sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_SRT_Add)) / CONVERT(decimal(10,2),(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add))) * 100.00,1)) END as Per_Add_Room
+                                    ,Country_Id  
+                                    ,0 as NoOfSuppliers_R    ");
+
+                    StringBuilder sbfinalQuery = new StringBuilder();
+                    sbfinalQuery.Append(sbSelect + " ");
+                    sbfinalQuery.Append(" " + sbfrom);
+                    sbfinalQuery.Append(" " + sbwhere + " ");
+                    sbfinalQuery.Append(" " + sbGroupBy);
+                    sbfinalQuery.Append(" " + sbOrderBy);
+
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        context.Database.CommandTimeout = 0;
+                        context.Configuration.AutoDetectChangesEnabled = false;
+                        returnObj = context.Database.SqlQuery<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS>(sbfinalQuery.ToString()).ToList();
+                        //foreach( var item in returnObj)
+                        //{
+                        //    var accomodationids = (from a in context.NewDashBoardReport.AsNoTracking()
+                        //                           where a.Country_Id == item.Country_id select a.HotelID).Distinct().ToList();
+
+                        //    item.NoOfSuppliers_H = (from apm in context.Accommodation_ProductMapping.AsNoTracking()
+                        //                       where accomodationids.Contains(apm.Accommodation_Id ?? Guid.Empty)
+                        //                       select apm.Supplier_Id).Distinct().Count();
+                        //    item.NoOfSuppliers_R = 0;
+                        //}
+                    }
+
+                }
+
+
+                return returnObj;
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching   CountryWise New DashBoard Report", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion NewDashBoardReport
     }
 }
