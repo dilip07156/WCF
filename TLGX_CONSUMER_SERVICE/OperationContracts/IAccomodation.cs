@@ -42,7 +42,7 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "GET", UriTemplate = "GetAccomodation/Details/{Accomodation_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataContracts.DC_Accomodation GetAccomodationDetails(string Accomodation_Id);
-        
+
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "GetAccomodation/ListForMissingAttributeReports", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
@@ -63,13 +63,13 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "GET", UriTemplate = "GetAccomodation/BasicInfo/{Accomodation_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         List<DataContracts.DC_AccomodationBasic> GetAccomodationBasicInfo(string Accomodation_Id);
-        
+
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "GetAccomodation/Info/Details", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         List<DataContracts.DC_Accommodation_RoomInfo> GetRoomDetailsByWithPagging(DC_Accommodation_RoomInfo_RQ RQ);
-        
-            [OperationContract]
+
+        [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "UpdateAccomodation/Info", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool UpdateAccomodationInfo(DataContracts.DC_Accomodation AccomodationInfo);
@@ -227,7 +227,7 @@ namespace OperationContracts
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "GET", UriTemplate = "CheckAccomodationDuplicateMediaPosition/{Accomodation_Id}/{MediaPosition}/{Accommodation_Media_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        bool CheckMediaPositionDuplicateforAccommodation(string Accomodation_Id, string MediaPosition,string Accommodation_Media_Id);
+        bool CheckMediaPositionDuplicateforAccommodation(string Accomodation_Id, string MediaPosition, string Accommodation_Media_Id);
 
         #endregion
 
@@ -258,7 +258,7 @@ namespace OperationContracts
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "GET", UriTemplate = "GetAccomodation/NearbyPlacesWithPaging/{Accomodation_Id}/{DataKey_Id}/{pageSize}/{pageindex}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        IList<DataContracts.DC_Accommodation_NearbyPlaces> GetNearbyPlacesDetailsWithPaging(string Accomodation_Id, string DataKey_Id,string pageSize,string pageindex);
+        IList<DataContracts.DC_Accommodation_NearbyPlaces> GetNearbyPlacesDetailsWithPaging(string Accomodation_Id, string DataKey_Id, string pageSize, string pageindex);
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
@@ -438,5 +438,45 @@ namespace OperationContracts
         [WebInvoke(Method = "GET", UriTemplate = "UpdateAccomodation/TxInfo", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         void UpdateAccomodationTxInfo();
         #endregion
+
+        #region KAFKA
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "AddLstAccomodation/Descriptions", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        bool AddLstAccomodationDescriptions(List<DataContracts.DC_Accommodation_Descriptions> AD);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "AddLstAccomodation/Facilities", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        bool AddLstAccomodationFacilities(List<DataContracts.DC_Accommodation_Facility> AF);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "AddLstAccomodation/Status", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        bool AddLstAccomodationStatus(List<DataContracts.DC_Accommodation_Status> AS);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "AddLstAccomodation/Contacts", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        bool AddLstAccomodationContacts(List<DataContracts.DC_Accommodation_Contact> AC);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "GetAccomodationByAccoId/RoomInfobyId/{Accomodation_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.DC_Accommodation_RoomInfo> GetAccomodationRoomInfobyAccoID(string Accomodation_Id);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "AddLstAccomodation/RoomInfo", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        bool AddLstAccomodationRoomInfo(List<DataContracts.DC_Accommodation_RoomInfo> RI);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "AddLstAccomodation/RoomAmenities", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        bool AddLstRoomAmenities(List<DataContracts.DC_Accomodation_Roomamenities> RA);
+
+        
+        #endregion KAFKA
+
     }
 }

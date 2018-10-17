@@ -75,7 +75,7 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
-        
+
         public IList<DC_Accomodation> GetAccomodationListForMissingAttributeReports(DC_Accomodation_Search_RQ RQ)
         {
             using (BL_Accomodation objBL = new BL_Accomodation())
@@ -119,7 +119,7 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
-        
+
         #endregion
 
         #region Accomodation Info
@@ -137,7 +137,7 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
-        
+
         public List<DC_AccomodationBasic> GetAccomodationBasicInfo(string Accomodation_Id)
         {
             using (BL_Accomodation objBL = new BL_Accomodation())
@@ -499,7 +499,7 @@ namespace ConsumerSvc
             using (BL_Accomodation objBL = new BL_Accomodation())
             {
                 List<DC_Accommodation_NearbyPlaces> searchResults = new List<DC_Accommodation_NearbyPlaces>();
-                searchResults = objBL.GetNearbyPlacesDetailsWithPaging(Guid.Parse(Accomodation_Id), Guid.Parse(DataKey_Id),Convert.ToInt32(pageSize),Convert.ToInt32(pageindex));
+                searchResults = objBL.GetNearbyPlacesDetailsWithPaging(Guid.Parse(Accomodation_Id), Guid.Parse(DataKey_Id), Convert.ToInt32(pageSize), Convert.ToInt32(pageindex));
 
                 if (searchResults == null)
                 {
@@ -655,6 +655,7 @@ namespace ConsumerSvc
                 return searchResults;
             }
         }
+
         #endregion
 
         #region Accomodation Room Facilities
@@ -869,6 +870,72 @@ namespace ConsumerSvc
             using (BL_Accomodation objBL = new BL_Accomodation())
             {
                 objBL.UpdateAccomodationTxInfo();
+            }
+        }
+
+        #endregion
+
+        #region KAFKA
+        public bool AddLstAccomodationDescriptions(List<DataContracts.DC_Accommodation_Descriptions> AD)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                return objBL.AddLstAccomodationDescriptions(AD);
+            }
+        }
+
+        public bool AddLstAccomodationFacilities(List<DataContracts.DC_Accommodation_Facility> AD)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                return objBL.AddLstAccomodationFacilities(AD);
+            }
+        }
+
+        public bool AddLstAccomodationStatus(List<DataContracts.DC_Accommodation_Status> AD)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                return objBL.AddLstAccomodationStatus(AD);
+            }
+        }
+
+        public bool AddLstAccomodationContacts(List<DataContracts.DC_Accommodation_Contact> AD)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                return objBL.AddLstAccomodationContacts(AD);
+            }
+        }
+
+        public IList<DC_Accommodation_RoomInfo> GetAccomodationRoomInfobyAccoID(string Accomodation_Id)
+        {
+            using (BL_Accomodation objBL = new BL_Accomodation())
+            {
+                List<DC_Accommodation_RoomInfo> searchResults = new List<DC_Accommodation_RoomInfo>();
+                searchResults = objBL.GetAccomodationRoomInfobyAccoID(Guid.Parse(Accomodation_Id));
+
+                if (searchResults == null)
+                {
+                    throw new WebFaultException<string>("No records found.", System.Net.HttpStatusCode.NoContent);
+                }
+                return searchResults;
+            }
+        }
+
+        public bool AddLstAccomodationRoomInfo(List<DataContracts.DC_Accommodation_RoomInfo> RI)
+        {
+            using (BL_Accomodation obj = new BL_Accomodation())
+            {
+                return obj.AddLstAccomodationRoomInfo(RI);
+            }
+        }
+
+        public bool AddLstRoomAmenities(List<DataContracts.DC_Accomodation_Roomamenities> RA)
+        {
+            using (BL_Accomodation obj = new BL_Accomodation())
+            {
+                return false;
             }
         }
 

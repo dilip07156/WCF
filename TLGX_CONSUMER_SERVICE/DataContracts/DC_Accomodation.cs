@@ -8,6 +8,28 @@ using System.Runtime.Serialization;
 
 namespace DataContracts
 {
+
+    [DataContract]
+    public class DC_Accomodation_Roomamenities
+    {
+
+        [DataMember]
+        public string name { get; set; }
+
+        [DataMember]
+        public Nullable<System.Guid> RoomInfo_Id { get; set; }
+
+        [DataMember]
+        public Nullable<System.Guid> Accommodation_Id { get; set; }
+
+        [DataMember]
+        public string type { get; set; }
+
+        [DataMember]
+        public bool isChargeable { get; set; }
+    }
+
+
     [DataContract]
     public class DC_Accomodation
     {
@@ -1588,6 +1610,13 @@ namespace DataContracts
                 _IsActive = value;
             }
         }
+
+        [DataMember]
+        public Guid? Country_Id { get; set; }
+
+        [DataMember]
+        public Guid? City_Id { get; set; }
+
     }
 
     [DataContract]
@@ -3343,6 +3372,9 @@ namespace DataContracts
         int? _TotalRecords;
 
         [DataMember]
+        public string TLGXAccoRoomId { get; set; }
+
+        [DataMember]
         public Guid Accommodation_RoomInfo_Id
         {
             get
@@ -3707,6 +3739,12 @@ namespace DataContracts
         }
 
         [DataMember]
+        public bool IsAmenityChanges { get; set; }
+
+        [DataMember]
+        public List<DC_Accomodation_Roomamenities> Amenities { get; set; } = new List<DC_Accomodation_Roomamenities>();
+
+        [DataMember]
         public List<DC_Accomodation_RoomFacilities> RoomFacilities
         {
             get
@@ -3757,6 +3795,8 @@ namespace DataContracts
         [DataMember]
         public int? PageSize;
     }
+
+
 
     [DataContract]
     public class DC_Accomodation_RoomFacilities
