@@ -53,5 +53,8 @@ namespace DataContracts.Mapping
         [DataMember]
         public int? Priority { get; set; }
 
+        [DataMember]
+        public string Source { get; set; }
+
     }
 }
