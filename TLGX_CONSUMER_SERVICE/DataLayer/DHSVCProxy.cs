@@ -253,6 +253,8 @@ namespace DataLayer
                     request.Method = "POST";
                 request.ContentType = "application/json";
                 request.KeepAlive = false;
+                request.Timeout = System.Threading.Timeout.Infinite;
+                request.ReadWriteTimeout = System.Threading.Timeout.Infinite;
 
                 var json = JsonConvert.SerializeObject(Param, Newtonsoft.Json.Formatting.None,
                             new JsonSerializerSettings
