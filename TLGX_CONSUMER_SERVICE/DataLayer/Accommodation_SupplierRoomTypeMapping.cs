@@ -73,5 +73,6 @@ namespace DataLayer
         public Nullable<double> MatchingScore { get; set; }
         public Nullable<int> RowCounter { get; set; }
         public Nullable<bool> IsNotTraining { get; set; }
+        public string Source { get; set; }
     }
 }

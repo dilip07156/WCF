@@ -1349,6 +1349,7 @@ namespace DataLayer
                                    Google_Place_Id = a.Google_Place_Id,
                                    FullAddress = a.FullAddress,
                                    InsertFrom = a.InsertFrom,
+                                   IsRoomMappingCompleted = (a.IsRoomMappingCompleted ?? false),
                                    Accomodation_Contact = (from ac in context.Accommodation_Contact
                                                            where ac.Accommodation_Id == a.Accommodation_Id
                                                            select new DataContracts.DC_Accommodation_Contact
@@ -1568,6 +1569,8 @@ namespace DataLayer
                         search.HotelName_Tx = CommonFunctions.HotelNameTX(AccomodationDetails.HotelName, AccomodationDetails.City, AccomodationDetails.Country, ref Keywords);
                         search.Latitude_Tx = (AccomodationDetails.Latitude == null) ? null : CommonFunctions.LatLongTX(AccomodationDetails.Latitude);
                         search.Longitude_Tx = (AccomodationDetails.Longitude == null) ? null : CommonFunctions.LatLongTX(AccomodationDetails.Longitude);
+
+                        search.IsRoomMappingCompleted = AccomodationDetails.IsRoomMappingCompleted;
 
                         //DataContracts.Masters.DC_keywordApply_RQ RQ = new DataContracts.Masters.DC_keywordApply_RQ();
                         //RQ.File_Id = supplierdata.File_Id;
