@@ -1721,7 +1721,7 @@ namespace DataLayer
                     return true;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding accomodation info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -3737,7 +3737,7 @@ namespace DataLayer
                     objNew.Smoking = RI.Smoking;
                     objNew.Legacy_Htl_Id = RI.Legacy_Htl_Id;
                     objNew.IsActive = RI.IsActive;
-
+                    objNew.TLGXAccoRoomId = RI.TLGXAccoRoomId;
                     context.Accommodation_RoomInfo.Add(objNew);
                     context.SaveChanges();
 
@@ -4724,14 +4724,14 @@ namespace DataLayer
 
 
         #region Kafka       
-        public List<DataContracts.DC_Accommodation_RoomInfo> GetAccomodationRoomInfobyAccoID(Guid Accomodation_Id)
+        public List<DataContracts.DC_Accommodation_RoomInfo> GetAccomodationRoomInfobyAccoID(Guid Accomodation_Id, string TLGXID = null)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     var search = from ar in context.Accommodation_RoomInfo
-                                 where ar.Accommodation_Id == Accomodation_Id
+                                 where (TLGXID != null ? ar.TLGXAccoRoomId == TLGXID : ar.Accommodation_Id == Accomodation_Id)
                                  select new DataContracts.DC_Accommodation_RoomInfo
                                  {
                                      Accommodation_Id = ar.Accommodation_Id,
@@ -4745,8 +4745,8 @@ namespace DataLayer
                                      Create_Date = ar.Create_Date,
                                      Create_User = ar.Create_User,
                                      Description = ar.Description,
-                                     Edit_Date = ar.Edit_Date,
-                                     Edit_User = ar.Edit_User,
+                                     Edit_Date = (TLGXID != null ? DateTime.Now : ar.Edit_Date),
+                                     Edit_User = (TLGXID != null ? "Kafka" : ar.Edit_User),
                                      FloorName = ar.FloorName,
                                      FloorNumber = ar.FloorNumber,
                                      Legacy_Htl_Id = ar.Legacy_Htl_Id,
@@ -4760,7 +4760,8 @@ namespace DataLayer
                                      RoomSize = ar.RoomSize,
                                      RoomView = ar.RoomView,
                                      Smoking = ar.Smoking,
-                                     IsActive = (ar.IsActive ?? true),
+                                     TLGXAccoRoomId = ar.TLGXAccoRoomId,
+                                     IsActive = (TLGXID != null ? false : (ar.IsActive ?? true)),
                                      RoomFacilities = (from rf in context.Accommodation_RoomFacility
                                                        where rf.Accommodation_Id == ar.Accommodation_Id
                                                        && rf.Accommodation_RoomInfo_Id == ar.Accommodation_RoomInfo_Id
@@ -4830,22 +4831,90 @@ namespace DataLayer
                             context.Accommodation_RoomInfo.Add(objNew);
                             context.SaveChanges();
 
-                            if (item.IsAmenityChanges == true && item.Amenities.Count > 0) { RA.AddRange(item.Amenities.ToList()); }
-
+                            //if (item.IsAmenityChanges == true && item.Amenities.Count > 0) { RA.AddRange(item.Amenities.ToList()); }
                         }
 
                     }
                 });
 
-                if (RA.Count() > 0)
-                {
-                    AddLstRoomAmenities(RA);
-                }
+                foreach (var item in RI) { if (item.IsAmenityChanges == true && item.Amenities.Count > 0) { RA.AddRange(item.Amenities.ToList()); } }
+
+
+                if (RA.Count() > 0) { AddLstRoomAmenities(RA); }
+
+
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding accomodation room info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while adding accomodation room info",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+        }
+
+        public bool UpdateLstAccomodationRoomInfo(List<DataContracts.DC_Accommodation_RoomInfo> RI)
+        {
+            try
+            {
+                foreach (var itm in RI)
+                {
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        var search = (from a in context.Accommodation_RoomInfo
+                                      where a.TLGXAccoRoomId == itm.TLGXAccoRoomId && a.Accommodation_Id == itm.Accommodation_Id &&
+                                      a.Accommodation_RoomInfo_Id == itm.Accommodation_RoomInfo_Id
+                                      select a).FirstOrDefault();
+
+                        if (search != null)
+                        {
+                            if ((itm.IsActive) != (search.IsActive ?? true))
+                            {
+                                search.IsActive = itm.IsActive;
+                                search.Edit_Date = itm.Edit_Date;
+                                search.Edit_User = itm.Edit_User;
+                            }
+                            else
+                            {
+                                search.Accommodation_Id = itm.Accommodation_Id;
+                                search.Accommodation_RoomInfo_Id = itm.Accommodation_RoomInfo_Id;
+                                search.Legacy_Htl_Id = itm.Legacy_Htl_Id;
+                                search.RoomId = itm.RoomId;
+                                search.RoomView = itm.RoomView;
+                                search.RoomName = itm.RoomName;
+                                search.Description = itm.Description;
+                                search.RoomSize = itm.RoomSize;
+                                search.RoomDecor = itm.RoomDecor;
+                                search.Smoking = itm.Smoking;
+                                search.FloorName = itm.FloorName;
+                                search.FloorNumber = itm.FloorNumber;
+                                search.BathRoomType = itm.BathRoomType;
+                                search.BedType = itm.BedType;
+                                search.CompanyRoomCategory = itm.CompanyRoomCategory;
+                                search.RoomCategory = itm.RoomCategory;
+                                search.IsActive = itm.IsActive;
+                                search.TLGXAccoRoomId = itm.TLGXAccoRoomId;
+                                search.Edit_Date = itm.Edit_Date;
+                                search.Edit_User = itm.Edit_User;
+                            }
+
+                            context.SaveChanges();
+                        }
+
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while adding accomodation room info",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
             }
         }
 
@@ -4853,13 +4922,32 @@ namespace DataLayer
         {
             try
             {
+                //DeleteAllAmenities(item);
 
-                Parallel.ForEach(RI, item =>
+                foreach (var item in RI.Select(x => new { x.Accommodation_Id, x.RoomInfo_Id }).Distinct())
                 {
-                    DeleteAllAmenities(item);
+                    DeleteAllAmenities(item.Accommodation_Id, item.RoomInfo_Id);
+                }
 
+                //Guid? previousaccoId = null;
+                //Guid? previousroomId = null;
+
+                foreach (var item in RI)
+                {
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
+                        //if (previousaccoId == null) { previousaccoId = item.Accommodation_Id; }
+                        //if (previousroomId == null) { previousroomId = item.RoomInfo_Id; }
+
+                        //if (previousaccoId != null && previousroomId != null)
+                        //{
+                        //    if (previousaccoId == item.Accommodation_Id && previousroomId != item.RoomInfo_Id || previousaccoId != item.Accommodation_Id && previousroomId == item.RoomInfo_Id)
+                        //    {
+                        //        DeleteAllAmenities(item);
+
+                        //    }
+                        //}
+
                         Accommodation_RoomFacility objNew = new Accommodation_RoomFacility();
 
                         objNew.Accommodation_RoomFacility_Id = Guid.NewGuid();
@@ -4876,7 +4964,40 @@ namespace DataLayer
                         context.Accommodation_RoomFacility.Add(objNew);
                         context.SaveChanges();
                     }
-                });
+                }
+
+                //Parallel.ForEach(RI, item =>
+                //{
+                //    using (ConsumerEntities context = new ConsumerEntities())
+                //    {
+                //        if (previousaccoId == null) { previousaccoId = item.Accommodation_Id; }
+                //        if (previousroomId == null) { previousroomId = item.RoomInfo_Id; }
+
+                //        if (previousaccoId != null && previousroomId != null)
+                //        {
+                //            if (previousaccoId == item.Accommodation_Id && previousroomId != item.RoomInfo_Id || previousaccoId != item.Accommodation_Id && previousroomId == item.RoomInfo_Id)
+                //            {
+                //                DeleteAllAmenities(item);
+                //            }
+                //        }
+
+                //        Accommodation_RoomFacility objNew = new Accommodation_RoomFacility();
+
+                //        objNew.Accommodation_RoomFacility_Id = Guid.NewGuid();
+                //        objNew.Accommodation_Id = item.Accommodation_Id;
+                //        objNew.Accommodation_RoomInfo_Id = item.RoomInfo_Id;
+                //        objNew.AmenityType = item.type;
+                //        objNew.AmenityName = item.name;
+                //        objNew.Description = null;
+                //        objNew.Create_Date = DateTime.Now;
+                //        objNew.Create_User = "Kafka";
+                //        objNew.Edit_Date = DateTime.Now;
+                //        objNew.Edit_user = "Kafka";
+                //        objNew.IsActive = true;
+                //        context.Accommodation_RoomFacility.Add(objNew);
+                //        context.SaveChanges();
+                //    }
+                //});
 
                 return true;
             }
@@ -4888,7 +5009,7 @@ namespace DataLayer
         }
 
 
-        public DC_Message DeleteAllAmenities(DataContracts.DC_Accomodation_Roomamenities param)
+        public DC_Message DeleteAllAmenities(Guid? Accommodation_Id, Guid? RoomInfo_Id)
         {
             DC_Message _msg = new DC_Message();
 
@@ -4897,7 +5018,7 @@ namespace DataLayer
                 try
                 {
                     var search = (from a in context.Accommodation_RoomFacility
-                                  where a.Accommodation_Id == param.Accommodation_Id && a.Accommodation_RoomInfo_Id == param.RoomInfo_Id
+                                  where a.Accommodation_Id == Accommodation_Id && a.Accommodation_RoomInfo_Id == RoomInfo_Id
                                   select a);
                     if (search != null && search.Count() > 0)
                     {
@@ -4916,7 +5037,7 @@ namespace DataLayer
                 }
                 catch (Exception e)
                 {
-                    throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while deleting Hotel Contact", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                    //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while deleting Hotel Contact", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
                 }
             }
             return _msg;

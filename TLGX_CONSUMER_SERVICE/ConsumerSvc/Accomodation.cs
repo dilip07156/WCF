@@ -913,7 +913,7 @@ namespace ConsumerSvc
             using (BL_Accomodation objBL = new BL_Accomodation())
             {
                 List<DC_Accommodation_RoomInfo> searchResults = new List<DC_Accommodation_RoomInfo>();
-                searchResults = objBL.GetAccomodationRoomInfobyAccoID(Guid.Parse(Accomodation_Id));
+                searchResults = objBL.GetAccomodationRoomInfobyAccoID((Accomodation_Id.Contains("ACCOID-") ? Guid.NewGuid() : Guid.Parse(Accomodation_Id)), (Accomodation_Id.Contains("ACCOID-") ? Accomodation_Id : null));
 
                 if (searchResults == null)
                 {
@@ -930,6 +930,15 @@ namespace ConsumerSvc
                 return obj.AddLstAccomodationRoomInfo(RI);
             }
         }
+
+        public bool UpdateLstAccomodationRoomInfo(List<DataContracts.DC_Accommodation_RoomInfo> RI)
+        {
+            using (BL_Accomodation obj = new BL_Accomodation())
+            {
+                return obj.UpdateLstAccomodationRoomInfo(RI);
+            }
+        }
+
 
         public bool AddLstRoomAmenities(List<DataContracts.DC_Accomodation_Roomamenities> RA)
         {

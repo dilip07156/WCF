@@ -470,12 +470,18 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "AddLstAccomodation/RoomInfo", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool AddLstAccomodationRoomInfo(List<DataContracts.DC_Accommodation_RoomInfo> RI);
 
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "UpdateLstAccomodation/RoomInfo", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        bool UpdateLstAccomodationRoomInfo(List<DataContracts.DC_Accommodation_RoomInfo> RI);
+
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "AddLstAccomodation/RoomAmenities", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool AddLstRoomAmenities(List<DataContracts.DC_Accomodation_Roomamenities> RA);
 
-        
+
         #endregion KAFKA
 
     }

@@ -692,11 +692,11 @@ namespace BusinessLayer
             }
         }
 
-        public List<DataContracts.DC_Accommodation_RoomInfo> GetAccomodationRoomInfobyAccoID(Guid Accomodation_Id)
+        public List<DataContracts.DC_Accommodation_RoomInfo> GetAccomodationRoomInfobyAccoID(Guid Accomodation_Id, string TLGXID = null)
         {
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
             {
-                return obj.GetAccomodationRoomInfobyAccoID(Accomodation_Id);
+                return obj.GetAccomodationRoomInfobyAccoID(Accomodation_Id, (TLGXID != null ? TLGXID.Replace("ACCOID-", "") : null));
             }
         }
 
@@ -705,6 +705,14 @@ namespace BusinessLayer
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
             {
                 return obj.AddLstAccomodationRoomInfo(RI);
+            }
+        }
+
+        public bool UpdateLstAccomodationRoomInfo(List<DataContracts.DC_Accommodation_RoomInfo> RI)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.UpdateLstAccomodationRoomInfo(RI);
             }
         }
 
