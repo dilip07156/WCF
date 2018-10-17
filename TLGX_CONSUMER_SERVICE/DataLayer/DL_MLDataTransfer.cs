@@ -417,9 +417,13 @@ namespace DataLayer
                     string DataTransferForTrainingDataMappingStatus = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["DataTransferForTrainingDataMappingStatus"]);
 
                     //Get Total Count
-                    string strTotalCount = @"SELECT COUNT(1) FROM Accommodation_SupplierRoomTypeMapping SRTM with(nolock)
-                                             JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) ON SRTM.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id
-                                             where SRTM.MappingStatus IN (" + DataTransferForTrainingDataMappingStatus + ")";
+                    string strTotalCount = @"SELECT COUNT(1) FROM 
+                                                Accommodation_SupplierRoomTypeMapping_Values SRTMV with(NOLOCK)
+                                                JOIN Accommodation_SupplierRoomTypeMapping SRTM with(nolock) 
+                                                    ON SRTMV.Accommodation_SupplierRoomTypeMapping_Id = SRTM.Accommodation_SupplierRoomTypeMapping_Id
+                                                JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) 
+                                                    ON SRTM.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id
+                                             where SRTMV.UserMappingStatus IN (" + DataTransferForTrainingDataMappingStatus + ")";
 
                     try { TotalCount = context.Database.SqlQuery<int>(strTotalCount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
                     int NoOfBatch = TotalCount / BatchSize;
@@ -495,9 +499,9 @@ namespace DataLayer
                                         SRTM.SupplierProductId AS  SupplierRoomSupplierProductId, 
                                         SRTM.Tx_StrippedName AS  TxStrippedName, 
                                         SRTM.Tx_ReorderedName AS  TxReorderedName, 
-                                        SRTM.MappingStatus AS  SupplierRoomMappingStatus, 
-                                        SRTM.MapId AS  MapId, 
-                                        SRTM.Accommodation_RoomInfo_Id AS  AccommodationRoomInfoId, 
+                                        SRTMV.UserMappingStatus AS  SupplierRoomMappingStatus, 
+                                        SRTMV.MapId AS  MapId, 
+                                        SRTMV.Accommodation_RoomInfo_Id AS  AccommodationRoomInfoId, 
                                         SRTM.RoomDescription AS  SupplierRoomRoomDescription, 
                                         SRTM.RoomSize AS  SupplierRoomRoomSize,
                                         ARI.Legacy_Htl_Id AS TLGXCommonHotelId,
@@ -523,9 +527,10 @@ namespace DataLayer
                                         ARI.Edit_Date as AccoEditDate,
                                         SRTM.MatchingScore,
                                         '' AS SimilarityIndicator         
-                                        FROM Accommodation_SupplierRoomTypeMapping SRTM WITH (NOLOCK) 
-                                        JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) ON SRTM.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id ");
-                    sbSelect.Append(" where SRTM.MappingStatus IN (");
+                                        FROM Accommodation_SupplierRoomTypeMapping_Values SRTMV WITH(NOLOCK)
+                                        JOIN Accommodation_SupplierRoomTypeMapping SRTM WITH (NOLOCK) ON SRTMV.Accommodation_SupplierRoomTypeMapping_Id = SRTM.Accommodation_SupplierRoomTypeMapping_Id
+                                        JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) ON SRTMV.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id ");
+                    sbSelect.Append(" where SRTMV.UserMappingStatus IN (");
                     sbSelect.Append(DataTransferForTrainingDataMappingStatus);
                     sbSelect.Append(" )  ");
 
@@ -1120,11 +1125,12 @@ namespace DataLayer
 
                         if (SupplierRoomTypeMappingValue != null)
                         {
-                            var roominfo = context.Accommodation_RoomInfo.Where(RInfo => RInfo.Accommodation_RoomInfo_Id == result.Accommodation_RoomInfo_Id).FirstOrDefault();
+                           
                             DC_ML_DL_SupplierAcco_Room_Data_RealTime _objToSendAIML;
                             foreach (var item in SupplierRoomTypeMappingValue)
                             {
                                 //Creating Data to send AIML
+                                var roominfo = context.Accommodation_RoomInfo.Where(RInfo => RInfo.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).FirstOrDefault();
                                 _objToSendAIML = new DC_ML_DL_SupplierAcco_Room_Data_RealTime()
                                 {
                                     AccommodationSupplierRoomTypeMappingId = Convert.ToString(item.Accommodation_SupplierRoomTypeMapping_Id),
@@ -1155,7 +1161,7 @@ namespace DataLayer
                                     SupplierRoomSupplierProductId = result.SupplierProductId,
                                     TxStrippedName = result.Tx_StrippedName,
                                     TxReorderedName = result.Tx_ReorderedName,
-                                    SupplierRoomMappingStatus = result.MappingStatus,
+                                    SupplierRoomMappingStatus = item.UserMappingStatus,
                                     MapId = item.MapId,
                                     AccommodationRoomInfoId = Convert.ToString(item.Accommodation_RoomInfo_Id),
                                     SupplierRoomRoomDescription = result.RoomDescription,
