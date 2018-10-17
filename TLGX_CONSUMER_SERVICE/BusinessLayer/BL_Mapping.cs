@@ -696,7 +696,7 @@ namespace BusinessLayer
         #endregion
 
         #region Supplier Data Export
-        public List<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport( string AccoPriority, string SupplierID, string IsMdmDataOnly)
+        public List<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport( string AccoPriority, string SupplierID, string IsMdmDataOnly, string SuppPriority)
         {
             int accoPriority;
             if (!int.TryParse(AccoPriority, out accoPriority))
@@ -715,9 +715,15 @@ namespace BusinessLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
             }
 
+            int suppPriority;
+            if (!int.TryParse(SuppPriority, out suppPriority))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+
             using (DL_Mapping objBL = new DL_Mapping())
             {
-                return objBL.GetSupplierDataForExport(accoPriority,gSupplier_Id, bIsMdmDataOnly);
+                return objBL.GetSupplierDataForExport(accoPriority,gSupplier_Id, bIsMdmDataOnly, suppPriority);
             }
         }
 

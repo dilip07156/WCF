@@ -1217,7 +1217,6 @@ namespace DataLayer
             catch (Exception ex)
             {
 
-                throw;
             }
         }
         #endregion
