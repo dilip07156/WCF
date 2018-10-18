@@ -769,5 +769,17 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        #region EzeegoHotelVs
+        public List<DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport> EzeegoHotelVsSupplierHotelMappingReport(DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport_RQ RQ)
+        {
+            //DC_EzeegoHotelVsSupplierHotelMappingReport_RQ rq = new DC_EzeegoHotelVsSupplierHotelMappingReport_RQ();
+            //rq.Region = RQ.Select();
+            using (DL_Mapping objBL = new DL_Mapping())
+            {
+                return objBL.EzeegoHotelVsSupplierHotelMappingReport(RQ);
+            }
+        }
+        #endregion
     }
 }

@@ -805,5 +805,23 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        #region
+        public List<DataContracts.DC_Master_Country> GetRegionwiseCountriesList(List<string> RegionCodeList)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetRegionwiseCountriesList(RegionCodeList);
+            }
+        }
+
+        public List<DataContracts.DC_Master_City> GetCountrywiseCitiesList(List<Guid> CountryIdListList)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetCountrywiseCitiesList(CountryIdListList);
+            }
+        }
+        #endregion	
     }
 }

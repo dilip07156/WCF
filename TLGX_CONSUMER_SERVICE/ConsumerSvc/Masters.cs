@@ -810,5 +810,23 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
+        #region Multiselect Dropdown
+        public IList<DataContracts.DC_Master_Country> GetRegionwiseCountriesList(List<string> RegionCodeList)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetRegionwiseCountriesList(RegionCodeList);
+            }
+        }
+
+        public IList<DataContracts.DC_Master_City> GetCountrywiseCitiesList(List<string> CountryIdList)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetCountrywiseCitiesList(CountryIdList.ConvertAll(Guid.Parse));
+            }
+        }
+        #endregion
     }
 }

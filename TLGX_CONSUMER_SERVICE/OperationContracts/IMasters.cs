@@ -554,5 +554,19 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "Master/Zone/IncludeExcludeHotels", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataContracts.DC_Message IncludeExcludeHotels(DataContracts.Masters.DC_ZoneRQ param);
         #endregion
+
+        #region MultiSelectDropdown
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Master/GetRegionwiseCountries/CountryList", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.DC_Master_Country> GetRegionwiseCountriesList(List<string> RegionCodeList);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Master/GetCountrywiseCities/CityList", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.DC_Master_City> GetCountrywiseCitiesList(List<string> CountryIdList);
+
+        #endregion
     }
 }

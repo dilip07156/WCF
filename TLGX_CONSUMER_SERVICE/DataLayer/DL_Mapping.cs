@@ -10346,5 +10346,87 @@ namespace DataLayer
             var msg = _obj.AddStaticDataUploadErrorLog(obj);
         }
         #endregion
+
+        #region 
+        public List<DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport> EzeegoHotelVsSupplierHotelMappingReport(DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport_RQ RQ)
+        {
+            try
+            {
+                List<DC_EzeegoHotelVsSupplierHotelMappingReport> response = new List<DC_EzeegoHotelVsSupplierHotelMappingReport>();
+
+
+                StringBuilder sbSelect = new StringBuilder();
+                StringBuilder sbFrom = new StringBuilder();
+                StringBuilder sbJoin = new StringBuilder();
+                StringBuilder sbWhere = new StringBuilder();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var regionData = RQ.Region;
+                    // var countryData = RQ[0].Country;
+                    string countryData = String.Join(",", RQ.Country.Select(s => "'" + s + "'"));
+
+                    string cityData = String.Join(",", RQ.City.Select(s => "'" + s + "'"));
+
+                    string supplierData = String.Join(",", RQ.Supplier.Select(s => "'" + s + "'"));
+                    //  var AccoPriority = RQ[0].AccoPriority.Select(int.Parse).ToList(); 
+
+                    string AccoPriority = String.Join(",", RQ.AccoPriority.Select(s => "'" + s + "'"));
+                    // var HotelId = Convert.ToInt16(RQ[0].selectedHotelId ?? "0");
+
+
+                    sbSelect.Append(" Select ac.Legacy_HTL_ID, ac.TLGXAccoId,  ac.HotelName,ac.country AS CountryName, ac.city AS CityName, ac.Priority");
+                    sbFrom.Append(" From Accommodation ac with(NOLOCK) ");
+
+                    if (RQ.Country.Count > 0)
+                    {
+                        sbWhere.Append(" where ac.Country_Id in(" + countryData + ")");
+                    }
+
+                    if (RQ.Supplier.Count > 0)
+                    {
+                        sbSelect.Append(" , apm.SupplierName, apm.Status");
+                        sbJoin.Append(" Join Accommodation_ProductMapping apm with(nolock) on ac.Accommodation_Id = apm.Accommodation_Id");
+                        sbWhere.Append(" and apm.Supplier_Id in(" + supplierData + ")");
+                    }
+
+                    if (RQ.City.Count > 0)
+                    {
+                        sbWhere.Append(" and ac.City_Id in(" + cityData + ")");
+                    }
+
+                    if (RQ.AccoPriority.Count > 0)
+                    {
+                        sbWhere.Append(" and CAST(ac.Priority AS varchar(50)) AS Priority in(" + AccoPriority + ")");
+                    }
+
+
+                    StringBuilder sbfinalquery = new StringBuilder();
+                    sbfinalquery.Append(sbSelect); sbfinalquery.Append(" ");
+                    sbfinalquery.Append(sbFrom); sbfinalquery.Append(" ");
+                    sbfinalquery.Append(sbJoin); sbfinalquery.Append(" ");
+                    sbfinalquery.Append(sbWhere); sbfinalquery.Append(" ");
+
+                    var result = context.Database.SqlQuery<DC_EzeegoHotelVsSupplierHotelMappingReport>(sbfinalquery.ToString()).ToList();
+
+                    if (result.Count == 0)
+                    {
+                        return result = new List<DC_EzeegoHotelVsSupplierHotelMappingReport> { };
+                    }
+                    else
+                    {
+                        return result;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+
+
+
+        }
+        #endregion
     }
 }

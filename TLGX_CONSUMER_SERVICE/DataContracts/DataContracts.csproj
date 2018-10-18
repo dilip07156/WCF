@@ -163,6 +163,8 @@
     <Compile Include="DC_SqlTableColumnInfo.cs" />
     <Compile Include="Mapping\DC_Accommodation_SupplierRoomTypeMapping_Values.cs" />
     <Compile Include="Mapping\DC_Accommodation_SupplierRoomTypeMapping_Online.cs" />
+    <Compile Include="Mapping\DC_EzeegoHotelVsSupplierHotelMappingReport.cs" />
+    <Compile Include="Masters\DC_Master_Region.cs" />
     <Compile Include="ML\DC_ML_DL_MasterAccoRecord.cs" />
     <Compile Include="ML\DC_ML_DL_MasterAccoRoomFacility.cs" />
     <Compile Include="ML\DC_ML_DL_MasterAccoRoomInfo.cs" />

@@ -439,6 +439,12 @@ namespace ConsumerSvc
 
         #endregion
 
-        
+        public IList<DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport> EzeegoHotelVsSupplierHotelMappingReport(DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport_RQ RQ)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.EzeegoHotelVsSupplierHotelMappingReport(RQ);
+            }
+        }
     }
 }
