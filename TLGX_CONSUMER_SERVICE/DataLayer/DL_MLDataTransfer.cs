@@ -496,9 +496,9 @@ namespace DataLayer
                                         SRTM.SupplierProductId AS  SupplierRoomSupplierProductId, 
                                         SRTM.Tx_StrippedName AS  TxStrippedName, 
                                         SRTM.Tx_ReorderedName AS  TxReorderedName, 
-                                        SRTM.MappingStatus AS  SupplierRoomMappingStatus, 
-                                        SRTM.MapId AS  MapId, 
-                                        SRTM.Accommodation_RoomInfo_Id AS  AccommodationRoomInfoId, 
+                                        SRTMV.UserMappingStatus AS  SupplierRoomMappingStatus, 
+                                        SRTMV.MapId AS  MapId, 
+                                        SRTMV.Accommodation_RoomInfo_Id AS  AccommodationRoomInfoId, 
                                         SRTM.RoomDescription AS  SupplierRoomRoomDescription, 
                                         SRTM.RoomSize AS  SupplierRoomRoomSize,
                                         ARI.Legacy_Htl_Id AS TLGXCommonHotelId,
@@ -524,9 +524,10 @@ namespace DataLayer
                                         ARI.Edit_Date as AccoEditDate,
                                         SRTM.MatchingScore,
                                         '' AS SimilarityIndicator         
-                                        FROM Accommodation_SupplierRoomTypeMapping SRTM WITH (NOLOCK) 
-                                        JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) ON SRTM.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id ");
-                    sbSelect.Append(" where SRTM.MappingStatus IN (");
+                                        FROM Accommodation_SupplierRoomTypeMapping_Values SRTMV WITH(NOLOCK)
+                                        JOIN Accommodation_SupplierRoomTypeMapping SRTM WITH (NOLOCK) ON SRTMV.Accommodation_SupplierRoomTypeMapping_Id = SRTM.Accommodation_SupplierRoomTypeMapping_Id
+                                        JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) ON SRTMV.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id ");
+                    sbSelect.Append(" where SRTMV.UserMappingStatus IN (");
                     sbSelect.Append(DataTransferForTrainingDataMappingStatus);
                     sbSelect.Append(" )  ");
 
@@ -543,13 +544,11 @@ namespace DataLayer
                     {
                         StringBuilder sbSelectSRTA = new StringBuilder();
                         sbSelectSRTA.Append(@"SELECT  
-                                        RoomTypeMapAttribute_Id,
-                                        RoomTypeMap_Id,
-                                        SupplierRoomTypeAttribute,
-                                        SystemAttributeKeyword
-                                        FROM Accommodation_SupplierRoomTypeAttributes SRTMA with(nolock) 
-                                        INNER JOIN Accommodation_SupplierRoomTypeMapping SRTM with(nolock) ON SRTMA.RoomTypeMap_Id = SRTM.Accommodation_SupplierRoomTypeMapping_Id 
-                                        WHERE SRTM.MappingStatus = 'MAPPED' ");
+                                                RoomTypeMapAttribute_Id,RoomTypeMap_Id,
+                                                SupplierRoomTypeAttribute,SystemAttributeKeyword
+                                                FROM Accommodation_SupplierRoomTypeAttributes SRTMA with(nolock) 
+                                                INNER JOIN Accommodation_SupplierRoomTypeMapping_Values SRTMV with(nolock) ON SRTMA.RoomTypeMap_Id = SRTMV.Accommodation_SupplierRoomTypeMapping_Id 
+                                                WHERE SRTMV.UserMappingStatus = 'MAPPED' ");
 
                         try { SRTA = context.Database.SqlQuery<DataContracts.DC_ML_SupplierAcco_RoomExtendedAttributes_Data>(sbSelectSRTA.ToString()).ToList(); } catch (Exception ex) { }
                     }
@@ -571,7 +570,7 @@ namespace DataLayer
                             SupplierRoomTypeCode = item.SupplierRoomTypeCode,
                             SupplierRoomName = item.SupplierRoomName,
                             TXRoomName = item.TXRoomName,
-                            SupplierRoomBedType = Convert.ToString(item.SupplierRoomBedType) + "-" + Convert.ToString(item.SupplierRoomBedTypeCode),
+                            SupplierRoomBedType = Convert.ToString(item.SupplierRoomBedType) + " - " + Convert.ToString(item.SupplierRoomBedTypeCode),
                             SupplierRoomSmoking = item.SupplierRoomSmoking,
                             SupplierRoomView = item.SupplierRoomView,
                             SupplierRoomExtractedAttributes = SRTA.Where(w => w.RoomTypeMap_Id == item.AccommodationSupplierRoomTypeMappingId).Select(s => new DC_ML_RoomTypeMatch_ExtractedAttributes { Key = s.SystemAttributeKeyword, Value = s.SupplierRoomTypeAttribute }).ToList(),
@@ -1106,10 +1105,12 @@ namespace DataLayer
 
                         if (SupplierRoomTypeMappingValue != null)
                         {
-                            var roominfo = context.Accommodation_RoomInfo.Where(RInfo => RInfo.Accommodation_RoomInfo_Id == result.Accommodation_RoomInfo_Id).FirstOrDefault();
+                            
                             DC_ML_DL_SupplierAcco_Room_Data_RealTime _objToSendAIML;
                             foreach (var item in SupplierRoomTypeMappingValue)
                             {
+                                //Creating Data to send AIML
+                                var roominfo = context.Accommodation_RoomInfo.Where(RInfo => RInfo.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).FirstOrDefault();
                                 //Creating Data to send AIML
                                 _objToSendAIML = new DC_ML_DL_SupplierAcco_Room_Data_RealTime()
                                 {
@@ -1141,7 +1142,7 @@ namespace DataLayer
                                     SupplierRoomSupplierProductId = result.SupplierProductId,
                                     TxStrippedName = result.Tx_StrippedName,
                                     TxReorderedName = result.Tx_ReorderedName,
-                                    SupplierRoomMappingStatus = result.MappingStatus,
+                                    SupplierRoomMappingStatus = item.UserMappingStatus,
                                     MapId = item.MapId,
                                     AccommodationRoomInfoId = Convert.ToString(item.Accommodation_RoomInfo_Id),
                                     SupplierRoomRoomDescription = result.RoomDescription,
