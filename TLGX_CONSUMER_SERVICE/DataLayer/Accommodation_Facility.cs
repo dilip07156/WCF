@@ -11,7 +11,7 @@ namespace DataLayer
 {
     using System;
     using System.Collections.Generic;
-
+    
     public partial class Accommodation_Facility : IDisposable
     {
         public System.Guid Accommodation_Facility_Id { get; set; }
@@ -29,7 +29,6 @@ namespace DataLayer
 
         public void Dispose()
         {
-            
         }
     }
 }

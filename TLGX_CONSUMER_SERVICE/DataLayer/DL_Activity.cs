@@ -2383,7 +2383,8 @@ namespace DataLayer
                                      //TourType
                                      Activity_TourType = a.TourType,
                                      SupplierTourType = spm.SupplierTourType,
-
+                                     TLGXDisplaySubType_ID = a.TLGXDisplaySubType_ID,
+                                     TLGXDisplaySubType = a.TLGXDisplaySubType,
 
                                      //TourType
 
@@ -2486,6 +2487,8 @@ namespace DataLayer
                             res.Edit_User = RQ.Edit_User;
 
                             res.ProductCategory = RQ.ProductCategory;
+                            res.TLGXDisplaySubType = RQ.TLGXDisplaySubType;
+                            res.TLGXDisplaySubType_ID = RQ.TLGXDisplaySubType_ID;
 
                             if (!string.IsNullOrWhiteSpace(RQ.ProductCategorySubType))
                             {
@@ -2748,6 +2751,8 @@ namespace DataLayer
                         obj.Street4 = RQ.Street4;
                         obj.Street5 = RQ.Street5;
                         obj.USP = RQ.USP;
+                        obj.TLGXDisplaySubType = RQ.TLGXDisplaySubType;
+                        obj.TLGXDisplaySubType_ID = RQ.TLGXDisplaySubType_ID;
                         obj.Create_Date = DateTime.Now;
                         obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
                         obj.TourType = RQ.Activity_TourType;

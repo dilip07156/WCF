@@ -1499,6 +1499,11 @@ namespace DataContracts.Masters
         [DataMember]
         public string SupplierTourType { get; set; }
 
+        [DataMember]
+        public Guid? TLGXDisplaySubType_ID { get; set; }
+
+        [DataMember]
+        public string TLGXDisplaySubType { get; set; }
 
         [DataMember]
         public string SupplierLocation { get; set; }
