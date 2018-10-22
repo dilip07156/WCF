@@ -8,6 +8,19 @@ namespace OperationContracts
     [ServiceContract]
     public interface IStaticDataHandler
     {
+        #region AddFileDetails
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "DataHandler/MongoFileDetails/InsertAndGet/{SupplierId}/{EntityId}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.UploadStaticData.DC_SupplierImportFileDetails InsertAndGetMongoFileDetails(string SupplierId, string EntityId);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "DataHandler/UploadStaticData/FileDetails/Add", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message AddStaticDataFileDetail(DataContracts.UploadStaticData.DC_SupplierImportFileDetails obj);
+
+        #endregion AddFileDetails
+
         #region "Mapping Config Attributes"
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
@@ -30,10 +43,7 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "DataHandler/FileDetails/UpdateProcessStatus", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataContracts.DC_Message UpdateStaticDataFileDetailStatus(DataContracts.UploadStaticData.DC_SupplierImportFileDetails obj);
 
-        [OperationContract]
-        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "DataHandler/MongoFileDetails/InsertAndGet/{SupplierId}/{EntityId}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DataContracts.UploadStaticData.DC_SupplierImportFileDetails InsertAndGetMongoFileDetails(string SupplierId, string EntityId);
+        
 
         #endregion
 
@@ -250,5 +260,7 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "DataHandler/Keyword/Apply", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataContracts.DC_Message ApplyKeyword(DataContracts.Masters.DC_keywordApply_RQ RQ);
         #endregion
+
+
     }
 }
