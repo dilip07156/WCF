@@ -246,7 +246,7 @@ namespace DataContracts
         public string TxStrippedName { get; set; }
         public string TxReorderedName { get; set; }
         public string SupplierRoomMappingStatus { get; set; }
-        public int? MapId { get; set; }
+        public long? MapId { get; set; }
         public Guid? AccommodationRoomInfoId { get; set; }
         public string SupplierRoomRoomDescription { get; set; }
         public string SupplierRoomRoomSize { get; set; }
