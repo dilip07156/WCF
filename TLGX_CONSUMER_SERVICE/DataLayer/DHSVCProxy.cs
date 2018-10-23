@@ -226,7 +226,7 @@ namespace DataLayer
             }
         }
 
-        public static bool PostDataNewtonsoft(ProxyFor For, string URI, object Param, Type RequestType, Type ResponseType, out object ReturnValue)
+        public static bool PostDataNewtonsoft(ProxyFor For, string URI, object Param, Type RequestType, Type ResponseType, out object ReturnValue, string method = "")
         {
             try
             {
@@ -247,9 +247,14 @@ namespace DataLayer
                 HttpWebRequest request;
                 request = (HttpWebRequest)WebRequest.Create(AbsPath + URI);
 
-                request.Method = "POST";
+                if (!String.IsNullOrWhiteSpace(method))
+                    request.Method = method;
+                else
+                    request.Method = "POST";
                 request.ContentType = "application/json";
                 request.KeepAlive = false;
+                request.Timeout = System.Threading.Timeout.Infinite;
+                request.ReadWriteTimeout = System.Threading.Timeout.Infinite;
 
                 var json = JsonConvert.SerializeObject(Param, Newtonsoft.Json.Formatting.None,
                             new JsonSerializerSettings
@@ -261,7 +266,7 @@ namespace DataLayer
                     streamWriter.Write(json);
                 }
 
-               var response = request.GetResponse();
+                var response = request.GetResponse();
 
                 if (((System.Net.HttpWebResponse)response).StatusCode != HttpStatusCode.OK)
                 {
@@ -273,7 +278,7 @@ namespace DataLayer
                     StreamReader sr = new StreamReader(newStream);
                     var result = sr.ReadToEnd();
                     ReturnValue = JsonConvert.DeserializeObject(result, ResponseType);
-                    
+
                 }
                 response.Dispose();
                 response = null;

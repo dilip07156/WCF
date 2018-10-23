@@ -2899,6 +2899,7 @@ namespace DataLayer
                             newRTM.TX_RoomName = null;
                             newRTM.Tx_StrippedName = null;
 
+                            //Added source in SRTM
                             newRTM.Source = "Online";
 
                             data.Accommodation_SupplierRoomType_Id = ASRTM_ID.ToString().ToUpper();

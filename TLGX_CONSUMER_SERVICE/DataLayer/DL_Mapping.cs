@@ -17,6 +17,7 @@ using DataContracts;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.SqlClient;
+using DataContracts.ML;
 
 namespace DataLayer
 {
@@ -3141,6 +3142,7 @@ namespace DataLayer
                 {
                     return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Request message has no records." };
                 }
+                bool IsNotTrainingflag = true;
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
@@ -3150,7 +3152,8 @@ namespace DataLayer
                     string CallingUser = woc.Headers["CallingUser"];
 
                     //get all records for this supplier room record.
-                    var allaccoSuppRoomTypeMapVals = context.Accommodation_SupplierRoomTypeMapping_Values.Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == obj[0].Accommodation_SupplierRoomTypeMapping_Id).ToList();
+                    Guid _acoo_supRoomId = Guid.Parse(Convert.ToString(obj[0].Accommodation_SupplierRoomTypeMapping_Id));
+                    var allaccoSuppRoomTypeMapVals = context.Accommodation_SupplierRoomTypeMapping_Values.Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == _acoo_supRoomId).ToList();
 
                     foreach (DC_Accommodation_SupplierRoomTypeMapping_Values item in obj)
                     {
@@ -3177,6 +3180,7 @@ namespace DataLayer
                                 context.Accommodation_SupplierRoomTypeMapping_Values.Add(dc);
                             }
                         }
+                        IsNotTrainingflag = item.IsNotTraining ?? true;
                     }
 
                     if (context.ChangeTracker.HasChanges())
@@ -3216,8 +3220,15 @@ namespace DataLayer
                         }
 
                         context.SaveChanges();
+
+
                     }
 
+                    //Call Training Data To push 
+                    if (!IsNotTrainingflag)
+                    {
+                        DeleteOrSendTraingData(Guid.Parse(Convert.ToString(obj[0].Accommodation_SupplierRoomTypeMapping_Id)), IsNotTrainingflag);
+                    }
                 }
                 return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "All Valid Records are successfully updated." };
             }
@@ -3243,6 +3254,8 @@ namespace DataLayer
                         var accoSuppRoomTypeMap = context.Accommodation_SupplierRoomTypeMapping.Find(item.Accommodation_SupplierRoomTypeMapping_Id);
                         if (accoSuppRoomTypeMap != null)
                         {
+                            //If IsNotTraining is true & system falg is true then delete else do nothing
+                            DeleteOrSendTraingData(item.Accommodation_SupplierRoomTypeMapping_Id, item.IsNotTraining);
                             accoSuppRoomTypeMap.IsNotTraining = item.IsNotTraining;
                             accoSuppRoomTypeMap.Edit_User = item.Edit_User ?? CallingUser;
                             accoSuppRoomTypeMap.Edit_Date = DateTime.Now;
@@ -3257,6 +3270,29 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating Training flag" + ex.Message, ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+
+        public void DeleteOrSendTraingData(Guid Accommodation_SupplierRoomTypeMapping_Id, bool IsNotTraining)
+        {
+            string strURI;
+            string baseAddress = Convert.ToString(OperationContext.Current.Host.BaseAddresses[0]);
+
+            if (IsNotTraining)
+            {
+                //Calling Delete API is located
+                strURI = string.Format(baseAddress + System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_DeleteTrainingData"] + Accommodation_SupplierRoomTypeMapping_Id.ToString());
+            }
+            else
+            {
+                //Sent releavent data to training system. string baseAddress = Convert.ToString(OperationContext.Current.Host.BaseAddresses[0]);
+                strURI = string.Format(baseAddress + System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_TrainingDataPushToAIML"] + Accommodation_SupplierRoomTypeMapping_Id.ToString());
+            }
+            using (DHSVCProxyAsync DHP = new DHSVCProxyAsync())
+            {
+                DHP.GetAsync(ProxyFor.MachingLearningDataTransfer, strURI);
+            }
+        }
+
 
         public IList<DataContracts.Mapping.DC_SupplierRoomTypeAttributes> GetAttributesForAccomodationSupplierRoomTypeMapping(Guid SupplierRoomtypeMappingID)
         {
@@ -7740,7 +7776,7 @@ namespace DataLayer
         #endregion
 
         #region Export Supplier Data
-        public List<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport(int? AccoPriority, Guid? Supplier_id, bool IsMdmDataOnly)
+        public List<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport(int? AccoPriority, Guid? Supplier_id, bool IsMdmDataOnly, int? SuppPriority)
         {
             try
             {
@@ -7753,8 +7789,13 @@ namespace DataLayer
                     //List<Dashboard_MappingStat> MappingData = new List<Dashboard_MappingStat>();
                     List<USP_MappingStatus_Result> MappingData = new List<USP_MappingStatus_Result>();
 
+                    if (SuppPriority == 0)
+                    {
+                        SuppPriority = null;
+                    }
+
                     //var temp = context.USP_MappingStatus();
-                    var suppliermaster = context.Supplier.Where(w => w.StatusCode == "ACTIVE" && w.Supplier_Id == (Supplier_id == Guid.Empty ? w.Supplier_Id : Supplier_id)).Select(s => new
+                    var suppliermaster = context.Supplier.Where(w => w.StatusCode == "ACTIVE" && w.Priority==(SuppPriority == null ? w.Priority: SuppPriority) && w.Supplier_Id == (Supplier_id == Guid.Empty ? w.Supplier_Id : Supplier_id)).Select(s => new
                     {
                         s.Supplier_Id,
                         s.Name,
@@ -7861,7 +7902,7 @@ namespace DataLayer
                     {
                         var supplierResult = new DC_SupplierExportDataReport();
 
-                        supplierResult.Priority = Convert.ToString(supplier.Priority);
+                        supplierResult.Priority = Convert.ToString(supplier.Priority == null ? "" : "P"+supplier.Priority);
                         supplierResult.Supplier_Id = supplier.Supplier_Id;
                         supplierResult.SupplierName = supplier.Name;
 
@@ -10142,12 +10183,10 @@ namespace DataLayer
                 StringBuilder sbselect = new StringBuilder();
                 StringBuilder sbfrom = new StringBuilder();
                 StringBuilder sbwhere = new StringBuilder();
-
-
+                List<DataContracts.Mapping.DC_CountryMapping> result = new List<DataContracts.Mapping.DC_CountryMapping>();
 
                 sbfrom.Append(@" FROM m_CountryMapping CMP 
                                  LEFT JOIN m_CountryMaster CM ON CMP.Country_Id = CM.Country_Id");
-
 
                 #region Get where Clause
                 sbwhere.Append(" WHERE 1=1 ");
@@ -10183,7 +10222,7 @@ namespace DataLayer
                 skip = RQ.PageSize * RQ.PageNo;
 
                 StringBuilder sbsqlselectcount = new StringBuilder();
-                sbsqlselectcount.Append("select count(apm.Accommodation_ProductMapping_Id) ");
+                sbsqlselectcount.Append("select count(CMP.CountryMapping_Id) ");
                 sbsqlselectcount.Append(" " + sbfrom);
                 sbsqlselectcount.Append(" " + sbwhere);
 
@@ -10193,8 +10232,11 @@ namespace DataLayer
                     try { total = context.Database.SqlQuery<int>(sbsqlselectcount.ToString()).FirstOrDefault(); } catch (Exception ex) { }
                 }
 
-                #region -- Select query
-                sbselect.Append(@"  SELECT 
+                if (total > 0)
+                {
+
+                    #region -- Select query
+                    sbselect.Append(@"  SELECT 
                                     CMP.CountryMapping_Id   AS  CountryMapping_Id, 
                                     CMP.Country_Id  AS  Country_Id,
                                     CMP.Supplier_Id  AS  Supplier_Id,
@@ -10217,54 +10259,50 @@ namespace DataLayer
                                     CMP.SupplierImportFile_Id AS  SupplierImporrtFile_Id,
                                     ISNULL(CMP.Batch, 0)  AS  Batch,
                                     CMP.ReRun_SupplierImportFile_Id  AS  ReRunSupplierImporrtFile_Id,
-                                    ISNULL(CMP.ReRun_Batch,0) AS ReRunBatch ");
-                sbselect.Append(total.ToString() + " AS  TotalRecord ");
+                                    ISNULL(CMP.ReRun_Batch,0) AS ReRunBatch,");
+                    sbselect.Append(total.ToString() + " AS  TotalRecord ");
 
-                #endregion
+                    #endregion
 
-                if (total <= skip)
-                {
-                    int PageIndex = 0;
-                    int intReminder = total % RQ.PageSize;
-                    int intQuotient = total / RQ.PageSize;
-
-                    if (intReminder > 0)
+                    if (total <= skip)
                     {
-                        PageIndex = intQuotient + 1;
+                        int PageIndex = 0;
+                        int intReminder = total % RQ.PageSize;
+                        int intQuotient = total / RQ.PageSize;
+
+                        if (intReminder > 0)
+                        {
+                            PageIndex = intQuotient + 1;
+                        }
+                        else
+                        {
+                            PageIndex = intQuotient;
+                        }
+
+                        skip = RQ.PageSize * (PageIndex - 1);
                     }
-                    else
+
+                    StringBuilder sbOrderby = new StringBuilder();
+                    sbOrderby.Append(" ORDER BY CMP.CountryName ");
+                    sbOrderby.Append(" OFFSET ");
+                    sbOrderby.Append((skip).ToString());
+                    sbOrderby.Append(" ROWS FETCH NEXT ");
+                    sbOrderby.Append(RQ.PageSize.ToString());
+                    sbOrderby.Append(" ROWS ONLY ");
+
+                    StringBuilder sbfinalQuery = new StringBuilder();
+                    sbfinalQuery.Append(sbselect + " ");
+                    sbfinalQuery.Append(" " + sbfrom + " ");
+                    sbfinalQuery.Append(" " + sbwhere + " ");
+                    sbfinalQuery.Append(" " + sbOrderby);
+
+                    using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        PageIndex = intQuotient;
+                        context.Configuration.AutoDetectChangesEnabled = false;
+                        try { result = context.Database.SqlQuery<DataContracts.Mapping.DC_CountryMapping>(sbfinalQuery.ToString()).ToList(); } catch (Exception ex) { }
                     }
-
-                    skip = RQ.PageSize * (PageIndex - 1);
-
-                    // sbsqlselect.Append(Convert.ToString(PageIndex - 1) + " As PageIndex ");
-
                 }
-                //else
-                //    sbsqlselect.Append(Convert.ToString(obj.PageNo) + " As PageIndex ");
 
-                StringBuilder sbOrderby = new StringBuilder();
-                sbOrderby.Append((skip).ToString());
-                sbOrderby.Append(" ROWS FETCH NEXT ");
-                sbOrderby.Append(RQ.PageSize.ToString());
-                sbOrderby.Append(" ROWS ONLY ");
-
-                // List<DataContracts.Mapping.DC_CountryMapping> result = new List<DataContracts.Mapping.DC_CountryMapping>();
-
-                StringBuilder sbfinalQuery = new StringBuilder();
-                sbfinalQuery.Append(sbselect + " ");
-                sbfinalQuery.Append(" " + sbfrom + " ");
-                sbfinalQuery.Append(" " + sbwhere + " ");
-                sbfinalQuery.Append(" " + sbOrderby);
-
-                List<DataContracts.Mapping.DC_CountryMapping> result = new List<DataContracts.Mapping.DC_CountryMapping>();
-                using (ConsumerEntities context = new ConsumerEntities())
-                {
-                    context.Configuration.AutoDetectChangesEnabled = false;
-                    try { result = context.Database.SqlQuery<DataContracts.Mapping.DC_CountryMapping>(sbfinalQuery.ToString()).ToList(); } catch (Exception ex) { }
-                }
                 return result;
             }
             catch (Exception e)

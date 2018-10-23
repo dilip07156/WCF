@@ -1273,7 +1273,7 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation details", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
-        
+
         #endregion
 
         #region AccomodationInfo
@@ -1349,6 +1349,7 @@ namespace DataLayer
                                    Google_Place_Id = a.Google_Place_Id,
                                    FullAddress = a.FullAddress,
                                    InsertFrom = a.InsertFrom,
+                                   IsRoomMappingCompleted = (a.IsRoomMappingCompleted ?? false),
                                    Accomodation_Contact = (from ac in context.Accommodation_Contact
                                                            where ac.Accommodation_Id == a.Accommodation_Id
                                                            select new DataContracts.DC_Accommodation_Contact
@@ -1568,6 +1569,8 @@ namespace DataLayer
                         search.HotelName_Tx = CommonFunctions.HotelNameTX(AccomodationDetails.HotelName, AccomodationDetails.City, AccomodationDetails.Country, ref Keywords);
                         search.Latitude_Tx = (AccomodationDetails.Latitude == null) ? null : CommonFunctions.LatLongTX(AccomodationDetails.Latitude);
                         search.Longitude_Tx = (AccomodationDetails.Longitude == null) ? null : CommonFunctions.LatLongTX(AccomodationDetails.Longitude);
+
+                        search.IsRoomMappingCompleted = AccomodationDetails.IsRoomMappingCompleted;
 
                         //DataContracts.Masters.DC_keywordApply_RQ RQ = new DataContracts.Masters.DC_keywordApply_RQ();
                         //RQ.File_Id = supplierdata.File_Id;
@@ -3476,10 +3479,13 @@ namespace DataLayer
                 sbFinalquery.Append(sbFrom);
                 sbFinalquery.Append(sbWhere);
 
-                sbFinalquery.Append(" order by ar.RoomName ");
+                //Order by Mapping Status & Score
+                sbFinalquery.Append(" order by CASE WHEN ISNULL(ASRTM.SystemEditDate,CAST('01-Jan-1990' AS DATE)) > ISNULL(ASRTM.UserEditDate,CAST('01-Jan-1990' AS DATE)) THEN ISNULL(ASRTM.SystemMappingStatus,'UNMAPPED') ELSE ISNULL(ASRTM.UserMappingStatus,'UNMAPPED') END ");
+                sbFinalquery.Append(" , ASRTM.MatchingScore DESC ");
 
                 List<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails> result = new List<DC_Accomodation_Category_DDL_WithExtraDetails>();
                 context.Configuration.AutoDetectChangesEnabled = false;
+                context.Database.CommandTimeout = 0;
                 try { result = context.Database.SqlQuery<DataContracts.DC_Accomodation_Category_DDL_WithExtraDetails>(sbFinalquery.ToString()).ToList(); } catch (Exception ex) { }
                 return result;
             }

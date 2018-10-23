@@ -84,5 +84,25 @@ namespace BusinessLayer
                return objDL.GetMLDataApiTransferStatus();
             }
         }
+
+        #region*** Training Data Delete ***
+        public void ML_DataTransfer_DeleteTrainingData(string accommodation_SupplierRoomTypeMapping_Id)
+        {
+            using (DL_MLDataTransfer objDL = new DL_MLDataTransfer())
+            {
+                objDL.ML_DataTransfer_DeleteTrainingData(Guid.Parse(accommodation_SupplierRoomTypeMapping_Id));
+            }
+        }
+        #endregion
+
+        #region *** Training Data push(+ve & -ve) ***
+        public void ML_DataTransfer_TrainingDataPushToAIML(string accommodation_SupplierRoomTypeMapping_Id)
+        {
+            using (DL_MLDataTransfer objDL = new DL_MLDataTransfer())
+            {
+                objDL.ML_DataTransfer_TrainingDataPushToAIML(Guid.Parse(accommodation_SupplierRoomTypeMapping_Id));
+            }
+        }
+        #endregion
     }
 }

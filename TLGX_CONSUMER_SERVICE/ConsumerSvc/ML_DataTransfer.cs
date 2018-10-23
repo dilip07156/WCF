@@ -81,5 +81,25 @@ namespace ConsumerSvc
             }
 
         }
+
+        #region*** Training Data Delete ***
+        public void ML_DataTransfer_DeleteTrainingData(string accommodation_SupplierRoomTypeMapping_Id)
+        {
+            using (BL_MLDataTransfer objBL = new BL_MLDataTransfer())
+            {
+                objBL.ML_DataTransfer_DeleteTrainingData(accommodation_SupplierRoomTypeMapping_Id);
+            }
+        }
+        #endregion
+
+        #region *** Training Data push(+ve & -ve) ***
+        public void ML_DataTransfer_TrainingDataPushToAIML(string accommodation_SupplierRoomTypeMapping_Id)
+        {
+            using (BL_MLDataTransfer objBL = new BL_MLDataTransfer())
+            {
+                objBL.ML_DataTransfer_TrainingDataPushToAIML(accommodation_SupplierRoomTypeMapping_Id);
+            }
+        }
+        #endregion
     }
 }
