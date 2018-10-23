@@ -4479,7 +4479,8 @@ namespace DataLayer
                                 StateName = obj.StateName,
                                 StateCode = obj.StateCode,
                                 CountryName = obj.CountryName,
-                                CountryCode = obj.CountryCode
+                                CountryCode = obj.CountryCode,
+                                Source = "StaticFile"
 
                             };
                             context.Accommodation_SupplierRoomTypeMapping.Add(objNew);

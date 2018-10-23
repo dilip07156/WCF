@@ -2899,6 +2899,8 @@ namespace DataLayer
                             newRTM.TX_RoomName = null;
                             newRTM.Tx_StrippedName = null;
 
+                            newRTM.Source = "Online";
+
                             data.Accommodation_SupplierRoomType_Id = ASRTM_ID.ToString().ToUpper();
                             data.Status = "UNMAPPED";
                             data.SystemRoomTypeMapId = CurrentCounter;
