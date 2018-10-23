@@ -283,6 +283,51 @@ namespace BusinessLayer
             }
         }
 
+        public int Get_STG_Record_Count(string SupplierImportFile_Id, string Entity)
+        {
+            if(Guid.TryParse(SupplierImportFile_Id, out Guid gSupplierImportFile_Id))
+            {
+                using (DataLayer.DL_UploadStaticData objDL = new DataLayer.DL_UploadStaticData())
+                {
+                    return objDL.Get_STG_Record_Count(gSupplierImportFile_Id, Entity);
+                }
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public DataContracts.DC_Message DeDupe_EntityMapping_FromSTG(string SupplierImportFile_Id, string Entity)
+        {
+            if (Guid.TryParse(SupplierImportFile_Id, out Guid gSupplierImportFile_Id))
+            {
+                using (DataLayer.DL_UploadStaticData objDL = new DataLayer.DL_UploadStaticData())
+                {
+                    return objDL.DeDupe_EntityMapping_FromSTG(gSupplierImportFile_Id, Entity);
+                }
+            }
+            else
+            {
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Danger, StatusMessage = "Invalid Supplier Import File Id" };
+            }
+        }
+
+        public DataContracts.DC_Message STG_Cleanup(string SupplierImportFile_Id, string Entity)
+        {
+            if (Guid.TryParse(SupplierImportFile_Id, out Guid gSupplierImportFile_Id))
+            {
+                using (DataLayer.DL_UploadStaticData objDL = new DataLayer.DL_UploadStaticData())
+                {
+                    return objDL.STG_Cleanup(gSupplierImportFile_Id, Entity);
+                }
+            }
+            else
+            {
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Danger, StatusMessage = "Invalid Supplier Import File Id" };
+            }
+        }
+
         #endregion
 
         #region Process Or Test Uploaded Files

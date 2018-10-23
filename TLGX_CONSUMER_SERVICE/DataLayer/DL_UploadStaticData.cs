@@ -1642,7 +1642,7 @@ namespace DataLayer
                     {
                         Guid File_Id = Guid.Empty;
                         File_Id = lstobj[0].SupplierImportFile_Id ?? Guid.Empty;
-                        
+
                         //var oldRecords = (from y in context.stg_SupplierCountryMapping
                         //                  where y.SupplierName.Trim().ToUpper() == mySupplier.Trim().ToUpper()
                         //                  && y.SupplierImportFile_Id == File_Id
@@ -2208,7 +2208,7 @@ namespace DataLayer
                     var skip = RQ.PageSize * RQ.PageNo;
 
                     var stgResult = (from a in stgSearch
-                                     orderby a.SupplierName, a.CountryName
+                                     orderby a.stg_Country_Id
                                      select new DataContracts.STG.DC_stg_SupplierCountryMapping
                                      {
                                          stg_Country_Id = a.stg_Country_Id,
@@ -2225,8 +2225,7 @@ namespace DataLayer
                                          ContinentCode = a.ContinentCode,
                                          ContinentName = a.ContinentName,
                                          SupplierImportFile_Id = a.SupplierImportFile_Id
-                                     }
-                                        ).Skip(skip).Take(RQ.PageSize).ToList();
+                                     }).Skip(skip).Take(RQ.PageSize).ToList();
 
                     return stgResult;
 
@@ -2328,7 +2327,7 @@ namespace DataLayer
                     var skip = RQ.PageSize * RQ.PageNo;
 
                     var stgResult = (from a in stgSearch
-                                     orderby a.SupplierName, a.CountryName
+                                     orderby a.stg_City_Id
                                      select new DataContracts.STG.DC_stg_SupplierCityMapping
                                      {
                                          stg_City_Id = a.stg_City_Id,
@@ -2349,8 +2348,7 @@ namespace DataLayer
                                          Country_Id = a.Country_Id,
                                          Supplier_Id = a.Supplier_Id,
                                          SupplierImportFile_Id = a.SupplierImportFile_Id
-                                     }
-                                        ).Skip(skip).Take(RQ.PageSize).ToList();
+                                     }).Skip(skip).Take(RQ.PageSize).ToList();
 
                     return stgResult;
 
@@ -2400,7 +2398,6 @@ namespace DataLayer
                                     where a.SupplierName.Trim().ToUpper() == RQ.SupplierName.Trim().ToUpper()
                                     select a;
                     }
-
 
                     if (!string.IsNullOrWhiteSpace(RQ.CountryCode))
                     {
@@ -2477,6 +2474,7 @@ namespace DataLayer
                     }
 
                     var stgResult = (from a in stgSearch
+                                     orderby a.stg_AccoMapping_Id
                                      select new DataContracts.STG.DC_stg_SupplierProductMapping
                                      {
                                          stg_AccoMapping_Id = a.stg_AccoMapping_Id,
@@ -2490,7 +2488,6 @@ namespace DataLayer
                                          CountryName = a.CountryName,
                                          SupplierId = a.SupplierId,
                                          SupplierName = a.SupplierName,
-                                         //TotalRecords = total,
                                          Latitude = a.Latitude,
                                          Longitude = a.Longitude,
                                          Address = a.Address,
@@ -2520,7 +2517,7 @@ namespace DataLayer
                                          Supplier_Id = a.Supplier_Id,
                                          ProductType = a.ProductType,
                                          SupplierImportFile_Id = a.SupplierImportFile_Id
-                                     }).ToList();
+                                     }).Skip(RQ.PageNo * RQ.PageSize).Take(RQ.PageSize).ToList();
 
                     return stgResult;
 
@@ -2550,8 +2547,6 @@ namespace DataLayer
                                     where a.stg_SupplierHotelRoomMapping_Id == RQ.stg_SupplierHotelRoomMapping_Id
                                     select a;
                     }
-
-
 
                     if (RQ.SupplierImportFile_Id.HasValue)
                     {
@@ -2630,7 +2625,7 @@ namespace DataLayer
                     var skip = RQ.PageSize * RQ.PageNo;
 
                     var stgResult = (from a in stgSearch
-                                     orderby a.SupplierName
+                                     orderby a.stg_SupplierHotelRoomMapping_Id
                                      select new DataContracts.STG.DC_stg_SupplierHotelRoomMapping
                                      {
                                          Amenities = a.Amenities,
@@ -2676,8 +2671,7 @@ namespace DataLayer
                                          CountryCode = a.CountryCode,
                                          StateName = a.StateName,
                                          StateCode = a.StateCode
-                                     }
-                                        ).Skip(skip).Take(RQ.PageSize).ToList();
+                                     }).Skip(skip).Take(RQ.PageSize).ToList();
 
                     return stgResult;
                 }
@@ -2927,87 +2921,267 @@ namespace DataLayer
 
         #region De-Dupe Mapping data from STG tables
 
-        public DataContracts.DC_Message DeDupe_CountryMapping_FromSTG(Guid SupplierImportFile_Id)
+        public DataContracts.DC_Message DeDupe_EntityMapping_FromSTG(Guid SupplierImportFile_Id, string Entity)
         {
             DataContracts.DC_Message dc = new DataContracts.DC_Message();
-
             try
             {
-                using (ConsumerEntities context = new ConsumerEntities())
+                if (Entity == "Country")
                 {
-                    
+                    dc = DeDupe_CountryMapping_FromSTG(SupplierImportFile_Id);
                 }
-                return dc;
+                else if (Entity == "City")
+                {
+                    dc = DeDupe_CityMapping_FromSTG(SupplierImportFile_Id);
+                }
+                else if (Entity == "Hotel")
+                {
+                    dc = DeDupe_ProductMapping_FromSTG(SupplierImportFile_Id);
+                }
+                else if (Entity == "RoomType")
+                {
+                    dc = DeDupe_RoomMapping_FromSTG(SupplierImportFile_Id);
+                }
+                else
+                {
+                    dc = new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Invalid Entity Type" };
+                }
             }
             catch (Exception e)
             {
                 dc.StatusMessage = ReadOnlyMessage.strFailed;
                 dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
-                return dc;
+
+            }
+            return dc;
+        }
+
+        public DataContracts.DC_Message DeDupe_CountryMapping_FromSTG(Guid SupplierImportFile_Id)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Success" };
+                }
+            }
+            catch (Exception e)
+            {
+                return new DC_Message { StatusMessage = e.Message + Environment.NewLine + e.InnerException.Message, StatusCode = ReadOnlyMessage.StatusCode.Failed };
             }
         }
 
         public DataContracts.DC_Message DeDupe_CityMapping_FromSTG(Guid SupplierImportFile_Id)
         {
-            DataContracts.DC_Message dc = new DataContracts.DC_Message();
-
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-
+                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Success" };
                 }
-                return dc;
             }
             catch (Exception e)
             {
-                dc.StatusMessage = ReadOnlyMessage.strFailed;
-                dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
-                return dc;
+                return new DC_Message { StatusMessage = e.Message + Environment.NewLine + e.InnerException.Message, StatusCode = ReadOnlyMessage.StatusCode.Failed };
             }
 
         }
 
         public DataContracts.DC_Message DeDupe_ProductMapping_FromSTG(Guid SupplierImportFile_Id)
         {
-            DataContracts.DC_Message dc = new DataContracts.DC_Message();
-
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    StringBuilder sql = new StringBuilder();
+                    sql.AppendLine("DECLARE @SupplierImportFile_Id AS UNIQUEIDENTIFIER = '" + SupplierImportFile_Id.ToString() + "'");
+                    sql.AppendLine("DECLARE @Country_Id AS UNIQUEIDENTIFIER");
+                    sql.AppendLine("DECLARE db_cursor CURSOR FOR ");
+                    sql.AppendLine("SELECT DISTINCT Country_Id FROM stg_SupplierProductMapping WHERE SupplierImportFile_Id = @SupplierImportFile_Id");
+                    sql.AppendLine("OPEN db_cursor");
+                    sql.AppendLine("FETCH NEXT FROM db_cursor INTO @Country_Id  ");
+                    sql.AppendLine("WHILE @@FETCH_STATUS = 0 ");
+                    sql.AppendLine("BEGIN  ");
+                    sql.AppendLine("UPDATE APM SET APM.IsActive = 0 FROM Accommodation_ProductMapping APM WITH (NOLOCK)");
+                    sql.AppendLine("LEFT JOIN stg_SupplierProductMapping STG WITH (NOLOCK)");
+                    sql.AppendLine("ON STG.SupplierImportFile_Id = @SupplierImportFile_Id ");
+                    sql.AppendLine("AND STG.Supplier_Id = APM.Supplier_Id ");
+                    sql.AppendLine("AND STG.ProductId = APM.SupplierProductReference");
+                    sql.AppendLine("WHERE APM.Country_Id IS NOT NULL AND STG.stg_AccoMapping_Id IS NULL");
+                    sql.AppendLine("AND APM.Country_Id = @Country_Id");
+                    sql.AppendLine("FETCH NEXT FROM db_cursor INTO @Country_Id  ");
+                    sql.AppendLine("END ");
+                    sql.AppendLine("CLOSE db_cursor  ");
+                    sql.AppendLine("DEALLOCATE db_cursor ");
 
+                    context.Database.CommandTimeout = 0;
+
+                    context.Database.ExecuteSqlCommand(sql.ToString());
+                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Success" };
                 }
-                return dc;
             }
             catch (Exception e)
             {
-                dc.StatusMessage = ReadOnlyMessage.strFailed;
-                dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
-                return dc;
+                return new DC_Message { StatusMessage = e.Message + Environment.NewLine + e.InnerException.Message, StatusCode = ReadOnlyMessage.StatusCode.Failed };
             }
 
         }
 
         public DataContracts.DC_Message DeDupe_RoomMapping_FromSTG(Guid SupplierImportFile_Id)
         {
-            DataContracts.DC_Message dc = new DataContracts.DC_Message();
-
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-
+                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Success" };
                 }
-                return dc;
+            }
+            catch (Exception e)
+            {
+                return new DC_Message { StatusMessage = e.Message + Environment.NewLine + e.InnerException.Message, StatusCode = ReadOnlyMessage.StatusCode.Failed };
+            }
+        }
+
+        #endregion
+
+        #region STG Cleanup
+        public DataContracts.DC_Message STG_Cleanup(Guid SupplierImportFile_Id, string Entity)
+        {
+            DataContracts.DC_Message dc = new DataContracts.DC_Message();
+            try
+            {
+                if (Entity == "Country")
+                {
+                    dc = STG_Country_Cleanup(SupplierImportFile_Id);
+                }
+                else if (Entity == "City")
+                {
+                    dc = STG_City_Cleanup(SupplierImportFile_Id);
+                }
+                else if (Entity == "Hotel")
+                {
+                    dc = STG_Hotel_Cleanup(SupplierImportFile_Id);
+                }
+                else if (Entity == "RoomType")
+                {
+                    dc = STG_Room_Cleanup(SupplierImportFile_Id);
+                }
+                else
+                {
+                    dc = new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Invalid Entity Type" };
+                }
             }
             catch (Exception e)
             {
                 dc.StatusMessage = ReadOnlyMessage.strFailed;
                 dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
-                return dc;
-            }
 
+            }
+            return dc;
+        }
+
+        public DataContracts.DC_Message STG_Country_Cleanup(Guid SupplierImportFile_Id)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    int x = context.Database.ExecuteSqlCommand("Delete from stg_SupplierCountryMapping where SupplierImportFile_Id = @p0", SupplierImportFile_Id);
+                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = x + " Rows affected."};
+                }
+            }
+            catch (Exception e)
+            {
+                return new DC_Message { StatusMessage = e.Message + Environment.NewLine + e.InnerException.Message, StatusCode = ReadOnlyMessage.StatusCode.Failed };
+            }
+        }
+
+        public DataContracts.DC_Message STG_City_Cleanup(Guid SupplierImportFile_Id)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    int x = context.Database.ExecuteSqlCommand("Delete from stg_SupplierCityMapping where SupplierImportFile_Id = @p0", SupplierImportFile_Id);
+                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = x + " Rows affected." };
+                }
+            }
+            catch (Exception e)
+            {
+                return new DC_Message { StatusMessage = e.Message + Environment.NewLine + e.InnerException.Message, StatusCode = ReadOnlyMessage.StatusCode.Failed };
+            }
+        }
+
+        public DataContracts.DC_Message STG_Hotel_Cleanup(Guid SupplierImportFile_Id)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    int x = context.Database.ExecuteSqlCommand("Delete from stg_SupplierProductMapping where SupplierImportFile_Id = @p0", SupplierImportFile_Id);
+                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = x + " Rows affected." };
+                }
+            }
+            catch (Exception e)
+            {
+                return new DC_Message { StatusMessage = e.Message + Environment.NewLine + e.InnerException.Message, StatusCode = ReadOnlyMessage.StatusCode.Failed };
+            }
+        }
+
+        public DataContracts.DC_Message STG_Room_Cleanup(Guid SupplierImportFile_Id)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    int x = context.Database.ExecuteSqlCommand("Delete from stg_SupplierHotelRoomMapping where SupplierImportFile_Id = @p0", SupplierImportFile_Id);
+                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = x + " Rows affected." };
+                }
+            }
+            catch (Exception e)
+            {
+                return new DC_Message { StatusMessage = e.Message + Environment.NewLine + e.InnerException.Message, StatusCode = ReadOnlyMessage.StatusCode.Failed };
+            }
+        }
+
+        #endregion
+
+        #region Get Record Count from STG tables
+
+        public int Get_STG_Record_Count(Guid SupplierImportFile_Id, string Entity)
+        {
+            int RecordCount = 0;
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (Entity == "Country")
+                    {
+                        RecordCount = context.stg_SupplierCountryMapping.AsNoTracking().Where(w => w.SupplierImportFile_Id == SupplierImportFile_Id).Count();
+                    }
+                    else if (Entity == "City")
+                    {
+                        RecordCount = context.stg_SupplierCityMapping.AsNoTracking().Where(w => w.SupplierImportFile_Id == SupplierImportFile_Id).Count();
+                    }
+                    else if (Entity == "Hotel")
+                    {
+                        RecordCount = context.stg_SupplierProductMapping.AsNoTracking().Where(w => w.SupplierImportFile_Id == SupplierImportFile_Id).Count();
+                    }
+                    else if (Entity == "RoomType")
+                    {
+                        RecordCount = context.stg_SupplierHotelRoomMapping.AsNoTracking().Where(w => w.SupplierImportFile_Id == SupplierImportFile_Id).Count();
+                    }
+                    else
+                    {
+                        RecordCount = 0;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                RecordCount = 0;
+            }
+            return RecordCount;
         }
 
         #endregion

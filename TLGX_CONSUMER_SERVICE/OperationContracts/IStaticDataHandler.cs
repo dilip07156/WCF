@@ -117,6 +117,16 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "DataHandler/STG/RoomType/Add", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataContracts.DC_Message AddSTGRoomTypeData(List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> obj);
 
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "DataHandler/STG/RecordCount/Get/{SupplierImportFile_Id}/{Entity}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        int Get_STG_Record_Count(string SupplierImportFile_Id, string Entity);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "DataHandler/STG/Cleanup/{SupplierImportFile_Id}/{Entity}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message STG_Cleanup(string SupplierImportFile_Id, string Entity);
+
         #endregion
 
         #region Supplier
@@ -167,7 +177,6 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "DataHandler/Mapping/City/UpdateStatus", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj);
-        //List<DataContracts.Mapping.DC_CityMapping> UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj);
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
@@ -230,6 +239,11 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "DataHandler/Mapping/RoomType/Insert", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMapping_Online> RoomTypeMappingOnline_Insert(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMapping_Online> obj);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "DataHandler/Mapping/DeDupe/{SupplierImportFile_Id}/{Entity}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message DeDupe_EntityMapping_FromSTG(string SupplierImportFile_Id, string Entity);
 
         #endregion
 

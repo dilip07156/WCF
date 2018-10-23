@@ -49,6 +49,7 @@ namespace ConsumerSvc
                 return objBL.UpdateStaticDataFileDetailStatus(obj);
             }
         }
+
         public DC_Message AddStaticDataUploadErrorLog(DC_SupplierImportFile_ErrorLog obj)
         {
             using (BL_UploadStaticData objBL = new BL_UploadStaticData())
@@ -128,6 +129,7 @@ namespace ConsumerSvc
                 return objBL.GetSTGCityData(obj);
             }
         }
+
         public List<DC_CityMapping> GetMappingCityData(DC_CityMapping_RQ obj)
         {
             using (BL_Mapping objBL = new BL_Mapping())
@@ -144,7 +146,6 @@ namespace ConsumerSvc
             }
         }
 
-        //public List<DC_CityMapping> UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
         public bool UpdateCityMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
         {
             using (BL_Mapping objBL = new BL_Mapping())
@@ -152,7 +153,6 @@ namespace ConsumerSvc
                 return objBL.UpdateCityMappingStatus(obj);
             }
         }
-
 
         public List<DC_stg_SupplierProductMapping> GetSTGHotelData(DC_stg_SupplierProductMapping_RQ obj)
         {
@@ -179,7 +179,6 @@ namespace ConsumerSvc
             }
         }
 
-        //public List<DC_Accomodation_ProductMapping> UpdateHotelMappingStatus(DC_MappingMatch obj)
         public bool UpdateHotelMappingStatus(DC_MappingMatch obj)
         {
             using (BL_Mapping objBL = new BL_Mapping())
@@ -384,6 +383,30 @@ namespace ConsumerSvc
             using (BL_UploadStaticData objBL = new BL_UploadStaticData())
             {
                 return objBL.AddStaticDataFileDetail(obj);
+            }
+        }
+
+        public int Get_STG_Record_Count(string SupplierImportFile_Id, string Entity)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.Get_STG_Record_Count(SupplierImportFile_Id, Entity);
+            }
+        }
+
+        public DataContracts.DC_Message DeDupe_EntityMapping_FromSTG(string SupplierImportFile_Id, string Entity)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.DeDupe_EntityMapping_FromSTG(SupplierImportFile_Id, Entity);
+            }
+        }
+
+        public DataContracts.DC_Message STG_Cleanup(string SupplierImportFile_Id, string Entity)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.STG_Cleanup(SupplierImportFile_Id, Entity);
             }
         }
     }

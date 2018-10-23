@@ -117,7 +117,6 @@ namespace DataContracts.STG
         [DataMember]
         public string TX_COUNTRYNAME { get; set; }
 
-
         [DataMember]
         public string StarRating { get; set; }
 
@@ -139,20 +138,20 @@ namespace DataContracts.STG
 
         [DataMember]
         public string TLGXProductCode { get; set; }
+
         [DataMember]
         public Guid? SupplierImportFile_Id { get; set; }
+
         [DataMember]
         public string ProductType { get; set; }
-
-
     }
 
     [DataContract]
     public class DC_stg_SupplierProductMapping_RQ
     {
-
         [DataMember]
         public Guid? SupplierImportFile_Id { get; set; }
+
         [DataMember]
         public Nullable<System.Guid> stg_AccoMapping_Id { get; set; }
 
@@ -191,6 +190,7 @@ namespace DataContracts.STG
 
         [DataMember]
         public int PageSize { get; set; }
+
         [DataMember]
         public string Latitude { get; set; }
 
