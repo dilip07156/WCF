@@ -164,8 +164,8 @@
         <EntityTypeShape EntityType="ConsumerModel.Activity_CategoriesType" Width="3.625" PointX="18.5" PointY="13.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_DeparturePoints" Width="1.5" PointX="13.75" PointY="17.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierCityDepartureCode" Width="1.5" PointX="0.75" PointY="19.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Flavour" Width="1.5" PointX="3.375" PointY="19.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_MediaAttributes" Width="1.5" PointX="19.375" PointY="8.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Flavour" Width="1.5" PointX="3.375" PointY="19.75" />
       </Diagram>
       <Diagram DiagramId="28746cebad1b4c418813bb18d8ac1b56" Name="ZoneManager" ZoomLevel="109" >
         <EntityTypeShape EntityType="ConsumerModel.ZoneProduct_Mapping" Width="1.5" PointX="4.75" PointY="0.75" />
