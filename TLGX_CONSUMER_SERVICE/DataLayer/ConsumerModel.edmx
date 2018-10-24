@@ -2143,6 +2143,38 @@
           <Property Name="Edit_User" Type="nvarchar" MaxLength="255" />
           <Property Name="IsSystemAttribute" Type="bit" />
         </EntityType>
+        <EntityType Name="NewDashBoardReport">
+          <Key>
+            <PropertyRef Name="Report_ID" />
+          </Key>
+          <Property Name="Report_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="HotelID" Type="uniqueidentifier" />
+          <Property Name="CommonHotelID" Type="int" />
+          <Property Name="TLGxAccoID" Type="nvarchar" MaxLength="100" />
+          <Property Name="RegionName" Type="nvarchar" MaxLength="50" />
+          <Property Name="CountryName" Type="nvarchar" MaxLength="255" />
+          <Property Name="CityName" Type="nvarchar" MaxLength="255" />
+          <Property Name="StarRating" Type="nvarchar" MaxLength="10" />
+          <Property Name="HotelName" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsPreferredHotel" Type="bit" />
+          <Property Name="AccoPriority" Type="nvarchar" MaxLength="10" />
+          <Property Name="Country_Id" Type="uniqueidentifier" />
+          <Property Name="City_Id" Type="uniqueidentifier" />
+          <Property Name="ProductCategory" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProductCategorySubType" Type="nvarchar" MaxLength="255" />
+          <Property Name="Count_APM_Mapped_And_AutoMapped" Type="int" />
+          <Property Name="Count_APM_Review" Type="int" />
+          <Property Name="Count_SRT_Attached_to_HOTEL" Type="int" />
+          <Property Name="Count_SRT_Mapped" Type="int" />
+          <Property Name="Count_SRT_Automapped" Type="int" />
+          <Property Name="Count_SRT_Review" Type="int" />
+          <Property Name="Count_SRT_Unmapped" Type="int" />
+          <Property Name="Count_SRT_Add" Type="int" />
+          <Property Name="Count_SuppliersAcco" Type="int" />
+          <Property Name="Count_SuppliersRoom" Type="int" />
+          <Property Name="Count_AccoRooms" Type="int" />
+          <Property Name="ReportType" Type="nvarchar" MaxLength="10" />
+        </EntityType>
         <EntityType Name="Organisation_Company">
           <Key>
             <PropertyRef Name="Organisation_Company_Id" />
@@ -2955,6 +2987,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="m_WorkflowSteps" EntityType="Self.m_WorkflowSteps" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="m_ZoneMaster" EntityType="Self.m_ZoneMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Media_Attributes" EntityType="Self.Media_Attributes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NewDashBoardReport" EntityType="Self.NewDashBoardReport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Organisation_Company" EntityType="Self.Organisation_Company" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Places" EntityType="Self.Places" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule_NextOccurance" EntityType="Self.Schedule_NextOccurance" Schema="dbo" store:Type="Tables" />
@@ -3192,9 +3225,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="Accommodation_SupplierRoomTypeMapping_Values" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeMapping_Values" />
           <EntitySet Name="Activity_MediaAttributes" EntityType="ConsumerModel.Activity_MediaAttributes" />
           <EntitySet Name="m_CountryMaster" EntityType="ConsumerModel.m_CountryMaster" />
-          <EntitySet Name="m_CityMaster" EntityType="ConsumerModel.m_CityMaster" />
-          <EntitySet Name="Activity_Flavour" EntityType="ConsumerModel.Activity_Flavour" />
-
+          <EntitySet Name="NewDashBoardReport" EntityType="ConsumerModel.NewDashBoardReport" />
+          
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
@@ -5998,6 +6030,63 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="TourType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="TLGXDisplaySubType" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="TLGXDisplaySubType_ID" Type="Guid" />
+        </EntityType>
+        <EntityType Name="NewDashBoardReport">
+          <Key>
+            <PropertyRef Name="Report_ID" />
+          </Key>
+          <Property Name="Report_ID" Type="Guid" Nullable="false" />
+          <Property Name="HotelID" Type="Guid" />
+          <Property Name="CommonHotelID" Type="Int32" />
+          <Property Name="TLGxAccoID" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="RegionName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CountryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CityName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="StarRating" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="HotelName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsPreferredHotel" Type="Boolean" />
+          <Property Name="AccoPriority" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Country_Id" Type="Guid" />
+          <Property Name="City_Id" Type="Guid" />
+          <Property Name="ProductCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductCategorySubType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Count_APM_Mapped_And_AutoMapped" Type="Int32" />
+          <Property Name="Count_APM_Review" Type="Int32" />
+          <Property Name="Count_SRT_Attached_to_HOTEL" Type="Int32" />
+          <Property Name="Count_SRT_Mapped" Type="Int32" />
+          <Property Name="Count_SRT_Automapped" Type="Int32" />
+          <Property Name="Count_SRT_Review" Type="Int32" />
+          <Property Name="Count_SRT_Unmapped" Type="Int32" />
+          <Property Name="Count_SRT_Add" Type="Int32" />
+          <Property Name="Count_SuppliersAcco" Type="Int32" />
+          <Property Name="Count_SuppliersRoom" Type="Int32" />
+          <Property Name="Count_AccoRooms" Type="Int32" />
+          <Property Name="ReportType" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="m_CityMaster">
+          <Key>
+            <PropertyRef Name="City_Id" />
+          </Key>
+          <Property Name="City_Id" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CountryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CountryCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Country_Id" Type="Guid" Nullable="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="State_Id" Type="Guid" />
+          <Property Name="StateName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="StateCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Google_PlaceId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Key" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Rank" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Priority" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         
       </Schema>
@@ -8829,6 +8918,39 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NewDashBoardReport">
+            <EntityTypeMapping TypeName="ConsumerModel.NewDashBoardReport">
+              <MappingFragment StoreEntitySet="NewDashBoardReport">
+                <ScalarProperty Name="ReportType" ColumnName="ReportType" />
+                <ScalarProperty Name="Count_AccoRooms" ColumnName="Count_AccoRooms" />
+                <ScalarProperty Name="Count_SuppliersRoom" ColumnName="Count_SuppliersRoom" />
+                <ScalarProperty Name="Count_SuppliersAcco" ColumnName="Count_SuppliersAcco" />
+                <ScalarProperty Name="Count_SRT_Add" ColumnName="Count_SRT_Add" />
+                <ScalarProperty Name="Count_SRT_Unmapped" ColumnName="Count_SRT_Unmapped" />
+                <ScalarProperty Name="Count_SRT_Review" ColumnName="Count_SRT_Review" />
+                <ScalarProperty Name="Count_SRT_Automapped" ColumnName="Count_SRT_Automapped" />
+                <ScalarProperty Name="Count_SRT_Mapped" ColumnName="Count_SRT_Mapped" />
+                <ScalarProperty Name="Count_SRT_Attached_to_HOTEL" ColumnName="Count_SRT_Attached_to_HOTEL" />
+                <ScalarProperty Name="Count_APM_Review" ColumnName="Count_APM_Review" />
+                <ScalarProperty Name="Count_APM_Mapped_And_AutoMapped" ColumnName="Count_APM_Mapped_And_AutoMapped" />
+                <ScalarProperty Name="ProductCategorySubType" ColumnName="ProductCategorySubType" />
+                <ScalarProperty Name="ProductCategory" ColumnName="ProductCategory" />
+                <ScalarProperty Name="City_Id" ColumnName="City_Id" />
+                <ScalarProperty Name="Country_Id" ColumnName="Country_Id" />
+                <ScalarProperty Name="AccoPriority" ColumnName="AccoPriority" />
+                <ScalarProperty Name="IsPreferredHotel" ColumnName="IsPreferredHotel" />
+                <ScalarProperty Name="HotelName" ColumnName="HotelName" />
+                <ScalarProperty Name="StarRating" ColumnName="StarRating" />
+                <ScalarProperty Name="CityName" ColumnName="CityName" />
+                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
+                <ScalarProperty Name="RegionName" ColumnName="RegionName" />
+                <ScalarProperty Name="TLGxAccoID" ColumnName="TLGxAccoID" />
+                <ScalarProperty Name="CommonHotelID" ColumnName="CommonHotelID" />
+                <ScalarProperty Name="HotelID" ColumnName="HotelID" />
+                <ScalarProperty Name="Report_ID" ColumnName="Report_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
