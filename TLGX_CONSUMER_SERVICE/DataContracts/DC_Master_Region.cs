@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataContracts.Masters
+namespace DataContracts
 {
     [DataContract]
     public class DC_Master_Region

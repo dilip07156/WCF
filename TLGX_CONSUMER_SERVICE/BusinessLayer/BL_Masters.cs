@@ -815,11 +815,27 @@ namespace BusinessLayer
             }
         }
 
-        public List<DataContracts.DC_Master_City> GetCountrywiseCitiesList(List<Guid> CountryIdListList)
+        public List<DataContracts.DC_Master_City> GetAllCountrywiseCitiesList(List<Guid> CountryIdListList)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
             {
-                return obj.GetCountrywiseCitiesList(CountryIdListList);
+                return obj.GetAllCountrywiseCitiesList(CountryIdListList);
+            }
+        }
+
+        public List<DataContracts.DC_Master_City> GetCountrywiseCitiesList(DataContracts.Masters.DC_CitywithMultipleCountry_Search_RQ RQ)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetCountrywiseCitiesList(RQ);
+            }
+        }
+
+        public List<DataContracts.DC_Master_City> GetCitiesDetails(string CountryName, string CityName)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetCitiesDetails(CountryName, CityName);
             }
         }
         #endregion	

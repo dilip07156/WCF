@@ -16,6 +16,9 @@ namespace DataContracts.Mapping
         public string CountryName { get; set; }
 
         [DataMember]
+        public string RegionName { get; set; }
+
+        [DataMember]
         public string CityName { get; set; }
 
         [DataMember]
@@ -54,5 +57,6 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public string selectedHotelId { get; set; }
+
     }
 }

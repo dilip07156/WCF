@@ -6244,7 +6244,7 @@ namespace DataLayer
             }
         }
 
-        public List<DataContracts.DC_Master_City> GetCountrywiseCitiesList(List<Guid> CountryIdList)
+        public List<DataContracts.DC_Master_City> GetAllCountrywiseCitiesList(List<Guid> CountryIdList)
         {
             try
             {
@@ -6254,7 +6254,49 @@ namespace DataLayer
                     var City = from c in context.m_CityMaster
                                orderby c.Name
                                where c.Status == "ACTIVE" && CountryIdList.Distinct().Contains(c.Country_Id)
-                               select new DataContracts.DC_Master_City { City_Id = c.City_Id, City_Name = c.CountryName + "->" + c.Name, City_Code = c.Code };
+                               select new DataContracts.DC_Master_City { City_Id = c.City_Id, City_Name =  c.Name + "," + c.CountryName, City_Code = c.Code };
+
+                    return City.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public List<DataContracts.DC_Master_City> GetCountrywiseCitiesList(DC_CitywithMultipleCountry_Search_RQ RQ)
+        {
+            try
+            {
+                List<DataContracts.DC_Master_City> countryList = new List<DC_Master_City>();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var City = from c in context.m_CityMaster
+                               orderby c.Name
+                               where c.Status == "ACTIVE" && RQ.CountryIdList.Distinct().Contains(c.Country_Id) && c.Name.Contains(RQ.CityName)
+                               select new DataContracts.DC_Master_City { City_Id = c.City_Id, City_Name = c.Name + "," + c.CountryName, City_Code = c.Code };
+
+                    return City.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public List<DataContracts.DC_Master_City> GetCitiesDetails(string CountryName, string CityName)
+        {
+            try
+            {
+                List<DataContracts.DC_Master_City> countryList = new List<DC_Master_City>();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var City = from c in context.m_CityMaster
+                               orderby c.Name
+                               where c.Status == "ACTIVE" && c.CountryName == CountryName && c.Name == CityName
+                               select new DataContracts.DC_Master_City { City_Id = c.City_Id, City_Name = c.Name, City_Code = c.Code };
 
                     return City.ToList();
                 }
