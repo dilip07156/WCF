@@ -3226,7 +3226,9 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="Activity_MediaAttributes" EntityType="ConsumerModel.Activity_MediaAttributes" />
           <EntitySet Name="m_CountryMaster" EntityType="ConsumerModel.m_CountryMaster" />
           <EntitySet Name="NewDashBoardReport" EntityType="ConsumerModel.NewDashBoardReport" />
-          
+		  <EntitySet Name="Activity_Flavour" EntityType="ConsumerModel.Activity_Flavour" />
+          <EntitySet Name="m_CityMaster" EntityType="ConsumerModel.m_CityMaster" />
+
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
         <EntitySet Name="stg_SupplierActivityMapping" EntityType="ConsumerModel.stg_SupplierActivityMapping" />-->
