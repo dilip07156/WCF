@@ -5954,31 +5954,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Rank" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Priority" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="m_CityMaster">
-          <Key>
-            <PropertyRef Name="City_Id" />
-          </Key>
-          <Property Name="City_Id" Type="Guid" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CountryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CountryCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Country_Id" Type="Guid" Nullable="false" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="State_Id" Type="Guid" />
-          <Property Name="StateName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="StateCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="Google_PlaceId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Latitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Longitude" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Key" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Rank" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Priority" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Activity_Flavour">
           <Key>
             <PropertyRef Name="Activity_Flavour_Id" />
