@@ -766,12 +766,12 @@ namespace BusinessLayer
 
 
         #region NewDashBoardReport
-        public List<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise(DataContracts.Mapping.DC_NewDashBoardReport_RQ parm)
+        public List<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise()
         {
 
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {
-                return objBL.GetNewDashboardReport_CountryWise(parm);
+                return objBL.GetNewDashboardReport_CountryWise();
             }
 
         }

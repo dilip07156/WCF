@@ -440,11 +440,11 @@ namespace ConsumerSvc
         #endregion
 
         #region NewDashBoardReport
-        public IList<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise(DataContracts.Mapping.DC_NewDashBoardReport_RQ parm)
+        public IList<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise()
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
-                return objBL.GetNewDashboardReport_CountryWise(parm);
+                return objBL.GetNewDashboardReport_CountryWise();
             }
         }
         #endregion NewDashBoardReport

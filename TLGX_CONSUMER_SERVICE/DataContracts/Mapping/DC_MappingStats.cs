@@ -1564,11 +1564,29 @@ namespace DataContracts.Mapping
         [DataMember]
         public string CityName { get; set; }
         [DataMember]
-        public int StarRating { get; set; }
+        public string StarRating { get; set; }
         [DataMember]
         public Guid Country_Id { get; set; }
         [DataMember]
         public Guid City_Id { get; set; }
+    }
+    [DataContract]
+    public class DC_SupCount
+    {
+        [DataMember]
+        public int Count_SuppliersAcco { get; set; }
+        [DataMember]
+        public int Count_SuppliersRoom { get; set; }
+        [DataMember]
+        public Guid? Country_Id { get; set; }
+    }
+    [DataContract]
+    public class DC_PrefferdHotel
+    {
+        [DataMember]
+        public int PrefHotelCount { get; set; }
+        [DataMember]
+        public Guid Country_Id { get; set; }
     }
     #endregion
 }

@@ -14,7 +14,8 @@ namespace DataLayer
     
     public partial class NewDashBoardReport
     {
-        public System.Guid HotelID { get; set; }
+        public System.Guid Report_ID { get; set; }
+        public Nullable<System.Guid> HotelID { get; set; }
         public Nullable<int> CommonHotelID { get; set; }
         public string TLGxAccoID { get; set; }
         public string RegionName { get; set; }
@@ -22,7 +23,7 @@ namespace DataLayer
         public string CityName { get; set; }
         public string StarRating { get; set; }
         public string HotelName { get; set; }
-        public bool IsPreferredHotel { get; set; }
+        public Nullable<bool> IsPreferredHotel { get; set; }
         public string AccoPriority { get; set; }
         public Nullable<System.Guid> Country_Id { get; set; }
         public Nullable<System.Guid> City_Id { get; set; }
@@ -39,5 +40,6 @@ namespace DataLayer
         public Nullable<int> Count_SuppliersAcco { get; set; }
         public Nullable<int> Count_SuppliersRoom { get; set; }
         public Nullable<int> Count_AccoRooms { get; set; }
+        public string ReportType { get; set; }
     }
 }
