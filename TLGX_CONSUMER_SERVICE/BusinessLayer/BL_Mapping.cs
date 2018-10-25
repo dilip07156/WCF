@@ -696,7 +696,7 @@ namespace BusinessLayer
         #endregion
 
         #region Supplier Data Export
-        public List<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport( string AccoPriority, string SupplierID, string IsMdmDataOnly)
+        public List<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport( string AccoPriority, string SupplierID, string IsMdmDataOnly, string SuppPriority)
         {
             int accoPriority;
             if (!int.TryParse(AccoPriority, out accoPriority))
@@ -715,9 +715,15 @@ namespace BusinessLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
             }
 
+            int suppPriority;
+            if (!int.TryParse(SuppPriority, out suppPriority))
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
+            }
+
             using (DL_Mapping objBL = new DL_Mapping())
             {
-                return objBL.GetSupplierDataForExport(accoPriority,gSupplier_Id, bIsMdmDataOnly);
+                return objBL.GetSupplierDataForExport(accoPriority,gSupplier_Id, bIsMdmDataOnly, suppPriority);
             }
         }
 
@@ -760,6 +766,31 @@ namespace BusinessLayer
             using (DL_Mapping objDL = new DL_Mapping())
             {
                 return objDL.GetRTM_ML_Suggestions(Guid.Parse(Accomodation_SupplierRoomTypeMapping_Id));
+            }
+        }
+        #endregion
+
+
+        #region NewDashBoardReport
+        public List<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise()
+        {
+
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetNewDashboardReport_CountryWise();
+            }
+
+        }
+        #endregion NewDashBoardReport
+
+        #region EzeegoHotelVs
+        public List<DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport> EzeegoHotelVsSupplierHotelMappingReport(DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport_RQ RQ)
+        {
+            //DC_EzeegoHotelVsSupplierHotelMappingReport_RQ rq = new DC_EzeegoHotelVsSupplierHotelMappingReport_RQ();
+            //rq.Region = RQ.Select();
+            using (DL_Mapping objBL = new DL_Mapping())
+            {
+                return objBL.EzeegoHotelVsSupplierHotelMappingReport(RQ);
             }
         }
         #endregion

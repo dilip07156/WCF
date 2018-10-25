@@ -12,7 +12,7 @@ namespace DataLayer
     using System;
     using System.Collections.Generic;
     
-    public partial class Accommodation_Status
+    public partial class Accommodation_Status : IDisposable
     {
         public System.Guid Accommodation_Status_Id { get; set; }
         public Nullable<System.Guid> Accommodation_Id { get; set; }
@@ -26,5 +26,9 @@ namespace DataLayer
         public Nullable<System.DateTime> Create_Date { get; set; }
         public string Edit_User { get; set; }
         public Nullable<System.DateTime> Edit_Date { get; set; }
+
+        public void Dispose()
+        {
+        }
     }
 }

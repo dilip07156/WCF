@@ -19,8 +19,8 @@ namespace OperationContracts
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "Mapping/Statistics/GetSupplierDataExport/{AccoPriority}/{SupplierID}/{IsMdmDataOnly}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        IList<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport(string AccoPriority, string SupplierID, string IsMdmDataOnly);
+        [WebInvoke(Method = "GET", UriTemplate = "Mapping/Statistics/GetSupplierDataExport/{AccoPriority}/{SupplierID}/{IsMdmDataOnly}/{SuppPriority}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport(string AccoPriority, string SupplierID, string IsMdmDataOnly, string SuppPriority);
 
         #region roll_off_reports
 
@@ -85,7 +85,10 @@ namespace OperationContracts
 
         #endregion
 
-
-
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Mapping/Statistics/EzeegoHotelVsSupplierHotelMapping", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport> EzeegoHotelVsSupplierHotelMappingReport(DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport_RQ parm);
+        
     }
 }
