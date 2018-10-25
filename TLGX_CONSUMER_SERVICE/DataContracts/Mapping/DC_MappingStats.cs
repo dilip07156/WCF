@@ -1589,8 +1589,6 @@ namespace DataContracts.Mapping
         public Guid Country_Id { get; set; }
     }
     #endregion
-}
-
 
     #region Supplier Mapping Report 
     [DataContract]
@@ -1623,6 +1621,8 @@ namespace DataContracts.Mapping
     }
 
     #endregion
+
+
 }
-#endregion
+
 
