@@ -2349,7 +2349,6 @@ namespace DataLayer
                 try
                 {
                     var res = context.Database.SqlQuery<DC_M_masterattributevalue>(sql.ToString()).ToList(); 
-                    //var res = context.Database.SqlQuery<DC_ZoneHotelList>(SearchZoneHotelQuery.ToString()).ToList();
                     return res;
                 }
                 catch (Exception ex) { return null; }
