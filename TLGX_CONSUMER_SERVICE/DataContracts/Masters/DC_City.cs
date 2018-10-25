@@ -810,4 +810,14 @@ namespace DataContracts.Masters
             }
         }
     }
+
+    [DataContract]
+    public class DC_CitywithMultipleCountry_Search_RQ
+    {
+        [DataMember]
+        public string CityName { get; set; }
+
+        [DataMember]
+        public List<Guid> CountryIdList { get; set; }
+    }
 }

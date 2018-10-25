@@ -56,6 +56,7 @@ namespace DataContracts
                 _Country_Code = value;
             }
         }
+        public string RegionCode { get; set; }
     }
 
     public class DC_CountryMaster
