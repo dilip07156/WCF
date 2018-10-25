@@ -838,6 +838,7 @@
           <Property Name="Activity_Status_Edit_Date" Type="datetime" />
           <Property Name="TourType" Type="nvarchar" MaxLength="100" />
           <Property Name="TLGXDisplaySubType" Type="varchar" MaxLength="500" />
+          <Property Name="TLGXDisplaySubType_ID" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Activity_FlavourOptions">
           <Key>
@@ -5996,6 +5997,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Activity_Status_Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="TourType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="TLGXDisplaySubType" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="TLGXDisplaySubType_ID" Type="Guid" />
         </EntityType>
         
       </Schema>
@@ -8859,6 +8861,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="Activity_Flavour">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_Flavour">
               <MappingFragment StoreEntitySet="Activity_Flavour">
+                <ScalarProperty Name="TLGXDisplaySubType_ID" ColumnName="TLGXDisplaySubType_ID" />
                 <ScalarProperty Name="TLGXDisplaySubType" ColumnName="TLGXDisplaySubType" />
                 <ScalarProperty Name="TourType" ColumnName="TourType" />
                 <ScalarProperty Name="Activity_Status_Edit_Date" ColumnName="Activity_Status_Edit_Date" />

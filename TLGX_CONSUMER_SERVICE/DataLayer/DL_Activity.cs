@@ -2355,12 +2355,28 @@ namespace DataLayer
                                      Create_User = a.Create_User,
                                      Edit_Date = a.Edit_Date,
                                      Edit_User = a.Edit_User,
+
                                      ProductCategory = a.ProductCategory,
+
+                                     // TLGX Subtype
+                                     TLGXDisplaySubType_ID = a.TLGXDisplaySubType_ID,
                                      TLGXDisplaySubType = a.TLGXDisplaySubType,
+
+                                     //ProductCategorySubType = a.ProductCategorySubType,
+                                     //ProductNameSubType = a.ProductNameSubType,
+                                     //ProductType = a.ProductType,
+
+                                     //ProductCategorySubType = string.Join(",", context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == a.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s.SupplierProductCategorySubType).Distinct().ToArray()),
+                                     //ProductNameSubType = string.Join(",", context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == a.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s.SupplierProductNameSubType).Distinct().ToArray()),
+                                     //ProductType = string.Join(",", context.Activity_CategoriesType.AsNoTracking().Where(w => w.Activity_Flavour_Id == a.Activity_Flavour_Id && w.Activity_FlavourOptions_Id == null).Select(s => s.SupplierProductType).Distinct().ToArray()),
+
                                      SupplierCity = spm.SupplierCityName + " (" + spm.SupplierCityCode + ")",
                                      SupplierCountry = spm.SupplierCountryName + " (" + spm.SupplierCountryCode + ")",
                                      SupplierProductCategory = "Activities",
+                                     //SupplierProductCategorySubType = spm.SupplierType,
                                      SupplierProductCode = spm.SuplierProductCode,
+                                     //SupplierProductNameSubType = spm.SupplierProductType,
+                                     //SupplierProductType = spm.SupplierType,
                                      Supplier_Id = s.Supplier_Id,
                                      SupplierCode = s.Code,
                                      SupplierName = s.Name,
@@ -2368,8 +2384,16 @@ namespace DataLayer
                                      Activity_Status_Edit_Date = a.Activity_Status_Edit_Date,
                                      Activity_Status_Edit_User = a.Activity_Status_Edit_User,
                                      Activity_StatusNotes = a.Activity_StatusNotes,
+                                     //TourType
                                      Activity_TourType = a.TourType,
                                      SupplierTourType = spm.SupplierTourType,
+
+
+                                     //TourType
+
+
+                                     // Area/Address
+
                                      SupplierLocation = spm.Location,
 
                                      Categories = (from ct in context.Activity_CategoriesType
