@@ -3961,6 +3961,10 @@ namespace DataLayer
                 {
                     sbWhere.Append(" and acco.Priority = " + obj.Priority.Value);
                 }
+                if (!string.IsNullOrWhiteSpace(obj.Source))
+                {
+                    sbWhere.Append(" and asrtm.Source = '" + obj.Source + "' ");
+                }
 
                 sbFrom.Append(@" FROM  [dbo].[Accommodation_SupplierRoomTypeMapping] AS  asrtm WITH (NOLOCK)
                                 INNER JOIN [dbo].[Accommodation] AS acco WITH (NOLOCK) ON  asrtm.[Accommodation_Id] = acco.[Accommodation_Id] AND ISNULL(acco.IsActive,0) = 1
@@ -4511,7 +4515,8 @@ namespace DataLayer
                                 StateName = obj.StateName,
                                 StateCode = obj.StateCode,
                                 CountryName = obj.CountryName,
-                                CountryCode = obj.CountryCode
+                                CountryCode = obj.CountryCode,
+                                Source = "StaticFile"
 
                             };
                             context.Accommodation_SupplierRoomTypeMapping.Add(objNew);
@@ -10347,6 +10352,92 @@ namespace DataLayer
         }
         #endregion
 
+        #region NewDashBoardReport
+        public List<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise()
+        {
+            try
+            {
+                List<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> returnObj = new List<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS>();
+
+              // Query to get Country Wise Hotel Counts
+                StringBuilder sbSelect = new StringBuilder();
+              
+                sbSelect.Append(@" Select RegionName, CountryName, 0.0 as ContentScore 
+                                    , isnull(sum(Count_APM_Mapped_And_AutoMapped) + sum(Count_APM_Review),0) as TotalSupplierHotels 
+                                    , isnull(sum(Count_APM_Mapped_And_AutoMapped),0)Mapped_Hotel
+                                    , isnull(sum(Count_APM_Review),0) as Review_Hotel
+                                    , 0 as Unmapped_Hotel
+                                    ,CASE (sum(Count_APM_Mapped_And_AutoMapped) + sum(Count_APM_Review)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_APM_Mapped_And_AutoMapped)) / CONVERT(decimal(10,2),(sum(Count_APM_Mapped_And_AutoMapped) + sum(Count_APM_Review))) * 100.00,1)) END as Per_Mapped_Hotel
+                                    ,CASE (sum(Count_APM_Mapped_And_AutoMapped) + sum(Count_APM_Review)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_APM_Review)) / CONVERT(decimal(10,2),(sum(Count_APM_Mapped_And_AutoMapped) + sum(Count_APM_Review))) * 100.00,1)) END as Per_Review_Hotel
+                                                                 
+                                    , isnull(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add),0) as TotalSupplierRoom
+                                    , isnull(sum(Count_SRT_Mapped),0) as Mapped_Room
+                                    , isnull(sum(Count_SRT_Review),0) as Review_Room
+                                    , isnull(sum(Count_SRT_Unmapped),0) as Unmapped_Room
+                                    , isnull(sum(Count_SRT_Add),0) as Add_Room
+                                    , isnull(sum(Count_SRT_Automapped),0) as AutoMapped_Room
+                                    , CASE (sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_SRT_Mapped)) / CONVERT(decimal(10,2),(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add))) * 100.00,1)) END as Per_Mapped_Room
+                                    , CASE (sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_SRT_Automapped)) / CONVERT(decimal(10,2),(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add))) * 100.00,1)) END as Per_AutoMapped_Room
+                                    , CASE (sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_SRT_Review)) / CONVERT(decimal(10,2),(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add))) * 100.00,1)) END as Per_Review_Room
+                                    , CASE (sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_SRT_UnMapped)) / CONVERT(decimal(10,2),(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add))) * 100.00,1)) END as Per_Unmapped_Room
+                                    , CASE (sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_SRT_Add)) / CONVERT(decimal(10,2),(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add))) * 100.00,1)) END as Per_Add_Room
+                                    ,Country_Id   
+                                    FROM [NewDashBoardReport]  with (NoLock)
+                                    WHERE  ReportType='HOTEL' and  Country_Id!='00000000-0000-0000-0000-000000000000' 
+                                    GROUP BY  RegionName ,CountryName , Country_Id 
+                                    ORDER BY CountryName
+                                    ");
+              
+
+                // CountryWise Distinct SupplierCount
+                StringBuilder sbSupplierCount = new StringBuilder();
+                sbSupplierCount.Append(@"select isnull(Count_SuppliersAcco,0) as Count_SuppliersAcco , isnull(Count_SuppliersRoom,0) as Count_SuppliersRoom , Country_Id 
+                                        from NewDashBoardReport NDBR with(nolock)
+                                        where NDBR.ReportType='COUNTRY'");
+
+                // Query To get CountryWise preffered Hotel Count
+                StringBuilder sbPrefHotelCount = new StringBuilder();
+                sbPrefHotelCount.Append(@"select Country_Id, isnull(count(HotelID) ,0) as PrefHotelCount
+                                        from NewDashBoardReport  with(nolock)
+                                        where ReportType='HOTEL' and Country_Id<>'00000000-0000-0000-0000-000000000000' AND IsPreferredHotel=1 
+                                        GROUP BY Country_Id");
+
+
+                List<DC_SupCount> TotalSupCounts = new List<DC_SupCount>();
+                List<DC_PrefferdHotel> PrefHotCounts = new List<DC_PrefferdHotel>();
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Database.CommandTimeout = 0;
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    returnObj = context.Database.SqlQuery<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS>(sbSelect.ToString()).ToList();
+                    TotalSupCounts = context.Database.SqlQuery<DataContracts.Mapping.DC_SupCount>(sbSupplierCount.ToString()).ToList();
+                    PrefHotCounts = context.Database.SqlQuery<DataContracts.Mapping.DC_PrefferdHotel>(sbPrefHotelCount.ToString()).ToList();
+                }
+
+                foreach (var item in returnObj)
+                {
+                    if (TotalSupCounts != null)
+                    {
+                        item.NoOfSuppliers_H = TotalSupCounts.Where(p => p.Country_Id == item.Country_id).Select(p => p.Count_SuppliersAcco).SingleOrDefault();
+                        item.NoOfSuppliers_R= TotalSupCounts.Where(p => p.Country_Id == item.Country_id).Select(p => p.Count_SuppliersRoom).SingleOrDefault();
+                    }
+                    if(PrefHotCounts!= null)
+                    {
+                        item.PreferredHotels = PrefHotCounts.Where(p => p.Country_Id == item.Country_id).Select(p => p.PrefHotelCount).SingleOrDefault();
+                    }
+                    
+                }
+              
+                return returnObj;
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching   CountryWise New DashBoard Report", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion NewDashBoardReport
+
         #region 
         public List<DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport> EzeegoHotelVsSupplierHotelMappingReport(DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport_RQ RQ)
         {
@@ -10420,6 +10511,60 @@ namespace DataLayer
             return response;
 
         }
+        #endregion
+
+
+        #region AccoProductMapping Report
+        //GAURAV-TMAP-645
+        public List<DataContracts.Mapping.DC_SupplierAccoMappingExportDataReport> AccomodationMappingReport(DC_SupplerVSupplier_Report_RQ dC_SupplerVSupplier_Report_RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    List<DataContracts.Mapping.DC_SupplierAccoMappingExportDataReport> lstAcco = new List<DataContracts.Mapping.DC_SupplierAccoMappingExportDataReport>();
+                    StringBuilder sb = new StringBuilder();
+
+
+                    sb.Append(@"
+                                Declare @TotalHotel int = (select count(*) from Accommodation_ProductMapping with(Nolock) where Supplier_Id = '" + dC_SupplerVSupplier_Report_RQ.Accommodation_Source_Id + "')");
+                    sb.Append(@"     select Priority, Supplier_Id,SupplierName,Accomodation_MannualMapped ,Accomodation_AutoMapped,Accomodation_ReviewMapped,Accomodation_Unmapped,
+                                (Accomodation_MannualMapped + Accomodation_AutoMapped + Accomodation_ReviewMapped + Accomodation_Unmapped) as AccomodationTotal,
+                                    @TotalHotel as AccoHotelCount, Compared_SupplierName as SourceSupplierName
+                                from AccommodationSupplierMappingReport_SupplierVSupplier with(nolock) where Compared_Supplier_Id = '" + dC_SupplerVSupplier_Report_RQ.Accommodation_Source_Id + "' ");
+
+                    if(dC_SupplerVSupplier_Report_RQ.Compare_WithSupplier_Ids != null && dC_SupplerVSupplier_Report_RQ.Compare_WithSupplier_Ids.Count > 0)
+                    {
+                        string ids = string.Join(",", dC_SupplerVSupplier_Report_RQ.Compare_WithSupplier_Ids
+                                            .Select(x => string.Format("'{0}'", x)));
+                        
+
+                        sb.Append("and Supplier_Id in (" + ids + ") ");
+
+                    }
+                    sb.Append(" order by Priority,SupplierName ");
+                    //sb.Append("select top 500 AC.Accommodation_Id,AC.HotelName,AC.city,AC.State_Name  As State,St.StateCode,AC.country from Accommodation AC left outer join m_States St on AC.Country_Id = St.Country_Id and ac.State_Name = st.StateName ");
+                    //sb.Append("where AC.IsActive = 1 and AC.HotelName Like '%" + RQ.HotelName + "%'");
+                    //if (!string.IsNullOrWhiteSpace(RQ.Country))
+                    //{
+                    //    sb.Append(" and ( AC.country = '"); sb.Append(RQ.Country); sb.Append("' ");
+                    //    sb.Append(" OR AC.Country_Id = '"); sb.Append(RQ.Country_Id); sb.Append("') ");
+                    //}
+                    //if (!string.IsNullOrWhiteSpace(RQ.State))
+                    //{
+                    //    sb.Append(" and AC.State_Name = '"); sb.Append(RQ.State); sb.Append("' ");
+                    //}
+                    //sb.Append(" order by AC.HotelName");
+                    try { lstAcco = context.Database.SqlQuery<DataContracts.Mapping.DC_SupplierAccoMappingExportDataReport>(sb.ToString()).ToList(); } catch (Exception ex) { }
+                    return lstAcco;
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation for autocomplete", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
         #endregion
     }
 }

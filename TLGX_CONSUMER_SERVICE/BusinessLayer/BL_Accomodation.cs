@@ -66,7 +66,7 @@ namespace BusinessLayer
                 return obj.AccomodationSearchAutoComplete(RQ);
             }
         }
-        
+
 
         #endregion
 
@@ -85,7 +85,7 @@ namespace BusinessLayer
                 return obj.GetAccomodationBasicInfo(Accomodation_Id);
             }
         }
-        
+
         public List<DataContracts.DC_Accommodation_RoomInfo> GetRoomDetailsByWithPagging(DC_Accommodation_RoomInfo_RQ RQ)
         {
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
@@ -322,11 +322,11 @@ namespace BusinessLayer
             }
         }
 
-        public bool CheckMediaPositionDuplicateforAccommodation(Guid Accomodation_Id, int mediaposition,Guid Accommodation_Media_Id)
+        public bool CheckMediaPositionDuplicateforAccommodation(Guid Accomodation_Id, int mediaposition, Guid Accommodation_Media_Id)
         {
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
             {
-                return obj.CheckMediaPositionDuplicateforAccommodation(Accomodation_Id, mediaposition,Accommodation_Media_Id);
+                return obj.CheckMediaPositionDuplicateforAccommodation(Accomodation_Id, mediaposition, Accommodation_Media_Id);
             }
         }
         #endregion
@@ -339,7 +339,7 @@ namespace BusinessLayer
             int iPageNo;
             int iPageSize;
 
-            if (!Guid.TryParse(Accomodation_Media_Id, out gAccomodation_Media_Id) || !Guid.TryParse(DataKey_Id, out gDataKey_Id) || !int.TryParse(PageNo,out iPageNo) || !int.TryParse(PageSize, out iPageSize))
+            if (!Guid.TryParse(Accomodation_Media_Id, out gAccomodation_Media_Id) || !Guid.TryParse(DataKey_Id, out gDataKey_Id) || !int.TryParse(PageNo, out iPageNo) || !int.TryParse(PageSize, out iPageSize))
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
             }
@@ -352,7 +352,7 @@ namespace BusinessLayer
 
         public bool AddAccomodationMediaAttributes(DataContracts.DC_Accomodation_Media_Attributes AM)
         {
-            if(AM.Accomodation_Media_Id == null)
+            if (AM.Accomodation_Media_Id == null)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
             }
@@ -389,7 +389,7 @@ namespace BusinessLayer
         {
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
             {
-                return obj.GetNearbyPlacesDetailsWithPaging(Accomodation_Id, DataKey_Id,pageSize,pageindex);
+                return obj.GetNearbyPlacesDetailsWithPaging(Accomodation_Id, DataKey_Id, pageSize, pageindex);
             }
         }
 
@@ -477,6 +477,7 @@ namespace BusinessLayer
             }
 
         }
+
         public bool AddAccomodationRoomInfo(DataContracts.DC_Accommodation_RoomInfo RI)
         {
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
@@ -484,6 +485,7 @@ namespace BusinessLayer
                 return obj.AddAccomodationRoomInfo(RI);
             }
         }
+
         public bool UpdateAccomodationRoomInfo(DataContracts.DC_Accommodation_RoomInfo RI)
         {
             using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
@@ -656,5 +658,71 @@ namespace BusinessLayer
         }
 
         #endregion
+
+        #region KAFKA
+        public bool AddLstAccomodationDescriptions(List<DataContracts.DC_Accommodation_Descriptions> AD)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.AddLstAccomodationDescriptions(AD);
+            }
+        }
+
+        public bool AddLstAccomodationFacilities(List<DataContracts.DC_Accommodation_Facility> AF)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.AddLstAccomodationFacilities(AF);
+            }
+        }
+
+        public bool AddLstAccomodationStatus(List<DataContracts.DC_Accommodation_Status> AS)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.AddLstAccomodationStatus(AS);
+            }
+        }
+
+        public bool AddLstAccomodationContacts(List<DataContracts.DC_Accommodation_Contact> AC)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.AddLstAccomodationContacts(AC);
+            }
+        }
+
+        public List<DataContracts.DC_Accommodation_RoomInfo> GetAccomodationRoomInfobyAccoID(Guid Accomodation_Id, string TLGXID = null)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.GetAccomodationRoomInfobyAccoID(Accomodation_Id, (TLGXID != null ? TLGXID.Replace("ACCOID-", "") : null));
+            }
+        }
+
+        public bool AddLstAccomodationRoomInfo(List<DataContracts.DC_Accommodation_RoomInfo> RI)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.AddLstAccomodationRoomInfo(RI);
+            }
+        }
+
+        public bool UpdateLstAccomodationRoomInfo(List<DataContracts.DC_Accommodation_RoomInfo> RI)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.UpdateLstAccomodationRoomInfo(RI);
+            }
+        }
+
+        public bool AddLstRoomAmenities(List<DataContracts.DC_Accomodation_Roomamenities> RA)
+        {
+            using (DataLayer.DL_Accomodation obj = new DataLayer.DL_Accomodation())
+            {
+                return obj.AddLstRoomAmenities(RA);
+            }
+        }
+        #endregion KAFKA
     }
 }
