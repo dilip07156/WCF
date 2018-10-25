@@ -439,6 +439,23 @@ namespace ConsumerSvc
 
         #endregion
 
-        
+        #region NewDashBoardReport
+        public IList<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise()
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetNewDashboardReport_CountryWise();
+            }
+        }
+        #endregion NewDashBoardReport
+
+
+        public IList<DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport> EzeegoHotelVsSupplierHotelMappingReport(DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport_RQ RQ)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.EzeegoHotelVsSupplierHotelMappingReport(RQ);
+            }
+        }
     }
 }

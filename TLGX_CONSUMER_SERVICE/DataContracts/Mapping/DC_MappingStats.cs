@@ -1497,5 +1497,96 @@ namespace DataContracts.Mapping
         public int Sequence { get; set; }
         public string Status { get; set; }
     }
+    #endregion
+
+    #region NewDashBoardReports
+    [DataContract]
+    public class DC_NewDashBoardReportCountry_RS
+    {
+        [DataMember]
+        public string RegionName { get; set; }
+        [DataMember]
+        public string CountryName { get; set; }
+        [DataMember]
+        public int PreferredHotels { get; set; }
+        [DataMember]
+        public decimal ContentScore { get; set; }
+        [DataMember]
+        public int TotalSupplierHotels { get; set; }
+        [DataMember]
+        public int Mapped_Hotel { get; set; }
+        [DataMember]
+        public int Review_Hotel { get; set; }
+        [DataMember]
+        public int Unmapped_Hotel { get; set; }
+        [DataMember]
+        public decimal Per_Mapped_Hotel { get; set; }
+        [DataMember]
+        public decimal Per_Review_Hotel { get; set; }
+        [DataMember]
+        public int NoOfSuppliers_H { get; set; }
+        [DataMember]
+        public int TotalSupplierRoom { get; set; }
+        [DataMember]
+        public int Mapped_Room { get; set; }
+        [DataMember]
+        public int Review_Room { get; set; }
+        [DataMember]
+        public int Unmapped_Room { get; set; }
+        [DataMember]
+        public int Add_Room { get; set; }
+        [DataMember]
+        public int AutoMapped_Room { get; set; }
+        [DataMember]
+        public decimal Per_Mapped_Room { get; set; }
+        [DataMember]
+        public decimal Per_AutoMapped_Room { get; set; }
+        [DataMember]
+        public decimal Per_Review_Room { get; set; }
+        [DataMember]
+        public decimal Per_Unmapped_Room { get; set; }
+        [DataMember]
+        public decimal Per_Add_Room { get; set; }
+        [DataMember]
+        public Guid Country_id { get; set; }
+        [DataMember]
+        public int NoOfSuppliers_R { get; set; }
+        
+    }
+
+    [DataContract]
+    public class DC_NewDashBoardReport_RQ
+    {
+        [DataMember]
+        public string RegionName { get; set; }
+        [DataMember]
+        public string CountryName { get; set; }
+        [DataMember]
+        public string CityName { get; set; }
+        [DataMember]
+        public string StarRating { get; set; }
+        [DataMember]
+        public Guid Country_Id { get; set; }
+        [DataMember]
+        public Guid City_Id { get; set; }
+    }
+    [DataContract]
+    public class DC_SupCount
+    {
+        [DataMember]
+        public int Count_SuppliersAcco { get; set; }
+        [DataMember]
+        public int Count_SuppliersRoom { get; set; }
+        [DataMember]
+        public Guid? Country_Id { get; set; }
+    }
+    [DataContract]
+    public class DC_PrefferdHotel
+    {
+        [DataMember]
+        public int PrefHotelCount { get; set; }
+        [DataMember]
+        public Guid Country_Id { get; set; }
+    }
+    #endregion
 }
-#endregion

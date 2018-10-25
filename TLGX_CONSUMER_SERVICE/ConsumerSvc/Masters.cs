@@ -810,5 +810,52 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
+        #region Multiselect Dropdown
+        public IList<DataContracts.DC_Master_Country> GetRegionwiseCountriesList(List<string> RegionCodeList)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetRegionwiseCountriesList(RegionCodeList);
+            }
+        }
+
+        public IList<DataContracts.DC_Master_City> GetAllCountrywiseCitiesList(List<string> CountryIdList)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetAllCountrywiseCitiesList(CountryIdList.ConvertAll(Guid.Parse));
+            }
+        }
+
+        public IList<DataContracts.DC_Master_City> GetCountrywiseCitiesList(DC_CitywithMultipleCountry_Search_RQ RQ)
+        {
+            using (BusinessLayer.BL_Masters obj = new BusinessLayer.BL_Masters())
+            {
+                return obj.GetCountrywiseCitiesList(RQ);
+            }
+        }
+
+        public IList<DataContracts.DC_Master_City> GetCitiesDetails(string CountryName, string CityName)
+        {
+            using (BusinessLayer.BL_Masters obj = new BusinessLayer.BL_Masters())
+            {
+                return obj.GetCitiesDetails(CountryName, CityName);
+            }
+        }
+
+        #endregion
+
+        #region 
+        public IList<DC_Master_Region> GetRegionMaster()
+        {
+            using (BL_Master_Region objBL = new BL_Master_Region())
+            {
+                List<DC_Master_Region> searchResults = new List<DC_Master_Region>();
+                searchResults = objBL.GetRegionMaster();
+                return searchResults;
+            }
+        }
+        #endregion
     }
 }
