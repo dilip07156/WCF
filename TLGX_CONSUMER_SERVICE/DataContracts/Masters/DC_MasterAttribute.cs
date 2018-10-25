@@ -9,7 +9,7 @@ using System.Runtime.Serialization;
 namespace DataContracts.Masters
 {
     [DataContract]
-    public class DC_MasterAttribute
+    public class DC_MasterAttribute : IDisposable
     {
         [DataMember]
         public Guid MasterAttributeValue_Id { get; set; }
@@ -23,6 +23,41 @@ namespace DataContracts.Masters
         public string MasterFor { get; set; }
         [DataMember]
         public Guid? ParentAttributeValue_Id { get; set; }
+
+        #region IDisposable implementation
+
+        /// <summary>
+        /// IDisposable.Dispose implementation, calls Dispose(true).
+        /// </summary>
+        void IDisposable.Dispose()
+        {
+            Dispose(true);
+        }
+
+        /// <summary>
+        /// Dispose worker method. Handles graceful shutdown of the
+        /// client even if it is an faulted state.
+        /// </summary>
+        /// <param name="disposing">Are we disposing (alternative
+        /// is to be finalizing)</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+               
+            }
+        }
+
+        /// <summary>
+        /// Finalizer.
+        /// </summary>
+        ~DC_MasterAttribute()
+        {
+            Dispose(false);
+        }
+
+        #endregion
+
     }
 
     [DataContract]
