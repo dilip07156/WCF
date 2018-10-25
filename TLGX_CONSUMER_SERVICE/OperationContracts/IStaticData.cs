@@ -76,8 +76,16 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "Mapping/Statistics/GetNewHotelsAddedReport", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         IList<DataContracts.Mapping.DC_newHotelsReport> getNewHotelsAddedReport(DataContracts.Mapping.DC_RollOFParams parm);
+
+        //GAURAV-TMAP-645
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Mapping/Statistics/AccomodationMappingReport", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Mapping.DC_SupplierAccoMappingExportDataReport> AccomodationMappingReport(DataContracts.Mapping.DC_SupplerVSupplier_Report_RQ dC_SupplerVSupplier_Report_RQ);
+
         #endregion
 
-       
+
+
     }
 }

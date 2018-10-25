@@ -1497,5 +1497,39 @@ namespace DataContracts.Mapping
         public int Sequence { get; set; }
         public string Status { get; set; }
     }
+
+
+    #region Supplier Mapping Report 
+    [DataContract]
+    public class DC_SupplierAccoMappingExportDataReport
+    {
+        [DataMember]
+        public int Priority { get; set; }
+        [DataMember]
+        public Guid? Supplier_Id { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+
+        [DataMember]
+        public int Accomodation_AutoMapped { get; set; }
+        [DataMember]
+        public int Accomodation_MannualMapped { get; set; }
+        [DataMember]
+        public int Accomodation_ReviewMapped { get; set; }
+        [DataMember]
+        public int Accomodation_Unmapped { get; set; }
+        [DataMember]
+        public int AccomodationTotal { get; set; }
+        [DataMember]
+        public int AccoHotelCount { get; set; }
+
+        [DataMember]
+        public string SourceSupplierName { get; set; }
+
+
+    }
+
+    #endregion
 }
 #endregion
+

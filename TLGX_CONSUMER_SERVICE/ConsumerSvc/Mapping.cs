@@ -173,7 +173,7 @@ namespace ConsumerSvc
         #endregion
 
         #region Supplierdata Export
-        public IList<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport( string AccoPriority, string SupplierID, string IsMdmDataOnly)
+        public IList<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport(string AccoPriority, string SupplierID, string IsMdmDataOnly)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
@@ -439,6 +439,15 @@ namespace ConsumerSvc
 
         #endregion
 
-        
+        #region AccoMapping Resport
+        //GAURAV-TMAP-645
+        public IList<DataContracts.Mapping.DC_SupplierAccoMappingExportDataReport> AccomodationMappingReport(DC_SupplerVSupplier_Report_RQ dC_SupplerVSupplier_Report_RQ)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.AccomodationMappingReport(dC_SupplerVSupplier_Report_RQ);
+            }
+        }
+        #endregion
     }
 }

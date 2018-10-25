@@ -10341,5 +10341,59 @@ namespace DataLayer
             var msg = _obj.AddStaticDataUploadErrorLog(obj);
         }
         #endregion
+
+
+        #region AccoProductMapping Report
+        //GAURAV-TMAP-645
+        public List<DataContracts.Mapping.DC_SupplierAccoMappingExportDataReport> AccomodationMappingReport(DC_SupplerVSupplier_Report_RQ dC_SupplerVSupplier_Report_RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    List<DataContracts.Mapping.DC_SupplierAccoMappingExportDataReport> lstAcco = new List<DataContracts.Mapping.DC_SupplierAccoMappingExportDataReport>();
+                    StringBuilder sb = new StringBuilder();
+
+
+                    sb.Append(@"
+                                Declare @TotalHotel int = (select count(*) from Accommodation_ProductMapping with(Nolock) where Supplier_Id = '" + dC_SupplerVSupplier_Report_RQ.Accommodation_Source_Id + "')");
+                    sb.Append(@"     select Priority, Supplier_Id,SupplierName,Accomodation_MannualMapped ,Accomodation_AutoMapped,Accomodation_ReviewMapped,Accomodation_Unmapped,
+                                (Accomodation_MannualMapped + Accomodation_AutoMapped + Accomodation_ReviewMapped + Accomodation_Unmapped) as AccomodationTotal,
+                                    @TotalHotel as AccoHotelCount, Compared_SupplierName as SourceSupplierName
+                                from AccommodationSupplierMappingReport_SupplierVSupplier with(nolock) where Compared_Supplier_Id = '" + dC_SupplerVSupplier_Report_RQ.Accommodation_Source_Id + "' ");
+
+                    if(dC_SupplerVSupplier_Report_RQ.Compare_WithSupplier_Ids != null && dC_SupplerVSupplier_Report_RQ.Compare_WithSupplier_Ids.Count > 0)
+                    {
+                        string ids = string.Join(",", dC_SupplerVSupplier_Report_RQ.Compare_WithSupplier_Ids
+                                            .Select(x => string.Format("'{0}'", x)));
+                        
+
+                        sb.Append("and Supplier_Id in (" + ids + ") ");
+
+                    }
+                    sb.Append(" order by Priority,SupplierName ");
+                    //sb.Append("select top 500 AC.Accommodation_Id,AC.HotelName,AC.city,AC.State_Name  As State,St.StateCode,AC.country from Accommodation AC left outer join m_States St on AC.Country_Id = St.Country_Id and ac.State_Name = st.StateName ");
+                    //sb.Append("where AC.IsActive = 1 and AC.HotelName Like '%" + RQ.HotelName + "%'");
+                    //if (!string.IsNullOrWhiteSpace(RQ.Country))
+                    //{
+                    //    sb.Append(" and ( AC.country = '"); sb.Append(RQ.Country); sb.Append("' ");
+                    //    sb.Append(" OR AC.Country_Id = '"); sb.Append(RQ.Country_Id); sb.Append("') ");
+                    //}
+                    //if (!string.IsNullOrWhiteSpace(RQ.State))
+                    //{
+                    //    sb.Append(" and AC.State_Name = '"); sb.Append(RQ.State); sb.Append("' ");
+                    //}
+                    //sb.Append(" order by AC.HotelName");
+                    try { lstAcco = context.Database.SqlQuery<DataContracts.Mapping.DC_SupplierAccoMappingExportDataReport>(sb.ToString()).ToList(); } catch (Exception ex) { }
+                    return lstAcco;
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation for autocomplete", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        #endregion
     }
 }

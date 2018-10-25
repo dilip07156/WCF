@@ -763,5 +763,15 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        //GAURAV-TMAP-645
+        public IList<DataContracts.Mapping.DC_SupplierAccoMappingExportDataReport> AccomodationMappingReport(DC_SupplerVSupplier_Report_RQ dC_SupplerVSupplier_Report_RQ)
+        {
+          
+            using (DL_Mapping objBL = new DL_Mapping())
+            {
+                return objBL.AccomodationMappingReport(dC_SupplerVSupplier_Report_RQ);
+            }
+        }
     }
 }
