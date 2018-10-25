@@ -10367,10 +10367,10 @@ namespace DataLayer
 
             sbSelect.AppendLine(" Select ac.CompanyHotelID As Legacy_HTL_ID, ac.TLGXAccoId,  ac.HotelName,ac.country AS CountryName, ac.city AS CityName, ac.Priority ");
             sbFrom.AppendLine(" From Accommodation ac with(NOLOCK) ");
-
+            sbWhere.AppendLine(" Where ac.TLGXAccoId IS NOT NULL ");
             if (RQ.Country.Count > 0)
             {
-                sbWhere.AppendLine(" where ac.Country_Id in(" + countryData + ") ");
+                sbWhere.AppendLine(" and ac.Country_Id in(" + countryData + ") ");
             }
 
             if (RQ.Supplier.Count > 0)
