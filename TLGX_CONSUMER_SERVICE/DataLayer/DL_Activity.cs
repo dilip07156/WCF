@@ -2361,7 +2361,7 @@ namespace DataLayer
                                      // TLGX Subtype
                                      TLGXDisplaySubType_ID = a.TLGXDisplaySubType_ID,
                                      TLGXDisplaySubType = a.TLGXDisplaySubType,
-                                     
+
                                      //ProductCategorySubType = a.ProductCategorySubType,
                                      //ProductNameSubType = a.ProductNameSubType,
                                      //ProductType = a.ProductType,
@@ -2697,6 +2697,8 @@ namespace DataLayer
                             res.TourType = RQ.Activity_TourType;
                             res.Location = RQ.Location;
 
+                            // TLGX SUBTYPE
+                            res.TLGXDisplaySubType = RQ.TLGXDisplaySubType;
 
                             if (context.SaveChanges() == 1)
                             {
@@ -2752,6 +2754,8 @@ namespace DataLayer
                         obj.Street4 = RQ.Street4;
                         obj.Street5 = RQ.Street5;
                         obj.USP = RQ.USP;
+                        // TLGX SUBTYPE
+                        obj.TLGXDisplaySubType = RQ.TLGXDisplaySubType;
                         obj.Create_Date = DateTime.Now;
                         obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
                         obj.TourType = RQ.Activity_TourType;

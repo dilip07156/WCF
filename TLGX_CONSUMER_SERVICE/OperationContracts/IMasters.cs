@@ -7,6 +7,7 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using DataContracts.Masters;
 using DataContracts;
+using System.Dynamic;
 
 namespace OperationContracts
 {
@@ -554,5 +555,17 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "Master/Zone/IncludeExcludeHotels", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataContracts.DC_Message IncludeExcludeHotels(DataContracts.Masters.DC_ZoneRQ param);
         #endregion
+
+        /// <summary>
+        /// TLGX SUB TYPE FIELD
+        /// </summary>
+        /// <param name="MasterAttribute_Id"></param>
+        /// <param name="PageSize"></param>
+        /// <param name="PageNo"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Master/MasterAttributes/TLGXSubType/{MasterFor}/{Name}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DC_M_masterattributevalue> GetDisplaySubType(string MasterFor, string Name);
     }
 }

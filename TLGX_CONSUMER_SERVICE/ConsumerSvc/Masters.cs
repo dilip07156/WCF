@@ -9,6 +9,7 @@ using OperationContracts;
 using DataContracts;
 using BusinessLayer;
 using DataContracts.Masters;
+using System.Dynamic;
 
 namespace ConsumerSvc
 {
@@ -313,7 +314,7 @@ namespace ConsumerSvc
                 return obj.GetAllAttributeAndValuesByParentAttributeValue(_obj);
             }
         }
-        
+
         public IList<DataContracts.Masters.DC_MasterAttribute> GetAllAttributeAndValues(DataContracts.Masters.DC_MasterAttribute _obj)
         {
             using (BusinessLayer.BL_Masters obj = new BL_Masters())
@@ -357,6 +358,15 @@ namespace ConsumerSvc
                 return obj.GetAttributeValues(MasterAttribute_Id, Convert.ToInt32(PageSize), Convert.ToInt32(PageNo));
             }
         }
+
+        public IList<DC_M_masterattributevalue> GetDisplaySubType(string MasterFor, string Name)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetDisplaySubType(MasterFor, Name);
+            }
+        }
+
         public DC_M_masterattribute GetAttributeDetails(string MasterAttribute_Id)
         {
             using (BusinessLayer.BL_Masters obj = new BL_Masters())
@@ -629,7 +639,7 @@ namespace ConsumerSvc
         {
             using (BusinessLayer.BL_Masters obj = new BL_Masters())
             {
-                return obj.GetActivityByCountryCity(CountryName,CityName);
+                return obj.GetActivityByCountryCity(CountryName, CityName);
             }
         }
         public List<DC_Supplier_DDL> GetSuppliersByProductCategory(string ProductCategory)
@@ -715,7 +725,7 @@ namespace ConsumerSvc
                 return obj.ReRunKeyword(Entity, Table, Supplier_Id);
             }
         }
-        
+
         #endregion
 
         //public string[] GetColumnNames(string TableName)
@@ -751,21 +761,21 @@ namespace ConsumerSvc
             }
         }
 
-        public IList<DataContracts.Masters.DC_ZoneSearch>SearchZone(DataContracts.Masters.DC_ZoneRQ param)
+        public IList<DataContracts.Masters.DC_ZoneSearch> SearchZone(DataContracts.Masters.DC_ZoneRQ param)
         {
             using (BusinessLayer.BL_Masters obj = new BL_Masters())
             {
                 return obj.SearchZone(param);
             }
         }
-        public IList<DC_ZoneCitiesSearch>SearchZoneCities(DataContracts.Masters.DC_ZoneRQ param)
+        public IList<DC_ZoneCitiesSearch> SearchZoneCities(DataContracts.Masters.DC_ZoneRQ param)
         {
             using (BusinessLayer.BL_Masters obj = new BL_Masters())
             {
                 return obj.SearchZoneCities(param);
             }
         }
-      
+
         public DataContracts.DC_Message DeactivateOrActivateZones(DataContracts.Masters.DC_ZoneRQ param)
         {
             using (BusinessLayer.BL_Masters obj = new BL_Masters())
