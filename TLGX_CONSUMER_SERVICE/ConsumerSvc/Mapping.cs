@@ -439,6 +439,33 @@ namespace ConsumerSvc
 
         #endregion
 
-        
+        #region NewDashBoardReport
+        public IList<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise()
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetNewDashboardReport_CountryWise();
+            }
+        }
+        #endregion NewDashBoardReport
+
+
+        public IList<DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport> EzeegoHotelVsSupplierHotelMappingReport(DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport_RQ RQ)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.EzeegoHotelVsSupplierHotelMappingReport(RQ);
+            }
+        }
+        #region AccoMapping Resport
+        //GAURAV-TMAP-645
+        public IList<DataContracts.Mapping.DC_SupplierAccoMappingExportDataReport> AccomodationMappingReport(DC_SupplerVSupplier_Report_RQ dC_SupplerVSupplier_Report_RQ)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.AccomodationMappingReport(dC_SupplerVSupplier_Report_RQ);
+            }
+        }
+        #endregion
     }
 }

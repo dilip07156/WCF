@@ -9,6 +9,7 @@ using DataContracts;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using DataContracts.Mapping;
+using System.Dynamic;
 
 namespace DataLayer
 {
@@ -2334,6 +2335,28 @@ namespace DataLayer
                 return result.ToList();
             }
         }
+
+        public IList<DC_M_masterattributevalue> GetDisplaySubType(string MasterFor, string Name)
+        {
+
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+
+                StringBuilder sql = new StringBuilder("Select Distinct AttributeValue  from m_masterattributevalue mav with(nolock) ").
+                    Append("join m_masterattribute ma with(nolock) on mav.MasterAttribute_Id = ma.MasterAttribute_Id ").
+                    Append("where ma.MasterFor = '" + MasterFor + "' and ma.Name = '" + Name + "' order by AttributeValue");
+                context.Database.CommandTimeout = 0;
+                try
+                {
+                    var res = context.Database.SqlQuery<DC_M_masterattributevalue>(sql.ToString()).ToList(); 
+                    //var res = context.Database.SqlQuery<DC_ZoneHotelList>(SearchZoneHotelQuery.ToString()).ToList();
+                    return res;
+                }
+                catch (Exception ex) { return null; }
+
+            }
+        }
+
         public IList<DC_M_masterattributevalue> GetAttributeValues(string MasterAttribute_Id, int PageSize, int PageNo)
         {
             Guid gMasterAttribute_Id = Guid.Parse(MasterAttribute_Id);
@@ -6218,6 +6241,95 @@ namespace DataLayer
             }
             return _msg;
         }
+        #endregion
+
+
+        #region MultiSelectDropdown
+
+        public List<DataContracts.DC_Master_Country> GetRegionwiseCountriesList(List<string> RegionCodeList)
+        {
+            try
+            {
+                List<DataContracts.DC_Master_Country> countryList = new List<DC_Master_Country>();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var country = from c in context.m_CountryMaster
+                                  orderby c.Name
+                                  where c.Status == "ACTIVE" && RegionCodeList.Distinct().Contains(c.RegionCode)
+                                  select new DataContracts.DC_Master_Country { Country_Id = c.Country_Id, Country_Name = c.Name, Country_Code = c.Code, RegionCode = c.RegionCode };
+
+                    return country.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public List<DataContracts.DC_Master_City> GetAllCountrywiseCitiesList(List<Guid> CountryIdList)
+        {
+            try
+            {
+                List<DataContracts.DC_Master_City> countryList = new List<DC_Master_City>();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var City = from c in context.m_CityMaster
+                               orderby c.Name
+                               where c.Status == "ACTIVE" && CountryIdList.Distinct().Contains(c.Country_Id)
+                               select new DataContracts.DC_Master_City { City_Id = c.City_Id, City_Name =  c.Name + "," + c.CountryName, City_Code = c.Code };
+
+                    return City.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public List<DataContracts.DC_Master_City> GetCountrywiseCitiesList(DC_CitywithMultipleCountry_Search_RQ RQ)
+        {
+            try
+            {
+                List<DataContracts.DC_Master_City> countryList = new List<DC_Master_City>();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var City = from c in context.m_CityMaster
+                               orderby c.Name
+                               where c.Status == "ACTIVE" && RQ.CountryIdList.Distinct().Contains(c.Country_Id) && c.Name.Contains(RQ.CityName)
+                               select new DataContracts.DC_Master_City { City_Id = c.City_Id, City_Name = c.Name + "," + c.CountryName, City_Code = c.Code };
+
+                    return City.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public List<DataContracts.DC_Master_City> GetCitiesDetails(string CountryName, string CityName)
+        {
+            try
+            {
+                List<DataContracts.DC_Master_City> countryList = new List<DC_Master_City>();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var City = from c in context.m_CityMaster
+                               orderby c.Name
+                               where c.Status == "ACTIVE" && c.CountryName == CountryName && c.Name == CityName
+                               select new DataContracts.DC_Master_City { City_Id = c.City_Id, City_Name = c.Name, City_Code = c.Code };
+
+                    return City.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         #endregion
     }
 }

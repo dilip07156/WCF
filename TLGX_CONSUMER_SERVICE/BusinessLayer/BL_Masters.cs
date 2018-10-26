@@ -2,6 +2,7 @@
 using DataContracts.Masters;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
@@ -340,6 +341,15 @@ namespace BusinessLayer
                 return obj.GetAttributeValues(MasterAttribute_Id, PageSize, PageNo);
             }
         }
+
+        public IList<DC_M_masterattributevalue> GetDisplaySubType(string MasterFor, string Name)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetDisplaySubType(MasterFor, Name);
+            }
+        }
+
         public DC_M_masterattribute GetAttributeDetails(Guid MasterAttribute_Id)
         {
             using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
@@ -805,5 +815,39 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        #region
+        public List<DataContracts.DC_Master_Country> GetRegionwiseCountriesList(List<string> RegionCodeList)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetRegionwiseCountriesList(RegionCodeList);
+            }
+        }
+
+        public List<DataContracts.DC_Master_City> GetAllCountrywiseCitiesList(List<Guid> CountryIdListList)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetAllCountrywiseCitiesList(CountryIdListList);
+            }
+        }
+
+        public List<DataContracts.DC_Master_City> GetCountrywiseCitiesList(DataContracts.Masters.DC_CitywithMultipleCountry_Search_RQ RQ)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetCountrywiseCitiesList(RQ);
+            }
+        }
+
+        public List<DataContracts.DC_Master_City> GetCitiesDetails(string CountryName, string CityName)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetCitiesDetails(CountryName, CityName);
+            }
+        }
+        #endregion	
     }
 }

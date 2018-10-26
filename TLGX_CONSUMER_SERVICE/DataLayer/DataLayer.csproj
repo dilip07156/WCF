@@ -394,6 +394,7 @@
     <Compile Include="DL_Masters.cs" />
     <Compile Include="DL_Master_Country.cs" />
     <Compile Include="DL_Master_City.cs" />
+    <Compile Include="DL_Master_Region.cs" />
     <Compile Include="DL_MLDataTransfer.cs" />
     <Compile Include="DL_MongoPush.cs" />
     <Compile Include="DL_Pentaho.cs" />
@@ -499,6 +500,9 @@
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="m_ZoneMaster.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NewDashBoardReport.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Organisation_Company.cs">

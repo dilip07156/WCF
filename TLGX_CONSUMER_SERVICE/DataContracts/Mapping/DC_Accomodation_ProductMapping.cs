@@ -706,4 +706,44 @@ namespace DataContracts.Mapping
             }
         }
     }
+
+
+    [DataContract]
+    public class DC_SupplerVSupplier_Report_RQ
+    {
+        System.Guid _Source_Suuplier_Id;
+        List<System.Guid> _Compare_WithSupplier_Ids;
+        System.Guid _Accommodation_Id;
+        string _Remarks;
+        DateTime _Edit_Date;
+        string _Edit_User;
+
+        [DataMember]
+        public Guid Accommodation_Source_Id
+        {
+            get
+            {
+                return _Source_Suuplier_Id;
+            }
+
+            set
+            {
+                _Source_Suuplier_Id = value;
+            }
+        }
+
+        [DataMember]
+        public List<System.Guid> Compare_WithSupplier_Ids
+        {
+            get
+            {
+                return _Compare_WithSupplier_Ids;
+            }
+
+            set
+            {
+                _Compare_WithSupplier_Ids = value;
+            }
+        }
+    }
 }
