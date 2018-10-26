@@ -3185,9 +3185,9 @@ namespace DataLayer
 
                     if (context.ChangeTracker.HasChanges())
                     {
-                        var AUTOMAPPED_CNT = allaccoSuppRoomTypeMapVals.Where(w => w.SystemMappingStatus == "AUTOMAPPED").Count();
-                        var MAPPED_CNT = allaccoSuppRoomTypeMapVals.Where(w => w.UserMappingStatus == "MAPPED").Count();
-                        var REVIEW_CNT = allaccoSuppRoomTypeMapVals.Where(w => w.SystemMappingStatus == "REVIEW" || w.UserMappingStatus == "REVIEW").Count();
+                        var AUTOMAPPED_CNT = allaccoSuppRoomTypeMapVals.Where(w => ((w.SystemEditDate ?? DateTime.MinValue) > (w.UserEditDate ?? DateTime.MinValue) ? (w.SystemMappingStatus ?? "UNMAPPED") : (w.UserMappingStatus ?? "UNMAPPED")) == "AUTOMAPPED").Count();
+                        var MAPPED_CNT = allaccoSuppRoomTypeMapVals.Where(w => ((w.SystemEditDate ?? DateTime.MinValue) > (w.UserEditDate ?? DateTime.MinValue) ? (w.SystemMappingStatus ?? "UNMAPPED") : (w.UserMappingStatus ?? "UNMAPPED")) == "MAPPED").Count();
+                        var REVIEW_CNT = allaccoSuppRoomTypeMapVals.Where(w => ((w.SystemEditDate ?? DateTime.MinValue) > (w.UserEditDate ?? DateTime.MinValue) ? (w.SystemMappingStatus ?? "UNMAPPED") : (w.UserMappingStatus ?? "UNMAPPED")) == "REVIEW").Count();
 
                         var srtm = context.Accommodation_SupplierRoomTypeMapping.Find(obj[0].Accommodation_SupplierRoomTypeMapping_Id);
 
