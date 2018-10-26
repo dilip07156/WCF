@@ -88,6 +88,7 @@
       <Diagram DiagramId="dd7305d7f2f340ddb587fd72c40ae548" Name="Mapping Static Data" >
         <EntityTypeShape EntityType="ConsumerModel.vwUserwisemappedStats" Width="1.5" PointX="3.375" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.Dashboard_MappingStat" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.NewDashBoardReport" Width="1.5" PointX="0.75" PointY="4.75" />
       </Diagram>
       <Diagram DiagramId="33089e75a83142f0a8f1044a69f7561b" Name="Schedules" >
         <EntityTypeShape EntityType="ConsumerModel.m_FrequencyType" Width="1.5" PointX="0.75" PointY="0.75" />

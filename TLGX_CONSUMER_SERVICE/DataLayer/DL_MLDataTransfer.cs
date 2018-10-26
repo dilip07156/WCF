@@ -1177,10 +1177,17 @@ namespace DataLayer
                                     _objToSendAIML.SimilarityIndicator = true;
                                     _objToSendAIML.SimilarityScore = 1;
                                 }
-                                else if (item.UserMappingStatus == MappingStatus.UNMAPPED.ToString() && (item.SystemMappingStatus == MappingStatus.AUTOMAPPED.ToString() || item.SystemMappingStatus == MappingStatus.REVIEW.ToString()))
+                                else if (item.UserMappingStatus == MappingStatus.UNMAPPED.ToString() &&
+                                    (string.IsNullOrWhiteSpace(item.SystemMappingStatus) ||
+                                     item.SystemMappingStatus == MappingStatus.AUTOMAPPED.ToString() ||
+                                     item.SystemMappingStatus == MappingStatus.REVIEW.ToString()))
                                 {
                                     _objToSendAIML.SimilarityIndicator = false;
                                     _objToSendAIML.SimilarityScore = 0;
+                                }
+                                else
+                                {
+                                    continue;
                                 }
                                 #endregion
 
