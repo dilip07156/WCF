@@ -722,6 +722,8 @@ namespace DataLayer
         {
             using (ConsumerEntities context = new ConsumerEntities())
             {
+                context.Database.CommandTimeout = 0;
+                
                 //Here we have to check City Wise unique supplier product codes for certain suppliers like 'GTA'
 
                 List<DataContracts.Mapping.DC_Accomodation_ProductMapping> toUpdate = new List<DC_Accomodation_ProductMapping>();
