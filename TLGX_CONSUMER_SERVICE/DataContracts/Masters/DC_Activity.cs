@@ -1129,6 +1129,10 @@ namespace DataContracts.Masters
         public Guid? Activity_Flavour_Id { get; set; }
         [DataMember]
         public Guid? Activity_FlavourOptions_Id { get; set; }
+
+        [DataMember]
+        public bool? WithActivity_FlavourOptions_Id { get; set; }
+
         [DataMember]
         public int? PageNo { get; set; }
         [DataMember]
@@ -1497,6 +1501,7 @@ namespace DataContracts.Masters
 
         [DataMember]
         public Guid? TLGXDisplaySubType_ID { get; set; }
+
         [DataMember]
         public string TLGXDisplaySubType { get; set; }
 

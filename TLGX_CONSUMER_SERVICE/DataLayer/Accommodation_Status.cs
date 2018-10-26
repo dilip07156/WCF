@@ -12,7 +12,7 @@ namespace DataLayer
     using System;
     using System.Collections.Generic;
     
-    public partial class Accommodation_Status : IDisposable
+    public partial class Accommodation_Status :IDisposable
     {
         public System.Guid Accommodation_Status_Id { get; set; }
         public Nullable<System.Guid> Accommodation_Id { get; set; }

@@ -1317,9 +1317,12 @@ namespace DataLayer
 
                     if (RQ.Activity_FlavourOptions_Id == null)
                     {
-                        search = from a in search
-                                 where a.Activity_FlavourOptions_Id == null
-                                 select a;
+                        if (RQ.WithActivity_FlavourOptions_Id == null)
+                        {
+                            search = from a in search
+                                     where a.Activity_FlavourOptions_Id == RQ.Activity_FlavourOptions_Id
+                                     select a;
+                        }
                     }
                     else
                     {
@@ -2032,7 +2035,7 @@ namespace DataLayer
                     var aCA = context.Activity_ClassificationAttributes.AsQueryable();
 
                     var aDOW = context.Activity_DaysOfWeek.AsQueryable();
-                    var aMedia = context.Activity_Media.Select(x=>x.Activity_Flavour_Id).Distinct().AsQueryable();
+                    var aMedia = context.Activity_Media.Select(x => x.Activity_Flavour_Id).Distinct().AsQueryable();
 
                     bool isCAFilter = false;
                     bool isDurationFilter = false;
@@ -2355,10 +2358,6 @@ namespace DataLayer
 
                                      ProductCategory = a.ProductCategory,
 
-                                     // TLGX Subtype
-                                     //TLGXDisplaySubType_ID = a.TLGXDisplaySubType_ID,
-                                     TLGXDisplaySubType = a.TLGXDisplaySubType,
-
                                      //ProductCategorySubType = a.ProductCategorySubType,
                                      //ProductNameSubType = a.ProductNameSubType,
                                      //ProductType = a.ProductType,
@@ -2384,13 +2383,14 @@ namespace DataLayer
                                      //TourType
                                      Activity_TourType = a.TourType,
                                      SupplierTourType = spm.SupplierTourType,
-
+                                     TLGXDisplaySubType_ID = a.TLGXDisplaySubType_ID,
+                                     TLGXDisplaySubType = a.TLGXDisplaySubType,
 
                                      //TourType
 
 
                                      // Area/Address
-                                     
+
                                      SupplierLocation = spm.Location,
 
                                      Categories = (from ct in context.Activity_CategoriesType
@@ -2487,6 +2487,8 @@ namespace DataLayer
                             res.Edit_User = RQ.Edit_User;
 
                             res.ProductCategory = RQ.ProductCategory;
+                            res.TLGXDisplaySubType = RQ.TLGXDisplaySubType;
+                            res.TLGXDisplaySubType_ID = RQ.TLGXDisplaySubType_ID;
 
                             if (!string.IsNullOrWhiteSpace(RQ.ProductCategorySubType))
                             {
@@ -2694,8 +2696,6 @@ namespace DataLayer
                             res.TourType = RQ.Activity_TourType;
                             res.Location = RQ.Location;
 
-                            // TLGX SUBTYPE
-                            res.TLGXDisplaySubType = RQ.TLGXDisplaySubType;
 
                             if (context.SaveChanges() == 1)
                             {
@@ -2751,8 +2751,8 @@ namespace DataLayer
                         obj.Street4 = RQ.Street4;
                         obj.Street5 = RQ.Street5;
                         obj.USP = RQ.USP;
-                        // TLGX SUBTYPE
                         obj.TLGXDisplaySubType = RQ.TLGXDisplaySubType;
+                        obj.TLGXDisplaySubType_ID = RQ.TLGXDisplaySubType_ID;
                         obj.Create_Date = DateTime.Now;
                         obj.Create_User = System.Web.HttpContext.Current.User.Identity.Name;
                         obj.TourType = RQ.Activity_TourType;
@@ -4770,134 +4770,134 @@ namespace DataLayer
             StringBuilder sbWhere = new StringBuilder();
             StringBuilder sbGroupBy = new StringBuilder();
             StringBuilder sborderBy = new StringBuilder();
-            
-                
+
+
+            try
+            {
+                sbSelect.Append("select spm.SupplierName,spm.SuplierProductCode As ActivityCode,F.ProductName As ActivityName");
+                sbSelect.Append(" ,LongDescription = (Select DE.Description from Activity_Descriptions De with(nolock) where De.Activity_Flavour_Id = spm.Activity_ID and De.DescriptionType = 'Long')  ");
+                sbSelect.Append(",ShortDescription = (Select De.Description from Activity_Descriptions De with(nolock) where De.Activity_Flavour_Id = spm.Activity_ID and De.DescriptionType = 'Short') ");
+
+                sbSelect.Append(",InterestType = (Select STUFF((SELECT ', ' + QUOTENAME(SystemInterestType) FROM Activity_CategoriesType with(nolock) where Activity_Flavour_Id = spm.Activity_ID FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,1,''))");
+                sbSelect.Append(",CategorySubType = (Select STUFF((SELECT ', ' + QUOTENAME(SystemProductCategorySubType) FROM Activity_CategoriesType with(nolock) where Activity_Flavour_Id = spm.Activity_ID FOR  XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,1,''))");
+                sbSelect.Append(",ProductType = (Select STUFF((SELECT ',' + QUOTENAME(SystemProductType) FROM Activity_CategoriesType with(nolock) where Activity_Flavour_Id = spm.Activity_ID  FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,1,''))");
+                sbSelect.Append(",ProductSubType = (Select STUFF((SELECT ',' + QUOTENAME(SystemProductNameSubType) FROM Activity_CategoriesType with(nolock) where Activity_Flavour_Id = spm.Activity_ID  FOR  XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,1,''))");
+
+                sbSelect.Append(",SuitableFor = (Select STUFF((SELECT ', ' + QUOTENAME(AttributeValue) FROM Activity_ClassificationAttributes with(nolock) where Activity_Flavour_Id = spm.Activity_ID and AttributeType='Product'  and AttributeSubType = 'SuitableFor' FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,1,''))");
+                sbSelect.Append(",PhysicalLevel = (Select STUFF((SELECT ', ' + QUOTENAME(AttributeValue) FROM Activity_ClassificationAttributes with(nolock) where Activity_Flavour_Id = spm.Activity_ID and  AttributeType='Product' and AttributeSubType = 'PhysicalIntensity' FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,1,''))");
+                sbSelect.Append(",spm.Location As AreaAddress");
+
+                sbSelect.Append(",Inclusions = (SELECT CASE  WHEN EXISTS ( SELECT COUNT(1) FROM Activity_Inclusions with(nolock) WHERE IsInclusion = 1 and Activity_Flavour_Id = spm.Activity_ID) THEN 'YES' Else 'NO' END)");
+                sbSelect.Append(",Exclusions = (SELECT CASE WHEN EXISTS ( SELECT COUNT(1) FROM Activity_Inclusions with(nolock) WHERE IsInclusion = 0 and Activity_Flavour_Id = spm.Activity_ID) THEN 'YES' Else 'NO' END)");
+
+                //sbSelect.Append(",FromDate = (Select CASE WHEN  Price_ValidFrom is not null  THEN MIN(ISNULL(Price_ValidFrom,coalesce( convert(varchar(20),Price_ValidFrom) , 22 )))  else NULL END FROM Activity_Prices where Activity_Flavour_Id = spm.Activity_ID group by Activity_Flavour_Id,Price_ValidFrom)");
+                //sbSelect.Append(",ToDate = (Select CASE WHEN  Price_ValidTo is not null  THEN MAX(ISNULL(Price_ValidTo,coalesce( convert(varchar(20),Price_ValidTo) , 22 )))  else NULL END FROM Activity_Prices where Activity_Flavour_Id=spm.Activity_ID group by Activity_Flavour_Id,Price_ValidTo)");
+
+                sbSelect.Append(",FromDate = (Select MIN(ISNULL(Price_ValidFrom, NULL)) FROM Activity_Prices with(nolock) where Activity_Flavour_Id = spm.Activity_ID)");
+                sbSelect.Append(",ToDate = (Select MAX(ISNULL(Price_ValidTo, NULL)) FROM Activity_Prices with(nolock) where Activity_Flavour_Id = spm.Activity_ID)");
+
+                sbSelect.Append(",Duration = (Select STUFF((SELECT ', ' + QUOTENAME(CASE WHEN CAST(SUBSTRING(Duration,1,charindex('.',Duration)-1) as int) > 0 then SUBSTRING(Duration,1,charindex('.',Duration)-1) + ' Days' ELSE '' END + CASE WHEN CAST(SUBSTRING(Duration,charindex('.',Duration) + 1 ,2) as int) > 0 then SUBSTRING(Duration,charindex('.',Duration) + 1 ,2) + ' Hours' ELSE '' END  + CASE WHEN CAST(SUBSTRING(Duration,charindex(':',Duration) + 1,2) as int) > 0 then SUBSTRING(Duration,charindex(':',Duration) + 1,2) + ' Mins' ELSE '' END  ) from Activity_DaysOfWeek where Activity_Flavor_ID = spm.Activity_ID FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,1,''))");
+
+
+                sbFrom.Append("from Activity_Flavour F with(nolock)");
+
+
+
+                sbJoin.Append(" join Activity_SupplierProductMapping spm with(nolock) on F.Activity_Flavour_ID = spm.Activity_ID ");
+                sbJoin.Append(" join Supplier S with(nolock) on spm.Supplier_ID = S.Supplier_Id and S.StatusCode = 'ACTIVE' ");
+
+
+
+
+                sbWhere.Append(" where Country_Id is not null and  City_Id is not null ");
+                //sbGroupBy.Append(" group by SupplierName");
+                sborderBy.Append(" order by SupplierName");
+                bool flagCountry = false;
+                if (!string.IsNullOrEmpty(_obj.SupplierID) && _obj.SupplierID != "0")
+                {
+                    sbWhere.Append(" and SPM.Supplier_Id='" + Guid.Parse(_obj.SupplierID) + "' ");
+                }
+                if (_obj.CountryID == "1") //All countries
+                {
+                    flagCountry = true;
+                    sbSelect.Append(" ,F.Country  ");
+                    // sbGroupBy.Append(" ,F.Country ");
+                    sborderBy.Append(" ,F.Country ");
+                    //sbWhere.Append(@"F.Country_Id='" + Guid.Parse(_obj.CountryID) + "' ");
+                }
+                else if (_obj.CountryID != "0" && _obj.CountryID != "1") //Single countries
+                {
+                    flagCountry = true;
+                    sbSelect.Append(" ,F.Country ");
+                    //sbGroupBy.Append(" ,F.Country ");
+                    sborderBy.Append(" ,F.Country ");
+                    sbWhere.Append(@" and F.Country_Id='" + Guid.Parse(_obj.CountryID) + "' ");
+                }
+                if (_obj.CityID == "1")
+                {
+                    if (!flagCountry)
+                    {
+                        sbSelect.Append(" ,F.Country ");
+                        //   sbGroupBy.Append(" ,F.Country ");
+                        sborderBy.Append(" ,F.Country ");
+                    }
+                    sbSelect.Append(" ,F.City ");
+                    //  sbGroupBy.Append(" ,F.City ");
+                    sborderBy.Append(" ,F.City ");
+
+                }
+                else if (_obj.CityID != "1" && _obj.CityID != "0")
+                {
+                    if (!flagCountry)
+                    {
+                        sbSelect.Append(" ,F.Country ");
+                        sbGroupBy.Append(" ,F.Country ");
+                        sborderBy.Append(" ,F.Country ");
+                    }
+                    sbSelect.Append(" ,F.City ");
+                    // sbGroupBy.Append(" ,F.City ");
+                    sborderBy.Append(" ,F.City ");
+                    sbWhere.Append(@" and F.City_Id='" + Guid.Parse(_obj.CityID) + "' ");
+
+                }
+
+                StringBuilder sbfinalquery = new StringBuilder();
+                sbfinalquery.Append(sbSelect); sbfinalquery.Append(" ");
+                sbfinalquery.Append(sbFrom); sbfinalquery.Append(" ");
+                sbfinalquery.Append(sbJoin); sbfinalquery.Append(" ");
+                sbfinalquery.Append(sbWhere); sbfinalquery.Append(" ");
+                //sbfinalquery.Append(sbGroupBy);
+                sbfinalquery.Append(sborderBy);
+
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Database.CommandTimeout = 0;
                     try
                     {
-                        sbSelect.Append("select spm.SupplierName,spm.SuplierProductCode As ActivityCode,F.ProductName As ActivityName");
-                        sbSelect.Append(" ,LongDescription = (Select DE.Description from Activity_Descriptions De with(nolock) where De.Activity_Flavour_Id = spm.Activity_ID and De.DescriptionType = 'Long')  ");
-                        sbSelect.Append(",ShortDescription = (Select De.Description from Activity_Descriptions De with(nolock) where De.Activity_Flavour_Id = spm.Activity_ID and De.DescriptionType = 'Short') ");
-                        
-                        sbSelect.Append(",InterestType = (Select STUFF((SELECT ', ' + QUOTENAME(SystemInterestType) FROM Activity_CategoriesType with(nolock) where Activity_Flavour_Id = spm.Activity_ID FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,1,''))");
-                        sbSelect.Append(",CategorySubType = (Select STUFF((SELECT ', ' + QUOTENAME(SystemProductCategorySubType) FROM Activity_CategoriesType with(nolock) where Activity_Flavour_Id = spm.Activity_ID FOR  XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,1,''))");
-                        sbSelect.Append(",ProductType = (Select STUFF((SELECT ',' + QUOTENAME(SystemProductType) FROM Activity_CategoriesType with(nolock) where Activity_Flavour_Id = spm.Activity_ID  FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,1,''))");
-                        sbSelect.Append(",ProductSubType = (Select STUFF((SELECT ',' + QUOTENAME(SystemProductNameSubType) FROM Activity_CategoriesType with(nolock) where Activity_Flavour_Id = spm.Activity_ID  FOR  XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,1,''))");
+                        result = context.Database.SqlQuery<DC_ActivityProductDetailsReport>(sbfinalquery.ToString()).ToList();
 
-                        sbSelect.Append(",SuitableFor = (Select STUFF((SELECT ', ' + QUOTENAME(AttributeValue) FROM Activity_ClassificationAttributes with(nolock) where Activity_Flavour_Id = spm.Activity_ID and AttributeType='Product'  and AttributeSubType = 'SuitableFor' FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,1,''))");
-                        sbSelect.Append(",PhysicalLevel = (Select STUFF((SELECT ', ' + QUOTENAME(AttributeValue) FROM Activity_ClassificationAttributes with(nolock) where Activity_Flavour_Id = spm.Activity_ID and  AttributeType='Product' and AttributeSubType = 'PhysicalIntensity' FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,1,''))");
-                        sbSelect.Append(",spm.Location As AreaAddress");
-
-                        sbSelect.Append(",Inclusions = (SELECT CASE  WHEN EXISTS ( SELECT COUNT(1) FROM Activity_Inclusions with(nolock) WHERE IsInclusion = 1 and Activity_Flavour_Id = spm.Activity_ID) THEN 'YES' Else 'NO' END)");
-                        sbSelect.Append(",Exclusions = (SELECT CASE WHEN EXISTS ( SELECT COUNT(1) FROM Activity_Inclusions with(nolock) WHERE IsInclusion = 0 and Activity_Flavour_Id = spm.Activity_ID) THEN 'YES' Else 'NO' END)");
-
-                    //sbSelect.Append(",FromDate = (Select CASE WHEN  Price_ValidFrom is not null  THEN MIN(ISNULL(Price_ValidFrom,coalesce( convert(varchar(20),Price_ValidFrom) , 22 )))  else NULL END FROM Activity_Prices where Activity_Flavour_Id = spm.Activity_ID group by Activity_Flavour_Id,Price_ValidFrom)");
-                    //sbSelect.Append(",ToDate = (Select CASE WHEN  Price_ValidTo is not null  THEN MAX(ISNULL(Price_ValidTo,coalesce( convert(varchar(20),Price_ValidTo) , 22 )))  else NULL END FROM Activity_Prices where Activity_Flavour_Id=spm.Activity_ID group by Activity_Flavour_Id,Price_ValidTo)");
-
-                        sbSelect.Append(",FromDate = (Select MIN(ISNULL(Price_ValidFrom, NULL)) FROM Activity_Prices with(nolock) where Activity_Flavour_Id = spm.Activity_ID)");
-                        sbSelect.Append(",ToDate = (Select MAX(ISNULL(Price_ValidTo, NULL)) FROM Activity_Prices with(nolock) where Activity_Flavour_Id = spm.Activity_ID)");
-
-                        sbSelect.Append(",Duration = (Select STUFF((SELECT ', ' + QUOTENAME(CASE WHEN CAST(SUBSTRING(Duration,1,charindex('.',Duration)-1) as int) > 0 then SUBSTRING(Duration,1,charindex('.',Duration)-1) + ' Days' ELSE '' END + CASE WHEN CAST(SUBSTRING(Duration,charindex('.',Duration) + 1 ,2) as int) > 0 then SUBSTRING(Duration,charindex('.',Duration) + 1 ,2) + ' Hours' ELSE '' END  + CASE WHEN CAST(SUBSTRING(Duration,charindex(':',Duration) + 1,2) as int) > 0 then SUBSTRING(Duration,charindex(':',Duration) + 1,2) + ' Mins' ELSE '' END  ) from Activity_DaysOfWeek where Activity_Flavor_ID = spm.Activity_ID FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,1,''))");
-
-
-                        sbFrom.Append("from Activity_Flavour F with(nolock)");
-
-                        
-
-                        sbJoin.Append(" join Activity_SupplierProductMapping spm with(nolock) on F.Activity_Flavour_ID = spm.Activity_ID ");
-                        sbJoin.Append(" join Supplier S with(nolock) on spm.Supplier_ID = S.Supplier_Id and S.StatusCode = 'ACTIVE' ");
-
-
-
-
-                        sbWhere.Append(" where Country_Id is not null and  City_Id is not null ");
-                        //sbGroupBy.Append(" group by SupplierName");
-                        sborderBy.Append(" order by SupplierName");
-                        bool flagCountry = false;
-                        if (!string.IsNullOrEmpty(_obj.SupplierID) && _obj.SupplierID != "0")
-                        {
-                            sbWhere.Append(" and SPM.Supplier_Id='" + Guid.Parse(_obj.SupplierID) + "' ");
-                        }
-                        if (_obj.CountryID == "1") //All countries
-                        {
-                            flagCountry = true;
-                            sbSelect.Append(" ,F.Country  ");
-                           // sbGroupBy.Append(" ,F.Country ");
-                            sborderBy.Append(" ,F.Country ");
-                            //sbWhere.Append(@"F.Country_Id='" + Guid.Parse(_obj.CountryID) + "' ");
-                        }
-                        else if (_obj.CountryID != "0" && _obj.CountryID != "1") //Single countries
-                        {
-                            flagCountry = true;
-                            sbSelect.Append(" ,F.Country ");
-                            //sbGroupBy.Append(" ,F.Country ");
-                            sborderBy.Append(" ,F.Country ");
-                            sbWhere.Append(@" and F.Country_Id='" + Guid.Parse(_obj.CountryID) + "' ");
-                        }
-                        if (_obj.CityID == "1")
-                        {
-                            if (!flagCountry)
-                            {
-                                sbSelect.Append(" ,F.Country ");
-                             //   sbGroupBy.Append(" ,F.Country ");
-                                sborderBy.Append(" ,F.Country ");
-                            }
-                            sbSelect.Append(" ,F.City ");
-                          //  sbGroupBy.Append(" ,F.City ");
-                            sborderBy.Append(" ,F.City ");
-
-                        }
-                        else if (_obj.CityID != "1" && _obj.CityID != "0")
-                        {
-                            if (!flagCountry)
-                            {
-                                sbSelect.Append(" ,F.Country ");
-                                sbGroupBy.Append(" ,F.Country ");
-                                sborderBy.Append(" ,F.Country ");
-                            }
-                            sbSelect.Append(" ,F.City ");
-                           // sbGroupBy.Append(" ,F.City ");
-                            sborderBy.Append(" ,F.City ");
-                            sbWhere.Append(@" and F.City_Id='" + Guid.Parse(_obj.CityID) + "' ");
-
-                        }
-
-                        StringBuilder sbfinalquery = new StringBuilder();
-                        sbfinalquery.Append(sbSelect); sbfinalquery.Append(" ");
-                        sbfinalquery.Append(sbFrom); sbfinalquery.Append(" ");
-                        sbfinalquery.Append(sbJoin); sbfinalquery.Append(" ");
-                        sbfinalquery.Append(sbWhere); sbfinalquery.Append(" ");
-                        //sbfinalquery.Append(sbGroupBy);
-                        sbfinalquery.Append(sborderBy);
-                
-
-                        using (ConsumerEntities context = new ConsumerEntities())
-                        {
-                        context.Database.CommandTimeout = 0;
-                        try
-                            {
-                                result = context.Database.SqlQuery<DC_ActivityProductDetailsReport>(sbfinalquery.ToString()).ToList();
-
-                                if (result.Count == 0)
-                                    return result = new List<DC_ActivityProductDetailsReport> { };
-                            }
-                            catch (Exception ex)
-                            {
-                                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus
-                                {
-                                    ErrorMessage = "Error while fetching Activity Product Details",
-                                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
-                                });
-
-                            }
-                        }
-
+                        if (result.Count == 0)
+                            return result = new List<DC_ActivityProductDetailsReport> { };
                     }
                     catch (Exception ex)
                     {
-                         throw ex.InnerException;
-                    }   
-                
-                return result;
+                        throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus
+                        {
+                            ErrorMessage = "Error while fetching Activity Product Details",
+                            ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                        });
+
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+
+            return result;
         }
         #endregion
 
@@ -4934,7 +4934,7 @@ namespace DataLayer
                     return true;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding accomodation media attributes", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
