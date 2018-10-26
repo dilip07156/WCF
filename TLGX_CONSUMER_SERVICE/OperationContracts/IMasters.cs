@@ -583,8 +583,22 @@ namespace OperationContracts
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "GET", UriTemplate = "Master/GetCitiesData/{CountryName}/{CityName}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        IList<DataContracts.DC_Master_City>GetCitiesDetails(string CountryName, string CityName);
+        IList<DataContracts.DC_Master_City> GetCitiesDetails(string CountryName, string CityName);
 
         #endregion
+
+        #region SubType
+        /// <summary>
+        ///  Master for TLGX SubType
+        /// </summary>
+        /// <param name="MasterFor"></param>
+        /// <param name="Name"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Master/MasterAttributes/TLGXSubType/{MasterFor}/{Name}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DC_M_masterattributevalue> GetDisplaySubType(string MasterFor, string Name);
+        #endregion SubType
+
     }
 }

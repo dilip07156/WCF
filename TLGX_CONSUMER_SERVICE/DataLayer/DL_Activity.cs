@@ -2359,7 +2359,7 @@ namespace DataLayer
                                      ProductCategory = a.ProductCategory,
 
                                      // TLGX Subtype
-                                     TLGXDisplaySubType_ID = a.TLGXDisplaySubType_ID,
+                                     //TLGXDisplaySubType_ID = a.TLGXDisplaySubType_ID,
                                      TLGXDisplaySubType = a.TLGXDisplaySubType,
 
                                      //ProductCategorySubType = a.ProductCategorySubType,
