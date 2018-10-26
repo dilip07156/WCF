@@ -9,6 +9,7 @@ using DataContracts;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using DataContracts.Mapping;
+using System.Dynamic;
 
 namespace DataLayer
 {
@@ -2334,6 +2335,28 @@ namespace DataLayer
                 return result.ToList();
             }
         }
+
+        public IList<DC_M_masterattributevalue> GetDisplaySubType(string MasterFor, string Name)
+        {
+
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+
+                StringBuilder sql = new StringBuilder("Select Distinct AttributeValue  from m_masterattributevalue mav with(nolock) ").
+                    Append("join m_masterattribute ma with(nolock) on mav.MasterAttribute_Id = ma.MasterAttribute_Id ").
+                    Append("where ma.MasterFor = '" + MasterFor + "' and ma.Name = '" + Name + "' order by AttributeValue");
+                context.Database.CommandTimeout = 0;
+                try
+                {
+                    var res = context.Database.SqlQuery<DC_M_masterattributevalue>(sql.ToString()).ToList(); 
+                    //var res = context.Database.SqlQuery<DC_ZoneHotelList>(SearchZoneHotelQuery.ToString()).ToList();
+                    return res;
+                }
+                catch (Exception ex) { return null; }
+
+            }
+        }
+
         public IList<DC_M_masterattributevalue> GetAttributeValues(string MasterAttribute_Id, int PageSize, int PageNo)
         {
             Guid gMasterAttribute_Id = Guid.Parse(MasterAttribute_Id);

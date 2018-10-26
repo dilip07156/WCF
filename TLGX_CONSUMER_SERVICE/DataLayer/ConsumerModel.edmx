@@ -838,7 +838,6 @@
           <Property Name="Activity_Status_Edit_Date" Type="datetime" />
           <Property Name="TourType" Type="nvarchar" MaxLength="100" />
           <Property Name="TLGXDisplaySubType" Type="varchar" MaxLength="500" />
-          <Property Name="TLGXDisplaySubType_ID" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="Activity_FlavourOptions">
           <Key>
@@ -3226,8 +3225,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="Activity_MediaAttributes" EntityType="ConsumerModel.Activity_MediaAttributes" />
           <EntitySet Name="m_CountryMaster" EntityType="ConsumerModel.m_CountryMaster" />
           <EntitySet Name="NewDashBoardReport" EntityType="ConsumerModel.NewDashBoardReport" />
-		  <EntitySet Name="Activity_Flavour" EntityType="ConsumerModel.Activity_Flavour" />
           <EntitySet Name="m_CityMaster" EntityType="ConsumerModel.m_CityMaster" />
+          <EntitySet Name="Activity_Flavour" EntityType="ConsumerModel.Activity_Flavour" />
 
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
@@ -5954,60 +5953,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Rank" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Priority" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Activity_Flavour">
-          <Key>
-            <PropertyRef Name="Activity_Flavour_Id" />
-          </Key>
-          <Property Name="Activity_Flavour_Id" Type="Guid" Nullable="false" />
-          <Property Name="Activity_Id" Type="Guid" />
-          <Property Name="ProductName" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="Country" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ProductCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ProductCategorySubType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ProductType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Legacy_Product_ID" Type="Int32" />
-          <Property Name="CommonProductNameSubType_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CompanyProductNameSubType_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="FinanceControlId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ProductNameSubType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="InterestType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="PlaceOfEvent" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="StartingPoint" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="EndingPoint" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="USP" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="IsPickUpDropDefined" Type="Boolean" />
-          <Property Name="MustSeeInCountry" Type="Boolean" />
-          <Property Name="CompanyReccom" Type="Boolean" />
-          <Property Name="Duration" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CountryCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CityCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Latitude" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Longitude" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Street" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Street2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Street3" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Street4" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Street5" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="PostalCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="City_Id" Type="Guid" />
-          <Property Name="Country_Id" Type="Guid" />
-          <Property Name="Area" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Location" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Activity_Language" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Activity_LanguageCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Activity_Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Activity_StatusNotes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Activity_Status_Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Activity_Status_Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="TourType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="TLGXDisplaySubType" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="TLGXDisplaySubType_ID" Type="Guid" />
-        </EntityType>
         <EntityType Name="NewDashBoardReport">
           <Key>
             <PropertyRef Name="Report_ID" />
@@ -6064,6 +6009,59 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Key" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Rank" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Priority" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Activity_Flavour">
+          <Key>
+            <PropertyRef Name="Activity_Flavour_Id" />
+          </Key>
+          <Property Name="Activity_Flavour_Id" Type="Guid" Nullable="false" />
+          <Property Name="Activity_Id" Type="Guid" />
+          <Property Name="ProductName" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Country" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductCategory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductCategorySubType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Legacy_Product_ID" Type="Int32" />
+          <Property Name="CommonProductNameSubType_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyProductNameSubType_Id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FinanceControlId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductNameSubType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InterestType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PlaceOfEvent" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="StartingPoint" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EndingPoint" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="USP" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsPickUpDropDefined" Type="Boolean" />
+          <Property Name="MustSeeInCountry" Type="Boolean" />
+          <Property Name="CompanyReccom" Type="Boolean" />
+          <Property Name="Duration" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CountryCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CityCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Longitude" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Street" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Street2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Street3" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Street4" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Street5" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PostalCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="City_Id" Type="Guid" />
+          <Property Name="Country_Id" Type="Guid" />
+          <Property Name="Area" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Location" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_Language" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_LanguageCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_StatusNotes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_Status_Edit_User" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Activity_Status_Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="TourType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TLGXDisplaySubType" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
         </EntityType>
         
       </Schema>
@@ -8960,7 +8958,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="Activity_Flavour">
             <EntityTypeMapping TypeName="ConsumerModel.Activity_Flavour">
               <MappingFragment StoreEntitySet="Activity_Flavour">
-                <ScalarProperty Name="TLGXDisplaySubType_ID" ColumnName="TLGXDisplaySubType_ID" />
                 <ScalarProperty Name="TLGXDisplaySubType" ColumnName="TLGXDisplaySubType" />
                 <ScalarProperty Name="TourType" ColumnName="TourType" />
                 <ScalarProperty Name="Activity_Status_Edit_Date" ColumnName="Activity_Status_Edit_Date" />
