@@ -175,5 +175,17 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
+
+        #region SyncAccommodationMaster
+        public DC_Message SyncAccommodationMaster(string log_id, string CreatedBy)
+        {
+            using (BusinessLayer.BL_RefreshDistributionData obj = new BL_RefreshDistributionData())
+            {
+                return obj.SyncAccommodationMaster(new Guid(log_id), CreatedBy);
+            }
+        }
+
+        #endregion 
     }
 }

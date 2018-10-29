@@ -250,6 +250,42 @@
     <None Include="Service References\ConsumerService\Consumer42.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\ConsumerService\Consumer511.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ConsumerService\Consumer512.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ConsumerService\Consumer513.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ConsumerService\Consumer514.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ConsumerService\Consumer515.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ConsumerService\Consumer516.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ConsumerService\Consumer517.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ConsumerService\Consumer518.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ConsumerService\Consumer519.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ConsumerService\Consumer520.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ConsumerService\Consumer521.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.City_AlphaPage1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Accommodation_Contact.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -286,16 +322,199 @@
     <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Accommodation_Status.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Accommodation_SupplierRoomTypeMap_SearchRS1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Accomodation.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_AccomodationBasic1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Accomodation_AutoComplete_RS1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Accomodation_Category_DDL1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Accomodation_Category_DDL_WithExtraDetails1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Accomodation_ClassificationAttributes1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Accomodation_DDL1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Accomodation_Media_Attributes1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Accomodation_ProductMapping1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Accomodation_RoomFacilities1.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Accomodation_Search_RS.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_DynamicAttributes_RS.datasource">
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Accomodation_SupplierRoomTypeMapping1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Acitivity_SupplierProductMapping1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Acitivity_SupplierProductMappingForDDL1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_ActivityProductDetailsReport1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_ActivitySearch_RS1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_CategoryTypes_DDL1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_ClassificationAttributes1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_Contact1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_Content1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_DDL1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_Deals1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_Descriptions1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_Flavour1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_Flavour_Options1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_Inclusions1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_InclusionsDetails1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_Media1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_OperatingDays1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_PickUpDrop1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_PickUpDropDetails1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_Policy1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_Prices1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_Report_RS1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_ReviewsAndScores1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_Status1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_SupplierProductMapping1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Activity_SupplierProductMapping_CA1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_ApplicationMgmt1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_City1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_CityArea1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_CityAreaLocation1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_CityMapping1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_City_Master_DDL1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Country1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_CountryMapping1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_CountryMaster1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_DynamicAttributes1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_EntityDetails1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_EntityType1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_FileProgressDashboard1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_FileUploadResponse1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_GenericMasterDetails_ByIDOrName1.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_GeoLocation.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_HotelListByCityCode1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Keyword1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_keyword_alias1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_MappingStats1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_MasterAttribute1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_MasterAttributeMapping1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_MasterAttributeMappingAdd_RS1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_MasterAttributeMapping_RS1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_MasterAttributeValueMappingRS1.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Master_City.datasource">
@@ -304,6 +523,7 @@
     <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Master_Country.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="System.Data.DataSet.datasource" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -324,6 +544,174 @@
     <None Include="Service References\ConsumerService\configuration.svcinfo" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Master_State1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Message1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_M_masterattribute1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_M_masterattributelists1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_M_masterattributevalue1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_M_masterparentattributes1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_newHotelsReport1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_PentahoApiCallLogDetails1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_PentahoTransStatus_TransStatus1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_PortMaster1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_RefreshDistributionDataLog1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Roles1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_RollOffReportRule1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_RollOffReportStatus1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_RollOffReportUpdate1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SiteMap1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SRT_ML_Response1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SRT_ML_Response_Semantic1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SRT_ML_Response_Supervised_Semantic1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SRT_ML_Response_Syntactic1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_State_Master_DDL1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Statuses1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Stg_Kafka1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Supplier1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SupplierEntity1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SupplierExportDataReport1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SupplierImportAttributes1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SupplierImportAttributeValues1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SupplierImportFileDetails1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SupplierImportFile_ErrorLog1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SupplierImportFile_Progress1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SupplierImportFile_Statistics1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SupplierImportFile_VerboseLog1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SupplierMarket1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_SupplierRoomTypeAttributes1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_supplierwisesummaryReport1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_supplierwiseUnmappedReport1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_supplierwiseunmappedsummaryReport1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Supplier_ApiLocation1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Supplier_DDL1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Supplier_ProductCategory1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Supplier_Schedule1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_Teams1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_unmappedActivityReport1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_UnmappedCityReport1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_UnmappedCountryReport1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_unmappedProductReport1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_UploadResponse1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_UserDetails1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_UserEntity1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_VelocityMappingStats1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_ZoneCitiesSearch1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_ZoneHotelList1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DC_ZoneSearch1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.DL_ML_DL_EntityStatus1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ConsumerService\ConsumerServiceClient.ConsumerService.State_AlphaPage1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\ConsumerService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>

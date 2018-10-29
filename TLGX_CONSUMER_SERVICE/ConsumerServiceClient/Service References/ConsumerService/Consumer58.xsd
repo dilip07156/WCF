@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/DataContracts.Schedulers" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/DataContracts.Schedulers" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:57643/Consumer.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="ArrayOfDC_Supplier_Schedule">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DC_Supplier_Schedule" nillable="true" type="tns:DC_Supplier_Schedule" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDC_Supplier_Schedule" nillable="true" type="tns:ArrayOfDC_Supplier_Schedule" />
+  <xs:complexType name="DC_Supplier_Schedule">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Create_Date" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Create_User" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DateOfMonth" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="DayOfWeek" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Edit_Date" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Edit_User" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="EndTime" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FrequencyTypeCode" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ISUpdateFrequence" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ISXMLSupplier" type="xs:boolean" />
+      <xs:element minOccurs="0" name="MonthOfYear" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="Recur_No" type="xs:int" />
+      <xs:element minOccurs="0" name="StartTime" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Status" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SupplierScheduleID" type="ser:guid" />
+      <xs:element minOccurs="0" name="Suppllier_ID" type="ser:guid" />
+      <xs:element minOccurs="0" name="WeekOfMonth" nillable="true" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DC_Supplier_Schedule" nillable="true" type="tns:DC_Supplier_Schedule" />
+</xs:schema>
