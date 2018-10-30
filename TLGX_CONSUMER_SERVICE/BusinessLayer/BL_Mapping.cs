@@ -804,5 +804,15 @@ namespace BusinessLayer
                 return objBL.AccomodationMappingReport(dC_SupplerVSupplier_Report_RQ);
             }
         }
+
+        #region HotelMapping
+        public List<DataContracts.Mapping.DC_HotelMappingReport_RS> HotelMappingReport(DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport_RQ RQ)
+        {
+            using (DL_Mapping objBL = new DL_Mapping())
+            {
+                return objBL.HotelMappingReport(RQ);
+            }
+        }
+        #endregion
     }
 }

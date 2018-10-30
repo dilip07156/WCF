@@ -1622,7 +1622,79 @@ namespace DataContracts.Mapping
 
     #endregion
 
+    #region Hotel Mapping Report
+    [DataContract]
+    public class DC_HotelMappingReport_RS
+    {
+        [DataMember]
+        public int CommonHotelID { get; set; }
 
-}
+        [DataMember]
+        public string TLGXAccoId { get; set; }
+
+        [DataMember]
+        public string HotelName { get; set; }
+
+        [DataMember]
+        public string CountryName { get; set; }
+
+        [DataMember]
+        public string RegionName { get; set; }
+
+        [DataMember]
+        public string CityName { get; set; }
+
+        [DataMember]
+        public int? Priority { get; set; }
+
+        [DataMember]
+        public int PreferredHotels { get; set; }
+
+        [DataMember]
+        public decimal ContentScore { get; set; }
+
+        [DataMember]
+        public int TotalSupplierHotels { get; set; }
+        [DataMember]
+        public int Mapped_Hotel { get; set; }
+        [DataMember]
+        public int Review_Hotel { get; set; }
+        [DataMember]
+        public int Unmapped_Hotel { get; set; }
+        [DataMember]
+        public decimal Per_Mapped_Hotel { get; set; }
+        [DataMember]
+        public decimal Per_Review_Hotel { get; set; }
+        [DataMember]
+        public int NoOfSuppliers_H { get; set; }
+        [DataMember]
+        public int TotalSupplierRoom { get; set; }
+        [DataMember]
+        public int Mapped_Room { get; set; }
+        [DataMember]
+        public int Review_Room { get; set; }
+        [DataMember]
+        public int Unmapped_Room { get; set; }
+        [DataMember]
+        public int Add_Room { get; set; }
+        [DataMember]
+        public int AutoMapped_Room { get; set; }
+        [DataMember]
+        public decimal Per_Mapped_Room { get; set; }
+        [DataMember]
+        public decimal Per_AutoMapped_Room { get; set; }
+        [DataMember]
+        public decimal Per_Review_Room { get; set; }
+        [DataMember]
+        public decimal Per_Unmapped_Room { get; set; }
+        [DataMember]
+        public decimal Per_Add_Room { get; set; }
+        [DataMember]
+        public int NoOfSuppliers_R { get; set; }
+
+    }
+
+        #endregion
+    }
 
 
