@@ -778,11 +778,11 @@ namespace DataLayer
                 {
                     formatstring = string.Format("{0}", string.Join("','", datatypes.Select(i => i.Replace("\"", "'"))));
 
-                    sqlquery = "SELECT COLUMN_NAME,CHARACTER_MAXIMUM_LENGTH from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME ='" + tblname + "'and DATA_TYPE in('" + formatstring + "');";
+                    sqlquery = "SELECT COLUMN_NAME,CHARACTER_MAXIMUM_LENGTH from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME ='" + tblname + "'and DATA_TYPE in ('" + formatstring + "');";
                 }
                 else
                 {
-                    sqlquery = "SELECT COLUMN_NAME,CHARACTER_MAXIMUM_LENGTH from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME ='" + tblname + "';";
+                    sqlquery = "SELECT COLUMN_NAME,CHARACTER_MAXIMUM_LENGTH from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = '" + tblname + "';";
                 }
                 var result = context.Database.SqlQuery<DataContracts.DC_SqlTableColumnInfo>(sqlquery).ToList();
                 return result;
