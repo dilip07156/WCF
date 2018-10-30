@@ -140,10 +140,13 @@ namespace DataContracts.STG
         public string TLGXProductCode { get; set; }
 
         [DataMember]
-        public Guid? SupplierImportFile_Id { get; set; }
+        public Guid SupplierImportFile_Id { get; set; }
 
         [DataMember]
         public string ProductType { get; set; }
+
+        [DataMember]
+        public Guid ComboFile_Id { get; set; }
     }
 
     [DataContract]

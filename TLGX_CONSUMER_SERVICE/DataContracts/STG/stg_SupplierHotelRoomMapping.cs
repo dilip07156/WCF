@@ -90,7 +90,7 @@ namespace DataContracts.STG
         [DataMember]
         public Nullable<System.Guid> Supplier_Id { get; set; }
         [DataMember]
-        public Guid? SupplierImportFile_Id { get; set; }
+        public Guid SupplierImportFile_Id { get; set; }
         [DataMember]
         public int? MinGuestOccupancy { get; set; }
         [DataMember]
@@ -105,6 +105,8 @@ namespace DataContracts.STG
         public string CountryName { get; set; }
         [DataMember]
         public string CountryCode { get; set; }
+        [DataMember]
+        public Guid ComboFile_Id { get; set; }
     }
 
     [DataContract]
