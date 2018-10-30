@@ -10627,7 +10627,7 @@ namespace DataLayer
                 sbWhere.AppendLine(" and City_Id in(" + cityData + ")");
             }
 
-            sbOrderBy.AppendLine("order by  CountryName, CityName, HotelName ");
+            sbOrderBy.AppendLine("order by  RegionName, CountryName, CityName, HotelName ");
 
             sbfinalquery.AppendLine(sbSelect.ToString());
             //sbfinalquery.AppendLine(sbFrom.ToString());
