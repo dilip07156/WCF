@@ -514,6 +514,230 @@ namespace DataLayer
                 {
                     //Check duplicate
                     string issue = "";
+                    string AppendMsg = string.Empty;
+
+                    var isDuplicate = false;
+
+                    switch (obj.AttributeType.ToLower())
+                    {
+                        case "filedetails":
+
+                            switch (obj.AttributeValue.ToLower())
+                            {
+                                case "firstrowisheader":
+                                case "format":
+                                case "keyword":
+                                case "delimiter":
+                                case "textqualifier":
+                                case "run matching":
+                                    // Check Duplicate Records for Main Flag Off.
+                                    isDuplicate = (from attr in context.m_SupplierImportAttributeValues
+                                                   where (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                                   attr.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
+                                                   attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id && attr.Priority == obj.Priority)
+                                                   select attr).Count() == 0 ? false : true;
+                                    // Check Duplicate for Delete State
+                                    issue = (from attr in context.m_SupplierImportAttributeValues
+                                             where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
+                                             (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                             attr.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
+                                              attr.STATUS.Trim().TrimStart().ToUpper() == "ACTIVE" &&
+                                              attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id && attr.Priority == obj.Priority
+                                             )
+                                             select attr.STATUS).Count() > 0 ? "ACTIVE" : "INACTIVE";
+                                    // Check Duplicate Records for Exact Issue in Value combinations.
+                                    AppendMsg = (from attr in context.m_SupplierImportAttributeValues
+                                                 where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
+                                                 (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                                 attr.AttributeName.Trim().TrimStart().ToUpper() != obj.AttributeName.Trim().TrimStart().ToUpper() &&
+                                                  attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id && attr.Priority == obj.Priority
+                                                 )
+                                                 select attr.STATUS).Count() > 0 ? " with different Value " : "";
+                                    break;
+                                case "numberofcolumns":
+                                    // Check Duplicate Records for Main Flag Off.
+                                    isDuplicate = (from attr in context.m_SupplierImportAttributeValues
+                                                   where (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                                   attr.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
+                                                   attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id && attr.Priority == obj.Priority)
+                                                   select attr).Count() == 0 ? false : true;
+                                    // Check Duplicate for Delete State
+                                    issue = (from attr in context.m_SupplierImportAttributeValues
+                                             where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
+                                             (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                             attr.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
+                                             attr.STATUS.Trim().TrimStart().ToUpper() == "ACTIVE" &&
+                                             attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id && attr.Priority == obj.Priority
+
+                                             )
+                                             select attr.STATUS).Count() > 0 ? "ACTIVE" : "INACTIVE";
+
+                                    // Check Duplicate Records for Exact Issue in Value combinations.
+                                    AppendMsg = (from attr in context.m_SupplierImportAttributeValues
+                                                 where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
+                                                 (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                                 attr.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
+                                                  attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id && attr.Priority == obj.Priority
+                                                 )
+                                                 select attr.STATUS).Count() > 0 ? " with different Value " : "";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            break;
+                        case "keyword":
+
+                            // Check Duplicate Records for Main Flag Off.
+                            isDuplicate = (from attr in context.m_SupplierImportAttributeValues
+                                           where (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                           attr.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
+                                           attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id && attr.Priority == obj.Priority)
+                                           select attr).Count() == 0 ? false : true;
+
+                            // Check Duplicate for Delete State
+                            issue = (from attr in context.m_SupplierImportAttributeValues
+                                     where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
+                                     (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                     attr.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
+                                      attr.STATUS.Trim().TrimStart().ToUpper() == "ACTIVE" &&
+                                      attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id && attr.Priority == obj.Priority
+                                     )
+                                     select attr.STATUS).Count() > 0 ? "ACTIVE" : "INACTIVE";
+                            // Check Duplicate Records for Exact Issue in Value combinations.
+                            AppendMsg = (from attr in context.m_SupplierImportAttributeValues
+                                         where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
+                                         (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                         attr.AttributeName.Trim().TrimStart().ToUpper() != obj.AttributeName.Trim().TrimStart().ToUpper() &&
+                                          attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id && attr.Priority == obj.Priority
+                                         )
+                                         select attr.STATUS).Count() > 0 ? " with different Value " : "";
+                            break;
+                        case "map":
+
+                            // Check Duplicate Records for Main Flag Off.
+                            isDuplicate = (from attr in context.m_SupplierImportAttributeValues
+                                           where (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                           attr.AttributeName.Trim().TrimStart().ToUpper() == obj.AttributeName.Trim().TrimStart().ToUpper() &&
+                                           attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id && attr.Priority == obj.Priority)
+                                           select attr).Count() == 0 ? false : true;
+
+                            // Check Duplicate for Delete State
+                            issue = (from attr in context.m_SupplierImportAttributeValues
+                                     where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
+                                     (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                     attr.AttributeName.Trim().TrimStart().ToUpper() == obj.AttributeName.Trim().TrimStart().ToUpper() &&
+                                      attr.STATUS.Trim().TrimStart().ToUpper() == "ACTIVE" &&
+                                      attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id && attr.Priority == obj.Priority
+                                     )
+                                     select attr.STATUS).Count() > 0 ? "ACTIVE" : "INACTIVE";
+
+                            // Check Duplicate Records for Exact Issue in Value combinations.
+                            AppendMsg = (from attr in context.m_SupplierImportAttributeValues
+                                         where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
+                                         (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                         attr.AttributeName.Trim().TrimStart().ToUpper() != obj.AttributeName.Trim().TrimStart().ToUpper() &&
+                                          attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id && attr.Priority == obj.Priority
+                                         )
+                                         select attr.STATUS).Count() > 0 ? " with different Value " : "";
+                            break;
+                        case "format":
+                            isDuplicate = (from attr in context.m_SupplierImportAttributeValues
+                                           where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
+                                           (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                            // attr.AttributeName.Trim().TrimStart().ToUpper() == obj.AttributeName.Trim().TrimStart().ToUpper() &&
+                                            //attr.AttributeValue_ID.Value == obj.AttributeValue_ID.Value &&
+                                            attr.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
+                                            attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id &&
+                                            attr.Priority == obj.Priority
+                                           )
+                                           select attr).Count() == 0 ? false : true;
+
+                            issue = (from attr in context.m_SupplierImportAttributeValues
+                                     where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
+                                     (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                      attr.AttributeValue.Trim().TrimStart().ToUpper() == obj.AttributeValue.Trim().TrimStart().ToUpper() &&
+                                      attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id && attr.Priority == obj.Priority
+                                     )
+                                     select attr.STATUS).Count() > 0 ? "ACTIVE" : "INACTIVE";
+                            break;
+                        default:
+                            isDuplicate = (from attr in context.m_SupplierImportAttributeValues
+                                           where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
+                                           (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                            attr.AttributeName.Trim().TrimStart().Replace(@"""", "").Replace("&quot;", "").Replace("&nbsp;", "").ToUpper() ==
+                                            obj.AttributeName.Trim().TrimStart().Replace(@"""", "").Replace("&quot;", "").Replace("&nbsp;", "").ToUpper() &&
+                                            //attr.AttributeValue_ID.Value.Replace(@"""", "").Replace("&quot;", "").Replace("&nbsp;", "") == obj.AttributeValue_ID.Value.Replace(@"""", "").Replace("&quot;", "").Replace("&nbsp;", "") &&
+                                            attr.AttributeValue.Trim().TrimStart().Replace(@"""", "").Replace("&quot;", "").Replace("&nbsp;", "").ToUpper() == obj.AttributeValue.Trim().TrimStart().Replace(@"""", "").Replace("&quot;", "").Replace("&nbsp;", "").ToUpper() &&
+                                            attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id &&
+                                            attr.Priority == obj.Priority
+                                           )
+
+
+                                           select attr).Count() == 0 ? false : true;
+
+                            issue = (from attr in context.m_SupplierImportAttributeValues
+                                     where attr.SupplierImportAttributeValue_Id == obj.SupplierImportAttributeValue_Id ||
+                                     (attr.AttributeType.Trim().TrimStart().ToUpper() == obj.AttributeType.Trim().TrimStart().ToUpper() &&
+                                      attr.AttributeName.Trim().TrimStart().ToUpper() == obj.AttributeName.Trim().TrimStart().ToUpper() &&
+                                      attr.AttributeValue.Trim().TrimStart().Replace("&quot;", "").ToUpper() == obj.AttributeValue.Trim().TrimStart().Replace(@"\""", "").ToUpper() &&
+                                      attr.SupplierImportAttribute_Id == obj.SupplierImportAttribute_Id &&
+                                      attr.Priority == obj.Priority && attr.STATUS.Trim().TrimStart().ToUpper() == "ACTIVE"
+                                     )
+                                     select attr.STATUS).Count() > 0 ? "ACTIVE" : "INACTIVE";
+                            break;
+                    }
+
+
+                    if (isDuplicate)
+                    {
+                        dc.StatusCode = ReadOnlyMessage.StatusCode.Duplicate;
+                        dc.StatusMessage = "Supplier Mapping Attribute" + (issue == "ACTIVE" ? ReadOnlyMessage.strAlreadyExist.Replace("system", "system" + AppendMsg) : ReadOnlyMessage.strAlreadyExist.Replace("system.", "system in Delete state.").Replace("system", "system" + AppendMsg));
+                        // ReadOnlyMessage.strAlreadyExist.Replace("system.","system in Delete state.") + issue;
+                    }
+                    else
+                    {
+                        DataLayer.m_SupplierImportAttributeValues objNew = new DataLayer.m_SupplierImportAttributeValues();
+
+                        objNew.SupplierImportAttributeValue_Id = obj.SupplierImportAttributeValue_Id;
+                        objNew.SupplierImportAttribute_Id = obj.SupplierImportAttribute_Id;
+                        objNew.AttributeType = obj.AttributeType;
+                        objNew.AttributeName = obj.AttributeName;
+                        objNew.AttributeValue = obj.AttributeValue;
+                        objNew.AttributeValue_ID = obj.AttributeValue_ID;
+                        objNew.CREATE_DATE = obj.CREATE_DATE;
+                        objNew.CREATE_USER = obj.CREATE_USER;
+                        objNew.STATUS = obj.STATUS;
+                        objNew.Priority = obj.Priority;
+                        objNew.Description = obj.Description;
+                        objNew.AttributeValueType = obj.AttributeValueType;
+                        objNew.Comparison = obj.Comparison;
+                        context.m_SupplierImportAttributeValues.Add(objNew);
+                        context.SaveChanges();
+                        dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        dc.StatusMessage = "Supplier Mapping Attribute Value" + ReadOnlyMessage.strAddedSuccessfully;
+                    }
+                }
+                return dc;
+            }
+            catch (Exception)
+            {
+                dc.StatusMessage = ReadOnlyMessage.strFailed;
+                dc.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                return dc;
+            }
+        }
+
+        public DataContracts.DC_Message AddStaticDataMappingAttributeValues_Original(DataContracts.UploadStaticData.DC_SupplierImportAttributeValues obj)
+        {
+            DataContracts.DC_Message dc = new DataContracts.DC_Message();
+
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    //Check duplicate
+                    string issue = "";
                     var isDuplicate = false;
                     if (obj.AttributeValue.ToLower() == "format")
                     {
