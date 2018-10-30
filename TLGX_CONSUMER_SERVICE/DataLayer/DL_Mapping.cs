@@ -10362,71 +10362,42 @@ namespace DataLayer
               // Query to get Country Wise Hotel Counts
                 StringBuilder sbSelect = new StringBuilder();
               
-                sbSelect.Append(@" Select RegionName, CountryName, 0.0 as ContentScore 
-                                    , isnull(sum(Count_APM_Mapped_And_AutoMapped) + sum(Count_APM_Review),0) as TotalSupplierHotels 
-                                    , isnull(sum(Count_APM_Mapped_And_AutoMapped),0)Mapped_Hotel
-                                    , isnull(sum(Count_APM_Review),0) as Review_Hotel
+                sbSelect.Append(@"  Select NDR.RegionName 
+                                    ,NDR.CountryName
+                                    ,0.0 as ContentScore 
+                                    , isnull(Count_APM_Mapped_And_AutoMapped + Count_APM_Review,0) as TotalSupplierHotels 
                                     , 0 as Unmapped_Hotel
-                                    ,CASE (sum(Count_APM_Mapped_And_AutoMapped) + sum(Count_APM_Review)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_APM_Mapped_And_AutoMapped)) / CONVERT(decimal(10,2),(sum(Count_APM_Mapped_And_AutoMapped) + sum(Count_APM_Review))) * 100.00,1)) END as Per_Mapped_Hotel
-                                    ,CASE (sum(Count_APM_Mapped_And_AutoMapped) + sum(Count_APM_Review)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_APM_Review)) / CONVERT(decimal(10,2),(sum(Count_APM_Mapped_And_AutoMapped) + sum(Count_APM_Review))) * 100.00,1)) END as Per_Review_Hotel
-                                                                 
-                                    , isnull(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add),0) as TotalSupplierRoom
-                                    , isnull(sum(Count_SRT_Mapped),0) as Mapped_Room
-                                    , isnull(sum(Count_SRT_Review),0) as Review_Room
-                                    , isnull(sum(Count_SRT_Unmapped),0) as Unmapped_Room
-                                    , isnull(sum(Count_SRT_Add),0) as Add_Room
-                                    , isnull(sum(Count_SRT_Automapped),0) as AutoMapped_Room
-                                    , CASE (sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_SRT_Mapped)) / CONVERT(decimal(10,2),(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add))) * 100.00,1)) END as Per_Mapped_Room
-                                    , CASE (sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_SRT_Automapped)) / CONVERT(decimal(10,2),(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add))) * 100.00,1)) END as Per_AutoMapped_Room
-                                    , CASE (sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_SRT_Review)) / CONVERT(decimal(10,2),(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add))) * 100.00,1)) END as Per_Review_Room
-                                    , CASE (sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_SRT_UnMapped)) / CONVERT(decimal(10,2),(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add))) * 100.00,1)) END as Per_Unmapped_Room
-                                    , CASE (sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), sum(Count_SRT_Add)) / CONVERT(decimal(10,2),(sum(Count_SRT_Mapped) + sum(Count_SRT_Automapped) + sum(Count_SRT_Review) + sum(Count_SRT_Unmapped) + sum(Count_SRT_Add))) * 100.00,1)) END as Per_Add_Room
-                                    ,Country_Id   
-                                    FROM [NewDashBoardReport]  with (NoLock)
-                                    WHERE  ReportType='HOTEL' and  Country_Id!='00000000-0000-0000-0000-000000000000' 
-                                    GROUP BY  RegionName ,CountryName , Country_Id 
-                                    ORDER BY CountryName
+                                    ,CASE (isnull(Count_APM_Mapped_And_AutoMapped,0) + isnull(Count_APM_Review,0)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), Count_APM_Mapped_And_AutoMapped) / CONVERT(decimal(10,2),(Count_APM_Mapped_And_AutoMapped + Count_APM_Review)) * 100.00,1)) END as Per_Mapped_Hotel
+                                    ,CASE (isnull(Count_APM_Mapped_And_AutoMapped,0) + isnull(Count_APM_Review,0)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), Count_APM_Review) / CONVERT(decimal(10,2),(Count_APM_Mapped_And_AutoMapped + Count_APM_Review)) * 100.00,1)) END as Per_Review_Hotel                                                                 
+                                    , isnull(Count_SRT_Attached_to_HOTEL,0) as TotalSupplierRoom
+                                    , CASE (Count_SRT_Mapped + Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), Count_SRT_Mapped) / CONVERT(decimal(10,2),(Count_SRT_Mapped + Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add)) * 100.00,1)) END as Per_Mapped_Room
+                                    , CASE (Count_SRT_Mapped + Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), Count_SRT_Automapped) / CONVERT(decimal(10,2),(Count_SRT_Mapped+ Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add)) * 100.00,1)) END as Per_AutoMapped_Room
+                                    , CASE (Count_SRT_Mapped + Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), Count_SRT_Review) / CONVERT(decimal(10,2),(Count_SRT_Mapped+ Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add)) * 100.00,1)) END as Per_Review_Room
+                                    , CASE (Count_SRT_Mapped + Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), Count_SRT_UnMapped) / CONVERT(decimal(10,2),(Count_SRT_Mapped+ Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add)) * 100.00,1)) END as Per_Unmapped_Room
+                                    , CASE (Count_SRT_Mapped + Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), Count_SRT_Add) / CONVERT(decimal(10,2),(Count_SRT_Mapped+ Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add)) * 100.00,1)) END as Per_Add_Room
+									,NDR.Count_SuppliersAcco as NoOfSuppliers_H
+                                    ,NDR.Count_SuppliersRoom as NoOfSuppliers_R 
+                                    ,isnull(PrefHotCount.PrefHot,0) as  PreferredHotels
+                                    ,NDR.Country_Id
+                                    FROM [NewDashBoardReport] NDR with (NoLock)
+                                    LEFT JOIN(select count(a.HotelID) as PrefHot,Country_Id from [NewDashBoardReport] a with (NoLock) where a.IsPreferredHotel=1  group by Country_Id ) PrefHotCount 
+                                    ON NDR.Country_Id= PrefHotCount.Country_Id
+                                    WHERE  ReportType='COUNTRY' and  NDR.Country_Id!='00000000-0000-0000-0000-000000000000' 
+									ORDER BY RegionName,CountryName
                                     ");
-              
-
-                // CountryWise Distinct SupplierCount
-                StringBuilder sbSupplierCount = new StringBuilder();
-                sbSupplierCount.Append(@"select isnull(Count_SuppliersAcco,0) as Count_SuppliersAcco , isnull(Count_SuppliersRoom,0) as Count_SuppliersRoom , Country_Id 
-                                        from NewDashBoardReport NDBR with(nolock)
-                                        where NDBR.ReportType='COUNTRY'");
-
-                // Query To get CountryWise preffered Hotel Count
-                StringBuilder sbPrefHotelCount = new StringBuilder();
-                sbPrefHotelCount.Append(@"select Country_Id, isnull(count(HotelID) ,0) as PrefHotelCount
-                                        from NewDashBoardReport  with(nolock)
-                                        where ReportType='HOTEL' and Country_Id<>'00000000-0000-0000-0000-000000000000' AND IsPreferredHotel=1 
-                                        GROUP BY Country_Id");
-
-
-                List<DC_SupCount> TotalSupCounts = new List<DC_SupCount>();
-                List<DC_PrefferdHotel> PrefHotCounts = new List<DC_PrefferdHotel>();
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     context.Database.CommandTimeout = 0;
                     context.Configuration.AutoDetectChangesEnabled = false;
-                    returnObj = context.Database.SqlQuery<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS>(sbSelect.ToString()).ToList();
-                    TotalSupCounts = context.Database.SqlQuery<DataContracts.Mapping.DC_SupCount>(sbSupplierCount.ToString()).ToList();
-                    PrefHotCounts = context.Database.SqlQuery<DataContracts.Mapping.DC_PrefferdHotel>(sbPrefHotelCount.ToString()).ToList();
-                }
+                    try
+                    {
+                        returnObj = context.Database.SqlQuery<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS>(sbSelect.ToString()).ToList();
+                    }
+                    catch(Exception ex)
+                    {
 
-                foreach (var item in returnObj)
-                {
-                    if (TotalSupCounts != null)
-                    {
-                        item.NoOfSuppliers_H = TotalSupCounts.Where(p => p.Country_Id == item.Country_id).Select(p => p.Count_SuppliersAcco).SingleOrDefault();
-                        item.NoOfSuppliers_R= TotalSupCounts.Where(p => p.Country_Id == item.Country_id).Select(p => p.Count_SuppliersRoom).SingleOrDefault();
                     }
-                    if(PrefHotCounts!= null)
-                    {
-                        item.PreferredHotels = PrefHotCounts.Where(p => p.Country_Id == item.Country_id).Select(p => p.PrefHotelCount).SingleOrDefault();
-                    }
-                    
                 }
               
                 return returnObj;
@@ -10434,6 +10405,91 @@ namespace DataLayer
             catch (Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching   CountryWise New DashBoard Report", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public List<DC_NewDashBoardReportCountry_RS> GetHotelMappingReport_CityWise(DataContracts.Mapping.DC_NewDashBoardReport_RQ RQ)
+        {
+            try
+            {
+                List<DC_NewDashBoardReportCountry_RS> retObj = new List<DC_NewDashBoardReportCountry_RS>();
+                var regionData = String.Join(",", RQ.Region.Select(s => "'" + s + "'"));
+                string countryData = String.Join(",", RQ.Country.Select(s => "'" + s + "'"));
+                string cityData = String.Join(",", RQ.City.Select(s => "'" + s + "'"));
+
+                //Query To get CityWise Data
+                StringBuilder sbSelect = new StringBuilder();
+
+                StringBuilder sbWhere = new StringBuilder();
+
+                StringBuilder sbOrderBy = new StringBuilder();
+
+                sbOrderBy.AppendLine(" ORDER BY RegionName ,CountryName ,CityName  ");
+
+                StringBuilder sbFinalQuery = new StringBuilder();
+
+                if (RQ.Country.Count > 0)
+                {
+                    sbWhere.AppendLine("  and NDR.Country_Id in(" + countryData + ") ");
+                }
+                if (RQ.City.Count > 0)
+                {
+                    sbWhere.AppendLine("  and NDR.City_Id in(" + cityData + ")");
+                }
+                if (RQ.Region.Count > 0)
+                {
+                    sbWhere.AppendLine("  and NDR.RegionName in(" + regionData + ")");
+                }
+
+
+                sbSelect.Append(@" SELECT
+                                    NDR.RegionName 
+                                    ,NDR.CountryName
+                                    ,NDR.CityName
+                                    ,0.0 as ContentScore 
+                                    , isnull(Count_APM_Mapped_And_AutoMapped + Count_APM_Review,0) as TotalSupplierHotels 
+                                    , 0 as Unmapped_Hotel
+                                    ,CASE (isnull(Count_APM_Mapped_And_AutoMapped,0) + isnull(Count_APM_Review,0)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), Count_APM_Mapped_And_AutoMapped) / CONVERT(decimal(10,2),(Count_APM_Mapped_And_AutoMapped + Count_APM_Review)) * 100.00,1)) END as Per_Mapped_Hotel
+                                    ,CASE (isnull(Count_APM_Mapped_And_AutoMapped,0) + isnull(Count_APM_Review,0)) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), Count_APM_Review) / CONVERT(decimal(10,2),(Count_APM_Mapped_And_AutoMapped + Count_APM_Review)) * 100.00,1)) END as Per_Review_Hotel                                                                 
+                                    , isnull(Count_SRT_Attached_to_HOTEL,0) as TotalSupplierRoom
+                                    , CASE (Count_SRT_Mapped + Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), Count_SRT_Mapped) / CONVERT(decimal(10,2),(Count_SRT_Mapped + Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add)) * 100.00,1)) END as Per_Mapped_Room
+                                    , CASE (Count_SRT_Mapped + Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), Count_SRT_Automapped) / CONVERT(decimal(10,2),(Count_SRT_Mapped+ Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add)) * 100.00,1)) END as Per_AutoMapped_Room
+                                    , CASE (Count_SRT_Mapped + Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), Count_SRT_Review) / CONVERT(decimal(10,2),(Count_SRT_Mapped+ Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add)) * 100.00,1)) END as Per_Review_Room
+                                    , CASE (Count_SRT_Mapped + Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), Count_SRT_UnMapped) / CONVERT(decimal(10,2),(Count_SRT_Mapped+ Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add)) * 100.00,1)) END as Per_Unmapped_Room
+                                    , CASE (Count_SRT_Mapped + Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add) WHEN 0 THEN 0 ELSE CONVERT(DECIMAL(10,1), ROUND(CONVERT(decimal(10,2), Count_SRT_Add) / CONVERT(decimal(10,2),(Count_SRT_Mapped+ Count_SRT_Automapped + Count_SRT_Review + Count_SRT_Unmapped + Count_SRT_Add)) * 100.00,1)) END as Per_Add_Room
+                                    ,NDR.Country_Id   
+                                    ,NDR.City_Id
+                                    ,NDR.Count_SuppliersAcco as NoOfSuppliers_H
+                                    ,NDR.Count_SuppliersRoom as NoOfSuppliers_R 
+                                    ,isnull(PrefHotCount.PrefHot,0) as  PreferredHotels
+                                    FROM [NewDashBoardReport] NDR with (NoLock)
+                                    LEFT JOIN(select count(a.HotelID) as PrefHot,City_Id from [NewDashBoardReport] a where a.IsPreferredHotel=1  group by City_Id ) PrefHotCount 
+                                    ON NDR.City_Id= PrefHotCount.City_Id
+                                    WHERE  ReportType='CITY' and  NDR.City_Id!='00000000-0000-0000-0000-000000000000'  ");
+
+                sbFinalQuery.Append(sbSelect);
+                sbFinalQuery.Append(sbWhere);
+                sbFinalQuery.Append(sbOrderBy);
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    try
+                    {
+                        context.Database.CommandTimeout = 0;
+                        retObj = context.Database.SqlQuery<DC_NewDashBoardReportCountry_RS>(sbFinalQuery.ToString()).ToList();
+                     
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+
+                return retObj;
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching City Wise Hotel MApping Report", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
         #endregion NewDashBoardReport

@@ -781,6 +781,15 @@ namespace BusinessLayer
             }
 
         }
+        public List<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetHotelMappingReport_CityWise(DC_NewDashBoardReport_RQ RQ)
+        {
+
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetHotelMappingReport_CityWise(RQ);
+            }
+
+        }
         #endregion NewDashBoardReport
 
         #region EzeegoHotelVs

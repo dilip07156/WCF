@@ -447,6 +447,14 @@ namespace ConsumerSvc
                 return objBL.GetNewDashboardReport_CountryWise();
             }
         }
+
+        public IList<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetHotelMappingReport_CityWise(DC_NewDashBoardReport_RQ RQ)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetHotelMappingReport_CityWise(RQ);
+            }
+        }
         #endregion NewDashBoardReport
 
 
