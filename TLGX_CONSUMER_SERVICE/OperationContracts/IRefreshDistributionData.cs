@@ -131,14 +131,6 @@ namespace OperationContracts
         #endregion
 
 
-        #region AccommodationMaster
-        [OperationContract]
-        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "Load/SyncAccommodationMaster/{Log_id}/{CreatedBy}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DC_Message SyncAccommodationMaster(string log_id, string CreatedBy);
-
-        #endregion
-
     }
 
 
