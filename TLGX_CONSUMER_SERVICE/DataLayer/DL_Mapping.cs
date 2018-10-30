@@ -830,10 +830,12 @@ namespace DataLayer
                 }
                 else
                 {
+                    var stgIds = stg.Select(s => s.stg_AccoMapping_Id).ToList();
                     toUpdate = (from a in context.Accommodation_ProductMapping.AsNoTracking()
                                 join s in context.stg_SupplierProductMapping.AsNoTracking() on
                                 new { a.Supplier_Id, a.SupplierProductReference } equals new { s.Supplier_Id, SupplierProductReference = s.ProductId }
                                 where s.SupplierImportFile_Id == File_Id
+                                && stgIds.Contains(s.stg_AccoMapping_Id)
                                 select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                                 {
                                     Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
