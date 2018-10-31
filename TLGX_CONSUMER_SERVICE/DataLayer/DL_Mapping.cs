@@ -710,17 +710,16 @@ namespace DataLayer
                 if (clsMappingHotel.Count > 0)
                 {
                     ret = UpdateAccomodationProductMapping(clsMappingHotel);
-                }
 
-                #region Delete stg_AccoMapping_Ids record from stg if it is processed
-                using (ConsumerEntities context = new ConsumerEntities())
-                {
-                    context.Database.CommandTimeout = 0;
-                    var stgIds = clsMappingHotel.Select(s => s.stg_AccoMapping_Id).ToList();
-                    var count = context.stg_SupplierProductMapping.Where(d => stgIds.Contains(d.stg_AccoMapping_Id)).Delete();
+                    #region Delete stg_AccoMapping_Ids record from stg if it is processed
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        context.Database.CommandTimeout = 0;
+                        var stgIds = clsMappingHotel.Select(s => s.stg_AccoMapping_Id).ToList();
+                        var count = context.stg_SupplierProductMapping.Where(d => stgIds.Contains(d.stg_AccoMapping_Id)).Delete();
+                    }
+                    #endregion
                 }
-                #endregion
-
             }
             PLog.PercentageValue = 100;
             USD.AddStaticDataUploadProcessLog(PLog);
