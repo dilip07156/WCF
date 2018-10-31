@@ -155,7 +155,25 @@ namespace ConsumerSvc
         }
         #endregion
 
+        #region Activity sync By Supplier
 
+        public DC_Message SyncActivityBySupplier(string log_id, string supplier_id, string CreatedBy)
+        {
+            using (BusinessLayer.BL_RefreshDistributionData obj = new BL_RefreshDistributionData())
+            {
+                return obj.SyncActivityBySupplier(log_id, supplier_id, CreatedBy);
+            }
+        }
+
+        public List<DC_SupplierEntity> LoadSupplierActivityStatusData()
+        {
+            using (BusinessLayer.BL_RefreshDistributionData obj = new BL_RefreshDistributionData())
+            {
+                return obj.LoadSupplierActivityStatusData();
+            }
+        }
+
+        #endregion
         #region == ML Data Integration
         public DC_Message SyncMLAPIData(DC_Distribution_MLDataRQ _obj)
         {
