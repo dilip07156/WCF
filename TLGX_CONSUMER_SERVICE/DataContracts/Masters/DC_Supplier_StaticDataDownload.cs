@@ -40,5 +40,17 @@ namespace DataContracts.Masters
         [DataMember]
         public int? PageSize { get; set; }
 
+        [DataMember]
+        public DateTime? CreateDate { get; set; }
+
+        [DataMember]
+        public DateTime? EditDate { get; set; }
+
+        [DataMember]
+        public string CreateUser { get; set; }
+
+        [DataMember]
+        public string EditUser { get; set; }
+
     }
 }

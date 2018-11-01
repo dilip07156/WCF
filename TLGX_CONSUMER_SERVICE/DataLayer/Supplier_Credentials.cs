@@ -21,5 +21,9 @@ namespace DataLayer
         public string Password { get; set; }
         public string Description { get; set; }
         public Nullable<bool> IsActive { get; set; }
+        public Nullable<System.DateTime> CreateDate { get; set; }
+        public Nullable<System.DateTime> EditDate { get; set; }
+        public string CreateUser { get; set; }
+        public string EditUser { get; set; }
     }
 }

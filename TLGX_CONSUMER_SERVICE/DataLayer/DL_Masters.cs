@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Diagnostics;
 using DataContracts.Mapping;
 using System.Dynamic;
+using System.ServiceModel.Web;
 
 namespace DataLayer
 {
@@ -2348,7 +2349,7 @@ namespace DataLayer
                 context.Database.CommandTimeout = 0;
                 try
                 {
-                    var res = context.Database.SqlQuery<DC_M_masterattributevalue>(sql.ToString()).ToList(); 
+                    var res = context.Database.SqlQuery<DC_M_masterattributevalue>(sql.ToString()).ToList();
                     //var res = context.Database.SqlQuery<DC_ZoneHotelList>(SearchZoneHotelQuery.ToString()).ToList();
                     return res;
                 }
@@ -6277,7 +6278,7 @@ namespace DataLayer
                     var City = from c in context.m_CityMaster
                                orderby c.Name
                                where c.Status == "ACTIVE" && CountryIdList.Distinct().Contains(c.Country_Id)
-                               select new DataContracts.DC_Master_City { City_Id = c.City_Id, City_Name =  c.Name + "," + c.CountryName, City_Code = c.Code };
+                               select new DataContracts.DC_Master_City { City_Id = c.City_Id, City_Name = c.Name + "," + c.CountryName, City_Code = c.Code };
 
                     return City.ToList();
                 }
@@ -6349,6 +6350,8 @@ namespace DataLayer
                         if (obj.IsActive != null)
                         {
                             search.IsActive = obj.IsActive;
+                            search.EditDate = DateTime.Now;
+                            search.EditUser = obj.EditUser;
                         }
                         else
                         {
@@ -6356,6 +6359,8 @@ namespace DataLayer
                             search.Username = obj.Username;
                             search.Password = obj.Password;
                             search.Description = obj.Description;
+                            search.EditDate = DateTime.Now;
+                            search.EditUser = obj.EditUser;
                         }
                         if (context.SaveChanges() == 1)
                         {
@@ -6380,6 +6385,8 @@ namespace DataLayer
                         newObj.Password = obj.Password;
                         newObj.Description = obj.Description;
                         newObj.IsActive = true;
+                        newObj.CreateDate = DateTime.Now;
+                        newObj.CreateUser = obj.CreateUser;
                         context.Supplier_Credentials.Add(newObj);
                         if (context.SaveChanges() == 1)
                         {
@@ -6393,9 +6400,9 @@ namespace DataLayer
                         }
                         return _msg;
                     }
-                    
+
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -6410,8 +6417,11 @@ namespace DataLayer
                 List<DataContracts.Masters.DC_Supplier_StaticDataDownload> result = new List<DC_Supplier_StaticDataDownload>();
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var downloadData = (from x in context.Supplier_Credentials
-                                        where x.Supplier_Id == obj.SupplierId || x.Supplier_Credentials_Id == obj.SupplierCredentialsId
+                    var allData = (from x in context.Supplier_Credentials
+                                 where x.Supplier_Id == obj.SupplierId || x.Supplier_Credentials_Id == obj.SupplierCredentialsId select x);
+
+                    
+                    var downloadData = (from x in allData
                                         orderby x.IsActive descending
                                         select new DC_Supplier_StaticDataDownload
                                         {
@@ -6421,14 +6431,14 @@ namespace DataLayer
                                             Username = x.Username,
                                             Password = x.Password,
                                             Description = x.Description,
-                                            IsActive = x.IsActive
-                                            
+                                            IsActive = x.IsActive,
+                                            TotalRecords = allData.Count()
+
                                         }).ToList();
-
                     result = downloadData.Count == 0 ? new List<DC_Supplier_StaticDataDownload> { } : downloadData;
-
                 }
-                return result;
+                int skip = (obj.PageNo ?? 0) * (obj.PageSize ?? 0);
+                return result.Skip(skip).Take((obj.PageSize ?? result.Count())).ToList(); ;
             }
             catch (Exception ex)
             {

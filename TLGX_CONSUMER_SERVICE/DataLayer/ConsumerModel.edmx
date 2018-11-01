@@ -2606,6 +2606,10 @@
           <Property Name="Password" Type="nvarchar" MaxLength="255" />
           <Property Name="Description" Type="varchar(max)" />
           <Property Name="IsActive" Type="bit" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="EditDate" Type="datetime" />
+          <Property Name="CreateUser" Type="varchar" MaxLength="50" />
+          <Property Name="EditUser" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Supplier_Market">
           <Key>
@@ -6088,6 +6092,10 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Password" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="EditDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateUser" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EditUser" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         
       </Schema>
@@ -9038,6 +9046,10 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="Supplier_Credentials">
             <EntityTypeMapping TypeName="ConsumerModel.Supplier_Credentials">
               <MappingFragment StoreEntitySet="Supplier_Credentials">
+                <ScalarProperty Name="EditUser" ColumnName="EditUser" />
+                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
+                <ScalarProperty Name="EditDate" ColumnName="EditDate" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
