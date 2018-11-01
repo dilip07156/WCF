@@ -65,9 +65,12 @@ namespace DataContracts.STG
 
         [DataMember]
         public string ContinentName { get; set; }
-        [DataMember]
-        public Guid? SupplierImportFile_Id { get; set; }
 
+        [DataMember]
+        public Guid SupplierImportFile_Id { get; set; }
+
+        [DataMember]
+        public Guid ComboFile_Id { get; set; }
     }
 
     [DataContract]

@@ -296,5 +296,17 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        #region SyncAccommodationMaster
+        public DC_Message SyncAccommodationMaster(Guid log_id, string CreatedBy)
+        {
+
+            using (DataLayer.DL_MongoPush obj = new DataLayer.DL_MongoPush())
+            {
+                return obj.SyncAccommodationMaster(log_id, CreatedBy);
+            }
+
+        }
+        #endregion
     }
 }

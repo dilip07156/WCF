@@ -447,6 +447,14 @@ namespace ConsumerSvc
                 return objBL.GetNewDashboardReport_CountryWise();
             }
         }
+
+        public IList<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetHotelMappingReport_CityWise(DC_NewDashBoardReport_RQ RQ)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.GetHotelMappingReport_CityWise(RQ);
+            }
+        }
         #endregion NewDashBoardReport
 
 
@@ -464,6 +472,16 @@ namespace ConsumerSvc
             using (BL_Mapping objBL = new BL_Mapping())
             {
                 return objBL.AccomodationMappingReport(dC_SupplerVSupplier_Report_RQ);
+            }
+        }
+        #endregion
+
+        #region Hotel Mapping Report
+        public IList<DataContracts.Mapping.DC_HotelMappingReport_RS> HotelMappingReport(DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport_RQ RQ)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.HotelMappingReport(RQ);
             }
         }
         #endregion

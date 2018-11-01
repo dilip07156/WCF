@@ -64,6 +64,9 @@ namespace DataContracts.UploadStaticData
 
         [DataMember]
         public int? CurrentBatch { get; set; }
+
+        [DataMember]
+        public Guid ComboFile_Id { get; set; }
     }
 
     [DataContract]

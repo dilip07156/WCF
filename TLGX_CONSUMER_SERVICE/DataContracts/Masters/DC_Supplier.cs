@@ -23,13 +23,18 @@ namespace DataContracts.Masters
         int _TotalRecords;
         int? _Priority;
         Guid? _File_Id;
+
         [DataMember]
         public bool? IsFullPull { get; set; }
 
         [DataMember]
         public int? CurrentBatch { get; set; }
+
         [DataMember]
         public int? TotalBatch { get; set; }
+
+        [DataMember]
+        public int BatchSize { get; set; }
 
         #region GetterSetter
         [DataMember]
@@ -257,7 +262,6 @@ namespace DataContracts.Masters
         #endregion
     }
 
-
     [DataContract]
     public class DC_Supplier_Search_RQ
     {
@@ -272,7 +276,6 @@ namespace DataContracts.Masters
        
         int? _PageNo;
         int? _PageSize;
-
 
         #region GetterSetter
         [DataMember]
@@ -408,7 +411,6 @@ namespace DataContracts.Masters
         }
         #endregion
     }
-
 
     [DataContract]
     public class DC_Supplier_DDL

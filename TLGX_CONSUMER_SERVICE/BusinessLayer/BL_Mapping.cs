@@ -237,7 +237,6 @@ namespace BusinessLayer
             }
         }
 
-
         public bool RoomTypeMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
@@ -781,6 +780,15 @@ namespace BusinessLayer
             }
 
         }
+        public List<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetHotelMappingReport_CityWise(DC_NewDashBoardReport_RQ RQ)
+        {
+
+            using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
+            {
+                return objBL.GetHotelMappingReport_CityWise(RQ);
+            }
+
+        }
         #endregion NewDashBoardReport
 
         #region EzeegoHotelVs
@@ -804,5 +812,15 @@ namespace BusinessLayer
                 return objBL.AccomodationMappingReport(dC_SupplerVSupplier_Report_RQ);
             }
         }
+
+        #region HotelMapping
+        public List<DataContracts.Mapping.DC_HotelMappingReport_RS> HotelMappingReport(DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport_RQ RQ)
+        {
+            using (DL_Mapping objBL = new DL_Mapping())
+            {
+                return objBL.HotelMappingReport(RQ);
+            }
+        }
+        #endregion
     }
 }

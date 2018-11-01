@@ -675,6 +675,58 @@ namespace DataLayer
                 string SupplierName = string.Empty;
                 using (ConsumerEntities context = new ConsumerEntities())
 
+        #region Accommodation Master Sync
+        public DC_Message SyncAccommodationMaster(Guid log_id, string CreatedBy)
+        {
+            try
+            {
+                Guid LogId;
+                using (ConsumerEntities context = new ConsumerEntities())
+
+                {
+                    var iScheduledCount = (from dlr in context.DistributionLayerRefresh_Log
+                                           where (dlr.Status == "Scheduled" || dlr.Status == "Running") && dlr.Element.ToUpper() == "ACCOMMODATION" && dlr.Type.ToUpper() == "MASTER"
+                                           select true).Count();
+
+                    if (iScheduledCount > 0)
+                    {
+                        return new DC_Message { StatusMessage = "Accommodation master sync has already been scheduled.", StatusCode = ReadOnlyMessage.StatusCode.Information };
+                    }
+                    else
+                    {
+                        LogId = log_id;
+
+                        //DataLayer.DistributionLayerRefresh_Log objNew = new DistributionLayerRefresh_Log();
+                        //objNew.Id = LogId;
+                        //objNew.Element = "ACCOMMODATION";
+                        //objNew.Type = "MASTER";
+                        //objNew.Create_Date = DateTime.Now;
+                        //objNew.Create_User = CreatedBy;// System.Web.HttpContext.Current.User.Identity.Name;
+                        //objNew.Status = "Scheduled";
+                        ////objNew.Supplier_Id = supplier_Id;
+                        //objNew.Edit_Date = DateTime.Now;
+                        //objNew.Edit_User = CreatedBy;
+                        //context.DistributionLayerRefresh_Log.Add(objNew);
+                        //context.SaveChanges();
+
+                        using (DHSVCProxyAsync DHP = new DHSVCProxyAsync())
+                        {
+                            string strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_AccommodationMaster"], LogId.ToString().ToString());
+                            DHP.GetAsync(ProxyFor.SqlToMongo, strURI);
+                        }
+                    }
+
+
+                    return new DC_Message { StatusMessage = "Accommodation master sync has been scheduled successfully.", StatusCode = ReadOnlyMessage.StatusCode.Success };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return new DC_Message { StatusMessage = ex.Message, StatusCode = ReadOnlyMessage.StatusCode.Failed };
+            }
+        }
+        #endregion
                 {
                     var iScheduledCount = (from dlr in context.DistributionLayerRefresh_Log
                                            where (dlr.Status == "Scheduled" || dlr.Status == "Running") && dlr.Element == "Activities" && dlr.Type == "Mapping"
