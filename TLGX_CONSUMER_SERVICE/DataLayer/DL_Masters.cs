@@ -6331,5 +6331,110 @@ namespace DataLayer
         }
 
         #endregion
+
+
+        #region Supplier Static Data Download
+        public DataContracts.DC_Message SupplierStaticDataDownload_AddUpdate(DataContracts.Masters.DC_Supplier_StaticDataDownload obj)
+        {
+            try
+            {
+                DC_Message _msg = new DC_Message();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    var search = context.Supplier_Credentials.Find(obj.SupplierCredentialsId);
+                    if (search != null)
+                    {
+                        //If status have some value then set as it is.
+                        if (obj.IsActive != null)
+                        {
+                            search.IsActive = obj.IsActive;
+                        }
+                        else
+                        {
+                            search.SupplierUrl = obj.URL;
+                            search.Username = obj.Username;
+                            search.Password = obj.Password;
+                            search.Description = obj.Description;
+                        }
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = "Supplier Static Download Data" + ReadOnlyMessage.strUpdatedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = "Supplier Static Download Data" + ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+
+                        return _msg;
+                    }
+                    else
+                    {
+                        var newObj = new Supplier_Credentials();
+                        newObj.Supplier_Credentials_Id = obj.SupplierCredentialsId;
+                        newObj.Supplier_Id = obj.SupplierId;
+                        newObj.SupplierUrl = obj.URL;
+                        newObj.Username = obj.Username;
+                        newObj.Password = obj.Password;
+                        newObj.Description = obj.Description;
+                        newObj.IsActive = true;
+                        context.Supplier_Credentials.Add(newObj);
+                        if (context.SaveChanges() == 1)
+                        {
+                            _msg.StatusMessage = "Supplier Static Download Data" + ReadOnlyMessage.strAddedSuccessfully;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        }
+                        else
+                        {
+                            _msg.StatusMessage = "Supplier Static Download Data" + ReadOnlyMessage.strFailed;
+                            _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        }
+                        return _msg;
+                    }
+                    
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding Supplier Static Download Data", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public List<DataContracts.Masters.DC_Supplier_StaticDataDownload> SupplierStaticDataDownload_Get(DataContracts.Masters.DC_Supplier_StaticDataDownload obj)
+        {
+            try
+            {
+                List<DataContracts.Masters.DC_Supplier_StaticDataDownload> result = new List<DC_Supplier_StaticDataDownload>();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var downloadData = (from x in context.Supplier_Credentials
+                                        where x.Supplier_Id == obj.SupplierId || x.Supplier_Credentials_Id == obj.SupplierCredentialsId
+                                        orderby x.IsActive descending
+                                        select new DC_Supplier_StaticDataDownload
+                                        {
+                                            SupplierCredentialsId = x.Supplier_Credentials_Id,
+                                            SupplierId = x.Supplier_Id,
+                                            URL = x.SupplierUrl,
+                                            Username = x.Username,
+                                            Password = x.Password,
+                                            Description = x.Description,
+                                            IsActive = x.IsActive
+                                            
+                                        }).ToList();
+
+                    result = downloadData.Count == 0 ? new List<DC_Supplier_StaticDataDownload> { } : downloadData;
+
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+        #endregion
     }
 }
