@@ -160,7 +160,7 @@ namespace DataLayer
 
                     using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
                     {
-                        var distribution = context.DistributionLayerRefresh_Log.AsNoTracking().Where(x => x.Element == "Activity" && x.Type == "Mapping").GroupBy(x => x.Supplier_Id).Select(g => g.OrderByDescending(x => x.Create_Date).FirstOrDefault()).ToList();
+                        var distribution = context.DistributionLayerRefresh_Log.AsNoTracking().Where(x => x.Element == "Activities" && x.Type == "Mapping").GroupBy(x => x.Supplier_Id).Select(g => g.OrderByDescending(x => x.Create_Date).FirstOrDefault()).ToList();
                         var supplier = (from sup in context.Supplier
                                         join supcat in context.Supplier_ProductCategory on sup.Supplier_Id equals supcat.Supplier_Id
                                         where supcat.ProductCategory.ToLower() == "activities"
