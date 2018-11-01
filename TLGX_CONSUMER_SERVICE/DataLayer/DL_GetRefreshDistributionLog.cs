@@ -148,6 +148,50 @@ namespace DataLayer
 
         }
 
+        #region Get Activity Monogpush Status
+        public List<DC_SupplierEntity> LoadSupplierActivityStatusData()
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Database.CommandTimeout = 0;
+                    context.Configuration.AutoDetectChangesEnabled = false;
+
+                    using (var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
+                    {
+                        var distribution = context.DistributionLayerRefresh_Log.AsNoTracking().Where(x => x.Element == "Activities" && x.Type == "Mapping").GroupBy(x => x.Supplier_Id).Select(g => g.OrderByDescending(x => x.Create_Date).FirstOrDefault()).ToList();
+                        var supplier = (from sup in context.Supplier
+                                        join supcat in context.Supplier_ProductCategory on sup.Supplier_Id equals supcat.Supplier_Id
+                                        where supcat.ProductCategory.ToLower() == "activities"
+                                        select sup).ToList();
+                        var SupplierData = (from s in supplier
+                                            join b in distribution on s.Supplier_Id equals b.Supplier_Id into c
+                                            from subset in c.DefaultIfEmpty()
+                                            where s.StatusCode == "ACTIVE"
+                                            orderby s.Name ascending
+                                            select new DC_SupplierEntity
+                                            {
+                                                Supplier_Id = s.Supplier_Id,
+                                                Supplier_Name = s.Name,
+                                                Element = string.Empty,
+                                                Type = string.Empty,
+                                                Status = (subset == null) ? string.Empty : subset.Status ?? string.Empty,
+                                                LastUpdated = subset == null ? string.Empty : subset.Create_Date.ToString(),
+                                                TotalCount = subset == null ? 0 : subset.TotalCount,
+                                                MongoPushCount = subset == null ? 0 : subset.MongoPushCount,
+                                            }).Distinct().ToList();
+
+                        return SupplierData;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching date", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
         #region == ML Data Integration
         public DC_Message SyncMLAPIData(DC_Distribution_MLDataRQ _obj)
         {

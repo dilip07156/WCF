@@ -248,6 +248,33 @@ namespace BusinessLayer
                 return new DC_Message { StatusMessage = "Invalid Supplier_id", StatusCode = ReadOnlyMessage.StatusCode.Danger };
             }
         }
+
+        #endregion
+        #region Activity data migration
+        public DC_Message SyncActivityBySupplier(string log_id, string supplier_id, string CreatedBy)
+        {
+            Guid logid = new Guid();
+            Guid gSupplier_Id;
+            if (Guid.TryParse(log_id, out logid) && Guid.TryParse(supplier_id, out gSupplier_Id))
+            {
+                using (DataLayer.DL_MongoPush obj = new DataLayer.DL_MongoPush())
+                {
+                    return obj.SyncActivityBySupplier(logid, gSupplier_Id, CreatedBy);
+                }
+            }
+            else
+            {
+                return new DC_Message { StatusMessage = "Invalid Supplier_id", StatusCode = ReadOnlyMessage.StatusCode.Danger };
+            }
+        }
+
+        public List<DC_SupplierEntity> LoadSupplierActivityStatusData()
+        {
+            using (DataLayer.DL_GetRefreshDistributionLog obj = new DataLayer.DL_GetRefreshDistributionLog())
+            {
+                return obj.LoadSupplierActivityStatusData();
+            }
+        }
         #endregion
 
         #region == ML Data Integration

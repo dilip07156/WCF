@@ -666,6 +666,14 @@ namespace DataLayer
             }
         }
         #endregion
+        #region Activity Supplier Migration
+        public DC_Message SyncActivityBySupplier(Guid log_id, Guid supplier_id, string CreatedBy)
+        {
+            try
+            {
+                Guid LogId;
+                string SupplierName = string.Empty;
+                using (ConsumerEntities context = new ConsumerEntities())
 
         #region Accommodation Master Sync
         public DC_Message SyncAccommodationMaster(Guid log_id, string CreatedBy)
@@ -719,6 +727,64 @@ namespace DataLayer
             }
         }
         #endregion
+                {
+                    var iScheduledCount = (from dlr in context.DistributionLayerRefresh_Log
+                                           where (dlr.Status == "Scheduled" || dlr.Status == "Running") && dlr.Element == "Activities" && dlr.Type == "Mapping"
+                                           select true).Count();
+
+                    if (iScheduledCount > 0)
+                    {
+                        return new DC_Message { StatusMessage = "Supplier Static Hotel sync has already been scheduled.", StatusCode = ReadOnlyMessage.StatusCode.Information };
+                    }
+                    else
+                    {
+                        LogId = Guid.NewGuid();
+
+                        DataLayer.DistributionLayerRefresh_Log objNew = new DistributionLayerRefresh_Log();
+                        objNew.Id = LogId;
+                        objNew.Element = "Activities";
+                        objNew.Type = "Mapping";
+                        objNew.Create_Date = DateTime.Now;
+                        objNew.Create_User = CreatedBy;// System.Web.HttpContext.Current.User.Identity.Name;
+                        objNew.Status = "Scheduled";
+                        objNew.Supplier_Id = supplier_id;
+                        objNew.Edit_Date = DateTime.Now;
+                        objNew.Edit_User = CreatedBy;
+                        context.DistributionLayerRefresh_Log.Add(objNew);
+                        context.SaveChanges();
+
+                        SupplierName = (from x in context.Supplier
+                                        where x.Supplier_Id == supplier_id
+                                        select x.Name).FirstOrDefault();
+                    }
+                    if (log_id == Guid.Empty)
+                    {
+                        using (DHSVCProxyAsync DHP = new DHSVCProxyAsync())
+                        {
+                            if (SupplierName != string.Empty)
+                            {
+                                string strURI = string.Format(System.Configuration.ConfigurationManager.AppSettings["Load_ActivityFlavourBySupplier"], LogId.ToString(), SupplierName);
+                                DHP.GetAsync(ProxyFor.SqlToMongo, strURI);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //Code goes here for Indert Update or Delete of a specific country
+                    }
+
+                    return new DC_Message { StatusMessage = "Supplier Activity Data  sync has been scheduled successfully.", StatusCode = ReadOnlyMessage.StatusCode.Success };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return new DC_Message { StatusMessage = ex.Message, StatusCode = ReadOnlyMessage.StatusCode.Failed };
+            }
+
+        }
+        #endregion
+
 
     }
 }

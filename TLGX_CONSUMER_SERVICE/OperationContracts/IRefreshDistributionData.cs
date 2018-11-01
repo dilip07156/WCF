@@ -51,7 +51,7 @@ namespace OperationContracts
         [WebInvoke(Method = "GET", UriTemplate = "Load/HotelMappingLite/{Hotel_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DC_Message SyncHotelMappingLite(string hotel_id);
 
-       
+
 
         #endregion
 
@@ -115,7 +115,18 @@ namespace OperationContracts
         DC_Message SyncSupplierStaticHotel(string log_id, string supplier_id, string CreatedBy);
         #endregion
 
+        #region Activity Data Migration
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Load/ActivityBySupplier/{log_id}/{supplier_id}/{CreatedBy}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_Message SyncActivityBySupplier(string log_id, string supplier_id, string CreatedBy);
 
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Load/SupplierActivityDetails", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DC_SupplierEntity> LoadSupplierActivityStatusData();
+
+        #endregion
         #region == ML Data Integration
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
