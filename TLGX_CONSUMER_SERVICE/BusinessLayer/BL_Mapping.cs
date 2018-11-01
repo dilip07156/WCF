@@ -301,7 +301,7 @@ namespace BusinessLayer
         }
 
 
-        public List<DC_CountryMapping> UpdateCountryMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
+        public bool UpdateCountryMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
         {
             using (DataLayer.DL_Mapping objBL = new DataLayer.DL_Mapping())
             {

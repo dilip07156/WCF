@@ -3494,86 +3494,314 @@ namespace DataLayer
             }
         }
 
-        public void CheckRoomTypeAlreadyExist(Guid File_Id, Guid CurSupplier_Id, List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> stg, out List<DC_Accommodation_SupplierRoomTypeMap_SearchRS> updateMappingList, out List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> insertSTGList)
+        public void CheckRoomTypeAlreadyExist(DataContracts.Masters.DC_Supplier FileDetails, Guid CurSupplier_Id, List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> stgRoomType, out List<DC_Accommodation_SupplierRoomTypeMap_SearchRS> updateMappingList, out List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> insertSTGList)
         {
-            #region Dynamic Query
-            StringBuilder sbSelect = new StringBuilder();
-            StringBuilder sbFrom = new StringBuilder();
-            StringBuilder sbJoin = new StringBuilder();
+            //StringBuilder sbSelect = new StringBuilder();
+            //StringBuilder sbFrom = new StringBuilder();
+            //StringBuilder sbJoin = new StringBuilder();
 
-            StringBuilder sbWhere = new StringBuilder();
+            //StringBuilder sbWhere = new StringBuilder();
             try
             {
                 string strSuppliercode = string.Empty;
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    strSuppliercode = Convert.ToString((from x in context.Supplier where x.Supplier_Id == CurSupplier_Id select x.Code).FirstOrDefault());
+                    strSuppliercode = context.Supplier.Find(CurSupplier_Id).Code;
                 }
+
                 #region Select
-                sbSelect.Append(@"SELECT 
-	                                ASTM.SupplierProductName As ProductName,	ASTM.Accommodation_Id As Accommodation_Id,
-	                                ASTM.SupplierName AS SupplierName,	ASTM.Accommodation_RoomInfo_Id AS Accommodation_RoomInfo_Id,
-	                                ASTM.SupplierRoomName AS Accommodation_RoomInfo_Name,	SHRM.RoomName AS SupplierRoomName,
-	                                ASTM.SupplierRoomName AS OldSupplierRoomName,	ASTM.Accommodation_SupplierRoomTypeMapping_Id AS Accommodation_SupplierRoomTypeMapping_Id,
-	                                ASTM.SupplierProductId AS SupplierProductId,	ASTM.MaxAdults AS MaxAdults,
-	                                ASTM.MaxChild AS MaxChild,	ASTM.MapId AS MaxChild,
-	                                ASTM.MappingStatus AS MappingStatus,	ASTM.MaxGuestOccupancy AS MaxGuestOccupancy,
-	                                ASTM.MaxInfants AS MaxInfants,	ASTM.Quantity AS Quantity,
-	                                ASTM.SupplierRoomCategory AS SupplierRoomCategory,	ASTM.RatePlan AS RatePlan,
-	                                ASTM.RatePlanCode AS RatePlanCode,	ASTM.SupplierProductName AS SupplierProductName,
-	                                ASTM.SupplierRoomCategoryId AS SupplierRoomCategoryId,	ASTM.SupplierRoomId AS SupplierRoomId,
-	                                ASTM.SupplierRoomTypeCode AS SupplierRoomTypeCode,	ASTM.Supplier_Id AS Supplier_Id,
-	                                ASTM.Tx_ReorderedName AS Tx_ReorderedName,	ASTM.TX_RoomName AS TX_RoomName,
-	                                ASTM.Tx_StrippedName AS Tx_StrippedName, ASTM.RoomDescription AS RoomDescription,
-	                                SHRM.stg_SupplierHotelRoomMapping_Id AS stg_SupplierHotelRoomMapping_Id,
-	                                ASTM.stg_SupplierHotelRoomMapping_Id AS Oldstg_SupplierHotelRoomMapping_Id,
-	                                ASTM.RoomSize AS RoomSize,	ISNULL(ASTM.SupplierImportFile_Id , CAST(0x0 AS UNIQUEIDENTIFIER)) AS SupplierImporrtFile_Id,
-	                                ISNULL(ASTM.Batch ,'0') AS Batch,
-	                                ISNULL(ASTM.ReRun_SupplierImportFile_Id, CAST(0x0 AS UNIQUEIDENTIFIER)) AS ReRunSupplierImporrtFile_Id,
-	                                ISNULL(ASTM.ReRun_Batch,'0') AS ReRunBatch,
-	                                CASE WHEN ASTM.SupplierRoomName != SHRM.RoomName THEN 'UPDATE' ELSE '' END AS ActionType");
+                //sbSelect.Append(@"SELECT 
+                //                 ASTM.SupplierProductName As ProductName,	ASTM.Accommodation_Id As Accommodation_Id,
+                //                 ASTM.SupplierName AS SupplierName,	ASTM.Accommodation_RoomInfo_Id AS Accommodation_RoomInfo_Id,
+                //                 ASTM.SupplierRoomName AS Accommodation_RoomInfo_Name,	SHRM.RoomName AS SupplierRoomName,
+                //                 ASTM.SupplierRoomName AS OldSupplierRoomName,	ASTM.Accommodation_SupplierRoomTypeMapping_Id AS Accommodation_SupplierRoomTypeMapping_Id,
+                //                 ASTM.SupplierProductId AS SupplierProductId,	ASTM.MaxAdults AS MaxAdults,
+                //                 ASTM.MaxChild AS MaxChild,	ASTM.MapId AS MaxChild,
+                //                 ASTM.MappingStatus AS MappingStatus,	ASTM.MaxGuestOccupancy AS MaxGuestOccupancy,
+                //                 ASTM.MaxInfants AS MaxInfants,	ASTM.Quantity AS Quantity,
+                //                 ASTM.SupplierRoomCategory AS SupplierRoomCategory,	ASTM.RatePlan AS RatePlan,
+                //                 ASTM.RatePlanCode AS RatePlanCode,	ASTM.SupplierProductName AS SupplierProductName,
+                //                 ASTM.SupplierRoomCategoryId AS SupplierRoomCategoryId,	ASTM.SupplierRoomId AS SupplierRoomId,
+                //                 ASTM.SupplierRoomTypeCode AS SupplierRoomTypeCode,	ASTM.Supplier_Id AS Supplier_Id,
+                //                 ASTM.Tx_ReorderedName AS Tx_ReorderedName,	ASTM.TX_RoomName AS TX_RoomName,
+                //                 ASTM.Tx_StrippedName AS Tx_StrippedName, ASTM.RoomDescription AS RoomDescription,
+                //                 SHRM.stg_SupplierHotelRoomMapping_Id AS stg_SupplierHotelRoomMapping_Id,
+                //                 ASTM.stg_SupplierHotelRoomMapping_Id AS Oldstg_SupplierHotelRoomMapping_Id,
+                //                 ASTM.RoomSize AS RoomSize,	ISNULL(ASTM.SupplierImportFile_Id , CAST(0x0 AS UNIQUEIDENTIFIER)) AS SupplierImporrtFile_Id,
+                //                 ISNULL(ASTM.Batch ,'0') AS Batch,
+                //                 ISNULL(ASTM.ReRun_SupplierImportFile_Id, CAST(0x0 AS UNIQUEIDENTIFIER)) AS ReRunSupplierImporrtFile_Id,
+                //                 ISNULL(ASTM.ReRun_Batch,'0') AS ReRunBatch,
+                //                 CASE WHEN ASTM.SupplierRoomName != SHRM.RoomName THEN 'UPDATE' ELSE '' END AS ActionType");
+
+                //sbFrom.Append(" FROM Accommodation_SupplierRoomTypeMapping ASTM WITH (NOLOCK) ");
+                //sbJoin.Append(" Join stg_SupplierHotelRoomMapping SHRM  WITH (NOLOCK) ON ");
+                //sbJoin.Append(@"    ASTM.Supplier_Id = SHRM.Supplier_Id 
+                //             AND ASTM.SupplierRoomTypeCode = SHRM.SupplierRoomTypeCode 
+                //             AND ASTM.SupplierProductId = SHRM.SupplierProductId ");
+
+                //if (strSuppliercode != string.Empty && strSuppliercode.ToLower() == "gta")
+                //{
+                //    sbJoin.Append(" AND ISNULL(ASTM.CityCode,ASTM.CityName) = ISNULL(SHRM.CityCode ,SHRM.CityName) ");
+                //    sbJoin.Append(" AND ISNULL(ASTM.CountryCode ,ASTM.CountryName) = ISNULL(SHRM.CountryCode,SHRM.CountryName) ");
+                //}
+                //else if (strSuppliercode != string.Empty && strSuppliercode.ToLower() == "mansley")
+                //{
+                //    sbJoin.Append(" AND ASTM.BedTypeCode = SHRM.BedTypeCode ");
+                //}
+                //sbWhere.Append(" WHERE ASTM.Supplier_Id = '" + CurSupplier_Id + "' ");
+                //sbWhere.Append("AND SHRM.SupplierImportFile_Id = '" + FileDetails.File_Id + "' ");
+
+                //StringBuilder sbfinalquery = new StringBuilder();
+                //sbfinalquery.Append(sbSelect); sbfinalquery.Append(" ");
+                //sbfinalquery.Append(sbFrom); sbfinalquery.Append(" ");
+                //sbfinalquery.Append(sbJoin); sbfinalquery.Append(" ");
+                //sbfinalquery.Append(sbWhere);
+
                 #endregion
-                sbFrom.Append(" FROM Accommodation_SupplierRoomTypeMapping ASTM WITH (NOLOCK) ");
-                sbJoin.Append(" Join stg_SupplierHotelRoomMapping SHRM  WITH (NOLOCK) ON ");
-                sbJoin.Append(@"    ASTM.Supplier_Id = SHRM.Supplier_Id 
-	                            AND ASTM.SupplierRoomTypeCode = SHRM.SupplierRoomTypeCode 
-	                            AND ASTM.SupplierProductId = SHRM.SupplierProductId ");
 
-                if (strSuppliercode != string.Empty && strSuppliercode.ToLower() == "gta")
-                {
-                    sbJoin.Append(" AND ISNULL(ASTM.CityCode,ASTM.CityName) = ISNULL(SHRM.CityCode ,SHRM.CityName) ");
-                    sbJoin.Append(" AND ISNULL(ASTM.CountryCode ,ASTM.CountryName) = ISNULL(SHRM.CountryCode,SHRM.CountryName) ");
-                }
-                else if (strSuppliercode != string.Empty && strSuppliercode.ToLower() == "mansley")
-                {
-                    sbJoin.Append(" AND ASTM.BedTypeCode = SHRM.BedTypeCode ");
-                }
-                sbWhere.Append(" WHERE ASTM.Supplier_Id = '" + CurSupplier_Id + "' ");
-                sbWhere.Append("AND SHRM.SupplierImportFile_Id = '" + File_Id + "' ");
+                List<DC_Accommodation_SupplierRoomTypeMap_SearchRS> toUpdate = new List<DC_Accommodation_SupplierRoomTypeMap_SearchRS>();
+                List<DC_stg_SupplierHotelRoomMapping> toInsert = new List<DC_stg_SupplierHotelRoomMapping>();
 
-                StringBuilder sbfinalquery = new StringBuilder();
-                sbfinalquery.Append(sbSelect); sbfinalquery.Append(" ");
-                sbfinalquery.Append(sbFrom); sbfinalquery.Append(" ");
-                sbfinalquery.Append(sbJoin); sbfinalquery.Append(" ");
-                sbfinalquery.Append(sbWhere);
+                var stgIds = stgRoomType.Select(s => s.stg_SupplierHotelRoomMapping_Id).ToList();
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    context.Configuration.AutoDetectChangesEnabled = false;
-                    var toUpdate = context.Database.SqlQuery<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS>(sbfinalquery.ToString()).ToList();
-                    insertSTGList = stg.Where(w => !toUpdate.Any(a => a.SupplierProductId == w.SupplierProductId && a.SupplierRoomTypeCode == w.SupplierRoomTypeCode)).ToList();
-                    updateMappingList = toUpdate.Where(w => w.SupplierRoomName != w.OldSupplierRoomName).ToList();
+                    context.Database.CommandTimeout = 0;
+
+                    var STG = context.stg_SupplierHotelRoomMapping.AsNoTracking().Where(w => w.SupplierImportFile_Id == FileDetails.File_Id && stgIds.Contains(w.stg_SupplierHotelRoomMapping_Id)).Select(s => s).ToList();
+
+                    if (strSuppliercode != string.Empty && strSuppliercode.ToLower() == "gta")
+                    {
+
+                        var ASRTM = context.Accommodation_SupplierRoomTypeMapping.AsNoTracking().Where(w => w.Supplier_Id == CurSupplier_Id).Select(s => new
+                        {
+                            s.Accommodation_SupplierRoomTypeMapping_Id,
+                            s.Accommodation_Id,
+                            s.MappingStatus,
+                            s.SupplierRoomName,
+                            s.SupplierRoomTypeCode,
+                            s.SupplierProductId,
+                            s.CountryCode,
+                            s.CountryName,
+                            s.CityCode,
+                            s.CityName
+                        }).ToList();
+
+                        toUpdate = (from a in ASRTM
+                                    join s in STG on
+                                    new { a.SupplierRoomTypeCode, a.SupplierProductId, Country = (a.CountryCode ?? a.CountryName), City = (a.CityCode ?? a.CityName) } equals new { s.SupplierRoomTypeCode, s.SupplierProductId, Country = (s.CountryCode ?? s.CountryName), City = (s.CityCode ?? s.CityName) }
+                                    select new DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS
+                                    {
+                                        Accommodation_SupplierRoomTypeMapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                                        Accommodation_Id = a.Accommodation_Id,
+                                        MappingStatus = a.MappingStatus,
+
+                                        SupplierRoomName = s.RoomName,
+                                        OldSupplierRoomName = a.SupplierRoomName,
+                                        SupplierRoomCategoryId = s.SupplierRoomCategoryId,
+                                        Location = s.RoomLocationCode,
+                                        MaxAdults = s.MaxAdults,
+                                        MaxChild = s.MaxChild,
+                                        MaxGuestOccupancy = s.MaxGuestOccupancy,
+                                        MaxInfants = s.MaxInfant,
+                                        ProductName = s.SupplierProductName,
+                                        Quantity = int.Parse(s.Quantity), // Check this
+                                        RatePlan = s.RatePlan,
+                                        RatePlanCode = s.RatePlanCode,
+                                        SupplierName = s.SupplierName,
+                                        SupplierProductId = s.SupplierProductId,
+                                        SupplierProductName = s.SupplierProductName,
+                                        SupplierRoomCategory = s.SupplierRoomCategory,
+                                        SupplierRoomId = s.SupplierRoomId,
+                                        SupplierRoomTypeCode = s.SupplierRoomTypeCode,
+                                        Supplier_Id = s.Supplier_Id,
+                                        stg_SupplierHotelRoomMapping_Id = s.stg_SupplierHotelRoomMapping_Id,
+                                        ActionType = "UPDATE",
+                                        RoomSize = s.RoomSize,
+                                        SupplierImporrtFile_Id = FileDetails.File_Id ?? Guid.Empty,
+                                        Batch = FileDetails.CurrentBatch ?? 0,
+                                        ReRunSupplierImporrtFile_Id = FileDetails.File_Id ?? Guid.Empty,
+                                        ReRunBatch = FileDetails.CurrentBatch ?? 0,
+                                        RoomDescription = s.RoomDescription,
+                                        BathRoomType = s.BathRoomType,
+                                        RoomViewCode = s.RoomViewCode,
+                                        FloorName = s.FloorName,
+                                        FloorNumber = s.FloorNumber,
+                                        SupplierProvider = s.SupplierProvider,
+                                        Amenities = s.Amenities,
+                                        RoomLocationCode = s.RoomLocationCode,
+                                        ChildAge = s.ChildAge,
+                                        ExtraBed = s.ExtraBed,
+                                        Bedrooms = s.Bedrooms,
+                                        Smoking = s.Smoking,
+                                        BedTypeCode = s.BedTypeCode,
+                                        PromotionalVendorCode = s.PromotionalVendorCode,
+                                        BeddingConfig = s.BeddingConfig,
+                                        MinGuestOccupancy = s.MinGuestOccupancy,
+                                        CityCode = s.CityCode,
+                                        CityName = s.CityName,
+                                        StateCode = s.StateCode,
+                                        StateName = s.StateName,
+                                        CountryCode = s.CountryCode,
+                                        CountryName = s.CountryName
+                                    }).ToList();
+                    }
+                    else if (strSuppliercode != string.Empty && strSuppliercode.ToLower() == "mansley")
+                    {
+                        var ASRTM = context.Accommodation_SupplierRoomTypeMapping.AsNoTracking().Where(w => w.Supplier_Id == CurSupplier_Id).Select(s => new
+                        {
+                            s.Accommodation_SupplierRoomTypeMapping_Id,
+                            s.Accommodation_Id,
+                            s.MappingStatus,
+                            s.SupplierRoomName,
+                            s.SupplierRoomTypeCode,
+                            s.SupplierProductId,
+                            s.BedTypeCode
+                        }).ToList();
+
+                        toUpdate = (from a in ASRTM
+                                    join s in STG on
+                                    new { a.SupplierRoomTypeCode, a.SupplierProductId, a.BedTypeCode } equals new { s.SupplierRoomTypeCode, s.SupplierProductId, s.BedTypeCode }
+                                    select new DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS
+                                    {
+                                        Accommodation_SupplierRoomTypeMapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                                        Accommodation_Id = a.Accommodation_Id,
+                                        MappingStatus = a.MappingStatus,
+
+                                        SupplierRoomName = s.RoomName,
+                                        OldSupplierRoomName = a.SupplierRoomName,
+                                        SupplierRoomCategoryId = s.SupplierRoomCategoryId,
+                                        Location = s.RoomLocationCode,
+                                        MaxAdults = s.MaxAdults,
+                                        MaxChild = s.MaxChild,
+                                        MaxGuestOccupancy = s.MaxGuestOccupancy,
+                                        MaxInfants = s.MaxInfant,
+                                        ProductName = s.SupplierProductName,
+                                        Quantity = int.Parse(s.Quantity), // Check this
+                                        RatePlan = s.RatePlan,
+                                        RatePlanCode = s.RatePlanCode,
+                                        SupplierName = s.SupplierName,
+                                        SupplierProductId = s.SupplierProductId,
+                                        SupplierProductName = s.SupplierProductName,
+                                        SupplierRoomCategory = s.SupplierRoomCategory,
+                                        SupplierRoomId = s.SupplierRoomId,
+                                        SupplierRoomTypeCode = s.SupplierRoomTypeCode,
+                                        Supplier_Id = s.Supplier_Id,
+                                        stg_SupplierHotelRoomMapping_Id = s.stg_SupplierHotelRoomMapping_Id,
+                                        ActionType = "UPDATE",
+                                        RoomSize = s.RoomSize,
+                                        SupplierImporrtFile_Id = FileDetails.File_Id ?? Guid.Empty,
+                                        Batch = FileDetails.CurrentBatch ?? 0,
+                                        ReRunSupplierImporrtFile_Id = FileDetails.File_Id ?? Guid.Empty,
+                                        ReRunBatch = FileDetails.CurrentBatch ?? 0,
+                                        RoomDescription = s.RoomDescription,
+                                        BathRoomType = s.BathRoomType,
+                                        RoomViewCode = s.RoomViewCode,
+                                        FloorName = s.FloorName,
+                                        FloorNumber = s.FloorNumber,
+                                        SupplierProvider = s.SupplierProvider,
+                                        Amenities = s.Amenities,
+                                        RoomLocationCode = s.RoomLocationCode,
+                                        ChildAge = s.ChildAge,
+                                        ExtraBed = s.ExtraBed,
+                                        Bedrooms = s.Bedrooms,
+                                        Smoking = s.Smoking,
+                                        BedTypeCode = s.BedTypeCode,
+                                        PromotionalVendorCode = s.PromotionalVendorCode,
+                                        BeddingConfig = s.BeddingConfig,
+                                        MinGuestOccupancy = s.MinGuestOccupancy,
+                                        CityCode = s.CityCode,
+                                        CityName = s.CityName,
+                                        StateCode = s.StateCode,
+                                        StateName = s.StateName,
+                                        CountryCode = s.CountryCode,
+                                        CountryName = s.CountryName
+                                    }).ToList();
+                    }
+                    else
+                    {
+                        var ASRTM = context.Accommodation_SupplierRoomTypeMapping.AsNoTracking().Where(w => w.Supplier_Id == CurSupplier_Id).Select(s => new
+                        {
+                            s.Accommodation_SupplierRoomTypeMapping_Id,
+                            s.Accommodation_Id,
+                            s.MappingStatus,
+                            s.SupplierRoomName,
+                            s.SupplierRoomTypeCode,
+                            s.SupplierProductId,
+                        }).ToList();
+
+                        toUpdate = (from a in ASRTM
+                                    join s in STG on
+                                    new { a.SupplierRoomTypeCode, a.SupplierProductId } equals new { s.SupplierRoomTypeCode, s.SupplierProductId }
+                                    select new DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS
+                                    {
+                                        Accommodation_SupplierRoomTypeMapping_Id = a.Accommodation_SupplierRoomTypeMapping_Id,
+                                        Accommodation_Id = a.Accommodation_Id,
+                                        MappingStatus = a.MappingStatus,
+
+                                        SupplierRoomName = s.RoomName,
+                                        OldSupplierRoomName = a.SupplierRoomName,
+                                        SupplierRoomCategoryId = s.SupplierRoomCategoryId,
+                                        Location = s.RoomLocationCode,
+                                        MaxAdults = s.MaxAdults,
+                                        MaxChild = s.MaxChild,
+                                        MaxGuestOccupancy = s.MaxGuestOccupancy,
+                                        MaxInfants = s.MaxInfant,
+                                        ProductName = s.SupplierProductName,
+                                        //Quantity = int.Parse(s.Quantity), // Check this
+                                        RatePlan = s.RatePlan,
+                                        RatePlanCode = s.RatePlanCode,
+                                        SupplierName = s.SupplierName,
+                                        SupplierProductId = s.SupplierProductId,
+                                        SupplierProductName = s.SupplierProductName,
+                                        SupplierRoomCategory = s.SupplierRoomCategory,
+                                        SupplierRoomId = s.SupplierRoomId,
+                                        SupplierRoomTypeCode = s.SupplierRoomTypeCode,
+                                        Supplier_Id = s.Supplier_Id,
+                                        stg_SupplierHotelRoomMapping_Id = s.stg_SupplierHotelRoomMapping_Id,
+                                        ActionType = "UPDATE",
+                                        RoomSize = s.RoomSize,
+                                        SupplierImporrtFile_Id = FileDetails.File_Id ?? Guid.Empty,
+                                        Batch = FileDetails.CurrentBatch ?? 0,
+                                        ReRunSupplierImporrtFile_Id = FileDetails.File_Id ?? Guid.Empty,
+                                        ReRunBatch = FileDetails.CurrentBatch ?? 0,
+                                        RoomDescription = s.RoomDescription,
+                                        BathRoomType = s.BathRoomType,
+                                        RoomViewCode = s.RoomViewCode,
+                                        FloorName = s.FloorName,
+                                        FloorNumber = s.FloorNumber,
+                                        SupplierProvider = s.SupplierProvider,
+                                        Amenities = s.Amenities,
+                                        RoomLocationCode = s.RoomLocationCode,
+                                        ChildAge = s.ChildAge,
+                                        ExtraBed = s.ExtraBed,
+                                        Bedrooms = s.Bedrooms,
+                                        Smoking = s.Smoking,
+                                        BedTypeCode = s.BedTypeCode,
+                                        PromotionalVendorCode = s.PromotionalVendorCode,
+                                        BeddingConfig = s.BeddingConfig,
+                                        MinGuestOccupancy = s.MinGuestOccupancy,
+                                        CityCode = s.CityCode,
+                                        CityName = s.CityName,
+                                        StateCode = s.StateCode,
+                                        StateName = s.StateName,
+                                        CountryCode = s.CountryCode,
+                                        CountryName = s.CountryName
+                                    }).ToList();
+                    }
+                    
+                    //toUpdate = context.Database.SqlQuery<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMap_SearchRS>(sbfinalquery.ToString()).ToList();
 
                 }
 
+                insertSTGList = stgRoomType.Where(w => !toUpdate.Any(a => a.stg_SupplierHotelRoomMapping_Id == w.stg_SupplierHotelRoomMapping_Id)).ToList();
+                updateMappingList = toUpdate;
             }
             catch (Exception ex)
             {
-                LogErrorMessage(File_Id, ex, "CheckRoomTypeAlreadyExist", "DL_Mapping", "CheckRoomTypeAlreadyExist", (int)Error_Enums_DataHandler.ErrorCodes.RoomTypeConfig_Generic, "", "CheckRoomTypeAlreadyExist failed");
+                LogErrorMessage(FileDetails.File_Id ?? Guid.Empty, ex, "CheckRoomTypeAlreadyExist", "DL_Mapping", "CheckRoomTypeAlreadyExist", (int)Error_Enums_DataHandler.ErrorCodes.RoomTypeConfig_Generic, "", "CheckRoomTypeAlreadyExist failed");
                 throw;
             }
-
-            #endregion
         }
 
         public bool RoomTypeMappingMatch(DataContracts.Masters.DC_Supplier obj)
@@ -3581,123 +3809,117 @@ namespace DataLayer
             try
             {
                 bool ret = true;
-                Guid File_Id = new Guid();
-                File_Id = Guid.Parse(obj.File_Id.ToString());
+                Guid File_Id = obj.File_Id ?? Guid.NewGuid();
+
                 PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
-                PLog.SupplierImportFile_Id = obj.File_Id;
+                PLog.SupplierImportFile_Id = File_Id;
                 PLog.Step = "MAP";
                 PLog.Status = "MAPPING";
                 PLog.CurrentBatch = obj.CurrentBatch ?? 0;
                 PLog.TotalBatch = obj.TotalBatch ?? 0;
                 DL_UploadStaticData staticdata = new DL_UploadStaticData();
-                List<DC_SupplierImportFileDetails> file = new List<DC_SupplierImportFileDetails>();
-                DC_SupplierImportFileDetails_RQ fileRQ = new DC_SupplierImportFileDetails_RQ();
-                fileRQ.SupplierImportFile_Id = File_Id;
-                file = staticdata.GetStaticDataFileDetail(fileRQ);
+
                 if (obj != null)
                 {
                     string CurSupplierName = obj.Name;
                     Guid CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
 
-                    List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> clsSTGHotel = new List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping>();
-                    List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> clsSTGHotelInsert = new List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping>();
-                    List<DC_Accommodation_SupplierRoomTypeMap_SearchRS> clsMappingHotel = new List<DC_Accommodation_SupplierRoomTypeMap_SearchRS>();
+                    List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> clsSTGRoomType = new List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping>();
+                    List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping> clsSTGRoomTypeInsert = new List<DataContracts.STG.DC_stg_SupplierHotelRoomMapping>();
+                    List<DC_Accommodation_SupplierRoomTypeMap_SearchRS> clsMappingRoomType = new List<DC_Accommodation_SupplierRoomTypeMap_SearchRS>();
 
+                    //Getting Stg Data 
                     DataContracts.STG.DC_stg_SupplierHotelRoomMapping_RQ RQ = new DataContracts.STG.DC_stg_SupplierHotelRoomMapping_RQ();
                     RQ.SupplierName = CurSupplierName;
                     RQ.Supplier_Id = CurSupplier_Id;
                     RQ.PageNo = 0;
                     RQ.PageSize = obj.BatchSize;
                     RQ.SupplierImportFile_Id = File_Id;
+                    clsSTGRoomType = staticdata.GetSTGRoomTypeData(RQ);
 
-                    //Getting Stg Data 
-                    clsSTGHotel = staticdata.GetSTGRoomTypeData(RQ);
                     PLog.PercentageValue = 15;
                     USD.AddStaticDataUploadProcessLog(PLog);
 
-                    CheckRoomTypeAlreadyExist(File_Id, CurSupplier_Id, clsSTGHotel, out clsMappingHotel, out clsSTGHotelInsert);
+                    CheckRoomTypeAlreadyExist(obj, CurSupplier_Id, clsSTGRoomType, out clsMappingRoomType, out clsSTGRoomTypeInsert);
+
                     PLog.PercentageValue = 26;
                     USD.AddStaticDataUploadProcessLog(PLog);
 
                     PLog.PercentageValue = 48;
                     USD.AddStaticDataUploadProcessLog(PLog);
 
-                    clsSTGHotel.RemoveAll(p => clsSTGHotelInsert.Any(p2 => (p2.stg_SupplierHotelRoomMapping_Id == p.stg_SupplierHotelRoomMapping_Id)));
-
-                    clsMappingHotel.RemoveAll(p => p.SupplierRoomName == p.OldSupplierRoomName);
-
-                    clsMappingHotel.InsertRange(clsMappingHotel.Count, clsSTGHotelInsert.Select
-                        (g => new DC_Accommodation_SupplierRoomTypeMap_SearchRS
-                        {
-                            Accommodation_SupplierRoomTypeMapping_Id = Guid.NewGuid(),
-                            SupplierRoomName = g.RoomName,
-                            OldSupplierRoomName = g.RoomName,
-                            SupplierRoomCategoryId = g.SupplierRoomCategoryId,
-                            Accommodation_Id = null,
-                            Accommodation_RoomInfo_Id = null,
-                            Accommodation_RoomInfo_Name = null,
-                            CommonProductId = null,
-                            Location = null,
-                            MapId = null,
-                            MappingStatus = "UNMAPPED",
-                            MaxAdults = g.MaxAdults,
-                            MaxChild = g.MaxChild,
-                            MaxGuestOccupancy = g.MaxGuestOccupancy,
-                            MaxInfants = g.MaxInfant,
-                            ProductName = null,
-                            Quantity = (!string.IsNullOrWhiteSpace(g.Quantity)) ? Convert.ToInt32(g.Quantity) : 0,
-                            RatePlan = g.RatePlan,
-                            RatePlanCode = g.RatePlanCode,
-                            RoomTypeAttributes = null,
-                            SupplierName = g.SupplierName,
-                            SupplierProductId = g.SupplierProductId,
-                            SupplierProductName = g.SupplierProductName,
-                            SupplierRoomCategory = g.SupplierRoomCategory,
-                            SupplierRoomId = g.SupplierRoomId,
-                            SupplierRoomTypeCode = g.SupplierRoomTypeCode,
-                            Supplier_Id = g.Supplier_Id,
-                            stg_SupplierHotelRoomMapping_Id = g.stg_SupplierHotelRoomMapping_Id,
-                            ActionType = "INSERT",
-                            RoomSize = g.RoomSize,
-                            SupplierImporrtFile_Id = obj.File_Id ?? Guid.Empty,
-                            Batch = obj.CurrentBatch ?? 0,
-                            ReRunSupplierImporrtFile_Id = obj.File_Id ?? Guid.Empty,
-                            ReRunBatch = obj.CurrentBatch ?? 0,
-                            RoomDescription = g.RoomDescription,
-                            BathRoomType = g.BathRoomType,
-                            RoomViewCode = g.RoomViewCode,
-                            FloorName = g.FloorName,
-                            FloorNumber = g.FloorNumber,
-                            SupplierProvider = g.SupplierProvider,
-                            Amenities = g.Amenities,
-                            RoomLocationCode = g.RoomLocationCode,
-                            ChildAge = g.ChildAge,
-                            ExtraBed = g.ExtraBed,
-                            Bedrooms = g.Bedrooms,
-                            Smoking = g.Smoking,
-                            BedTypeCode = g.BedTypeCode,
-                            PromotionalVendorCode = g.PromotionalVendorCode,
-                            BeddingConfig = g.BeddingConfig,
-                            MinGuestOccupancy = g.MinGuestOccupancy,
-                            CityCode = g.CityCode,
-                            CityName = g.CityName,
-                            StateCode = g.StateCode,
-                            StateName = g.StateName,
-                            CountryCode = g.CountryCode,
-                            CountryName = g.CountryName
-                        }));
+                    clsMappingRoomType.AddRange(clsSTGRoomTypeInsert.Select
+                    (g => new DC_Accommodation_SupplierRoomTypeMap_SearchRS
+                    {
+                        Accommodation_SupplierRoomTypeMapping_Id = Guid.NewGuid(),
+                        SupplierRoomName = g.RoomName,
+                        OldSupplierRoomName = g.RoomName,
+                        SupplierRoomCategoryId = g.SupplierRoomCategoryId,
+                        Accommodation_Id = null,
+                        Accommodation_RoomInfo_Id = null,
+                        Accommodation_RoomInfo_Name = null,
+                        CommonProductId = null,
+                        Location = g.RoomLocationCode,
+                        MapId = null,
+                        MappingStatus = "UNMAPPED",
+                        MaxAdults = g.MaxAdults,
+                        MaxChild = g.MaxChild,
+                        MaxGuestOccupancy = g.MaxGuestOccupancy,
+                        MaxInfants = g.MaxInfant,
+                        ProductName = null,
+                        Quantity = (!string.IsNullOrWhiteSpace(g.Quantity)) ? Convert.ToInt32(g.Quantity) : 0,
+                        RatePlan = g.RatePlan,
+                        RatePlanCode = g.RatePlanCode,
+                        RoomTypeAttributes = null,
+                        SupplierName = g.SupplierName,
+                        SupplierProductId = g.SupplierProductId,
+                        SupplierProductName = g.SupplierProductName,
+                        SupplierRoomCategory = g.SupplierRoomCategory,
+                        SupplierRoomId = g.SupplierRoomId,
+                        SupplierRoomTypeCode = g.SupplierRoomTypeCode,
+                        Supplier_Id = g.Supplier_Id,
+                        stg_SupplierHotelRoomMapping_Id = g.stg_SupplierHotelRoomMapping_Id,
+                        ActionType = "INSERT",
+                        RoomSize = g.RoomSize,
+                        SupplierImporrtFile_Id = obj.File_Id ?? Guid.Empty,
+                        Batch = obj.CurrentBatch ?? 0,
+                        ReRunSupplierImporrtFile_Id = obj.File_Id ?? Guid.Empty,
+                        ReRunBatch = obj.CurrentBatch ?? 0,
+                        RoomDescription = g.RoomDescription,
+                        BathRoomType = g.BathRoomType,
+                        RoomViewCode = g.RoomViewCode,
+                        FloorName = g.FloorName,
+                        FloorNumber = g.FloorNumber,
+                        SupplierProvider = g.SupplierProvider,
+                        Amenities = g.Amenities,
+                        RoomLocationCode = g.RoomLocationCode,
+                        ChildAge = g.ChildAge,
+                        ExtraBed = g.ExtraBed,
+                        Bedrooms = g.Bedrooms,
+                        Smoking = g.Smoking,
+                        BedTypeCode = g.BedTypeCode,
+                        PromotionalVendorCode = g.PromotionalVendorCode,
+                        BeddingConfig = g.BeddingConfig,
+                        MinGuestOccupancy = g.MinGuestOccupancy,
+                        CityCode = g.CityCode,
+                        CityName = g.CityName,
+                        StateCode = g.StateCode,
+                        StateName = g.StateName,
+                        CountryCode = g.CountryCode,
+                        CountryName = g.CountryName
+                    }));
 
                     CallLogVerbose(File_Id, "MAP", "Updating / Inserting Database.", obj.CurrentBatch);
-                    if (clsMappingHotel.Count > 0)
+                    if (clsMappingRoomType.Count > 0)
                     {
-                        ret = SupplierRoomTypeMapping_InsertUpdate(clsMappingHotel);
+                        ret = SupplierRoomTypeMapping_InsertUpdate(clsMappingRoomType);
                     }
 
                     #region Delete stg_Ids record from stg if it is processed
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
                         context.Database.CommandTimeout = 0;
-                        var stgIds = clsMappingHotel.Select(s => s.stg_SupplierHotelRoomMapping_Id).ToList();
+                        var stgIds = clsMappingRoomType.Select(s => s.stg_SupplierHotelRoomMapping_Id).ToList();
                         var count = context.stg_SupplierHotelRoomMapping.Where(d => stgIds.Contains(d.stg_SupplierHotelRoomMapping_Id)).Delete();
                     }
                     #endregion
@@ -4356,6 +4578,8 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    context.Database.CommandTimeout = 0;
+
                     foreach (DC_Accommodation_SupplierRoomTypeMap_SearchRS obj in lstobj)
                     {
                         if (obj.Accommodation_SupplierRoomTypeMapping_Id == null)
@@ -4363,19 +4587,18 @@ namespace DataLayer
                             continue;
                         }
 
-                        var search = (from a in context.Accommodation_SupplierRoomTypeMapping
-                                      where a.Accommodation_SupplierRoomTypeMapping_Id == obj.Accommodation_SupplierRoomTypeMapping_Id
-                                      select a).FirstOrDefault();
+                        var search = context.Accommodation_SupplierRoomTypeMapping.Find(obj.Accommodation_SupplierRoomTypeMapping_Id);
+
                         if (search == null)
                         {
                             DataLayer.Accommodation_SupplierRoomTypeMapping objNew = new DataLayer.Accommodation_SupplierRoomTypeMapping()
                             {
                                 Accommodation_SupplierRoomTypeMapping_Id = obj.Accommodation_SupplierRoomTypeMapping_Id,
-                                Accommodation_Id = (context.Accommodation_ProductMapping.Where(w => w.SupplierProductReference == obj.SupplierProductId && w.Supplier_Id == obj.Supplier_Id).Select(a => a.Accommodation_Id).FirstOrDefault()),
+                                Accommodation_Id = (context.Accommodation_ProductMapping.AsNoTracking().Where(w => w.SupplierProductReference == obj.SupplierProductId && w.Supplier_Id == obj.Supplier_Id).Select(a => a.Accommodation_Id).FirstOrDefault()),
                                 Accommodation_RoomInfo_Id = null,
                                 SupplierProductId = obj.SupplierProductId,
                                 Create_Date = DateTime.Now,
-                                Create_User = "TLGX",
+                                Create_User = "TLGX_Datahandler",
                                 Edit_Date = null,
                                 Edit_User = null,
                                 MapId = null,
@@ -4387,7 +4610,7 @@ namespace DataLayer
                                 Quantity = obj.Quantity,
                                 RatePlan = obj.RatePlan,
                                 RatePlanCode = obj.RatePlanCode,
-                                //stg_SupplierHotelRoomMapping_Id = obj.stg_SupplierHotelRoomMapping_Id,
+                                stg_SupplierHotelRoomMapping_Id = obj.stg_SupplierHotelRoomMapping_Id,
                                 SupplierName = obj.SupplierName,
                                 SupplierProductName = obj.SupplierProductName,
                                 SupplierRoomCategory = obj.SupplierRoomCategory,
@@ -4427,18 +4650,60 @@ namespace DataLayer
                                 CountryName = obj.CountryName,
                                 CountryCode = obj.CountryCode,
                                 Source = "StaticFile"
-
                             };
                             context.Accommodation_SupplierRoomTypeMapping.Add(objNew);
                             blnInserted = true;
                         }
                         else
                         {
-                            search.Accommodation_RoomInfo_Id = obj.Accommodation_RoomInfo_Id;
                             search.MappingStatus = obj.MappingStatus;
-                            search.Edit_Date = DateTime.Now;
-                            search.Edit_User = "TLGX";
-                            //search.stg_SupplierHotelRoomMapping_Id = obj.stg_SupplierHotelRoomMapping_Id;
+                            search.stg_SupplierHotelRoomMapping_Id = obj.stg_SupplierHotelRoomMapping_Id;
+                            search.SupplierRoomName = obj.SupplierRoomName;
+                            search.SupplierRoomCategoryId = obj.SupplierRoomCategoryId;
+                            search.Accommodation_Id = obj.Accommodation_Id;
+                            search.MappingStatus = obj.MappingStatus;
+                            search.MaxAdults = obj.MaxAdults;
+                            search.MaxChild = obj.MaxChild;
+                            search.MaxGuestOccupancy = obj.MaxGuestOccupancy;
+                            search.MaxInfants = obj.MaxInfants;
+                            search.Quantity = obj.Quantity;
+                            search.RatePlan = obj.RatePlan;
+                            search.RatePlanCode = obj.RatePlanCode;
+                            search.SupplierName = obj.SupplierName;
+                            search.SupplierProductId = obj.SupplierProductId;
+                            search.SupplierProductName = obj.SupplierProductName;
+                            search.SupplierRoomCategory = obj.SupplierRoomCategory;
+                            search.SupplierRoomId = obj.SupplierRoomId;
+                            search.SupplierRoomTypeCode = obj.SupplierRoomTypeCode;
+                            search.Supplier_Id = obj.Supplier_Id;
+                            search.RoomSize = obj.RoomSize;
+                            search.SupplierImportFile_Id = obj.SupplierImporrtFile_Id;
+                            search.Batch = obj.Batch;
+                            search.ReRun_SupplierImportFile_Id = obj.ReRunSupplierImporrtFile_Id;
+                            search.ReRun_Batch = obj.ReRunBatch;
+                            search.RoomDescription = obj.RoomDescription;
+                            search.BathRoomType = obj.BathRoomType;
+                            search.RoomViewCode = obj.RoomViewCode;
+                            search.FloorName = obj.FloorName;
+                            search.FloorNumber = obj.FloorNumber;
+                            search.SupplierProvider = obj.SupplierProvider;
+                            search.Amenities = obj.Amenities;
+                            search.RoomLocationCode = obj.RoomLocationCode;
+                            search.ChildAge = obj.ChildAge;
+                            search.ExtraBed = obj.ExtraBed;
+                            search.Bedrooms = obj.Bedrooms;
+                            search.Smoking = obj.Smoking;
+                            search.BedTypeCode = obj.BedTypeCode;
+                            search.PromotionalVendorCode = obj.PromotionalVendorCode;
+                            search.BeddingConfig = obj.BeddingConfig;
+                            search.MinGuestOccupancy = obj.MinGuestOccupancy;
+                            search.CityCode = obj.CityCode;
+                            search.CityName = obj.CityName;
+                            search.StateCode = obj.StateCode;
+                            search.StateName = obj.StateName;
+                            search.CountryCode = obj.CountryCode;
+                            search.CountryName = obj.CountryName;
+
                             context.SaveChanges();
                         }
                     }
@@ -4447,18 +4712,12 @@ namespace DataLayer
                     {
                         context.USP_UpdateMapID("roomtype");
                     }
-                    //context.USP_UpdateMapID("roomtype");
                 }
                 return true;
             }
             catch (Exception e)
             {
                 LogErrorMessage(lstobj[0].SupplierImporrtFile_Id, e, "SupplierRoomTypeMapping_InsertUpdate", "DL_Mapping", "SupplierRoomTypeMapping_InsertUpdate", (int)Error_Enums_DataHandler.ErrorCodes.RoomTypeConfig_Generic, "", "SupplierRoomTypeMapping_InsertUpdate failed");
-                //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
-                //{
-                //    ErrorMessage = "Error while updating accomodation product supplier mapping",
-                //    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
-                //});
                 return false;
             }
         }
@@ -6007,20 +6266,16 @@ namespace DataLayer
         public bool CountryMappingMatch(DataContracts.Masters.DC_Supplier obj)
         {
             bool ret = true;
-            Guid File_Id = new Guid();
-            File_Id = Guid.Parse(obj.File_Id.ToString());
+            Guid File_Id = obj.File_Id ?? Guid.Empty;
+
             PLog.SupplierImportFileProgress_Id = Guid.NewGuid();
-            PLog.SupplierImportFile_Id = obj.File_Id;
+            PLog.SupplierImportFile_Id = File_Id;
             PLog.Step = "MAP";
             PLog.Status = "MAPPING";
             PLog.CurrentBatch = obj.CurrentBatch ?? 0;
             PLog.TotalBatch = obj.TotalBatch ?? 0;
 
             DL_UploadStaticData staticdata = new DL_UploadStaticData();
-            List<DC_SupplierImportFileDetails> file = new List<DC_SupplierImportFileDetails>();
-            DC_SupplierImportFileDetails_RQ fileRQ = new DC_SupplierImportFileDetails_RQ();
-            fileRQ.SupplierImportFile_Id = File_Id;
-            file = staticdata.GetStaticDataFileDetail(fileRQ);
 
             if (obj != null)
             {
@@ -6028,98 +6283,98 @@ namespace DataLayer
                 Guid CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
 
                 List<DataContracts.STG.DC_stg_SupplierCountryMapping> clsSTGCountry = new List<DataContracts.STG.DC_stg_SupplierCountryMapping>();
-                List<DataContracts.STG.DC_stg_SupplierCountryMapping> clsSTGCountryInsert = new List<DataContracts.STG.DC_stg_SupplierCountryMapping>();
                 List<DC_CountryMapping> clsMappingCountry = new List<DC_CountryMapping>();
+                List<DC_CountryMapping> clsMappingCountryUpdate = new List<DC_CountryMapping>();
+                List<DC_CountryMapping> clsMappingCountryInsert = new List<DC_CountryMapping>();
 
                 CallLogVerbose(File_Id, "MAP", "Fetching Staged Countries.", obj.CurrentBatch);
+
+                //Get Data from STG Country data with File id and SupplierName
                 DataContracts.STG.DC_stg_SupplierCountryMapping_RQ RQ = new DataContracts.STG.DC_stg_SupplierCountryMapping_RQ();
                 RQ.SupplierName = CurSupplierName;
                 RQ.PageNo = 0;
                 RQ.PageSize = obj.BatchSize;
                 RQ.SupplierImportFile_Id = File_Id;
-                //Get Data from STG Country data with File id and SupplierName
                 clsSTGCountry = staticdata.GetSTGCountryData(RQ);
 
-                PLog.PercentageValue = 15;
-                USD.AddStaticDataUploadProcessLog(PLog);
-
-                CallLogVerbose(File_Id, "MAP", "Fetching Existing Mapping Data.", obj.CurrentBatch);
-
-                #region Getting Country Data from mapping Table For Supplier ID
-                DC_CountryMappingRQ RQMapping = new DC_CountryMappingRQ();
-                if (CurSupplier_Id != Guid.Empty)
-                {
-                    RQMapping.Supplier_Id = CurSupplier_Id;
-                }
-                RQMapping.PageNo = 0;
-                RQMapping.PageSize = int.MaxValue;
-                RQMapping.Status = "ALL";
-                clsMappingCountry = GetCountryMapping_ForHandler(RQMapping);
-
-                #endregion
+                var stgIds = clsSTGCountry.Select(s => s.stg_Country_Id).ToList();
 
                 PLog.PercentageValue = 15;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
                 CallLogVerbose(File_Id, "MAP", "Updating Existing Countries.", obj.CurrentBatch);
-                clsMappingCountry = clsMappingCountry.Select(c =>
-                {
-                    c.CountryCode = (clsSTGCountry.Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode)).Select(s1 => s1.CountryCode).FirstOrDefault()) ?? c.CountryCode;
-                    c.Edit_Date = DateTime.Now;
-                    c.Edit_User = "TLGX";
-                    c.ActionType = "UPDATE";
-                    c.stg_Country_Id = (clsSTGCountry.Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode)).Select(s1 => s1.stg_Country_Id).FirstOrDefault());
-                    c.ContinentCode = (clsSTGCountry.Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode)).Select(s1 => s1.ContinentCode).FirstOrDefault()) ?? c.ContinentCode;
-                    c.ContinentName = (clsSTGCountry.Where(s => (s.CountryName ?? s.CountryCode) == (c.CountryName ?? c.CountryCode)).Select(s1 => s1.ContinentName).FirstOrDefault()) ?? c.ContinentName;
-                    return c;
-                }).ToList();
 
-                CallLogVerbose(File_Id, "MAP", "Checking for New Countries in File.", obj.CurrentBatch);
-                clsSTGCountryInsert = clsSTGCountry.Where(p => !clsMappingCountry.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
-                && (
-                    (p.CountryCode != null && p2.CountryCode == p.CountryCode)
-                    || (p.CountryCode == null && p2.CountryName.ToString().Trim().ToUpper() == p.CountryName.ToString().Trim().ToUpper())
-                ))).ToList();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    clsMappingCountryUpdate = (from a in context.m_CountryMapping.AsNoTracking()
+                                               join s in context.stg_SupplierCountryMapping.AsNoTracking() on
+                                               new { SupplierName = a.SupplierName.ToUpper(), CountryCode = (a.CountryCode ?? a.CountryName) } equals new { SupplierName = s.SupplierName.ToUpper(), CountryCode = (s.CountryCode ?? s.CountryName) }
+                                               where s.SupplierImportFile_Id == File_Id && stgIds.Contains(s.stg_Country_Id)
+                                               select new DataContracts.Mapping.DC_CountryMapping
+                                               {
+                                                   stg_Country_Id = s.stg_Country_Id,
+                                                   CountryName = s.CountryName,
+                                                   CountryCode = s.CountryCode,
+                                                   ContinentCode = s.ContinentCode,
+                                                   ContinentName = s.ContinentName,
+                                                   Latitude = s.Latitude,
+                                                   Longitude = s.Longitude,
+
+                                                   SupplierName = CurSupplierName,
+                                                   Supplier_Id = CurSupplier_Id,
+                                                   Batch = obj.CurrentBatch ?? 0,
+                                                   ReRunBatch = obj.CurrentBatch ?? 0,
+                                                   ReRunSupplierImporrtFile_Id = File_Id,
+                                                   SupplierImporrtFile_Id = File_Id,
+
+                                                   CountryMapping_Id = a.CountryMapping_Id,
+                                                   Country_Id = a.Country_Id,
+                                                   Status = a.Status,
+                                                   Remarks = a.Remarks,
+                                                   MatchedBy = a.MatchedBy,
+                                                   OldCountryCode = a.CountryCode ?? a.CountryName,
+
+                                                   Edit_Date = DateTime.Now,
+                                                   Edit_User = "TLGX_Datahandler",
+                                                   ActionType = "UPDATE"
+
+                                               }).ToList();
+
+                    clsMappingCountry.AddRange(clsMappingCountryUpdate);
+                }
 
                 PLog.PercentageValue = 48;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
-                CallLogVerbose(File_Id, "MAP", "Removing UnEdited Data.", obj.CurrentBatch);
+                CallLogVerbose(File_Id, "MAP", "Checking for New Countries in File.", obj.CurrentBatch);
 
-                clsSTGCountry.RemoveAll(p => clsSTGCountryInsert.Any(p2 => (p2.stg_Country_Id == p.stg_Country_Id)));
-                clsMappingCountry.RemoveAll(p => p.CountryCode == p.OldCountryCode);
-
-                PLog.PercentageValue = 53;
-                USD.AddStaticDataUploadProcessLog(PLog);
-
-                CallLogVerbose(File_Id, "MAP", "Inserting New Countries.", obj.CurrentBatch);
-                clsMappingCountry.InsertRange(clsMappingCountry.Count, clsSTGCountryInsert.Select
-                (g => new DC_CountryMapping
+                clsMappingCountryInsert = clsSTGCountry.Where(w => !clsMappingCountryUpdate.Any(a => a.stg_Country_Id == w.stg_Country_Id)).Select(s => new DC_CountryMapping
                 {
-                    CountryMapping_Id = Guid.NewGuid(),
-                    Country_Id = null,
-                    Supplier_Id = CurSupplier_Id, //Guid.Parse(DictionaryLookup(mappingPrefix, "Supplier_Id", stgPrefix, Cursupplier_Id.ToString())),
-                    SupplierName = g.SupplierName, //DictionaryLookup(mappingPrefix, "SupplierName", stgPrefix, CurSupplierName), 
-                    CountryName = g.CountryName,  //DictionaryLookup(mappingPrefix, "CountryName", stgPrefix, g.CountryName), 
-                    CountryCode = g.CountryCode, //DictionaryLookup(mappingPrefix, "CountryCode", stgPrefix, g.CountryCode), 
-                    Status = "UNMAPPED", //DictionaryLookup(mappingPrefix, "Status", stgPrefix, "UNMAPPED"),                    
-                    Create_Date = DateTime.Now,
-                    Create_User = "TLGX_DataHandler",
-                    Edit_Date = null,
-                    Edit_User = null,
-                    MapID = null,
-                    Latitude = g.Latitude,
-                    Longitude = g.Longitude,
-                    ActionType = "INSERT",
-                    stg_Country_Id = g.stg_Country_Id,
-                    ContinentCode = g.ContinentCode,
-                    ContinentName = g.ContinentName,
-                    SupplierImporrtFile_Id = obj.File_Id ?? Guid.Empty,
+                    stg_Country_Id = s.stg_Country_Id,
+                    CountryName = s.CountryName,
+                    CountryCode = s.CountryCode,
+                    ContinentCode = s.ContinentCode,
+                    ContinentName = s.ContinentName,
+                    Latitude = s.Latitude,
+                    Longitude = s.Longitude,
+
+                    SupplierName = CurSupplierName,
+                    Supplier_Id = CurSupplier_Id,
                     Batch = obj.CurrentBatch ?? 0,
-                    ReRunSupplierImporrtFile_Id = obj.File_Id ?? Guid.Empty,
                     ReRunBatch = obj.CurrentBatch ?? 0,
-                    Remarks = "" //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
-                }));
+                    ReRunSupplierImporrtFile_Id = File_Id,
+                    SupplierImporrtFile_Id = File_Id,
+
+                    CountryMapping_Id = Guid.NewGuid(),
+                    Status = "UNMAPPED",
+
+                    Create_Date = DateTime.Now,
+                    Create_User = "TLGX_Datahandler",
+                    ActionType = "INSERT"
+
+                }).ToList();
+
+                clsMappingCountry.AddRange(clsMappingCountryInsert);
 
                 PLog.PercentageValue = 58;
                 USD.AddStaticDataUploadProcessLog(PLog);
@@ -6130,11 +6385,13 @@ namespace DataLayer
                 }
 
                 #region Delete stg_Ids record from stg if it is processed
-                using (ConsumerEntities context = new ConsumerEntities())
+                if (stgIds.Count > 0)
                 {
-                    context.Database.CommandTimeout = 0;
-                    var stgIds = clsMappingCountry.Select(s => s.stg_Country_Id).ToList();
-                    var count = context.stg_SupplierCountryMapping.Where(d => stgIds.Contains(d.stg_Country_Id)).Delete();
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        context.Database.CommandTimeout = 0;
+                        var count = context.stg_SupplierCountryMapping.Where(d => stgIds.Contains(d.stg_Country_Id)).Delete();
+                    }
                 }
                 #endregion
             }
@@ -6145,25 +6402,26 @@ namespace DataLayer
             return ret;
         }
 
-        public List<DC_CountryMapping> UpdateCountryMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
+        public bool UpdateCountryMappingStatus(DataContracts.Mapping.DC_MappingMatch obj)
         {
             DataContracts.Masters.DC_Supplier supdata = new DataContracts.Masters.DC_Supplier();
             supdata = obj.SupplierDetail;
-            List<DC_CountryMapping> CMS = obj.lstCountryMapping;
             List<DC_SupplierImportAttributeValues> configs = obj.lstConfigs;
             string configWhere = "";
             string curSupplier = "";
             Guid? curSupplier_Id = Guid.Empty;
             configWhere = "";
-            Guid File_Id = new Guid();
-            File_Id = Guid.Parse(obj.File_Id.ToString());
+            Guid File_Id = obj.File_Id ?? Guid.Empty;
 
             int totPriorities = obj.TotalPriorities;
             int curPriority = obj.CurrentPriority;
             int totConfigs = 0;
             int curConfig = 0;
             if (totPriorities <= 0)
+            {
                 totPriorities = 1;
+            }
+
             int PerForEachPriority = 60 / totPriorities;
 
             if (supdata != null)
@@ -6171,17 +6429,17 @@ namespace DataLayer
                 curSupplier = supdata.Name;
                 curSupplier_Id = supdata.Supplier_Id;
             }
-            List<DC_CountryMapping> ret = new List<DC_CountryMapping>();
-            //foreach (var CM in CMS)
-            //{
+
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var prodMapSearch = (from a in context.m_CountryMapping
-                                             //join s in context.STG_Mapping_TableIds.AsNoTracking() on a.CountryMapping_Id equals s.Mapping_Id
-                                         where a.ReRun_SupplierImportFile_Id == obj.File_Id && a.Country_Id == null && a.Supplier_Id == curSupplier_Id
-                                         && a.Status == "UNMAPPED" && a.ReRun_Batch == obj.CurrentBatch
+                    var prodMapSearch = (from a in context.m_CountryMapping.AsNoTracking()
+                                         where a.ReRun_SupplierImportFile_Id == obj.File_Id
+                                         && a.Country_Id == null
+                                         && a.Supplier_Id == curSupplier_Id
+                                         && a.Status == "UNMAPPED"
+                                         && a.ReRun_Batch == obj.CurrentBatch
                                          select a);
 
                     bool isCodeCheck = false;
@@ -6212,6 +6470,7 @@ namespace DataLayer
                         string CurrConfig = "";
                         CurrConfig = config.AttributeValue.Replace("m_CountryMaster.", "").Trim().ToUpper();
                         CallLogVerbose(File_Id, "MATCH", "Applying Check for " + CurrConfig, obj.CurrentBatch);
+
                         if (CurrConfig == "CODE")
                         {
                             isCodeCheck = true;
@@ -6220,6 +6479,7 @@ namespace DataLayer
                                              where a.CountryCode != null && m.Code != null
                                              select a);
                         }
+
                         if (CurrConfig == "NAME")
                         {
                             isNameCheck = true;
@@ -6228,6 +6488,7 @@ namespace DataLayer
                                              where a.CountryName != null && m.Name != null
                                              select a);
                         }
+
                         if (CurrConfig == "ISO3166-1-Alpha-2".Trim().ToUpper())
                         {
                             isCodeCheck = true;
@@ -6236,6 +6497,7 @@ namespace DataLayer
                                              where a.CountryCode != null && m.ISO3166_1_Alpha_2 != null
                                              select a);
                         }
+
                         if (CurrConfig == "ISO3166-1-Alpha-3".Trim().ToUpper())
                         {
                             isCodeCheck = true;
@@ -6244,6 +6506,7 @@ namespace DataLayer
                                              where a.CountryCode != null && m.ISO3166_1_Alpha_3 != null
                                              select a);
                         }
+
                         if (CurrConfig == "LATITUDE")
                         {
                             isLatLongCheck = true;
@@ -6252,8 +6515,7 @@ namespace DataLayer
                                              where m.Latitude != null && a.Latitude != null && m.Longitude != null && a.Longitude != null
                                              select a);
                         }
-                        //PLog.PercentageValue = (70 / totPriorities) / totConfigs;
-                        //PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + (PerForEachPriority / totConfigs);
+
                         PLog.PercentageValue = (PerForEachPriority * (curPriority - 1)) + ((PerForEachPriority / totConfigs) * curConfig);
                         USD.AddStaticDataUploadProcessLog(PLog);
                     }
@@ -6288,14 +6550,11 @@ namespace DataLayer
                         }
 
                         CallLogVerbose(File_Id, "MATCH", "Looking for Match in Master Data for Matching Combination " + curPriority.ToString() + ".", obj.CurrentBatch);
+
                         res = res.Select(c =>
                         {
                             c.Country_Id = (context.m_CountryMaster
                                             .Where(s => (
-                                                            //(isCodeCheck && s.Code == c.CountryCode && isNameCheck && s.Name == c.CountryName) ||
-                                                            //(isCodeCheck && (s.Code == c.CountryCode || s.ISO3166_1_Alpha_2 == c.CountryCode || s.ISO3166_1_Alpha_3 == c.CountryCode) && (!isNameCheck)) ||
-                                                            //((!isCodeCheck) && isNameCheck && s.Name == c.CountryName)
-
                                                             ((isCodeCheck && (s.Code == c.CountryCode || s.ISO3166_1_Alpha_2 == c.CountryCode || s.ISO3166_1_Alpha_3 == c.CountryCode)) || (!isCodeCheck)) &&
                                                             ((isNameCheck && s.Name == c.CountryName) || (!isNameCheck)) &&
                                                             ((isLatLongCheck && s.Latitude == c.Latitude && s.Longitude == c.Longitude) || (!isLatLongCheck))
@@ -6315,11 +6574,14 @@ namespace DataLayer
 
                         CallLogVerbose(File_Id, "MATCH", "Setting Appropriate Status.", obj.CurrentBatch);
 
-                        res.RemoveAll(p => p.Country_Id == Guid.Empty);
+                        res.RemoveAll(p => p.Country_Id == Guid.Empty || p.Country_Id == null);
                         res = res.Select(c =>
                         {
                             c.MatchedBy = curPriority - 1;
-                            c.Status = ("REVIEW"); return c;
+                            c.Status = ("REVIEW");
+                            c.Edit_Date = DateTime.Now;
+                            c.Edit_User = "TLGX_Datahandler";
+                            return c;
                         }).ToList();
 
                         if (totPriorities == curPriority)
@@ -6327,8 +6589,10 @@ namespace DataLayer
                             PLog.PercentageValue = 75;
                             USD.AddStaticDataUploadProcessLog(PLog);
                         }
+
                         CallLogVerbose(File_Id, "MATCH", res.Count.ToString() + " Matches Found for Combination " + curPriority.ToString() + ".", obj.CurrentBatch);
                         CallLogVerbose(File_Id, "MATCH", "Updating into Database.", obj.CurrentBatch);
+
                         if (UpdateCountryMapping(res))
                         {
                             if ((obj.FileMode ?? "ALL") == "ALL" && totPriorities == curPriority)
@@ -6338,17 +6602,6 @@ namespace DataLayer
                                 objStat.SupplierImportFile_Id = obj.File_Id;
                                 objStat.From = "MATCHING";
                                 DataContracts.DC_Message stat = USD.AddStaticDataUploadStatistics(objStat);
-
-                            }
-
-                            if (curSupplier_Id != null)
-                            {
-                                DataContracts.Mapping.DC_CountryMappingRQ RQ = new DC_CountryMappingRQ();
-                                RQ.Supplier_Id = curSupplier_Id;
-                                RQ.PageNo = 0;
-                                RQ.PageSize = int.MaxValue;
-                                RQ.Status = "UNMAPPED";
-                                res = GetCountryMapping(RQ);
                             }
                         }
 
@@ -6358,27 +6611,13 @@ namespace DataLayer
                             USD.AddStaticDataUploadProcessLog(PLog);
                         }
                     }
-                    else
-                    {
-                        if (curSupplier_Id != null)
-                        {
-                            DataContracts.Mapping.DC_CountryMappingRQ RQ = new DC_CountryMappingRQ();
-                            RQ.Supplier_Id = curSupplier_Id;
-                            RQ.PageNo = 0;
-                            RQ.PageSize = int.MaxValue;
-                            RQ.Status = "UNMAPPED";
-                            res = GetCountryMapping(RQ);
-                        }
-                    }
                     CallLogVerbose(File_Id, "MATCH", "Update Done.", obj.CurrentBatch);
-                    return res;
-
                 }
-
+                return true;
             }
             catch (Exception e)
             {
-                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating country mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+                return false;
             }
         }
 
@@ -6395,38 +6634,86 @@ namespace DataLayer
                 {
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        var search = (from a in context.m_CountryMapping
-                                      where a.CountryMapping_Id == CM.CountryMapping_Id
-                                      select a).FirstOrDefault();
+                        var search = context.m_CountryMapping.Find(CM.CountryMapping_Id);
+
                         if (search != null)
                         {
-                            //if (CM.Status != (search.Status ?? string.Empty))
-                            //{
-                            //    search.Status = CM.Status;
-                            //    search.Edit_Date = CM.Edit_Date;
-                            //    search.Edit_User = CM.Edit_User;
-                            //}
-                            //else
-                            //{
-                            search.Country_Id = CM.Country_Id;
-                            search.Supplier_Id = CM.Supplier_Id;
-                            if (CM.MatchedBy != null)
-                                search.MatchedBy = CM.MatchedBy;
-                            search.Status = CM.Status;
                             search.Edit_Date = CM.Edit_Date;
                             search.Edit_User = CM.Edit_User;
-                            search.Remarks = CM.Remarks;
-                            if (CM.ContinentCode != null)
+
+                            if (CM.Country_Id != null)
+                            {
+                                search.Country_Id = CM.Country_Id;
+                            }
+
+                            if (CM.Supplier_Id != null)
+                            {
+                                search.Supplier_Id = CM.Supplier_Id;
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(CM.Status))
+                            {
+                                search.Status = CM.Status;
+                            }
+
+                            if (CM.MatchedBy != null)
+                            {
+                                search.MatchedBy = CM.MatchedBy;
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(CM.Remarks))
+                            {
+                                search.Remarks = CM.Remarks;
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(CM.ContinentCode))
+                            {
                                 search.ContinentCode = CM.ContinentCode;
-                            if (CM.ContinentName != null)
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(CM.ContinentName))
+                            {
                                 search.ContinentName = CM.ContinentName;
-                            //}
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(CM.CountryCode))
+                            {
+                                search.CountryCode = CM.CountryCode;
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(CM.CountryName))
+                            {
+                                search.CountryName = CM.CountryName;
+                            }
+
+                            if (CM.SupplierImporrtFile_Id != null)
+                            {
+                                search.SupplierImportFile_Id = CM.SupplierImporrtFile_Id;
+                                search.Batch = CM.Batch;
+                            }
+
+                            if (CM.ReRunSupplierImporrtFile_Id != null)
+                            {
+                                search.ReRun_SupplierImportFile_Id = CM.ReRunSupplierImporrtFile_Id;
+                                search.ReRun_Batch = CM.ReRunBatch;
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(CM.Latitude))
+                            {
+                                search.Latitude = CM.Latitude;
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(CM.Longitude))
+                            {
+                                search.Longitude = CM.Longitude;
+                            }
 
                             context.SaveChanges();
                         }
                         else
                         {
                             DataLayer.m_CountryMapping objNew = new m_CountryMapping();
+
                             objNew.CountryMapping_Id = CM.CountryMapping_Id;
                             objNew.Country_Id = CM.Country_Id;
                             objNew.Supplier_Id = CM.Supplier_Id;
@@ -6450,11 +6737,7 @@ namespace DataLayer
                             objNew.ReRun_Batch = CM.ReRunBatch;
                             context.m_CountryMapping.Add(objNew);
                             context.SaveChanges();
-
-                            context.USP_UpdateMapID("country");
                         }
-
-                        //return true;
                     }
                 }
                 catch
@@ -6462,6 +6745,12 @@ namespace DataLayer
                     throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating country mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
                 }
             }
+
+            using (ConsumerEntities context = new ConsumerEntities())
+            {
+                context.USP_UpdateMapID("country");
+            }
+
             return true;
         }
 
@@ -6475,8 +6764,6 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-
-
                     var prodMapSearch = (from a in context.m_CityMapping.AsNoTracking() select a).AsQueryable();
                     var countrymaster = context.m_CountryMaster.AsNoTracking().Select(s => s).AsQueryable();
 
@@ -6676,16 +6963,6 @@ namespace DataLayer
                                                                 .OrderBy(p => p.EntityType).ToList()),
                                            }).Skip(skip).Take(param.PageSize).ToList();
 
-                        //CityMapList = CityMapList.Select(c =>
-                        //{
-                        //    c.MasterStateName = (context.m_States
-                        //                    .Where(s => (s.Country_Id == c.Country_Id))
-                        //                    .Select(s => s.StateName)
-                        //                    .FirstOrDefault()
-                        //                    );
-                        //    return c;
-                        //}).ToList();
-
                         //if (param.CalledFromTLGX == null || (param.CalledFromTLGX.ToString() != "TLGX"))
                         if (string.IsNullOrWhiteSpace(param.CalledFromTLGX))
                         {
@@ -6704,12 +6981,6 @@ namespace DataLayer
                                             if (searchCity == null)
                                             {
                                                 searchCity = CityMaster.Where(a => a.Country_Id == item.Country_Id && a.Name.ToUpper().Trim().Contains(cityName.ToUpper().Trim())).FirstOrDefault();
-                                                //if (searchCity == null)
-                                                //{
-                                                //    searchCity = CityMaster.Where(a => a.Country_Id == item.Country_Id && (a.Name.ToUpper().Trim() == cityCode.ToUpper().Trim())).FirstOrDefault();
-                                                //    if (searchCity == null)
-                                                //        searchCity = CityMaster.Where(a => a.Country_Id == item.Country_Id && a.Name.ToUpper().Trim().Contains(cityCode.ToUpper().Trim())).FirstOrDefault();
-                                                //}
                                             }
                                             if (searchCity != null)
                                             {
@@ -6744,10 +7015,7 @@ namespace DataLayer
             PLog.Status = "MAPPING";
             PLog.CurrentBatch = obj.CurrentBatch ?? 0;
             PLog.TotalBatch = obj.TotalBatch ?? 0;
-            List<DC_SupplierImportFileDetails> file = new List<DC_SupplierImportFileDetails>();
-            DC_SupplierImportFileDetails_RQ fileRQ = new DC_SupplierImportFileDetails_RQ();
-            fileRQ.SupplierImportFile_Id = File_Id;
-            file = staticdata.GetStaticDataFileDetail(fileRQ);
+
             if (obj != null)
             {
                 string CurSupplierName = obj.Name;
@@ -6774,60 +7042,10 @@ namespace DataLayer
                 PLog.PercentageValue = 26;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
-                CallLogVerbose(File_Id, "MAP", "Updating Existing Cities.", obj.CurrentBatch);
+                CallLogVerbose(File_Id, "MAP", "Updating Existing Cities & Checking for New Cities in batch", obj.CurrentBatch);
 
                 //Update Already ExistCity Data
-                UpdateExistCity(obj, out clsMappingCity);
-
-                PLog.PercentageValue = 37;
-                USD.AddStaticDataUploadProcessLog(PLog);
-
-                CallLogVerbose(File_Id, "MAP", "Checking for New Cities in File.", obj.CurrentBatch);
-                clsSTGCityInsert = clsSTGCity.Where(p => !clsMappingCity.Any(p2 => (p2.SupplierName.ToString().Trim().ToUpper() == p.SupplierName.ToString().Trim().ToUpper())
-                    && ((p2.CityCode ?? p2.CityName) == (p.CityCode ?? p.CityName)
-                        && p2.Country_Id == p.Country_Id))).ToList();
-                PLog.PercentageValue = 48;
-                USD.AddStaticDataUploadProcessLog(PLog);
-
-                CallLogVerbose(File_Id, "MAP", "Removing UnEdited Data.", obj.CurrentBatch);
-                clsSTGCity.RemoveAll(p => clsSTGCityInsert.Any(p2 => (p2.stg_City_Id == p.stg_City_Id)));
-
-                PLog.PercentageValue = 53;
-                USD.AddStaticDataUploadProcessLog(PLog);
-
-
-                CallLogVerbose(File_Id, "MAP", "Inserting New Cities.", obj.CurrentBatch);
-                clsMappingCity.InsertRange(clsMappingCity.Count, clsSTGCityInsert.Select
-                    (g => new DC_CityMapping
-                    {
-                        CityMapping_Id = Guid.NewGuid(),
-                        City_Id = null,
-                        CityCode = g.CityCode,
-                        CityName = g.CityName,
-                        Country_Id = null,
-                        Supplier_Id = CurSupplier_Id,
-                        SupplierName = g.SupplierName,
-                        CountryName = g.CountryName,
-                        CountryCode = g.CountryCode,
-                        Status = "UNMAPPED",
-                        Create_Date = DateTime.Now,
-                        Create_User = "TLGX_DataHandler",
-                        Edit_Date = null,
-                        Edit_User = null,
-                        MapID = null,
-                        Latitude = g.Latitude,
-                        Longitude = g.Longitude,
-                        oldCityName = g.CityName,
-                        ActionType = "INSERT",
-                        stg_City_Id = g.stg_City_Id,
-                        Remarks = "", //DictionaryLookup(mappingPrefix, "Remarks", stgPrefix, "")
-                        StateCode = g.StateCode,
-                        StateName = g.StateName,
-                        SupplierImporrtFile_Id = obj.File_Id ?? Guid.Empty,
-                        Batch = obj.CurrentBatch ?? 0,
-                        ReRunSupplierImporrtFile_Id = obj.File_Id ?? Guid.Empty,
-                        ReRunBatch = obj.CurrentBatch ?? 0
-                    }));
+                UpdateExistCity(obj, clsSTGCity, out clsMappingCity);
 
                 PLog.PercentageValue = 58;
                 USD.AddStaticDataUploadProcessLog(PLog);
@@ -6849,7 +7067,7 @@ namespace DataLayer
                 {
                     ret = true;
                 }
-                    
+
             }
             PLog.PercentageValue = 100;
             USD.AddStaticDataUploadProcessLog(PLog);
@@ -6857,63 +7075,92 @@ namespace DataLayer
             return ret;
         }
 
-        private void UpdateExistCity(DataContracts.Masters.DC_Supplier obj, out List<DC_CityMapping> clsMappingCity)
+        private void UpdateExistCity(DataContracts.Masters.DC_Supplier obj, List<DataContracts.STG.DC_stg_SupplierCityMapping> clsSTGCity, out List<DC_CityMapping> clsMappingCity)
         {
             try
             {
-                List<DataContracts.STG.DC_stg_SupplierCityMapping> clsSTGCity = new List<DataContracts.STG.DC_stg_SupplierCityMapping>();
-                DL_UploadStaticData staticdata = new DL_UploadStaticData();
                 string CurSupplierName = obj.Name;
                 Guid CurSupplier_Id = Guid.Parse(obj.Supplier_Id.ToString());
-                Guid File_Id = new Guid();
-                File_Id = Guid.Parse(obj.File_Id.ToString());
-                DataContracts.STG.DC_stg_SupplierCityMapping_RQ RQ = new DataContracts.STG.DC_stg_SupplierCityMapping_RQ();
-                RQ.SupplierName = CurSupplierName;
-                RQ.PageNo = 0;
-                RQ.PageSize = int.MaxValue;
-                RQ.SupplierImportFile_Id = File_Id;
-                clsSTGCity = staticdata.GetSTGCityData(RQ);
-
+                Guid File_Id = Guid.Parse(obj.File_Id.ToString());
                 List<DC_CityMapping> clsMappingCityLocal = new List<DC_CityMapping>();
-                DC_CityMapping_RQ RQCity = new DC_CityMapping_RQ();
-                if (CurSupplier_Id != Guid.Empty)
-                    RQCity.Supplier_Id = CurSupplier_Id;
-                RQCity.PageNo = 0;
-                RQCity.PageSize = int.MaxValue;
-                RQCity.CalledFromTLGX = "TLGX";
-                //RQ.Status = "ALL";
-                clsMappingCityLocal = GetCityMapping(RQCity);
+                List<DC_CityMapping> toUpdate = new List<DC_CityMapping>();
+                List<DC_CityMapping> toInsert = new List<DC_CityMapping>();
 
-                var result = (from x in clsMappingCityLocal
-                              join y in clsSTGCity on new { CityCode = (x.CityCode ?? x.CityName), x.Country_Id }
-                                                    equals new { CityCode = (y.CityCode ?? y.CityName), y.Country_Id }
-                              select y);
+                var stgIds = clsSTGCity.Select(s => s.stg_City_Id).ToList();
 
-                foreach (var item in result)
+                using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    foreach (var itemMapped in clsMappingCityLocal)
-                    {
-                        if (itemMapped.Country_Id == item.Country_Id && ((itemMapped.CityCode ?? itemMapped.CityName) == (item.CityCode ?? item.CityName)))
-                        {
-                            itemMapped.CityName = item.CityName ?? itemMapped.CityName;
-                            itemMapped.StateName = item.StateName ?? itemMapped.StateName;
-                            itemMapped.StateCode = item.StateCode ?? itemMapped.StateCode;
-                            itemMapped.stg_City_Id = item.stg_City_Id;
-                            itemMapped.ActionType = "UPDATE";
-                            itemMapped.Edit_User = "TLGX_DataHandler";
-                            itemMapped.Edit_Date = DateTime.Now;
-                            itemMapped.Latitude = item.Latitude ?? itemMapped.Latitude;
-                            itemMapped.Longitude = item.Longitude ?? itemMapped.Longitude;
-                            break;
-                        }
-                    }
+                    toUpdate = (from a in context.m_CityMapping.AsNoTracking()
+                                join s in context.stg_SupplierCityMapping.AsNoTracking() on
+                                new { a.Supplier_Id, CityCode = (a.CityCode ?? a.CityName), a.Country_Id } equals new { s.Supplier_Id, CityCode = (s.CityCode ?? s.CityName), s.Country_Id }
+                                where s.SupplierImportFile_Id == File_Id && stgIds.Contains(s.stg_City_Id)
+                                select new DataContracts.Mapping.DC_CityMapping
+                                {
+                                    City_Id = a.City_Id,
+                                    Batch = obj.CurrentBatch ?? 0,
+                                    SupplierImporrtFile_Id = File_Id,
+                                    ReRunSupplierImporrtFile_Id = File_Id,
+                                    Supplier_Id = CurSupplier_Id,
+                                    SupplierName = CurSupplierName,
+
+                                    stg_City_Id = s.stg_City_Id,
+                                    CityCode = s.CityCode,
+                                    CityMapping_Id = a.CityMapping_Id,
+                                    CityName = s.CityName,
+                                    CountryCode = s.CountryCode,
+                                    CountryName = s.CountryName,
+                                    Country_Id = s.Country_Id,
+                                    Latitude = s.Latitude,
+                                    Longitude = s.Longitude,
+                                    StateCode = s.StateCode,
+                                    StateName = s.StateName,
+
+                                    Status = a.Status,
+                                    Edit_Date = DateTime.Now,
+                                    Edit_User = "TLGX_DataHandler",
+                                    ActionType = "UPDATE"
+                                }).ToList();
+
+                    clsMappingCityLocal.AddRange(toUpdate);
                 }
+
+                toInsert = clsSTGCity.Where(w => !toUpdate.Any(a => a.stg_City_Id == w.stg_City_Id)).Select(s => new DC_CityMapping
+                {
+                    Batch = obj.CurrentBatch ?? 0,
+                    ReRunBatch = obj.CurrentBatch ?? 0,
+                    SupplierImporrtFile_Id = File_Id,
+                    ReRunSupplierImporrtFile_Id = File_Id,
+                    Supplier_Id = CurSupplier_Id,
+                    SupplierName = CurSupplierName,
+                    CityMapping_Id = Guid.NewGuid(),
+
+                    stg_City_Id = s.stg_City_Id,
+                    CityCode = s.CityCode,
+
+                    CityName = s.CityName,
+                    CountryCode = s.CountryCode,
+                    CountryName = s.CountryName,
+                    Country_Id = s.Country_Id,
+                    Latitude = s.Latitude,
+                    Longitude = s.Longitude,
+                    StateCode = s.StateCode,
+                    StateName = s.StateName,
+                    oldCityName = s.CityName,
+
+                    Status = "UNMAPPED",
+                    Create_Date = DateTime.Now,
+                    Create_User = "TLGX_DataHandler",
+                    ActionType = "INSERT"
+
+                }).ToList();
+
+                clsMappingCityLocal.AddRange(toInsert);
+
                 clsMappingCity = clsMappingCityLocal;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw ex;
             }
         }
 
@@ -6933,23 +7180,12 @@ namespace DataLayer
 
                         try
                         {
+                            var search = context.m_CityMapping.Find(CM.CityMapping_Id);
 
-                            var search = (from a in context.m_CityMapping
-                                          where a.CityMapping_Id == CM.CityMapping_Id
-                                          select a).FirstOrDefault();
                             if (search != null)
                             {
                                 try
                                 {
-                                    //if (CM.Status != (search.Status ?? string.Empty))
-                                    //{
-                                    //    search.City_Id = CM.City_Id;
-                                    //    search.Status = CM.Status;
-                                    //    search.Edit_Date = CM.Edit_Date;
-                                    //    search.Edit_User = CM.Edit_User;
-                                    //}
-                                    //else
-                                    //{
                                     search.City_Id = CM.City_Id;
                                     search.Country_Id = CM.Country_Id;
                                     search.Supplier_Id = CM.Supplier_Id;
@@ -6967,7 +7203,6 @@ namespace DataLayer
                                         search.Longitude = CM.Longitude;
                                     if (!string.IsNullOrEmpty(CM.Latitude))
                                         search.Latitude = CM.Latitude;
-                                    //}
                                     context.SaveChanges();
                                 }
                                 catch (Exception e)
@@ -6984,13 +7219,13 @@ namespace DataLayer
                                     DataContracts.DC_Message dc = new DataContracts.DC_Message();
                                     dc = ups.AddStaticDataUploadErrorLog(objE);
                                 }
-                                //context.SaveChanges();
                             }
                             else
                             {
                                 try
                                 {
                                     DataLayer.m_CityMapping objNew = new m_CityMapping();
+
                                     objNew.CityMapping_Id = CM.CityMapping_Id;
                                     objNew.City_Id = CM.City_Id;
                                     objNew.CityName = CM.CityName;
@@ -7045,8 +7280,6 @@ namespace DataLayer
                             }
 
                             ret = true;
-
-
                         }
                         catch
                         {
@@ -7054,6 +7287,7 @@ namespace DataLayer
                             throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating city mapping", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
                         }
                     }
+
                     if (ret)
                     {
                         context.SaveChanges();
@@ -7062,7 +7296,10 @@ namespace DataLayer
                 }
             }
             else
+            {
                 ret = true;
+            }
+
             return ret;
         }
 
