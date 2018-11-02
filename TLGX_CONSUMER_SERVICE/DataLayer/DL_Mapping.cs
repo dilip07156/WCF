@@ -2303,8 +2303,8 @@ namespace DataLayer
                 StringBuilder sbsqlwhere = new StringBuilder();
                 StringBuilder sbsqlcmjoin = new StringBuilder();
                 StringBuilder sbsqlctmjoin = new StringBuilder();
-
-                sbsqlwhere.AppendLine(" where 1=1 ");
+                //TMAP-781
+                sbsqlwhere.AppendLine(" where 1=1 and isnull(apm.IsActive,0) = 1 ");
 
                 if (obj.Supplier_Id.HasValue)
                 {
@@ -10551,8 +10551,9 @@ namespace DataLayer
             if (RQ.Supplier.Count > 0)
             {
                 sbSelect.AppendLine(" , Sup.Name As SupplierName, CASE WHEN ISNULL(APM.[Status],'UNMAPPED') IN ('AUTOMAPPED','MAPPED') THEN APM.SupplierProductReference ELSE 'Not Mapped' END AS [Status] ");
-                sbJoin.AppendLine("cross join (SELECT Supplier_Id, Code, Name, Priority from Supplier where Supplier_Id in (" + supplierData + ")) sup ");
-                sbJoin.AppendLine(" LEFT JOIN Accommodation_ProductMapping apm with(nolock) on ac.Accommodation_Id = apm.Accommodation_Id and apm.Supplier_Id = sup.Supplier_Id ");
+                sbJoin.AppendLine("cross join (SELECT Supplier_Id, Code, Name, Priority from Supplier  with(nolock)  where Supplier_Id in (" + supplierData + ")) sup ");
+                //TMAP-781
+                sbJoin.AppendLine(" LEFT JOIN Accommodation_ProductMapping apm with(nolock) on ac.Accommodation_Id = apm.Accommodation_Id and apm.Supplier_Id = sup.Supplier_Id and isnull(apm.IsActive,0) = 1  ");
 
             }
 
