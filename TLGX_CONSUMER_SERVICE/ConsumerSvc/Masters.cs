@@ -867,5 +867,23 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
+        #region Supplier Static Data Download
+        public DataContracts.DC_Message SupplierStaticDataDownload_AddUpdate(DataContracts.Masters.DC_Supplier_StaticDataDownload objApiLoc)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.SupplierStaticDataDownload_AddUpdate(objApiLoc);
+            }
+        }
+
+        public List<DataContracts.Masters.DC_Supplier_StaticDataDownload> SupplierStaticDataDownload_Get(DataContracts.Masters.DC_Supplier_StaticDataDownload objApiLoc)
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.SupplierStaticDataDownload_Get(objApiLoc);
+            }
+        }
+        #endregion
     }
 }

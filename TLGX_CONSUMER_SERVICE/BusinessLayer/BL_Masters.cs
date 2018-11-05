@@ -471,6 +471,7 @@ namespace BusinessLayer
                 return obj.SupplierApiLocation_Add(objApiLoc);
             }
         }
+
         #endregion
 
         #region Statuses
@@ -848,6 +849,24 @@ namespace BusinessLayer
                 return obj.GetCitiesDetails(CountryName, CityName);
             }
         }
-        #endregion	
+        #endregion
+
+        #region Supplier Static Data Download
+        public DataContracts.DC_Message SupplierStaticDataDownload_AddUpdate(DataContracts.Masters.DC_Supplier_StaticDataDownload objStatic)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.SupplierStaticDataDownload_AddUpdate(objStatic);
+            }
+        }
+
+        public List<DataContracts.Masters.DC_Supplier_StaticDataDownload> SupplierStaticDataDownload_Get(DataContracts.Masters.DC_Supplier_StaticDataDownload objStatic)
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.SupplierStaticDataDownload_Get(objStatic);
+            }
+        }
+        #endregion
     }
 }

@@ -600,5 +600,16 @@ namespace OperationContracts
         IList<DC_M_masterattributevalue> GetDisplaySubType(string MasterFor, string Name);
         #endregion SubType
 
+        #region SupplierStaticDataDownload
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Master/Supplier_StaticDataDownload/AddUpdate", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message SupplierStaticDataDownload_AddUpdate(DataContracts.Masters.DC_Supplier_StaticDataDownload obj);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Master/Supplier_StaticDataDownload/Get", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DataContracts.Masters.DC_Supplier_StaticDataDownload> SupplierStaticDataDownload_Get(DataContracts.Masters.DC_Supplier_StaticDataDownload obj);
+        #endregion
     }
 }
