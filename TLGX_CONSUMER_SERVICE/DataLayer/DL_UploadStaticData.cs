@@ -2046,7 +2046,7 @@ namespace DataLayer
             {
                 string mySupplier = lstobj[0].SupplierName;
                 Guid? mySupplier_Id = lstobj[0].Supplier_Id;
-               
+
                 if (!string.IsNullOrWhiteSpace(mySupplier))
                 {
                     //using (ConsumerEntities context = new ConsumerEntities())
@@ -2305,7 +2305,7 @@ namespace DataLayer
                 {
                     string mySupplier = lstobj[0].SupplierName;
                     Guid? mySupplier_Id = lstobj[0].Supplier_Id;
-                    
+
                     if (!string.IsNullOrWhiteSpace(mySupplier))
                     {
                         //var oldRecords = (from y in context.stg_SupplierHotelRoomMapping
@@ -3235,31 +3235,50 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    StringBuilder sql = new StringBuilder();
-                    sql.AppendLine("DECLARE @SupplierImportFile_Id AS UNIQUEIDENTIFIER = '" + SupplierImportFile_Id.ToString() + "'");
-                    sql.AppendLine("DECLARE @Country_Id AS UNIQUEIDENTIFIER");
-                    sql.AppendLine("DECLARE db_cursor CURSOR FOR ");
-                    sql.AppendLine("SELECT DISTINCT Country_Id FROM stg_SupplierProductMapping WHERE SupplierImportFile_Id = @SupplierImportFile_Id");
-                    sql.AppendLine("OPEN db_cursor");
-                    sql.AppendLine("FETCH NEXT FROM db_cursor INTO @Country_Id  ");
-                    sql.AppendLine("WHILE @@FETCH_STATUS = 0 ");
-                    sql.AppendLine("BEGIN  ");
-                    sql.AppendLine("UPDATE APM SET APM.IsActive = 0 FROM Accommodation_ProductMapping APM WITH (NOLOCK)");
-                    sql.AppendLine("LEFT JOIN stg_SupplierProductMapping STG WITH (NOLOCK)");
-                    sql.AppendLine("ON STG.SupplierImportFile_Id = @SupplierImportFile_Id ");
-                    sql.AppendLine("AND STG.Supplier_Id = APM.Supplier_Id ");
-                    sql.AppendLine("AND STG.ProductId = APM.SupplierProductReference");
-                    sql.AppendLine("WHERE APM.Country_Id IS NOT NULL AND STG.stg_AccoMapping_Id IS NULL");
-                    sql.AppendLine("AND APM.Country_Id = @Country_Id");
-                    sql.AppendLine("FETCH NEXT FROM db_cursor INTO @Country_Id  ");
-                    sql.AppendLine("END ");
-                    sql.AppendLine("CLOSE db_cursor  ");
-                    sql.AppendLine("DEALLOCATE db_cursor ");
 
-                    context.Database.CommandTimeout = 0;
+                    var SupplierFileDetails = context.SupplierImportFileDetails.Find(SupplierImportFile_Id);
 
-                    context.Database.ExecuteSqlCommand(sql.ToString());
-                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Success" };
+                    if (SupplierFileDetails != null)
+                    {
+                        Guid SupplierId = SupplierFileDetails.Supplier_Id;
+
+                        if(SupplierId != Guid.Empty)
+                        {
+                            StringBuilder sql = new StringBuilder();
+                            sql.AppendLine("DECLARE @SupplierImportFile_Id AS UNIQUEIDENTIFIER = '" + SupplierImportFile_Id.ToString() + "' ");
+                            sql.AppendLine("DECLARE @Supplier_Id AS UNIQUEIDENTIFIER = '" + SupplierId.ToString() + "' ");
+                            sql.AppendLine("DECLARE @Country_Id AS UNIQUEIDENTIFIER ");
+                            sql.AppendLine("DECLARE db_cursor CURSOR FOR ");
+                            sql.AppendLine("SELECT DISTINCT Country_Id FROM stg_SupplierProductMapping WHERE SupplierImportFile_Id = @SupplierImportFile_Id ");
+                            sql.AppendLine("OPEN db_cursor");
+                            sql.AppendLine("FETCH NEXT FROM db_cursor INTO @Country_Id ");
+                            sql.AppendLine("WHILE @@FETCH_STATUS = 0 ");
+                            sql.AppendLine("BEGIN  ");
+                            sql.AppendLine("UPDATE APM SET APM.IsActive = 0 FROM Accommodation_ProductMapping APM WITH(NOLOCK) ");
+                            sql.AppendLine("LEFT JOIN(Select stg_AccoMapping_Id, ProductId from stg_SupplierProductMapping WITH (NOLOCK) where ");
+                            sql.AppendLine("SupplierImportFile_Id = @SupplierImportFile_Id and Supplier_Id = @Supplier_Id and Country_Id = @Country_Id) STG ");
+                            sql.AppendLine("ON STG.ProductId = APM.SupplierProductReference ");
+                            sql.AppendLine("WHERE APM.Supplier_Id = @Supplier_Id AND APM.Country_Id = @Country_Id AND STG.stg_AccoMapping_Id IS NULL ");
+                            sql.AppendLine("FETCH NEXT FROM db_cursor INTO @Country_Id  ");
+                            sql.AppendLine("END ");
+                            sql.AppendLine("CLOSE db_cursor  ");
+                            sql.AppendLine("DEALLOCATE db_cursor ");
+
+                            context.Database.CommandTimeout = 0;
+
+                            context.Database.ExecuteSqlCommand(sql.ToString());
+
+                            return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = "Success" };
+                        }
+                        else
+                        {
+                            return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Invalid Supplier Id" };
+                        }
+                    }
+                    else
+                    {
+                        return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Invalid Supplier Import File Id" };
+                    }
                 }
             }
             catch (Exception e)
@@ -3329,7 +3348,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     int x = context.Database.ExecuteSqlCommand("Delete from stg_SupplierCountryMapping where SupplierImportFile_Id = @p0", SupplierImportFile_Id);
-                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = x + " Rows affected."};
+                    return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Success, StatusMessage = x + " Rows affected." };
                 }
             }
             catch (Exception e)
