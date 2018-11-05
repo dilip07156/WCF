@@ -2631,7 +2631,7 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(RQ.SupplierType))
                     {
                         search = from sup in search
-                                 where sup.SupplierType == RQ.SupplierType
+                                 where sup.SupplierType == RQ.SupplierType &&  sup.StatusCode.ToUpper() == "ACTIVE"
                                  select sup;
                     }
                     if (!string.IsNullOrWhiteSpace(RQ.StatusCode))
