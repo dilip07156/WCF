@@ -71,8 +71,6 @@ namespace OperationContracts
 
         #endregion
 
-
-
         #region RefreshDistributionLog
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
@@ -127,6 +125,7 @@ namespace OperationContracts
         List<DC_SupplierEntity> LoadSupplierActivityStatusData();
 
         #endregion
+
         #region == ML Data Integration
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
@@ -144,9 +143,17 @@ namespace OperationContracts
         #region AccommodationMaster
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "Load/SyncAccommodationMaster/{Log_id}/{CreatedBy}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DC_Message SyncAccommodationMaster(string log_id, string CreatedBy);
+        [WebInvoke(Method = "GET", UriTemplate = "Load/SyncAccommodationMaster/{Log_id}/{Accommodation_Id}/{CreatedBy}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_Message SyncAccommodationMaster(string log_id, string Accommodation_Id, string CreatedBy);
 
+        #endregion
+
+
+        #region Room Type Mapping
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Load/HotelRoomTypeMapping/{Log_id}/{Supplier_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_Message SyncHotelRoomTypeMapping(string log_id, string Supplier_Id);
         #endregion
     }
 

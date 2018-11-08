@@ -1377,6 +1377,7 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
         public List<DataContracts.DC_AccomodationBasic> GetAccomodationBasicInfo(Guid Accomodation_Id)
         {
             try
@@ -1422,6 +1423,7 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching accomodation info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
         public List<DataContracts.DC_Accomodation_AutoComplete_RS> AccomodationSearchAutoComplete(DataContracts.DC_Accomodation_AutoComplete_RQ RQ)
         {
             try
@@ -1458,9 +1460,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = (from a in context.Accommodation
-                                  where a.Accommodation_Id == AccomodationDetails.Accommodation_Id
-                                  select a).First();
+                    var search = context.Accommodation.Find(AccomodationDetails.Accommodation_Id);
 
                     if (search != null)
                     {
@@ -1480,15 +1480,14 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
         public bool UpdateAccomodationInfo(DataContracts.DC_Accomodation AccomodationDetails)
         {
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var search = (from a in context.Accommodation
-                                  where a.Accommodation_Id == AccomodationDetails.Accommodation_Id
-                                  select a).First();
+                    var search = context.Accommodation.Find(AccomodationDetails.Accommodation_Id);
 
                     if (search != null)
                     {
@@ -1572,32 +1571,14 @@ namespace DataLayer
 
                         search.IsRoomMappingCompleted = AccomodationDetails.IsRoomMappingCompleted;
 
-                        //DataContracts.Masters.DC_keywordApply_RQ RQ = new DataContracts.Masters.DC_keywordApply_RQ();
-                        //RQ.File_Id = supplierdata.File_Id;
-                        //RQ.CurrentBatch = CurrentBatch;
-                        //RQ.TotalBatch = TotalBatch;
-                        //supplierdata.CurrentBatch = CurrentBatch;
-                        //supplierdata.TotalBatch = TotalBatch;
-                        //RQ.KeywordEntity = CurEntity;
-                        //RQ.SearchTable = keyPrefix;
-                        //RQ.TakeColumn = Address_Column;
-                        //RQ.UpdateColumn = AddressTx_Column;
-                        //RQ.TablePrimaryKeys = staticdata.TTFUGetMappingHotelIds(supplierdata);
                         context.SaveChanges();
 
-                        #region Update No Of Hits
-                        var updatableAliases = (from k in Keywords
-                                                from ka in k.Alias
-                                                where ka.NewHits != 0
-                                                select ka).ToList();
-                        if (updatableAliases.Count > 0)
-                        {
-                            using (DL_Masters objDL = new DL_Masters())
-                            {
-                                objDL.DataHandler_Keyword_Update_NoOfHits(updatableAliases);
-                            }
-                        }
 
+                        #region Sync to Mongo
+                        using (DL_MongoPush mpushObj = new DL_MongoPush())
+                        {
+                            mpushObj.SyncAccommodationMaster(Guid.Empty, AccomodationDetails.Accommodation_Id, AccomodationDetails.Edit_User);
+                        }
                         #endregion
 
                     }
@@ -1614,115 +1595,125 @@ namespace DataLayer
         {
             try
             {
+                List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
+
+                using (DL_Masters objDL = new DL_Masters())
+                {
+                    Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
+                }
+
+                Accommodation newAcco = new Accommodation();
+
+                if (AccomodationDetails.Accommodation_Id == null)
+                {
+                    newAcco.Accommodation_Id = Guid.NewGuid();
+                }
+                else
+                {
+                    newAcco.Accommodation_Id = AccomodationDetails.Accommodation_Id;
+                }
+
+                newAcco.Affiliation = AccomodationDetails.Affiliation;
+                newAcco.Area = AccomodationDetails.Area;
+                newAcco.AwardsReceived = AccomodationDetails.AwardsReceived;
+                newAcco.Brand = AccomodationDetails.Brand;
+                newAcco.CarbonFootPrint = AccomodationDetails.CarbonFootPrint;
+                newAcco.Chain = AccomodationDetails.Chain;
+                newAcco.CheckInTime = AccomodationDetails.CheckInTime;
+                newAcco.CheckOutTime = AccomodationDetails.CheckOutTime;
+                newAcco.city = AccomodationDetails.City;
+                newAcco.City_ISO = AccomodationDetails.City_ISO;
+                newAcco.CompanyHotelID = AccomodationDetails.CompanyHotelID ?? 0;
+                newAcco.CompanyName = AccomodationDetails.CompanyName;
+                newAcco.CompanyRating = AccomodationDetails.CompanyRating;
+                newAcco.CompanyRecommended = AccomodationDetails.CompanyRecommended;
+                newAcco.country = AccomodationDetails.Country;
+                newAcco.Country_ISO = AccomodationDetails.Country_ISO;
+                newAcco.Create_Date = AccomodationDetails.Create_Date;
+                newAcco.Create_User = AccomodationDetails.Create_User;
+                newAcco.DisplayName = AccomodationDetails.DisplayName;
+                newAcco.FinanceControlID = AccomodationDetails.FinanceControlID;
+                newAcco.Hashtag = AccomodationDetails.Hashtag;
+                newAcco.HotelName = AccomodationDetails.HotelName;
+                newAcco.HotelRating = AccomodationDetails.HotelRating;
+                newAcco.InternalRemarks = AccomodationDetails.InternalRemarks;
+                newAcco.IsActive = AccomodationDetails.IsActive;
+                newAcco.IsMysteryProduct = AccomodationDetails.IsMysteryProduct;
+                newAcco.Latitude = AccomodationDetails.Latitude;
+                newAcco.LEGACY_CITY = AccomodationDetails.LEGACY_CITY;
+                newAcco.LEGACY_COUNTRY = AccomodationDetails.LEGACY_COUNTRY;
+                newAcco.Legacy_HTL_ID = AccomodationDetails.Legacy_HTL_ID;
+                newAcco.LEGACY_STATE = AccomodationDetails.LEGACY_STATE;
+                newAcco.Location = AccomodationDetails.Location;
+                newAcco.Longitude = AccomodationDetails.Longitude;
+                newAcco.OfflineDate = AccomodationDetails.OfflineDate;
+                newAcco.OnlineDate = AccomodationDetails.OnlineDate;
+                newAcco.PostalCode = AccomodationDetails.PostalCode;
+                newAcco.ProductCategory = AccomodationDetails.ProductCategory;
+                newAcco.ProductCategorySubType = AccomodationDetails.ProductCategorySubType;
+                newAcco.RatingDate = AccomodationDetails.RatingDate;
+                newAcco.Reason = AccomodationDetails.Reason;
+                newAcco.RecommendedFor = AccomodationDetails.RecommendedFor;
+                newAcco.Remarks = AccomodationDetails.Remarks;
+                newAcco.State_ISO = AccomodationDetails.State_ISO;
+                newAcco.State_Name = AccomodationDetails.State_Name;
+                newAcco.Street3 = AccomodationDetails.Street3;
+                newAcco.Street4 = AccomodationDetails.Street4;
+                newAcco.Street5 = AccomodationDetails.Street5;
+                newAcco.StreetName = AccomodationDetails.StreetName;
+                newAcco.StreetNumber = AccomodationDetails.StreetNumber;
+                newAcco.FullAddress = (AccomodationDetails.StreetNumber != string.Empty ? AccomodationDetails.StreetNumber + "," : string.Empty) +
+                                      (AccomodationDetails.StreetName != string.Empty ? AccomodationDetails.StreetName + "," : string.Empty) +
+                                      (AccomodationDetails.Street3 != string.Empty ? AccomodationDetails.Street3 + "," : string.Empty) +
+                                      (AccomodationDetails.Street4 != string.Empty ? AccomodationDetails.Street4 + "," : string.Empty) +
+                                      (AccomodationDetails.Street5 != string.Empty ? AccomodationDetails.Street5 + "," : string.Empty) +
+                                      (AccomodationDetails.PostalCode != string.Empty ? AccomodationDetails.PostalCode : string.Empty);
+                newAcco.SuburbDowntown = AccomodationDetails.SuburbDowntown;
+                newAcco.TotalFloors = AccomodationDetails.TotalFloors;
+                newAcco.TotalRooms = AccomodationDetails.TotalRooms;
+                newAcco.Town = AccomodationDetails.Town;
+                newAcco.YearBuilt = AccomodationDetails.YearBuilt;
+                newAcco.Google_Place_Id = AccomodationDetails.Google_Place_Id;
+                newAcco.Country_Id = AccomodationDetails.Country_Id;
+                newAcco.City_Id = AccomodationDetails.City_Id;
+                newAcco.InsertFrom = AccomodationDetails.InsertFrom;
+                newAcco.HotelName_Tx = CommonFunctions.HotelNameTX(AccomodationDetails.HotelName, AccomodationDetails.City, AccomodationDetails.Country, ref Keywords);
+
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
-                    using (DL_Masters objDL = new DL_Masters())
-                    {
-                        Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
-                    }
-
-                    Accommodation newAcco = new Accommodation();
-
-                    if (AccomodationDetails.Accommodation_Id == null)
-                    {
-                        newAcco.Accommodation_Id = Guid.NewGuid();
-                    }
-                    else
-                    {
-                        newAcco.Accommodation_Id = AccomodationDetails.Accommodation_Id;
-                    }
-
-                    newAcco.Affiliation = AccomodationDetails.Affiliation;
-                    newAcco.Area = AccomodationDetails.Area;
-                    newAcco.AwardsReceived = AccomodationDetails.AwardsReceived;
-                    newAcco.Brand = AccomodationDetails.Brand;
-                    newAcco.CarbonFootPrint = AccomodationDetails.CarbonFootPrint;
-                    newAcco.Chain = AccomodationDetails.Chain;
-                    newAcco.CheckInTime = AccomodationDetails.CheckInTime;
-                    newAcco.CheckOutTime = AccomodationDetails.CheckOutTime;
-                    newAcco.city = AccomodationDetails.City;
-                    newAcco.City_ISO = AccomodationDetails.City_ISO;
-                    newAcco.CompanyHotelID = AccomodationDetails.CompanyHotelID ?? 0;
-                    newAcco.CompanyName = AccomodationDetails.CompanyName;
-                    newAcco.CompanyRating = AccomodationDetails.CompanyRating;
-                    newAcco.CompanyRecommended = AccomodationDetails.CompanyRecommended;
-                    newAcco.country = AccomodationDetails.Country;
-                    newAcco.Country_ISO = AccomodationDetails.Country_ISO;
-                    newAcco.Create_Date = AccomodationDetails.Create_Date;
-                    newAcco.Create_User = AccomodationDetails.Create_User;
-                    newAcco.DisplayName = AccomodationDetails.DisplayName;
-                    newAcco.FinanceControlID = AccomodationDetails.FinanceControlID;
-                    newAcco.Hashtag = AccomodationDetails.Hashtag;
-                    newAcco.HotelName = AccomodationDetails.HotelName;
-                    newAcco.HotelRating = AccomodationDetails.HotelRating;
-                    newAcco.InternalRemarks = AccomodationDetails.InternalRemarks;
-                    newAcco.IsActive = AccomodationDetails.IsActive;
-                    newAcco.IsMysteryProduct = AccomodationDetails.IsMysteryProduct;
-                    newAcco.Latitude = AccomodationDetails.Latitude;
-                    newAcco.LEGACY_CITY = AccomodationDetails.LEGACY_CITY;
-                    newAcco.LEGACY_COUNTRY = AccomodationDetails.LEGACY_COUNTRY;
-                    newAcco.Legacy_HTL_ID = AccomodationDetails.Legacy_HTL_ID;
-                    newAcco.LEGACY_STATE = AccomodationDetails.LEGACY_STATE;
-                    newAcco.Location = AccomodationDetails.Location;
-                    newAcco.Longitude = AccomodationDetails.Longitude;
-                    newAcco.OfflineDate = AccomodationDetails.OfflineDate;
-                    newAcco.OnlineDate = AccomodationDetails.OnlineDate;
-                    newAcco.PostalCode = AccomodationDetails.PostalCode;
-                    newAcco.ProductCategory = AccomodationDetails.ProductCategory;
-                    newAcco.ProductCategorySubType = AccomodationDetails.ProductCategorySubType;
-                    newAcco.RatingDate = AccomodationDetails.RatingDate;
-                    newAcco.Reason = AccomodationDetails.Reason;
-                    newAcco.RecommendedFor = AccomodationDetails.RecommendedFor;
-                    newAcco.Remarks = AccomodationDetails.Remarks;
-                    newAcco.State_ISO = AccomodationDetails.State_ISO;
-                    newAcco.State_Name = AccomodationDetails.State_Name;
-                    newAcco.Street3 = AccomodationDetails.Street3;
-                    newAcco.Street4 = AccomodationDetails.Street4;
-                    newAcco.Street5 = AccomodationDetails.Street5;
-                    newAcco.StreetName = AccomodationDetails.StreetName;
-                    newAcco.StreetNumber = AccomodationDetails.StreetNumber;
-                    newAcco.FullAddress = (AccomodationDetails.StreetNumber != string.Empty ? AccomodationDetails.StreetNumber + "," : string.Empty) +
-                                          (AccomodationDetails.StreetName != string.Empty ? AccomodationDetails.StreetName + "," : string.Empty) +
-                                          (AccomodationDetails.Street3 != string.Empty ? AccomodationDetails.Street3 + "," : string.Empty) +
-                                          (AccomodationDetails.Street4 != string.Empty ? AccomodationDetails.Street4 + "," : string.Empty) +
-                                          (AccomodationDetails.Street5 != string.Empty ? AccomodationDetails.Street5 + "," : string.Empty) +
-                                          (AccomodationDetails.PostalCode != string.Empty ? AccomodationDetails.PostalCode : string.Empty);
-                    newAcco.SuburbDowntown = AccomodationDetails.SuburbDowntown;
-                    newAcco.TotalFloors = AccomodationDetails.TotalFloors;
-                    newAcco.TotalRooms = AccomodationDetails.TotalRooms;
-                    newAcco.Town = AccomodationDetails.Town;
-                    newAcco.YearBuilt = AccomodationDetails.YearBuilt;
-                    newAcco.Google_Place_Id = AccomodationDetails.Google_Place_Id;
-                    newAcco.Country_Id = AccomodationDetails.Country_Id;
-                    newAcco.City_Id = AccomodationDetails.City_Id;
-                    newAcco.InsertFrom = AccomodationDetails.InsertFrom;
-                    newAcco.HotelName_Tx = CommonFunctions.HotelNameTX(AccomodationDetails.HotelName, AccomodationDetails.City, AccomodationDetails.Country, ref Keywords);
                     context.Accommodation.Add(newAcco);
 
                     context.SaveChanges();
 
                     context.USP_UpdateMapID("accommodation");
-
-                    newAcco = null;
-
-                    #region Update No Of Hits
-                    var updatableAliases = (from k in Keywords
-                                            from ka in k.Alias
-                                            where ka.NewHits != 0
-                                            select ka).ToList();
-                    if (updatableAliases.Count > 0)
-                    {
-                        using (DL_Masters objDL = new DL_Masters())
-                        {
-                            objDL.DataHandler_Keyword_Update_NoOfHits(updatableAliases);
-                        }
-                    }
-
-                    #endregion
-
-                    return true;
                 }
+
+                #region Sync to Mongo
+                using (DL_MongoPush mpushObj = new DL_MongoPush())
+                {
+                    mpushObj.SyncAccommodationMaster(Guid.Empty, newAcco.Accommodation_Id, newAcco.Create_User);
+                }
+                #endregion
+
+                newAcco = null;
+
+                #region Update No Of Hits
+                var updatableAliases = (from k in Keywords
+                                        from ka in k.Alias
+                                        where ka.NewHits != 0
+                                        select ka).ToList();
+                if (updatableAliases.Count > 0)
+                {
+                    using (DL_Masters objDL = new DL_Masters())
+                    {
+                        objDL.DataHandler_Keyword_Update_NoOfHits(updatableAliases);
+                    }
+                }
+
+                return true;
+
+                #endregion
+
             }
             catch (Exception ex)
             {
@@ -4727,7 +4718,6 @@ namespace DataLayer
         }
 
         #endregion
-
 
         #region Kafka       
         public List<DataContracts.DC_Accommodation_RoomInfo> GetAccomodationRoomInfobyAccoID(Guid Accomodation_Id, string TLGXID = null)

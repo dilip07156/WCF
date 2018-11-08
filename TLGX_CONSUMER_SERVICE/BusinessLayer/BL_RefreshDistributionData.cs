@@ -298,15 +298,24 @@ namespace BusinessLayer
         #endregion
 
         #region SyncAccommodationMaster
-        public DC_Message SyncAccommodationMaster(Guid log_id, string CreatedBy)
+        public DC_Message SyncAccommodationMaster(Guid log_id, Guid Accommodation_Id, string CreatedBy)
         {
-
             using (DataLayer.DL_MongoPush obj = new DataLayer.DL_MongoPush())
             {
-                return obj.SyncAccommodationMaster(log_id, CreatedBy);
+                return obj.SyncAccommodationMaster(log_id, Accommodation_Id, CreatedBy);
             }
 
         }
         #endregion
+
+        #region SyncHotelRoomTypeMapping
+        public DC_Message SyncHotelRoomTypeMapping(Guid log_id, Guid Supplier_Id)
+        {
+            using (DataLayer.DL_MongoPush obj = new DataLayer.DL_MongoPush())
+            {
+                return obj.SyncHotelRoomTypeMapping(log_id, Supplier_Id);
+            }
+        }
+        #endregion 
     }
 }

@@ -146,11 +146,11 @@ namespace ConsumerSvc
 
         #region Supplier Entity hotel
 
-        public DC_Message SyncSupplierStaticHotel(string log_id,string supplier_id, string CreatedBy)
+        public DC_Message SyncSupplierStaticHotel(string log_id, string supplier_id, string CreatedBy)
         {
             using (BusinessLayer.BL_RefreshDistributionData obj = new BL_RefreshDistributionData())
             {
-                return obj.SyncSupplierStaticHotel(log_id ,supplier_id, CreatedBy);
+                return obj.SyncSupplierStaticHotel(log_id, supplier_id, CreatedBy);
             }
         }
         #endregion
@@ -174,6 +174,7 @@ namespace ConsumerSvc
         }
 
         #endregion
+
         #region == ML Data Integration
         public DC_Message SyncMLAPIData(DC_Distribution_MLDataRQ _obj)
         {
@@ -195,14 +196,43 @@ namespace ConsumerSvc
         #endregion
 
         #region SyncAccommodationMaster
-        public DC_Message SyncAccommodationMaster(string log_id, string CreatedBy)
+        public DC_Message SyncAccommodationMaster(string log_id, string Accommodation_Id, string CreatedBy)
         {
-            using (BusinessLayer.BL_RefreshDistributionData obj = new BL_RefreshDistributionData())
+            if (Guid.TryParse(log_id, out Guid gLogId) && Guid.TryParse(Accommodation_Id, out Guid gAccommodation_Id))
             {
-                return obj.SyncAccommodationMaster(new Guid(log_id), CreatedBy);
+                using (BusinessLayer.BL_RefreshDistributionData obj = new BL_RefreshDistributionData())
+                {
+                    return obj.SyncAccommodationMaster(gLogId, gAccommodation_Id, CreatedBy);
+                }
             }
+            else
+            {
+                return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Invalid Request." };
+            }
+
         }
 
         #endregion 
+
+
+        #region SyncHotelRoomTypeMapping
+        public DC_Message SyncHotelRoomTypeMapping(string log_id, string Supplier_Id)
+        {
+            if (Guid.TryParse(log_id, out Guid gLogId) && Guid.TryParse(Supplier_Id, out Guid gSupplier_Id))
+            {
+                using (BusinessLayer.BL_RefreshDistributionData obj = new BL_RefreshDistributionData())
+                {
+                    return obj.SyncHotelRoomTypeMapping(gLogId, gSupplier_Id);
+                }
+            }
+            else
+            {
+                return new DC_Message { StatusCode = ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Invalid Request." };
+            }
+
+        }
+        #endregion 
+
+        
     }
 }
