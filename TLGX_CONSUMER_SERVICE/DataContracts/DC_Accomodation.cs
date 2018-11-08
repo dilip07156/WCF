@@ -143,6 +143,12 @@ namespace DataContracts
         public Nullable<System.Guid> City_Id { get; set; }
 
         [DataMember]
+        public Nullable<System.Guid> Location_Id { get; set; }
+
+        [DataMember]
+        public Nullable<System.Guid> Area_Id { get; set; }
+
+        [DataMember]
         public Guid Accommodation_Id
         {
             get

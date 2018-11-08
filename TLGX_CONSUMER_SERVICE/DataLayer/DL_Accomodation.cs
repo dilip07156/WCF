@@ -1279,98 +1279,109 @@ namespace DataLayer
         #region AccomodationInfo
         public List<DataContracts.DC_Accomodation> GetAccomodationInfo(Guid Accomodation_Id)
         {
+            var returnData = new List<DataContracts.DC_Accomodation>();
+            Accommodation acco = new Accommodation();
+            List<Accommodation_Contact> accoContact = new List<Accommodation_Contact>();
             try
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var acco = from a in context.Accommodation
-                               where a.Accommodation_Id == Accomodation_Id
-                               select new DataContracts.DC_Accomodation
-                               {
-                                   Accommodation_Id = a.Accommodation_Id,
-                                   Affiliation = a.Affiliation,
-                                   Area = a.Area,
-                                   AwardsReceived = a.AwardsReceived,
-                                   Brand = a.Brand,
-                                   CarbonFootPrint = a.CarbonFootPrint,
-                                   Chain = a.Chain,
-                                   CheckInTime = a.CheckInTime,
-                                   CheckOutTime = a.CheckOutTime,
-                                   City = a.city,
-                                   City_ISO = a.City_ISO,
-                                   CompanyHotelID = a.CompanyHotelID,
-                                   CompanyName = a.CompanyName,
-                                   CompanyRating = a.CompanyRating,
-                                   CompanyRecommended = (a.CompanyRecommended ?? false),
-                                   Country = a.country,
-                                   Country_ISO = a.Country_ISO,
-                                   Country_Id = a.Country_Id,
-                                   City_Id = a.City_Id,
-                                   Create_Date = a.Create_Date,
-                                   Create_User = a.Create_User,
-                                   DisplayName = a.DisplayName,
-                                   Edit_Date = a.Edit_Date,
-                                   Edit_User = a.Edit_User,
-                                   FinanceControlID = a.FinanceControlID,
-                                   Hashtag = a.Hashtag,
-                                   HotelName = a.HotelName,
-                                   HotelRating = a.HotelRating,
-                                   InternalRemarks = a.InternalRemarks,
-                                   IsActive = a.IsActive,
-                                   IsMysteryProduct = (a.IsMysteryProduct ?? false),
-                                   Latitude = a.Latitude,
-                                   LEGACY_CITY = a.LEGACY_CITY,
-                                   LEGACY_COUNTRY = a.LEGACY_COUNTRY,
-                                   Legacy_HTL_ID = a.Legacy_HTL_ID,
-                                   LEGACY_STATE = a.LEGACY_STATE,
-                                   Location = a.Location,
-                                   Longitude = a.Longitude,
-                                   OfflineDate = a.OfflineDate,
-                                   OnlineDate = a.OnlineDate,
-                                   PostalCode = a.PostalCode,
-                                   ProductCategory = a.ProductCategory,
-                                   ProductCategorySubType = a.ProductCategorySubType,
-                                   RatingDate = a.RatingDate,
-                                   Reason = a.Reason,
-                                   RecommendedFor = a.RecommendedFor,
-                                   Remarks = a.Remarks,
-                                   State_ISO = a.State_ISO,
-                                   State_Name = a.State_Name,
-                                   Street3 = a.Street3,
-                                   Street4 = a.Street4,
-                                   Street5 = a.Street5,
-                                   StreetName = a.StreetName,
-                                   StreetNumber = a.StreetNumber,
-                                   SuburbDowntown = a.SuburbDowntown,
-                                   TotalFloors = a.TotalFloors,
-                                   TotalRooms = a.TotalRooms,
-                                   Town = a.Town,
-                                   YearBuilt = a.YearBuilt,
-                                   Google_Place_Id = a.Google_Place_Id,
-                                   FullAddress = a.FullAddress,
-                                   InsertFrom = a.InsertFrom,
-                                   IsRoomMappingCompleted = (a.IsRoomMappingCompleted ?? false),
-                                   Accomodation_Contact = (from ac in context.Accommodation_Contact
-                                                           where ac.Accommodation_Id == a.Accommodation_Id
-                                                           select new DataContracts.DC_Accommodation_Contact
-                                                           {
-                                                               Accommodation_Contact_Id = ac.Accommodation_Contact_Id,
-                                                               Accommodation_Id = ac.Accommodation_Id,
-                                                               Create_Date = ac.Create_Date,
-                                                               Create_User = ac.Create_User,
-                                                               Edit_Date = ac.Edit_Date,
-                                                               Edit_User = ac.Edit_User,
-                                                               Email = ac.Email,
-                                                               Fax = ac.Fax,
-                                                               Legacy_Htl_Id = ac.Legacy_Htl_Id,
-                                                               Telephone = ac.Telephone,
-                                                               WebSiteURL = ac.WebSiteURL,
-                                                               IsActive = (ac.IsActive ?? true)
-                                                           }).ToList()
-                               };
-
-                    return acco.ToList();
+                    acco = context.Accommodation.Find(Accomodation_Id);
+                    if (acco != null)
+                    {
+                        accoContact = context.Accommodation_Contact.Where(w => w.Accommodation_Id == Accomodation_Id).ToList();
+                    }
                 }
+
+                if (acco != null)
+                {
+                    returnData.Add(new DataContracts.DC_Accomodation
+                    {
+                        Accommodation_Id = acco.Accommodation_Id,
+                        Affiliation = acco.Affiliation,
+                        Area = acco.Area,
+                        AwardsReceived = acco.AwardsReceived,
+                        Brand = acco.Brand,
+                        CarbonFootPrint = acco.CarbonFootPrint,
+                        Chain = acco.Chain,
+                        CheckInTime = acco.CheckInTime,
+                        CheckOutTime = acco.CheckOutTime,
+                        City = acco.city,
+                        City_ISO = acco.City_ISO,
+                        CompanyHotelID = acco.CompanyHotelID,
+                        CompanyName = acco.CompanyName,
+                        CompanyRating = acco.CompanyRating,
+                        CompanyRecommended = (acco.CompanyRecommended ?? false),
+                        Country = acco.country,
+                        Country_ISO = acco.Country_ISO,
+                        Country_Id = acco.Country_Id,
+                        City_Id = acco.City_Id,
+                        Area_Id = acco.Area_Id,
+                        Location_Id = acco.Location_Id,
+                        Create_Date = acco.Create_Date,
+                        Create_User = acco.Create_User,
+                        DisplayName = acco.DisplayName,
+                        Edit_Date = acco.Edit_Date,
+                        Edit_User = acco.Edit_User,
+                        FinanceControlID = acco.FinanceControlID,
+                        Hashtag = acco.Hashtag,
+                        HotelName = acco.HotelName,
+                        HotelRating = acco.HotelRating,
+                        InternalRemarks = acco.InternalRemarks,
+                        IsActive = acco.IsActive,
+                        IsMysteryProduct = (acco.IsMysteryProduct ?? false),
+                        Latitude = acco.Latitude,
+                        LEGACY_CITY = acco.LEGACY_CITY,
+                        LEGACY_COUNTRY = acco.LEGACY_COUNTRY,
+                        Legacy_HTL_ID = acco.Legacy_HTL_ID,
+                        LEGACY_STATE = acco.LEGACY_STATE,
+                        Location = acco.Location,
+                        Longitude = acco.Longitude,
+                        OfflineDate = acco.OfflineDate,
+                        OnlineDate = acco.OnlineDate,
+                        PostalCode = acco.PostalCode,
+                        ProductCategory = acco.ProductCategory,
+                        ProductCategorySubType = acco.ProductCategorySubType,
+                        RatingDate = acco.RatingDate,
+                        Reason = acco.Reason,
+                        RecommendedFor = acco.RecommendedFor,
+                        Remarks = acco.Remarks,
+                        State_ISO = acco.State_ISO,
+                        State_Name = acco.State_Name,
+                        Street3 = acco.Street3,
+                        Street4 = acco.Street4,
+                        Street5 = acco.Street5,
+                        StreetName = acco.StreetName,
+                        StreetNumber = acco.StreetNumber,
+                        SuburbDowntown = acco.SuburbDowntown,
+                        TotalFloors = acco.TotalFloors,
+                        TotalRooms = acco.TotalRooms,
+                        Town = acco.Town,
+                        YearBuilt = acco.YearBuilt,
+                        Google_Place_Id = acco.Google_Place_Id,
+                        FullAddress = acco.FullAddress,
+                        InsertFrom = acco.InsertFrom,
+                        IsRoomMappingCompleted = (acco.IsRoomMappingCompleted ?? false),
+                        Accomodation_Contact = (from ac in accoContact
+                                                select new DataContracts.DC_Accommodation_Contact
+                                                {
+                                                    Accommodation_Contact_Id = ac.Accommodation_Contact_Id,
+                                                    Accommodation_Id = ac.Accommodation_Id,
+                                                    Create_Date = ac.Create_Date,
+                                                    Create_User = ac.Create_User,
+                                                    Edit_Date = ac.Edit_Date,
+                                                    Edit_User = ac.Edit_User,
+                                                    Email = ac.Email,
+                                                    Fax = ac.Fax,
+                                                    Legacy_Htl_Id = ac.Legacy_Htl_Id,
+                                                    Telephone = ac.Telephone,
+                                                    WebSiteURL = ac.WebSiteURL,
+                                                    IsActive = (ac.IsActive ?? true)
+                                                }).ToList(),
+                    });
+                }
+
+                return returnData;
             }
             catch
             {
@@ -1570,6 +1581,9 @@ namespace DataLayer
                         search.Longitude_Tx = (AccomodationDetails.Longitude == null) ? null : CommonFunctions.LatLongTX(AccomodationDetails.Longitude);
 
                         search.IsRoomMappingCompleted = AccomodationDetails.IsRoomMappingCompleted;
+
+                        search.Area_Id = AccomodationDetails.Area_Id;
+                        search.Location_Id = AccomodationDetails.Location_Id;
 
                         context.SaveChanges();
 

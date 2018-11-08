@@ -498,9 +498,6 @@ namespace DataLayer
 
                     try { lstAcco = context.Database.SqlQuery<DataContracts.Mapping.DC_Accomodation_ProductMapping>(sbQuery.ToString()).ToList(); } catch (Exception ex) { }
 
-
-
-
                     foreach (var item in lstAcco)
                     {
                         if (item.Accommodation_Id == null)
@@ -940,8 +937,9 @@ namespace DataLayer
                     setUNMAPPED = setUNMAPPED + " FROM Accommodation_ProductMapping APM ";
                     //setUNMAPPED = setUNMAPPED + " inner join STG_Mapping_TableIds S ON APM.Accommodation_ProductMapping_Id = S.Mapping_Id AND S.File_Id = '" + obj.File_Id.ToString() + "' ";
                     setUNMAPPED = setUNMAPPED + " WHERE ISNULL(APM.Status, '') = 'REVIEW' ";
-                    setUNMAPPED = setUNMAPPED + " and APM.ReRun_SupplierImportFile_Id = '" + obj.File_Id.ToString() + "' ";
-                    setUNMAPPED = setUNMAPPED + " and APM.ReRun_Batch = " + (obj.CurrentBatch).ToString();
+                    setUNMAPPED = setUNMAPPED + " AND APM.IsActive = 1 ";
+                    setUNMAPPED = setUNMAPPED + " AND APM.ReRun_SupplierImportFile_Id = '" + obj.File_Id.ToString() + "' ";
+                    setUNMAPPED = setUNMAPPED + " AND APM.ReRun_Batch = " + (obj.CurrentBatch).ToString();
                     try { setunmap = context.Database.ExecuteSqlCommand(setUNMAPPED); } catch (Exception ex) { }
                 }
 
@@ -1178,7 +1176,7 @@ namespace DataLayer
                     UpdateClause = UpdateClause + " , Edit_Date = GETDATE(), Edit_User = 'TLGX_DataHandler' ";
                     UpdateClause = UpdateClause + " FROM Accommodation_ProductMapping APM ";
 
-                    WhereClause = WhereClause + " WHERE APM.STATUS = 'UNMAPPED' AND ISNULL(A.IsActive, 0) = 1 ";
+                    WhereClause = WhereClause + " WHERE APM.STATUS = 'UNMAPPED' AND ISNULL(A.IsActive, 0) = 1 AND ISNULL(APM.IsActive, 0) = 1 ";
                     WhereClause = WhereClause + " AND APM.ReRun_Batch = " + (obj.CurrentBatch).ToString();
                     WhereClause = WhereClause + " AND APM.ReRun_SupplierImportFile_Id =  '" + obj.File_Id.ToString() + "';";
 
@@ -1208,14 +1206,13 @@ namespace DataLayer
 
                             string HotelLookUpSQL = "DECLARE @TABLE TABLE (APM_ID UNIQUEIDENTIFIER, A_ID UNIQUEIDENTIFIER) ";
                             HotelLookUpSQL = HotelLookUpSQL + ";WITH APM (Accommodation_Product_Mapping_Id, GeoLocation, Country_Id, ProductName, HotelName_Tx)  AS ";
-                            HotelLookUpSQL = HotelLookUpSQL + "(Select Accommodation_ProductMapping_Id, GeoLocation, Country_Id, ProductName, HotelName_Tx from Accommodation_ProductMapping WHERE GeoLocation IS NOT NULL ";
+                            HotelLookUpSQL = HotelLookUpSQL + "(Select Accommodation_ProductMapping_Id, GeoLocation, Country_Id, ProductName, HotelName_Tx from Accommodation_ProductMapping WITH (NOLOCK) WHERE GeoLocation IS NOT NULL ";
                             HotelLookUpSQL = HotelLookUpSQL + "and ReRun_SupplierImportFile_Id = '" + obj.File_Id.ToString() + "' ";
                             HotelLookUpSQL = HotelLookUpSQL + "and ReRun_Batch = " + (obj.CurrentBatch).ToString() + " ";
-                            HotelLookUpSQL = HotelLookUpSQL + "and STATUS = 'UNMAPPED'";
-                            HotelLookUpSQL = HotelLookUpSQL + ") ";
+                            HotelLookUpSQL = HotelLookUpSQL + "and STATUS = 'UNMAPPED' AND ISNULL(IsActive, 0) = 1 ) ";
                             HotelLookUpSQL = HotelLookUpSQL + "INSERT INTO @TABLE SELECT APM.Accommodation_Product_Mapping_Id, ";
                             HotelLookUpSQL = HotelLookUpSQL + "(SELECT TOP 1 A.Accommodation_Id from Accommodation A WITH (NOLOCK) ";
-                            HotelLookUpSQL = HotelLookUpSQL + "where A.Country_Id = APM.Country_Id ";
+                            HotelLookUpSQL = HotelLookUpSQL + "where A.Country_Id = APM.Country_Id AND ISNULL(A.IsActive, 0) = 1 ";
                             HotelLookUpSQL = HotelLookUpSQL + PriorityJoins;
                             HotelLookUpSQL = HotelLookUpSQL + "AND APM.GeoLocation.STDistance(A.GeoLocation) <= " + LookUpToDistanceInMeters + " ";
                             HotelLookUpSQL = HotelLookUpSQL + "ORDER BY APM.GeoLocation.STDistance(A.GeoLocation)) AS ACCOPRODNAME FROM APM; ";
@@ -1225,7 +1222,7 @@ namespace DataLayer
                             HotelLookUpSQL = HotelLookUpSQL + "Edit_Date = GETDATE(), Edit_User = 'TLGX_DataHandler', APM.Country_Id = A.Country_Id, APM.City_Id = A.City_Id, APM.Legacy_Htl_ID = A.CompanyHotelID ";
                             HotelLookUpSQL = HotelLookUpSQL + "FROM @TABLE TBL ";
                             HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation_ProductMapping APM ON TBL.APM_ID = APM.Accommodation_ProductMapping_Id ";
-                            HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation A ON TBL.A_ID = A.Accommodation_Id AND ISNULL(A.IsActive, 0) = 1 ; ";
+                            HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation A ON TBL.A_ID = A.Accommodation_Id AND ISNULL(A.IsActive, 0) = 1 AND ISNULL(APM.IsActive, 0) = 1 ; ";
 
                             try
                             {
@@ -1405,7 +1402,7 @@ namespace DataLayer
                         string sqlUpdatedRecords = "SELECT COUNT(*) FROM Accommodation_ProductMapping WITH (NOLOCK) WHERE ";
                         sqlUpdatedRecords = sqlUpdatedRecords + "ReRun_SupplierImportFile_Id = '" + obj.File_Id.ToString() + "' ";
                         sqlUpdatedRecords = sqlUpdatedRecords + "AND ReRun_Batch = " + (obj.CurrentBatch).ToString() + " ";
-                        sqlUpdatedRecords = sqlUpdatedRecords + "AND MatchedBy = " + priority.ToString() + ";";
+                        sqlUpdatedRecords = sqlUpdatedRecords + "AND MatchedBy = " + priority.ToString() + " AND ISNULL(APM.IsActive, 0) = 1 ;";
 
                         try
                         {
