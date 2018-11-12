@@ -25,11 +25,11 @@ namespace DataLayer
                     {
                         Guid _newID = Guid.Parse(Supplier_Id);
                         var result = from a in search
-                                     where a.Suppllier_ID == _newID
+                                     where a.Supplier_ID == _newID
                                      select new DataContracts.Schedulers.DC_Supplier_Schedule
                                      {
                                          SupplierScheduleID = a.SupplierScheduleID,
-                                         Suppllier_ID = a.Suppllier_ID,
+                                         Suppllier_ID = a.Supplier_ID,
                                          ISXMLSupplier = a.ISXMLSupplier,
                                          ISUpdateFrequence = (a.ISUpdateFrequence ?? false),
                                          FrequencyTypeCode = a.FrequencyTypeCode,
@@ -74,7 +74,7 @@ namespace DataLayer
 
                         if (result != null)
                         {
-                            result.Suppllier_ID = obj.Suppllier_ID;
+                            result.Supplier_ID = obj.Suppllier_ID;
                             result.ISXMLSupplier = obj.ISXMLSupplier;
                             result.ISUpdateFrequence = obj.ISUpdateFrequence;
                             result.Recur_No = obj.Recur_No;
@@ -107,7 +107,7 @@ namespace DataLayer
                         Supplier_Schedule _obj = new Supplier_Schedule
                         {
                             SupplierScheduleID = Guid.NewGuid(),
-                            Suppllier_ID = obj.Suppllier_ID,
+                            Supplier_ID = obj.Suppllier_ID,
                             ISXMLSupplier = obj.ISXMLSupplier,
                             ISUpdateFrequence = obj.ISUpdateFrequence,
                             FrequencyTypeCode = obj.FrequencyTypeCode,

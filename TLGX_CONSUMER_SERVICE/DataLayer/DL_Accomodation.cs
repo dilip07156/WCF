@@ -2125,21 +2125,21 @@ namespace DataLayer
                 {
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        using (Accommodation_Facility objNew = new Accommodation_Facility())
+                        Accommodation_Facility objNew = new Accommodation_Facility
                         {
-                            objNew.Accommodation_Facility_Id = Guid.NewGuid();
-                            objNew.Accommodation_Id = item.Accommodation_Id;
-                            objNew.Create_Date = item.Create_Date;
-                            objNew.Create_User = item.Create_User;
-                            objNew.Description = item.Description;
-                            objNew.FacilityCategory = item.FacilityCategory;
-                            objNew.FacilityName = item.FacilityName;
-                            objNew.FacilityType = item.FacilityType;
-                            objNew.Legacy_Htl_Id = item.Legacy_Htl_Id;
-                            objNew.IsActive = item.IsActive;
-                            context.Accommodation_Facility.Add(objNew);
-                            context.SaveChanges();
-                        }
+                            Accommodation_Facility_Id = Guid.NewGuid(),
+                            Accommodation_Id = item.Accommodation_Id,
+                            Create_Date = item.Create_Date,
+                            Create_User = item.Create_User,
+                            Description = item.Description,
+                            FacilityCategory = item.FacilityCategory,
+                            FacilityName = item.FacilityName,
+                            FacilityType = item.FacilityType,
+                            Legacy_Htl_Id = item.Legacy_Htl_Id,
+                            IsActive = item.IsActive
+                        };
+                        context.Accommodation_Facility.Add(objNew);
+                        context.SaveChanges();
                     }
                 });
 
@@ -2162,21 +2162,21 @@ namespace DataLayer
                 {
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        using (Accommodation_Status objNew = new Accommodation_Status())
+                        Accommodation_Status objNew = new Accommodation_Status
                         {
-                            objNew.Accommodation_Status_Id = Guid.NewGuid();
-                            objNew.Accommodation_Id = item.Accommodation_Id;
-                            objNew.CompanyMarket = item.CompanyMarket;
-                            objNew.DeactivationReason = item.DeactivationReason;
-                            objNew.From = item.From;
-                            objNew.Status = item.Status;
-                            objNew.To = item.To;
-                            objNew.IsActive = item.IsActive;
-                            objNew.Create_Date = item.Create_Date;
-                            objNew.Create_User = item.Create_User;
-                            context.Accommodation_Status.Add(objNew);
-                            context.SaveChanges();
-                        }
+                            Accommodation_Status_Id = Guid.NewGuid(),
+                            Accommodation_Id = item.Accommodation_Id,
+                            CompanyMarket = item.CompanyMarket,
+                            DeactivationReason = item.DeactivationReason,
+                            From = item.From,
+                            Status = item.Status,
+                            To = item.To,
+                            IsActive = item.IsActive,
+                            Create_Date = item.Create_Date,
+                            Create_User = item.Create_User
+                        };
+                        context.Accommodation_Status.Add(objNew);
+                        context.SaveChanges();
                     }
                 });
 
@@ -4806,40 +4806,37 @@ namespace DataLayer
                 {
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        using (Accommodation_RoomInfo objNew = new Accommodation_RoomInfo())
+                        Accommodation_RoomInfo objNew = new Accommodation_RoomInfo()
                         {
-                            objNew.Accommodation_RoomInfo_Id = Guid.NewGuid();
-                            objNew.Accommodation_Id = item.Accommodation_Id;
-                            objNew.Create_Date = item.Create_Date;
-                            objNew.Create_User = item.Create_User;
-                            objNew.Description = item.Description;
-                            objNew.AmenityTypes = item.AmenityTypes;
-                            objNew.BathRoomType = item.BathRoomType;
-                            objNew.BedType = item.BedType;
-                            objNew.Category = item.Category;
-                            objNew.CompanyName = item.CompanyName;
-                            objNew.CompanyRoomCategory = item.CompanyRoomCategory;
-                            objNew.FloorName = item.FloorName;
-                            objNew.FloorNumber = item.FloorNumber;
-                            objNew.MysteryRoom = item.MysteryRoom;
-                            objNew.NoOfInterconnectingRooms = item.NoOfInterconnectingRooms;
-                            objNew.NoOfRooms = item.NoOfRooms;
-                            objNew.RoomCategory = item.RoomCategory;
-                            objNew.RoomDecor = item.RoomDecor;
-                            objNew.RoomId = item.RoomId;
-                            objNew.RoomName = item.RoomName;
-                            objNew.RoomSize = item.RoomSize;
-                            objNew.RoomView = item.RoomView;
-                            objNew.Smoking = item.Smoking;
-                            objNew.Legacy_Htl_Id = item.Legacy_Htl_Id;
-                            objNew.IsActive = item.IsActive;
-                            objNew.TLGXAccoRoomId = item.TLGXAccoRoomId;
-                            context.Accommodation_RoomInfo.Add(objNew);
-                            context.SaveChanges();
-
-                            //if (item.IsAmenityChanges == true && item.Amenities.Count > 0) { RA.AddRange(item.Amenities.ToList()); }
-                        }
-
+                            Accommodation_RoomInfo_Id = Guid.NewGuid(),
+                            Accommodation_Id = item.Accommodation_Id,
+                            Create_Date = item.Create_Date,
+                            Create_User = item.Create_User,
+                            Description = item.Description,
+                            AmenityTypes = item.AmenityTypes,
+                            BathRoomType = item.BathRoomType,
+                            BedType = item.BedType,
+                            Category = item.Category,
+                            CompanyName = item.CompanyName,
+                            CompanyRoomCategory = item.CompanyRoomCategory,
+                            FloorName = item.FloorName,
+                            FloorNumber = item.FloorNumber,
+                            MysteryRoom = item.MysteryRoom,
+                            NoOfInterconnectingRooms = item.NoOfInterconnectingRooms,
+                            NoOfRooms = item.NoOfRooms,
+                            RoomCategory = item.RoomCategory,
+                            RoomDecor = item.RoomDecor,
+                            RoomId = item.RoomId,
+                            RoomName = item.RoomName,
+                            RoomSize = item.RoomSize,
+                            RoomView = item.RoomView,
+                            Smoking = item.Smoking,
+                            Legacy_Htl_Id = item.Legacy_Htl_Id,
+                            IsActive = item.IsActive,
+                            TLGXAccoRoomId = item.TLGXAccoRoomId,
+                        };
+                        context.Accommodation_RoomInfo.Add(objNew);
+                        context.SaveChanges();
                     }
                 });
 

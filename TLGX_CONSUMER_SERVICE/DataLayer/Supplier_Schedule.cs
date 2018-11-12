@@ -15,7 +15,7 @@ namespace DataLayer
     public partial class Supplier_Schedule
     {
         public System.Guid SupplierScheduleID { get; set; }
-        public System.Guid Suppllier_ID { get; set; }
+        public System.Guid Supplier_ID { get; set; }
         public bool ISXMLSupplier { get; set; }
         public Nullable<bool> ISUpdateFrequence { get; set; }
         public string FrequencyTypeCode { get; set; }
