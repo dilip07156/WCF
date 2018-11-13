@@ -1222,7 +1222,7 @@ namespace DataLayer
                             HotelLookUpSQL = HotelLookUpSQL + "Edit_Date = GETDATE(), Edit_User = 'TLGX_DataHandler', APM.Country_Id = A.Country_Id, APM.City_Id = A.City_Id, APM.Legacy_Htl_ID = A.CompanyHotelID ";
                             HotelLookUpSQL = HotelLookUpSQL + "FROM @TABLE TBL ";
                             HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation_ProductMapping APM ON TBL.APM_ID = APM.Accommodation_ProductMapping_Id ";
-                            HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation A ON TBL.A_ID = A.Accommodation_Id AND ISNULL(A.IsActive, 0) = 1 AND ISNULL(APM.IsActive, 0) = 1 ; ";
+                            HotelLookUpSQL = HotelLookUpSQL + "INNER JOIN Accommodation A ON TBL.A_ID = A.Accommodation_Id AND ISNULL(A.IsActive, 0) = 1 ; ";
 
                             try
                             {
@@ -1402,7 +1402,7 @@ namespace DataLayer
                         string sqlUpdatedRecords = "SELECT COUNT(*) FROM Accommodation_ProductMapping WITH (NOLOCK) WHERE ";
                         sqlUpdatedRecords = sqlUpdatedRecords + "ReRun_SupplierImportFile_Id = '" + obj.File_Id.ToString() + "' ";
                         sqlUpdatedRecords = sqlUpdatedRecords + "AND ReRun_Batch = " + (obj.CurrentBatch).ToString() + " ";
-                        sqlUpdatedRecords = sqlUpdatedRecords + "AND MatchedBy = " + priority.ToString() + " AND ISNULL(APM.IsActive, 0) = 1 ;";
+                        sqlUpdatedRecords = sqlUpdatedRecords + "AND MatchedBy = " + priority.ToString() + " AND ISNULL(IsActive, 0) = 1 ;";
 
                         try
                         {
