@@ -320,6 +320,11 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "AddActivity/MediaAttributes", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         bool AddActivityMediaAttributes(DataContracts.Masters.DC_Activity_MediaAttributes AM);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "Activity/GetMediaForAttributes", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<Activity_MediaDetailsForAttribute> GetActivityMediaForAttributes();
         #endregion
 
     }

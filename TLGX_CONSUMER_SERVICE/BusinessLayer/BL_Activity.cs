@@ -503,6 +503,13 @@ namespace BusinessLayer
                 return obj.AddActivityMediaAttributes(AM);
             }
         }
+        public List<Activity_MediaDetailsForAttribute> GetActivityMediaForAttributes()
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityMediaForAttributes();
+            }
+        }
         #endregion
 
     }
