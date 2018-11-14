@@ -543,6 +543,14 @@ namespace ConsumerSvc
                 return objBL.AddActivityMediaAttributes(AM);
             }
         }
+
+        public List<Activity_MediaDetailsForAttribute> GetActivityMediaForAttributes()
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                return objBL.GetActivityMediaForAttributes();
+            }
+        }
         #endregion
 
     }
