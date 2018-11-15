@@ -2580,7 +2580,7 @@ namespace DataLayer
                 List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
                 if (SupplierImportFile_Id != Guid.Empty)
                 {
-                    CallLogVerbose(SupplierImportFile_Id, "MAP", "Updating / Inserting to database.", Batch);
+                    CallLogVerbose(SupplierImportFile_Id, "MAP", "Fetching keywords.", Batch);
 
                     using (DL_Masters objDL = new DL_Masters())
                     {
