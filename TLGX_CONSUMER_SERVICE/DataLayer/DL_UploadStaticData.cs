@@ -1284,6 +1284,10 @@ namespace DataLayer
                         search.PROCESS_DATE = obj.PROCESS_DATE;
                         search.IsActive = obj.IsActive;
                         search.CurrentBatch = obj.CurrentBatch;
+                        search.IsPaused = obj.IsPaused;
+                        search.IsRestarted = obj.IsRestarted;
+                        obj.IsResumed = obj.IsResumed;
+                        obj.IsStopped = obj.IsStopped;
                     }
                     context.SaveChanges();
                     if (obj.IsStopped == true)
