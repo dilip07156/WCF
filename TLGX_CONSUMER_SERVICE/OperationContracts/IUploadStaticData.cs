@@ -147,5 +147,13 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "UploadStaticData/Mapping/UpdateSupplierImportDetails/UpdateUploaded", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataContracts.DC_Message UpdateSupplierImportFileDetailsFromNewToUploaded(DataContracts.UploadStaticData.DC_SupplierImportFileDetails obj);
         #endregion
+
+        #region Data Processing Check
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "UploadStaticData/FileProcessingCheck/Get", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message FileProcessingCheckInSupplierImportFileDetails(string SupplierId);
+        //GAURAV_TMAP_746
+        #endregion
     }
 }
