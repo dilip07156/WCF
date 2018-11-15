@@ -730,161 +730,56 @@ namespace DataLayer
             {
                 context.Database.CommandTimeout = 0;
 
-                //Here we have to check City Wise unique supplier product codes for certain suppliers like 'GTA'
-
                 List<DataContracts.Mapping.DC_Accomodation_ProductMapping> toUpdate = new List<DC_Accomodation_ProductMapping>();
 
-                if (SupplierCode.ToUpper() == "GTA")
-                {
-                    //CheckByCityCode
-                    List<DataContracts.Mapping.DC_Accomodation_ProductMapping> toUpdateByCityCode = new List<DC_Accomodation_ProductMapping>();
-                    List<DataContracts.Mapping.DC_Accomodation_ProductMapping> toUpdateByCityName = new List<DC_Accomodation_ProductMapping>();
-
-                    toUpdateByCityCode = (from a in context.Accommodation_ProductMapping.AsNoTracking()
-                                          join s in context.stg_SupplierProductMapping.AsNoTracking() on
-                                          new { a.Supplier_Id, a.SupplierProductReference, a.CityCode } equals new { s.Supplier_Id, SupplierProductReference = s.ProductId, s.CityCode }
-                                          where s.SupplierImportFile_Id == File_Id
-                                          select new DataContracts.Mapping.DC_Accomodation_ProductMapping
-                                          {
-                                              Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
-                                              Accommodation_Id = a.Accommodation_Id,
-                                              ProductName = s.ProductName,
-                                              Street = s.StreetName,
-                                              Street2 = s.Street2,
-                                              Street3 = s.Street3,
-                                              Street4 = s.Street4,
-                                              CountryCode = s.CountryCode,
-                                              CountryName = s.CountryName,
-                                              CityCode = s.CityCode,
-                                              CityName = s.CityName,
-                                              StateCode = s.StateCode,
-                                              StateName = s.StateName,
-                                              FullAddress = s.Address,
-                                              PostCode = s.PostalCode,
-                                              TelephoneNumber = s.TelephoneNumber,
-                                              Fax = s.Fax,
-                                              Email = s.Email,
-                                              Website = s.Website,
-                                              Latitude = s.Latitude,
-                                              Longitude = s.Longitude,
-                                              Edit_Date = DateTime.Now,
-                                              Edit_User = "TLGX_DataHandler",
-                                              IsActive = true,
-                                              StarRating = s.StarRating,
-                                              Country_Id = s.Country_Id,
-                                              City_Id = s.City_Id,
-                                              ActionType = "UPDATE",
-                                              stg_AccoMapping_Id = s.stg_AccoMapping_Id,
-                                              ProductType = s.ProductType,
-                                              ReRunSupplierImporrtFile_Id = File_Id,
-                                              ReRunBatch = Batch,
-                                              Status = a.Status
-                                          }).ToList();
-
-                    if (toUpdateByCityCode.Count == 0)
-                    {
-                        //CheckByCityName
-                        toUpdateByCityName = (from a in context.Accommodation_ProductMapping.AsNoTracking()
-                                              join s in context.stg_SupplierProductMapping.AsNoTracking() on
-                                              new { a.Supplier_Id, a.SupplierProductReference, a.CountryCode, a.CityName } equals new { s.Supplier_Id, SupplierProductReference = s.ProductId, s.CountryCode, s.CityName }
-                                              where s.SupplierImportFile_Id == File_Id
-                                              select new DataContracts.Mapping.DC_Accomodation_ProductMapping
-                                              {
-                                                  Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
-                                                  Accommodation_Id = a.Accommodation_Id,
-                                                  ProductName = s.ProductName,
-                                                  Street = s.StreetName,
-                                                  Street2 = s.Street2,
-                                                  Street3 = s.Street3,
-                                                  Street4 = s.Street4,
-                                                  CountryCode = s.CountryCode,
-                                                  CountryName = s.CountryName,
-                                                  CityCode = s.CityCode,
-                                                  CityName = s.CityName,
-                                                  StateCode = s.StateCode,
-                                                  StateName = s.StateName,
-                                                  FullAddress = s.Address,
-                                                  PostCode = s.PostalCode,
-                                                  TelephoneNumber = s.TelephoneNumber,
-                                                  Fax = s.Fax,
-                                                  Email = s.Email,
-                                                  Website = s.Website,
-                                                  Latitude = s.Latitude,
-                                                  Longitude = s.Longitude,
-                                                  Edit_Date = DateTime.Now,
-                                                  Edit_User = "TLGX_DataHandler",
-                                                  IsActive = true,
-                                                  StarRating = s.StarRating,
-                                                  Country_Id = s.Country_Id,
-                                                  City_Id = s.City_Id,
-                                                  ActionType = "UPDATE",
-                                                  stg_AccoMapping_Id = s.stg_AccoMapping_Id,
-                                                  ProductType = s.ProductType,
-                                                  ReRunSupplierImporrtFile_Id = File_Id,
-                                                  ReRunBatch = Batch,
-                                                  Status = a.Status
-                                              }).ToList();
-
-                        if (toUpdateByCityName.Count > 0)
-                        {
-                            //toUpdateByCityName.RemoveAll(r => toUpdateByCityCode.Any(w => w.Accommodation_ProductMapping_Id == r.Accommodation_ProductMapping_Id));
-                            toUpdateByCityCode.InsertRange(0, toUpdateByCityName);
-                        }
-                    }
-
-                    toUpdate.InsertRange(0, toUpdateByCityCode);
-                }
-                else
-                {
-                    var stgIds = stg.Select(s => s.stg_AccoMapping_Id).ToList();
-                    toUpdate = (from a in context.Accommodation_ProductMapping.AsNoTracking()
-                                join s in context.stg_SupplierProductMapping.AsNoTracking() on
-                                new { a.Supplier_Id, a.SupplierProductReference } equals new { s.Supplier_Id, SupplierProductReference = s.ProductId }
-                                where s.SupplierImportFile_Id == File_Id
-                                && stgIds.Contains(s.stg_AccoMapping_Id)
-                                select new DataContracts.Mapping.DC_Accomodation_ProductMapping
-                                {
-                                    Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
-                                    Accommodation_Id = a.Accommodation_Id,
-                                    ProductName = s.ProductName,
-                                    Street = (s.Address == null ? (s.StreetNo + " " + s.StreetName) : s.Address),
-                                    Street2 = (s.Address == null ? s.Street2 : ""),
-                                    Street3 = (s.Address == null ? s.Street3 : ""),
-                                    Street4 = (s.Street4 ?? "") + " " + (s.Street5 ?? ""),
-                                    PostCode = s.PostalCode,
-                                    CountryCode = s.CountryCode,
-                                    CountryName = s.CountryName,
-                                    CityCode = s.CityCode,
-                                    CityName = s.CityName,
-                                    StateCode = s.StateCode,
-                                    StateName = s.StateName,
-                                    FullAddress = (s.Address == null ? ((s.StreetNo ?? "") + (((s.StreetNo ?? "") != "") ? ", " : "")
-                                       + (s.StreetName ?? "") + (((s.StreetName ?? "") != "") ? ", " : "")
-                                       + (s.Street2 ?? "") + (((s.Street2 ?? "") != "") ? ", " : "")
-                                       + (s.Street3 ?? "") + (((s.Street3 ?? "") != "") ? ", " : "")
-                                       + (s.Street4 ?? "") + (((s.Street4 ?? "") != "") ? ", " : "")
-                                       + (s.Street5 ?? "") + (((s.Street5 ?? "") != "") ? ", " : "") + (s.PostalCode ?? ""))
-                                       : ((s.Address ?? "") + (((s.Address ?? "") != "") ? ", " : "") + (s.PostalCode ?? ""))),
-                                    TelephoneNumber = s.TelephoneNumber,
-                                    Fax = s.Fax,
-                                    Email = s.Email,
-                                    Website = s.Website,
-                                    Latitude = s.Latitude,
-                                    Longitude = s.Longitude,
-                                    Edit_Date = DateTime.Now,
-                                    Edit_User = "TLGX_DataHandler",
-                                    IsActive = true,
-                                    StarRating = s.StarRating,
-                                    Country_Id = s.Country_Id,
-                                    City_Id = s.City_Id,
-                                    ActionType = "UPDATE",
-                                    stg_AccoMapping_Id = s.stg_AccoMapping_Id,
-                                    ProductType = s.ProductType,
-                                    ReRunSupplierImporrtFile_Id = File_Id,
-                                    ReRunBatch = Batch,
-                                    Status = a.Status
-                                }).ToList();
-                }
+                var stgIds = stg.Select(s => s.stg_AccoMapping_Id).ToList();
+                toUpdate = (from a in context.Accommodation_ProductMapping.AsNoTracking()
+                            join s in context.stg_SupplierProductMapping.AsNoTracking() on
+                            new { a.Supplier_Id, a.SupplierProductReference } equals new { s.Supplier_Id, SupplierProductReference = s.ProductId }
+                            where s.SupplierImportFile_Id == File_Id
+                            && stgIds.Contains(s.stg_AccoMapping_Id)
+                            select new DataContracts.Mapping.DC_Accomodation_ProductMapping
+                            {
+                                Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
+                                Accommodation_Id = a.Accommodation_Id,
+                                ProductName = s.ProductName,
+                                Street = (s.Address == null ? (s.StreetNo + " " + s.StreetName) : s.Address),
+                                Street2 = (s.Address == null ? s.Street2 : ""),
+                                Street3 = (s.Address == null ? s.Street3 : ""),
+                                Street4 = (s.Street4 ?? "") + " " + (s.Street5 ?? ""),
+                                PostCode = s.PostalCode,
+                                CountryCode = s.CountryCode,
+                                CountryName = s.CountryName,
+                                CityCode = s.CityCode,
+                                CityName = s.CityName,
+                                StateCode = s.StateCode,
+                                StateName = s.StateName,
+                                FullAddress = (s.Address == null ? ((s.StreetNo ?? "") + (((s.StreetNo ?? "") != "") ? ", " : "")
+                                   + (s.StreetName ?? "") + (((s.StreetName ?? "") != "") ? ", " : "")
+                                   + (s.Street2 ?? "") + (((s.Street2 ?? "") != "") ? ", " : "")
+                                   + (s.Street3 ?? "") + (((s.Street3 ?? "") != "") ? ", " : "")
+                                   + (s.Street4 ?? "") + (((s.Street4 ?? "") != "") ? ", " : "")
+                                   + (s.Street5 ?? "") + (((s.Street5 ?? "") != "") ? ", " : "") + (s.PostalCode ?? ""))
+                                   : ((s.Address ?? "") + (((s.Address ?? "") != "") ? ", " : "") + (s.PostalCode ?? ""))),
+                                TelephoneNumber = s.TelephoneNumber,
+                                Fax = s.Fax,
+                                Email = s.Email,
+                                Website = s.Website,
+                                Latitude = s.Latitude,
+                                Longitude = s.Longitude,
+                                Edit_Date = DateTime.Now,
+                                Edit_User = "TLGX_DataHandler",
+                                IsActive = true,
+                                StarRating = s.StarRating,
+                                Country_Id = s.Country_Id,
+                                City_Id = s.City_Id,
+                                ActionType = "UPDATE",
+                                stg_AccoMapping_Id = s.stg_AccoMapping_Id,
+                                ProductType = s.ProductType,
+                                ReRunSupplierImporrtFile_Id = File_Id,
+                                ReRunBatch = Batch,
+                                Status = a.Status
+                            }).ToList();
 
                 insertSTGList = stg.Where(w => !toUpdate.Any(a => a.stg_AccoMapping_Id == w.stg_AccoMapping_Id)).ToList();
                 updateMappingList = toUpdate;
@@ -2685,7 +2580,7 @@ namespace DataLayer
 
                 #region Loop through all the records to Update / Insert
 
-                Parallel.ForEach(obj, PM =>
+                foreach (var PM in obj)
                 {
                     if (PM.Accommodation_ProductMapping_Id != null)
                     {
@@ -2960,6 +2855,8 @@ namespace DataLayer
 
                                     search.IsActive = true;
 
+                                    search.GeoLocation = System.Data.Entity.Spatial.DbGeography.FromText(String.Format(CultureInfo.InvariantCulture, "POINT({0} {1})", search.Longitude, search.Latitude));
+
                                 } //Means it is coming from Datahandler and all 
                                 #endregion
 
@@ -3103,6 +3000,8 @@ namespace DataLayer
 
                                 objNew.IsActive = true;
 
+                                objNew.GeoLocation = System.Data.Entity.Spatial.DbGeography.FromText(String.Format(CultureInfo.InvariantCulture, "POINT({0} {1})", objNew.Longitude, objNew.Latitude));
+
                                 context.Accommodation_ProductMapping.Add(objNew);
                                 context.SaveChanges();
 
@@ -3130,25 +3029,25 @@ namespace DataLayer
                             throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation product mapping" + e.Message, ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
                         }
                     }
-                });
+                }
                 #endregion
 
                 #region Update the GeoLocation & MapId Column value if the record is inserted / Updated from Datahandler
                 if (SupplierImportFile_Id != Guid.Empty)
                 {
                     //Geolocation
-                    try
-                    {
-                        string sql = "";
-                        sql = "UPDATE Accommodation_ProductMapping Set GeoLocation = geography::Point(Latitude, Longitude, 4326) ";
-                        sql = sql + " WHERE Latitude IS NOT NULL and Longitude IS NOT NULL ";
-                        sql = sql + " AND TRY_CONVERT(float, Latitude) IS NOT NULL AND TRY_CONVERT(float, Longitude) IS NOT NULL ";
-                        sql = sql + " AND (TRY_CONVERT(float, Latitude) >= -90 AND TRY_CONVERT(float, Latitude) <= 90) ";
-                        sql = sql + " AND (TRY_CONVERT(float, Longitude) >= -180 AND TRY_CONVERT(float, Longitude) <= 180) ";
-                        sql = sql + " AND ReRun_SupplierImportFile_Id = '" + SupplierImportFile_Id + "' AND ReRun_Batch = " + Batch + ";";
-                        context.Database.ExecuteSqlCommand(sql);
-                    }
-                    catch (Exception ex) { }
+                    //try
+                    //{
+                    //    string sql = "";
+                    //    sql = "UPDATE Accommodation_ProductMapping Set GeoLocation = geography::Point(Latitude, Longitude, 4326) ";
+                    //    sql = sql + " WHERE Latitude IS NOT NULL and Longitude IS NOT NULL ";
+                    //    sql = sql + " AND TRY_CONVERT(float, Latitude) IS NOT NULL AND TRY_CONVERT(float, Longitude) IS NOT NULL ";
+                    //    sql = sql + " AND (TRY_CONVERT(float, Latitude) >= -90 AND TRY_CONVERT(float, Latitude) <= 90) ";
+                    //    sql = sql + " AND (TRY_CONVERT(float, Longitude) >= -180 AND TRY_CONVERT(float, Longitude) <= 180) ";
+                    //    sql = sql + " AND ReRun_SupplierImportFile_Id = '" + SupplierImportFile_Id + "' AND ReRun_Batch = " + Batch + ";";
+                    //    context.Database.ExecuteSqlCommand(sql);
+                    //}
+                    //catch (Exception ex) { }
 
                     //mapid
                     try
