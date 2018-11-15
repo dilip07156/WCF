@@ -2855,7 +2855,21 @@ namespace DataLayer
 
                                     search.IsActive = true;
 
-                                    search.GeoLocation = System.Data.Entity.Spatial.DbGeography.FromText(String.Format(CultureInfo.InvariantCulture, "POINT({0} {1})", search.Longitude, search.Latitude));
+                                    if (double.TryParse(search.Longitude, out double Lng) && double.TryParse(search.Latitude, out double Lat))
+                                    {
+                                        if (Lat >= -90 && Lat <= 90 && Lng >= -180 && Lng <= 180)
+                                        {
+                                            search.GeoLocation = System.Data.Entity.Spatial.DbGeography.FromText(String.Format(CultureInfo.InvariantCulture, "POINT({0} {1})", Lng, Lat));
+                                        }
+                                        else
+                                        {
+                                            search.GeoLocation = null;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        search.GeoLocation = null;
+                                    }
 
                                 } //Means it is coming from Datahandler and all 
                                 #endregion
@@ -3000,7 +3014,21 @@ namespace DataLayer
 
                                 objNew.IsActive = true;
 
-                                objNew.GeoLocation = System.Data.Entity.Spatial.DbGeography.FromText(String.Format(CultureInfo.InvariantCulture, "POINT({0} {1})", objNew.Longitude, objNew.Latitude));
+                                if (double.TryParse(objNew.Longitude, out double Lng) && double.TryParse(objNew.Latitude, out double Lat))
+                                {
+                                    if (Lat >= -90 && Lat <= 90 && Lng >= -180 && Lng <= 180)
+                                    {
+                                        objNew.GeoLocation = System.Data.Entity.Spatial.DbGeography.FromText(String.Format(CultureInfo.InvariantCulture, "POINT({0} {1})", Lng, Lat));
+                                    }
+                                    else
+                                    {
+                                        objNew.GeoLocation = null;
+                                    }
+                                }
+                                else
+                                {
+                                    objNew.GeoLocation = null;
+                                }
 
                                 context.Accommodation_ProductMapping.Add(objNew);
                                 context.SaveChanges();
