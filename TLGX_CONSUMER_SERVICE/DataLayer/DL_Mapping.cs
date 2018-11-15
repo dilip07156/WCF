@@ -636,16 +636,21 @@ namespace DataLayer
                 RQ.PageSize = obj.BatchSize;
                 RQ.PageNo = 0;
 
+                CallLogVerbose(File_Id, "MAP", "Get Data from Stg", obj.CurrentBatch);
+
                 clsSTGHotel = staticdata.GetSTGHotelData(RQ);
 
                 PLog.PercentageValue = 15;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Separate Insert and Update records", obj.CurrentBatch);
                 //Dupe check hotel logic
                 CheckHotelAlreadyExist(File_Id, obj.CurrentBatch ?? 0, CurSupplier_Id, CurSupplierName, clsSTGHotel, out clsMappingHotel, out clsSTGHotelInsert);
 
                 PLog.PercentageValue = 53;
                 USD.AddStaticDataUploadProcessLog(PLog);
+
+                CallLogVerbose(File_Id, "MAP", "Combine the records", obj.CurrentBatch);
 
                 clsMappingHotel.InsertRange(clsMappingHotel.Count, clsSTGHotelInsert.Select
                     (g => new DC_Accomodation_ProductMapping
@@ -702,7 +707,7 @@ namespace DataLayer
 
                 PLog.PercentageValue = 60;
                 USD.AddStaticDataUploadProcessLog(PLog);
-                CallLogVerbose(File_Id, "MAP", "Updating / Inserting to database.", obj.CurrentBatch);
+                
 
                 if (clsMappingHotel.Count > 0)
                 {
@@ -713,6 +718,9 @@ namespace DataLayer
                     {
                         context.Database.CommandTimeout = 0;
                         var stgIds = clsMappingHotel.Select(s => s.stg_AccoMapping_Id).ToList();
+
+                        CallLogVerbose(File_Id, "MAP", "Delete the batch from STG", obj.CurrentBatch);
+
                         var count = context.stg_SupplierProductMapping.Where(d => stgIds.Contains(d.stg_AccoMapping_Id)).Delete();
                     }
                     #endregion
@@ -733,6 +741,9 @@ namespace DataLayer
                 List<DataContracts.Mapping.DC_Accomodation_ProductMapping> toUpdate = new List<DC_Accomodation_ProductMapping>();
 
                 var stgIds = stg.Select(s => s.stg_AccoMapping_Id).ToList();
+
+                CallLogVerbose(File_Id, "MAP", "Get Update List", Batch);
+
                 toUpdate = (from a in context.Accommodation_ProductMapping.AsNoTracking()
                             join s in context.stg_SupplierProductMapping.AsNoTracking() on
                             new { a.Supplier_Id, a.SupplierProductReference } equals new { s.Supplier_Id, SupplierProductReference = s.ProductId }
@@ -780,6 +791,8 @@ namespace DataLayer
                                 ReRunBatch = Batch,
                                 Status = a.Status
                             }).ToList();
+
+                CallLogVerbose(File_Id, "MAP", "Get Insert List", Batch);
 
                 insertSTGList = stg.Where(w => !toUpdate.Any(a => a.stg_AccoMapping_Id == w.stg_AccoMapping_Id)).ToList();
                 updateMappingList = toUpdate;
@@ -2567,6 +2580,8 @@ namespace DataLayer
                 List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
                 if (SupplierImportFile_Id != Guid.Empty)
                 {
+                    CallLogVerbose(SupplierImportFile_Id, "MAP", "Updating / Inserting to database.", Batch);
+
                     using (DL_Masters objDL = new DL_Masters())
                     {
                         Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
@@ -2579,6 +2594,11 @@ namespace DataLayer
                 #endregion
 
                 #region Loop through all the records to Update / Insert
+
+                if (SupplierImportFile_Id != Guid.Empty)
+                {
+                    CallLogVerbose(SupplierImportFile_Id, "MAP", "Updating / Inserting to database.", Batch);
+                }
 
                 foreach (var PM in obj)
                 {
@@ -3080,6 +3100,7 @@ namespace DataLayer
                     //mapid
                     try
                     {
+                        CallLogVerbose(SupplierImportFile_Id, "MAP", "Updating MapId", Batch);
                         context.USP_UpdateMapID("product");
                     }
                     catch (Exception ex) { }
@@ -3089,7 +3110,7 @@ namespace DataLayer
                 #region Update No Of Keyword Hits if the operation is from Datahandler
                 if (SupplierImportFile_Id != Guid.Empty)
                 {
-
+                    CallLogVerbose(SupplierImportFile_Id, "MAP", "Updating Keyword Counters", Batch);
                     var updatableAliases = (from k in Keywords
                                             from ka in k.Alias
                                             where ka.NewHits != 0
@@ -3104,9 +3125,7 @@ namespace DataLayer
 
                 }
                 #endregion
-
             }
-
             return true;
         }
 
