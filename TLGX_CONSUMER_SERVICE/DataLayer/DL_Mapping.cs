@@ -10679,5 +10679,56 @@ namespace DataLayer
         }
 
         #endregion
+
+        #region Reset Supplier Room Type Mapping        
+        //GAURAV_TMAP_746
+        public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_Reset(List<DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
+        {
+            try
+            {
+               
+                    StringBuilder sb = new StringBuilder();
+                
+
+                    sb.Append(@" delete from Accommodation_SupplierRoomTypeMapping_Values  where Accommodation_SupplierRoomTypeMapping_Id = '" + Acco_RoomTypeMap_Ids.Select(x => x.Acco_RoomTypeMap_Id).SingleOrDefault() + "' and UserMappingStatus<> 'MAPPED'");
+                //sb.Append(@"     select Priority, Supplier_Id,SupplierName,Accomodation_MannualMapped ,Accomodation_AutoMapped,Accomodation_ReviewMapped,Accomodation_Unmapped,
+                //            (Accomodation_MannualMapped + Accomodation_AutoMapped + Accomodation_ReviewMapped + Accomodation_Unmapped) as AccomodationTotal,
+                //                @TotalHotel as AccoHotelCount, Compared_SupplierName as SourceSupplierName
+                //            from AccommodationSupplierMappingReport_SupplierVSupplier with(nolock) where Compared_Supplier_Id = '" + dC_SupplerVSupplier_Report_RQ.Accommodation_Source_Id + "' ");
+
+                StringBuilder sbCheck = new StringBuilder();
+                sbCheck.Append(@" Select count(*) from Accommodation_SupplierRoomTypeMapping_Values with(nolock) where Accommodation_SupplierRoomTypeMapping_Id = '" + Acco_RoomTypeMap_Ids.Select(x => x.Acco_RoomTypeMap_Id).SingleOrDefault() + "' and UserMappingStatus = 'MAPPED'");
+
+
+                StringBuilder sbUpdate = new StringBuilder();
+                sbUpdate.Append(@" Update Accommodation_SupplierRoomTypeMapping set MappingStatus = 'MAPPED' where Accommodation_SupplierRoomTypeMapping_Id = '" + Acco_RoomTypeMap_Ids.Select(x => x.Acco_RoomTypeMap_Id).SingleOrDefault() + "' ");
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    try {
+
+                        context.Database.ExecuteSqlCommand(sb.ToString());
+
+                        int count = context.Database.SqlQuery<int>(sbCheck.ToString()).FirstOrDefault();
+
+                        if(count > 0)
+                        {
+                            context.Database.ExecuteSqlCommand(sbUpdate.ToString());
+
+                        }
+
+                    } catch (Exception ex) { }
+                }
+
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword Replace and Attribute Extraction has been done." };
+
+            }
+            catch (Exception ex)
+            {
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Failed, StatusMessage = ex.Message };
+                //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while TTFU", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        #endregion
     }
 }

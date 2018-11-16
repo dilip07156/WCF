@@ -251,6 +251,13 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "Mapping/GetHotelMapping", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         IList<DataContracts.Mapping.DC_HotelMappingReport_RS> HotelMappingReport(DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport_RQ RQ);
         #endregion
+
+        //GAURAV_TMAP_746
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Mapping/AccoSupplierRoomType/Reset", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_Reset(List<DataContracts.Mapping.DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids);
+        
     }
 }
 

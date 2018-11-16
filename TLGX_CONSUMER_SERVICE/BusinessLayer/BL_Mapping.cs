@@ -822,5 +822,16 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        #region Reset Supplier Room Type Mapping        
+        //GAURAV_TMAP_746
+        public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_Reset(List<DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
+        {
+            using (DL_Mapping objBL = new DL_Mapping())
+            {
+                return objBL.AccomodationSupplierRoomTypeMapping_Reset(Acco_RoomTypeMap_Ids);
+            }
+        }
+        #endregion  
     }
 }
