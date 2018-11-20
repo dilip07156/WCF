@@ -1109,6 +1109,11 @@ namespace DataLayer
 
                             foreach (var item in SupplierRoomTypeMappingValue)
                             {
+                                if((item.SystemEditDate ?? DateTime.MinValue) > (item.UserEditDate ?? DateTime.MinValue))
+                                {
+                                    continue;
+                                }
+
                                 //Creating Data to send AIML
                                 var roominfo = context.Accommodation_RoomInfo.Find(item.Accommodation_RoomInfo_Id);
                                 //Creating Data to send AIML
