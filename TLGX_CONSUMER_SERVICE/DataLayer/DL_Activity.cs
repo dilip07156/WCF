@@ -4946,7 +4946,7 @@ namespace DataLayer
                 {
                     StringBuilder sbQuery = new StringBuilder();
 
-                    sbQuery.Append(" Select top 100 M.Activity_Media_Id, M.Activity_Flavour_Id, M.Media_URL,M.FileFormat,spm.SupplierName,F.CommonProductNameSubType_Id+'_' + REVERSE(SUBSTRING(REVERSE(Media_URL),0,charindex('/',REVERSE(Media_URL)))) AS filename ");
+                    sbQuery.Append(" Select M.Activity_Media_Id, M.Activity_Flavour_Id, M.Media_URL,M.FileFormat,spm.SupplierName,F.CommonProductNameSubType_Id+'_' + REVERSE(SUBSTRING(REVERSE(Media_URL),0,charindex('/',REVERSE(Media_URL)))) AS filename ");
                     sbQuery.Append(@"  from Activity_Media M with(nolock)
                                         join Activity_Flavour F with(nolock) on M.Activity_Flavour_Id = F.Activity_Flavour_Id
                                         join Activity_SupplierProductMapping spm with(nolock) on M.Activity_Flavour_Id = spm.Activity_ID
