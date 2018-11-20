@@ -3219,8 +3219,6 @@ namespace DataLayer
                         }
 
                         context.SaveChanges();
-
-
                     }
 
                     //Call Training Data To push 
@@ -4803,7 +4801,6 @@ namespace DataLayer
                 }
                 #endregion
 
-
                 int i = 0;
                 List<DC_SupplierRoomName_AttributeList> AttributeList;
 
@@ -4912,7 +4909,10 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(CallingAgent))
                     {
                         if (CallingAgent == "MDM")
+                        {
                             UpdateRoomTypeMappingStatus_GetAndProcessData(null, asrtmd.Select(s => s.RoomTypeMap_Id).ToList());
+                        }
+                            
                     }
                 }
 
@@ -5413,7 +5413,6 @@ namespace DataLayer
                 {
                     sbSupplierRoomTypeMap_Ids.Append("'" + id.ToString() + "',");
                 }
-
             }
             else if (obj != null && AccoRoomMap_Ids == null)
             {
@@ -5946,6 +5945,7 @@ namespace DataLayer
                         int AUTOMAPPED_CNT = CurrentMappedRecords.Where(w => w.SystemMappingStatus == "AUTOMAPPED").Count();
                         var MAPPED_CNT = CurrentMappedRecords.Where(w => w.SystemMappingStatus == "MAPPED").Count();
                         var REVIEW_CNT = CurrentMappedRecords.Where(w => w.SystemMappingStatus == "REVIEW").Count();
+
                         if (ASRTM != null)
                         {
                             if (itemToUpdate.MappingStatus == "ADD" && ASRTM.MappingStatus != itemToUpdate.MappingStatus)
@@ -6039,6 +6039,11 @@ namespace DataLayer
                             }
                         }
 
+                        //Call Broker Delete Training Data API, true is passed as to delete the training data as it is hard perform mapping by Broker
+                        if (IsCalledFromTTFU && ASRTM != null)
+                        {
+                            DeleteOrSendTraingData(ASRTM.Accommodation_SupplierRoomTypeMapping_Id, true);
+                        }
                     }
                 }
                 #endregion
