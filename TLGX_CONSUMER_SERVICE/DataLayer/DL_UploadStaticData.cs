@@ -1284,6 +1284,10 @@ namespace DataLayer
                         search.PROCESS_DATE = obj.PROCESS_DATE;
                         search.IsActive = obj.IsActive;
                         search.CurrentBatch = obj.CurrentBatch;
+                        search.IsPaused = obj.IsPaused;
+                        search.IsRestarted = obj.IsRestarted;
+                        obj.IsResumed = obj.IsResumed;
+                        obj.IsStopped = obj.IsStopped;
                     }
                     context.SaveChanges();
                     if (obj.IsStopped == true)
@@ -3242,7 +3246,7 @@ namespace DataLayer
                     {
                         Guid SupplierId = SupplierFileDetails.Supplier_Id;
 
-                        if(SupplierId != Guid.Empty)
+                        if (SupplierId != Guid.Empty)
                         {
                             StringBuilder sql = new StringBuilder();
                             sql.AppendLine("DECLARE @SupplierImportFile_Id AS UNIQUEIDENTIFIER = '" + SupplierImportFile_Id.ToString() + "' ");
@@ -3753,5 +3757,40 @@ namespace DataLayer
         }
         #endregion
 
+
+        #region File Processing Check
+        //GAURAV_TMAP_746
+        public DataContracts.DC_Message FileProcessingCheckInSupplierImportFileDetails(string SupplierId)
+        {
+            DataContracts.DC_Message dc = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    int count = 0;
+                    StringBuilder sb = new StringBuilder();
+
+
+                    sb.Append(@" Select Count(1) from SupplierImportFileDetails where status not in ('Scheduled', 'UPloaded', 'New', 'Stopped', 'Paused', 'Error', 'Processed', 'Resumed', 'PROCESS LATER')
+                    and Supplier_Id = '" + SupplierId + "'");
+
+
+
+                    try { count = context.Database.SqlQuery<int>(sb.ToString()).FirstOrDefault(); } catch (Exception ex) { }
+
+                    if (count > 0)
+                    {
+                        dc.StatusMessage = "RUNNING";
+                    }
+                }
+            }
+            catch
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while searching accomodation for autocomplete", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+
+            return dc;
+        }
+        #endregion
     }
 }
