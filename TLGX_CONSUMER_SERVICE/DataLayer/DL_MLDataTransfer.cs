@@ -464,7 +464,7 @@ namespace DataLayer
 
                     StringBuilder sbSelect = new StringBuilder();
                     StringBuilder sbOrderby = new StringBuilder();
-                    sbSelect.Append(@"SELECT  TOP 10 
+                    sbSelect.Append(@"SELECT 
                                         SRTM.Accommodation_SupplierRoomTypeMapping_Id AS AccommodationSupplierRoomTypeMappingId,
                                         SRTM.Accommodation_Id AS AccommodationId,
                                         SRTM.Supplier_Id AS SupplierId, 
@@ -522,9 +522,7 @@ namespace DataLayer
                                         ARI.Create_Date AS AccoCreateUser,
                                         ARI.Edit_User as AccoEditUser,
                                         ARI.Edit_Date as AccoEditDate,
-                                        SRTM.MatchingScore,
-                                        CASE WHEN SRTMV.UserMappingStatus = 'MAPPED' THEN 1 ELSE 0 END AS SimilarityIndicator,
-                                        CASE WHEN SRTMV.UserMappingStatus = 'MAPPED' THEN 1 ELSE 0 END AS SimilarityScore  
+                                        SRTM.MatchingScore
                                         FROM Accommodation_SupplierRoomTypeMapping_Values SRTMV WITH(NOLOCK)
                                         JOIN Accommodation_SupplierRoomTypeMapping SRTM WITH (NOLOCK) ON SRTMV.Accommodation_SupplierRoomTypeMapping_Id = SRTM.Accommodation_SupplierRoomTypeMapping_Id
                                         JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) ON SRTMV.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id 
@@ -616,8 +614,8 @@ namespace DataLayer
                             AccoCreateUser = item.AccoCreateUser,
                             AccoEditDate = Convert.ToString(item.AccoEditDate),
                             AccoEditUser = item.AccoEditUser,
-                            SimilarityIndicator = Convert.ToBoolean(item.SimilarityIndicator),
-                            SimilarityScore = item.SimilarityScore
+                            SimilarityIndicator = (item.SupplierRoomMappingStatus == "MAPPED" ? true : false),//  Convert.ToBoolean(item.SimilarityIndicator),
+                            SimilarityScore = (item.SupplierRoomMappingStatus == "MAPPED" ? 1 : 0)
                         });
                     }
                     _obj.Mode = "offline";
