@@ -18,6 +18,7 @@ using System.Globalization;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.SqlClient;
 using DataContracts.ML;
+using System.Configuration;
 
 namespace DataLayer
 {
@@ -7918,11 +7919,14 @@ namespace DataLayer
                         #endregion
 
                         #region Hotel Mapping Data
+
+                        List<string> Unmappingstatus = new List<string>(); Unmappingstatus = "HOLD,REMAP,UNMAPPED".Split(',').ToList();
+
                         supplierResult.Hotel_TotalRecordReceived = string.Empty;
                         supplierResult.Hotel_AutoMapped = MappingData.Where(x => x.MappingFor == "Product" && x.Status == "AUTOMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
                         supplierResult.Hotel_MannualMapped = MappingData.Where(x => x.MappingFor == "Product" && x.Status == "MAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
                         supplierResult.Hotel_ReviewMapped = MappingData.Where(x => x.MappingFor == "Product" && x.Status == "REVIEW" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
-                        supplierResult.Hotel_Unmapped = MappingData.Where(x => x.MappingFor == "Product" && x.Status == "UNMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
+                        supplierResult.Hotel_Unmapped = MappingData.Where(x => x.MappingFor == "Product" && Unmappingstatus.Any(w => w == x.Status) && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
                         supplierResult.HotelTotal = supplierResult.Hotel_AutoMapped + supplierResult.Hotel_MannualMapped + supplierResult.Hotel_ReviewMapped + supplierResult.Hotel_Unmapped; //MappingData.Where(w => w.MappingFor == "Product" && w.Supplier_Id == supplier.Supplier_Id).Sum(s => s.TotalCount) ?? 0;
                         if (supplierResult.HotelTotal > 0)
                         {
