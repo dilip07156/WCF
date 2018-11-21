@@ -711,9 +711,17 @@ namespace DataLayer
                     #region Delete stg_AccoMapping_Ids record from stg if it is processed
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        context.Database.CommandTimeout = 0;
-                        var stgIds = clsMappingHotel.Select(s => s.stg_AccoMapping_Id).ToList();
-                        var count = context.stg_SupplierProductMapping.Where(d => stgIds.Contains(d.stg_AccoMapping_Id)).Delete();
+                        try
+                        {
+                            context.Database.CommandTimeout = 0;
+                            var stgIds = clsMappingHotel.Select(s => s.stg_AccoMapping_Id).ToList();
+                            var count = context.stg_SupplierProductMapping.Where(d => stgIds.Contains(d.stg_AccoMapping_Id)).Delete();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogErrorMessage(File_Id, ex, "DataLayer", "DL_Mapping", "HotelMappingMatch", (int)ex.Message.GetTypeCode(), ex.GetType().Name, "Error while Delete Match.");
+                        }
+
                     }
                     #endregion
                 }
@@ -733,16 +741,28 @@ namespace DataLayer
                 List<DataContracts.Mapping.DC_Accomodation_ProductMapping> toUpdate = new List<DC_Accomodation_ProductMapping>();
 
                 var stgIds = stg.Select(s => s.stg_AccoMapping_Id).ToList();
-                toUpdate = (from a in context.Accommodation_ProductMapping.AsNoTracking()
-                            join s in context.stg_SupplierProductMapping.AsNoTracking() on
-                            new { a.Supplier_Id, a.SupplierProductReference } equals new { s.Supplier_Id, SupplierProductReference = s.ProductId }
-                            where s.SupplierImportFile_Id == File_Id
-                            && stgIds.Contains(s.stg_AccoMapping_Id)
+
+                var UpdateRecords = (from a in context.Accommodation_ProductMapping.AsNoTracking()
+                                     join s in context.stg_SupplierProductMapping.AsNoTracking() on
+                                     new { a.Supplier_Id, a.SupplierProductReference } equals new { s.Supplier_Id, SupplierProductReference = s.ProductId }
+                                     where s.SupplierImportFile_Id == File_Id
+                                     && stgIds.Contains(s.stg_AccoMapping_Id)
+                                     select new
+                                     {
+                                         a.Accommodation_ProductMapping_Id,
+                                         a.Accommodation_Id,
+                                         s.stg_AccoMapping_Id,
+                                         a.Status
+                                     }).ToList();
+
+                toUpdate = (from a in UpdateRecords
+                            join s in stg on a.stg_AccoMapping_Id equals s.stg_AccoMapping_Id
                             select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                             {
                                 Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
                                 Accommodation_Id = a.Accommodation_Id,
                                 ProductName = s.ProductName,
+                                SupplierProductReference = s.ProductId,
                                 Street = (s.Address == null ? (s.StreetNo + " " + s.StreetName) : s.Address),
                                 Street2 = (s.Address == null ? s.Street2 : ""),
                                 Street3 = (s.Address == null ? s.Street3 : ""),
@@ -783,8 +803,6 @@ namespace DataLayer
 
                 insertSTGList = stg.Where(w => !toUpdate.Any(a => a.stg_AccoMapping_Id == w.stg_AccoMapping_Id)).ToList();
                 updateMappingList = toUpdate;
-
-                context.Dispose();
             }
         }
 
@@ -2855,8 +2873,21 @@ namespace DataLayer
 
                                     search.IsActive = true;
 
-                                    search.GeoLocation = System.Data.Entity.Spatial.DbGeography.FromText(String.Format(CultureInfo.InvariantCulture, "POINT({0} {1})", search.Longitude, search.Latitude));
-
+                                    if (double.TryParse(search.Longitude, out double Lng) && double.TryParse(search.Latitude, out double Lat))
+                                    {
+                                        if (Lat >= -90 && Lat <= 90 && Lng >= -180 && Lng <= 180)
+                                        {
+                                            search.GeoLocation = System.Data.Entity.Spatial.DbGeography.FromText(String.Format(CultureInfo.InvariantCulture, "POINT({0} {1})", Lng, Lat));
+                                        }
+                                        else
+                                        {
+                                            search.GeoLocation = null;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        search.GeoLocation = null;
+                                    }
                                 } //Means it is coming from Datahandler and all 
                                 #endregion
 
@@ -3000,7 +3031,21 @@ namespace DataLayer
 
                                 objNew.IsActive = true;
 
-                                objNew.GeoLocation = System.Data.Entity.Spatial.DbGeography.FromText(String.Format(CultureInfo.InvariantCulture, "POINT({0} {1})", objNew.Longitude, objNew.Latitude));
+                                if (double.TryParse(objNew.Longitude, out double Lng) && double.TryParse(objNew.Latitude, out double Lat))
+                                {
+                                    if (Lat >= -90 && Lat <= 90 && Lng >= -180 && Lng <= 180)
+                                    {
+                                        objNew.GeoLocation = System.Data.Entity.Spatial.DbGeography.FromText(String.Format(CultureInfo.InvariantCulture, "POINT({0} {1})", Lng, Lat));
+                                    }
+                                    else
+                                    {
+                                        objNew.GeoLocation = null;
+                                    }
+                                }
+                                else
+                                {
+                                    objNew.GeoLocation = null;
+                                }
 
                                 context.Accommodation_ProductMapping.Add(objNew);
                                 context.SaveChanges();
@@ -6954,7 +6999,13 @@ namespace DataLayer
                     {
                         context.Database.CommandTimeout = 0;
                         var stgIds = clsMappingCity.Select(s => s.stg_City_Id).ToList();
-                        var count = context.stg_SupplierCityMapping.Where(d => stgIds.Contains(d.stg_City_Id)).Delete();
+
+                        using (var trn = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadCommitted))
+                        {
+                            var count = context.stg_SupplierCityMapping.Where(d => stgIds.Contains(d.stg_City_Id)).Delete();
+
+                            trn.Commit();
+                        }
                     }
                     #endregion
                 }
