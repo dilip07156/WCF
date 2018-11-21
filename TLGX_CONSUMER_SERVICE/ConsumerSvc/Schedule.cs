@@ -13,11 +13,11 @@ namespace ConsumerSvc
 {
     public partial class Consumer : IConsumer
     {
-        public IList<DataContracts.Schedulers.DC_Supplier_Schedule> GetSchedule(string Supplier_Id)
+        public IList<DataContracts.Schedulers.DC_Supplier_Schedule> GetSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
         {
             using (BusinessLayer.BL_Schedule obj = new BL_Schedule())
             {
-                return obj.GetSchedule(Supplier_Id);
+                return obj.GetSchedule(RQ);
             }
         }
 
@@ -28,6 +28,25 @@ namespace ConsumerSvc
                 return objBL.AddUpdateSchedule(obj);
             }
         }
+
+        public IList<DataContracts.Schedulers.DC_Supplier_Schedule_RS> GetScheduleBySupplier(DataContracts.Schedulers.DC_Supplier_Schedule_RQ _obj)
+        {
+            using (BusinessLayer.BL_Schedule obj = new BL_Schedule())
+            {
+                return obj.GetScheduleBySupplier(_obj);
+            }
+        }
+
+        
+
+        public bool UpdateSupplierSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
+        {
+            using (BusinessLayer.BL_Schedule obj = new BL_Schedule())
+            {
+                return obj.UpdateSupplierSchedule(RQ);
+            }
+        }
+
 
     }
 }

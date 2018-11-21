@@ -161,6 +161,7 @@ namespace DataLayer
         public virtual DbSet<m_CityMaster> m_CityMaster { get; set; }
         public virtual DbSet<Activity_Flavour> Activity_Flavour { get; set; }
         public virtual DbSet<Supplier_Schedule> Supplier_Schedule { get; set; }
+        public virtual DbSet<Supplier_Credentials> Supplier_Credentials { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {

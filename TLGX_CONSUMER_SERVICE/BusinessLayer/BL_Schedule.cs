@@ -15,11 +15,11 @@ namespace BusinessLayer
 
         }
 
-        public IList<DataContracts.Schedulers.DC_Supplier_Schedule> GetSchedule(string Supplier_Id)
+        public IList<DataContracts.Schedulers.DC_Supplier_Schedule> GetSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
         {
             using (DataLayer.DL_Schedule obj = new DataLayer.DL_Schedule())
             {
-                return obj.GetSchedule(Supplier_Id);
+                return obj.GetSchedule(RQ);
             }
         }
         public DataContracts.DC_Message AddUpdateSchedule(DataContracts.Schedulers.DC_Supplier_Schedule obj)
@@ -27,6 +27,22 @@ namespace BusinessLayer
             using (DataLayer.DL_Schedule objDL = new DataLayer.DL_Schedule())
             {
                 return objDL.AddUpdateSchedule(obj);
+            }
+        }
+
+        public IList<DataContracts.Schedulers.DC_Supplier_Schedule_RS> GetScheduleBySupplier(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
+        {
+            using (DataLayer.DL_Schedule obj = new DataLayer.DL_Schedule())
+            {
+                return obj.GetScheduleBySupplier(RQ);
+            }
+        }
+
+        public bool UpdateSupplierSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
+        {
+            using (DataLayer.DL_Schedule obj = new DataLayer.DL_Schedule())
+            {
+                return obj.UpdateSupplierSchedule(RQ);
             }
         }
     }
