@@ -375,6 +375,18 @@
           <Property Name="Edit_Date" Type="datetime" />
           <Property Name="IsActive" Type="bit" />
           <Property Name="TLGXAccoRoomId" Type="varchar" MaxLength="50" />
+          <Property Name="TX_RoomName" Type="nvarchar" MaxLength="255" />
+          <Property Name="TX_RoomName_Stripped" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Accommodation_RoomInfo_Attributes">
+          <Key>
+            <PropertyRef Name="Accommodation_RoomInfo_Attribute_Id" />
+          </Key>
+          <Property Name="Accommodation_RoomInfo_Attribute_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Accommodation_RoomInfo_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Accommodation_RoomInfo_Attribute" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="SystemAttributeKeyword" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="SystemAttributeKeyword_Id" Type="uniqueidentifier" Nullable="false" />
         </EntityType>
         <EntityType Name="Accommodation_RouteInfo">
           <Key>
@@ -2935,6 +2947,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="Accommodation_ProductMapping" EntityType="Self.Accommodation_ProductMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Accommodation_RoomFacility" EntityType="Self.Accommodation_RoomFacility" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Accommodation_RoomInfo" EntityType="Self.Accommodation_RoomInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Accommodation_RoomInfo_Attributes" EntityType="Self.Accommodation_RoomInfo_Attributes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Accommodation_RouteInfo" EntityType="Self.Accommodation_RouteInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Accommodation_RuleInfo" EntityType="Self.Accommodation_RuleInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Accommodation_Status" EntityType="Self.Accommodation_Status" Schema="dbo" store:Type="Tables" />
@@ -3268,6 +3281,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="Supplier_Credentials" EntityType="ConsumerModel.Supplier_Credentials" />
           <EntitySet Name="Supplier_Scheduled_Task" EntityType="ConsumerModel.Supplier_Scheduled_Task" />
           <EntitySet Name="Supplier_Schedule" EntityType="ConsumerModel.Supplier_Schedule" />
+          <EntitySet Name="Accommodation_RoomInfo_Attributes" EntityType="ConsumerModel.Accommodation_RoomInfo_Attributes" />
 
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
@@ -3452,6 +3466,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="TLGXAccoRoomId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TX_RoomName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TX_RoomName_Stripped" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Accommodation_RouteInfo">
           <Key>
@@ -6141,6 +6157,16 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="CronExpression" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" />
         </EntityType>
+        <EntityType Name="Accommodation_RoomInfo_Attributes">
+          <Key>
+            <PropertyRef Name="Accommodation_RoomInfo_Attribute_Id" />
+          </Key>
+          <Property Name="Accommodation_RoomInfo_Attribute_Id" Type="Guid" Nullable="false" />
+          <Property Name="Accommodation_RoomInfo_Id" Type="Guid" Nullable="false" />
+          <Property Name="Accommodation_RoomInfo_Attribute" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SystemAttributeKeyword" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SystemAttributeKeyword_Id" Type="Guid" Nullable="false" />
+        </EntityType>
         
       </Schema>
     </edmx:ConceptualModels>
@@ -6305,6 +6331,8 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="Accommodation_RoomInfo">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_RoomInfo">
               <MappingFragment StoreEntitySet="Accommodation_RoomInfo">
+                <ScalarProperty Name="TX_RoomName_Stripped" ColumnName="TX_RoomName_Stripped" />
+                <ScalarProperty Name="TX_RoomName" ColumnName="TX_RoomName" />
                 <ScalarProperty Name="TLGXAccoRoomId" ColumnName="TLGXAccoRoomId" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
@@ -9123,6 +9151,17 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
                 <ScalarProperty Name="Entity" ColumnName="Entity" />
                 <ScalarProperty Name="Supplier_ID" ColumnName="Supplier_ID" />
                 <ScalarProperty Name="SupplierScheduleID" ColumnName="SupplierScheduleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Accommodation_RoomInfo_Attributes">
+            <EntityTypeMapping TypeName="ConsumerModel.Accommodation_RoomInfo_Attributes">
+              <MappingFragment StoreEntitySet="Accommodation_RoomInfo_Attributes">
+                <ScalarProperty Name="SystemAttributeKeyword_Id" ColumnName="SystemAttributeKeyword_Id" />
+                <ScalarProperty Name="SystemAttributeKeyword" ColumnName="SystemAttributeKeyword" />
+                <ScalarProperty Name="Accommodation_RoomInfo_Attribute" ColumnName="Accommodation_RoomInfo_Attribute" />
+                <ScalarProperty Name="Accommodation_RoomInfo_Id" ColumnName="Accommodation_RoomInfo_Id" />
+                <ScalarProperty Name="Accommodation_RoomInfo_Attribute_Id" ColumnName="Accommodation_RoomInfo_Attribute_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
