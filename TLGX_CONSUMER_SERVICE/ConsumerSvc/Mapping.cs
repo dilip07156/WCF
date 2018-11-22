@@ -98,6 +98,14 @@ namespace ConsumerSvc
             }
         }
 
+        public DataContracts.DC_Message Accomodation_Room_TTFUALL(string Accommodation_Room_Id)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.Accomodation_Room_TTFUALL(Accommodation_Room_Id);
+            }
+        }
+
         public DataContracts.DC_Message UpdateAccomodationSupplierRoomTypeMappingValues(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMapping_Values> obj)
         {
             using (BL_Mapping objBL = new BL_Mapping())

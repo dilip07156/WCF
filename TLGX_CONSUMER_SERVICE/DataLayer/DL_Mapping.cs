@@ -707,7 +707,7 @@ namespace DataLayer
 
                 PLog.PercentageValue = 60;
                 USD.AddStaticDataUploadProcessLog(PLog);
-                
+
 
                 if (clsMappingHotel.Count > 0)
                 {
@@ -4912,7 +4912,7 @@ namespace DataLayer
                         {
                             UpdateRoomTypeMappingStatus_GetAndProcessData(null, asrtmd.Select(s => s.RoomTypeMap_Id).ToList());
                         }
-                            
+
                     }
                 }
 
@@ -4931,6 +4931,116 @@ namespace DataLayer
             {
                 return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Failed, StatusMessage = ex.Message };
                 //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while TTFU", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public DataContracts.DC_Message Accomodation_Room_TTFUALL(Guid Accommodation_RoomInfo_Id)
+        {
+            try
+            {
+                List<AccoRoomTemp> AccoRooms = new List<AccoRoomTemp>();
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (Accommodation_RoomInfo_Id != Guid.Empty)
+                    {
+                        AccoRooms = context.Accommodation_RoomInfo.Where(w => w.Accommodation_RoomInfo_Id == Accommodation_RoomInfo_Id).Select(s => new AccoRoomTemp { AccoRoom_Id = s.Accommodation_RoomInfo_Id, AccoRoomName = s.RoomName, AccoRoomDesc = s.Description }).ToList();
+                    }
+                    else
+                    {
+                        context.Database.CommandTimeout = 0;
+                        AccoRooms = context.Accommodation_RoomInfo.Select(s => new AccoRoomTemp { AccoRoom_Id = s.Accommodation_RoomInfo_Id, AccoRoomName = s.RoomName, AccoRoomDesc = s.Description }).ToList();
+                    }
+                }
+
+                #region Get All Keywords & Room Names
+
+                List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
+                using (DL_Masters objDL = new DL_Masters())
+                {
+                    Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "RoomType", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
+                }
+
+                #endregion
+
+                int i = 0;
+                List<DC_SupplierRoomName_AttributeList> AttributeList;
+
+                foreach (AccoRoomTemp rn in AccoRooms)
+                {
+                    i = i + 1;
+
+                    string TX_RoomName = string.Empty;
+                    string TX_RoomName_Stripped = string.Empty;
+                    string TX_RoomDesc = string.Empty;
+                    string TX_RoomDesc_Stripped = string.Empty;
+
+                    AttributeList = new List<DC_SupplierRoomName_AttributeList>();
+
+                    string BaseRoomName = string.Empty;
+                    string RoomDescription = string.Empty;
+
+                    if (string.IsNullOrWhiteSpace(rn.AccoRoomName))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        BaseRoomName = rn.AccoRoomName;
+                        RoomDescription = rn.AccoRoomDesc;
+                    }
+
+                    BaseRoomName = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_RoomName, ref TX_RoomName_Stripped, BaseRoomName, new string[] { });
+
+                    //Value assignment
+                    rn.TX_AccoRoomName = TX_RoomName;
+                    rn.TX_AccoRoomName_Stripped = TX_RoomName_Stripped;
+
+                    //Perform TTFU on Room Description to extract the Attributes.
+                    RoomDescription = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_RoomDesc, ref TX_RoomDesc_Stripped, RoomDescription, new string[] { });
+
+                    //Assign the final Attribute List
+                    rn.AttributeList = AttributeList;
+
+                    #region UpdateToDB
+
+                    //Update Room Name Stripped and Attributes
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        //Remove Existing Attribute List Records
+                        context.Accommodation_RoomInfo_Attributes.Where(w => w.Accommodation_RoomInfo_Id == rn.AccoRoom_Id).Delete();
+
+
+
+                        context.Accommodation_RoomInfo_Attributes.AddRange((from a in rn.AttributeList
+                                                                                   select new Accommodation_RoomInfo_Attributes
+                                                                                   {
+                                                                                       Accommodation_RoomInfo_Attribute_Id = Guid.NewGuid(),
+                                                                                       Accommodation_RoomInfo_Id = rn.AccoRoom_Id,
+                                                                                       Accommodation_RoomInfo_Attribute = a.SupplierRoomTypeAttribute,
+                                                                                       SystemAttributeKeyword = a.SystemAttributeKeyword,
+                                                                                       SystemAttributeKeyword_Id = a.SystemAttributeKeywordID
+                                                                                   }).ToList());
+
+                        var RI = context.Accommodation_RoomInfo.Find(rn.AccoRoom_Id);
+                        if (RI != null)
+                        {
+                            RI.TX_RoomName = rn.TX_AccoRoomName;
+                            RI.TX_RoomName_Stripped = rn.TX_AccoRoomName_Stripped;
+                        }
+
+                        context.SaveChanges();
+                    }
+
+                    #endregion
+                }
+
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword Replace and Attribute Extraction has been done." };
+
+            }
+            catch (Exception ex)
+            {
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Failed, StatusMessage = ex.Message };
             }
         }
 
@@ -10684,5 +10794,15 @@ namespace DataLayer
         }
 
         #endregion
+    }
+
+    public class AccoRoomTemp
+    {
+        public Guid AccoRoom_Id { get; set; }
+        public string AccoRoomName { get; set; }
+        public string AccoRoomDesc { get; set; }
+        public string TX_AccoRoomName { get; set; }
+        public string TX_AccoRoomName_Stripped { get; set; }
+        public List<DC_SupplierRoomName_AttributeList> AttributeList { get; set; }
     }
 }
