@@ -71,7 +71,6 @@ namespace DataLayer
         public virtual DbSet<m_Statuses> m_Statuses { get; set; }
         public virtual DbSet<m_FrequencyType> m_FrequencyType { get; set; }
         public virtual DbSet<Schedule_NextOccurance> Schedule_NextOccurance { get; set; }
-        public virtual DbSet<Supplier_Schedule> Supplier_Schedule { get; set; }
         public virtual DbSet<Supplier_Market> Supplier_Market { get; set; }
         public virtual DbSet<Supplier_ProductCategory> Supplier_ProductCategory { get; set; }
         public virtual DbSet<m_MasterAttributeMapping> m_MasterAttributeMapping { get; set; }
@@ -162,6 +161,8 @@ namespace DataLayer
         public virtual DbSet<m_CityMaster> m_CityMaster { get; set; }
         public virtual DbSet<Activity_Flavour> Activity_Flavour { get; set; }
         public virtual DbSet<Supplier_Credentials> Supplier_Credentials { get; set; }
+        public virtual DbSet<Supplier_Scheduled_Task> Supplier_Scheduled_Task { get; set; }
+        public virtual DbSet<Supplier_Schedule> Supplier_Schedule { get; set; }
     
         public virtual int USP_UpdateMapID(string updateIn)
         {
