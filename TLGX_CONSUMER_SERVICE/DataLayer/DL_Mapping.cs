@@ -18,6 +18,7 @@ using System.Globalization;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.SqlClient;
 using DataContracts.ML;
+using System.Configuration;
 
 namespace DataLayer
 {
@@ -636,16 +637,21 @@ namespace DataLayer
                 RQ.PageSize = obj.BatchSize;
                 RQ.PageNo = 0;
 
+                CallLogVerbose(File_Id, "MAP", "Get Data from Stg", obj.CurrentBatch);
+
                 clsSTGHotel = staticdata.GetSTGHotelData(RQ);
 
                 PLog.PercentageValue = 15;
                 USD.AddStaticDataUploadProcessLog(PLog);
 
+                CallLogVerbose(File_Id, "MAP", "Separate Insert and Update records", obj.CurrentBatch);
                 //Dupe check hotel logic
                 CheckHotelAlreadyExist(File_Id, obj.CurrentBatch ?? 0, CurSupplier_Id, CurSupplierName, clsSTGHotel, out clsMappingHotel, out clsSTGHotelInsert);
 
                 PLog.PercentageValue = 53;
                 USD.AddStaticDataUploadProcessLog(PLog);
+
+                CallLogVerbose(File_Id, "MAP", "Combine the records", obj.CurrentBatch);
 
                 clsMappingHotel.InsertRange(clsMappingHotel.Count, clsSTGHotelInsert.Select
                     (g => new DC_Accomodation_ProductMapping
@@ -702,7 +708,7 @@ namespace DataLayer
 
                 PLog.PercentageValue = 60;
                 USD.AddStaticDataUploadProcessLog(PLog);
-                CallLogVerbose(File_Id, "MAP", "Updating / Inserting to database.", obj.CurrentBatch);
+
 
                 if (clsMappingHotel.Count > 0)
                 {
@@ -741,6 +747,8 @@ namespace DataLayer
                 List<DataContracts.Mapping.DC_Accomodation_ProductMapping> toUpdate = new List<DC_Accomodation_ProductMapping>();
 
                 var stgIds = stg.Select(s => s.stg_AccoMapping_Id).ToList();
+
+                CallLogVerbose(File_Id, "MAP", "Get Update List", Batch);
 
                 var UpdateRecords = (from a in context.Accommodation_ProductMapping.AsNoTracking()
                                      join s in context.stg_SupplierProductMapping.AsNoTracking() on
@@ -800,6 +808,8 @@ namespace DataLayer
                                 ReRunBatch = Batch,
                                 Status = a.Status
                             }).ToList();
+
+                CallLogVerbose(File_Id, "MAP", "Get Insert List", Batch);
 
                 insertSTGList = stg.Where(w => !toUpdate.Any(a => a.stg_AccoMapping_Id == w.stg_AccoMapping_Id)).ToList();
                 updateMappingList = toUpdate;
@@ -2585,6 +2595,8 @@ namespace DataLayer
                 List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
                 if (SupplierImportFile_Id != Guid.Empty)
                 {
+                    CallLogVerbose(SupplierImportFile_Id, "MAP", "Fetching keywords.", Batch);
+
                     using (DL_Masters objDL = new DL_Masters())
                     {
                         Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "HotelName", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
@@ -2597,6 +2609,11 @@ namespace DataLayer
                 #endregion
 
                 #region Loop through all the records to Update / Insert
+
+                if (SupplierImportFile_Id != Guid.Empty)
+                {
+                    CallLogVerbose(SupplierImportFile_Id, "MAP", "Updating / Inserting to database.", Batch);
+                }
 
                 foreach (var PM in obj)
                 {
@@ -3097,6 +3114,7 @@ namespace DataLayer
                     //mapid
                     try
                     {
+                        CallLogVerbose(SupplierImportFile_Id, "MAP", "Updating MapId", Batch);
                         context.USP_UpdateMapID("product");
                     }
                     catch (Exception ex) { }
@@ -3106,7 +3124,7 @@ namespace DataLayer
                 #region Update No Of Keyword Hits if the operation is from Datahandler
                 if (SupplierImportFile_Id != Guid.Empty)
                 {
-
+                    CallLogVerbose(SupplierImportFile_Id, "MAP", "Updating Keyword Counters", Batch);
                     var updatableAliases = (from k in Keywords
                                             from ka in k.Alias
                                             where ka.NewHits != 0
@@ -3121,9 +3139,7 @@ namespace DataLayer
 
                 }
                 #endregion
-
             }
-
             return true;
         }
 
@@ -3217,8 +3233,6 @@ namespace DataLayer
                         }
 
                         context.SaveChanges();
-
-
                     }
 
                     //Call Training Data To push 
@@ -4801,7 +4815,6 @@ namespace DataLayer
                 }
                 #endregion
 
-
                 int i = 0;
                 List<DC_SupplierRoomName_AttributeList> AttributeList;
 
@@ -4910,7 +4923,10 @@ namespace DataLayer
                     if (!string.IsNullOrWhiteSpace(CallingAgent))
                     {
                         if (CallingAgent == "MDM")
+                        {
                             UpdateRoomTypeMappingStatus_GetAndProcessData(null, asrtmd.Select(s => s.RoomTypeMap_Id).ToList());
+                        }
+
                     }
                 }
 
@@ -4929,6 +4945,116 @@ namespace DataLayer
             {
                 return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Failed, StatusMessage = ex.Message };
                 //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while TTFU", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public DataContracts.DC_Message Accomodation_Room_TTFUALL(Guid Accommodation_RoomInfo_Id)
+        {
+            try
+            {
+                List<AccoRoomTemp> AccoRooms = new List<AccoRoomTemp>();
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (Accommodation_RoomInfo_Id != Guid.Empty)
+                    {
+                        AccoRooms = context.Accommodation_RoomInfo.Where(w => w.Accommodation_RoomInfo_Id == Accommodation_RoomInfo_Id).Select(s => new AccoRoomTemp { AccoRoom_Id = s.Accommodation_RoomInfo_Id, AccoRoomName = s.RoomName, AccoRoomDesc = s.Description }).ToList();
+                    }
+                    else
+                    {
+                        context.Database.CommandTimeout = 0;
+                        AccoRooms = context.Accommodation_RoomInfo.Select(s => new AccoRoomTemp { AccoRoom_Id = s.Accommodation_RoomInfo_Id, AccoRoomName = s.RoomName, AccoRoomDesc = s.Description }).ToList();
+                    }
+                }
+
+                #region Get All Keywords & Room Names
+
+                List<DataContracts.Masters.DC_Keyword> Keywords = new List<DataContracts.Masters.DC_Keyword>();
+                using (DL_Masters objDL = new DL_Masters())
+                {
+                    Keywords = objDL.SearchKeyword(new DataContracts.Masters.DC_Keyword_RQ { EntityFor = "RoomType", PageNo = 0, PageSize = int.MaxValue, Status = "ACTIVE", AliasStatus = "ACTIVE" });
+                }
+
+                #endregion
+
+                int i = 0;
+                List<DC_SupplierRoomName_AttributeList> AttributeList;
+
+                foreach (AccoRoomTemp rn in AccoRooms)
+                {
+                    i = i + 1;
+
+                    string TX_RoomName = string.Empty;
+                    string TX_RoomName_Stripped = string.Empty;
+                    string TX_RoomDesc = string.Empty;
+                    string TX_RoomDesc_Stripped = string.Empty;
+
+                    AttributeList = new List<DC_SupplierRoomName_AttributeList>();
+
+                    string BaseRoomName = string.Empty;
+                    string RoomDescription = string.Empty;
+
+                    if (string.IsNullOrWhiteSpace(rn.AccoRoomName))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        BaseRoomName = rn.AccoRoomName;
+                        RoomDescription = rn.AccoRoomDesc;
+                    }
+
+                    BaseRoomName = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_RoomName, ref TX_RoomName_Stripped, BaseRoomName, new string[] { });
+
+                    //Value assignment
+                    rn.TX_AccoRoomName = TX_RoomName;
+                    rn.TX_AccoRoomName_Stripped = TX_RoomName_Stripped;
+
+                    //Perform TTFU on Room Description to extract the Attributes.
+                    RoomDescription = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_RoomDesc, ref TX_RoomDesc_Stripped, RoomDescription, new string[] { });
+
+                    //Assign the final Attribute List
+                    rn.AttributeList = AttributeList;
+
+                    #region UpdateToDB
+
+                    //Update Room Name Stripped and Attributes
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        //Remove Existing Attribute List Records
+                        context.Accommodation_RoomInfo_Attributes.Where(w => w.Accommodation_RoomInfo_Id == rn.AccoRoom_Id).Delete();
+
+
+
+                        context.Accommodation_RoomInfo_Attributes.AddRange((from a in rn.AttributeList
+                                                                                   select new Accommodation_RoomInfo_Attributes
+                                                                                   {
+                                                                                       Accommodation_RoomInfo_Attribute_Id = Guid.NewGuid(),
+                                                                                       Accommodation_RoomInfo_Id = rn.AccoRoom_Id,
+                                                                                       Accommodation_RoomInfo_Attribute = a.SupplierRoomTypeAttribute,
+                                                                                       SystemAttributeKeyword = a.SystemAttributeKeyword,
+                                                                                       SystemAttributeKeyword_Id = a.SystemAttributeKeywordID
+                                                                                   }).ToList());
+
+                        var RI = context.Accommodation_RoomInfo.Find(rn.AccoRoom_Id);
+                        if (RI != null)
+                        {
+                            RI.TX_RoomName = rn.TX_AccoRoomName;
+                            RI.TX_RoomName_Stripped = rn.TX_AccoRoomName_Stripped;
+                        }
+
+                        context.SaveChanges();
+                    }
+
+                    #endregion
+                }
+
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword Replace and Attribute Extraction has been done." };
+
+            }
+            catch (Exception ex)
+            {
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Failed, StatusMessage = ex.Message };
             }
         }
 
@@ -5411,7 +5537,6 @@ namespace DataLayer
                 {
                     sbSupplierRoomTypeMap_Ids.Append("'" + id.ToString() + "',");
                 }
-
             }
             else if (obj != null && AccoRoomMap_Ids == null)
             {
@@ -5944,6 +6069,7 @@ namespace DataLayer
                         int AUTOMAPPED_CNT = CurrentMappedRecords.Where(w => w.SystemMappingStatus == "AUTOMAPPED").Count();
                         var MAPPED_CNT = CurrentMappedRecords.Where(w => w.SystemMappingStatus == "MAPPED").Count();
                         var REVIEW_CNT = CurrentMappedRecords.Where(w => w.SystemMappingStatus == "REVIEW").Count();
+
                         if (ASRTM != null)
                         {
                             if (itemToUpdate.MappingStatus == "ADD" && ASRTM.MappingStatus != itemToUpdate.MappingStatus)
@@ -6037,6 +6163,11 @@ namespace DataLayer
                             }
                         }
 
+                        //Call Broker Delete Training Data API, true is passed as to delete the training data as it is hard perform mapping by Broker
+                        if (IsCalledFromTTFU && ASRTM != null)
+                        {
+                            DeleteOrSendTraingData(ASRTM.Accommodation_SupplierRoomTypeMapping_Id, true);
+                        }
                     }
                 }
                 #endregion
@@ -7917,11 +8048,14 @@ namespace DataLayer
                         #endregion
 
                         #region Hotel Mapping Data
+
+                        List<string> Unmappingstatus = new List<string>(); Unmappingstatus = "HOLD,REMAP,UNMAPPED".Split(',').ToList();
+
                         supplierResult.Hotel_TotalRecordReceived = string.Empty;
                         supplierResult.Hotel_AutoMapped = MappingData.Where(x => x.MappingFor == "Product" && x.Status == "AUTOMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
                         supplierResult.Hotel_MannualMapped = MappingData.Where(x => x.MappingFor == "Product" && x.Status == "MAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
                         supplierResult.Hotel_ReviewMapped = MappingData.Where(x => x.MappingFor == "Product" && x.Status == "REVIEW" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
-                        supplierResult.Hotel_Unmapped = MappingData.Where(x => x.MappingFor == "Product" && x.Status == "UNMAPPED" && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
+                        supplierResult.Hotel_Unmapped = MappingData.Where(x => x.MappingFor == "Product" && Unmappingstatus.Any(w => w == x.Status) && x.Supplier_Id == supplier.Supplier_Id).Sum(x => x.TotalCount) ?? 0;
                         supplierResult.HotelTotal = supplierResult.Hotel_AutoMapped + supplierResult.Hotel_MannualMapped + supplierResult.Hotel_ReviewMapped + supplierResult.Hotel_Unmapped; //MappingData.Where(w => w.MappingFor == "Product" && w.Supplier_Id == supplier.Supplier_Id).Sum(s => s.TotalCount) ?? 0;
                         if (supplierResult.HotelTotal > 0)
                         {
@@ -10683,5 +10817,15 @@ namespace DataLayer
         }
 
         #endregion
+    }
+
+    public class AccoRoomTemp
+    {
+        public Guid AccoRoom_Id { get; set; }
+        public string AccoRoomName { get; set; }
+        public string AccoRoomDesc { get; set; }
+        public string TX_AccoRoomName { get; set; }
+        public string TX_AccoRoomName_Stripped { get; set; }
+        public List<DC_SupplierRoomName_AttributeList> AttributeList { get; set; }
     }
 }

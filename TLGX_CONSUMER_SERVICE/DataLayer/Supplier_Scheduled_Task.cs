@@ -12,19 +12,18 @@ namespace DataLayer
     using System;
     using System.Collections.Generic;
     
-    public partial class Accommodation_Facility
+    public partial class Supplier_Scheduled_Task
     {
-        public System.Guid Accommodation_Facility_Id { get; set; }
-        public Nullable<System.Guid> Accommodation_Id { get; set; }
-        public Nullable<int> Legacy_Htl_Id { get; set; }
-        public string FacilityCategory { get; set; }
-        public string FacilityType { get; set; }
-        public string FacilityName { get; set; }
-        public string Description { get; set; }
-        public string Create_User { get; set; }
+        public System.Guid SupplierScheduledTaskID { get; set; }
+        public System.Guid Supplier_ID { get; set; }
+        public string Entity { get; set; }
+        public string Status { get; set; }
+        public Nullable<System.DateTime> Task_Date { get; set; }
+        public Nullable<bool> Is_Complete { get; set; }
         public Nullable<System.DateTime> Create_Date { get; set; }
-        public string Edit_User { get; set; }
+        public string Create_User { get; set; }
         public Nullable<System.DateTime> Edit_Date { get; set; }
+        public string Edit_User { get; set; }
         public Nullable<bool> IsActive { get; set; }
     }
 }

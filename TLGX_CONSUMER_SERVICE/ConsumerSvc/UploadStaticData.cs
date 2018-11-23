@@ -215,5 +215,15 @@ namespace ConsumerSvc
             }
         }
         #endregion
+        //GAURAV_TMAP_746
+        #region File Processing Check
+        public DataContracts.DC_Message FileProcessingCheckInSupplierImportFileDetails(string SupplierId)
+        {
+            using (BL_UploadStaticData objBL = new BL_UploadStaticData())
+            {
+                return objBL.FileProcessingCheckInSupplierImportFileDetails(SupplierId);
+            }
+        }
+        #endregion
     }
 }

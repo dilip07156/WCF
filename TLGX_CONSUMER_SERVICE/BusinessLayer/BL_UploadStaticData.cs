@@ -48,7 +48,7 @@ namespace BusinessLayer
             {
                 using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
                 {
-                    dc =  objBL.AddStaticDataMappingAttribute(obj);
+                    dc = objBL.AddStaticDataMappingAttribute(obj);
                 }
             }
             return dc;
@@ -148,7 +148,7 @@ namespace BusinessLayer
                 return objBL.UpdateStaticDataFileDetailStatus(obj);
             }
         }
-       
+
 
         #endregion
 
@@ -285,7 +285,7 @@ namespace BusinessLayer
 
         public int Get_STG_Record_Count(string SupplierImportFile_Id, string Entity)
         {
-            if(Guid.TryParse(SupplierImportFile_Id, out Guid gSupplierImportFile_Id))
+            if (Guid.TryParse(SupplierImportFile_Id, out Guid gSupplierImportFile_Id))
             {
                 using (DataLayer.DL_UploadStaticData objDL = new DataLayer.DL_UploadStaticData())
                 {
@@ -393,5 +393,16 @@ namespace BusinessLayer
         }
         #endregion
 
+
+        #region File Processing Check
+        //GAURAV_TMAP_746
+        public DataContracts.DC_Message FileProcessingCheckInSupplierImportFileDetails(string SupplierId)
+        {
+            using (DataLayer.DL_UploadStaticData objBL = new DataLayer.DL_UploadStaticData())
+            {
+                return objBL.FileProcessingCheckInSupplierImportFileDetails(SupplierId);
+            }
+        }
+        #endregion
     }
 }
