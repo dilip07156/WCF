@@ -374,9 +374,7 @@ namespace DataLayer
                                         Edit_User,
                                         Edit_Date,
                                         TX_RoomName as RoomInfo_TX
-                                        FROM Accommodation_RoomInfo with(nolock) WHERE Accommodation_RoomInfo_Id = '91AC41D6-7523-4607-B267-000031C95A61'; ");
-
-                    //Accommodation_Id IS NOT NULL; ");
+                                        FROM Accommodation_RoomInfo with(nolock) WHERE Accommodation_Id IS NOT NULL; ");
 
                     StringBuilder sbfinal = new StringBuilder();
                     sbfinal.Append(sbSelect);
@@ -410,7 +408,7 @@ namespace DataLayer
                                         Accommodation_RoomInfo_Id,
                                         Accommodation_RoomInfo_Attribute,
                                         SystemAttributeKeyword 
-                                        FROM Accommodation_RoomInfo_Attributes with(nolock)  WHERE Accommodation_RoomInfo_Id = '91AC41D6-7523-4607-B267-000031C95A61'; ");
+                                        FROM Accommodation_RoomInfo_Attributes with(nolock); ");
 
                     StringBuilder sbfinal = new StringBuilder();
                     sbfinal.Append(sbSelect);
