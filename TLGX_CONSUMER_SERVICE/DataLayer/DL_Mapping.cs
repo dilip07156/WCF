@@ -717,12 +717,17 @@ namespace DataLayer
                     #region Delete stg_AccoMapping_Ids record from stg if it is processed
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
-                        context.Database.CommandTimeout = 0;
-                        var stgIds = clsMappingHotel.Select(s => s.stg_AccoMapping_Id).ToList();
+                        try
+                        {
+                            context.Database.CommandTimeout = 0;
+                            var stgIds = clsMappingHotel.Select(s => s.stg_AccoMapping_Id).ToList();
+                            var count = context.stg_SupplierProductMapping.Where(d => stgIds.Contains(d.stg_AccoMapping_Id)).Delete();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogErrorMessage(File_Id, ex, "DataLayer", "DL_Mapping", "HotelMappingMatch", (int)ex.Message.GetTypeCode(), ex.GetType().Name, "Error while Delete Match.");
+                        }
 
-                        CallLogVerbose(File_Id, "MAP", "Delete the batch from STG", obj.CurrentBatch);
-
-                        var count = context.stg_SupplierProductMapping.Where(d => stgIds.Contains(d.stg_AccoMapping_Id)).Delete();
                     }
                     #endregion
                 }
@@ -745,16 +750,27 @@ namespace DataLayer
 
                 CallLogVerbose(File_Id, "MAP", "Get Update List", Batch);
 
-                toUpdate = (from a in context.Accommodation_ProductMapping.AsNoTracking()
-                            join s in context.stg_SupplierProductMapping.AsNoTracking() on
-                            new { a.Supplier_Id, a.SupplierProductReference } equals new { s.Supplier_Id, SupplierProductReference = s.ProductId }
-                            where s.SupplierImportFile_Id == File_Id
-                            && stgIds.Contains(s.stg_AccoMapping_Id)
+                var UpdateRecords = (from a in context.Accommodation_ProductMapping.AsNoTracking()
+                                     join s in context.stg_SupplierProductMapping.AsNoTracking() on
+                                     new { a.Supplier_Id, a.SupplierProductReference } equals new { s.Supplier_Id, SupplierProductReference = s.ProductId }
+                                     where s.SupplierImportFile_Id == File_Id
+                                     && stgIds.Contains(s.stg_AccoMapping_Id)
+                                     select new
+                                     {
+                                         a.Accommodation_ProductMapping_Id,
+                                         a.Accommodation_Id,
+                                         s.stg_AccoMapping_Id,
+                                         a.Status
+                                     }).ToList();
+
+                toUpdate = (from a in UpdateRecords
+                            join s in stg on a.stg_AccoMapping_Id equals s.stg_AccoMapping_Id
                             select new DataContracts.Mapping.DC_Accomodation_ProductMapping
                             {
                                 Accommodation_ProductMapping_Id = a.Accommodation_ProductMapping_Id,
                                 Accommodation_Id = a.Accommodation_Id,
                                 ProductName = s.ProductName,
+                                SupplierProductReference = s.ProductId,
                                 Street = (s.Address == null ? (s.StreetNo + " " + s.StreetName) : s.Address),
                                 Street2 = (s.Address == null ? s.Street2 : ""),
                                 Street3 = (s.Address == null ? s.Street3 : ""),
@@ -797,8 +813,6 @@ namespace DataLayer
 
                 insertSTGList = stg.Where(w => !toUpdate.Any(a => a.stg_AccoMapping_Id == w.stg_AccoMapping_Id)).ToList();
                 updateMappingList = toUpdate;
-
-                context.Dispose();
             }
         }
 
@@ -2891,7 +2905,6 @@ namespace DataLayer
                                     {
                                         search.GeoLocation = null;
                                     }
-
                                 } //Means it is coming from Datahandler and all 
                                 #endregion
 
@@ -7117,7 +7130,13 @@ namespace DataLayer
                     {
                         context.Database.CommandTimeout = 0;
                         var stgIds = clsMappingCity.Select(s => s.stg_City_Id).ToList();
-                        var count = context.stg_SupplierCityMapping.Where(d => stgIds.Contains(d.stg_City_Id)).Delete();
+
+                        using (var trn = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadCommitted))
+                        {
+                            var count = context.stg_SupplierCityMapping.Where(d => stgIds.Contains(d.stg_City_Id)).Delete();
+
+                            trn.Commit();
+                        }
                     }
                     #endregion
                 }
@@ -10797,6 +10816,57 @@ namespace DataLayer
             return response;
         }
 
+        #endregion
+
+        #region Reset Supplier Room Type Mapping        
+        //GAURAV_TMAP_746
+        public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_Reset(List<DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
+        {
+            try
+            {
+               
+                    StringBuilder sb = new StringBuilder();
+                
+
+                    sb.Append(@" delete from Accommodation_SupplierRoomTypeMapping_Values  where Accommodation_SupplierRoomTypeMapping_Id = '" + Acco_RoomTypeMap_Ids.Select(x => x.Acco_RoomTypeMap_Id).SingleOrDefault() + "' and UserMappingStatus<> 'MAPPED'");
+                //sb.Append(@"     select Priority, Supplier_Id,SupplierName,Accomodation_MannualMapped ,Accomodation_AutoMapped,Accomodation_ReviewMapped,Accomodation_Unmapped,
+                //            (Accomodation_MannualMapped + Accomodation_AutoMapped + Accomodation_ReviewMapped + Accomodation_Unmapped) as AccomodationTotal,
+                //                @TotalHotel as AccoHotelCount, Compared_SupplierName as SourceSupplierName
+                //            from AccommodationSupplierMappingReport_SupplierVSupplier with(nolock) where Compared_Supplier_Id = '" + dC_SupplerVSupplier_Report_RQ.Accommodation_Source_Id + "' ");
+
+                StringBuilder sbCheck = new StringBuilder();
+                sbCheck.Append(@" Select count(*) from Accommodation_SupplierRoomTypeMapping_Values with(nolock) where Accommodation_SupplierRoomTypeMapping_Id = '" + Acco_RoomTypeMap_Ids.Select(x => x.Acco_RoomTypeMap_Id).SingleOrDefault() + "' and UserMappingStatus = 'MAPPED'");
+
+
+                StringBuilder sbUpdate = new StringBuilder();
+                sbUpdate.Append(@" Update Accommodation_SupplierRoomTypeMapping set MappingStatus = 'MAPPED' where Accommodation_SupplierRoomTypeMapping_Id = '" + Acco_RoomTypeMap_Ids.Select(x => x.Acco_RoomTypeMap_Id).SingleOrDefault() + "' ");
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    try {
+
+                        context.Database.ExecuteSqlCommand(sb.ToString());
+
+                        int count = context.Database.SqlQuery<int>(sbCheck.ToString()).FirstOrDefault();
+
+                        if(count > 0)
+                        {
+                            context.Database.ExecuteSqlCommand(sbUpdate.ToString());
+
+                        }
+
+                    } catch (Exception ex) { }
+                }
+
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword Replace and Attribute Extraction has been done." };
+
+            }
+            catch (Exception ex)
+            {
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Failed, StatusMessage = ex.Message };
+                //throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while TTFU", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
         #endregion
     }
 

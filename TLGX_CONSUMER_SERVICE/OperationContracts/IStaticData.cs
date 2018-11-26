@@ -89,6 +89,8 @@ namespace OperationContracts
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
         [WebInvoke(Method = "POST", UriTemplate = "Mapping/Statistics/EzeegoHotelVsSupplierHotelMapping", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         IList<DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport> EzeegoHotelVsSupplierHotelMappingReport(DataContracts.Mapping.DC_EzeegoHotelVsSupplierHotelMappingReport_RQ parm);
+
+
         
     }
 }
