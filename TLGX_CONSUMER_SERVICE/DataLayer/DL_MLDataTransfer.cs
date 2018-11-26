@@ -259,6 +259,7 @@ namespace DataLayer
             DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo _obj = new DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo();
             DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo _objToSend = new DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo();
             List<DataContracts.DC_ML_MasterAccoRoomInfo_Data> _objAcoo = new List<DataContracts.DC_ML_MasterAccoRoomInfo_Data>();
+            List<DC_ML_DL_AccoRoom_ExtendedAttributes_Data> _objAccoRoomAttributes = new List<DC_ML_DL_AccoRoom_ExtendedAttributes_Data>();
 
             int TotalCount = 0;
             int MLDataInsertedCount = 0;
@@ -266,6 +267,7 @@ namespace DataLayer
             {
                 UpdateDistLogInfo(LogId, PushStatus.RUNNNING);
                 _objAcoo = GetMasterAccoRoomInformationDataForMLTrans(0, 0);
+                _objAccoRoomAttributes = GetMasterAccoRoomExtendedAttrsForMLTrans();
                 TotalCount = _objAcoo.Count();
 
                 //Get Batch Size
@@ -274,7 +276,9 @@ namespace DataLayer
                 int NoOfBatch = TotalCount / BatchSize;
                 int mod = TotalCount % BatchSize;
                 if (mod > 0)
+                {
                     NoOfBatch = NoOfBatch + 1;
+                }
 
                 for (int BatchNo = 0; BatchNo < NoOfBatch; BatchNo++)
                 {
@@ -308,6 +312,8 @@ namespace DataLayer
                                                                              CreateUser = item.Create_User,
                                                                              EditDate = Convert.ToString(item.Edit_Date),
                                                                              EditUser = item.Edit_User,
+                                                                             RoomInfo_TX = item.RoomInfo_TX,
+                                                                             ExtractedAttributes = _objAccoRoomAttributes.Where(w => w.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).Select(s => new ExtractedAttributes { Key = s.SystemAttributeKeyword, Value = s.Accommodation_RoomInfo_Attribute }).ToList()
                                                                          }).Skip(BatchNo * BatchSize).Take(BatchSize).ToList();
 
                         _objToSend.Mode = "offline";
@@ -342,7 +348,7 @@ namespace DataLayer
 
                     StringBuilder sbSelect = new StringBuilder();
                     StringBuilder sbOrderby = new StringBuilder();
-                    sbSelect.Append(@"SELECT  
+                    sbSelect.Append(@"SELECT 
                                        Accommodation_RoomInfo_Id,
                                         Accommodation_Id,
                                         Legacy_Htl_Id,
@@ -366,8 +372,11 @@ namespace DataLayer
                                         Create_User,
                                         Create_Date,
                                         Edit_User,
-                                        Edit_Date
-                                        FROM Accommodation_RoomInfo with(nolock) WHERE Accommodation_Id IS NOT NULL; ");
+                                        Edit_Date,
+                                        TX_RoomName as RoomInfo_TX
+                                        FROM Accommodation_RoomInfo with(nolock) WHERE Accommodation_RoomInfo_Id = '91AC41D6-7523-4607-B267-000031C95A61'; ");
+
+                    //Accommodation_Id IS NOT NULL; ");
 
                     StringBuilder sbfinal = new StringBuilder();
                     sbfinal.Append(sbSelect);
@@ -381,9 +390,42 @@ namespace DataLayer
             {
                 throw;
             }
-
-
         }
+
+
+        private List<DC_ML_DL_AccoRoom_ExtendedAttributes_Data> GetMasterAccoRoomExtendedAttrsForMLTrans()
+        {
+            List<DC_ML_DL_AccoRoom_ExtendedAttributes_Data> _objAcooRoomAttrs = new List<DC_ML_DL_AccoRoom_ExtendedAttributes_Data>();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Database.CommandTimeout = 0;
+                    context.Configuration.AutoDetectChangesEnabled = false;
+
+                    StringBuilder sbSelect = new StringBuilder();
+                    StringBuilder sbOrderby = new StringBuilder();
+                    //Accommodation_RoomInfo_Attribute_Id,
+                    sbSelect.Append(@"SELECT  
+                                        Accommodation_RoomInfo_Id,
+                                        Accommodation_RoomInfo_Attribute,
+                                        SystemAttributeKeyword 
+                                        FROM Accommodation_RoomInfo_Attributes with(nolock)  WHERE Accommodation_RoomInfo_Id = '91AC41D6-7523-4607-B267-000031C95A61'; ");
+
+                    StringBuilder sbfinal = new StringBuilder();
+                    sbfinal.Append(sbSelect);
+
+                    try { _objAcooRoomAttrs = context.Database.SqlQuery<DC_ML_DL_AccoRoom_ExtendedAttributes_Data>(sbfinal.ToString()).ToList(); } catch (Exception ex) { }
+                }
+
+                return _objAcooRoomAttrs;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         #endregion
 
 
@@ -1109,7 +1151,7 @@ namespace DataLayer
 
                             foreach (var item in SupplierRoomTypeMappingValue)
                             {
-                                if((item.SystemEditDate ?? DateTime.MinValue) > (item.UserEditDate ?? DateTime.MinValue))
+                                if ((item.SystemEditDate ?? DateTime.MinValue) > (item.UserEditDate ?? DateTime.MinValue))
                                 {
                                     continue;
                                 }

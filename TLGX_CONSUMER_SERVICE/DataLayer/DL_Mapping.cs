@@ -5009,7 +5009,7 @@ namespace DataLayer
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
                         //Remove Existing Attribute List Records
-                        context.Accommodation_RoomInfo_Attributes.Where(w => w.Accommodation_RoomInfo_Id == rn.AccoRoom_Id).Delete();
+                        //context.Accommodation_RoomInfo_Attributes.Where(w => w.Accommodation_RoomInfo_Id == rn.AccoRoom_Id).Delete();
 
 
 

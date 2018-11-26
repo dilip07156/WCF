@@ -115,6 +115,8 @@ namespace DataContracts
         public string Edit_User { get; set; }
         [DataMember]
         public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string RoomInfo_TX { get; set; }
     }
 
     [DataContract]
