@@ -29,5 +29,13 @@ namespace ConsumerSvc
             }
         }
 
+        public IList<DataContracts.Schedulers.SupplierScheduledTask> GetScheduledTaskByRoles(DataContracts.Schedulers.DC_SupplierScheduledTaskRQ obj)
+        {
+            using (BL_Schedule _obj = new BL_Schedule())
+            {
+                return _obj.GetScheduledTaskByRoles(obj);
+            }
+        }
+
     }
 }

@@ -29,5 +29,12 @@ namespace BusinessLayer
                 return objDL.AddUpdateSchedule(obj);
             }
         }
+        public IList<DataContracts.Schedulers.SupplierScheduledTask> GetScheduledTaskByRoles(DataContracts.Schedulers.DC_SupplierScheduledTaskRQ _obj)
+        {
+            using (DataLayer.DL_ScheduledTask obj = new DataLayer.DL_ScheduledTask())
+            {
+                return obj.GetScheduleTaskList(_obj);
+            }
+        }
     }
 }
