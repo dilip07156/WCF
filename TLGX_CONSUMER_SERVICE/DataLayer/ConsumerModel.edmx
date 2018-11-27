@@ -2185,6 +2185,11 @@
           <Property Name="Count_SuppliersRoom" Type="int" />
           <Property Name="Count_AccoRooms" Type="int" />
           <Property Name="ReportType" Type="nvarchar" MaxLength="10" />
+          <Property Name="TotalNoOfHotelRooms" Type="int" />
+          <Property Name="TotalNoOfHotels" Type="int" />
+          <Property Name="Priority" Type="varchar" MaxLength="50" />
+          <Property Name="Rank" Type="varchar" MaxLength="50" />
+          <Property Name="Key" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Organisation_Company">
           <Key>
@@ -2684,18 +2689,32 @@
         </EntityType>
         <EntityType Name="Supplier_Scheduled_Task">
           <Key>
-            <PropertyRef Name="SupplierScheduledTaskID" />
+            <PropertyRef Name="Task_Id" />
           </Key>
-          <Property Name="SupplierScheduledTaskID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="Supplier_ID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="Entity" Type="varchar" MaxLength="150" />
-          <Property Name="Status" Type="nvarchar" MaxLength="50" />
-          <Property Name="Task_Date" Type="datetime" />
-          <Property Name="Is_Complete" Type="bit" />
+          <Property Name="Task_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Schedule_Id" Type="uniqueidentifier" />
+          <Property Name="Schedule_Datetime" Type="datetime" />
+          <Property Name="Api_Call_Log_Id" Type="uniqueidentifier" />
+          <Property Name="Status" Type="varchar" MaxLength="50" />
           <Property Name="Create_Date" Type="datetime" />
-          <Property Name="Create_User" Type="nvarchar" MaxLength="150" />
+          <Property Name="Create_User" Type="varchar" MaxLength="50" />
           <Property Name="Edit_Date" Type="datetime" />
-          <Property Name="Edit_User" Type="nvarchar" MaxLength="150" />
+          <Property Name="Edit_User" Type="varchar" MaxLength="50" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="Supplier_Scheduled_Task_Log">
+          <Key>
+            <PropertyRef Name="Log_Id" />
+          </Key>
+          <Property Name="Log_Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Task_Id" Type="uniqueidentifier" />
+          <Property Name="Status_Message" Type="varchar" MaxLength="255" />
+          <Property Name="Log_Type" Type="varchar" MaxLength="50" />
+          <Property Name="Remarks" Type="varchar" MaxLength="255" />
+          <Property Name="Create_Date" Type="datetime" />
+          <Property Name="Create_User" Type="varchar" MaxLength="50" />
+          <Property Name="Edit_Date" Type="datetime" />
+          <Property Name="Edit_User" Type="varchar" MaxLength="50" />
           <Property Name="IsActive" Type="bit" />
         </EntityType>
         <EntityType Name="SupplierEntity">
@@ -3062,6 +3081,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="Supplier_ProductCategory" EntityType="Self.Supplier_ProductCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier_Schedule" EntityType="Self.Supplier_Schedule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier_Scheduled_Task" EntityType="Self.Supplier_Scheduled_Task" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Supplier_Scheduled_Task_Log" EntityType="Self.Supplier_Scheduled_Task_Log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierEntity" EntityType="Self.SupplierEntity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFile_ErrorLog" EntityType="Self.SupplierImportFile_ErrorLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierImportFile_Progress" EntityType="Self.SupplierImportFile_Progress" Schema="dbo" store:Type="Tables" />
@@ -3280,9 +3300,10 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="m_CityMaster" EntityType="ConsumerModel.m_CityMaster" />
           <EntitySet Name="Activity_Flavour" EntityType="ConsumerModel.Activity_Flavour" />
           <EntitySet Name="Supplier_Credentials" EntityType="ConsumerModel.Supplier_Credentials" />
-          <EntitySet Name="Supplier_Scheduled_Task" EntityType="ConsumerModel.Supplier_Scheduled_Task" />
-          <EntitySet Name="Supplier_Schedule" EntityType="ConsumerModel.Supplier_Schedule" />
           <EntitySet Name="Accommodation_RoomInfo_Attributes" EntityType="ConsumerModel.Accommodation_RoomInfo_Attributes" />
+          <EntitySet Name="Supplier_Schedule" EntityType="ConsumerModel.Supplier_Schedule" />
+          <EntitySet Name="Supplier_Scheduled_Task_Log" EntityType="ConsumerModel.Supplier_Scheduled_Task_Log" />
+          <EntitySet Name="Supplier_Scheduled_Task" EntityType="ConsumerModel.Supplier_Scheduled_Task" />
 
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
@@ -6020,6 +6041,11 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Count_SuppliersRoom" Type="Int32" />
           <Property Name="Count_AccoRooms" Type="Int32" />
           <Property Name="ReportType" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="TotalNoOfHotelRooms" Type="Int32" />
+          <Property Name="TotalNoOfHotels" Type="Int32" />
+          <Property Name="Priority" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Rank" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Key" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="m_CityMaster">
           <Key>
@@ -6115,21 +6141,15 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="CreateUser" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="EditUser" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Supplier_Scheduled_Task">
+        <EntityType Name="Accommodation_RoomInfo_Attributes">
           <Key>
-            <PropertyRef Name="SupplierScheduledTaskID" />
+            <PropertyRef Name="Accommodation_RoomInfo_Attribute_Id" />
           </Key>
-          <Property Name="SupplierScheduledTaskID" Type="Guid" Nullable="false" />
-          <Property Name="Supplier_ID" Type="Guid" Nullable="false" />
-          <Property Name="Entity" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
-          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Task_Date" Type="DateTime" Precision="3" />
-          <Property Name="Is_Complete" Type="Boolean" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_User" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Accommodation_RoomInfo_Attribute_Id" Type="Guid" Nullable="false" />
+          <Property Name="Accommodation_RoomInfo_Id" Type="Guid" Nullable="false" />
+          <Property Name="Accommodation_RoomInfo_Attribute" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SystemAttributeKeyword" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SystemAttributeKeyword_Id" Type="Guid" Nullable="false" />
         </EntityType>
         <EntityType Name="Supplier_Schedule">
           <Key>
@@ -6148,6 +6168,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="WeekOfMonth" Type="Int32" />
           <Property Name="StartYear" Type="Int32" />
           <Property Name="EndYear" Type="Int32" />
+          <Property Name="User_Role_Id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="StartTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EndTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -6158,15 +6179,35 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="CronExpression" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" />
         </EntityType>
-        <EntityType Name="Accommodation_RoomInfo_Attributes">
+        <EntityType Name="Supplier_Scheduled_Task_Log">
           <Key>
-            <PropertyRef Name="Accommodation_RoomInfo_Attribute_Id" />
+            <PropertyRef Name="Log_Id" />
           </Key>
-          <Property Name="Accommodation_RoomInfo_Attribute_Id" Type="Guid" Nullable="false" />
-          <Property Name="Accommodation_RoomInfo_Id" Type="Guid" Nullable="false" />
-          <Property Name="Accommodation_RoomInfo_Attribute" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SystemAttributeKeyword" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="SystemAttributeKeyword_Id" Type="Guid" Nullable="false" />
+          <Property Name="Log_Id" Type="Guid" Nullable="false" />
+          <Property Name="Task_Id" Type="Guid" />
+          <Property Name="Status_Message" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Log_Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Remarks" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Supplier_Scheduled_Task">
+          <Key>
+            <PropertyRef Name="Task_Id" />
+          </Key>
+          <Property Name="Task_Id" Type="Guid" Nullable="false" />
+          <Property Name="Schedule_Id" Type="Guid" />
+          <Property Name="Schedule_Datetime" Type="DateTime" Precision="3" />
+          <Property Name="Api_Call_Log_Id" Type="Guid" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
         </EntityType>
         
       </Schema>
@@ -8983,6 +9024,11 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="NewDashBoardReport">
             <EntityTypeMapping TypeName="ConsumerModel.NewDashBoardReport">
               <MappingFragment StoreEntitySet="NewDashBoardReport">
+                <ScalarProperty Name="Key" ColumnName="Key" />
+                <ScalarProperty Name="Rank" ColumnName="Rank" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="TotalNoOfHotels" ColumnName="TotalNoOfHotels" />
+                <ScalarProperty Name="TotalNoOfHotelRooms" ColumnName="TotalNoOfHotelRooms" />
                 <ScalarProperty Name="ReportType" ColumnName="ReportType" />
                 <ScalarProperty Name="Count_AccoRooms" ColumnName="Count_AccoRooms" />
                 <ScalarProperty Name="Count_SuppliersRoom" ColumnName="Count_SuppliersRoom" />
@@ -9110,20 +9156,14 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Supplier_Scheduled_Task">
-            <EntityTypeMapping TypeName="ConsumerModel.Supplier_Scheduled_Task">
-              <MappingFragment StoreEntitySet="Supplier_Scheduled_Task">
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="Is_Complete" ColumnName="Is_Complete" />
-                <ScalarProperty Name="Task_Date" ColumnName="Task_Date" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Entity" ColumnName="Entity" />
-                <ScalarProperty Name="Supplier_ID" ColumnName="Supplier_ID" />
-                <ScalarProperty Name="SupplierScheduledTaskID" ColumnName="SupplierScheduledTaskID" />
+          <EntitySetMapping Name="Accommodation_RoomInfo_Attributes">
+            <EntityTypeMapping TypeName="ConsumerModel.Accommodation_RoomInfo_Attributes">
+              <MappingFragment StoreEntitySet="Accommodation_RoomInfo_Attributes">
+                <ScalarProperty Name="SystemAttributeKeyword_Id" ColumnName="SystemAttributeKeyword_Id" />
+                <ScalarProperty Name="SystemAttributeKeyword" ColumnName="SystemAttributeKeyword" />
+                <ScalarProperty Name="Accommodation_RoomInfo_Attribute" ColumnName="Accommodation_RoomInfo_Attribute" />
+                <ScalarProperty Name="Accommodation_RoomInfo_Id" ColumnName="Accommodation_RoomInfo_Id" />
+                <ScalarProperty Name="Accommodation_RoomInfo_Attribute_Id" ColumnName="Accommodation_RoomInfo_Attribute_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -9139,6 +9179,7 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="EndTime" ColumnName="EndTime" />
                 <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="User_Role_Id" ColumnName="User_Role_Id" />
                 <ScalarProperty Name="EndYear" ColumnName="EndYear" />
                 <ScalarProperty Name="StartYear" ColumnName="StartYear" />
                 <ScalarProperty Name="WeekOfMonth" ColumnName="WeekOfMonth" />
@@ -9155,14 +9196,35 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Accommodation_RoomInfo_Attributes">
-            <EntityTypeMapping TypeName="ConsumerModel.Accommodation_RoomInfo_Attributes">
-              <MappingFragment StoreEntitySet="Accommodation_RoomInfo_Attributes">
-                <ScalarProperty Name="SystemAttributeKeyword_Id" ColumnName="SystemAttributeKeyword_Id" />
-                <ScalarProperty Name="SystemAttributeKeyword" ColumnName="SystemAttributeKeyword" />
-                <ScalarProperty Name="Accommodation_RoomInfo_Attribute" ColumnName="Accommodation_RoomInfo_Attribute" />
-                <ScalarProperty Name="Accommodation_RoomInfo_Id" ColumnName="Accommodation_RoomInfo_Id" />
-                <ScalarProperty Name="Accommodation_RoomInfo_Attribute_Id" ColumnName="Accommodation_RoomInfo_Attribute_Id" />
+          <EntitySetMapping Name="Supplier_Scheduled_Task_Log">
+            <EntityTypeMapping TypeName="ConsumerModel.Supplier_Scheduled_Task_Log">
+              <MappingFragment StoreEntitySet="Supplier_Scheduled_Task_Log">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="Log_Type" ColumnName="Log_Type" />
+                <ScalarProperty Name="Status_Message" ColumnName="Status_Message" />
+                <ScalarProperty Name="Task_Id" ColumnName="Task_Id" />
+                <ScalarProperty Name="Log_Id" ColumnName="Log_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Supplier_Scheduled_Task">
+            <EntityTypeMapping TypeName="ConsumerModel.Supplier_Scheduled_Task">
+              <MappingFragment StoreEntitySet="Supplier_Scheduled_Task">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Api_Call_Log_Id" ColumnName="Api_Call_Log_Id" />
+                <ScalarProperty Name="Schedule_Datetime" ColumnName="Schedule_Datetime" />
+                <ScalarProperty Name="Schedule_Id" ColumnName="Schedule_Id" />
+                <ScalarProperty Name="Task_Id" ColumnName="Task_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
