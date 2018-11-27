@@ -46,7 +46,13 @@ namespace ConsumerSvc
                 return obj.UpdateSupplierSchedule(RQ);
             }
         }
-
+        public bool CheckExistingSupplierSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
+        {
+            using (BusinessLayer.BL_Schedule obj = new BL_Schedule())
+            {
+                return obj.CheckExistingSupplierSchedule(RQ);
+            }
+        }
 
     }
 }

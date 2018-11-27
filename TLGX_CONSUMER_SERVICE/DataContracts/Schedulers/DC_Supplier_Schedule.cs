@@ -58,6 +58,8 @@ namespace DataContracts.Schedulers
         public string CronExpression { get; set; }
         [DataMember]
         public bool IsActive { get; set; }
+        [DataMember]
+        public string User_Role_Id { get; set; }
 
 
 
@@ -80,6 +82,8 @@ namespace DataContracts.Schedulers
         public string Edit_User { get; set; }
         [DataMember]
         public string Status { get; set; }
+        [DataMember]
+        public List<string> Entities { get; set; }
 
     }
     public class DC_Supplier_Schedule_RS

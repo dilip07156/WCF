@@ -46,7 +46,8 @@ namespace DataLayer
                                          Create_User = a.Create_User,
                                          Edit_Date= a.Edit_Date,
                                          Edit_User = a.Edit_User,
-                                         Entity=a.Entity
+                                         Entity=a.Entity,
+                                         User_Role_Id=a.User_Role_Id,
                                      };
 
                         return result.ToList();
@@ -74,7 +75,8 @@ namespace DataLayer
                                          Create_User = a.Create_User,
                                          Edit_Date = a.Edit_Date,
                                          Edit_User = a.Edit_User,
-                                         Entity = a.Entity
+                                         Entity = a.Entity,
+                                         User_Role_Id=a.User_Role_Id,
                                      };
 
                         return result.ToList();
@@ -126,6 +128,7 @@ namespace DataLayer
                                 result.Entity = strentity;
                                 result.CronExpression = obj.CronExpression;
                                 result.IsActive = true;
+                                result.User_Role_Id = obj.User_Role_Id;
                                 if (context.SaveChanges() == 1)
                                 {
                                     _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
@@ -162,6 +165,7 @@ namespace DataLayer
                                 CronExpression = obj.CronExpression,
                                 Status= obj.Status,
                                 IsActive = true,
+                                User_Role_Id=obj.User_Role_Id,
                         };
                             context.Supplier_Schedule.Add(_obj);
                             if (context.SaveChanges() == 1)
@@ -253,5 +257,32 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+        public bool CheckExistingSupplierSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    //var search  = from ac in context.Supplier_Schedule where ac.Supplier_ID equals RQ.sup
+
+                    var search = (from ac in context.Supplier_Schedule
+                                  //join r in RQ on ac.Supplier_ID equals r.Suppllier_ID 
+                                  where ac.Supplier_ID==RQ.Suppllier_ID && RQ.Entities.Contains(ac.Entity) 
+                                  select ac).ToList();
+                    if(search.Count>0)
+                    {
+                        return false;
+                    }
+
+                    return true;
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation contacts", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
     }
 }

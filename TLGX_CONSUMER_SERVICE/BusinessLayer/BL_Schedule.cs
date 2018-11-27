@@ -45,5 +45,13 @@ namespace BusinessLayer
                 return obj.UpdateSupplierSchedule(RQ);
             }
         }
+
+        public bool CheckExistingSupplierSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
+        {
+            using (DataLayer.DL_Schedule obj = new DataLayer.DL_Schedule())
+            {
+                return obj.CheckExistingSupplierSchedule(RQ);
+            }
+        }
     }
 }
