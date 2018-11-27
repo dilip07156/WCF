@@ -926,6 +926,22 @@ namespace DataContracts.Masters
         [DataMember]
         public bool IsSystemAttribute { get; set; }
     }
+    public class Activity_MediaDetailsForAttribute
+    {
+        [DataMember]
+        public Guid Activity_Media_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Flavour_Id { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+        [DataMember]
+        public string Media_URL { get; set; }
+        [DataMember]
+        public string FileFormat { get; set; }
+        [DataMember]
+        public string Filename { get; set; }
+
+    }
     #endregion
 
     #region inclusions

@@ -204,6 +204,21 @@ namespace BusinessLayer
             }
         }
 
+        public DataContracts.DC_Message Accomodation_Room_TTFUALL(string Accommodation_Room_Id)
+        {
+            if(Guid.TryParse(Accommodation_Room_Id, out Guid gAccommodation_Room_Id))
+            {
+                using (DL_Mapping objDL = new DL_Mapping())
+                {
+                    return objDL.Accomodation_Room_TTFUALL(gAccommodation_Room_Id);
+                }
+            }
+            else
+            {
+                return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Warning, StatusMessage = "Invalid Room Id" };
+            }
+        }
+
         public DataContracts.DC_Message UpdateAccomodationSupplierRoomTypeMappingValues(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMapping_Values> obj)
         {
             using (DL_Mapping objDL = new DL_Mapping())
@@ -350,7 +365,7 @@ namespace BusinessLayer
         #endregion
 
         #region Mapping Stats
-        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(string SupplierID, string PriorityId, string ProductCategory,string isMDM)
+        public List<DataContracts.Mapping.DC_MappingStats> GetMappingStatistics(string SupplierID, string PriorityId, string ProductCategory, string isMDM)
         {
             Guid gSupplier_Id;
             int iPriorityId;
@@ -364,7 +379,8 @@ namespace BusinessLayer
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
             }
-            if(!bool.TryParse(isMDM, out isMDMNew)){
+            if (!bool.TryParse(isMDM, out isMDMNew))
+            {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Invalid Request", ErrorStatusCode = System.Net.HttpStatusCode.BadRequest });
             }
 
@@ -390,7 +406,7 @@ namespace BusinessLayer
                 return false;
         }
 
-        
+
         #endregion
         #region roll_off_reports
         public List<DataContracts.Mapping.DC_RollOffReportRule> getStatisticforRuleReport(DataContracts.Mapping.DC_RollOFParams param)
@@ -695,7 +711,7 @@ namespace BusinessLayer
         #endregion
 
         #region Supplier Data Export
-        public List<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport( string AccoPriority, string SupplierID, string IsMdmDataOnly, string SuppPriority)
+        public List<DataContracts.Mapping.DC_SupplierExportDataReport> GetSupplierDataForExport(string AccoPriority, string SupplierID, string IsMdmDataOnly, string SuppPriority)
         {
             int accoPriority;
             if (!int.TryParse(AccoPriority, out accoPriority))
@@ -722,7 +738,7 @@ namespace BusinessLayer
 
             using (DL_Mapping objBL = new DL_Mapping())
             {
-                return objBL.GetSupplierDataForExport(accoPriority,gSupplier_Id, bIsMdmDataOnly, suppPriority);
+                return objBL.GetSupplierDataForExport(accoPriority, gSupplier_Id, bIsMdmDataOnly, suppPriority);
             }
         }
 
@@ -806,7 +822,7 @@ namespace BusinessLayer
         //GAURAV-TMAP-645
         public IList<DataContracts.Mapping.DC_SupplierAccoMappingExportDataReport> AccomodationMappingReport(DC_SupplerVSupplier_Report_RQ dC_SupplerVSupplier_Report_RQ)
         {
-          
+
             using (DL_Mapping objBL = new DL_Mapping())
             {
                 return objBL.AccomodationMappingReport(dC_SupplerVSupplier_Report_RQ);
@@ -822,5 +838,16 @@ namespace BusinessLayer
             }
         }
         #endregion
+
+        #region Reset Supplier Room Type Mapping        
+        //GAURAV_TMAP_746
+        public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_Reset(List<DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
+        {
+            using (DL_Mapping objBL = new DL_Mapping())
+            {
+                return objBL.AccomodationSupplierRoomTypeMapping_Reset(Acco_RoomTypeMap_Ids);
+            }
+        }
+        #endregion  
     }
 }
