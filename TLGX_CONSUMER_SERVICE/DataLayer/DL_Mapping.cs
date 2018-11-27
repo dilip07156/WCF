@@ -3236,10 +3236,7 @@ namespace DataLayer
                     }
 
                     //Call Training Data To push 
-                    if (!IsNotTrainingflag)
-                    {
                         DeleteOrSendTraingData(Guid.Parse(Convert.ToString(obj[0].Accommodation_SupplierRoomTypeMapping_Id)), IsNotTrainingflag);
-                    }
                 }
                 return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "All Valid Records are successfully updated." };
             }
@@ -3294,6 +3291,9 @@ namespace DataLayer
             }
             else
             {
+                //Calling Delete API is located
+                strURI = string.Format(baseAddress + System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_DeleteTrainingData"] + Accommodation_SupplierRoomTypeMapping_Id.ToString());
+
                 //Sent releavent data to training system. string baseAddress = Convert.ToString(OperationContext.Current.Host.BaseAddresses[0]);
                 strURI = string.Format(baseAddress + System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_RoomTypeMatching_TrainingDataPushToAIML"] + Accommodation_SupplierRoomTypeMapping_Id.ToString());
             }

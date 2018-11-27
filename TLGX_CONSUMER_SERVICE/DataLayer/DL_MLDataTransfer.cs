@@ -1138,14 +1138,12 @@ namespace DataLayer
 
                     if (result != null)
                     {
-                        var _lstSupplierRoomTypeMappingValue = context.Accommodation_SupplierRoomTypeMapping_Values.Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id && rv.Accommodation_RoomInfo_Id != null).ToList();
 
-
-                        //Getting highest matching Score value to send that only - TMAP-888
-                        var maxValue = _lstSupplierRoomTypeMappingValue.Max(x => x.MatchingScore);
                         List<Accommodation_SupplierRoomTypeMapping_Values> SupplierRoomTypeMappingValue = new List<Accommodation_SupplierRoomTypeMapping_Values>();
-                        SupplierRoomTypeMappingValue.Add(_lstSupplierRoomTypeMappingValue.First(x => x.MatchingScore == maxValue));
-                        //End Here
+                        SupplierRoomTypeMappingValue = context.Accommodation_SupplierRoomTypeMapping_Values.Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id && rv.Accommodation_RoomInfo_Id != null).ToList();
+
+                        var maxValue = SupplierRoomTypeMappingValue.Max(x => x.MatchingScore);
+
 
                         var accodetails = context.Accommodation.Find(result.Accommodation_Id);
 
@@ -1160,7 +1158,10 @@ namespace DataLayer
                                 {
                                     continue;
                                 }
-
+                                if (item.UserMappingStatus.ToUpper() == MappingStatus.MAPPED.ToString() && item.MatchingScore != maxValue)
+                                {
+                                    continue;
+                                }
                                 //Creating Data to send AIML
                                 var roominfo = context.Accommodation_RoomInfo.Find(item.Accommodation_RoomInfo_Id);
                                 //Creating Data to send AIML
