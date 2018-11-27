@@ -30,6 +30,10 @@ namespace DataContracts.Schedulers
         public DateTime ScheduledDate { get; set; }
         [DataMember]
         public int TotalRecord { get; set; }
+        [DataMember]
+        public int LogId { get; set; }
+        [DataMember]
+        public string Status { get; set; }
     }
 
 
@@ -54,6 +58,8 @@ namespace DataContracts.Schedulers
         public string SortBy { get; set; }
         [DataMember]
         public string UserName { get; set; }
+        [DataMember]
+        public string RedirectFrom { get; set; }
                
        
     }
