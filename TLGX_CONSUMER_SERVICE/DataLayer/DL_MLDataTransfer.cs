@@ -1138,7 +1138,14 @@ namespace DataLayer
 
                     if (result != null)
                     {
-                        var SupplierRoomTypeMappingValue = context.Accommodation_SupplierRoomTypeMapping_Values.Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id && rv.Accommodation_RoomInfo_Id != null).ToList();
+                        var _lstSupplierRoomTypeMappingValue = context.Accommodation_SupplierRoomTypeMapping_Values.Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id && rv.Accommodation_RoomInfo_Id != null).ToList();
+
+
+                        //Getting highest matching Score value to send that only - TMAP-888
+                        var maxValue = _lstSupplierRoomTypeMappingValue.Max(x => x.MatchingScore);
+                        List<Accommodation_SupplierRoomTypeMapping_Values> SupplierRoomTypeMappingValue = new List<Accommodation_SupplierRoomTypeMapping_Values>();
+                        SupplierRoomTypeMappingValue.Add(_lstSupplierRoomTypeMappingValue.First(x => x.MatchingScore == maxValue));
+                        //End Here
 
                         var accodetails = context.Accommodation.Find(result.Accommodation_Id);
 
