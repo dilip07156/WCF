@@ -533,6 +533,38 @@ namespace DataContracts.Masters
         public string Time { get; set; }
     }
 
+    //GAURAV_TMAP_876
+    [DataContract]
+    public class DC_Priorities
+    {
+        [DataMember]
+        public string Name { get; set; }
+        [DataMember]
+        public string Value { get; set; }
+     
+    }
+
+    [DataContract]
+    public class DC_Keys
+    {
+        [DataMember]
+        public string Name { get; set; }
+        [DataMember]
+        public string Value { get; set; }
+
+    }
+
+    [DataContract]
+    public class DC_Ranks
+    {
+        [DataMember]
+        public string Name { get; set; }
+        [DataMember]
+        public string Value { get; set; }
+
+    }
+
+
     [DataContract]
     public class DC_CityAreaLocation
     {

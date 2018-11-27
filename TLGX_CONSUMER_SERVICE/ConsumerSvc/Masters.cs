@@ -143,6 +143,31 @@ namespace ConsumerSvc
             }
         }
 
+        //GAURAV_TMAP_876
+        public IList<DataContracts.Masters.DC_Priorities> GetPrioritiesOfCityMaster()
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetPrioritiesOfCityMaster();
+            }
+        }
+
+        public IList<DataContracts.Masters.DC_Keys> GetKeysOfCityMaster()
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetKeysOfCityMaster();
+            }
+        }
+
+        public IList<DataContracts.Masters.DC_Ranks> GetRanksOfCityMaster()
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetRanksOfCityMaster();
+            }
+        }
+
         #endregion
 
         #region State Master

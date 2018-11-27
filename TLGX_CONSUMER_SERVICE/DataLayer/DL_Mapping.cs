@@ -10505,6 +10505,9 @@ namespace DataLayer
                 var regionData = String.Join(",", RQ.Region.Select(s => "'" + s + "'"));
                 string countryData = String.Join(",", RQ.Country.Select(s => "'" + s + "'"));
                 string cityData = String.Join(",", RQ.City.Select(s => "'" + s + "'"));
+                string priorityData =  String.Join(",", RQ.Priorities.Select(s => "'" + s + "'"));
+                string keysData = String.Join(",", RQ.Keys.Select(s => "'" + s + "'"));
+                string ranksData = String.Join(",", RQ.Ranks.Select(s => "'" + s + "'"));
 
                 //Query To get CityWise Data
                 StringBuilder sbSelect = new StringBuilder();
@@ -10530,7 +10533,22 @@ namespace DataLayer
                     sbWhere.AppendLine("  and NDR.RegionName in(" + regionData + ")");
                 }
 
+                if (RQ.Priorities.Count > 0)
+                {
+                    sbWhere.AppendLine("  and [NDR.Priority] in (" + priorityData + ")");
+                }
 
+
+                if (RQ.Ranks.Count > 0)
+                {
+                    sbWhere.AppendLine("  and NDR.[Rank] in (" + ranksData + ")");
+                }
+
+
+                if (RQ.Keys.Count > 0)
+                {
+                    sbWhere.AppendLine("  and NDR.[Key] in (" + keysData + ")");
+                }
                 sbSelect.Append(@" SELECT
                                     NDR.RegionName 
                                     ,NDR.CountryName
@@ -10551,11 +10569,13 @@ namespace DataLayer
                                     ,NDR.Count_SuppliersAcco as NoOfSuppliers_H
                                     ,NDR.Count_SuppliersRoom as NoOfSuppliers_R 
                                     ,isnull(PrefHotCount.PrefHot,0) as  PreferredHotels
+                                    ,isnull(NDR.TotalNoOfHotelRooms,0) as TotalNoOfHotelRooms
+									,isnull(NDR.TotalNoOfHotels,0) as TotalNoOfHotels
                                     FROM [NewDashBoardReport] NDR with (NoLock)
-                                    LEFT JOIN(select count(a.HotelID) as PrefHot,City_Id from [NewDashBoardReport] a where a.IsPreferredHotel=1  group by City_Id ) PrefHotCount 
+                                    LEFT JOIN(select count(a.HotelID) as PrefHot,City_Id from [NewDashBoardReport] a where a.AccoPriority is not null  group by City_Id ) PrefHotCount 
                                     ON NDR.City_Id= PrefHotCount.City_Id
                                     WHERE  ReportType='CITY' and  NDR.City_Id!='00000000-0000-0000-0000-000000000000'  ");
-
+                //GAURAV_TMAP_876
                 sbFinalQuery.Append(sbSelect);
                 sbFinalQuery.Append(sbWhere);
                 sbFinalQuery.Append(sbOrderBy);

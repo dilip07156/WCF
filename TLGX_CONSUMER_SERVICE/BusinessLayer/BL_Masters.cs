@@ -113,6 +113,33 @@ namespace BusinessLayer
                 return obj.GetCountryCityMaster(RQ);
             }
         }
+        //GAURAV_TMAP_876
+        public List<DataContracts.Masters.DC_Priorities> GetPrioritiesOfCityMaster()
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetPrioritiesOfCityMaster();
+            }
+        }
+
+        public List<DataContracts.Masters.DC_Keys> GetKeysOfCityMaster()
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetKeysOfCityMaster();
+            }
+        }
+
+        public List<DataContracts.Masters.DC_Ranks> GetRanksOfCityMaster()
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetRanksOfCityMaster();
+            }
+        }
+
+
+
         #endregion
 
         #region State Master
