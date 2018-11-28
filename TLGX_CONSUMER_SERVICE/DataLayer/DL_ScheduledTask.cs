@@ -37,7 +37,7 @@ namespace DataLayer
 
                     #region select 
                     sbsqlselect.Append(@"select d.Name SuppllierName,c.Entity,a.Log_Id,b.Schedule_Datetime as ScheduledDate,b.Status as Status,
-                                         case when b.Status='Pending' then DATEDIFF(d,GETDATE(),b.Schedule_Datetime) else '0' end as PendingDays, ");
+                                         case when b.Status='Pending' then DATEDIFF(d,GETDATE(),b.Schedule_Datetime) else '0' end as PendingFordays, ");
 
                     #endregion
 
