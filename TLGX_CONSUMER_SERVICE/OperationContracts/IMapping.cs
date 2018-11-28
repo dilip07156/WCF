@@ -240,8 +240,8 @@ namespace OperationContracts
         #region NewDashBoardReport
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "GetCountryWiseNewDashReport", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        IList<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise();
+        [WebInvoke(Method = "POST", UriTemplate = "GetCountryWiseNewDashReport", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise(DataContracts.Mapping.DC_NewDashBoardReport_RQ param1);
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]

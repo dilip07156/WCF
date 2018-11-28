@@ -10442,7 +10442,7 @@ namespace DataLayer
         #endregion
 
         #region NewDashBoardReport
-        public List<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise()
+        public List<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise(DataContracts.Mapping.DC_NewDashBoardReport_RQ RQ)
         {
             try
             {
@@ -10450,6 +10450,34 @@ namespace DataLayer
 
                 // Query to get Country Wise Hotel Counts
                 StringBuilder sbSelect = new StringBuilder();
+              
+                string priorityData = String.Join(",", RQ.Priorities.Select(s => "'" + s + "'"));
+                string keysData = String.Join(",", RQ.Keys.Select(s => "'" + s + "'"));
+                string ranksData = String.Join(",", RQ.Ranks.Select(s => "'" + s + "'"));
+
+                StringBuilder sbWhere = new StringBuilder();
+
+                if (RQ.Priorities.Count > 0)
+                {
+                    sbWhere.AppendLine("  and NDR.[Priority] in (" + priorityData + ")");
+                }
+
+
+                if (RQ.Ranks.Count > 0)
+                {
+                    sbWhere.AppendLine("  and NDR.[Rank] in (" + ranksData + ")");
+                }
+
+
+                if (RQ.Keys.Count > 0)
+                {
+                    sbWhere.AppendLine("  and NDR.[Key] in (" + keysData + ")");
+                }
+
+
+                StringBuilder sbOrderBy = new StringBuilder();
+
+                sbOrderBy.AppendLine(" ORDER BY RegionName,CountryName  ");
 
                 sbSelect.Append(@"  Select NDR.RegionName 
                                     ,NDR.CountryName
@@ -10468,12 +10496,18 @@ namespace DataLayer
                                     ,NDR.Count_SuppliersRoom as NoOfSuppliers_R 
                                     ,isnull(PrefHotCount.PrefHot,0) as  PreferredHotels
                                     ,NDR.Country_Id
+                                    ,isnull(NDR.TotalNoOfHotelRooms,0) as TotalNoOfHotelRooms
+									,isnull(NDR.TotalNoOfHotels,0) as TotalNoOfHotels
                                     FROM [NewDashBoardReport] NDR with (NoLock)
-                                    LEFT JOIN(select count(a.HotelID) as PrefHot,Country_Id from [NewDashBoardReport] a with (NoLock) where a.IsPreferredHotel=1  group by Country_Id ) PrefHotCount 
+                                    LEFT JOIN(select count(a.HotelID) as PrefHot,Country_Id from [NewDashBoardReport] a with (NoLock) where a.AccoPriority is not null  group by Country_Id ) PrefHotCount 
                                     ON NDR.Country_Id= PrefHotCount.Country_Id
                                     WHERE  ReportType='COUNTRY' and  NDR.Country_Id!='00000000-0000-0000-0000-000000000000' 
-									ORDER BY RegionName,CountryName
                                     ");
+                //GAURAV_TMAP_875
+                StringBuilder sbFinalQuery = new StringBuilder();
+                sbFinalQuery.Append(sbSelect);
+                sbFinalQuery.Append(sbWhere);
+                sbFinalQuery.Append(sbOrderBy);
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
@@ -10481,7 +10515,7 @@ namespace DataLayer
                     context.Configuration.AutoDetectChangesEnabled = false;
                     try
                     {
-                        returnObj = context.Database.SqlQuery<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS>(sbSelect.ToString()).ToList();
+                        returnObj = context.Database.SqlQuery<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS>(sbFinalQuery.ToString()).ToList();
                     }
                     catch (Exception ex)
                     {
@@ -10741,6 +10775,7 @@ namespace DataLayer
             var regionData = String.Join(",", RQ.Region.Select(s => "'" + s + "'"));
             string countryData = String.Join(",", RQ.Country.Select(s => "'" + s + "'"));
             string cityData = String.Join(",", RQ.City.Select(s => "'" + s + "'"));
+            string priorityData = String.Join(",", RQ.AccoPriority.Select(s => "'" + s + "'"));
 
             #region Construct SQL Query
 
@@ -10790,6 +10825,11 @@ namespace DataLayer
             if (RQ.City.Count > 0)
             {
                 sbWhere.AppendLine(" and City_Id in(" + cityData + ")");
+            }
+            //GAURAV_TMAP_874
+            if (RQ.AccoPriority.Count > 0)
+            {
+                sbWhere.AppendLine("  and [Priority] in (" + priorityData + ")");
             }
 
             sbOrderBy.AppendLine("order by  RegionName, CountryName, CityName, HotelName ");

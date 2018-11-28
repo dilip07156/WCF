@@ -64,6 +64,31 @@ namespace ConsumerSvc
                 return obj.UpdateCountryMaster(param);
             }
         }
+
+        //GAURAV_TMAP_875
+        public IList<DataContracts.Masters.DC_Priorities> GetPrioritiesOfCountryMaster()
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetPrioritiesOfCountryMaster();
+            }
+        }
+
+        public IList<DataContracts.Masters.DC_Keys> GetKeysOfCountryMaster()
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetKeysOfCountryMaster();
+            }
+        }
+
+        public IList<DataContracts.Masters.DC_Ranks> GetRanksOfCountryMaster()
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetRanksOfCountryMaster();
+            }
+        }
         #endregion
 
         #region City Master
@@ -907,6 +932,17 @@ namespace ConsumerSvc
             using (BusinessLayer.BL_Masters obj = new BL_Masters())
             {
                 return obj.SupplierStaticDataDownload_Get(objApiLoc);
+            }
+        }
+        #endregion
+
+        #region Accomodation Priority
+        //GAURAV_TMAP_875
+        public IList<DataContracts.Masters.DC_Priorities> GetPrioritiesOfAccommodationMaster()
+        {
+            using (BusinessLayer.BL_Masters obj = new BL_Masters())
+            {
+                return obj.GetPrioritiesOfAccommodationMaster();
             }
         }
         #endregion
