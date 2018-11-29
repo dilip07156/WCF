@@ -37,7 +37,7 @@ namespace DataLayer
 
                     #region select 
                     sbsqlselect.Append(@"select d.Name SuppllierName,c.Entity,a.Log_Id,b.Schedule_Datetime as ScheduledDate,b.Status as Status,
-                                         case when b.Status='Pending' then DATEDIFF(d,GETDATE(),b.Schedule_Datetime) else '0' end as PendingFordays, ");
+                                         case when b.Status='Pending' then DATEDIFF(d,b.Schedule_Datetime,GETDATE()) else '0' end as PendingFordays,a.log_type as LogType, ");
 
                     #endregion
 
@@ -102,37 +102,37 @@ namespace DataLayer
                         sbsqlselect.Append(total.ToString() + " AS  TotalRecord ");
                     }
 
-                    //if (total <= skip)
-                    //{
-                    //    int PageIndex = 0;
-                    //    int intReminder = total % RQ.PageSize;
-                    //    int intQuotient = total / RQ.PageSize;
+                    if (total <= skip)
+                    {
+                        int PageIndex = 0;
+                        int intReminder = total % RQ.PageSize;
+                        int intQuotient = total / RQ.PageSize;
 
-                    //    if (intReminder > 0)
-                    //    {
-                    //        PageIndex = intQuotient + 1;
-                    //    }
-                    //    else
-                    //    {
-                    //        PageIndex = intQuotient;
-                    //    }
+                        if (intReminder > 0)
+                        {
+                            PageIndex = intQuotient + 1;
+                        }
+                        else
+                        {
+                            PageIndex = intQuotient;
+                        }
 
-                    //    skip = RQ.PageSize * (PageIndex - 1);
-                    //}
+                        skip = RQ.PageSize * (PageIndex - 1);
+                    }
 
-                    //StringBuilder sbOrderby = new StringBuilder();
-                    //sbOrderby.Append(" ORDER BY d.Name ");
-                    //sbOrderby.Append(" OFFSET ");
-                    //sbOrderby.Append((skip).ToString());
-                    //sbOrderby.Append(" ROWS FETCH NEXT ");
-                    //sbOrderby.Append(RQ.PageSize.ToString());
-                    //sbOrderby.Append(" ROWS ONLY ");
+                    StringBuilder sbOrderby = new StringBuilder();
+                    sbOrderby.Append(" ORDER BY d.Name ");
+                    sbOrderby.Append(" OFFSET ");
+                    sbOrderby.Append((skip).ToString());
+                    sbOrderby.Append(" ROWS FETCH NEXT ");
+                    sbOrderby.Append(RQ.PageSize.ToString());
+                    sbOrderby.Append(" ROWS ONLY ");
 
                     StringBuilder sbfinalQuery = new StringBuilder();
                     sbfinalQuery.Append(sbsqlselect + " ");
                     sbfinalQuery.Append(" " + sbsqlfrom + " ");
                     sbfinalQuery.Append(" " + sbsqlwhere + " ");
-                    //sbfinalQuery.Append(" " + sbOrderby);
+                    sbfinalQuery.Append(" " + sbOrderby);
 
                     using (ConsumerEntities context = new ConsumerEntities())
                     {

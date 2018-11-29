@@ -34,6 +34,8 @@ namespace DataContracts.Schedulers
         public int LogId { get; set; }
         [DataMember]
         public string Status { get; set; }
+        [DataMember]
+        public string LogType { get; set; }
     }
 
 
