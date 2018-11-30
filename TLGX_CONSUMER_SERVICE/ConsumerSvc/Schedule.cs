@@ -13,11 +13,11 @@ namespace ConsumerSvc
 {
     public partial class Consumer : IConsumer
     {
-        public IList<DataContracts.Schedulers.DC_Supplier_Schedule> GetSchedule(string Supplier_Id)
+        public IList<DataContracts.Schedulers.DC_Supplier_Schedule> GetSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
         {
             using (BusinessLayer.BL_Schedule obj = new BL_Schedule())
             {
-                return obj.GetSchedule(Supplier_Id);
+                return obj.GetSchedule(RQ);
             }
         }
 

@@ -57,6 +57,33 @@ namespace BusinessLayer
                 return obj.UpdateCountryMaster(param);
             }
         }
+
+
+        //GAURAV_TMAP_875
+        public List<DataContracts.Masters.DC_Priorities> GetPrioritiesOfCountryMaster()
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetPrioritiesOfCountryMaster();
+            }
+        }
+
+        public List<DataContracts.Masters.DC_Keys> GetKeysOfCountryMaster()
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetKeysOfCountryMaster();
+            }
+        }
+
+        public List<DataContracts.Masters.DC_Ranks> GetRanksOfCountryMaster()
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetRanksOfCountryMaster();
+            }
+        }
+
         #endregion
 
         #region CityMaster
@@ -113,6 +140,33 @@ namespace BusinessLayer
                 return obj.GetCountryCityMaster(RQ);
             }
         }
+        //GAURAV_TMAP_876
+        public List<DataContracts.Masters.DC_Priorities> GetPrioritiesOfCityMaster()
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetPrioritiesOfCityMaster();
+            }
+        }
+
+        public List<DataContracts.Masters.DC_Keys> GetKeysOfCityMaster()
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetKeysOfCityMaster();
+            }
+        }
+
+        public List<DataContracts.Masters.DC_Ranks> GetRanksOfCityMaster()
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetRanksOfCityMaster();
+            }
+        }
+
+
+
         #endregion
 
         #region State Master
@@ -867,6 +921,19 @@ namespace BusinessLayer
                 return obj.SupplierStaticDataDownload_Get(objStatic);
             }
         }
+        #endregion
+
+        #region Accomodation Priority
+
+        //GAURAV_TMAP_875
+        public List<DataContracts.Masters.DC_Priorities> GetPrioritiesOfAccommodationMaster()
+        {
+            using (DataLayer.DL_Masters obj = new DataLayer.DL_Masters())
+            {
+                return obj.GetPrioritiesOfAccommodationMaster();
+            }
+        }
+
         #endregion
     }
 }

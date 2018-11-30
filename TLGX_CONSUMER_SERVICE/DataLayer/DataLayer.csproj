@@ -203,6 +203,9 @@
     <Compile Include="Accommodation_RoomInfo.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Accommodation_RoomInfo_Attributes.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Accommodation_RouteInfo.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
@@ -601,6 +604,9 @@
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Supplier_Scheduled_Task.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Supplier_Scheduled_Task_Log.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="UserEntity.cs">

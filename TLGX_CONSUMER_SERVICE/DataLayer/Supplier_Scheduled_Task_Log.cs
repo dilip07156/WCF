@@ -12,13 +12,13 @@ namespace DataLayer
     using System;
     using System.Collections.Generic;
     
-    public partial class Supplier_Scheduled_Task
+    public partial class Supplier_Scheduled_Task_Log
     {
-        public System.Guid Task_Id { get; set; }
-        public Nullable<System.Guid> Schedule_Id { get; set; }
-        public Nullable<System.DateTime> Schedule_Datetime { get; set; }
-        public Nullable<System.Guid> Api_Call_Log_Id { get; set; }
-        public string Status { get; set; }
+        public System.Guid Log_Id { get; set; }
+        public Nullable<System.Guid> Task_Id { get; set; }
+        public string Status_Message { get; set; }
+        public string Log_Type { get; set; }
+        public string Remarks { get; set; }
         public Nullable<System.DateTime> Create_Date { get; set; }
         public string Create_User { get; set; }
         public Nullable<System.DateTime> Edit_Date { get; set; }

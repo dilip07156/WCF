@@ -14,6 +14,11 @@ using System.Runtime.Serialization.Json;
 using System.IO;
 using Newtonsoft.Json;
 using DataContracts.Mapping;
+using System.Transactions;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Core;
+using System.Threading;
+using System.Data.Entity.SqlServer;
 
 namespace DataLayer
 {
@@ -1953,6 +1958,7 @@ namespace DataLayer
         public DataContracts.DC_Message AddSTGCityData(List<DataContracts.STG.DC_stg_SupplierCityMapping> lstobj)
         {
             DataContracts.DC_Message dc = new DataContracts.DC_Message();
+            var executionStrategy = new SqlAzureExecutionStrategy();
 
             try
             {
@@ -2020,7 +2026,16 @@ namespace DataLayer
                             context.stg_SupplierCityMapping.Add(objNew);
 
                         }
-                        context.SaveChanges();
+
+                        using (var trn = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadCommitted))
+                        {
+                            context.SaveChanges();
+
+                            trn.Commit();
+                        }
+
+
+
                         dc.StatusCode = ReadOnlyMessage.StatusCode.Success;
                         dc.StatusMessage = "City Static Data " + ReadOnlyMessage.strAddedSuccessfully;
 
@@ -2490,7 +2505,7 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    var stgSearch = from a in context.stg_SupplierCityMapping select a;
+                    var stgSearch = from a in context.stg_SupplierCityMapping.AsNoTracking() select a;
 
                     if (RQ.stg_City_Id.HasValue)
                     {
@@ -2716,7 +2731,14 @@ namespace DataLayer
                                     select a;
                     }
 
-                    var stgResult = (from a in stgSearch
+                    List<DataContracts.STG.DC_stg_SupplierProductMapping> stgResult = new List<DC_stg_SupplierProductMapping>();
+
+                    using (var t = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions
+                    {
+                        IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+                    }))
+                    {
+                        stgResult = (from a in stgSearch
                                      orderby a.stg_AccoMapping_Id
                                      select new DataContracts.STG.DC_stg_SupplierProductMapping
                                      {
@@ -2761,6 +2783,7 @@ namespace DataLayer
                                          ProductType = a.ProductType,
                                          SupplierImportFile_Id = a.SupplierImportFile_Id ?? Guid.Empty
                                      }).Skip(RQ.PageNo * RQ.PageSize).Take(RQ.PageSize).ToList();
+                    }
 
                     return stgResult;
 

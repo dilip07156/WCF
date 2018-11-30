@@ -40,5 +40,22 @@ namespace DataContracts.ML
         public string CreateDate { get; set; }
         public string EditUser { get; set; }
         public string EditDate { get; set; }
+        public string RoomInfo_TX { get; set; }
+        public List<ExtractedAttributes> ExtractedAttributes { get; set; }
+
+    }
+
+    public class DC_ML_DL_AccoRoom_ExtendedAttributes_Data
+    {
+        //public Guid Accommodation_RoomInfo_Attribute_Id { get; set; }
+        public Guid Accommodation_RoomInfo_Id { get; set; }
+        public string Accommodation_RoomInfo_Attribute { get; set; }
+        public string SystemAttributeKeyword { get; set; }
+    }
+
+    public class ExtractedAttributes
+    {
+        public string Key { get; set; }
+        public string Value { get; set; }
     }
 }

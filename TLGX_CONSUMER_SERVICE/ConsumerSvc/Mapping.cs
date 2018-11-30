@@ -98,6 +98,14 @@ namespace ConsumerSvc
             }
         }
 
+        public DataContracts.DC_Message Accomodation_Room_TTFUALL(string Accommodation_Room_Id)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.Accomodation_Room_TTFUALL(Accommodation_Room_Id);
+            }
+        }
+
         public DataContracts.DC_Message UpdateAccomodationSupplierRoomTypeMappingValues(List<DataContracts.Mapping.DC_Accommodation_SupplierRoomTypeMapping_Values> obj)
         {
             using (BL_Mapping objBL = new BL_Mapping())
@@ -440,11 +448,11 @@ namespace ConsumerSvc
         #endregion
 
         #region NewDashBoardReport
-        public IList<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise()
+        public IList<DataContracts.Mapping.DC_NewDashBoardReportCountry_RS> GetNewDashboardReport_CountryWise(DC_NewDashBoardReport_RQ RQ)
         {
             using (BL_Mapping objBL = new BL_Mapping())
             {
-                return objBL.GetNewDashboardReport_CountryWise();
+                return objBL.GetNewDashboardReport_CountryWise(RQ);
             }
         }
 
@@ -485,5 +493,16 @@ namespace ConsumerSvc
             }
         }
         #endregion
+
+        #region Reset Supplier Room Type Mapping        
+        //GAURAV_TMAP_746
+        public DataContracts.DC_Message AccomodationSupplierRoomTypeMapping_Reset(List<DC_SupplierRoomType_TTFU_RQ> Acco_RoomTypeMap_Ids)
+        {
+            using (BL_Mapping objBL = new BL_Mapping())
+            {
+                return objBL.AccomodationSupplierRoomTypeMapping_Reset(Acco_RoomTypeMap_Ids);
+            }
+        }
+        #endregion  
     }
 }

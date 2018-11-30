@@ -18,7 +18,7 @@ namespace DataContracts.Mapping
         List<DC_MappingStatsFor> _MappingStatsFor;
 
         [DataMember]
-        public List<string> SupplierNames{ get; set; }
+        public List<string> SupplierNames { get; set; }
         [DataMember]
         public Guid SupplierId
         {
@@ -46,7 +46,7 @@ namespace DataContracts.Mapping
                 _SupplierName = value;
             }
         }
-        
+
         [DataMember]
         public List<DC_MappingStatsFor> MappingStatsFor
         {
@@ -144,7 +144,7 @@ namespace DataContracts.Mapping
         public int HotelsMapped { get; set; }
         [DataMember]
         public int TotalEligibleRoom { get; set; }
-        
+
         [DataMember]
         public int Room_AutoMapped { get; set; }
         [DataMember]
@@ -1428,7 +1428,7 @@ namespace DataContracts.Mapping
     [DataContract]
     public class DC_VelocityMappingStatsFor
     {
-         string _MappingFor;
+        string _MappingFor;
         int _unmappeddata;
         int? _estimate;
         List<DC_VelocityMappingdata> _MappingData;
@@ -1540,7 +1540,11 @@ namespace DataContracts.Mapping
         [DataMember]
         public Guid City_Id { get; set; }
         [DataMember]
-        public string CityName { get; set; }    
+        public string CityName { get; set; }
+        [DataMember]
+        public int TotalNoOfHotelRooms { get; set; }
+        [DataMember]
+        public int TotalNoOfHotels { get; set; }
 
     }
 
@@ -1555,6 +1559,17 @@ namespace DataContracts.Mapping
 
         [DataMember]
         public List<string> City { get; set; }
+
+        //GAURAV_TMAP_876
+        [DataMember]
+        public List<string> Priorities { get; set; }
+
+        [DataMember]
+        public List<string> Keys { get; set; }
+
+
+        [DataMember]
+        public List<string> Ranks { get; set; }
     }
     #endregion
 
@@ -1662,7 +1677,7 @@ namespace DataContracts.Mapping
 
     }
 
-        #endregion
-    }
+    #endregion
+}
 
 
