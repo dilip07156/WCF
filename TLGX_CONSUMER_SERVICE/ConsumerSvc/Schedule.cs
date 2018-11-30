@@ -37,5 +37,15 @@ namespace ConsumerSvc
             }
         }
 
+        //UpdateTaskLog
+        public DataContracts.DC_Message UpdateTaskLog(DataContracts.Schedulers.DC_SupplierScheduledTaskRQ obj)
+        {
+            using (BusinessLayer.BL_Schedule objBL = new BL_Schedule())
+            {
+                return objBL.UpdateTaskLog(obj);
+            }
+        }
+
+
     }
 }

@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using DataContracts;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Security;
@@ -36,13 +38,13 @@ namespace DataLayer
                     List<DataContracts.Schedulers.SupplierScheduledTask> result = new List<DataContracts.Schedulers.SupplierScheduledTask>();
 
                     #region select 
-                    sbsqlselect.Append(@"select d.Name SuppllierName,c.Entity,a.Log_Id,b.Schedule_Datetime as ScheduledDate,b.Status as Status,
-                                         case when b.Status='Pending' then DATEDIFF(d,b.Schedule_Datetime,GETDATE()) else '0' end as PendingFordays,a.log_type as LogType, ");
+                    sbsqlselect.Append(@"select d.Name SuppllierName,c.Entity,a.Log_Id as LogId,b.Schedule_Datetime as ScheduledDate,b.Status as Status,
+                                         case when b.Status='Pending' then DATEDIFF(d,b.Schedule_Datetime,GETDATE()) else '0' end as PendingFordays,a.log_type as LogType,e.PentahoCall_Id as Pentahocall_id,f.API_Path as ApiPath,e.Status as APIStatus, ");
 
                     #endregion
 
                     #region from
-                    sbsqlfrom.AppendLine(" from Supplier_Scheduled_Task_Log a with (nolock) inner join Supplier_Scheduled_Task b with (nolock) on a.Task_Id = b.Task_Id inner join Supplier_Schedule c with (nolock) on c.SupplierScheduleID = b.Schedule_Id inner join Supplier d with (nolock) on d.Supplier_Id = c.Supplier_ID");
+                    sbsqlfrom.AppendLine(" from Supplier_Scheduled_Task_Log a with (nolock) inner join Supplier_Scheduled_Task b with (nolock) on a.Task_Id = b.Task_Id inner join Supplier_Schedule c with (nolock) on c.SupplierScheduleID = b.Schedule_Id inner join Supplier d with (nolock) on d.Supplier_Id = c.Supplier_ID Left join Supplier_ApiCallLog e with (nolock) on e.SupplierApiCallLog_Id=b.Api_Call_Log_Id Left join Supplier_APILocation f with (nolock) on f.Supplier_APILocation_Id=e.SupplierApiLocation_Id");
 
                     #endregion
 
@@ -151,6 +153,60 @@ namespace DataLayer
             {
                 throw new System.ServiceModel.FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Supplier Scheduled task", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
+        }
+
+        public DataContracts.DC_Message UpdateTaskLog(DataContracts.Schedulers.DC_SupplierScheduledTaskRQ obj)
+        {
+            try
+            {
+                DC_Message _msg = new DC_Message();
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+
+                    if (obj.LogId != Guid.Empty)
+                    {
+                        //var result = context.Supplier_Scheduled_Task.Find(obj.SupplierScheduleID);
+
+                        //if (result != null)
+                        //{
+                        //    result.Supplier_ID = obj.Suppllier_ID;
+                        //    result.ISXMLSupplier = obj.ISXMLSupplier;
+                        //    result.ISUpdateFrequence = obj.ISUpdateFrequence;
+                        //    result.Recur_No = obj.Recur_No;
+                        //    result.MonthOfYear = obj.MonthOfYear;
+                        //    result.FrequencyTypeCode = obj.FrequencyTypeCode;
+                        //    result.DateOfMonth = obj.DateOfMonth;
+                        //    result.DayOfWeek = obj.DayOfWeek;
+                        //    result.WeekOfMonth = obj.WeekOfMonth;
+                        //    result.StartTime = obj.StartTime;
+                        //    result.EndTime = obj.EndTime;
+                        //    result.Status = obj.Status;
+                        //    result.Edit_User = obj.Edit_User;
+                        //    result.Edit_Date = obj.Edit_Date;
+                        //    if (context.SaveChanges() == 1)
+                        //    {
+                        //        _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                        //        _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                        //    }
+                        //    else
+                        //    {
+                        //        _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                        //        _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                        //    }
+                        //}
+                        //return _msg;
+
+                    }
+                    
+                }
+                return _msg;
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while saving Supplier Schedule", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+
+
         }
     }
 }

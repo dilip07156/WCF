@@ -31,11 +31,17 @@ namespace DataContracts.Schedulers
         [DataMember]
         public int TotalRecord { get; set; }
         [DataMember]
-        public int LogId { get; set; }
+        public Guid LogId { get; set; }
         [DataMember]
         public string Status { get; set; }
         [DataMember]
         public string LogType { get; set; }
+        [DataMember]
+        public Guid? Pentahocall_id { get; set; }
+        [DataMember]
+        public string ApiPath { get; set; }
+        [DataMember]
+        public string APIStatus { get; set; }
     }
 
 
@@ -62,7 +68,13 @@ namespace DataContracts.Schedulers
         public string UserName { get; set; }
         [DataMember]
         public string RedirectFrom { get; set; }
-               
-       
+        [DataMember]
+        public Guid? LogId { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+
+
     }
 }

@@ -36,5 +36,15 @@ namespace BusinessLayer
                 return obj.GetScheduleTaskList(_obj);
             }
         }
+
+        //UpdateTaskLog
+
+        public DataContracts.DC_Message UpdateTaskLog(DataContracts.Schedulers.DC_SupplierScheduledTaskRQ obj)
+        {
+            using (DataLayer.DL_ScheduledTask objDL = new DataLayer.DL_ScheduledTask())
+            {
+                return objDL.UpdateTaskLog(obj);
+            }
+        }
     }
 }
