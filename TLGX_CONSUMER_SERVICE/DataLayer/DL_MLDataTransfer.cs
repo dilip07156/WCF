@@ -374,9 +374,7 @@ namespace DataLayer
                                         Edit_User,
                                         Edit_Date,
                                         TX_RoomName as RoomInfo_TX
-                                        FROM Accommodation_RoomInfo with(nolock) WHERE Accommodation_RoomInfo_Id = '91AC41D6-7523-4607-B267-000031C95A61'; ");
-
-                    //Accommodation_Id IS NOT NULL; ");
+                                        FROM Accommodation_RoomInfo with(nolock) WHERE Accommodation_Id IS NOT NULL; ");
 
                     StringBuilder sbfinal = new StringBuilder();
                     sbfinal.Append(sbSelect);
@@ -410,7 +408,7 @@ namespace DataLayer
                                         Accommodation_RoomInfo_Id,
                                         Accommodation_RoomInfo_Attribute,
                                         SystemAttributeKeyword 
-                                        FROM Accommodation_RoomInfo_Attributes with(nolock)  WHERE Accommodation_RoomInfo_Id = '91AC41D6-7523-4607-B267-000031C95A61'; ");
+                                        FROM Accommodation_RoomInfo_Attributes with(nolock); ");
 
                     StringBuilder sbfinal = new StringBuilder();
                     sbfinal.Append(sbSelect);
@@ -1140,7 +1138,12 @@ namespace DataLayer
 
                     if (result != null)
                     {
-                        var SupplierRoomTypeMappingValue = context.Accommodation_SupplierRoomTypeMapping_Values.Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id && rv.Accommodation_RoomInfo_Id != null).ToList();
+
+                        List<Accommodation_SupplierRoomTypeMapping_Values> SupplierRoomTypeMappingValue = new List<Accommodation_SupplierRoomTypeMapping_Values>();
+                        SupplierRoomTypeMappingValue = context.Accommodation_SupplierRoomTypeMapping_Values.Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id && rv.Accommodation_RoomInfo_Id != null).ToList();
+
+                        var maxValue = SupplierRoomTypeMappingValue.Max(x => x.MatchingScore);
+
 
                         var accodetails = context.Accommodation.Find(result.Accommodation_Id);
 
@@ -1155,7 +1158,10 @@ namespace DataLayer
                                 {
                                     continue;
                                 }
-
+                                if (item.UserMappingStatus.ToUpper() == MappingStatus.MAPPED.ToString() && item.MatchingScore != maxValue)
+                                {
+                                    continue;
+                                }
                                 //Creating Data to send AIML
                                 var roominfo = context.Accommodation_RoomInfo.Find(item.Accommodation_RoomInfo_Id);
                                 //Creating Data to send AIML

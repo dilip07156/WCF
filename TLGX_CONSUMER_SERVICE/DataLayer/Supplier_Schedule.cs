@@ -27,6 +27,7 @@ namespace DataLayer
         public Nullable<int> WeekOfMonth { get; set; }
         public Nullable<int> StartYear { get; set; }
         public Nullable<int> EndYear { get; set; }
+        public string User_Role_Id { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
         public string Status { get; set; }
@@ -36,6 +37,5 @@ namespace DataLayer
         public string Edit_User { get; set; }
         public string CronExpression { get; set; }
         public Nullable<bool> IsActive { get; set; }
-        public Nullable<int> User_Role_Id { get; set; }
     }
 }

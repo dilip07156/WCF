@@ -2185,6 +2185,11 @@
           <Property Name="Count_SuppliersRoom" Type="int" />
           <Property Name="Count_AccoRooms" Type="int" />
           <Property Name="ReportType" Type="nvarchar" MaxLength="10" />
+          <Property Name="TotalNoOfHotelRooms" Type="int" />
+          <Property Name="TotalNoOfHotels" Type="int" />
+          <Property Name="Priority" Type="varchar" MaxLength="50" />
+          <Property Name="Rank" Type="varchar" MaxLength="50" />
+          <Property Name="Key" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Organisation_Company">
           <Key>
@@ -2671,7 +2676,7 @@
           <Property Name="WeekOfMonth" Type="int" />
           <Property Name="StartYear" Type="int" />
           <Property Name="EndYear" Type="int" />
-          <Property Name="User_Role_Id" Type="int" />
+          <Property Name="User_Role_Id" Type="nvarchar" MaxLength="50" />
           <Property Name="StartTime" Type="nvarchar" MaxLength="50" />
           <Property Name="EndTime" Type="nvarchar" MaxLength="50" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
@@ -3295,10 +3300,10 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySet Name="m_CityMaster" EntityType="ConsumerModel.m_CityMaster" />
           <EntitySet Name="Activity_Flavour" EntityType="ConsumerModel.Activity_Flavour" />
           <EntitySet Name="Supplier_Credentials" EntityType="ConsumerModel.Supplier_Credentials" />
-          <EntitySet Name="Supplier_Schedule" EntityType="ConsumerModel.Supplier_Schedule" />
           <EntitySet Name="Accommodation_RoomInfo_Attributes" EntityType="ConsumerModel.Accommodation_RoomInfo_Attributes" />
           <EntitySet Name="Supplier_Scheduled_Task" EntityType="ConsumerModel.Supplier_Scheduled_Task" />
           <EntitySet Name="Supplier_Scheduled_Task_Log" EntityType="ConsumerModel.Supplier_Scheduled_Task_Log" />
+          <EntitySet Name="Supplier_Schedule" EntityType="ConsumerModel.Supplier_Schedule" />
 
           <!--<EntitySet Name="Supplier_APILocation" EntityType="ConsumerModel.Supplier_APILocation" />
           <EntitySet Name="Accommodation_SupplierRoomTypeAttributes" EntityType="ConsumerModel.Accommodation_SupplierRoomTypeAttributes" />
@@ -6036,6 +6041,11 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Count_SuppliersRoom" Type="Int32" />
           <Property Name="Count_AccoRooms" Type="Int32" />
           <Property Name="ReportType" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="TotalNoOfHotelRooms" Type="Int32" />
+          <Property Name="TotalNoOfHotels" Type="Int32" />
+          <Property Name="Priority" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Rank" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Key" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="m_CityMaster">
           <Key>
@@ -6131,34 +6141,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="CreateUser" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="EditUser" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Supplier_Schedule">
-          <Key>
-            <PropertyRef Name="SupplierScheduleID" />
-          </Key>
-          <Property Name="SupplierScheduleID" Type="Guid" Nullable="false" />
-          <Property Name="Supplier_ID" Type="Guid" Nullable="false" />
-          <Property Name="Entity" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
-          <Property Name="ISXMLSupplier" Type="Boolean" Nullable="false" />
-          <Property Name="ISUpdateFrequence" Type="Boolean" />
-          <Property Name="FrequencyTypeCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Recur_No" Type="Int32" />
-          <Property Name="MonthOfYear" Type="Int32" />
-          <Property Name="DayOfWeek" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="DateOfMonth" Type="Int32" />
-          <Property Name="WeekOfMonth" Type="Int32" />
-          <Property Name="StartYear" Type="Int32" />
-          <Property Name="EndYear" Type="Int32" />
-          <Property Name="StartTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EndTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Create_Date" Type="DateTime" Precision="3" />
-          <Property Name="Create_User" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
-          <Property Name="Edit_User" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="CronExpression" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="IsActive" Type="Boolean" />
-          <Property Name="User_Role_Id" Type="Int32" />
-        </EntityType>
         <EntityType Name="Accommodation_RoomInfo_Attributes">
           <Key>
             <PropertyRef Name="Accommodation_RoomInfo_Attribute_Id" />
@@ -6197,6 +6179,34 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <Property Name="Create_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Edit_Date" Type="DateTime" Precision="3" />
           <Property Name="Edit_User" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Supplier_Schedule">
+          <Key>
+            <PropertyRef Name="SupplierScheduleID" />
+          </Key>
+          <Property Name="SupplierScheduleID" Type="Guid" Nullable="false" />
+          <Property Name="Supplier_ID" Type="Guid" Nullable="false" />
+          <Property Name="Entity" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="ISXMLSupplier" Type="Boolean" Nullable="false" />
+          <Property Name="ISUpdateFrequence" Type="Boolean" />
+          <Property Name="FrequencyTypeCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Recur_No" Type="Int32" />
+          <Property Name="MonthOfYear" Type="Int32" />
+          <Property Name="DayOfWeek" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="DateOfMonth" Type="Int32" />
+          <Property Name="WeekOfMonth" Type="Int32" />
+          <Property Name="StartYear" Type="Int32" />
+          <Property Name="EndYear" Type="Int32" />
+          <Property Name="User_Role_Id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StartTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EndTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Create_Date" Type="DateTime" Precision="3" />
+          <Property Name="Create_User" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Edit_Date" Type="DateTime" Precision="3" />
+          <Property Name="Edit_User" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="CronExpression" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" />
         </EntityType>
         
@@ -9014,6 +9024,11 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
           <EntitySetMapping Name="NewDashBoardReport">
             <EntityTypeMapping TypeName="ConsumerModel.NewDashBoardReport">
               <MappingFragment StoreEntitySet="NewDashBoardReport">
+                <ScalarProperty Name="Key" ColumnName="Key" />
+                <ScalarProperty Name="Rank" ColumnName="Rank" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="TotalNoOfHotels" ColumnName="TotalNoOfHotels" />
+                <ScalarProperty Name="TotalNoOfHotelRooms" ColumnName="TotalNoOfHotelRooms" />
                 <ScalarProperty Name="ReportType" ColumnName="ReportType" />
                 <ScalarProperty Name="Count_AccoRooms" ColumnName="Count_AccoRooms" />
                 <ScalarProperty Name="Count_SuppliersRoom" ColumnName="Count_SuppliersRoom" />
@@ -9141,35 +9156,6 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Supplier_Schedule">
-            <EntityTypeMapping TypeName="ConsumerModel.Supplier_Schedule">
-              <MappingFragment StoreEntitySet="Supplier_Schedule">
-                <ScalarProperty Name="User_Role_Id" ColumnName="User_Role_Id" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="CronExpression" ColumnName="CronExpression" />
-                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
-                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
-                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
-                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
-                <ScalarProperty Name="EndYear" ColumnName="EndYear" />
-                <ScalarProperty Name="StartYear" ColumnName="StartYear" />
-                <ScalarProperty Name="WeekOfMonth" ColumnName="WeekOfMonth" />
-                <ScalarProperty Name="DateOfMonth" ColumnName="DateOfMonth" />
-                <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
-                <ScalarProperty Name="MonthOfYear" ColumnName="MonthOfYear" />
-                <ScalarProperty Name="Recur_No" ColumnName="Recur_No" />
-                <ScalarProperty Name="FrequencyTypeCode" ColumnName="FrequencyTypeCode" />
-                <ScalarProperty Name="ISUpdateFrequence" ColumnName="ISUpdateFrequence" />
-                <ScalarProperty Name="ISXMLSupplier" ColumnName="ISXMLSupplier" />
-                <ScalarProperty Name="Entity" ColumnName="Entity" />
-                <ScalarProperty Name="Supplier_ID" ColumnName="Supplier_ID" />
-                <ScalarProperty Name="SupplierScheduleID" ColumnName="SupplierScheduleID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Accommodation_RoomInfo_Attributes">
             <EntityTypeMapping TypeName="ConsumerModel.Accommodation_RoomInfo_Attributes">
               <MappingFragment StoreEntitySet="Accommodation_RoomInfo_Attributes">
@@ -9210,6 +9196,35 @@ warning 6002: The table/view 'TLGX_MAPPING.dbo.vwUserwisemappedStats' does not h
                 <ScalarProperty Name="Status_Message" ColumnName="Status_Message" />
                 <ScalarProperty Name="Task_Id" ColumnName="Task_Id" />
                 <ScalarProperty Name="Log_Id" ColumnName="Log_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Supplier_Schedule">
+            <EntityTypeMapping TypeName="ConsumerModel.Supplier_Schedule">
+              <MappingFragment StoreEntitySet="Supplier_Schedule">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CronExpression" ColumnName="CronExpression" />
+                <ScalarProperty Name="Edit_User" ColumnName="Edit_User" />
+                <ScalarProperty Name="Edit_Date" ColumnName="Edit_Date" />
+                <ScalarProperty Name="Create_User" ColumnName="Create_User" />
+                <ScalarProperty Name="Create_Date" ColumnName="Create_Date" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="User_Role_Id" ColumnName="User_Role_Id" />
+                <ScalarProperty Name="EndYear" ColumnName="EndYear" />
+                <ScalarProperty Name="StartYear" ColumnName="StartYear" />
+                <ScalarProperty Name="WeekOfMonth" ColumnName="WeekOfMonth" />
+                <ScalarProperty Name="DateOfMonth" ColumnName="DateOfMonth" />
+                <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
+                <ScalarProperty Name="MonthOfYear" ColumnName="MonthOfYear" />
+                <ScalarProperty Name="Recur_No" ColumnName="Recur_No" />
+                <ScalarProperty Name="FrequencyTypeCode" ColumnName="FrequencyTypeCode" />
+                <ScalarProperty Name="ISUpdateFrequence" ColumnName="ISUpdateFrequence" />
+                <ScalarProperty Name="ISXMLSupplier" ColumnName="ISXMLSupplier" />
+                <ScalarProperty Name="Entity" ColumnName="Entity" />
+                <ScalarProperty Name="Supplier_ID" ColumnName="Supplier_ID" />
+                <ScalarProperty Name="SupplierScheduleID" ColumnName="SupplierScheduleID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
