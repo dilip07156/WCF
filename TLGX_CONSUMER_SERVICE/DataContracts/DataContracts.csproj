@@ -160,6 +160,7 @@
     <Compile Include="DC_GooglePlaceNearBy.cs" />
     <Compile Include="DC_Master_Region.cs" />
     <Compile Include="DC_ML_DataTransfer.cs" />
+    <Compile Include="DC_SchedulerServices.cs" />
     <Compile Include="DC_SqlTableColumnInfo.cs" />
     <Compile Include="Mapping\DC_Accommodation_SupplierRoomTypeMapping_Values.cs" />
     <Compile Include="Mapping\DC_Accommodation_SupplierRoomTypeMapping_Online.cs" />

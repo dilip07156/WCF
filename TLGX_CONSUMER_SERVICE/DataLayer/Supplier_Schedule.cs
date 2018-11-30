@@ -36,5 +36,6 @@ namespace DataLayer
         public string Edit_User { get; set; }
         public string CronExpression { get; set; }
         public Nullable<bool> IsActive { get; set; }
+        public Nullable<int> User_Role_Id { get; set; }
     }
 }

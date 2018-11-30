@@ -274,7 +274,7 @@ namespace ConsumerSvc
                 objBL.DataHandler_Keyword_Update_NoOfHits(NoOfHits);
             }
         }
-        
+
         public void DataHandler_RoomName_Attributes_Update(DC_SupplierRoomName_Details SRNDetails)
         {
             using (BL_Mapping objBL = new BL_Mapping())
@@ -409,5 +409,92 @@ namespace ConsumerSvc
                 return objBL.STG_Cleanup(SupplierImportFile_Id, Entity);
             }
         }
+        #region Task Checker Activities
+
+        public List<DC_UnprocessedData> getTaskGeneratorFiles()
+        {
+            using (BL_SchedulerServices obj = new BL_SchedulerServices())
+            {
+                return obj.getTaskGeneratorFiles();
+            }
+        }
+
+
+        #endregion
+
+
+        #region CRUD Declarations Supplier_Scheduled_Task
+
+        public List<DC_SchedulerServicesTasks> Get_Scheduled_Tasks(DC_SchedulerServicesTasks RqDC_SchedulerServices)
+        {
+            using (BL_SchedulerServices obj = new BL_SchedulerServices())
+            {
+                return obj.Get_Scheduled_Tasks(RqDC_SchedulerServices);
+            }
+        }
+
+        public DC_Message Add_Scheduled_Tasks(DC_SchedulerServicesTasks RqDC_SchedulerServices)
+        {
+            using (BL_SchedulerServices obj = new BL_SchedulerServices())
+            {
+                return obj.Add_Scheduled_Tasks(RqDC_SchedulerServices);
+            }
+        }
+
+
+        public DC_Message Update_Scheduled_Tasks(DC_SchedulerServicesTasks RqDC_SchedulerServices)
+        {
+            using (BL_SchedulerServices obj = new BL_SchedulerServices())
+            {
+                return obj.Update_Scheduled_Tasks(RqDC_SchedulerServices);
+            }
+        }
+
+        public DC_Message Delete_Scheduled_Tasks(DC_SchedulerServicesTasks RqDC_SchedulerServices)
+        {
+            using (BL_SchedulerServices obj = new BL_SchedulerServices())
+            {
+                return obj.Delete_Scheduled_Tasks(RqDC_SchedulerServices);
+            }
+        }
+
+        #endregion
+
+        #region CRUD Declarations Supplier_Scheduled_Task
+
+        public List<DC_SchedulerServicesLogs> Get_Scheduled_Logs(DC_SchedulerServicesLogs RqDC_SchedulerServices)
+        {
+            using (BL_SchedulerServices obj = new BL_SchedulerServices())
+            {
+                return obj.Get_Scheduled_Logs(RqDC_SchedulerServices);
+            }
+        }
+
+        public DC_Message Add_Scheduled_Tasklog(DC_SchedulerServicesLogs RqDC_SchedulerServices)
+        {
+            using (BL_SchedulerServices obj = new BL_SchedulerServices())
+            {
+                return obj.Add_Scheduled_Tasklog(RqDC_SchedulerServices);
+            }
+        }
+
+
+        public DC_Message Update_Scheduled_Logs(DC_SchedulerServicesLogs RqDC_SchedulerServices)
+        {
+            using (BL_SchedulerServices obj = new BL_SchedulerServices())
+            {
+                return obj.Update_Scheduled_Logs(RqDC_SchedulerServices);
+            }
+        }
+
+        public DC_Message Delete_Scheduled_Logs(DC_SchedulerServicesLogs RqDC_SchedulerServices)
+        {
+            using (BL_SchedulerServices obj = new BL_SchedulerServices())
+            {
+                return obj.Delete_Scheduled_Logs(RqDC_SchedulerServices);
+            }
+        }
+
+        #endregion
     }
 }

@@ -401,6 +401,7 @@
     <Compile Include="DL_MongoPush.cs" />
     <Compile Include="DL_Pentaho.cs" />
     <Compile Include="DL_Schedule.cs" />
+    <Compile Include="DL_SchedulerServices.cs" />
     <Compile Include="DL_UploadStaticData.cs" />
     <Compile Include="DynamicAttribute.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
@@ -603,6 +604,9 @@
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Supplier_Scheduled_Task.cs">
+      <DependentUpon>ConsumerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Supplier_Scheduled_Task_Log.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="UserEntity.cs">
