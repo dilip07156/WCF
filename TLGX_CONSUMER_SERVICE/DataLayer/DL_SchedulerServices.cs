@@ -202,6 +202,10 @@ namespace DataLayer
                                 using (var trn = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadCommitted))
                                 {
                                     search.Status = param.Status;
+
+                                    // Condition for Change Running Status to completed.
+                                    if (param.Api_Call_Log_Id != null) { search.Api_Call_Log_Id = param.Api_Call_Log_Id; }
+
                                     search.Edit_User = param.Create_User;
                                     search.Edit_Date = DateTime.Now;
                                     context.SaveChanges();
@@ -674,6 +678,46 @@ namespace DataLayer
 
             return lstUnprocessedData;
         }
+        #endregion
+
+
+        #region MyRegion
+        public List<DC_LoggerData> getLoggerTasks()
+        {
+            List<DC_LoggerData> lstUnprocessedData = new List<DC_LoggerData>();
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+
+                sb.Append(" select * from (select tsk.Status TaskStatus, replace(t.Status,'FAILED','ERROR') PentahoStatus, tsk.Task_Id, SupplierApiCallLog_Id, SupplierApiLocation_Id, PentahoCall_Id from ( ");
+                sb.Append(" select ROW_NUMBER() over(partition by sa.Supplier_APILocation_Id order by api.Create_Date desc) rowNum,mav.AttributeValue, sa.API_Path,ss.SupplierScheduleID,api.Status, ");
+                sb.Append(" api.SupplierApiCallLog_Id,api.SupplierApiLocation_Id,api.PentahoCall_Id from Supplier_Schedule ss with(nolock) ");
+                sb.Append(" inner join m_masterattributevalue mav with(nolock) on LOWER(LTRIM(RTRIM(mav.AttributeValue))) = LOWER(LTRIM(RTRIM(ss.Entity))) ");
+                sb.Append(" inner join m_masterattribute ma  with(nolock) on ma.MasterAttribute_Id = mav.MasterAttribute_Id ");
+                sb.Append(" left join Supplier_APILocation sa with(nolock) on sa.Supplier_Id = ss.Supplier_ID and sa.Entity_Id = mav.MasterAttributeValue_Id ");
+                sb.Append(" inner join Supplier_ApiCallLog api with(nolock) on sa.Supplier_APILocation_Id = api.SupplierApiLocation_Id ");
+                sb.Append(" where ma.Name = 'MappingEntity' and ma.MasterFor = 'MappingFileConfig' ) t ");
+                sb.Append(" left join Supplier_Scheduled_Task tsk with(nolock) on t.SupplierScheduleID = tsk.Schedule_Id where t.rowNum = 1 AND tsk.Status = 'Running' ");
+                sb.Append(" ) t; ");
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Database.CommandTimeout = 0;
+                    lstUnprocessedData = context.Database.SqlQuery<DC_LoggerData>(sb.ToString()).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while fetching Logger Tasks",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+
+            return lstUnprocessedData;
+        }
+
         #endregion
     }
 

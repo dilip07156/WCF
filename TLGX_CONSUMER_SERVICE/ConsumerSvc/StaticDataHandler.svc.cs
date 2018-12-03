@@ -427,8 +427,14 @@ namespace ConsumerSvc
                 return obj.getExecutableTasks();
             }
         }
-        
 
+        public List<DC_LoggerData> getLoggerTasks()
+        {
+            using (BL_SchedulerServices obj = new BL_SchedulerServices())
+            {
+                return obj.getLoggerTasks();
+            }
+        }
         #endregion
 
 

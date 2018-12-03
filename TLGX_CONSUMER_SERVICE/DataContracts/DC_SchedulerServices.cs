@@ -121,4 +121,26 @@ namespace DataContracts
 
 
     }
+
+    [DataContract]
+    public class DC_LoggerData
+    {
+        [DataMember]
+        public Guid SupplierApiCallLog_Id { get; set; }
+
+        [DataMember]
+        public Guid SupplierApiLocation_Id { get; set; }
+
+        [DataMember]
+        public Guid PentahoCall_Id { get; set; }
+
+        [DataMember]
+        public Guid Task_Id { get; set; }
+
+        [DataMember]
+        public string PentahoStatus { get; set; }
+
+        [DataMember]
+        public string TaskStatus { get; set; }
+    }
 }

@@ -101,8 +101,15 @@ namespace BusinessLayer
                 return obj.getExecutableTasks();
             }
         }
-        
 
+        public List<DC_LoggerData> getLoggerTasks()
+        {
+            using (DL_SchedulerServices obj = new DL_SchedulerServices())
+            {
+                return obj.getLoggerTasks();
+            }
+        }
+        
         #endregion
 
     }

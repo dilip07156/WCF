@@ -288,7 +288,10 @@ namespace OperationContracts
         [WebInvoke(Method = "GET", UriTemplate = "SchedulerServices/TaskExecuter/GetExecutableData", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         List<DC_UnprocessedExecuterData> getExecutableTasks();
 
-
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "SchedulerServices/TaskLogger/GetLoggerData", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DC_LoggerData> getLoggerTasks();
 
         #endregion
 
