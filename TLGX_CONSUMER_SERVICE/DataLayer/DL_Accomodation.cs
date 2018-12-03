@@ -1575,8 +1575,15 @@ namespace DataLayer
                         search.Country_Id = AccomodationDetails.Country_Id;
                         search.City_Id = AccomodationDetails.City_Id;
                         //Check Ratting changes
-                        if (search.HotelRating != AccomodationDetails.HotelRating)
-                            search.RatingDate = DateTime.Today.Date;
+                        if (AccomodationDetails.RatingDate != null)
+                        {
+                            search.RatingDate = AccomodationDetails.RatingDate;
+                        }
+                        else
+                        {
+                            if (search.HotelRating != AccomodationDetails.HotelRating)
+                                search.RatingDate = DateTime.Today.Date;
+                        }
 
                         search.HotelRating = AccomodationDetails.HotelRating;
                         search.Reason = AccomodationDetails.Reason;
@@ -1609,21 +1616,15 @@ namespace DataLayer
                         search.Area_Id = AccomodationDetails.Area_Id;
                         search.Location_Id = AccomodationDetails.Location_Id;
 
-                        if (!string.IsNullOrWhiteSpace(AccomodationDetails.Telephone_TX))
-                        {
-                            search.Telephone_Tx = AccomodationDetails.Telephone_TX;
-                        }
+                        search.TLGXAccoId = AccomodationDetails.TLGXAccoId;
+                        search.Telephone_Tx = AccomodationDetails.Telephone_TX;
 
                         List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList> AttributeList = new List<DataContracts.Mapping.DC_SupplierRoomName_AttributeList>();
                         string TX_Value = string.Empty;
                         string SX_Value = string.Empty;
                         search.Address_Tx = CommonFunctions.TTFU(ref Keywords, ref AttributeList, ref TX_Value, ref SX_Value, search.FullAddress, new string[] { AccomodationDetails.City, AccomodationDetails.Country });
 
-                        if(!string.IsNullOrWhiteSpace(AccomodationDetails.TLGXAccoId))
-                        {
-                            search.TLGXAccoId = AccomodationDetails.TLGXAccoId;
-                        }
-                        
+
                         if (double.TryParse(search.Longitude, out double Lng) && double.TryParse(search.Latitude, out double Lat))
                         {
                             if (Lat >= -90 && Lat <= 90 && Lng >= -180 && Lng <= 180)
