@@ -93,6 +93,14 @@ namespace BusinessLayer
                 return obj.getTaskGeneratorFiles();
             }
         }
+
+        public List<DC_UnprocessedExecuterData> getExecutableTasks()
+        {
+            using (DL_SchedulerServices obj = new DL_SchedulerServices())
+            {
+                return obj.getExecutableTasks();
+            }
+        }
         
 
         #endregion

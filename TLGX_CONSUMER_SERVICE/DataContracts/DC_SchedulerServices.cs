@@ -98,4 +98,27 @@ namespace DataContracts
 
     }
 
+    [DataContract]
+    public class DC_UnprocessedExecuterData
+    {
+        [DataMember]
+        public Guid SupplierScheduleID { get; set; }
+
+        [DataMember]
+        public Guid? Supplier_APILocation_Id { get; set; }
+
+        [DataMember]
+        public Guid Task_Id { get; set; }
+
+        [DataMember]
+        public DateTime ScheduleDate { get; set; }
+
+        [DataMember]
+        public string Api_Call_Log_Id { get; set; }
+
+        [DataMember]
+        public string Status { get; set; }
+
+
+    }
 }

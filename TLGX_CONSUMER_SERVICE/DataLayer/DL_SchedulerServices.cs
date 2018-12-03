@@ -5,6 +5,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace DataLayer
 {
@@ -198,10 +199,15 @@ namespace DataLayer
                             var search = context.Supplier_Scheduled_Task.Find(param.Task_Id);
                             if (search != null)
                             {
-                                search.Status = param.Status;
-                                search.Edit_User = param.Create_User;
-                                search.Edit_Date = DateTime.Now;
-                                context.SaveChanges();
+                                using (var trn = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadCommitted))
+                                {
+                                    search.Status = param.Status;
+                                    search.Edit_User = param.Create_User;
+                                    search.Edit_Date = DateTime.Now;
+                                    context.SaveChanges();
+
+                                    trn.Commit();
+                                }
                             }
                             _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success;
                             _msg.StatusMessage = param.Task_Id + DataContracts.ReadOnlyMessage.strUpdatedSuccessfully;
@@ -255,10 +261,18 @@ namespace DataLayer
                             {
                                 if (param.Operation.ToLower() == "softdelete")
                                 {
-                                    search.Edit_User = param.Create_User;
-                                    search.Edit_Date = DateTime.Now;
-                                    search.IsActive = param.IsActive;
-                                    context.SaveChanges();
+
+
+                                    using (var trn = context.Database.BeginTransaction(System.Data.IsolationLevel.ReadCommitted))
+                                    {
+                                        search.Edit_User = param.Create_User;
+                                        search.Edit_Date = DateTime.Now;
+                                        search.IsActive = param.IsActive;
+                                        context.SaveChanges();
+                                        trn.Commit();
+                                    }
+
+
                                 }
                                 _msg.StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success;
                                 _msg.StatusMessage = param.Task_Id + DataContracts.ReadOnlyMessage.strDeleted.Replace("deleted", (param.IsActive ? "restored" : "deleted"));
@@ -573,11 +587,11 @@ namespace DataLayer
 
 
                 sb.Append("with CTE AS(select ROW_NUMBER() over(partition by SupplierScheduleID order by tsk.Create_date Desc) RowNum, SupplierScheduleID, tsk.Status, ");
-                sb.Append("isnull(tsk.Schedule_Datetime, getdate()) As ScheduleDate, sch.CronExpression, Api_Call_Log_Id As Api_Call_Log_Id, isnull(sch.ISXMLSupplier, 1) ISXMLSupplier ");
+                sb.Append("isnull(tsk.Schedule_Datetime, getdate()) As ScheduleDate, sch.CronExpression, Api_Call_Log_Id As Api_Call_Log_Id, isnull(sch.ISXMLSupplier, 0) ISXMLSupplier ");
                 sb.Append("from Supplier_Schedule sch with(nolock) inner join Supplier spr with(nolock) on sch.Supplier_ID = spr.Supplier_Id left join Supplier_Scheduled_Task tsk ");
                 sb.Append("with(nolock) on sch.SupplierScheduleID = tsk.Schedule_Id where spr.StatusCode = 'ACTIVE' and sch.Entity is not null and len(CronExpression) > 0) ");
                 sb.Append("select RowNum, SupplierScheduleID, ScheduleDate, CronExpression, Api_Call_Log_Id, ");
-                sb.Append("ISXMLSupplier, Status from CTE where RowNum = 1 And status <> 'Pending' And Convert(Date, ScheduleDate) <= Convert(Date, GETDATE()); ");
+                sb.Append("ISXMLSupplier, Status from CTE where RowNum = 1 And ISNULL(status,'') <> 'Pending' And Convert(Date, ScheduleDate) <= Convert(Date, GETDATE()); ");
 
                 //sb.Append(" with CTE AS(select ROW_NUMBER() over(partition by SupplierScheduleID order by tsk.Create_Date Desc) RowNum, SupplierScheduleID, tsk.Status,              ");
                 //sb.Append(" isnull(tsk.Schedule_Datetime, getdate()) As ScheduleDate, sch.CronExpression, Api_Call_Log_Id As Api_Call_Log_Id, isnull(sch.ISXMLSupplier, 1) ISXMLSupplier   ");
@@ -612,6 +626,55 @@ namespace DataLayer
         }
         #endregion
 
+        #region Task Executer
+
+        /// <summary>
+        /// Below Function will return the Tasks that will be scheduled for today to Execute.
+        /// </summary>
+        /// <returns> List of UnprocessedData</returns>
+        public List<DC_UnprocessedExecuterData> getExecutableTasks()
+        {
+            List<DC_UnprocessedExecuterData> lstUnprocessedData = new List<DC_UnprocessedExecuterData>();
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+
+                sb.Append(" with CTE AS( ");
+                sb.Append(" select ROW_NUMBER() over(partition by SupplierScheduleID order by tsk.Create_date Desc) RowNum, SupplierScheduleID, tsk.Status, tsk.Schedule_Datetime ScheduleDate, tsk.Task_Id, ");
+                sb.Append(" sch.CronExpression, Api_Call_Log_Id As Api_Call_Log_Id, isnull(sch.ISXMLSupplier, 1) ISXMLSupplier from Supplier_Schedule sch with(nolock) ");
+                sb.Append(" inner join Supplier spr with(nolock) on sch.Supplier_ID = spr.Supplier_Id ");
+                sb.Append(" left join Supplier_Scheduled_Task tsk with(nolock) on sch.SupplierScheduleID = tsk.Schedule_Id ");
+                sb.Append(" where spr.StatusCode = 'ACTIVE' and sch.Entity is not null and len(CronExpression) > 0) , ");
+                sb.Append(" CTE1 AS( ");
+                sb.Append(" select mav.AttributeValue, sa.API_Path, ss.SupplierScheduleID,sa.Supplier_APILocation_Id from Supplier_Schedule ss with(nolock) ");
+                sb.Append(" inner join m_masterattributevalue mav with(nolock) on LOWER(LTRIM(RTRIM(mav.AttributeValue))) = LOWER(LTRIM(RTRIM(ss.Entity))) ");
+                sb.Append(" inner join m_masterattribute ma  with(nolock) on ma.MasterAttribute_Id = mav.MasterAttribute_Id ");
+                sb.Append(" left join Supplier_APILocation sa with(nolock) on sa.Supplier_Id = ss.Supplier_ID and sa.Entity_Id = mav.MasterAttributeValue_Id ");
+                sb.Append(" where ma.Name = 'MappingEntity' and ma.MasterFor = 'MappingFileConfig' ");
+                sb.Append(" ) ");
+                sb.Append(" select CTE.SupplierScheduleID, ScheduleDate, CTE1.API_Path Api_Call_Log_Id, Status,Task_Id,Supplier_APILocation_Id from CTE LEFT JOIN CTE1 On CTE.SupplierScheduleID = CTE1.SupplierScheduleID ");
+                sb.Append(" where RowNum = 1 And status = 'Pending' And ISXMLSupplier = 1 And Convert(Date, ScheduleDate) <= Convert(Date, GETDATE()) order by ScheduleDate; ");
+
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Database.CommandTimeout = 0;
+                    lstUnprocessedData = context.Database.SqlQuery<DC_UnprocessedExecuterData>(sb.ToString()).ToList();
+                    //return lstUnprocessedData;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while fetching Scheduled Tasks",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+
+            return lstUnprocessedData;
+        }
+        #endregion
     }
 
 }

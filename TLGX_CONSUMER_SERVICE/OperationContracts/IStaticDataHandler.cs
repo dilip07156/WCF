@@ -283,10 +283,10 @@ namespace OperationContracts
         [WebInvoke(Method = "GET", UriTemplate = "SchedulerServices/TaskCheker/GetUnprocessed", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         List<DC_UnprocessedData> getTaskGeneratorFiles();
 
-        //[OperationContract]
-        //[FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        //[WebInvoke(Method = "GET", UriTemplate = "SchedulerServices/TaskExecuter/GetAPILocation", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        //List<DC_UnprocessedData> Get_UnprocessedAPILocations();
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "SchedulerServices/TaskExecuter/GetExecutableData", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DC_UnprocessedExecuterData> getExecutableTasks();
 
 
 

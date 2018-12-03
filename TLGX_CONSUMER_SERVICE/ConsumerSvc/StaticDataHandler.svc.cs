@@ -409,7 +409,7 @@ namespace ConsumerSvc
                 return objBL.STG_Cleanup(SupplierImportFile_Id, Entity);
             }
         }
-        #region Task Checker Activities
+        #region Task Scheduler Activities
 
         public List<DC_UnprocessedData> getTaskGeneratorFiles()
         {
@@ -419,6 +419,15 @@ namespace ConsumerSvc
             }
         }
 
+
+        public List<DC_UnprocessedExecuterData> getExecutableTasks()
+        {
+            using (BL_SchedulerServices obj = new BL_SchedulerServices())
+            {
+                return obj.getExecutableTasks();
+            }
+        }
+        
 
         #endregion
 
