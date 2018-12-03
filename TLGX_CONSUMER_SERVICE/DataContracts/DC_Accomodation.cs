@@ -125,6 +125,11 @@ namespace DataContracts
         string _Room_Amenities;
         string _Null_Columns;
 
+        [DataMember]
+        public string Telephone_TX { get; set; }
+
+        [DataMember]
+        public string TLGXAccoId { get; set; }
 
         [DataMember]
         public string Latitude_Tx { get; set; }
