@@ -47,6 +47,8 @@ namespace DataContracts
         public string Operation { get; set; }
     }
 
+
+
     [DataContract]
     public class DC_SchedulerServicesLogs
     {
@@ -79,22 +81,44 @@ namespace DataContracts
     public class DC_UnprocessedData
     {
         [DataMember]
+        public Guid Supplier_ID { get; set; }
+
+        [DataMember]
+        public string Name { get; set; }
+
+        [DataMember]
+        public string Entity { get; set; }
+
+        [DataMember]
         public Guid SupplierScheduleID { get; set; }
 
         [DataMember]
-        public string Status { get; set; }
-
-        [DataMember]
-        public DateTime? ScheduleDate { get; set; }
+        public DateTime ScheduleDate { get; set; }
 
         [DataMember]
         public string CronExpression { get; set; }
 
         [DataMember]
-        public Guid? Api_Call_Log_Id { get; set; }
+        public string API_Path { get; set; }
 
         [DataMember]
         public bool ISXMLSupplier { get; set; }
+
+        [DataMember]
+        public string Status { get; set; }
+
+        [DataMember]
+        public string PentahoStatus { get; set; }
+
+        [DataMember]
+        public Guid? api_Call_Log_Id { get; set; }
+
+        [DataMember]
+        public Guid? Supplier_APILocation_Id { get; set; }
+
+        [DataMember]
+        public Guid? PentahoCall_Id { get; set; }
+
 
     }
 
@@ -114,12 +138,13 @@ namespace DataContracts
         public DateTime ScheduleDate { get; set; }
 
         [DataMember]
-        public string Api_Call_Log_Id { get; set; }
+        public Guid Api_Call_Log_Id { get; set; }
 
         [DataMember]
         public string Status { get; set; }
 
-
+        [DataMember]
+        public int TotalCount { get; set; }
     }
 
     [DataContract]

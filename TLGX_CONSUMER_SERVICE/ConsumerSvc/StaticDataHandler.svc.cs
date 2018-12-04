@@ -435,6 +435,15 @@ namespace ConsumerSvc
                 return obj.getLoggerTasks();
             }
         }
+
+        public DC_UnprocessedExecuterData getRunningCount()
+        {
+            using (BL_SchedulerServices obj = new BL_SchedulerServices())
+            {
+                return obj.getRunningCount();
+            }
+        }
+        
         #endregion
 
 

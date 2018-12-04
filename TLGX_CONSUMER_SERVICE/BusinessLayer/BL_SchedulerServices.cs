@@ -109,6 +109,14 @@ namespace BusinessLayer
                 return obj.getLoggerTasks();
             }
         }
+
+        public DC_UnprocessedExecuterData getRunningCount()
+        {
+            using (DL_SchedulerServices obj = new DL_SchedulerServices())
+            {
+                return obj.getRunningCount();
+            }
+        }
         
         #endregion
 

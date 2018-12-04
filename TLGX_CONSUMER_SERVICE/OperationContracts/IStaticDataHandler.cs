@@ -293,6 +293,11 @@ namespace OperationContracts
         [WebInvoke(Method = "GET", UriTemplate = "SchedulerServices/TaskLogger/GetLoggerData", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         List<DC_LoggerData> getLoggerTasks();
 
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "SchedulerServices/TaskLogger/getRunningCount", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_UnprocessedExecuterData getRunningCount();
+
         #endregion
 
         #region CRUD Declarations Supplier_Scheduled_Task
