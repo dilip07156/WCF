@@ -46,6 +46,14 @@ namespace ConsumerSvc
             }
         }
 
+        public IList<DataContracts.Schedulers.Supplier_Task_Logs> GetScheduleTaskLogList(string Task_Id)
+        {
+            using (BL_Schedule _obj = new BL_Schedule())
+            {
+                return _obj.GetScheduleTaskLogList(Task_Id);
+            }
+        }
+
 
     }
 }

@@ -46,5 +46,14 @@ namespace BusinessLayer
                 return objDL.UpdateTaskLog(obj);
             }
         }
+
+        public IList<DataContracts.Schedulers.Supplier_Task_Logs> GetScheduleTaskLogList(string Task_Id)
+        {
+            using (DataLayer.DL_ScheduledTask obj = new DataLayer.DL_ScheduledTask())
+            {
+                return obj.GetScheduleTaskLogList(Task_Id);
+            }
+        }
+
     }
 }

@@ -13,9 +13,9 @@ namespace DataContracts.Schedulers
         public void Dispose()
         { }
         [DataMember]
-        public Guid SupplierScheduleTaskID { get; set; }
+        public Guid? SupplierScheduleTaskID { get; set; }
         [DataMember]
-        public Guid Suppllier_ID { get; set; }
+        public Guid? Suppllier_ID { get; set; }
         [DataMember]
         public string SuppllierName { get; set; }
         [DataMember]
@@ -31,7 +31,9 @@ namespace DataContracts.Schedulers
         [DataMember]
         public int TotalRecord { get; set; }
         [DataMember]
-        public Guid LogId { get; set; }
+        public Guid? LogId { get; set; }
+        [DataMember]
+        public Guid? Task_Id { get; set; }
         [DataMember]
         public string Status { get; set; }
         [DataMember]
@@ -42,6 +44,7 @@ namespace DataContracts.Schedulers
         public string ApiPath { get; set; }
         [DataMember]
         public string APIStatus { get; set; }
+        
     }
 
 
@@ -70,6 +73,41 @@ namespace DataContracts.Schedulers
         public string RedirectFrom { get; set; }
         [DataMember]
         public Guid? LogId { get; set; }
+        [DataMember]
+        public Guid? TaskId { get; set; }
+        [DataMember]
+        public DateTime? Edit_Date { get; set; }
+        [DataMember]
+        public string Edit_User { get; set; }
+
+
+    }
+
+    [DataContract]
+    public class Supplier_Task_Logs
+    {
+        [DataMember]
+        public Guid? Log_id { get; set; }
+        [DataMember]
+        public Guid? Task_id { get; set; }
+        [DataMember]
+        public string StatusMessage { get; set; }
+        [DataMember]
+        public string LogType { get; set; }
+        [DataMember]
+        public string Remarks { get; set; }
+        [DataMember]
+        public DateTime? CreateDate { get; set; }
+        [DataMember]
+        public int PageNo { get; set; }
+        [DataMember]
+        public int PageSize { get; set; }
+        [DataMember]
+        public string SortBy { get; set; }
+        [DataMember]
+        public string UserName { get; set; }
+        [DataMember]
+        public string RedirectFrom { get; set; }
         [DataMember]
         public DateTime? Edit_Date { get; set; }
         [DataMember]
