@@ -1600,6 +1600,11 @@ namespace DataLayer
                         search.TotalFloors = AccomodationDetails.TotalFloors;
                         search.TotalRooms = AccomodationDetails.TotalRooms;
                         search.Town = AccomodationDetails.Town;
+
+                        if(!string.IsNullOrWhiteSpace(AccomodationDetails.YearBuilt) && AccomodationDetails.YearBuilt.Length > 10)
+                        {
+                            AccomodationDetails.YearBuilt = AccomodationDetails.YearBuilt.Substring(0, 10);
+                        }
                         search.YearBuilt = AccomodationDetails.YearBuilt;
                         search.Google_Place_Id = AccomodationDetails.Google_Place_Id;
                         search.InsertFrom = AccomodationDetails.InsertFrom;
@@ -1658,7 +1663,7 @@ namespace DataLayer
                     return true;
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -1696,6 +1701,16 @@ namespace DataLayer
                 newAcco.CheckOutTime = AccomodationDetails.CheckOutTime;
                 newAcco.city = AccomodationDetails.City;
                 newAcco.City_ISO = AccomodationDetails.City_ISO;
+
+                if (AccomodationDetails.CompanyHotelID == null)
+                {
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        var companyHtlId = context.Accommodation.Max(m => m.CompanyHotelID) ?? 0;
+                        AccomodationDetails.CompanyHotelID = companyHtlId + 1;
+                    }
+                }
+
                 newAcco.CompanyHotelID = AccomodationDetails.CompanyHotelID ?? 0;
                 newAcco.CompanyName = AccomodationDetails.CompanyName;
                 newAcco.CompanyRating = AccomodationDetails.CompanyRating;
@@ -1747,6 +1762,12 @@ namespace DataLayer
                 newAcco.TotalFloors = AccomodationDetails.TotalFloors;
                 newAcco.TotalRooms = AccomodationDetails.TotalRooms;
                 newAcco.Town = AccomodationDetails.Town;
+
+                if (!string.IsNullOrWhiteSpace(AccomodationDetails.YearBuilt) && AccomodationDetails.YearBuilt.Length > 10)
+                {
+                    AccomodationDetails.YearBuilt = AccomodationDetails.YearBuilt.Substring(0, 10);
+                }
+
                 newAcco.YearBuilt = AccomodationDetails.YearBuilt;
                 newAcco.Google_Place_Id = AccomodationDetails.Google_Place_Id;
                 newAcco.Country_Id = AccomodationDetails.Country_Id;
@@ -1789,16 +1810,15 @@ namespace DataLayer
 
                 if (!string.IsNullOrWhiteSpace(AccomodationDetails.Telephone_TX))
                 {
-                    search.Telephone_Tx = AccomodationDetails.Telephone_TX;
+                    newAcco.Telephone_Tx = AccomodationDetails.Telephone_TX;
                 }
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     context.Accommodation.Add(newAcco);
-
                     context.SaveChanges();
 
-                    context.USP_UpdateMapID("accommodation");
+                    //context.USP_UpdateMapID("accommodation");
                 }
 
                 #region Sync to Mongo
@@ -1981,28 +2001,31 @@ namespace DataLayer
         {
             try
             {
-                if (AC.FirstOrDefault().Accommodation_Id == null) { return false; }
-
-                Parallel.ForEach(AC, item =>
+                if (AC != null && AC.Count > 0)
                 {
-                    using (ConsumerEntities context = new ConsumerEntities())
-                    {
-                        Accommodation_Contact newObj = new Accommodation_Contact();
-                        newObj.Accommodation_Contact_Id = item.Accommodation_Contact_Id;
-                        newObj.Accommodation_Id = item.Accommodation_Id;
-                        newObj.Create_Date = item.Create_Date;
-                        newObj.Create_User = item.Create_User;
-                        newObj.Email = item.Email;
-                        newObj.Fax = item.Fax;
-                        newObj.Legacy_Htl_Id = item.Legacy_Htl_Id;
-                        newObj.Telephone = item.Telephone;
-                        newObj.WebSiteURL = item.WebSiteURL;
-                        newObj.IsActive = item.IsActive;
+                    if (AC.FirstOrDefault().Accommodation_Id == null) { return false; }
 
-                        context.Accommodation_Contact.Add(newObj);
-                        context.SaveChanges();
-                    }
-                });
+                    Parallel.ForEach(AC, item =>
+                    {
+                        using (ConsumerEntities context = new ConsumerEntities())
+                        {
+                            Accommodation_Contact newObj = new Accommodation_Contact();
+                            newObj.Accommodation_Contact_Id = item.Accommodation_Contact_Id;
+                            newObj.Accommodation_Id = item.Accommodation_Id;
+                            newObj.Create_Date = item.Create_Date;
+                            newObj.Create_User = item.Create_User;
+                            newObj.Email = item.Email;
+                            newObj.Fax = item.Fax;
+                            newObj.Legacy_Htl_Id = item.Legacy_Htl_Id;
+                            newObj.Telephone = item.Telephone;
+                            newObj.WebSiteURL = item.WebSiteURL;
+                            newObj.IsActive = item.IsActive;
+
+                            context.Accommodation_Contact.Add(newObj);
+                            context.SaveChanges();
+                        }
+                    });
+                }
 
                 return true;
             }
