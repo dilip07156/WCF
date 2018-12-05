@@ -35,8 +35,8 @@ namespace DataContracts.STG
         [DataMember]
         public string Partion { get; set; }
 
-        //[DataMember]
-        //public DateTime?  TimeStamp { get; set; }
+        [DataMember]
+        public DateTime? TimeStamp { get; set; }
 
         [DataMember]
         public string TopicPartion { get; set; }
