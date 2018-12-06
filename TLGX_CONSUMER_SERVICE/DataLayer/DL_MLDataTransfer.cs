@@ -266,68 +266,56 @@ namespace DataLayer
             try
             {
                 UpdateDistLogInfo(LogId, PushStatus.RUNNNING);
-                _objAcoo = GetMasterAccoRoomInformationDataForMLTrans(0, 0);
+                _objAcoo = GetMasterAccoRoomInformationDataForMLTrans();
                 _objAccoRoomAttributes = GetMasterAccoRoomExtendedAttrsForMLTrans();
                 TotalCount = _objAcoo.Count();
 
-                //Get Batch Size
-                int BatchSize = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["DataTransferBatchSize"]);
-
-                int NoOfBatch = TotalCount / BatchSize;
-                int mod = TotalCount % BatchSize;
-                if (mod > 0)
+                foreach (var item in _objAcoo)
                 {
-                    NoOfBatch = NoOfBatch + 1;
-                }
+                    _objToSend.MasterAccommodationRoomInformation = new List<DC_ML_DL_MasterAccoRoomInfo_Data>();
+                    _objToSend.MasterAccommodationRoomInformation.Add(
+                        new DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo_Data
+                        {
+                            AccommodationRoomInfoId = Convert.ToString(item.Accommodation_RoomInfo_Id),
+                            AccommodationId = Convert.ToString(item.Accommodation_Id),
+                            TLGXHotelId = Convert.ToString(item.Legacy_Htl_Id),
+                            RoomId = item.RoomId,
+                            RoomView = item.RoomView,
+                            NoOfRooms = item.NoOfRooms,
+                            RoomName = item.RoomName,
+                            NoOfInterconnectingRooms = item.NoOfInterconnectingRooms,
+                            Description = item.Description,
+                            RoomSize = item.RoomSize,
+                            RoomDecor = item.RoomDecor,
+                            Smoking = item.Smoking,
+                            FloorName = item.FloorName,
+                            FloorNumber = item.FloorNumber,
+                            MysteryRoom = item.MysteryRoom,
+                            BathRoomType = item.BathRoomType,
+                            BedType = item.BedType,
+                            CompanyRoomCategory = item.CompanyRoomCategory,
+                            RoomCategory = item.RoomCategory,
+                            Category = item.Category,
+                            CreateDate = Convert.ToString(item.Create_Date),
+                            CreateUser = item.Create_User,
+                            EditDate = Convert.ToString(item.Edit_Date),
+                            EditUser = item.Edit_User,
+                            RoomInfo_TX = item.RoomInfo_TX,
+                            ExtractedAttributes = _objAccoRoomAttributes.Where(w => w.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).Select(s => new ExtractedAttributes { Key = s.SystemAttributeKeyword, Value = s.Accommodation_RoomInfo_Attribute }).ToList()
+                        });
 
-                for (int BatchNo = 0; BatchNo < NoOfBatch; BatchNo++)
-                {
-                    if (_obj != null)
-                    {
-                        _objToSend.MasterAccommodationRoomInformation = (from item in _objAcoo
-                                                                         orderby item.Accommodation_RoomInfo_Id
-                                                                         select new DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo_Data
-                                                                         {
-                                                                             AccommodationRoomInfoId = Convert.ToString(item.Accommodation_RoomInfo_Id),
-                                                                             AccommodationId = Convert.ToString(item.Accommodation_Id),
-                                                                             TLGXHotelId = Convert.ToString(item.Legacy_Htl_Id),
-                                                                             RoomId = item.RoomId,
-                                                                             RoomView = item.RoomView,
-                                                                             NoOfRooms = item.NoOfRooms,
-                                                                             RoomName = item.RoomName,
-                                                                             NoOfInterconnectingRooms = item.NoOfInterconnectingRooms,
-                                                                             Description = item.Description,
-                                                                             RoomSize = item.RoomSize,
-                                                                             RoomDecor = item.RoomDecor,
-                                                                             Smoking = item.Smoking,
-                                                                             FloorName = item.FloorName,
-                                                                             FloorNumber = item.FloorNumber,
-                                                                             MysteryRoom = item.MysteryRoom,
-                                                                             BathRoomType = item.BathRoomType,
-                                                                             BedType = item.BedType,
-                                                                             CompanyRoomCategory = item.CompanyRoomCategory,
-                                                                             RoomCategory = item.RoomCategory,
-                                                                             Category = item.Category,
-                                                                             CreateDate = Convert.ToString(item.Create_Date),
-                                                                             CreateUser = item.Create_User,
-                                                                             EditDate = Convert.ToString(item.Edit_Date),
-                                                                             EditUser = item.Edit_User,
-                                                                             RoomInfo_TX = item.RoomInfo_TX,
-                                                                             ExtractedAttributes = _objAccoRoomAttributes.Where(w => w.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).Select(s => new ExtractedAttributes { Key = s.SystemAttributeKeyword, Value = s.Accommodation_RoomInfo_Attribute }).ToList()
-                                                                         }).Skip(BatchNo * BatchSize).Take(BatchSize).ToList();
+                    _objToSend.Mode = "offline";
+                    _objToSend.BatchId = Guid.NewGuid().ToString();
+                    _objToSend.Transaction = "1";
+                    object result = null;
+                    DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_MasterAccommodationRoomInformation"], _objToSend, typeof(DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo), typeof(DC_ML_Message), out result);
 
-                        _objToSend.Mode = "offline";
-                        _objToSend.BatchId = Guid.NewGuid().ToString();
-                        _objToSend.Transaction = "1";
+                    MLDataInsertedCount = MLDataInsertedCount + _objToSend.MasterAccommodationRoomInformation.Count();
 
-                        object result = null;
-                        DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_MasterAccommodationRoomInformation"], _objToSend, typeof(DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo), typeof(DC_ML_Message), out result);
-
-                        MLDataInsertedCount = MLDataInsertedCount + _objToSend.MasterAccommodationRoomInformation.Count();
+                    if (MLDataInsertedCount % 500 == 0 || MLDataInsertedCount == TotalCount)
                         UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
-                    }
                 }
-                UpdateDistLogInfo(LogId, PushStatus.COMPLETED, TotalCount, MLDataInsertedCount);
+
             }
             catch (Exception ex)
             {
@@ -336,7 +324,7 @@ namespace DataLayer
             }
             return string.Empty;
         }
-        private List<DataContracts.DC_ML_MasterAccoRoomInfo_Data> GetMasterAccoRoomInformationDataForMLTrans(int batchSize, int batchNo)
+        private List<DataContracts.DC_ML_MasterAccoRoomInfo_Data> GetMasterAccoRoomInformationDataForMLTrans()
         {
             List<DataContracts.DC_ML_MasterAccoRoomInfo_Data> _objAcoo = new List<DataContracts.DC_ML_MasterAccoRoomInfo_Data>();
             try
@@ -347,7 +335,6 @@ namespace DataLayer
                     context.Configuration.AutoDetectChangesEnabled = false;
 
                     StringBuilder sbSelect = new StringBuilder();
-                    StringBuilder sbOrderby = new StringBuilder();
                     sbSelect.Append(@"SELECT 
                                        Accommodation_RoomInfo_Id,
                                         Accommodation_Id,
@@ -376,10 +363,7 @@ namespace DataLayer
                                         TX_RoomName as RoomInfo_TX
                                         FROM Accommodation_RoomInfo with(nolock) WHERE Accommodation_Id IS NOT NULL; ");
 
-                    StringBuilder sbfinal = new StringBuilder();
-                    sbfinal.Append(sbSelect);
-
-                    try { _objAcoo = context.Database.SqlQuery<DataContracts.DC_ML_MasterAccoRoomInfo_Data>(sbfinal.ToString()).ToList(); } catch (Exception ex) { }
+                    try { _objAcoo = context.Database.SqlQuery<DataContracts.DC_ML_MasterAccoRoomInfo_Data>(sbSelect.ToString()).ToList(); } catch (Exception ex) { }
                 }
 
                 return _objAcoo;
