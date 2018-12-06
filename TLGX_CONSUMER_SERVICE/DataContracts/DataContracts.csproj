@@ -229,6 +229,7 @@
     <Compile Include="DC_ServiceUrls.cs" />
     <Compile Include="ReadOnlyMessage.cs" />
     <Compile Include="Schedulers\DC_Supplier_Schedule.cs" />
+    <Compile Include="Schedulers\SupplierScheduledTask.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="STG\DC_Stg_Kafka.cs" />
     <Compile Include="STG\DC_STG_Mapping_Table_Ids.cs" />
