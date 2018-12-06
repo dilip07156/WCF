@@ -29,29 +29,31 @@ namespace BusinessLayer
                 return objDL.AddUpdateSchedule(obj);
             }
         }
-
-        public IList<DataContracts.Schedulers.DC_Supplier_Schedule_RS> GetScheduleBySupplier(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
+        public IList<DataContracts.Schedulers.SupplierScheduledTask> GetScheduledTaskByRoles(DataContracts.Schedulers.DC_SupplierScheduledTaskRQ _obj)
         {
-            using (DataLayer.DL_Schedule obj = new DataLayer.DL_Schedule())
+            using (DataLayer.DL_ScheduledTask obj = new DataLayer.DL_ScheduledTask())
             {
-                return obj.GetScheduleBySupplier(RQ);
+                return obj.GetScheduleTaskList(_obj);
             }
         }
 
-        public bool UpdateSupplierSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
+        //UpdateTaskLog
+
+        public DataContracts.DC_Message UpdateTaskLog(DataContracts.Schedulers.DC_SupplierScheduledTaskRQ obj)
         {
-            using (DataLayer.DL_Schedule obj = new DataLayer.DL_Schedule())
+            using (DataLayer.DL_ScheduledTask objDL = new DataLayer.DL_ScheduledTask())
             {
-                return obj.UpdateSupplierSchedule(RQ);
+                return objDL.UpdateTaskLog(obj);
             }
         }
 
-        public bool CheckExistingSupplierSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
+        public IList<DataContracts.Schedulers.Supplier_Task_Logs> GetScheduleTaskLogList(string Task_Id)
         {
-            using (DataLayer.DL_Schedule obj = new DataLayer.DL_Schedule())
+            using (DataLayer.DL_ScheduledTask obj = new DataLayer.DL_ScheduledTask())
             {
-                return obj.CheckExistingSupplierSchedule(RQ);
+                return obj.GetScheduleTaskLogList(Task_Id);
             }
         }
+
     }
 }
