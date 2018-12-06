@@ -1122,7 +1122,12 @@ namespace DataLayer
 
                     if (result != null)
                     {
-                        var SupplierRoomTypeMappingValue = context.Accommodation_SupplierRoomTypeMapping_Values.Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id && rv.Accommodation_RoomInfo_Id != null).ToList();
+
+                        List<Accommodation_SupplierRoomTypeMapping_Values> SupplierRoomTypeMappingValue = new List<Accommodation_SupplierRoomTypeMapping_Values>();
+                        SupplierRoomTypeMappingValue = context.Accommodation_SupplierRoomTypeMapping_Values.Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id && rv.Accommodation_RoomInfo_Id != null).ToList();
+
+                        var maxValue = SupplierRoomTypeMappingValue.Max(x => x.MatchingScore);
+
 
                         var accodetails = context.Accommodation.Find(result.Accommodation_Id);
 
@@ -1137,7 +1142,10 @@ namespace DataLayer
                                 {
                                     continue;
                                 }
-
+                                if (item.UserMappingStatus.ToUpper() == MappingStatus.MAPPED.ToString() && item.MatchingScore != maxValue)
+                                {
+                                    continue;
+                                }
                                 //Creating Data to send AIML
                                 var roominfo = context.Accommodation_RoomInfo.Find(item.Accommodation_RoomInfo_Id);
                                 //Creating Data to send AIML

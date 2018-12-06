@@ -460,6 +460,103 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating country master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+
+
+        //GAURAV_TMAP_875
+        public List<DataContracts.Masters.DC_Priorities> GetPrioritiesOfCountryMaster()
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    //var search = from c in context.m_CityMaster
+                    //             select c;                                     
+
+                 
+                    StringBuilder sbSelect = new StringBuilder();
+                    StringBuilder sbwhere = new StringBuilder();
+                    StringBuilder sbfrom = new StringBuilder();
+                    StringBuilder sbwhereCity = new StringBuilder();
+                    sbSelect.Append(" select * from (Select  distinct [Priority] [Name],[Priority] [Value] from m_CountryMaster with(Nolock) where isnull([Priority],'') <> ''  ) a order by cast(a.[Name] as numeric) ");
+
+                    StringBuilder sbFinalQuery = new StringBuilder();
+                    sbFinalQuery.Append(sbSelect);
+
+
+
+                    var retPrority = context.Database.SqlQuery<DataContracts.Masters.DC_Priorities>(sbFinalQuery.ToString()).ToList();
+
+                    return retPrority;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Country Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public List<DataContracts.Masters.DC_Keys> GetKeysOfCountryMaster()
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                                                
+
+                    StringBuilder sbSelect = new StringBuilder();
+
+                    sbSelect.Append(@" select [Keys] as [Value], (case when [Keys] = '0' then 'No' when [Keys] = '1' then 'Yes' else '' end) Name  
+                                        from ( select distinct[Key] as Keys from m_CountryMaster with(Nolock) where isnull([Key],'') <> '') a order by cast([Keys] as numeric) desc 
+                                        ");
+
+                    StringBuilder sbFinalQuery = new StringBuilder();
+                    sbFinalQuery.Append(sbSelect);
+
+
+
+                    var retKeys = context.Database.SqlQuery<DataContracts.Masters.DC_Keys>(sbFinalQuery.ToString()).ToList();
+
+                    return retKeys;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Country Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public List<DataContracts.Masters.DC_Ranks> GetRanksOfCountryMaster()
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    //var search = from c in context.m_CityMaster
+                    //             select c;                                     
+
+                    StringBuilder sbSelect = new StringBuilder();
+                    StringBuilder sbSelectCity = new StringBuilder();
+                    StringBuilder sbwhere = new StringBuilder();
+                    StringBuilder sbfrom = new StringBuilder();
+                    StringBuilder sbwhereCity = new StringBuilder();
+                    sbSelect.Append(@" select [Rank][Name],[Rank] [Value]  from (select distinct [Rank] from m_CountryMaster with(Nolock) where isnull([Rank],'') <>'') a
+                                            order by cast([Rank] as numeric)
+                                        ");
+
+                    StringBuilder sbFinalQuery = new StringBuilder();
+                    sbFinalQuery.Append(sbSelectCity);
+
+                    var retRanks = context.Database.SqlQuery<DataContracts.Masters.DC_Ranks>(sbFinalQuery.ToString()).ToList();
+
+                    return retRanks;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Country Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
         #endregion
 
         #region StateMaster
@@ -1304,6 +1401,108 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating city master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
+        //GAURAV_TMAP_876
+
+        public List<DataContracts.Masters.DC_Priorities> GetPrioritiesOfCityMaster()
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    //var search = from c in context.m_CityMaster
+                    //             select c;                                     
+
+                    StringBuilder sbSelect = new StringBuilder();
+                    StringBuilder sbSelectCity = new StringBuilder();
+                    StringBuilder sbwhere = new StringBuilder();
+                    StringBuilder sbfrom = new StringBuilder();
+                    StringBuilder sbwhereCity = new StringBuilder();
+                    sbSelectCity.Append(" select * from (Select  distinct [Priority] [Name],[Priority] [Value] from m_CityMaster with(Nolock) where [Priority] is not null ) a order by cast(a.[Name] as numeric) ");
+
+                    StringBuilder sbCityQuery = new StringBuilder();
+                    sbCityQuery.Append(sbSelectCity);
+                    
+
+
+                    var retPrority = context.Database.SqlQuery<DataContracts.Masters.DC_Priorities>(sbCityQuery.ToString()).ToList();
+
+                    return retPrority;
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching City Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public List<DataContracts.Masters.DC_Keys> GetKeysOfCityMaster()
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    //var search = from c in context.m_CityMaster
+                    //             select c;                                     
+
+                    StringBuilder sbSelect = new StringBuilder();
+                    StringBuilder sbSelectCity = new StringBuilder();
+                    StringBuilder sbwhere = new StringBuilder();
+                    StringBuilder sbfrom = new StringBuilder();
+                    StringBuilder sbwhereCity = new StringBuilder();
+                    sbSelectCity.Append(@" select [Keys] as [Value], (case when [Keys] = '0' then 'No' when [Keys] = '1' then 'Yes' else '' end) Name  
+                                        from ( select distinct[Key] as Keys from m_CityMaster with(Nolock) where [Key] is not null) a order by cast([Keys] as numeric) desc 
+                                        ");
+
+                    StringBuilder sbCityQuery = new StringBuilder();
+                    sbCityQuery.Append(sbSelectCity);
+
+
+
+                    var retKeys = context.Database.SqlQuery<DataContracts.Masters.DC_Keys>(sbCityQuery.ToString()).ToList();
+
+                    return retKeys;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching City Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+        public List<DataContracts.Masters.DC_Ranks> GetRanksOfCityMaster()
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    //var search = from c in context.m_CityMaster
+                    //             select c;                                     
+
+                    StringBuilder sbSelect = new StringBuilder();
+                    StringBuilder sbSelectCity = new StringBuilder();
+                    StringBuilder sbwhere = new StringBuilder();
+                    StringBuilder sbfrom = new StringBuilder();
+                    StringBuilder sbwhereCity = new StringBuilder();
+                    sbSelectCity.Append(@" select [Rank][Name],[Rank] [Value]  from (select distinct [Rank] from m_CityMaster with(Nolock) where [Rank] is not null ) a
+                                            order by cast([Rank] as numeric)
+                                        ");
+
+                    StringBuilder sbCityQuery = new StringBuilder();
+                    sbCityQuery.Append(sbSelectCity);
+
+                    var retRanks = context.Database.SqlQuery<DataContracts.Masters.DC_Ranks>(sbCityQuery.ToString()).ToList();
+
+                    return retRanks;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching City Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        //GAURAV_TMAP_876
         #endregion
 
         #region DynamicAttributes
@@ -6443,6 +6642,35 @@ namespace DataLayer
             catch (Exception ex)
             {
                 throw ex.InnerException;
+            }
+        }
+        #endregion
+
+        #region Accomodation Priority
+        public List<DataContracts.Masters.DC_Priorities> GetPrioritiesOfAccommodationMaster()
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    
+                    StringBuilder sbSelectPriority = new StringBuilder();
+                    
+                    
+                    sbSelectPriority.Append("  select * from (Select  distinct cast([Priority] as varchar(50)) [Name],cast([Priority] as varchar(50)) [Value] from Accommodation with(Nolock) where isnull([Priority],'') <> ''  ) a order by cast(a.[Name] as numeric) ");
+
+                    StringBuilder sbFinalQuery = new StringBuilder();
+                    sbFinalQuery.Append(sbSelectPriority);
+
+                     var retPrority = context.Database.SqlQuery<DataContracts.Masters.DC_Priorities>(sbFinalQuery.ToString()).ToList();
+
+                    return retPrority;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Accomodatio Master", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
         }
         #endregion
