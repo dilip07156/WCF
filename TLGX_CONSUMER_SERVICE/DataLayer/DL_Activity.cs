@@ -11,6 +11,7 @@ using System.Runtime.Serialization;
 using DataContracts.Masters;
 using DataContracts;
 using System.Text.RegularExpressions;
+using System.Configuration;
 
 namespace DataLayer
 {
@@ -708,6 +709,7 @@ namespace DataLayer
                     int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
 
                     var result = from a in search
+                                 join b in context.Activity_Flavour on a.Activity_Flavour_Id equals b.Activity_Flavour_Id
                                  orderby a.MediaName
                                  select new DataContracts.Masters.DC_Activity_Media
                                  {
@@ -726,7 +728,7 @@ namespace DataLayer
                                      FileFormat = a.FileFormat,
                                      Legacy_Product_Id = a.Legacy_Product_Id,
                                      MediaFileMaster = a.MediaFileMaster,
-                                     MediaID = a.MediaID,
+                                     MediaID = a.MediaID.ToString(),
                                      Media_Path = a.Media_Path,
                                      Media_Position = a.Media_Position,
                                      Media_URL = a.Media_URL,
@@ -737,6 +739,11 @@ namespace DataLayer
                                      Media_Caption = a.Media_Caption,
                                      Media_Height = a.Media_Height,
                                      Media_Width = a.Media_Width,
+                                     CommonProductNameSubType_Id=b.CommonProductNameSubType_Id,
+                                     IsWaterMark=a.IsWaterMark,
+                                     IsRelevent=a.IsRelevent,
+                                     IsDuplicate=a.IsDuplicate,
+                                     Media_Feedback=a.Media_Feedback,
                                      TotalRecords = total
                                  };
                     return result.Skip(skip).Take((RQ.PageSize ?? total)).ToList();
@@ -787,7 +794,7 @@ namespace DataLayer
                                 res.SubCategory = RQ.SubCategory;
                                 res.MediaFileMaster = RQ.MediaFileMaster;
                                 res.Description = RQ.Description;
-                                res.MediaID = RQ.MediaID;
+                                res.MediaID = Convert.ToInt32(RQ.MediaID);
                                 res.MediaType = RQ.MediaType;
                                 res.RoomCategory = RQ.RoomCategory;
                                 res.MediaName = RQ.MediaName;
@@ -829,7 +836,7 @@ namespace DataLayer
                         newmed.SubCategory = RQ.SubCategory;
                         newmed.MediaFileMaster = RQ.MediaFileMaster;
                         newmed.Description = RQ.Description;
-                        newmed.MediaID = RQ.MediaID;
+                        newmed.MediaID = Convert.ToInt32(RQ.MediaID);
                         newmed.MediaType = RQ.MediaType;
                         newmed.RoomCategory = RQ.RoomCategory;
                         newmed.MediaName = RQ.MediaName;
@@ -859,6 +866,44 @@ namespace DataLayer
                     return _msg;
                 }
             }
+            catch (Exception ex)
+            {
+                throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity media", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public DC_Message AddUpdateActivityMediaReview(DC_Activity_MediaReview RQ)
+        {           
+            DataContracts.DC_Message _msg = new DataContracts.DC_Message();
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    if (RQ.Activity_Media_Id != null)
+                    {
+                        var res = context.Activity_Media.Find(RQ.Activity_Media_Id);
+                        if (res != null)
+                        {
+                            res.IsWaterMark = RQ.IsWaterMark;
+                            res.IsRelevent = RQ.IsRelevent;
+                            res.IsDuplicate = RQ.IsDuplicate;
+                            res.Media_Feedback = RQ.Media_ReviewFeedback;
+                            res.Edit_Date = DateTime.Now;
+                            res.Edit_User = System.Web.HttpContext.Current.User.Identity.Name;
+                            if (context.SaveChanges() == 1)
+                            {
+                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                            }
+                        }
+
+                    }
+                }
+                      
+            
+                return _msg;
+            }
+            
             catch (Exception ex)
             {
                 throw new FaultException<DC_ErrorStatus>(new DC_ErrorStatus { ErrorMessage = "Error while adding Activity media", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
@@ -4962,6 +5007,53 @@ namespace DataLayer
                 throw;
             }
             return lstActivity_MediaDetailsForAttribute;
+        }
+
+        public List<DC_Activity_MediaAttributesForImageReview> GetActivityMediaAttributesForImageReview(DC_Activity_Media_Search_RQ RQ)
+        {
+            try
+            {
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    var search = from a in context.Activity_MediaAttributes
+                                 select a;
+
+                    if (RQ.Activity_Flavour_Id != null)
+                    {
+                        search = from a in search
+                                 join b in context.Activity_Media on a.Activity_Media_Id equals b.Activity_Media_Id
+                                 where b.Activity_Flavour_Id==RQ.Activity_Flavour_Id
+                                 select a;
+                    }
+
+                    string AttributeType = ConfigurationManager.AppSettings["ActivityMediaAttribute"];
+                   List<string> test= AttributeType.Split(',').ToList<string>();
+                    if ((AttributeType != null && AttributeType != string.Empty))
+                    {
+                        search = from a in search
+                                 where test.Contains(a.AttributeType)
+                                 select a;
+                    }
+
+                    var result = from a in search
+                                 orderby a.AttributeType
+                                 select new DataContracts.Masters.DC_Activity_MediaAttributesForImageReview
+                                 {
+                                     Activity_MediaAttributes_Id = a.Activity_MediaAttributes_Id,
+                                     Activity_Media_Id = a.Activity_Media_Id,
+                                     AttributeType = a.AttributeType,
+                                     AttributeValue = a.AttributeValue
+
+                                 };
+                    var test1 = result.ToList();
+                    return result.ToList();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            
         }
         #endregion
 
