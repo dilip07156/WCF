@@ -567,7 +567,7 @@ namespace DataLayer
                     try
                     {
                         StringBuilder sbSelectSRTA = new StringBuilder();
-                        sbSelectSRTA.Append(@"SELECT  
+                        sbSelectSRTA.Append(@"SELECT   
                                                 RoomTypeMapAttribute_Id,RoomTypeMap_Id,
                                                 SupplierRoomTypeAttribute,SystemAttributeKeyword
                                                 FROM Accommodation_SupplierRoomTypeAttributes SRTMA with(nolock) 
@@ -642,7 +642,8 @@ namespace DataLayer
                             AccoEditDate = Convert.ToString(item.AccoEditDate),
                             AccoEditUser = item.AccoEditUser,
                             SimilarityIndicator = (item.SupplierRoomMappingStatus == "MAPPED" ? true : false),//  Convert.ToBoolean(item.SimilarityIndicator),
-                            SimilarityScore = (item.SupplierRoomMappingStatus == "MAPPED" ? 1 : 0)
+                            SimilarityScore = (item.SupplierRoomMappingStatus == "MAPPED" ? 1 : 0),
+                            TLGXAccoRoomId = item.TLGXAccoRoomId
                         });
                     }
                     _obj.Mode = "offline";
