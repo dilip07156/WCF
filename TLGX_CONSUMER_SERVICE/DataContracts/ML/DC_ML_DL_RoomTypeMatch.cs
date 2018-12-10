@@ -78,7 +78,8 @@ namespace DataContracts.ML
         public string AccoEditDate { get; set; }										
         public string AccoEditUser { get; set; }										
         public bool SimilarityIndicator { get; set; }									
-        public double SimilarityScore { get; set; }										
+        public double SimilarityScore { get; set; }
+        public string TLGXAccoRoomId { get; set; }
 
     }
 }

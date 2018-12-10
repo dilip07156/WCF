@@ -301,6 +301,7 @@ namespace DataLayer
                             EditDate = Convert.ToString(item.Edit_Date),
                             EditUser = item.Edit_User,
                             RoomInfo_TX = item.RoomInfo_TX,
+                            TLGXAccoRoomId = item.TLGXAccoRoomId,
                             ExtractedAttributes = _objAccoRoomAttributes.Where(w => w.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).Select(s => new ExtractedAttributes { Key = s.SystemAttributeKeyword, Value = s.Accommodation_RoomInfo_Attribute }).ToList()
                         });
 
@@ -360,7 +361,8 @@ namespace DataLayer
                                         Create_Date,
                                         Edit_User,
                                         Edit_Date,
-                                        TX_RoomName as RoomInfo_TX
+                                        TX_RoomName as RoomInfo_TX,
+                                        TLGXAccoRoomId
                                         FROM Accommodation_RoomInfo with(nolock) WHERE Accommodation_Id IS NOT NULL; ");
 
                     try { _objAcoo = context.Database.SqlQuery<DataContracts.DC_ML_MasterAccoRoomInfo_Data>(sbSelect.ToString()).ToList(); } catch (Exception ex) { }
@@ -388,7 +390,7 @@ namespace DataLayer
                     StringBuilder sbSelect = new StringBuilder();
                     StringBuilder sbOrderby = new StringBuilder();
                     //Accommodation_RoomInfo_Attribute_Id,
-                    sbSelect.Append(@"SELECT  
+                    sbSelect.Append(@"SELECT   
                                         Accommodation_RoomInfo_Id,
                                         Accommodation_RoomInfo_Attribute,
                                         SystemAttributeKeyword 
@@ -546,7 +548,8 @@ namespace DataLayer
                                         ARI.Create_Date AS AccoCreateUser,
                                         ARI.Edit_User as AccoEditUser,
                                         ARI.Edit_Date as AccoEditDate,
-                                        SRTM.MatchingScore
+                                        SRTM.MatchingScore,
+										ARI.TLGXAccoRoomId
                                         FROM Accommodation_SupplierRoomTypeMapping_Values SRTMV WITH(NOLOCK)
                                         JOIN Accommodation_SupplierRoomTypeMapping SRTM WITH (NOLOCK) ON SRTMV.Accommodation_SupplierRoomTypeMapping_Id = SRTM.Accommodation_SupplierRoomTypeMapping_Id
                                         JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) ON SRTMV.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id 

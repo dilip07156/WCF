@@ -42,6 +42,7 @@ namespace DataContracts.ML
         public string EditDate { get; set; }
         public string RoomInfo_TX { get; set; }
         public List<ExtractedAttributes> ExtractedAttributes { get; set; }
+        public string TLGXAccoRoomId { get; set; }
 
     }
 

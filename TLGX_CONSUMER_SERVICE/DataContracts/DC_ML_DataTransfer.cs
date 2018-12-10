@@ -117,6 +117,7 @@ namespace DataContracts
         public DateTime? Edit_Date { get; set; }
         [DataMember]
         public string RoomInfo_TX { get; set; }
+        public string TLGXAccoRoomId { get; set; }
     }
 
     [DataContract]
@@ -277,6 +278,7 @@ namespace DataContracts
         public string AccoEditUser { get; set; }
         public string SimilarityIndicator { get; set; }
         public float SimilarityScore { get; set; }
+        public string TLGXAccoRoomId { get; set; }
 
     }
 }
