@@ -84,6 +84,9 @@ namespace DataContracts.Schedulers
         public string Status { get; set; }
         [DataMember]
         public List<string> Entities { get; set; }
+        [DataMember]
+        public bool IsActive { get; set; }
+        public string Enitity { get; set; }
 
     }
     [DataContract]

@@ -48,6 +48,7 @@ namespace DataLayer
                                          Edit_User = a.Edit_User,
                                          Entity=a.Entity,
                                          User_Role_Id=a.User_Role_Id,
+                                         IsActive=a.IsActive.Value,
                                      };
 
                         return result.ToList();
@@ -77,6 +78,7 @@ namespace DataLayer
                                          Edit_User = a.Edit_User,
                                          Entity = a.Entity,
                                          User_Role_Id=a.User_Role_Id,
+                                         IsActive=a.IsActive.Value,
                                      };
 
                         return result.ToList();
@@ -238,12 +240,26 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+
                     var search = (from ac in context.Supplier_Schedule
                                   where ac.SupplierScheduleID == RQ.SupplierScheduleID
                                   select ac).First();
-                    if (search != null)
+                    if(RQ.IsActive==true)
                     {
-                        search.IsActive = false;
+                        var Activecount = (from a in context.Supplier_Schedule
+                                     where a.Supplier_ID == RQ.Suppllier_ID && a.Entity == RQ.Enitity && a.IsActive==true
+                                     select a).Count();
+                        if(Activecount == 0)
+                        {
+                            search.IsActive = RQ.IsActive;
+                            search.Edit_Date = RQ.Edit_Date;
+                            search.Edit_User = RQ.Edit_User;
+                            context.SaveChanges();
+                        }
+                    }
+                   else if (search != null)
+                    {
+                        search.IsActive = RQ.IsActive;
                         search.Edit_Date = RQ.Edit_Date;
                         search.Edit_User = RQ.Edit_User;                       
                         context.SaveChanges();
