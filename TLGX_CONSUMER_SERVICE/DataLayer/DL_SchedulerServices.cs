@@ -584,7 +584,7 @@ namespace DataLayer
 
         public List<DC_UnprocessedData> getTaskGeneratorFiles()
         {
-            List<DC_UnprocessedData> lstUnprocessedData = new List<DC_UnprocessedData>();
+          //  List<DC_UnprocessedData> lstUnprocessedData = new List<DC_UnprocessedData>();
             try
             {
                 StringBuilder sb = new StringBuilder();
@@ -616,18 +616,18 @@ namespace DataLayer
                 sb.Append(" where ma.Name = 'MappingEntity' and ma.MasterFor = 'MappingFileConfig' ) t");
                 sb.Append(" left join Supplier_Scheduled_Task tsk with(nolock) on t.SupplierScheduleID = tsk.Schedule_Id where t.rowNum = 1 AND tsk.Status = 'Running'");
                 sb.Append(" ) t )");
-                sb.Append(" select Supplier_ID, Name, Entity, CTE.SupplierScheduleID,CTE.Task_Id, ScheduleDate, CronExpression,Convert(varchar(max), CTE1.API_Path) API_Path, ISXMLSupplier, Status ,");
+                sb.Append(" select NEWID() Supplier_ID, Name, Entity, CTE.SupplierScheduleID,CTE.Task_Id, ScheduleDate, CronExpression,Convert(varchar(max), CTE1.API_Path) API_Path, ISXMLSupplier, Status ,");
                 sb.Append(" CTE2.PentahoStatus, CTE2.SupplierApiCallLog_Id api_Call_Log_Id, CTE2.SupplierApiLocation_Id Supplier_APILocation_Id, CTE2.PentahoCall_Id PentahoCall_Id from CTE");
                 sb.Append("   LEFT JOIN CTE1 On CTE.SupplierScheduleID = CTE1.SupplierScheduleID");
                 sb.Append(" left join CTE2 on cte.SupplierScheduleID = CTE2.Schedule_Id  where RowNum = 1 And ISXMLSupplier = 1 AND Convert(Date, ScheduleDate) <= Convert(Date, GETDATE()) ");
                 sb.Append(" and REPLACE(isnull(PentahoStatus,''),'SENT TO CARTE','RUNNING') <> 'RUNNING' order by ScheduleDate;");
 
-
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     context.Database.CommandTimeout = 0;
-                    lstUnprocessedData = context.Database.SqlQuery<DC_UnprocessedData>(sb.ToString()).ToList();
-                    //return lstUnprocessedData;
+                    var lstUnprocessedData = context.Database.SqlQuery<DC_UnprocessedData>(sb.ToString()).ToList();
+                    return lstUnprocessedData;
+
                 }
             }
             catch (Exception ex)
@@ -639,7 +639,6 @@ namespace DataLayer
                 });
             }
 
-            return lstUnprocessedData;
         }
         #endregion
 
@@ -697,7 +696,7 @@ namespace DataLayer
         #region MyRegion
         public List<DC_LoggerData> getLoggerTasks()
         {
-            List<DC_LoggerData> lstUnprocessedData = new List<DC_LoggerData>();
+            List<DC_UnprocessedData> lstUnprocessedData = new List<DC_UnprocessedData>();
             try
             {
                 StringBuilder sb = new StringBuilder();
@@ -738,7 +737,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
                     context.Database.CommandTimeout = 0;
-                    lstUnprocessedData = context.Database.SqlQuery<DC_LoggerData>(sb.ToString()).ToList();
+                    lstUnprocessedData = context.Database.SqlQuery<DC_UnprocessedData>(sb.ToString()).ToList();
                 }
             }
             catch (Exception ex)
@@ -750,7 +749,7 @@ namespace DataLayer
                 });
             }
 
-            return lstUnprocessedData;
+            return new List<DC_LoggerData>();
         }
 
 
