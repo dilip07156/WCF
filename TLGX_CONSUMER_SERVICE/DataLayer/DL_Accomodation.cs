@@ -1498,13 +1498,15 @@ namespace DataLayer
             {
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    context.Database.CommandTimeout = 0;
+
                     #region Country/City Check
-                    if (AccomodationDetails.Country_Id == null && !string.IsNullOrWhiteSpace(AccomodationDetails.Country))
+                    if ((AccomodationDetails.Country_Id == null || AccomodationDetails.Country_Id == Guid.Empty) && !string.IsNullOrWhiteSpace(AccomodationDetails.Country))
                     {
                         AccomodationDetails.Country_Id = context.m_CountryMaster.AsNoTracking().Where(w => w.Name.ToLower() == AccomodationDetails.Country.ToLower()).Select(s => s.Country_Id).FirstOrDefault();
                     }
 
-                    if (AccomodationDetails.Country_Id != null && AccomodationDetails.City_Id == null && !string.IsNullOrWhiteSpace(AccomodationDetails.City) && !string.IsNullOrWhiteSpace(AccomodationDetails.State_Name))
+                    if (AccomodationDetails.Country_Id != null && (AccomodationDetails.City_Id == null || AccomodationDetails.City_Id == Guid.Empty) && !string.IsNullOrWhiteSpace(AccomodationDetails.City) && !string.IsNullOrWhiteSpace(AccomodationDetails.State_Name))
                     {
                         AccomodationDetails.City_Id = context.m_CityMaster.AsNoTracking().Where(w =>
                         w.Country_Id == AccomodationDetails.Country_Id &&
@@ -1512,7 +1514,7 @@ namespace DataLayer
                         w.Name.ToLower() == AccomodationDetails.City.ToLower()).Select(s => s.City_Id).FirstOrDefault();
                     }
 
-                    if (AccomodationDetails.Country_Id != null && AccomodationDetails.City_Id == null && !string.IsNullOrWhiteSpace(AccomodationDetails.City))
+                    if (AccomodationDetails.Country_Id != null && (AccomodationDetails.City_Id == null || AccomodationDetails.City_Id == Guid.Empty) && !string.IsNullOrWhiteSpace(AccomodationDetails.City))
                     {
                         AccomodationDetails.City_Id = context.m_CityMaster.AsNoTracking().Where(w =>
                         w.Country_Id == AccomodationDetails.Country_Id &&
@@ -1601,7 +1603,7 @@ namespace DataLayer
                         search.TotalRooms = AccomodationDetails.TotalRooms;
                         search.Town = AccomodationDetails.Town;
 
-                        if(!string.IsNullOrWhiteSpace(AccomodationDetails.YearBuilt) && AccomodationDetails.YearBuilt.Length > 10)
+                        if (!string.IsNullOrWhiteSpace(AccomodationDetails.YearBuilt) && AccomodationDetails.YearBuilt.Length > 10)
                         {
                             AccomodationDetails.YearBuilt = AccomodationDetails.YearBuilt.Substring(0, 10);
                         }
@@ -1663,7 +1665,7 @@ namespace DataLayer
                     return true;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while updating accomodation info", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -2018,7 +2020,7 @@ namespace DataLayer
                             newObj.Fax = item.Fax;
                             newObj.Legacy_Htl_Id = item.Legacy_Htl_Id;
                             newObj.Telephone = item.Telephone;
-                            newObj.WebSiteURL = item.WebSiteURL;
+                            newObj.WebSiteURL = item.WebSiteURL == null ? null : (item.WebSiteURL.Length > 255 ? item.WebSiteURL.Substring(0, 255) : item.WebSiteURL);
                             newObj.IsActive = item.IsActive;
 
                             context.Accommodation_Contact.Add(newObj);
