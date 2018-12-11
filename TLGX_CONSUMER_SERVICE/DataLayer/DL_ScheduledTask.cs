@@ -25,12 +25,12 @@ namespace DataLayer
                 if (RQ.UserName != null && !String.IsNullOrWhiteSpace(RQ.UserName))
                 {
                     StringBuilder sbselectRoles = new StringBuilder();
-                    sbselectRoles.Append(@"select SysUserRole.RoleId from AspNetUsers SysUser with(nolock) join AspNetUserRoles SysUserRole with(nolock) on SysUser.Id= SysUserRole.UserId  where SysUser.UserName  ='" + RQ.UserName);
-                    List<int> listRoles = new List<int>();
+                    sbselectRoles.Append(@"select SysUserRole.RoleId from AspNetUsers SysUser with(nolock) join AspNetUserRoles SysUserRole with(nolock) on SysUser.Id= SysUserRole.UserId  where SysUser.UserName  ='" + RQ.UserName + "'");
+                    List<string> listRoles = new List<string>();
                     using (ConsumerEntities context = new ConsumerEntities())
                     {
                         context.Configuration.AutoDetectChangesEnabled = false;
-                        try { listRoles = context.Database.SqlQuery<int>(sbselectRoles.ToString()).ToList(); } catch (Exception ex) { }
+                        try { listRoles = context.Database.SqlQuery<string>(sbselectRoles.ToString()).ToList(); } catch (Exception ex) { }
                     }
 
                     StringBuilder sbsqlselect = new StringBuilder();
@@ -53,15 +53,23 @@ namespace DataLayer
                     #endregion
 
                     sbsqlwhere.AppendLine(" where 1=1 ");
-                    if (!string.IsNullOrWhiteSpace(RQ.RedirectFrom))
+
+                    if(!string.IsNullOrWhiteSpace(RQ.Notification))
                     {
-                        sbsqlfrom.AppendLine(" inner join (select distinct Task_Id,log_type from  Supplier_Scheduled_Task_Log with (nolock)) g on g.Task_Id = b.Task_Id ");
-                        sbsqlwhere.AppendLine(" and g.log_type = '" + RQ.RedirectFrom + "' ");
+                        sbsqlfrom.AppendLine(" inner join (Select Task_Id, Log_Type from( select row_number() over(partition by task_id order by create_date desc) as RowNo, Log_Type, Task_Id " +
+                            "from Supplier_Scheduled_Task_Log with (nolock) where Status_Message <> 'Completed' and Create_Date < GETDATE() and log_type='"+RQ.Notification+"') T Where RowNo = 1) g on g.Task_Id = b.Task_Id");
+                        
                     }
+
+                    //if (!string.IsNullOrWhiteSpace(RQ.RedirectFrom))
+                    //{
+                    //    sbsqlfrom.AppendLine(" inner join (select distinct Task_Id,log_type from  Supplier_Scheduled_Task_Log with (nolock)) g on g.Task_Id = b.Task_Id ");
+                    //    sbsqlwhere.AppendLine(" and g.log_type = '" + RQ.RedirectFrom + "' ");
+                    //}
 
                     if (listRoles.Count>0)
                     {
-                        sbsqlwhere.AppendLine(" and c.user_role_id (" + listRoles.ToString().TrimEnd(',') + ");");
+                        sbsqlwhere.AppendLine(" and c.user_role_id IN ('" + String.Join(",", listRoles) + "')");
                     }
 
                     if (RQ.FromDate != null)
@@ -171,7 +179,7 @@ namespace DataLayer
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
 
-                    if (obj.LogId != Guid.Empty)
+                    if (obj.TaskId != Guid.Empty)
                     {
                         //var result = (from a in context.Supplier_Scheduled_Task_Log
                         //             join b in context.Supplier_Scheduled_Task on a.Task_Id equals b.Task_Id
@@ -180,25 +188,29 @@ namespace DataLayer
                         var result = (from  a in context.Supplier_Scheduled_Task 
                                       where a.Task_Id==obj.TaskId
                                       select a).FirstOrDefault();
-                        var unprocessedtask = from a in context.SupplierImportFileDetails
-                                              where a.Supplier_Id == obj.Supplier_Id && a.Entity==obj.Entity && a.STATUS!= "PROCESSED" && result.Schedule_Datetime.Value.Date<a.CREATE_DATE.Value.Date
-                                              select a;
-                        if(unprocessedtask.Count()==0 && result!=null)
+
+                        if (result != null)
                         {
-                            result.Edit_Date = obj.Edit_Date;
-                            result.Edit_User = obj.Edit_User;
-                            result.Status = "Completed";
-                            if (context.SaveChanges() == 1)
+                            var unprocessedtask = from a in context.SupplierImportFileDetails
+                                                  where a.Supplier_Id == obj.Supplier_Id && a.Entity == obj.Entity && a.STATUS != "PROCESSED" && result.Schedule_Datetime < a.CREATE_DATE
+                                                  select a;
+                            if (unprocessedtask.Count() == 0 )
                             {
-                                _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                result.Edit_Date = obj.Edit_Date;
+                                result.Edit_User = obj.Edit_User;
+                                result.Status = "Completed";
+                                if (context.SaveChanges() == 1)
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strUpdatedSuccessfully;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Success;
+                                }
+                                else
+                                {
+                                    _msg.StatusMessage = ReadOnlyMessage.strFailed;
+                                    _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
+                                }
                             }
-                            else
-                            {
-                                _msg.StatusMessage = ReadOnlyMessage.strFailed;
-                                _msg.StatusCode = ReadOnlyMessage.StatusCode.Failed;
-                            }
-                        }                                                                
+                        }
 
                     }
                     
@@ -238,6 +250,77 @@ namespace DataLayer
                             return result.ToList();
                             }
                     }   
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new System.ServiceModel.FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while fetching Supplier Scheduled task", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
+            }
+        }
+
+        public IList<DataContracts.Schedulers.Supplier_Task_Notifications> GetScheduleNotificationTaskLog(DataContracts.Schedulers.DC_SupplierScheduledTaskRQ RQ)
+        {
+            try
+            {
+                if (RQ.UserName != null && !String.IsNullOrWhiteSpace(RQ.UserName))
+                {
+                    StringBuilder sbselectRoles = new StringBuilder();
+                    sbselectRoles.Append(@"select SysUserRole.RoleId from AspNetUsers SysUser with(nolock) join AspNetUserRoles SysUserRole with(nolock) on SysUser.Id= SysUserRole.UserId  where SysUser.UserName  ='" + RQ.UserName+"'");
+                    List<string> listRoles = new List<string>();
+                    using (ConsumerEntities context = new ConsumerEntities())
+                    {
+                        context.Configuration.AutoDetectChangesEnabled = false;
+                        try { listRoles = context.Database.SqlQuery<string>(sbselectRoles.ToString()).ToList(); } catch (Exception ex) { }
+                    }
+
+                    StringBuilder sbFinalselectQuery = new StringBuilder();
+                    StringBuilder sbsqlFinalwhere = new StringBuilder();
+                    StringBuilder sbsqlFinalGroupby = new StringBuilder();
+                    StringBuilder sbsselectQuery = new StringBuilder();
+                    StringBuilder sbsqlfrom = new StringBuilder();
+                    StringBuilder sbsqlwhere = new StringBuilder();
+                    List<DataContracts.Schedulers.Supplier_Task_Notifications> result = new List<DataContracts.Schedulers.Supplier_Task_Notifications>();
+
+                    #region 
+                    //sbsqlselectQuery.Append(@"Select count(1) as Notification_Count, Log_Type from (select row_number() over (partition by task_id order by create_date desc) as RowNo,Log_Type 
+                    //                      from Supplier_Scheduled_Task_Log where Status_Message <> 'Completed' and Create_Date<GETDATE()) T Where RowNo = 1
+                    //                      group by Log_Type");
+
+                    sbFinalselectQuery.Append(@"Select count(1) as Notification_Count, Log_Type from (");
+
+                    sbsselectQuery.Append(@"select row_number() over (partition by task_log.task_id order by task_log.create_date desc) as RowNo,Log_Type 
+                                            from Supplier_Schedule sup inner join Supplier_Scheduled_Task sup_task on sup.SupplierScheduleID=sup_task.Schedule_Id
+                                            inner join Supplier_Scheduled_Task_Log task_log on task_log.Task_Id=sup_task.Task_Id and Status_Message <> 'Completed' and task_log.Create_Date<GETDATE()");
+
+
+                    #endregion
+                    sbsqlwhere.AppendLine(" where 1=1 ");
+                    if (listRoles.Count > 0)
+                    {
+                        sbsqlwhere.AppendLine(" and sup.user_role_id IN ('" + String.Join(",", listRoles) + "')");
+                    }
+
+                    sbsqlwhere.AppendLine(") T where RowNo=1");
+                    sbsqlFinalGroupby.Append(@"group by Log_Type");
+
+                    StringBuilder sbfinalQuery = new StringBuilder();
+                    sbfinalQuery.Append(sbFinalselectQuery + " ");
+                    sbfinalQuery.Append(" " + sbsselectQuery + " ");
+                    sbfinalQuery.Append(" " + sbsqlwhere + " ");
+                    sbfinalQuery.Append(" " + sbsqlFinalGroupby);
+
+                    using (ConsumerEntities context = new ConsumerEntities())
+                        {
+                            context.Configuration.AutoDetectChangesEnabled = false;
+                            try { result = context.Database.SqlQuery<DataContracts.Schedulers.Supplier_Task_Notifications>(sbfinalQuery.ToString()).ToList(); } catch (Exception ex) { }
+                        }
+
+
+                    return result;
+                }
                 else
                 {
                     return null;

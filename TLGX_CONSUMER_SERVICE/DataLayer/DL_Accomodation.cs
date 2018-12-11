@@ -1789,7 +1789,7 @@ namespace DataLayer
 
                 if (!string.IsNullOrWhiteSpace(AccomodationDetails.Telephone_TX))
                 {
-                    search.Telephone_Tx = AccomodationDetails.Telephone_TX;
+                    newAcco.Telephone_Tx = AccomodationDetails.Telephone_TX;
                 }
 
                 using (ConsumerEntities context = new ConsumerEntities())

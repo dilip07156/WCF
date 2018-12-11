@@ -37,5 +37,10 @@ namespace OperationContracts
         [WebInvoke(Method = "GET", UriTemplate = "Schedule/GetScheduleTaskLogList/{Task_Id}", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         IList<DataContracts.Schedulers.Supplier_Task_Logs> GetScheduleTaskLogList(string Task_Id);
 
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "Schedule/GetScheduleNotificationTaskLog", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        IList<DataContracts.Schedulers.Supplier_Task_Notifications> GetScheduleNotificationTaskLog(DataContracts.Schedulers.DC_SupplierScheduledTaskRQ obj);
+
     }
 }

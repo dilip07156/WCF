@@ -55,5 +55,13 @@ namespace BusinessLayer
             }
         }
 
+        public IList<DataContracts.Schedulers.Supplier_Task_Notifications> GetScheduleNotificationTaskLog(DataContracts.Schedulers.DC_SupplierScheduledTaskRQ RQ)
+        {
+            using (DataLayer.DL_ScheduledTask obj = new DataLayer.DL_ScheduledTask())
+            {
+                return obj.GetScheduleNotificationTaskLog(RQ);
+            }
+        }
+
     }
 }

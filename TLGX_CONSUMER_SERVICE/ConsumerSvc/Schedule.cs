@@ -54,6 +54,14 @@ namespace ConsumerSvc
             }
         }
 
+        public IList<DataContracts.Schedulers.Supplier_Task_Notifications> GetScheduleNotificationTaskLog(DataContracts.Schedulers.DC_SupplierScheduledTaskRQ RQ)
+        {
+            using (BL_Schedule _obj = new BL_Schedule())
+            {
+                return _obj.GetScheduleNotificationTaskLog(RQ);
+            }
+        }
+
 
     }
 }

@@ -79,6 +79,8 @@ namespace DataContracts.Schedulers
         public DateTime? Edit_Date { get; set; }
         [DataMember]
         public string Edit_User { get; set; }
+        [DataMember]
+        public string Notification { get; set; }
 
 
     }
@@ -114,5 +116,18 @@ namespace DataContracts.Schedulers
         public string Edit_User { get; set; }
 
 
+    }
+
+    [DataContract]
+    public class Supplier_Task_Notifications
+    {
+        [DataMember]
+        public Guid? Log_id { get; set; }
+        [DataMember]
+        public Guid? Task_id { get; set; }
+        [DataMember]
+        public int Notification_Count { get; set; }
+        [DataMember]
+        public string LogType { get; set; }
     }
 }
