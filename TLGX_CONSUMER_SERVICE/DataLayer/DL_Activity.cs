@@ -5026,15 +5026,16 @@ namespace DataLayer
                                  select a;
                     }
 
-                    string AttributeType = ConfigurationManager.AppSettings["ActivityMediaAttribute"];
-                   List<string> test= AttributeType.Split(',').ToList<string>();
-                    if ((AttributeType != null && AttributeType != string.Empty))
-                    {
-                        search = from a in search
-                                 where test.Contains(a.AttributeType)
-                                 select a;
-                    }
-
+                    // string AttributeType = ConfigurationManager.AppSettings["ActivityMediaAttribute"];
+                    //List<string> test= AttributeType.Split(',').ToList<string>();
+                    // if ((AttributeType != null && AttributeType != string.Empty))
+                    // {
+                    //     search = from a in search
+                    //              where test.Contains(a.AttributeType)
+                    //              select a;
+                    // }
+                    int total = search.Count();
+                    int skip = (RQ.PageNo ?? 0) * (RQ.PageSize ?? 0);
                     var result = from a in search
                                  orderby a.AttributeType
                                  select new DataContracts.Masters.DC_Activity_MediaAttributesForImageReview
@@ -5045,8 +5046,7 @@ namespace DataLayer
                                      AttributeValue = a.AttributeValue
 
                                  };
-                    var test1 = result.ToList();
-                    return result.ToList();
+                    return result.OrderBy(p => p.Activity_Media_Id).Skip(skip).Take((RQ.PageSize ?? total)).ToList();
                 }
             }
             catch (Exception)
