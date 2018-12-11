@@ -29,30 +29,31 @@ namespace ConsumerSvc
             }
         }
 
-        public IList<DataContracts.Schedulers.DC_Supplier_Schedule_RS> GetScheduleBySupplier(DataContracts.Schedulers.DC_Supplier_Schedule_RQ _obj)
+        public IList<DataContracts.Schedulers.SupplierScheduledTask> GetScheduledTaskByRoles(DataContracts.Schedulers.DC_SupplierScheduledTaskRQ obj)
         {
-            using (BusinessLayer.BL_Schedule obj = new BL_Schedule())
+            using (BL_Schedule _obj = new BL_Schedule())
             {
-                return obj.GetScheduleBySupplier(_obj);
+                return _obj.GetScheduledTaskByRoles(obj);
             }
         }
 
-        
+        //UpdateTaskLog
+        public DataContracts.DC_Message UpdateTaskLog(DataContracts.Schedulers.DC_SupplierScheduledTaskRQ obj)
+        {
+            using (BusinessLayer.BL_Schedule objBL = new BL_Schedule())
+            {
+                return objBL.UpdateTaskLog(obj);
+            }
+        }
 
-        public bool UpdateSupplierSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
+        public IList<DataContracts.Schedulers.Supplier_Task_Logs> GetScheduleTaskLogList(string Task_Id)
         {
-            using (BusinessLayer.BL_Schedule obj = new BL_Schedule())
+            using (BL_Schedule _obj = new BL_Schedule())
             {
-                return obj.UpdateSupplierSchedule(RQ);
+                return _obj.GetScheduleTaskLogList(Task_Id);
             }
         }
-        public bool CheckExistingSupplierSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
-        {
-            using (BusinessLayer.BL_Schedule obj = new BL_Schedule())
-            {
-                return obj.CheckExistingSupplierSchedule(RQ);
-            }
-        }
+
 
     }
 }

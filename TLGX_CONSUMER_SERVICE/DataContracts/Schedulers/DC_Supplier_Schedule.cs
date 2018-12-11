@@ -64,7 +64,7 @@ namespace DataContracts.Schedulers
 
 
     }
-
+    [DataContract]
     public class DC_Supplier_Schedule_RQ
     {
         [DataMember]
@@ -86,6 +86,7 @@ namespace DataContracts.Schedulers
         public List<string> Entities { get; set; }
 
     }
+    [DataContract]
     public class DC_Supplier_Schedule_RS
     {
         [DataMember]
