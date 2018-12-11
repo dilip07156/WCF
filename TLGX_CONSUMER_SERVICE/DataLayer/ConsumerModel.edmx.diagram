@@ -143,7 +143,6 @@
         <EntityTypeShape EntityType="ConsumerModel.Activity_Ancillary" Width="1.5" PointX="13.5" PointY="0.5" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_Deals" Width="1.5" PointX="13.5" PointY="3.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_Descriptions" Width="1.5" PointX="13.5" PointY="7.375" />
-        <EntityTypeShape EntityType="ConsumerModel.Activity_Media" Width="1.5" PointX="7" PointY="0.5" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierActivityImageMapping" Width="1.5" PointX="8.625" PointY="4.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierActivityMetaDataMapping" Width="1.5" PointX="7" PointY="6.625" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierActivityReviews" Width="1.5" PointX="15.125" PointY="0.5" />
@@ -171,6 +170,7 @@
         <EntityTypeShape EntityType="ConsumerModel.Activity_SupplierCityDepartureCode" Width="1.5" PointX="0.75" PointY="19.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_MediaAttributes" Width="1.5" PointX="19.375" PointY="8.75" />
         <EntityTypeShape EntityType="ConsumerModel.Activity_Flavour" Width="2.75" PointX="3.375" PointY="19.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Activity_Media" Width="1.5" PointX="9.375" PointY="19.75" />
       </Diagram>
       <Diagram DiagramId="28746cebad1b4c418813bb18d8ac1b56" Name="ZoneManager" ZoomLevel="109" >
         <EntityTypeShape EntityType="ConsumerModel.ZoneProduct_Mapping" Width="1.5" PointX="4.75" PointY="0.75" />

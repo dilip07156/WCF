@@ -872,6 +872,16 @@ namespace DataContracts.Masters
         public string Media_Caption { get; set; }
         [DataMember]
         public int? TotalRecords { get; set; }
+        [DataMember]
+        public string CommonProductNameSubType_Id { get; set; }
+        [DataMember]
+        public bool? IsWaterMark { get; set; }
+        [DataMember]
+        public bool? IsRelevent { get; set; }
+        [DataMember]
+        public bool? IsDuplicate { get; set; }
+        [DataMember]
+        public string Media_Feedback { get; set; }
     }
     [DataContract]
     public class DC_Activity_Media_Search_RQ
@@ -942,6 +952,35 @@ namespace DataContracts.Masters
         public string Filename { get; set; }
 
     }
+
+    [DataContract]
+    public class DC_Activity_MediaReview
+    {
+        [DataMember]
+        public Guid? Activity_Media_Id { get; set; }
+        [DataMember]
+        public bool? IsWaterMark { get; set; }
+        [DataMember]
+        public bool? IsRelevent { get; set; }
+        [DataMember]
+        public bool? IsDuplicate { get; set; }
+        [DataMember]
+        public string Media_ReviewFeedback { get; set; }              
+    }
+
+    [DataContract]
+    public class DC_Activity_MediaAttributesForImageReview
+    {
+        [DataMember]
+        public Guid Activity_MediaAttributes_Id { get; set; }
+        [DataMember]
+        public Guid? Activity_Media_Id { get; set; }
+        [DataMember]
+        public string AttributeType { get; set; }
+        [DataMember]
+        public string AttributeValue { get; set; }
+    }
+
     #endregion
 
     #region inclusions
