@@ -18,7 +18,7 @@ namespace DataContracts
         [DataMember]
         public Guid AccommodationId { get; set; }
         [DataMember]
-        public int? TLGXHotelId { get; set; }
+        public int? TLGXCommonHotelId { get; set; }
         [DataMember]
         public string AccommodationName { get; set; }
         [DataMember]
@@ -37,6 +37,8 @@ namespace DataContracts
         public DateTime? EditDate { get; set; }
         [DataMember]
         public string Edituser { get; set; }
+        [DataMember]
+        public string TLGXAccoId { get; set; }
     }
 
     [DataContract]
@@ -62,6 +64,12 @@ namespace DataContracts
         public DateTime? Edit_Date { get; set; }
         [DataMember]
         public string Edit_user { get; set; }
+        [DataMember]
+        public int? TLGXCommonHotelId { get; set; }
+        [DataMember]
+        public string TLGXAccoId { get; set; }
+        [DataMember]
+        public string TLGXAccoRoomId { get; set; }
     }
 
     [DataContract]
@@ -72,7 +80,7 @@ namespace DataContracts
         [DataMember]
         public Guid Accommodation_Id { get; set; }
         [DataMember]
-        public int? Legacy_Htl_Id { get; set; }
+        public int? TLGXCommonHotelId { get; set; }
         [DataMember]
         public string RoomId { get; set; }
         [DataMember]
@@ -117,7 +125,10 @@ namespace DataContracts
         public DateTime? Edit_Date { get; set; }
         [DataMember]
         public string RoomInfo_TX { get; set; }
+        [DataMember]
         public string TLGXAccoRoomId { get; set; }
+        [DataMember]
+        public string TLGXAccoId { get; set; }
     }
 
     [DataContract]
@@ -147,7 +158,7 @@ namespace DataContracts
         [DataMember]
         public Guid SupplierId { get; set; }
         [DataMember]
-        public int? TLGXHotelId { get; set; }
+        public int? TLGXCommonHotelId { get; set; }
         [DataMember]
         public string AccommodationName { get; set; }
         [DataMember]
@@ -166,6 +177,9 @@ namespace DataContracts
         public DateTime? EditDate { get; set; }
         [DataMember]
         public string Edituser { get; set; }
+
+        [DataMember]
+        public string TLGXAccoId { get; set; }
     }
 
     [DataContract]
@@ -214,6 +228,10 @@ namespace DataContracts
         public int? MinGuestOccupancy { get; set; }
         public string PromotionalVendorCode { get; set; }
         public string BeddingConfig { get; set; }
+
+        public int? TLGXCommonHotelId { get; set; }
+
+        public string TLGXAccoId { get; set; }
     }
 
     [DataContract]
@@ -279,6 +297,7 @@ namespace DataContracts
         public string SimilarityIndicator { get; set; }
         public float SimilarityScore { get; set; }
         public string TLGXAccoRoomId { get; set; }
+        public string TLGXAccoId { get; set; }
 
     }
 }

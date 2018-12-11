@@ -81,5 +81,7 @@ namespace DataContracts.ML
         public double SimilarityScore { get; set; }
         public string TLGXAccoRoomId { get; set; }
 
+        public string TLGXAccoId { get; set; }
+
     }
 }

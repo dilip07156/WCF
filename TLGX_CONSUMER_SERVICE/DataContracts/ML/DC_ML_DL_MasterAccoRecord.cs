@@ -17,7 +17,7 @@ namespace DataContracts.ML
     public class DC_ML_DL_MasterAccoRecord_Data
     {
         public string AccommodationId { get; set; }
-        public int? TLGXHotelId { get; set; }
+        public int? TLGXCommonHotelId { get; set; }
         public string AccommodationName { get; set; }
         public string Country { get; set; }
         public string City { get; set; }
@@ -27,5 +27,6 @@ namespace DataContracts.ML
         public string CreateUser { get; set; }
         public string EditDate { get; set; }
         public string Edituser { get; set; }
+        public string TLGXAccoId { get; set; }
     }
 }

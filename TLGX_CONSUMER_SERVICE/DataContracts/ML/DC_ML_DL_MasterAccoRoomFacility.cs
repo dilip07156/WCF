@@ -26,5 +26,9 @@ namespace DataContracts.ML
         public string CreateUser { get; set; }
         public string EditDate { get; set; }
         public string Edituser { get; set; }
+
+        public int? TLGXCommonHotelId { get; set; }
+        public string TLGXAccoId { get; set; }
+        public string TLGXAccoRoomId { get; set; }
     }
 }
