@@ -295,8 +295,13 @@ namespace OperationContracts
 
         [OperationContract]
         [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
-        [WebInvoke(Method = "GET", UriTemplate = "SchedulerServices/TaskLogger/getRunningCount", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        DC_UnprocessedExecuterData getRunningCount();
+        [WebInvoke(Method = "POST", UriTemplate = "SchedulerServices/TaskLogger/getRunningCount", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_UnprocessedExecuterData getScalerCount(DC_UnprocessedExecuterData QueryID);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "SchedulerServices/TaskLogger/getUsersToNotify", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_GetUsersToNotify getUsersToNotify(DC_GetUsersToNotify QueryID);
 
         #endregion
 

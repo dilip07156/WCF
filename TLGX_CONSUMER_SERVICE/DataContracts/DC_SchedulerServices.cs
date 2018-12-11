@@ -47,8 +47,6 @@ namespace DataContracts
         public string Operation { get; set; }
     }
 
-
-
     [DataContract]
     public class DC_SchedulerServicesLogs
     {
@@ -93,6 +91,9 @@ namespace DataContracts
         public Guid SupplierScheduleID { get; set; }
 
         [DataMember]
+        public Guid? Task_ID { get; set; }
+
+        [DataMember]
         public DateTime ScheduleDate { get; set; }
 
         [DataMember]
@@ -126,25 +127,20 @@ namespace DataContracts
     public class DC_UnprocessedExecuterData
     {
         [DataMember]
-        public Guid SupplierScheduleID { get; set; }
-
-        [DataMember]
-        public Guid? Supplier_APILocation_Id { get; set; }
-
-        [DataMember]
-        public Guid Task_Id { get; set; }
-
-        [DataMember]
-        public DateTime ScheduleDate { get; set; }
-
-        [DataMember]
-        public Guid Api_Call_Log_Id { get; set; }
-
-        [DataMember]
-        public string Status { get; set; }
-
-        [DataMember]
         public int TotalCount { get; set; }
+    }
+
+    [DataContract]
+    public class DC_GetUsersToNotify
+    {
+        [DataMember]
+        public string EmailAddress { get; set; }
+
+        [DataMember]
+        public int UsersFound { get; set; }
+
+        [DataMember]
+        public Guid Task_ID { get; set; }
     }
 
     [DataContract]

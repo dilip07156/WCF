@@ -436,11 +436,19 @@ namespace ConsumerSvc
             }
         }
 
-        public DC_UnprocessedExecuterData getRunningCount()
+        public DC_UnprocessedExecuterData getScalerCount(DC_UnprocessedExecuterData QueryID)
         {
             using (BL_SchedulerServices obj = new BL_SchedulerServices())
             {
-                return obj.getRunningCount();
+                return obj.getScalerCount(QueryID);
+            }
+        }
+
+        public DC_GetUsersToNotify getUsersToNotify(DC_GetUsersToNotify rqTaskID)
+        {
+            using (BL_SchedulerServices obj = new BL_SchedulerServices())
+            {
+                return obj.getUsersToNotify(rqTaskID);
             }
         }
         

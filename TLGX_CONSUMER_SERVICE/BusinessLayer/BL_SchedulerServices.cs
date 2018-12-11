@@ -110,11 +110,19 @@ namespace BusinessLayer
             }
         }
 
-        public DC_UnprocessedExecuterData getRunningCount()
+        public DC_UnprocessedExecuterData getScalerCount(DC_UnprocessedExecuterData QueryID)
         {
             using (DL_SchedulerServices obj = new DL_SchedulerServices())
             {
-                return obj.getRunningCount();
+                return obj.getScalerCount(QueryID);
+            }
+        }
+
+        public DC_GetUsersToNotify getUsersToNotify(DC_GetUsersToNotify rqTask_Id)
+        {
+            using (DL_SchedulerServices obj = new DL_SchedulerServices())
+            {
+                return obj.getUsersToNotify(rqTask_Id);
             }
         }
         

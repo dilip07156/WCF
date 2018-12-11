@@ -589,37 +589,39 @@ namespace DataLayer
             {
                 StringBuilder sb = new StringBuilder();
 
-                sb.Append(" ; with CTE AS (");
-                sb.Append("  select ");
-                sb.Append("      ROW_NUMBER() over(partition by SupplierScheduleID order by tsk.Create_date Desc) RowNum, SupplierScheduleID, tsk.Status, ");
-                sb.Append("  	case when tsk.Status = 'Pending' then tsk.Schedule_Datetime else Getdate() end ScheduleDate, sch.CronExpression, Api_Call_Log_Id As Api_Call_Log_Id, ");
-                sb.Append("      isnull(sch.ISXMLSupplier, 0) ISXMLSupplier, sch.Supplier_ID, spr.Name, sch.Entity ");
-                sb.Append("  from Supplier_Schedule sch with(nolock) ");
-                sb.Append("  inner join Supplier spr with(nolock) on sch.Supplier_ID = spr.Supplier_Id ");
-                sb.Append("  left join Supplier_Scheduled_Task tsk with(nolock) on sch.SupplierScheduleID = tsk.Schedule_Id ");
-                sb.Append("  where spr.StatusCode = 'ACTIVE' and sch.Entity is not null and len(CronExpression) > 0 ");
-                sb.Append("  ) ,  ");
-                sb.Append(" CTE1 AS( ");
-                sb.Append(" select ");
-                sb.Append("     mav.AttributeValue, sa.API_Path, ss.SupplierScheduleID, sa.Supplier_APILocation_Id ");
-                sb.Append(" from Supplier_Schedule ss with(nolock) ");
-                sb.Append(" inner join m_masterattributevalue mav with(nolock) on LOWER(LTRIM(RTRIM(mav.AttributeValue))) = LOWER(LTRIM(RTRIM(ss.Entity))) ");
-                sb.Append(" inner join m_masterattribute ma  with(nolock) on ma.MasterAttribute_Id = mav.MasterAttribute_Id ");
-                sb.Append(" left join Supplier_APILocation sa with(nolock) on sa.Supplier_Id = ss.Supplier_ID and sa.Entity_Id = mav.MasterAttributeValue_Id ");
-                sb.Append(" where ma.Name = 'MappingEntity' and ma.MasterFor = 'MappingFileConfig' ");
-                sb.Append(" )  ");
-                sb.Append(" select Supplier_ID, Name, Entity, CTE.SupplierScheduleID, ScheduleDate, CronExpression,Convert(varchar(max),CTE1.API_Path) API_Path, ISXMLSupplier, Status ");
-                sb.Append(" , null Api_Call_Log_Id,null Supplier_APILocation_Id,null PentahoCall_Id from CTE ");
-                sb.Append(" LEFT JOIN CTE1 On CTE.SupplierScheduleID = CTE1.SupplierScheduleID ");
-                sb.Append(" where RowNum = 1 And ISXMLSupplier = 1 AND Convert(Date, ScheduleDate) <= Convert(Date, GETDATE()) ");
+                sb.Append(" ; with CTE AS(");
+                sb.Append("  select ROW_NUMBER() over(partition by SupplierScheduleID order by tsk.Create_date Desc) RowNum, SupplierScheduleID, tsk.Status,");
+                sb.Append("  case when tsk.Status = 'Pending' then tsk.Schedule_Datetime else Getdate() end ScheduleDate, sch.CronExpression, Api_Call_Log_Id As Api_Call_Log_Id,");
+                sb.Append("  isnull(sch.ISXMLSupplier, 0) ISXMLSupplier, sch.Supplier_ID, spr.Name, sch.Entity, tsk.Task_Id from Supplier_Schedule sch with(nolock)");
+                sb.Append("  inner join Supplier spr with(nolock) on sch.Supplier_ID = spr.Supplier_Id");
+                sb.Append("  left join Supplier_Scheduled_Task tsk with(nolock) on sch.SupplierScheduleID = tsk.Schedule_Id");
+                sb.Append("  where spr.StatusCode = 'ACTIVE' and sch.Entity is not null and len(CronExpression) > 0");
+                sb.Append("  ) ,");
+                sb.Append(" CTE1 AS(");
+                sb.Append(" select mav.AttributeValue, sa.API_Path, ss.SupplierScheduleID, sa.Supplier_APILocation_Id from Supplier_Schedule ss with(nolock)");
+                sb.Append(" inner join m_masterattributevalue mav with(nolock) on LOWER(LTRIM(RTRIM(mav.AttributeValue))) = LOWER(LTRIM(RTRIM(ss.Entity)))");
+                sb.Append(" inner join m_masterattribute ma  with(nolock) on ma.MasterAttribute_Id = mav.MasterAttribute_Id");
+                sb.Append(" left join Supplier_APILocation sa with(nolock) on sa.Supplier_Id = ss.Supplier_ID and sa.Entity_Id = mav.MasterAttributeValue_Id");
+                sb.Append(" where ma.Name = 'MappingEntity' and ma.MasterFor = 'MappingFileConfig'");
+                sb.Append(" ) ,");
+                sb.Append(" CTE2 AS(");
+                sb.Append(" select* from (select tsk.Status TaskStatus, replace(t.Status,'FAILED','ERROR') PentahoStatus, tsk.Schedule_Id,  SupplierApiCallLog_Id,");
+                sb.Append(" SupplierApiLocation_Id, PentahoCall_Id from(select ROW_NUMBER() over(partition by sa.Supplier_APILocation_Id order by api.Create_Date desc) rowNum, ");
+                sb.Append(" mav.AttributeValue, sa.API_Path,ss.SupplierScheduleID,api.Status,api.SupplierApiCallLog_Id,api.SupplierApiLocation_Id,api.PentahoCall_Id   ");
+                sb.Append(" from Supplier_Schedule ss with(nolock)");
+                sb.Append(" inner join m_masterattributevalue mav with(nolock) on LOWER(LTRIM(RTRIM(mav.AttributeValue))) = LOWER(LTRIM(RTRIM(ss.Entity)))");
+                sb.Append(" inner join m_masterattribute ma  with(nolock) on ma.MasterAttribute_Id = mav.MasterAttribute_Id");
+                sb.Append(" left join Supplier_APILocation sa with(nolock) on sa.Supplier_Id = ss.Supplier_ID and sa.Entity_Id = mav.MasterAttributeValue_Id");
+                sb.Append(" inner join Supplier_ApiCallLog api with(nolock) on sa.Supplier_APILocation_Id = api.SupplierApiLocation_Id");
+                sb.Append(" where ma.Name = 'MappingEntity' and ma.MasterFor = 'MappingFileConfig' ) t");
+                sb.Append(" left join Supplier_Scheduled_Task tsk with(nolock) on t.SupplierScheduleID = tsk.Schedule_Id where t.rowNum = 1 AND tsk.Status = 'Running'");
+                sb.Append(" ) t )");
+                sb.Append(" select Supplier_ID, Name, Entity, CTE.SupplierScheduleID,CTE.Task_Id, ScheduleDate, CronExpression,Convert(varchar(max), CTE1.API_Path) API_Path, ISXMLSupplier, Status ,");
+                sb.Append(" CTE2.PentahoStatus, CTE2.SupplierApiCallLog_Id api_Call_Log_Id, CTE2.SupplierApiLocation_Id Supplier_APILocation_Id, CTE2.PentahoCall_Id PentahoCall_Id from CTE");
+                sb.Append("   LEFT JOIN CTE1 On CTE.SupplierScheduleID = CTE1.SupplierScheduleID");
+                sb.Append(" left join CTE2 on cte.SupplierScheduleID = CTE2.Schedule_Id  where RowNum = 1 And ISXMLSupplier = 1 AND Convert(Date, ScheduleDate) <= Convert(Date, GETDATE()) ");
+                sb.Append(" and REPLACE(isnull(PentahoStatus,''),'SENT TO CARTE','RUNNING') <> 'RUNNING' order by ScheduleDate;");
 
-
-                //sb.Append("with CTE AS(select ROW_NUMBER() over(partition by SupplierScheduleID order by tsk.Create_date Desc) RowNum, SupplierScheduleID, tsk.Status, ");
-                //sb.Append("isnull(tsk.Schedule_Datetime, getdate()) As ScheduleDate, sch.CronExpression, Api_Call_Log_Id As Api_Call_Log_Id, isnull(sch.ISXMLSupplier, 0) ISXMLSupplier ");
-                //sb.Append("from Supplier_Schedule sch with(nolock) inner join Supplier spr with(nolock) on sch.Supplier_ID = spr.Supplier_Id left join Supplier_Scheduled_Task tsk ");
-                //sb.Append("with(nolock) on sch.SupplierScheduleID = tsk.Schedule_Id where spr.StatusCode = 'ACTIVE' and sch.Entity is not null and len(CronExpression) > 0) ");
-                //sb.Append("select RowNum, SupplierScheduleID, ScheduleDate, CronExpression, Api_Call_Log_Id, ");
-                //sb.Append("ISXMLSupplier, Status from CTE where RowNum = 1 And ISNULL(status,'') <> 'Pending' And Convert(Date, ScheduleDate) <= Convert(Date, GETDATE()); ");
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
@@ -752,7 +754,7 @@ namespace DataLayer
         }
 
 
-        public DC_UnprocessedExecuterData getRunningCount()
+        public DC_UnprocessedExecuterData getScalerCount(DC_UnprocessedExecuterData QueryID)
         {
             DC_UnprocessedExecuterData RunningData = new DC_UnprocessedExecuterData();
 
@@ -760,8 +762,16 @@ namespace DataLayer
             {
                 StringBuilder sb = new StringBuilder();
 
-                sb.Append(" DECLARE @CountOfRunning int;DECLARE @default uniqueidentifier = cast(cast(0 as binary) as uniqueidentifier);select @CountOfRunning = count(0) from Supplier_ApiCallLog where status = 'RUNNING';");
-                sb.Append(" select  @CountOfRunning TotalCount; ");
+                switch (QueryID.TotalCount)
+                {
+                    case 1:
+                        sb.Append(" DECLARE @CountOfRunning int;DECLARE @default uniqueidentifier = cast(cast(0 as binary) as uniqueidentifier);select @CountOfRunning = count(0) from Supplier_ApiCallLog where status = 'RUNNING';");
+                        sb.Append(" select  @CountOfRunning TotalCount; ");
+                        break;
+                    default:
+                        break;
+                }
+
 
 
                 using (ConsumerEntities context = new ConsumerEntities())
@@ -775,6 +785,54 @@ namespace DataLayer
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
                 {
                     ErrorMessage = "Error while fetching Logger Tasks",
+                    ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
+                });
+            }
+
+            return RunningData;
+        }
+
+        public DC_GetUsersToNotify getUsersToNotify(DC_GetUsersToNotify rqTask_Id)
+        {
+            DC_GetUsersToNotify RunningData = new DC_GetUsersToNotify();
+
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+
+                sb.Append(" DECLARE @TaskID uniqueIdentifier = '" + rqTask_Id.Task_ID.ToString() + "';");
+                sb.Append(" IF EXISTS(select top 1 1  from AspNetUsers aspnt ");
+                sb.Append(" Inner join AspNetUserRoles roles on aspnt.Id = roles.UserId");
+                sb.Append(" inner join Supplier_Schedule ss on roles.RoleId = ss.User_Role_Id");
+                sb.Append(" inner Join Supplier_Scheduled_Task tsk on ss.SupplierScheduleID = tsk.Schedule_Id  where tsk.Task_Id = @TaskID");
+                sb.Append(" and aspnt.IsActive = 1 AND aspnt.UserName like '%@%.com')");
+                sb.Append(" begin");
+                sb.Append(" select  1 UsersFound,STUFF((select ';' + CONVERT(varchar(50), LTRIM(RTRIM(aspnt.UserName)))  from AspNetUsers aspnt");
+                sb.Append(" Inner join AspNetUserRoles roles on aspnt.Id = roles.UserId");
+                sb.Append(" inner join Supplier_Schedule ss on roles.RoleId = ss.User_Role_Id");
+                sb.Append(" inner Join Supplier_Scheduled_Task tsk on ss.SupplierScheduleID = tsk.Schedule_Id  where tsk.Task_Id = @TaskID");
+                sb.Append(" and aspnt.IsActive = 1 AND aspnt.UserName like '%@%.com'  group by  aspnt.UserName for xml path('')  ), 1, 1, '') as EmailAddress");
+                sb.Append(" end");
+                sb.Append(" else");
+                sb.Append(" begin");
+                sb.Append(" select  0 UsersFound,STUFF((select ';' + CONVERT(varchar(50), LTRIM(RTRIM(aspnt.UserName)))  from AspNetUsers aspnt");
+                sb.Append(" Inner join AspNetUserRoles roles on aspnt.Id = roles.UserId");
+                sb.Append(" inner join Supplier_Schedule ss on roles.RoleId = ss.User_Role_Id");
+                sb.Append(" inner Join Supplier_Scheduled_Task tsk on ss.SupplierScheduleID = tsk.Schedule_Id  where tsk.Task_Id = @TaskID");
+                sb.Append(" and aspnt.IsActive = 1 AND aspnt.UserName like '%@%.com'  group by  aspnt.UserName for xml path('')  ), 1, 1, '') as EmailAddress");
+                sb.Append(" end");
+
+                using (ConsumerEntities context = new ConsumerEntities())
+                {
+                    context.Database.CommandTimeout = 0;
+                    RunningData = context.Database.SqlQuery<DC_GetUsersToNotify>(sb.ToString()).ToList().FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus
+                {
+                    ErrorMessage = "Error while fetching Email Addess.",
                     ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError
                 });
             }
