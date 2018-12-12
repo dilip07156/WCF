@@ -1817,6 +1817,7 @@ namespace DataLayer
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
+                    context.Database.CommandTimeout = 0;
                     context.Accommodation.Add(newAcco);
                     context.SaveChanges();
 
