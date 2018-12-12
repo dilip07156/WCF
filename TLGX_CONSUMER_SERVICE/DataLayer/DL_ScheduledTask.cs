@@ -56,9 +56,10 @@ namespace DataLayer
 
                     if(!string.IsNullOrWhiteSpace(RQ.Notification))
                     {
-                        sbsqlfrom.AppendLine(" inner join (Select Task_Id, Log_Type from( select row_number() over(partition by task_id order by create_date desc) as RowNo, Log_Type, Task_Id " +
-                            "from Supplier_Scheduled_Task_Log with (nolock) where Status_Message <> 'Completed' and Create_Date < GETDATE() and log_type='"+RQ.Notification+"') T Where RowNo = 1) g on g.Task_Id = b.Task_Id");
-                        
+                        sbsqlfrom.AppendLine(" inner join (Select Task_Id, Log_Type,Status_Message from( select row_number() over(partition by task_id order by create_date desc) as RowNo, Log_Type, Task_Id,Status_Message " +
+                            "from Supplier_Scheduled_Task_Log with (nolock) where  Create_Date < GETDATE()) T Where RowNo = 1) g on g.Task_Id = b.Task_Id");
+                        sbsqlwhere.AppendLine(" and log_type='" + RQ.Notification + "' and Status_Message <> 'Completed'");
+
                     }
 
                     //if (!string.IsNullOrWhiteSpace(RQ.RedirectFrom))
@@ -291,9 +292,9 @@ namespace DataLayer
 
                     sbFinalselectQuery.Append(@"Select count(1) as Notification_Count, Log_Type from (");
 
-                    sbsselectQuery.Append(@"select row_number() over (partition by task_log.task_id order by task_log.create_date desc) as RowNo,Log_Type 
+                    sbsselectQuery.Append(@"select row_number() over (partition by task_log.task_id order by task_log.create_date desc) as RowNo,Log_Type,Status_Message
                                             from Supplier_Schedule sup inner join Supplier_Scheduled_Task sup_task on sup.SupplierScheduleID=sup_task.Schedule_Id
-                                            inner join Supplier_Scheduled_Task_Log task_log on task_log.Task_Id=sup_task.Task_Id and Status_Message <> 'Completed' and task_log.Create_Date<GETDATE()");
+                                            inner join Supplier_Scheduled_Task_Log task_log on task_log.Task_Id=sup_task.Task_Id  and task_log.Create_Date<GETDATE()");
 
 
                     #endregion
@@ -303,7 +304,7 @@ namespace DataLayer
                         sbsqlwhere.AppendLine(" and sup.user_role_id IN ('" + String.Join(",", listRoles) + "')");
                     }
 
-                    sbsqlwhere.AppendLine(") T where RowNo=1");
+                    sbsqlwhere.AppendLine(") T where RowNo=1 and Status_Message <> 'Completed'");
                     sbsqlFinalGroupby.Append(@"group by Log_Type");
 
                     StringBuilder sbfinalQuery = new StringBuilder();
