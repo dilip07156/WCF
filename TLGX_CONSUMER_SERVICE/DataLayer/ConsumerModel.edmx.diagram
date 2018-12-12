@@ -94,9 +94,9 @@
       <Diagram DiagramId="33089e75a83142f0a8f1044a69f7561b" Name="Schedules" >
         <EntityTypeShape EntityType="ConsumerModel.m_FrequencyType" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.Schedule_NextOccurance" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Supplier_Scheduled_Task" Width="2" PointX="7.125" PointY="0.75" />
+        <EntityTypeShape EntityType="ConsumerModel.Supplier_Scheduled_Task_Log" Width="2.375" PointX="4.625" PointY="0.75" />
         <EntityTypeShape EntityType="ConsumerModel.Supplier_Schedule" Width="1.5" PointX="0.75" PointY="3.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Supplier_Scheduled_Task_Log" Width="1.5" PointX="3.375" PointY="3.75" />
-        <EntityTypeShape EntityType="ConsumerModel.Supplier_Scheduled_Task" Width="1.5" PointX="5.375" PointY="0.75" />
       </Diagram>
       <Diagram DiagramId="08987ed3375444b4b2ea2413845dc265" Name="SupplierMasters" >
         <EntityTypeShape EntityType="ConsumerModel.Supplier_Market" Width="1.5" PointX="2.75" PointY="0.75" />

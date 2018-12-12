@@ -14,6 +14,8 @@ namespace DataContracts
         [DataMember]
         public static string strAlreadyExist = " already exist in system.";
         [DataMember]
+        public static string strnotExist = " not exist in system.";
+        [DataMember]
         public static string strAddedSuccessfully = " has been added successfully.";
         [DataMember]
         public static string strUpdatedSuccessfully = " has been updated successfully.";
@@ -51,6 +53,6 @@ namespace DataContracts
             Paused,
         };
 
-       
+
     }
 }
