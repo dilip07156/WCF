@@ -544,7 +544,7 @@ namespace DataLayer
                                         ");
 
                     StringBuilder sbFinalQuery = new StringBuilder();
-                    sbFinalQuery.Append(sbSelectCity);
+                    sbFinalQuery.Append(sbSelect);
 
                     var retRanks = context.Database.SqlQuery<DataContracts.Masters.DC_Ranks>(sbFinalQuery.ToString()).ToList();
 
