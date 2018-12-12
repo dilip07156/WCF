@@ -3740,7 +3740,9 @@ namespace DataLayer
                                     ISNULL(ASRTM.UserMappingStatus,'UNMAPPED') AS UserMappingStatus,
                                     ISNULL(ASRTM.SystemMappingStatus,'UNMAPPED') AS SystemMappingStatus,
                                     ISNULL(ASRTM.SystemEditDate,CAST('01-Jan-1990' AS DATE)) AS SystemEditDate,
-                                    ISNULL(ASRTM.UserEditDate,CAST('01-Jan-1990' AS DATE)) AS UserEditDate ");
+                                    ISNULL(ASRTM.UserEditDate,CAST('01-Jan-1990' AS DATE)) AS UserEditDate,
+                                    ASRTM.Edit_User AS EditUser,
+                                    ASRTM.Edit_SystemUser AS SystemEditUser ");
 
                 #endregion
                 //sbFrom.Append(@" from Accommodation_RoomInfo ar WITH(NOLOCK) 

@@ -5817,6 +5817,10 @@ namespace DataContracts
         public DateTime? SystemEditDate { get; set; }
         [DataMember]
         public DateTime? UserEditDate { get; set; }
+        [DataMember]
+        public string EditUser { get; set; }
+        [DataMember]
+        public string SystemEditUser { get; set; }
     }
 
     [DataContract]
