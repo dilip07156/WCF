@@ -29,11 +29,37 @@ namespace ConsumerSvc
             }
         }
 
+        public IList<DataContracts.Schedulers.DC_Supplier_Schedule_RS> GetScheduleBySupplier(DataContracts.Schedulers.DC_Supplier_Schedule_RQ _obj)
+        {
+            using (BusinessLayer.BL_Schedule obj = new BL_Schedule())
+            {
+                return obj.GetScheduleBySupplier(_obj);
+            }
+        }
+
+
+
+        public bool UpdateSupplierSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
+        {
+            using (BusinessLayer.BL_Schedule obj = new BL_Schedule())
+            {
+                return obj.UpdateSupplierSchedule(RQ);
+            }
+        }
+
         public IList<DataContracts.Schedulers.SupplierScheduledTask> GetScheduledTaskByRoles(DataContracts.Schedulers.DC_SupplierScheduledTaskRQ obj)
         {
             using (BL_Schedule _obj = new BL_Schedule())
             {
                 return _obj.GetScheduledTaskByRoles(obj);
+            }
+        }
+
+        public bool CheckExistingSupplierSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
+        {
+            using (BusinessLayer.BL_Schedule obj = new BL_Schedule())
+            {
+                return obj.CheckExistingSupplierSchedule(RQ);
             }
         }
 

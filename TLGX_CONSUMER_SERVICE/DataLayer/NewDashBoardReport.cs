@@ -41,5 +41,10 @@ namespace DataLayer
         public Nullable<int> Count_SuppliersRoom { get; set; }
         public Nullable<int> Count_AccoRooms { get; set; }
         public string ReportType { get; set; }
+        public Nullable<int> TotalNoOfHotelRooms { get; set; }
+        public Nullable<int> TotalNoOfHotels { get; set; }
+        public string Priority { get; set; }
+        public string Rank { get; set; }
+        public string Key { get; set; }
     }
 }

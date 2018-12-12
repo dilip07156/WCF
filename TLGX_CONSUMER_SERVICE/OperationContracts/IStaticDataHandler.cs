@@ -2,6 +2,7 @@
 using System.ServiceModel.Web;
 using System.Collections.Generic;
 using System;
+using DataContracts;
 
 namespace OperationContracts
 {
@@ -43,7 +44,7 @@ namespace OperationContracts
         [WebInvoke(Method = "POST", UriTemplate = "DataHandler/FileDetails/UpdateProcessStatus", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         DataContracts.DC_Message UpdateStaticDataFileDetailStatus(DataContracts.UploadStaticData.DC_SupplierImportFileDetails obj);
 
-        
+
 
         #endregion
 
@@ -275,6 +276,99 @@ namespace OperationContracts
         DataContracts.DC_Message ApplyKeyword(DataContracts.Masters.DC_keywordApply_RQ RQ);
         #endregion
 
+        #region Task Checker Activities
 
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "SchedulerServices/TaskCheker/GetUnprocessed", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DC_UnprocessedData> getTaskGeneratorFiles();
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "SchedulerServices/TaskExecuter/GetExecutableData", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DC_UnprocessedExecuterData> getExecutableTasks();
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "GET", UriTemplate = "SchedulerServices/TaskLogger/GetLoggerData", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DC_LoggerData> getLoggerTasks();
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "SchedulerServices/TaskLogger/getRunningCount", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_UnprocessedExecuterData getScalerCount(DC_UnprocessedExecuterData QueryID);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "SchedulerServices/TaskLogger/getUsersToNotify", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_GetUsersToNotify getUsersToNotify(DC_GetUsersToNotify QueryID);
+
+        #endregion
+
+        #region CRUD Declarations Supplier_Scheduled_Task
+
+        /// <summary>
+        /// Comment for All Links inside the given CRUD Ops Region
+        /// </summary>
+        /// <param name="C reate">  SchedulerServices/ScheduledTask/Add    </param>
+        /// <param name="R ead"  >  SchedulerServices/ScheduledTask/Get    </param>
+        /// <param name="U pdate">  SchedulerServices/ScheduledTask/Update </param>
+        /// <param name="D elete">  SchedulerServices/ScheduledTask/Delete </param>
+        /// <returns></returns>
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "SchedulerServices/ScheduledTask/Add", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_Message Add_Scheduled_Tasks(DC_SchedulerServicesTasks RQ);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "SchedulerServices/ScheduledTask/Get", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DC_SchedulerServicesTasks> Get_Scheduled_Tasks(DC_SchedulerServicesTasks RqDC_SchedulerServices);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "SchedulerServices/ScheduledTask/Update", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_Message Update_Scheduled_Tasks(DC_SchedulerServicesTasks RQ);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "SchedulerServices/ScheduledTask/Delete", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_Message Delete_Scheduled_Tasks(DC_SchedulerServicesTasks RQ);
+
+        #endregion
+
+        #region CRUD Declarations Supplier_Scheduled_Task_Log
+
+        /// <summary>
+        /// Comment for All Links inside the given CRUD Ops Region
+        /// </summary>
+        /// <param name="C reate">  SchedulerServices/ScheduledLog/Add    </param>
+        /// <param name="R ead"  >  SchedulerServices/ScheduledLog/Get    </param>
+        /// <param name="U pdate">  SchedulerServices/ScheduledLog/Update </param>
+        /// <param name="D elete">  SchedulerServices/ScheduledLog/Delete </param>
+        /// <returns></returns>
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "SchedulerServices/ScheduledLog/Add", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_Message Add_Scheduled_Tasklog(DC_SchedulerServicesLogs RQ);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "SchedulerServices/ScheduledLog/Get", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DC_SchedulerServicesLogs> Get_Scheduled_Logs(DC_SchedulerServicesLogs RqDC_SchedulerServices);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "SchedulerServices/ScheduledLog/Update", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_Message Update_Scheduled_Logs(DC_SchedulerServicesLogs RQ);
+
+        [OperationContract]
+        [FaultContract(typeof(DataContracts.DC_ErrorStatus))]
+        [WebInvoke(Method = "POST", UriTemplate = "SchedulerServices/ScheduledLog/Delete", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        DC_Message Delete_Scheduled_Logs(DC_SchedulerServicesLogs RQ);
+
+        #endregion
     }
 }

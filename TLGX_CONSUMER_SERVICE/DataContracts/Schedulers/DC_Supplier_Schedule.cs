@@ -64,7 +64,7 @@ namespace DataContracts.Schedulers
 
 
     }
-
+    [DataContract]
     public class DC_Supplier_Schedule_RQ
     {
         [DataMember]
@@ -84,8 +84,12 @@ namespace DataContracts.Schedulers
         public string Status { get; set; }
         [DataMember]
         public List<string> Entities { get; set; }
+        [DataMember]
+        public bool IsActive { get; set; }
+        public string Enitity { get; set; }
 
     }
+    [DataContract]
     public class DC_Supplier_Schedule_RS
     {
         [DataMember]

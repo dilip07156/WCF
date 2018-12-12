@@ -402,6 +402,7 @@
     <Compile Include="DL_Pentaho.cs" />
     <Compile Include="DL_Schedule.cs" />
     <Compile Include="DL_ScheduledTask.cs" />
+    <Compile Include="DL_SchedulerServices.cs" />
     <Compile Include="DL_UploadStaticData.cs" />
     <Compile Include="DynamicAttribute.cs">
       <DependentUpon>ConsumerModel.tt</DependentUpon>

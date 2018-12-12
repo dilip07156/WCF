@@ -37,6 +37,30 @@ namespace BusinessLayer
             }
         }
 
+        public bool CheckExistingSupplierSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
+        {
+            using (DataLayer.DL_Schedule obj = new DataLayer.DL_Schedule())
+            {
+                return obj.CheckExistingSupplierSchedule(RQ);
+            }
+        }
+
+        public IList<DataContracts.Schedulers.DC_Supplier_Schedule_RS> GetScheduleBySupplier(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
+        {
+            using (DataLayer.DL_Schedule obj = new DataLayer.DL_Schedule())
+            {
+                return obj.GetScheduleBySupplier(RQ);
+            }
+        }
+
+        public bool UpdateSupplierSchedule(DataContracts.Schedulers.DC_Supplier_Schedule_RQ RQ)
+        {
+            using (DataLayer.DL_Schedule obj = new DataLayer.DL_Schedule())
+            {
+                return obj.UpdateSupplierSchedule(RQ);
+            }
+        }
+
         //UpdateTaskLog
 
         public DataContracts.DC_Message UpdateTaskLog(DataContracts.Schedulers.DC_SupplierScheduledTaskRQ obj)
