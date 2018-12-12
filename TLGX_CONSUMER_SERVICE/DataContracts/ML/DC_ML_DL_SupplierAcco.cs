@@ -21,7 +21,7 @@ namespace DataContracts.ML
         public string SupplierProductReference { get; set; }
         public string SupplierName { get; set; }
         public string SupplierId { get; set; }
-        public int? TLGXHotelId { get; set; }
+        public int? TLGXCommonHotelId { get; set; }
         public string AccommodationName { get; set; }
         public string Country { get; set; }
         public string City { get; set; }
@@ -31,5 +31,7 @@ namespace DataContracts.ML
         public string CreateUser { get; set; }
         public string EditDate { get; set; }
         public string Edituser { get; set; }
+
+        public string TLGXAccoId { get; set; }
     }
 }

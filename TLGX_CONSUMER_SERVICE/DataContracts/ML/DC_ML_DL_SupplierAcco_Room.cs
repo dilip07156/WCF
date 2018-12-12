@@ -59,6 +59,8 @@ namespace DataContracts.ML
         public string PromotionalVendorCode { get; set; }
         public string BeddingConfig { get; set; }
 
+        public int? TLGXCommonHotelId { get; set; }
+        public string TLGXAccoId { get; set; }
     }
 
     public class DC_ML_DL_SupplierAcco_Room_Data_Delete

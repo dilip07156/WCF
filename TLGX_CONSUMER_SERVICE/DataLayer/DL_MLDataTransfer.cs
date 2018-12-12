@@ -82,7 +82,7 @@ namespace DataLayer
                     StringBuilder sbOrderby = new StringBuilder();
                     sbSelect.Append(@"SELECT  
                                         Accommodation_Id As AccommodationId,
-                                        CompanyHotelID As TLGXHotelId,
+                                        CompanyHotelID As TLGXCommonHotelId,
                                         HotelName As AccommodationName,
                                         city As City,
                                         country As Country,
@@ -91,7 +91,8 @@ namespace DataLayer
                                         Create_Date AS CreateDate,
                                         Create_User AS CreateUser,
                                         Edit_Date AS EditDate,
-                                        Edit_User As Edituser
+                                        Edit_User As Edituser,
+										TLGXAccoId As TLGXAccoId
                                         FROM Accommodation with(nolock)  ");
                     int skip = batchNo * batchSize;
                     sbOrderby.Append("  ORDER BY Accommodation_Id OFFSET " + (skip).ToString() + " ROWS FETCH NEXT " + batchSize.ToString() + " ROWS ONLY ");
@@ -119,7 +120,8 @@ namespace DataLayer
                             EditDate = Convert.ToString(item.EditDate),
                             Edituser = item.Edituser,
                             PostalCode = item.PostalCode,
-                            TLGXHotelId = item.TLGXHotelId
+                            TLGXCommonHotelId = item.TLGXCommonHotelId,
+                            TLGXAccoId = item.TLGXAccoId
                         });
                     }
                     _obj.Mode = "offline";
@@ -197,18 +199,23 @@ namespace DataLayer
                     StringBuilder sbOrderby = new StringBuilder();
                     sbSelect.Append(@"SELECT  
                                         Accommodation_RoomFacility_Id,
-                                        Accommodation_Id,
-                                        Accommodation_RoomInfo_Id,
+                                        arF.Accommodation_Id,
+                                        arF.Accommodation_RoomInfo_Id,
                                         AmenityType,
                                         AmenityName,
-                                        Description,
-                                        Create_Date,
-                                        Create_User,
-                                        Edit_Date,
-                                        Edit_user
-                                        FROM Accommodation_RoomFacility with(nolock)  ");
+                                        arF.Description,
+                                        arF.Create_Date,
+                                        arF.Create_User,
+                                        arF.Edit_Date,
+                                        arF.Edit_user,
+										ari.TLGXAccoRoomId,
+										ac.CompanyHotelID As TLGXCommonHotelId,
+										ac.TLGXAccoId
+                                        FROM Accommodation_RoomFacility arF with(nolock) 
+										JOIN Accommodation_RoomInfo ari with(nolock) on arf.Accommodation_RoomInfo_Id = ari.Accommodation_RoomInfo_Id
+										join Accommodation ac with(nolock) on ari.Accommodation_Id = ac.Accommodation_Id  ");
                     int skip = batchNo * batchSize;
-                    sbOrderby.Append("  ORDER BY Accommodation_Id OFFSET " + (skip).ToString() + " ROWS FETCH NEXT " + batchSize.ToString() + " ROWS ONLY ");
+                    sbOrderby.Append("  ORDER BY arF.Accommodation_RoomFacility_Id OFFSET " + (skip).ToString() + " ROWS FETCH NEXT " + batchSize.ToString() + " ROWS ONLY ");
 
                     StringBuilder sbfinal = new StringBuilder();
                     sbfinal.Append(sbSelect);
@@ -232,7 +239,10 @@ namespace DataLayer
                             CreateDate = Convert.ToString(item.Create_Date),
                             CreateUser = item.Create_User,
                             EditDate = Convert.ToString(item.Edit_Date),
-                            Edituser = item.Edit_user
+                            Edituser = item.Edit_user,
+                            TLGXCommonHotelId = item.TLGXCommonHotelId,
+                            TLGXAccoRoomId = item.TLGXAccoRoomId,
+                            TLGXAccoId = item.TLGXAccoId  
                         });
                     }
                     _obj.Mode = "offline";
@@ -253,7 +263,7 @@ namespace DataLayer
         #endregion
 
 
-        #region ***  MasterAccommodationRoomInformation Done ***
+        #region ***  MasterAccommodationRoomInformation  ***
         public string ML_DataTransferMasterAccommodationRoomInformation(Guid LogId)
         {
             DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo _obj = new DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo();
@@ -278,7 +288,7 @@ namespace DataLayer
                         {
                             AccommodationRoomInfoId = Convert.ToString(item.Accommodation_RoomInfo_Id),
                             AccommodationId = Convert.ToString(item.Accommodation_Id),
-                            TLGXHotelId = Convert.ToString(item.Legacy_Htl_Id),
+                            TLGXCommonHotelId = item.TLGXCommonHotelId,
                             RoomId = item.RoomId,
                             RoomView = item.RoomView,
                             NoOfRooms = item.NoOfRooms,
@@ -301,6 +311,8 @@ namespace DataLayer
                             EditDate = Convert.ToString(item.Edit_Date),
                             EditUser = item.Edit_User,
                             RoomInfo_TX = item.RoomInfo_TX,
+                            TLGXAccoRoomId = item.TLGXAccoRoomId,
+                            TLGXAccoId = item.TLGXAccoId,
                             ExtractedAttributes = _objAccoRoomAttributes.Where(w => w.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).Select(s => new ExtractedAttributes { Key = s.SystemAttributeKeyword, Value = s.Accommodation_RoomInfo_Attribute }).ToList()
                         });
 
@@ -336,9 +348,9 @@ namespace DataLayer
 
                     StringBuilder sbSelect = new StringBuilder();
                     sbSelect.Append(@"SELECT 
-                                       Accommodation_RoomInfo_Id,
-                                        Accommodation_Id,
-                                        Legacy_Htl_Id,
+                                       ARI.Accommodation_RoomInfo_Id,
+                                       ARI.Accommodation_Id,
+                                       Ac.CompanyHotelID AS TLGXCommonHotelId,
                                         RoomId,
                                         RoomView,
                                         NoOfRooms AS NoOfRooms,
@@ -356,12 +368,15 @@ namespace DataLayer
                                         CompanyRoomCategory,
                                         RoomCategory,
                                         Category,
-                                        Create_User,
-                                        Create_Date,
-                                        Edit_User,
-                                        Edit_Date,
-                                        TX_RoomName as RoomInfo_TX
-                                        FROM Accommodation_RoomInfo with(nolock) WHERE Accommodation_Id IS NOT NULL; ");
+                                        ARI.Create_User,
+                                        ARI.Create_Date,
+                                        ARI.Edit_User,
+                                        ARI.Edit_Date,
+                                        TX_RoomName as RoomInfo_TX,
+                                        TLGXAccoRoomId,
+                                        AC.TLGXAccoId
+                                        FROM Accommodation_RoomInfo ARI with(nolock) 
+										join Accommodation AC with(nolock) on ARI.Accommodation_Id = AC.Accommodation_Id ");
 
                     try { _objAcoo = context.Database.SqlQuery<DataContracts.DC_ML_MasterAccoRoomInfo_Data>(sbSelect.ToString()).ToList(); } catch (Exception ex) { }
                 }
@@ -388,7 +403,7 @@ namespace DataLayer
                     StringBuilder sbSelect = new StringBuilder();
                     StringBuilder sbOrderby = new StringBuilder();
                     //Accommodation_RoomInfo_Attribute_Id,
-                    sbSelect.Append(@"SELECT  
+                    sbSelect.Append(@"SELECT   
                                         Accommodation_RoomInfo_Id,
                                         Accommodation_RoomInfo_Attribute,
                                         SystemAttributeKeyword 
@@ -525,7 +540,7 @@ namespace DataLayer
                                         SRTMV.Accommodation_RoomInfo_Id AS  AccommodationRoomInfoId, 
                                         SRTM.RoomDescription AS  SupplierRoomRoomDescription, 
                                         SRTM.RoomSize AS  SupplierRoomRoomSize,
-                                        ARI.Legacy_Htl_Id AS TLGXCommonHotelId,
+                                        AC.CompanyHotelID AS TLGXCommonHotelId,
                                         ARI.RoomId AS AccoRoomId,
                                         ARI.RoomView AS AccoRoomView,
                                         ARI.NoOfRooms AS AccoNoOfRooms,
@@ -546,11 +561,15 @@ namespace DataLayer
                                         ARI.Create_Date AS AccoCreateUser,
                                         ARI.Edit_User as AccoEditUser,
                                         ARI.Edit_Date as AccoEditDate,
-                                        SRTM.MatchingScore
+                                        SRTM.MatchingScore,
+										ARI.TLGXAccoRoomId,
+                                        AC.TLGXAccoId
                                         FROM Accommodation_SupplierRoomTypeMapping_Values SRTMV WITH(NOLOCK)
                                         JOIN Accommodation_SupplierRoomTypeMapping SRTM WITH (NOLOCK) ON SRTMV.Accommodation_SupplierRoomTypeMapping_Id = SRTM.Accommodation_SupplierRoomTypeMapping_Id
                                         JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) ON SRTMV.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id 
-                                        where SRTMV.UserMappingStatus IN ('MAPPED','UNMAPPED') AND SRTMV.Accommodation_RoomInfo_Id IS NOT NULL ");
+										JOIN Accommodation AC with(nolock) on ARI.Accommodation_Id = AC.Accommodation_Id 
+                                        where SRTMV.UserMappingStatus IN ('MAPPED','UNMAPPED') AND ISNULL(SRTM.IsNotTraining, 0 ) = 0 ; ");
+                    
 
                     StringBuilder sbfinal = new StringBuilder();
                     sbfinal.Append(sbSelect);
@@ -564,7 +583,7 @@ namespace DataLayer
                     try
                     {
                         StringBuilder sbSelectSRTA = new StringBuilder();
-                        sbSelectSRTA.Append(@"SELECT  
+                        sbSelectSRTA.Append(@"SELECT   
                                                 RoomTypeMapAttribute_Id,RoomTypeMap_Id,
                                                 SupplierRoomTypeAttribute,SystemAttributeKeyword
                                                 FROM Accommodation_SupplierRoomTypeAttributes SRTMA with(nolock) 
@@ -639,7 +658,9 @@ namespace DataLayer
                             AccoEditDate = Convert.ToString(item.AccoEditDate),
                             AccoEditUser = item.AccoEditUser,
                             SimilarityIndicator = (item.SupplierRoomMappingStatus == "MAPPED" ? true : false),//  Convert.ToBoolean(item.SimilarityIndicator),
-                            SimilarityScore = (item.SupplierRoomMappingStatus == "MAPPED" ? 1 : 0)
+                            SimilarityScore = (item.SupplierRoomMappingStatus == "MAPPED" ? 1 : 0),
+                            TLGXAccoRoomId = item.TLGXAccoRoomId,
+                            TLGXAccoId = item.TLGXAccoId
                         });
                     }
                     _obj.Mode = "offline";
@@ -721,7 +742,7 @@ namespace DataLayer
                                         APM.SupplierProductReference,
                                         APM.SupplierName,
                                         APM.Supplier_Id AS SupplierId,
-                                        Acc.CompanyHotelID AS TLGXHotelId,
+                                        Acc.CompanyHotelID AS TLGXCommonHotelId,
                                         APM.ProductName AS AccommodationName,
                                         APM.CountryName AS Country,
                                         APM.CityName AS City,
@@ -730,7 +751,9 @@ namespace DataLayer
                                         APM.Create_Date AS CreateDate,
                                         APM.Create_User AS CreateUser,
                                         APM.Edit_Date AS EditDate,
-                                        APM.Edit_User AS Edituser from Accommodation_ProductMapping APM WITH(NOLOCK)
+                                        APM.Edit_User AS Edituser,
+                                        Acc.TLGXAccoId
+                                        from Accommodation_ProductMapping APM WITH(NOLOCK)
                                         LEFT JOIN Accommodation Acc WITH (NOLOCK) ON APM.Accommodation_Id = Acc.Accommodation_Id ");
                     int skip = batchNo * batchSize;
                     sbOrderby.Append("  ORDER BY APM.Accommodation_ProductMapping_Id OFFSET " + (skip).ToString() + " ROWS FETCH NEXT " + batchSize.ToString() + " ROWS ONLY ");
@@ -761,7 +784,8 @@ namespace DataLayer
                             SupplierId = Convert.ToString(item.SupplierId),
                             SupplierName = item.SupplierName,
                             SupplierProductReference = item.SupplierProductReference,
-                            TLGXHotelId = item.TLGXHotelId
+                            TLGXCommonHotelId = item.TLGXCommonHotelId,
+                            TLGXAccoId = item.TLGXAccoId
                         });
                     }
                     _obj.Mode = "offline";
@@ -836,16 +860,18 @@ namespace DataLayer
                     StringBuilder sbSelect = new StringBuilder();
                     StringBuilder sbOrderby = new StringBuilder();
                     sbSelect.Append(@"SELECT  
-                                       Accommodation_SupplierRoomTypeMapping_Id,Accommodation_Id,Supplier_Id
+                                        Accommodation_SupplierRoomTypeMapping_Id,Asrtm.Accommodation_Id,Supplier_Id
                                       ,SupplierName,SupplierRoomId,SupplierRoomTypeCode
                                       ,SupplierRoomName,TX_RoomName,SupplierRoomCategory,SupplierRoomCategoryId
-                                      ,Create_Date,Create_User,Edit_Date,Edit_User,MaxAdults
+                                      ,Asrtm.Create_Date,Asrtm.Create_User,Asrtm.Edit_Date,Asrtm.Edit_User,MaxAdults
                                       ,MaxChild,MaxInfants,MaxGuestOccupancy,Quantity,RatePlan
                                       ,RatePlanCode,SupplierProductName,SupplierProductId,Tx_StrippedName,Tx_ReorderedName
                                       ,MappingStatus,MapId,Accommodation_RoomInfo_Id,RoomSize,BathRoomType
                                       ,RoomViewCode,FloorName,FloorNumber,Amenities,RoomLocationCode
                                       ,ChildAge,ExtraBed,Bedrooms,Smoking,BedTypeCode,MinGuestOccupancy,PromotionalVendorCode,BeddingConfig
-                                      FROM Accommodation_SupplierRoomTypeMapping with(nolock)  ");
+									  ,AC.TLGXAccoId,Ac.CompanyHotelID As TLGXCommonHotelId
+                                      FROM Accommodation_SupplierRoomTypeMapping Asrtm with(nolock) 
+									  left join Accommodation Ac with(nolock) on Asrtm.Accommodation_Id = Ac.Accommodation_Id  ");
                     int skip = batchNo * batchSize;
                     sbOrderby.Append("  ORDER BY Accommodation_SupplierRoomTypeMapping_Id OFFSET " + (skip).ToString() + " ROWS FETCH NEXT " + batchSize.ToString() + " ROWS ONLY ");
 
@@ -906,6 +932,8 @@ namespace DataLayer
                             MinGuestOccupancy = item.MinGuestOccupancy,
                             PromotionalVendorCode = item.PromotionalVendorCode,
                             BeddingConfig = item.BeddingConfig,
+                            TLGXCommonHotelId = item.TLGXCommonHotelId,
+                            TLGXAccoId = item.TLGXAccoId
                         });
                     }
                     _obj.Mode = "offline";
