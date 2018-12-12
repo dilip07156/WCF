@@ -117,6 +117,14 @@ namespace BusinessLayer
             {
                 return obj.AddUpdateActivityMedia(RQ);
             }
+        }        
+
+         public DC_Message AddUpdateActivityMediaReview(DC_Activity_MediaReview RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.AddUpdateActivityMediaReview(RQ);
+            }
         }
         #endregion
 
@@ -508,6 +516,15 @@ namespace BusinessLayer
             using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
             {
                 return obj.GetActivityMediaForAttributes();
+            }
+        }
+        
+
+         public List<DC_Activity_MediaAttributesForImageReview> GetActivityMediaAttributesForImageReview(DC_Activity_Media_Search_RQ RQ)
+        {
+            using (DataLayer.DL_Activity obj = new DataLayer.DL_Activity())
+            {
+                return obj.GetActivityMediaAttributesForImageReview(RQ);
             }
         }
         #endregion

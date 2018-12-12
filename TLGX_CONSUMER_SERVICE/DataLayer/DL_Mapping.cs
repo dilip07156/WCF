@@ -6113,13 +6113,27 @@ namespace DataLayer
                                 {
                                     Found.Edit_User = CallingUser;
                                 }
-                                Found.Edit_SystemUser = "ML_BROKER_API";
-                                Found.SystemEditDate = DateTime.Now;
                                 Found.SystemMappingStatus = currentmap.SystemMappingStatus;
                                 Found.MatchingScore = Convert.ToDouble(currentmap.MatchingScore);
+
+                                //Need to be Apply condition
+                                if(Found.UserMappingStatus != null && Found.UserMappingStatus.ToUpper() == "MAPPED")
+                                {
+                                    if (!string.IsNullOrWhiteSpace(CallingUser))
+                                    {
+                                        Found.Edit_SystemUser = CallingUser;
+                                    }
+                                }
+                                else
+                                {
+                                    Found.Edit_SystemUser = string.IsNullOrWhiteSpace(CallingUser) == false ? CallingUser : "ML_BROKER_API"; 
+                                    Found.SystemEditDate = DateTime.Now;
+                                }
                             }
                             else
                             {
+                                string strEdit_SystemUser = string.IsNullOrWhiteSpace(CallingUser) == false ? CallingUser : "ML_BROKER_API";
+
                                 context.Accommodation_SupplierRoomTypeMapping_Values.Add(new Accommodation_SupplierRoomTypeMapping_Values
                                 {
                                     Accommodation_SupplierRoomTypeMapping_Value_Id = Guid.NewGuid(),
@@ -6129,27 +6143,27 @@ namespace DataLayer
                                     Create_Date = DateTime.Now,
                                     Create_User = "ML_BROKER_API",
                                     Edit_User = CallingUser,
-                                    Edit_SystemUser = "ML_BROKER_API",
+                                    Edit_SystemUser = strEdit_SystemUser,
                                     SystemEditDate = DateTime.Now,
                                     SystemMappingStatus = currentmap.SystemMappingStatus
                                 });
                             }
                         }
-
-                        foreach (var existingmap in ExistingMappedRecords)
-                        {
-                            if (existingmap.SystemEditDate == null || existingmap.SystemEditDate < existingmap.UserEditDate)
-                            {
-                                if (!string.IsNullOrWhiteSpace(CallingUser))
-                                {
-                                    existingmap.Edit_User = CallingUser;
-                                }
-                                existingmap.Edit_SystemUser = "ML_BROKER_API";
-                                existingmap.SystemEditDate = DateTime.Now;
-                                existingmap.SystemMappingStatus = "UNMAPPED";
-                                existingmap.MatchingScore = null;
-                            }
-                        }
+                        //Commented as instructed by Rubesh
+                        //foreach (var existingmap in ExistingMappedRecords)
+                        //{
+                        //    if (existingmap.SystemEditDate == null || existingmap.SystemEditDate < existingmap.UserEditDate)
+                        //    {
+                        //        if (!string.IsNullOrWhiteSpace(CallingUser))
+                        //        {
+                        //            existingmap.Edit_User = CallingUser;
+                        //        }
+                        //        existingmap.Edit_SystemUser = "ML_BROKER_API";
+                        //        existingmap.SystemEditDate = DateTime.Now;
+                        //        existingmap.SystemMappingStatus = "UNMAPPED";
+                        //        existingmap.MatchingScore = null;
+                        //    }
+                        //}
 
                         try
                         {

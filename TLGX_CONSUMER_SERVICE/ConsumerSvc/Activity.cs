@@ -140,6 +140,14 @@ namespace ConsumerSvc
                 return obj.AddUpdateActivityMedia(RQ);
             }
         }
+
+        public DC_Message AddUpdateActivityMediaReview(DC_Activity_MediaReview RQ)
+        {
+            using (BusinessLayer.BL_Activity obj = new BL_Activity())
+            {
+                return obj.AddUpdateActivityMediaReview(RQ);
+            }
+        }
         #endregion
 
         #region Activity Inclusions
@@ -549,6 +557,15 @@ namespace ConsumerSvc
             using (BL_Activity objBL = new BL_Activity())
             {
                 return objBL.GetActivityMediaForAttributes();
+            }
+        }
+        
+
+         public List<DC_Activity_MediaAttributesForImageReview> GetActivityMediaAttributesForImageReview(DC_Activity_Media_Search_RQ RQ)
+        {
+            using (BL_Activity objBL = new BL_Activity())
+            {
+                return objBL.GetActivityMediaAttributesForImageReview(RQ);
             }
         }
         #endregion

@@ -152,10 +152,10 @@
     <Compile Include="BL_MLDataTransfer.cs" />
     <Compile Include="BL_Pentaho.cs" />
     <Compile Include="BL_RefreshDistributionData.cs" />
-    <Compile Include="BL_Schedule.cs" />
     <Compile Include="BL_Masters.cs" />
     <Compile Include="BL_Master_City.cs" />
     <Compile Include="BL_Master_Country.cs" />
+    <Compile Include="BL_Schedule.cs" />
     <Compile Include="BL_UploadStaticData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
