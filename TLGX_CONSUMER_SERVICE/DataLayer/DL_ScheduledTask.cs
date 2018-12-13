@@ -290,9 +290,9 @@ namespace DataLayer
                     //                      from Supplier_Scheduled_Task_Log where Status_Message <> 'Completed' and Create_Date<GETDATE()) T Where RowNo = 1
                     //                      group by Log_Type");
 
-                    sbFinalselectQuery.Append(@"Select count(1) as Notification_Count, Log_Type from (");
+                    sbFinalselectQuery.Append(@"Select count(1) as Notification_Count,case when ISXMLSupplier=0 then 'File' else 'API' end as NotificationType,Status_Message from (");
 
-                    sbsselectQuery.Append(@"select row_number() over (partition by task_log.task_id order by task_log.create_date desc) as RowNo,Log_Type,Status_Message
+                    sbsselectQuery.Append(@"select row_number() over (partition by task_log.task_id order by task_log.create_date desc) as RowNo,Log_Type,Status_Message,sup.ISXMLSupplier
                                             from Supplier_Schedule sup inner join Supplier_Scheduled_Task sup_task on sup.SupplierScheduleID=sup_task.Schedule_Id
                                             inner join Supplier_Scheduled_Task_Log task_log on task_log.Task_Id=sup_task.Task_Id  and task_log.Create_Date<GETDATE()");
 
@@ -304,8 +304,8 @@ namespace DataLayer
                         sbsqlwhere.AppendLine(" and sup.user_role_id IN ('" + String.Join(",", listRoles) + "')");
                     }
 
-                    sbsqlwhere.AppendLine(") T where RowNo=1 and Status_Message <> 'Completed'");
-                    sbsqlFinalGroupby.Append(@"group by Log_Type");
+                    sbsqlwhere.AppendLine(") T where RowNo=1 ");
+                    sbsqlFinalGroupby.Append(@"group by ISXMLSupplier,Status_Message");
 
                     StringBuilder sbfinalQuery = new StringBuilder();
                     sbfinalQuery.Append(sbFinalselectQuery + " ");

@@ -128,6 +128,8 @@ namespace DataContracts.Schedulers
         [DataMember]
         public int Notification_Count { get; set; }
         [DataMember]
-        public string LogType { get; set; }
+        public string NotificationType { get; set; }
+        [DataMember]
+        public string Status_Message { get; set; }
     }
 }
