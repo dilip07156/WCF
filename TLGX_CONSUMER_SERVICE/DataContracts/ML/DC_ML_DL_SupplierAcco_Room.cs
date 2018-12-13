@@ -146,9 +146,8 @@ namespace DataContracts.ML
         public string AccoEditUser { get; set; }
         public bool? SimilarityIndicator { get; set; }
         public int SimilarityScore { get; set; }
-
-
-
+        public string TLGXAccoId { get; set; }
+        public string TLGXAccoRoomId { get; set; }
     }
     public class DC_ML_DL_SupplierAcco_Room_Attributes_Data_RealTime
     {

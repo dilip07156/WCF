@@ -1151,14 +1151,14 @@ namespace DataLayer
 
                     if (result != null)
                     {
-
                         List<Accommodation_SupplierRoomTypeMapping_Values> SupplierRoomTypeMappingValue = new List<Accommodation_SupplierRoomTypeMapping_Values>();
-                        SupplierRoomTypeMappingValue = context.Accommodation_SupplierRoomTypeMapping_Values.Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id && rv.Accommodation_RoomInfo_Id != null).ToList();
+                        SupplierRoomTypeMappingValue = context.Accommodation_SupplierRoomTypeMapping_Values.AsNoTracking()
+                                                    .Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id 
+                                                    && rv.Accommodation_RoomInfo_Id != null && (rv.UserMappingStatus == "MAPPED" || rv.UserMappingStatus == "UNMAPPED")).ToList();
 
-                        var maxValue = SupplierRoomTypeMappingValue.Max(x => x.MatchingScore);
-
-
+                        //var maxValue = SupplierRoomTypeMappingValue.Max(x => x.MatchingScore);
                         var accodetails = context.Accommodation.Find(result.Accommodation_Id);
+                        var accoRoomDetails = context.Accommodation_RoomInfo.AsNoTracking().Where(w => w.Accommodation_Id == result.Accommodation_Id);
 
                         if (SupplierRoomTypeMappingValue != null)
                         {
@@ -1167,14 +1167,16 @@ namespace DataLayer
 
                             foreach (var item in SupplierRoomTypeMappingValue)
                             {
-                                if ((item.SystemEditDate ?? DateTime.MinValue) > (item.UserEditDate ?? DateTime.MinValue))
-                                {
-                                    continue;
-                                }
-                                if (item.UserMappingStatus.ToUpper() == MappingStatus.MAPPED.ToString() && item.MatchingScore != maxValue)
-                                {
-                                    continue;
-                                }
+                                //if ((item.SystemEditDate ?? DateTime.MinValue) > (item.UserEditDate ?? DateTime.MinValue))
+                                //{
+                                //    continue;
+                                //}
+
+                                //if (item.UserMappingStatus.ToUpper() == MappingStatus.MAPPED.ToString() && item.MatchingScore != maxValue)
+                                //{
+                                //    continue;
+                                //}
+
                                 //Creating Data to send AIML
                                 var roominfo = context.Accommodation_RoomInfo.Find(item.Accommodation_RoomInfo_Id);
                                 //Creating Data to send AIML
@@ -1217,7 +1219,7 @@ namespace DataLayer
                                     SupplierRoomRoomDescription = result.RoomDescription,
                                     SupplierRoomRoomSize = result.RoomSize,
                                     TLGXCommonHotelId = accodetails.CompanyHotelID,
-                                    AccoRoomId = Convert.ToString(item.Accommodation_RoomInfo_Id),
+                                    AccoRoomId = accoRoomDetails.Where(x => x.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).FirstOrDefault().RoomId,
                                     AccoRoomView = roominfo.RoomView,
                                     AccoNoOfRooms = roominfo.NoOfRooms,
                                     AccoRoomName = roominfo.RoomName,
@@ -1236,7 +1238,9 @@ namespace DataLayer
                                     AccoCreateDate = Convert.ToString(accodetails.Create_Date),
                                     AccoCreateUser = accodetails.Create_User,
                                     AccoEditDate = Convert.ToString(accodetails.Edit_Date),
-                                    AccoEditUser = accodetails.Edit_User
+                                    AccoEditUser = accodetails.Edit_User,
+                                    TLGXAccoId = accodetails.TLGXAccoId,
+                                    TLGXAccoRoomId = accoRoomDetails.Where(x => x.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).FirstOrDefault().TLGXAccoRoomId
                                 };
 
                                 //Setting SimilarityIndicator and SimilarityScore
