@@ -242,7 +242,7 @@ namespace DataLayer
                             Edituser = item.Edit_user,
                             TLGXCommonHotelId = item.TLGXCommonHotelId,
                             TLGXAccoRoomId = item.TLGXAccoRoomId,
-                            TLGXAccoId = item.TLGXAccoId  
+                            TLGXAccoId = item.TLGXAccoId
                         });
                     }
                     _obj.Mode = "offline";
@@ -262,29 +262,49 @@ namespace DataLayer
         }
         #endregion
 
-
         #region ***  MasterAccommodationRoomInformation  ***
         public string ML_DataTransferMasterAccommodationRoomInformation(Guid LogId)
         {
             DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo _obj = new DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo();
             DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo _objToSend = new DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo();
+            _objToSend.Mode = "offline";
+            _objToSend.Transaction = "1";
+
             List<DataContracts.DC_ML_MasterAccoRoomInfo_Data> _objAcoo = new List<DataContracts.DC_ML_MasterAccoRoomInfo_Data>();
             List<DC_ML_DL_AccoRoom_ExtendedAttributes_Data> _objAccoRoomAttributes = new List<DC_ML_DL_AccoRoom_ExtendedAttributes_Data>();
 
             int TotalCount = 0;
             int MLDataInsertedCount = 0;
+            int BatchSize = 500;
+            int NoOfBatch = 0;
+
             try
             {
                 UpdateDistLogInfo(LogId, PushStatus.RUNNNING);
-                _objAcoo = GetMasterAccoRoomInformationDataForMLTrans();
-                _objAccoRoomAttributes = GetMasterAccoRoomExtendedAttrsForMLTrans();
-                TotalCount = _objAcoo.Count();
 
-                foreach (var item in _objAcoo)
+                using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    _objToSend.MasterAccommodationRoomInformation = new List<DC_ML_DL_MasterAccoRoomInfo_Data>();
-                    _objToSend.MasterAccommodationRoomInformation.Add(
-                        new DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo_Data
+                    TotalCount = context.Accommodation_RoomInfo.Where(w => w.Accommodation_Id != null).Count();
+                }
+
+                NoOfBatch = TotalCount / BatchSize;
+                int mod = TotalCount % BatchSize;
+                if (mod > 0)
+                {
+                    NoOfBatch = NoOfBatch + 1;
+                }
+
+                _objAccoRoomAttributes = GetMasterAccoRoomExtendedAttrsForMLTrans();
+
+                _objToSend.MasterAccommodationRoomInformation = new List<DC_ML_DL_MasterAccoRoomInfo_Data>();
+
+                for (int BatchNo = 0; BatchNo < NoOfBatch; BatchNo++)
+                {
+                    _objAcoo = GetMasterAccoRoomInformationDataForMLTrans(BatchNo, BatchSize);
+
+                    foreach (var item in _objAcoo)
+                    {
+                        _objToSend.MasterAccommodationRoomInformation.Add(new DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo_Data
                         {
                             AccommodationRoomInfoId = Convert.ToString(item.Accommodation_RoomInfo_Id),
                             AccommodationId = Convert.ToString(item.Accommodation_Id),
@@ -316,18 +336,19 @@ namespace DataLayer
                             ExtractedAttributes = _objAccoRoomAttributes.Where(w => w.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).Select(s => new ExtractedAttributes { Key = s.SystemAttributeKeyword, Value = s.Accommodation_RoomInfo_Attribute }).ToList()
                         });
 
-                    _objToSend.Mode = "offline";
-                    _objToSend.BatchId = Guid.NewGuid().ToString();
-                    _objToSend.Transaction = "1";
-                    object result = null;
-                    DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_MasterAccommodationRoomInformation"], _objToSend, typeof(DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo), typeof(DC_ML_Message), out result);
+                        _objAccoRoomAttributes.RemoveAll(x => x.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id);
+                    }
 
                     MLDataInsertedCount = MLDataInsertedCount + _objToSend.MasterAccommodationRoomInformation.Count();
 
-                    if (MLDataInsertedCount % 500 == 0 || MLDataInsertedCount == TotalCount)
-                        UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
-                }
+                    _objToSend.BatchId = Guid.NewGuid().ToString();
 
+                    DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_MasterAccommodationRoomInformation"], _objToSend, typeof(DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo), typeof(DC_ML_Message), out object result);
+
+                    _objToSend.MasterAccommodationRoomInformation.Clear();
+
+                    UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
+                }
             }
             catch (Exception ex)
             {
@@ -336,7 +357,8 @@ namespace DataLayer
             }
             return string.Empty;
         }
-        private List<DataContracts.DC_ML_MasterAccoRoomInfo_Data> GetMasterAccoRoomInformationDataForMLTrans()
+
+        private List<DataContracts.DC_ML_MasterAccoRoomInfo_Data> GetMasterAccoRoomInformationDataForMLTrans(int BatchNo, int BatchSize)
         {
             List<DataContracts.DC_ML_MasterAccoRoomInfo_Data> _objAcoo = new List<DataContracts.DC_ML_MasterAccoRoomInfo_Data>();
             try
@@ -347,7 +369,7 @@ namespace DataLayer
                     context.Configuration.AutoDetectChangesEnabled = false;
 
                     StringBuilder sbSelect = new StringBuilder();
-                    sbSelect.Append(@"SELECT 
+                    sbSelect.Append(@" SELECT 
                                        ARI.Accommodation_RoomInfo_Id,
                                        ARI.Accommodation_Id,
                                        Ac.CompanyHotelID AS TLGXCommonHotelId,
@@ -377,7 +399,8 @@ namespace DataLayer
                                         AC.TLGXAccoId
                                         FROM Accommodation_RoomInfo ARI with(nolock) 
 										join Accommodation AC with(nolock) on ARI.Accommodation_Id = AC.Accommodation_Id ");
-
+                    int skip = BatchNo * BatchSize;
+                    sbSelect.Append("  ORDER BY ARI.Accommodation_RoomInfo_Id OFFSET " + (skip).ToString() + " ROWS FETCH NEXT " + BatchSize.ToString() + " ROWS ONLY ");
                     try { _objAcoo = context.Database.SqlQuery<DataContracts.DC_ML_MasterAccoRoomInfo_Data>(sbSelect.ToString()).ToList(); } catch (Exception ex) { }
                 }
 
@@ -388,7 +411,6 @@ namespace DataLayer
                 throw;
             }
         }
-
 
         private List<DC_ML_DL_AccoRoom_ExtendedAttributes_Data> GetMasterAccoRoomExtendedAttrsForMLTrans()
         {
@@ -424,7 +446,6 @@ namespace DataLayer
         }
 
         #endregion
-
 
         #region *** RoomTypeMatching ***
         public string ML_DataTransferRoomTypeMatching(Guid LogId)
@@ -569,7 +590,7 @@ namespace DataLayer
                                         JOIN Accommodation_RoomInfo ARI WITH (NOLOCK) ON SRTMV.Accommodation_RoomInfo_Id = ARI.Accommodation_RoomInfo_Id 
 										JOIN Accommodation AC with(nolock) on ARI.Accommodation_Id = AC.Accommodation_Id 
                                         where SRTMV.UserMappingStatus IN ('MAPPED','UNMAPPED') AND ISNULL(SRTM.IsNotTraining, 0 ) = 0 ; ");
-                    
+
 
                     StringBuilder sbfinal = new StringBuilder();
                     sbfinal.Append(sbSelect);
@@ -1150,14 +1171,14 @@ namespace DataLayer
 
                     if (result != null)
                     {
-
                         List<Accommodation_SupplierRoomTypeMapping_Values> SupplierRoomTypeMappingValue = new List<Accommodation_SupplierRoomTypeMapping_Values>();
-                        SupplierRoomTypeMappingValue = context.Accommodation_SupplierRoomTypeMapping_Values.Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id && rv.Accommodation_RoomInfo_Id != null).ToList();
+                        SupplierRoomTypeMappingValue = context.Accommodation_SupplierRoomTypeMapping_Values.AsNoTracking()
+                                                    .Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id
+                                                    && rv.Accommodation_RoomInfo_Id != null && (rv.UserMappingStatus == "MAPPED" || rv.UserMappingStatus == "UNMAPPED")).ToList();
 
-                        var maxValue = SupplierRoomTypeMappingValue.Max(x => x.MatchingScore);
-
-
+                        //var maxValue = SupplierRoomTypeMappingValue.Max(x => x.MatchingScore);
                         var accodetails = context.Accommodation.Find(result.Accommodation_Id);
+                        var accoRoomDetails = context.Accommodation_RoomInfo.AsNoTracking().Where(w => w.Accommodation_Id == result.Accommodation_Id);
 
                         if (SupplierRoomTypeMappingValue != null)
                         {
@@ -1166,14 +1187,16 @@ namespace DataLayer
 
                             foreach (var item in SupplierRoomTypeMappingValue)
                             {
-                                if ((item.SystemEditDate ?? DateTime.MinValue) > (item.UserEditDate ?? DateTime.MinValue))
-                                {
-                                    continue;
-                                }
-                                if (item.UserMappingStatus.ToUpper() == MappingStatus.MAPPED.ToString() && item.MatchingScore != maxValue)
-                                {
-                                    continue;
-                                }
+                                //if ((item.SystemEditDate ?? DateTime.MinValue) > (item.UserEditDate ?? DateTime.MinValue))
+                                //{
+                                //    continue;
+                                //}
+
+                                //if (item.UserMappingStatus.ToUpper() == MappingStatus.MAPPED.ToString() && item.MatchingScore != maxValue)
+                                //{
+                                //    continue;
+                                //}
+
                                 //Creating Data to send AIML
                                 var roominfo = context.Accommodation_RoomInfo.Find(item.Accommodation_RoomInfo_Id);
                                 //Creating Data to send AIML
@@ -1216,7 +1239,7 @@ namespace DataLayer
                                     SupplierRoomRoomDescription = result.RoomDescription,
                                     SupplierRoomRoomSize = result.RoomSize,
                                     TLGXCommonHotelId = accodetails.CompanyHotelID,
-                                    AccoRoomId = Convert.ToString(item.Accommodation_RoomInfo_Id),
+                                    AccoRoomId = accoRoomDetails.Where(x => x.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).FirstOrDefault().RoomId,
                                     AccoRoomView = roominfo.RoomView,
                                     AccoNoOfRooms = roominfo.NoOfRooms,
                                     AccoRoomName = roominfo.RoomName,
@@ -1235,7 +1258,9 @@ namespace DataLayer
                                     AccoCreateDate = Convert.ToString(accodetails.Create_Date),
                                     AccoCreateUser = accodetails.Create_User,
                                     AccoEditDate = Convert.ToString(accodetails.Edit_Date),
-                                    AccoEditUser = accodetails.Edit_User
+                                    AccoEditUser = accodetails.Edit_User,
+                                    TLGXAccoId = accodetails.TLGXAccoId,
+                                    TLGXAccoRoomId = accoRoomDetails.Where(x => x.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).FirstOrDefault().TLGXAccoRoomId
                                 };
 
                                 //Setting SimilarityIndicator and SimilarityScore

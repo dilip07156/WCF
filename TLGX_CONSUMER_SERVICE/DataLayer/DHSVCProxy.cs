@@ -349,6 +349,56 @@ namespace DataLayer
             hc.GetAsync(requestUri);
         }
 
+        public void PostDataNewtonsoftAync(ProxyFor For, string URI, object Param, string method = "")
+        {
+            try
+            {
+                string AbsPath = string.Empty;
+                if (For == ProxyFor.DataHandler)
+                {
+                    AbsPath = DHSVCProxy.DHSVCURL;
+                }
+                else if (For == ProxyFor.SqlToMongo)
+                {
+                    AbsPath = DHSVCProxy.MONGOSVCURL;
+                }
+                else if (For == ProxyFor.MachingLearningDataTransfer)
+                {
+                    AbsPath = DHSVCProxy.MLSVCURL_DataApi;
+                }
+
+                string requestUri = AbsPath + URI;
+
+                var json = JsonConvert.SerializeObject(Param, Newtonsoft.Json.Formatting.None,
+                            new JsonSerializerSettings
+                            {
+                                NullValueHandling = NullValueHandling.Ignore
+                            });
+
+                StringContent jsonValue = new StringContent(json, Encoding.UTF8, "application/json");
+
+                using (HttpClient hc = new HttpClient())
+                {
+                    if (!String.IsNullOrWhiteSpace(method))
+                        hc.PostAsync(requestUri, jsonValue);
+                    else if (method == "POST")
+                        hc.PostAsync(requestUri, jsonValue);
+                    else if (method == "GET")
+                        hc.GetAsync(requestUri);
+                    else if (method == "POST")
+                        hc.DeleteAsync(requestUri);
+                    else if (method == "POST")
+                        hc.PutAsync(requestUri, jsonValue);
+                    else
+                        hc.PostAsync(requestUri, jsonValue);
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
         public void Dispose()
         {
 

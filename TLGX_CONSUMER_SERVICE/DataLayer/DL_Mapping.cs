@@ -3193,7 +3193,7 @@ namespace DataLayer
                                 context.Accommodation_SupplierRoomTypeMapping_Values.Add(dc);
                             }
                         }
-                        IsNotTrainingflag = item.IsNotTraining ?? true;
+                        IsNotTrainingflag = item.IsNotTraining ?? false;
                     }
 
                     if (context.ChangeTracker.HasChanges())
@@ -3206,15 +3206,15 @@ namespace DataLayer
 
                         if (srtm != null)
                         {
-                            if (AUTOMAPPED_CNT != 0 && srtm.MappingStatus != "AUTOMAPPED")
+                            if (MAPPED_CNT != 0 && srtm.MappingStatus != "MAPPED")
                             {
-                                srtm.MappingStatus = "AUTOMAPPED";
+                                srtm.MappingStatus = "MAPPED";
                                 srtm.Edit_User = CallingUser;
                                 srtm.Edit_Date = DateTime.Now;
                             }
-                            else if (AUTOMAPPED_CNT == 0 && MAPPED_CNT != 0 && srtm.MappingStatus != "MAPPED")
+                            else if (AUTOMAPPED_CNT != 0 && MAPPED_CNT == 0 && srtm.MappingStatus != "AUTOMAPPED")
                             {
-                                srtm.MappingStatus = "MAPPED";
+                                srtm.MappingStatus = "AUTOMAPPED";
                                 srtm.Edit_User = CallingUser;
                                 srtm.Edit_Date = DateTime.Now;
                             }
@@ -3236,7 +3236,7 @@ namespace DataLayer
                     }
 
                     //Call Training Data To push 
-                        DeleteOrSendTraingData(Guid.Parse(Convert.ToString(obj[0].Accommodation_SupplierRoomTypeMapping_Id)), IsNotTrainingflag);
+                    DeleteOrSendTraingData(Guid.Parse(Convert.ToString(obj[0].Accommodation_SupplierRoomTypeMapping_Id)), IsNotTrainingflag);
                 }
                 return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "All Valid Records are successfully updated." };
             }
@@ -5027,14 +5027,14 @@ namespace DataLayer
 
 
                         context.Accommodation_RoomInfo_Attributes.AddRange((from a in rn.AttributeList
-                                                                                   select new Accommodation_RoomInfo_Attributes
-                                                                                   {
-                                                                                       Accommodation_RoomInfo_Attribute_Id = Guid.NewGuid(),
-                                                                                       Accommodation_RoomInfo_Id = rn.AccoRoom_Id,
-                                                                                       Accommodation_RoomInfo_Attribute = a.SupplierRoomTypeAttribute,
-                                                                                       SystemAttributeKeyword = a.SystemAttributeKeyword,
-                                                                                       SystemAttributeKeyword_Id = a.SystemAttributeKeywordID
-                                                                                   }).ToList());
+                                                                            select new Accommodation_RoomInfo_Attributes
+                                                                            {
+                                                                                Accommodation_RoomInfo_Attribute_Id = Guid.NewGuid(),
+                                                                                Accommodation_RoomInfo_Id = rn.AccoRoom_Id,
+                                                                                Accommodation_RoomInfo_Attribute = a.SupplierRoomTypeAttribute,
+                                                                                SystemAttributeKeyword = a.SystemAttributeKeyword,
+                                                                                SystemAttributeKeyword_Id = a.SystemAttributeKeywordID
+                                                                            }).ToList());
 
                         var RI = context.Accommodation_RoomInfo.Find(rn.AccoRoom_Id);
                         if (RI != null)
@@ -6066,27 +6066,21 @@ namespace DataLayer
                         var ExistingMappedRecords = context.Accommodation_SupplierRoomTypeMapping_Values.Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == SupplierRoomTypeId).ToList();
                         var CurrentMappedRecords = ListOfMappedRooms.Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == SupplierRoomTypeId).ToList();
 
+                        var MAPPED_CNT = ExistingMappedRecords.Where(w => w.UserMappingStatus == "MAPPED").Count();
                         int AUTOMAPPED_CNT = CurrentMappedRecords.Where(w => w.SystemMappingStatus == "AUTOMAPPED").Count();
-                        var MAPPED_CNT = CurrentMappedRecords.Where(w => w.SystemMappingStatus == "MAPPED").Count();
                         var REVIEW_CNT = CurrentMappedRecords.Where(w => w.SystemMappingStatus == "REVIEW").Count();
 
                         if (ASRTM != null)
                         {
-                            if (itemToUpdate.MappingStatus == "ADD" && ASRTM.MappingStatus != itemToUpdate.MappingStatus)
+                            if (MAPPED_CNT != 0 && ASRTM.MappingStatus != "MAPPED")
                             {
-                                ASRTM.MappingStatus = itemToUpdate.MappingStatus;
-                                ASRTM.Edit_Date = DateTime.Now;
-                                ASRTM.Edit_User = "ML_BROKER_API";
-                            }
-                            else if (AUTOMAPPED_CNT != 0 && ASRTM.MappingStatus != "AUTOMAPPED")
-                            {
-                                ASRTM.MappingStatus = "AUTOMAPPED";
+                                ASRTM.MappingStatus = "MAPPED";
                                 ASRTM.Edit_User = CallingUser;
                                 ASRTM.Edit_Date = DateTime.Now;
                             }
-                            else if (AUTOMAPPED_CNT == 0 && MAPPED_CNT != 0 && ASRTM.MappingStatus != "MAPPED")
+                            else if (AUTOMAPPED_CNT != 0 && MAPPED_CNT == 0 && ASRTM.MappingStatus != "AUTOMAPPED")
                             {
-                                ASRTM.MappingStatus = "MAPPED";
+                                ASRTM.MappingStatus = "AUTOMAPPED";
                                 ASRTM.Edit_User = CallingUser;
                                 ASRTM.Edit_Date = DateTime.Now;
                             }
@@ -6095,6 +6089,12 @@ namespace DataLayer
                                 ASRTM.MappingStatus = "REVIEW";
                                 ASRTM.Edit_User = CallingUser;
                                 ASRTM.Edit_Date = DateTime.Now;
+                            }
+                            else if (itemToUpdate.MappingStatus == "ADD" && ASRTM.MappingStatus != itemToUpdate.MappingStatus)
+                            {
+                                ASRTM.MappingStatus = itemToUpdate.MappingStatus;
+                                ASRTM.Edit_Date = DateTime.Now;
+                                ASRTM.Edit_User = "ML_BROKER_API";
                             }
                             else if (AUTOMAPPED_CNT == 0 && MAPPED_CNT == 0 && REVIEW_CNT == 0 && ASRTM.MappingStatus != "UNMAPPED")
                             {
@@ -6117,7 +6117,7 @@ namespace DataLayer
                                 Found.MatchingScore = Convert.ToDouble(currentmap.MatchingScore);
 
                                 //Need to be Apply condition
-                                if(Found.UserMappingStatus != null && Found.UserMappingStatus.ToUpper() == "MAPPED")
+                                if (Found.UserMappingStatus != null && Found.UserMappingStatus.ToUpper() == "MAPPED")
                                 {
                                     if (!string.IsNullOrWhiteSpace(CallingUser))
                                     {
@@ -6126,7 +6126,7 @@ namespace DataLayer
                                 }
                                 else
                                 {
-                                    Found.Edit_SystemUser = string.IsNullOrWhiteSpace(CallingUser) == false ? CallingUser : "ML_BROKER_API"; 
+                                    Found.Edit_SystemUser = string.IsNullOrWhiteSpace(CallingUser) == false ? CallingUser : "ML_BROKER_API";
                                     Found.SystemEditDate = DateTime.Now;
                                 }
                             }
@@ -10483,7 +10483,7 @@ namespace DataLayer
 
                 // Query to get Country Wise Hotel Counts
                 StringBuilder sbSelect = new StringBuilder();
-              
+
                 string priorityData = String.Join(",", RQ.Priorities.Select(s => "'" + s + "'"));
                 string keysData = String.Join(",", RQ.Keys.Select(s => "'" + s + "'"));
                 string ranksData = String.Join(",", RQ.Ranks.Select(s => "'" + s + "'"));
@@ -10572,7 +10572,7 @@ namespace DataLayer
                 var regionData = String.Join(",", RQ.Region.Select(s => "'" + s + "'"));
                 string countryData = String.Join(",", RQ.Country.Select(s => "'" + s + "'"));
                 string cityData = String.Join(",", RQ.City.Select(s => "'" + s + "'"));
-                string priorityData =  String.Join(",", RQ.Priorities.Select(s => "'" + s + "'"));
+                string priorityData = String.Join(",", RQ.Priorities.Select(s => "'" + s + "'"));
                 string keysData = String.Join(",", RQ.Keys.Select(s => "'" + s + "'"));
                 string ranksData = String.Join(",", RQ.Ranks.Select(s => "'" + s + "'"));
 
@@ -10898,11 +10898,11 @@ namespace DataLayer
         {
             try
             {
-               
-                    StringBuilder sb = new StringBuilder();
-                
 
-                    sb.Append(@" delete from Accommodation_SupplierRoomTypeMapping_Values  where Accommodation_SupplierRoomTypeMapping_Id = '" + Acco_RoomTypeMap_Ids.Select(x => x.Acco_RoomTypeMap_Id).SingleOrDefault() + "' and UserMappingStatus<> 'MAPPED'");
+                StringBuilder sb = new StringBuilder();
+
+
+                sb.Append(@" delete from Accommodation_SupplierRoomTypeMapping_Values  where Accommodation_SupplierRoomTypeMapping_Id = '" + Acco_RoomTypeMap_Ids.Select(x => x.Acco_RoomTypeMap_Id).SingleOrDefault() + "' and UserMappingStatus<> 'MAPPED'");
                 //sb.Append(@"     select Priority, Supplier_Id,SupplierName,Accomodation_MannualMapped ,Accomodation_AutoMapped,Accomodation_ReviewMapped,Accomodation_Unmapped,
                 //            (Accomodation_MannualMapped + Accomodation_AutoMapped + Accomodation_ReviewMapped + Accomodation_Unmapped) as AccomodationTotal,
                 //                @TotalHotel as AccoHotelCount, Compared_SupplierName as SourceSupplierName
@@ -10917,19 +10917,21 @@ namespace DataLayer
 
                 using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    try {
+                    try
+                    {
 
                         context.Database.ExecuteSqlCommand(sb.ToString());
 
                         int count = context.Database.SqlQuery<int>(sbCheck.ToString()).FirstOrDefault();
 
-                        if(count > 0)
+                        if (count > 0)
                         {
                             context.Database.ExecuteSqlCommand(sbUpdate.ToString());
 
                         }
 
-                    } catch (Exception ex) { }
+                    }
+                    catch (Exception ex) { }
                 }
 
                 return new DataContracts.DC_Message { StatusCode = DataContracts.ReadOnlyMessage.StatusCode.Success, StatusMessage = "Keyword Replace and Attribute Extraction has been done." };
