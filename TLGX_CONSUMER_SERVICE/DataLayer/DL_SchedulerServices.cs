@@ -450,7 +450,7 @@ namespace DataLayer
                     return _msg;
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 throw new FaultException<DataContracts.DC_ErrorStatus>(new DataContracts.DC_ErrorStatus { ErrorMessage = "Error while adding Task log", ErrorStatusCode = System.Net.HttpStatusCode.InternalServerError });
             }
@@ -595,31 +595,28 @@ namespace DataLayer
                 sb.Append("  isnull(sch.ISXMLSupplier, 0) ISXMLSupplier, sch.Supplier_ID, spr.Name, sch.Entity, tsk.Task_Id from Supplier_Schedule sch with(nolock)");
                 sb.Append("  inner join Supplier spr with(nolock) on sch.Supplier_ID = spr.Supplier_Id");
                 sb.Append("  left join Supplier_Scheduled_Task tsk with(nolock) on sch.SupplierScheduleID = tsk.Schedule_Id");
-                sb.Append("  where spr.StatusCode = 'ACTIVE' and sch.Entity is not null and len(CronExpression) > 0");
-                sb.Append("  ) ,");
+                sb.Append("  where spr.StatusCode = 'ACTIVE' and sch.Entity is not null and len(CronExpression) > 0 ) ,");
                 sb.Append(" CTE1 AS(");
                 sb.Append(" select mav.AttributeValue, sa.API_Path, ss.SupplierScheduleID, sa.Supplier_APILocation_Id from Supplier_Schedule ss with(nolock)");
                 sb.Append(" inner join m_masterattributevalue mav with(nolock) on LOWER(LTRIM(RTRIM(mav.AttributeValue))) = LOWER(LTRIM(RTRIM(ss.Entity)))");
                 sb.Append(" inner join m_masterattribute ma  with(nolock) on ma.MasterAttribute_Id = mav.MasterAttribute_Id");
                 sb.Append(" left join Supplier_APILocation sa with(nolock) on sa.Supplier_Id = ss.Supplier_ID and sa.Entity_Id = mav.MasterAttributeValue_Id");
-                sb.Append(" where ma.Name = 'MappingEntity' and ma.MasterFor = 'MappingFileConfig'");
-                sb.Append(" ) ,");
+                sb.Append(" where ma.Name = 'MappingEntity' and ma.MasterFor = 'MappingFileConfig') ,");
                 sb.Append(" CTE2 AS(");
                 sb.Append(" select* from (select tsk.Status TaskStatus, replace(t.Status,'FAILED','ERROR') PentahoStatus, tsk.Schedule_Id,  SupplierApiCallLog_Id,");
                 sb.Append(" SupplierApiLocation_Id, PentahoCall_Id from(select ROW_NUMBER() over(partition by sa.Supplier_APILocation_Id order by api.Create_Date desc) rowNum, ");
-                sb.Append(" mav.AttributeValue, sa.API_Path,ss.SupplierScheduleID,api.Status,api.SupplierApiCallLog_Id,api.SupplierApiLocation_Id,api.PentahoCall_Id   ");
+                sb.Append(" mav.AttributeValue, sa.API_Path,ss.SupplierScheduleID,api.Status,api.SupplierApiCallLog_Id,sa.Supplier_APILocation_Id SupplierApiLocation_Id,api.PentahoCall_Id   ");
                 sb.Append(" from Supplier_Schedule ss with(nolock)");
                 sb.Append(" inner join m_masterattributevalue mav with(nolock) on LOWER(LTRIM(RTRIM(mav.AttributeValue))) = LOWER(LTRIM(RTRIM(ss.Entity)))");
                 sb.Append(" inner join m_masterattribute ma  with(nolock) on ma.MasterAttribute_Id = mav.MasterAttribute_Id");
-                sb.Append(" left join Supplier_APILocation sa with(nolock) on sa.Supplier_Id = ss.Supplier_ID and sa.Entity_Id = mav.MasterAttributeValue_Id");
-                sb.Append(" inner join Supplier_ApiCallLog api with(nolock) on sa.Supplier_APILocation_Id = api.SupplierApiLocation_Id");
+                sb.Append(" inner join Supplier_APILocation sa with(nolock) on sa.Supplier_Id = ss.Supplier_ID and sa.Entity_Id = mav.MasterAttributeValue_Id");
+                sb.Append(" left join Supplier_ApiCallLog api with(nolock) on sa.Supplier_APILocation_Id = api.SupplierApiLocation_Id");
                 sb.Append(" where ma.Name = 'MappingEntity' and ma.MasterFor = 'MappingFileConfig' ) t");
-                sb.Append(" left join Supplier_Scheduled_Task tsk with(nolock) on t.SupplierScheduleID = tsk.Schedule_Id where t.rowNum = 1 AND tsk.Status = 'Running'");
-                sb.Append(" ) t )");
-                sb.Append(" select NEWID() Supplier_ID, Name, Entity, CTE.SupplierScheduleID,CTE.Task_Id, ScheduleDate, CronExpression,Convert(varchar(max), CTE1.API_Path) API_Path, ISXMLSupplier, Status ,");
-                sb.Append(" CTE2.PentahoStatus, CTE2.SupplierApiCallLog_Id api_Call_Log_Id, CTE2.SupplierApiLocation_Id Supplier_APILocation_Id, CTE2.PentahoCall_Id PentahoCall_Id from CTE");
-                sb.Append("   LEFT JOIN CTE1 On CTE.SupplierScheduleID = CTE1.SupplierScheduleID");
-                sb.Append(" left join CTE2 on cte.SupplierScheduleID = CTE2.Schedule_Id  where RowNum = 1 And ISXMLSupplier = 1 AND Convert(Date, ScheduleDate) <= Convert(Date, GETDATE()) ");
+                sb.Append(" left join Supplier_Scheduled_Task tsk with(nolock) on t.SupplierScheduleID = tsk.Schedule_Id where t.rowNum = 1 ) t )");
+                sb.Append(" select NEWID() Supplier_ID, Name, Entity, CTE.SupplierScheduleID,CTE.Task_Id, ScheduleDate, CronExpression,Convert(varchar(max),  isnull(CTE1.API_Path,'')) API_Path, ISXMLSupplier, Status ,");
+                sb.Append(" CASE WHEN CTE.Status = 'Pending' THEN '' ELSE isnull(CTE2.PentahoStatus,'') END PentahoStatus, CTE2.SupplierApiCallLog_Id api_Call_Log_Id, CTE2.SupplierApiLocation_Id Supplier_APILocation_Id, CTE2.PentahoCall_Id PentahoCall_Id from CTE");
+                sb.Append(" LEFT JOIN CTE1 On CTE.SupplierScheduleID = CTE1.SupplierScheduleID");
+                sb.Append(" left join CTE2 on cte.SupplierScheduleID = CTE2.Schedule_Id  AND cte.Status = cte2.TaskStatus where RowNum = 1 AND Convert(Datetime, ScheduleDate) <= Convert(Datetime, GETDATE()) ");
                 sb.Append(" and REPLACE(isnull(PentahoStatus,''),'SENT TO CARTE','RUNNING') <> 'RUNNING' order by ScheduleDate;");
 
                 using (ConsumerEntities context = new ConsumerEntities())
