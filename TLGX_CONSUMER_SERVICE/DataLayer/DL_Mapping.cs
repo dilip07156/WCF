@@ -6066,27 +6066,21 @@ namespace DataLayer
                         var ExistingMappedRecords = context.Accommodation_SupplierRoomTypeMapping_Values.Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == SupplierRoomTypeId).ToList();
                         var CurrentMappedRecords = ListOfMappedRooms.Where(w => w.Accommodation_SupplierRoomTypeMapping_Id == SupplierRoomTypeId).ToList();
 
+                        var MAPPED_CNT = ExistingMappedRecords.Where(w => w.UserMappingStatus == "MAPPED").Count();
                         int AUTOMAPPED_CNT = CurrentMappedRecords.Where(w => w.SystemMappingStatus == "AUTOMAPPED").Count();
-                        var MAPPED_CNT = CurrentMappedRecords.Where(w => w.SystemMappingStatus == "MAPPED").Count();
                         var REVIEW_CNT = CurrentMappedRecords.Where(w => w.SystemMappingStatus == "REVIEW").Count();
 
                         if (ASRTM != null)
                         {
-                            if (itemToUpdate.MappingStatus == "ADD" && ASRTM.MappingStatus != itemToUpdate.MappingStatus)
+                            if (MAPPED_CNT != 0 && ASRTM.MappingStatus != "MAPPED")
                             {
-                                ASRTM.MappingStatus = itemToUpdate.MappingStatus;
-                                ASRTM.Edit_Date = DateTime.Now;
-                                ASRTM.Edit_User = "ML_BROKER_API";
-                            }
-                            else if (AUTOMAPPED_CNT != 0 && ASRTM.MappingStatus != "AUTOMAPPED")
-                            {
-                                ASRTM.MappingStatus = "AUTOMAPPED";
+                                ASRTM.MappingStatus = "MAPPED";
                                 ASRTM.Edit_User = CallingUser;
                                 ASRTM.Edit_Date = DateTime.Now;
                             }
-                            else if (AUTOMAPPED_CNT == 0 && MAPPED_CNT != 0 && ASRTM.MappingStatus != "MAPPED")
+                            else if (AUTOMAPPED_CNT != 0 && MAPPED_CNT == 0 && ASRTM.MappingStatus != "AUTOMAPPED")
                             {
-                                ASRTM.MappingStatus = "MAPPED";
+                                ASRTM.MappingStatus = "AUTOMAPPED";
                                 ASRTM.Edit_User = CallingUser;
                                 ASRTM.Edit_Date = DateTime.Now;
                             }
@@ -6095,6 +6089,12 @@ namespace DataLayer
                                 ASRTM.MappingStatus = "REVIEW";
                                 ASRTM.Edit_User = CallingUser;
                                 ASRTM.Edit_Date = DateTime.Now;
+                            }
+                            else if (itemToUpdate.MappingStatus == "ADD" && ASRTM.MappingStatus != itemToUpdate.MappingStatus)
+                            {
+                                ASRTM.MappingStatus = itemToUpdate.MappingStatus;
+                                ASRTM.Edit_Date = DateTime.Now;
+                                ASRTM.Edit_User = "ML_BROKER_API";
                             }
                             else if (AUTOMAPPED_CNT == 0 && MAPPED_CNT == 0 && REVIEW_CNT == 0 && ASRTM.MappingStatus != "UNMAPPED")
                             {
