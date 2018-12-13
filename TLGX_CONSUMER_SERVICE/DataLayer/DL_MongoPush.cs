@@ -684,7 +684,7 @@ namespace DataLayer
 
                     if (iScheduledCount > 0)
                     {
-                        return new DC_Message { StatusMessage = "Supplier Static Hotel sync has already been scheduled.", StatusCode = ReadOnlyMessage.StatusCode.Information };
+                        return new DC_Message { StatusMessage = "Supplier Static Activity Data sync has already been scheduled.", StatusCode = ReadOnlyMessage.StatusCode.Information };
                     }
                     else
                     {
