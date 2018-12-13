@@ -275,60 +275,69 @@ namespace DataLayer
 
             int TotalCount = 0;
             int MLDataInsertedCount = 0;
+            int BatchSize = 500;
+
             try
             {
                 UpdateDistLogInfo(LogId, PushStatus.RUNNNING);
-                _objAcoo = GetMasterAccoRoomInformationDataForMLTrans();
-                _objAccoRoomAttributes = GetMasterAccoRoomExtendedAttrsForMLTrans();
-                TotalCount = _objAcoo.Count();
 
-                foreach (var item in _objAcoo)
+                using (ConsumerEntities context = new ConsumerEntities())
                 {
-                    _objToSend.MasterAccommodationRoomInformation.Add(new DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo_Data
+                    TotalCount = context.Accommodation_RoomInfo.Where(w => w.Accommodation_Id != null).Count();
+                }
+
+                _objAccoRoomAttributes = GetMasterAccoRoomExtendedAttrsForMLTrans();
+
+                for (int BatchNo = 0; BatchNo < BatchSize; BatchNo++)
+                {
+                    _objAcoo = GetMasterAccoRoomInformationDataForMLTrans(BatchNo, BatchSize);
+
+                    foreach (var item in _objAcoo)
                     {
-                        AccommodationRoomInfoId = Convert.ToString(item.Accommodation_RoomInfo_Id),
-                        AccommodationId = Convert.ToString(item.Accommodation_Id),
-                        TLGXCommonHotelId = item.TLGXCommonHotelId,
-                        RoomId = item.RoomId,
-                        RoomView = item.RoomView,
-                        NoOfRooms = item.NoOfRooms,
-                        RoomName = item.RoomName,
-                        NoOfInterconnectingRooms = item.NoOfInterconnectingRooms,
-                        Description = item.Description,
-                        RoomSize = item.RoomSize,
-                        RoomDecor = item.RoomDecor,
-                        Smoking = item.Smoking,
-                        FloorName = item.FloorName,
-                        FloorNumber = item.FloorNumber,
-                        MysteryRoom = item.MysteryRoom,
-                        BathRoomType = item.BathRoomType,
-                        BedType = item.BedType,
-                        CompanyRoomCategory = item.CompanyRoomCategory,
-                        RoomCategory = item.RoomCategory,
-                        Category = item.Category,
-                        CreateDate = Convert.ToString(item.Create_Date),
-                        CreateUser = item.Create_User,
-                        EditDate = Convert.ToString(item.Edit_Date),
-                        EditUser = item.Edit_User,
-                        RoomInfo_TX = item.RoomInfo_TX,
-                        TLGXAccoRoomId = item.TLGXAccoRoomId,
-                        TLGXAccoId = item.TLGXAccoId,
-                        ExtractedAttributes = _objAccoRoomAttributes.Where(w => w.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).Select(s => new ExtractedAttributes { Key = s.SystemAttributeKeyword, Value = s.Accommodation_RoomInfo_Attribute }).ToList()
-                    });
-                    _objAccoRoomAttributes.RemoveAll(x => x.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id);
-                    MLDataInsertedCount = MLDataInsertedCount + 1;
+                        _objToSend.MasterAccommodationRoomInformation.Add(new DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo_Data
+                        {
+                            AccommodationRoomInfoId = Convert.ToString(item.Accommodation_RoomInfo_Id),
+                            AccommodationId = Convert.ToString(item.Accommodation_Id),
+                            TLGXCommonHotelId = item.TLGXCommonHotelId,
+                            RoomId = item.RoomId,
+                            RoomView = item.RoomView,
+                            NoOfRooms = item.NoOfRooms,
+                            RoomName = item.RoomName,
+                            NoOfInterconnectingRooms = item.NoOfInterconnectingRooms,
+                            Description = item.Description,
+                            RoomSize = item.RoomSize,
+                            RoomDecor = item.RoomDecor,
+                            Smoking = item.Smoking,
+                            FloorName = item.FloorName,
+                            FloorNumber = item.FloorNumber,
+                            MysteryRoom = item.MysteryRoom,
+                            BathRoomType = item.BathRoomType,
+                            BedType = item.BedType,
+                            CompanyRoomCategory = item.CompanyRoomCategory,
+                            RoomCategory = item.RoomCategory,
+                            Category = item.Category,
+                            CreateDate = Convert.ToString(item.Create_Date),
+                            CreateUser = item.Create_User,
+                            EditDate = Convert.ToString(item.Edit_Date),
+                            EditUser = item.Edit_User,
+                            RoomInfo_TX = item.RoomInfo_TX,
+                            TLGXAccoRoomId = item.TLGXAccoRoomId,
+                            TLGXAccoId = item.TLGXAccoId,
+                            ExtractedAttributes = _objAccoRoomAttributes.Where(w => w.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id).Select(s => new ExtractedAttributes { Key = s.SystemAttributeKeyword, Value = s.Accommodation_RoomInfo_Attribute }).ToList()
+                        });
 
-                    if (MLDataInsertedCount % 1000 == 0 || MLDataInsertedCount == TotalCount)
-                    {
-                        _objToSend.BatchId = Guid.NewGuid().ToString();
-                        
-                        DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_MasterAccommodationRoomInformation"], _objToSend, typeof(DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo), typeof(DC_ML_Message), out object result);
-
-                        _objToSend.MasterAccommodationRoomInformation.Clear();
-
-                        UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
-                        
+                        _objAccoRoomAttributes.RemoveAll(x => x.Accommodation_RoomInfo_Id == item.Accommodation_RoomInfo_Id);
                     }
+
+                    MLDataInsertedCount = MLDataInsertedCount + _objToSend.MasterAccommodationRoomInformation.Count();
+
+                    _objToSend.BatchId = Guid.NewGuid().ToString();
+
+                    DHSVCProxy.PostDataNewtonsoft(ProxyFor.MachingLearningDataTransfer, System.Configuration.ConfigurationManager.AppSettings["MLSVCURL_DataApi_Post_MasterAccommodationRoomInformation"], _objToSend, typeof(DataContracts.ML.DC_ML_DL_MasterAccoRoomInfo), typeof(DC_ML_Message), out object result);
+
+                    _objToSend.MasterAccommodationRoomInformation.Clear();
+
+                    UpdateDistLogInfo(LogId, PushStatus.RUNNNING, TotalCount, MLDataInsertedCount);
                 }
             }
             catch (Exception ex)
@@ -338,7 +347,8 @@ namespace DataLayer
             }
             return string.Empty;
         }
-        private List<DataContracts.DC_ML_MasterAccoRoomInfo_Data> GetMasterAccoRoomInformationDataForMLTrans()
+
+        private List<DataContracts.DC_ML_MasterAccoRoomInfo_Data> GetMasterAccoRoomInformationDataForMLTrans(int BatchNo, int BatchSize)
         {
             List<DataContracts.DC_ML_MasterAccoRoomInfo_Data> _objAcoo = new List<DataContracts.DC_ML_MasterAccoRoomInfo_Data>();
             try
@@ -349,7 +359,7 @@ namespace DataLayer
                     context.Configuration.AutoDetectChangesEnabled = false;
 
                     StringBuilder sbSelect = new StringBuilder();
-                    sbSelect.Append(@"SELECT 
+                    sbSelect.Append(@" SELECT 
                                        ARI.Accommodation_RoomInfo_Id,
                                        ARI.Accommodation_Id,
                                        Ac.CompanyHotelID AS TLGXCommonHotelId,
@@ -379,7 +389,8 @@ namespace DataLayer
                                         AC.TLGXAccoId
                                         FROM Accommodation_RoomInfo ARI with(nolock) 
 										join Accommodation AC with(nolock) on ARI.Accommodation_Id = AC.Accommodation_Id ");
-
+                    int skip = BatchNo * BatchSize;
+                    sbSelect.Append("  ORDER BY ARI.Accommodation_RoomInfo_Id OFFSET " + (skip).ToString() + " ROWS FETCH NEXT " + BatchSize.ToString() + " ROWS ONLY ");
                     try { _objAcoo = context.Database.SqlQuery<DataContracts.DC_ML_MasterAccoRoomInfo_Data>(sbSelect.ToString()).ToList(); } catch (Exception ex) { }
                 }
 
@@ -390,7 +401,6 @@ namespace DataLayer
                 throw;
             }
         }
-
 
         private List<DC_ML_DL_AccoRoom_ExtendedAttributes_Data> GetMasterAccoRoomExtendedAttrsForMLTrans()
         {
@@ -1153,7 +1163,7 @@ namespace DataLayer
                     {
                         List<Accommodation_SupplierRoomTypeMapping_Values> SupplierRoomTypeMappingValue = new List<Accommodation_SupplierRoomTypeMapping_Values>();
                         SupplierRoomTypeMappingValue = context.Accommodation_SupplierRoomTypeMapping_Values.AsNoTracking()
-                                                    .Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id 
+                                                    .Where(rv => rv.Accommodation_SupplierRoomTypeMapping_Id == accommodation_SupplierRoomTypeMapping_Id
                                                     && rv.Accommodation_RoomInfo_Id != null && (rv.UserMappingStatus == "MAPPED" || rv.UserMappingStatus == "UNMAPPED")).ToList();
 
                         //var maxValue = SupplierRoomTypeMappingValue.Max(x => x.MatchingScore);
