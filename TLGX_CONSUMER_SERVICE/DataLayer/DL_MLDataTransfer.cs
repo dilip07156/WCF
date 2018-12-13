@@ -276,6 +276,7 @@ namespace DataLayer
             int TotalCount = 0;
             int MLDataInsertedCount = 0;
             int BatchSize = 500;
+            int NoOfBatch = 0;
 
             try
             {
@@ -286,9 +287,16 @@ namespace DataLayer
                     TotalCount = context.Accommodation_RoomInfo.Where(w => w.Accommodation_Id != null).Count();
                 }
 
+                NoOfBatch = TotalCount / BatchSize;
+                int mod = TotalCount % BatchSize;
+                if (mod > 0)
+                {
+                    NoOfBatch = NoOfBatch + 1;
+                }
+
                 _objAccoRoomAttributes = GetMasterAccoRoomExtendedAttrsForMLTrans();
 
-                for (int BatchNo = 0; BatchNo < BatchSize; BatchNo++)
+                for (int BatchNo = 0; BatchNo < NoOfBatch; BatchNo++)
                 {
                     _objAcoo = GetMasterAccoRoomInformationDataForMLTrans(BatchNo, BatchSize);
 
