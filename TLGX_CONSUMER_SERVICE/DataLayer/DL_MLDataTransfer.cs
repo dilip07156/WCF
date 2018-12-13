@@ -296,6 +296,8 @@ namespace DataLayer
 
                 _objAccoRoomAttributes = GetMasterAccoRoomExtendedAttrsForMLTrans();
 
+                _objToSend.MasterAccommodationRoomInformation = new List<DC_ML_DL_MasterAccoRoomInfo_Data>();
+
                 for (int BatchNo = 0; BatchNo < NoOfBatch; BatchNo++)
                 {
                     _objAcoo = GetMasterAccoRoomInformationDataForMLTrans(BatchNo, BatchSize);
