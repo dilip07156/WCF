@@ -349,7 +349,7 @@ namespace DataLayer
                     context.Configuration.AutoDetectChangesEnabled = false;
 
                     StringBuilder sbSelect = new StringBuilder();
-                    sbSelect.Append(@"SELECT top 500 
+                    sbSelect.Append(@"SELECT 
                                        ARI.Accommodation_RoomInfo_Id,
                                        ARI.Accommodation_Id,
                                        Ac.CompanyHotelID AS TLGXCommonHotelId,
